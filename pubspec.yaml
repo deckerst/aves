@@ -1,20 +1,22 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
+publish_to: none
+
 # version bump checklist:
 # - pubspec version
 # - github changelog: /CHANGELOG.md
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.13.12+163
-publish_to: none
+version: 1.14.0+164
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.27.4
-  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
+  flutter: 3.41.1
+  sdk: ">=3.11.0 <4.0.0"
+
 workspace:
   - plugins/aves_magnifier
   - plugins/aves_map
@@ -72,8 +74,7 @@ dependencies:
   decorated_icon:
   device_info_plus:
   dlna_dart:
-  # `dynamic_color` v1.8.1 is broken, relying on `Color.toARGB32` which is not in Flutter v3.27.4
-  dynamic_color: 1.7.0
+  dynamic_color:
   equatable:
   event_bus:
   expansion_tile_card:
@@ -87,7 +88,6 @@ dependencies:
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git
-      ref: 6a8c14bceaefd00e703ad517fd2a32fa2081b5de
   flutter_map:
   flutter_markdown_plus:
   flutter_staggered_animations:
@@ -120,8 +120,7 @@ dependencies:
   screen_brightness:
   shared_preferences:
   shelf:
-  # smooth_page_indicator v2 requires a recent `vector` lib from Flutter
-  smooth_page_indicator: 1.2.1
+  smooth_page_indicator:
   sqflite:
   stack_trace:
   streams_channel:
@@ -129,12 +128,17 @@ dependencies:
       url: https://github.com/deckerst/aves_streams_channel.git
   synchronized:
   url_launcher:
-  # vector_map_tiles v10.0.0-beta requires Flutter v3.37.0 and Impeller
-  vector_map_tiles: ^9.0.0-beta.8
+  # `vector_map_tiles` v10.0.0-beta API is unclear to provide sprites
+  vector_map_tiles: ^9.0.0-beta
   vector_math:
   vector_tile_renderer:
   volume_controller:
   xml:
+
+dependency_overrides:
+  # `shared_preferences_android` v2.4.20 depends on `androidx.datastore:datastore` v1.2.0, embedding
+  # native lib `libdatastore_shared_counter.so` which is not 16KB aligned for `x86_64` and `arm64-v8a`
+  shared_preferences_android: 2.4.18
 
 dev_dependencies:
   flutter_test:
@@ -164,9 +168,6 @@ flutter:
 
 ################################################################################
 # Test driver
-
-# capture shaders (profile mode, real device only):
-# % ./flutterw drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
 
 # generate screenshots (profile mode, specific collection):
 # % ./flutterw drive --flavor play -t test_driver/driver_screenshots.dart --profile

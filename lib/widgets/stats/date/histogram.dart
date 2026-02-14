@@ -88,13 +88,14 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
 
           // smooth curve
           _interpolatedDataLoader = compute<_DataInterpolationArg, List<_EntryByDate>?>(
-              _computeInterpolatedData,
-              _DataInterpolationArg(
-                firstDate: _firstDate,
-                lastDate: _lastDate,
-                level: _level,
-                entryCountPerDate: _entryCountPerDate,
-              ));
+            _computeInterpolatedData,
+            _DataInterpolationArg(
+              firstDate: _firstDate,
+              lastDate: _lastDate,
+              level: _level,
+              entryCountPerDate: _entryCountPerDate,
+            ),
+          );
           _areaChartLoader = _interpolatedDataLoader.then((_) => Future.delayed(animationDuration * timeDilation));
         }
       }
@@ -283,7 +284,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
       selectionModels: [
         charts.SelectionModelConfig(
           changedListener: (model) => _selection.value = model.selectedDatum.firstOrNull?.datum as _EntryByDate?,
-        )
+        ),
       ],
     );
     if (drawArea) {

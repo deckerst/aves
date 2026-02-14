@@ -29,8 +29,8 @@ class AvesDialog extends StatelessWidget {
     this.horizontalContentPadding = defaultHorizontalContentPadding,
     this.content,
     this.actions = const [],
-  })  : assert((scrollableContent != null) ^ (content != null)),
-        scrollController = scrollController ?? ScrollController();
+  }) : assert((scrollableContent != null) ^ (content != null)),
+       scrollController = scrollController ?? ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +114,10 @@ class AvesDialog extends StatelessWidget {
   }
 
   static Decoration contentDecoration(BuildContext context) => BoxDecoration(
-        border: Border(
-          bottom: Divider.createBorderSide(context, width: borderWidth),
-        ),
-      );
+    border: Border(
+      bottom: Divider.createBorderSide(context, width: borderWidth),
+    ),
+  );
 
   static ShapeBorder shape(BuildContext context) {
     return RoundedRectangleBorder(
@@ -149,37 +149,82 @@ class DialogTitle extends StatelessWidget {
   }
 }
 
-Future<void> showNoMatchingAppDialog(BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AvesDialog(
-        content: Text(context.l10n.noMatchingAppDialogMessage),
-        actions: const [OkButton()],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
+Future<void> showNoMatchingAppDialog(BuildContext context) => showWarningDialog(
+  context: context,
+  message: context.l10n.noMatchingAppDialogMessage,
+);
 
-class CancelButton extends StatelessWidget {
-  const CancelButton({super.key});
+Future<void> showWarningDialog({
+  required BuildContext context,
+  required String message,
+}) => showDialog(
+  context: context,
+  builder: (context) => AvesMessageDialog.info(message),
+  routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+);
+
+class CancelButton<T> extends StatelessWidget {
+  final String? text;
+  final T? result;
+
+  const CancelButton({
+    super.key,
+    this.text,
+    this.result,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.maybeOf(context)?.pop(),
+      onPressed: () => Navigator.maybeOf(context)?.pop(result),
       // MD2 button labels were upper case but they are lower case in MD3
-      child: Text(Themes.asButtonLabel(context.l10n.cancelTooltip)),
+      child: Text(text ?? Themes.asButtonLabel(context.l10n.cancelTooltip)),
     );
   }
 }
 
-class OkButton extends StatelessWidget {
-  const OkButton({super.key});
+class OkButton<T> extends StatelessWidget {
+  final String? text;
+  final T? result;
+
+  const OkButton({
+    super.key,
+    this.text,
+    this.result,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.maybeOf(context)?.pop(),
+      onPressed: () => Navigator.maybeOf(context)?.pop(result),
       // MD2 button labels were upper case but they are lower case in MD3
-      child: Text(Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
+      child: Text(text ?? Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
+    );
+  }
+}
+
+class AvesMessageDialog extends StatelessWidget {
+  final String message;
+  final List<Widget> actions;
+
+  const AvesMessageDialog({
+    super.key,
+    required this.message,
+    required this.actions,
+  });
+
+  factory AvesMessageDialog.info(String message) {
+    return AvesMessageDialog(
+      message: message,
+      actions: const [OkButton()],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AvesDialog(
+      content: Text(message),
+      actions: actions,
     );
   }
 }

@@ -31,10 +31,10 @@ class TagFilter extends CollectionFilter with CoveredFilter, TagBaseFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'tag': tag,
-        'reversed': reversed,
-      };
+    'type': type,
+    'tag': tag,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

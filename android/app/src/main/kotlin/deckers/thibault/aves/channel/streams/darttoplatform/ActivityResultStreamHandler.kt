@@ -92,7 +92,13 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             success(granted)
             endOfStream()
         } catch (e: Exception) {
-            error("requestMediaFileAccess-request", "failed to request access to ${uris.size} uris=$uris", e.message)
+            val byFromMediaStore = uris.groupBy { uri -> uri.toString().startsWith("content://media/") }
+            error(
+                "requestMediaFileAccess-request", "failed to request access to ${uris.size} uris" +
+                        " (${byFromMediaStore[true]?.size ?: 0} from media store" +
+                        ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
+                        ")", e.message
+            )
         }
     }
 

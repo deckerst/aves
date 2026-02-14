@@ -38,7 +38,8 @@ class DecoratedThumbnail extends StatelessWidget {
     final double thumbnailHeight = tileExtent;
     final double thumbnailWidth;
     if (isMosaic) {
-      thumbnailWidth = thumbnailHeight *
+      thumbnailWidth =
+          thumbnailHeight *
           entry.displayAspectRatio.clamp(
             MosaicSectionLayoutBuilder.minThumbnailAspectRatio,
             MosaicSectionLayoutBuilder.maxThumbnailAspectRatio,
@@ -79,10 +80,12 @@ class DecoratedThumbnail extends StatelessWidget {
       // `decoration` with sub logical pixel width yields scintillating borders
       // so we use `foregroundDecoration` instead
       foregroundDecoration: BoxDecoration(
-        border: Border.fromBorderSide(BorderSide(
-          color: borderColor(context),
-          width: borderWidth(context),
-        )),
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: borderColor(context),
+            width: borderWidth(context),
+          ),
+        ),
       ),
       width: thumbnailWidth,
       height: thumbnailHeight,

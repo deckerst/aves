@@ -134,33 +134,35 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: seriesData
-                  .map((d) => InkWell(
-                        onTap: onTap != null ? () => onTap(d) : null,
-                        borderRadius: const BorderRadius.all(Radius.circular(123)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(AIcons.circle, fill: 1, color: colorize(context, d)),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                formatKey(d),
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                maxLines: 1,
-                              ),
+                  .map(
+                    (d) => InkWell(
+                      onTap: onTap != null ? () => onTap(d) : null,
+                      borderRadius: const BorderRadius.all(Radius.circular(123)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(AIcons.circle, fill: 1, color: colorize(context, d)),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              formatKey(d),
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              maxLines: 1,
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              formatValue(d.value),
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            formatValue(d.value),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
-                            const SizedBox(width: 4),
-                          ],
-                        ),
-                      ))
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           );

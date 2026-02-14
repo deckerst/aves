@@ -219,12 +219,12 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     final selectedFilters = selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
-          action,
-          appMode: appMode,
-          isSelecting: isSelecting,
-          itemCount: itemCount,
-          selectedFilters: selectedFilters,
-        );
+      action,
+      appMode: appMode,
+      isSelecting: isSelecting,
+      itemCount: itemCount,
+      selectedFilters: selectedFilters,
+    );
 
     void onActionSelected(ChipSetAction action) {
       switch (action) {
@@ -290,11 +290,13 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
       if (canCreateStoredAlbums) ...[
         null,
         ChipSetAction.createVault,
-      ]
+      ],
     ];
 
     return [
-      ...quickActions.where(isVisible).map(
+      ...quickActions
+          .where(isVisible)
+          .map(
             (action) => IconButton(
               icon: action.getIcon(),
               onPressed: () => onActionSelected(action),

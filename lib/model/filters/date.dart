@@ -56,11 +56,11 @@ class DateFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'level': level.toString(),
-        'date': date?.toIso8601String(),
-        'reversed': reversed,
-      };
+    'type': type,
+    'level': level.toString(),
+    'date': date?.toIso8601String(),
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

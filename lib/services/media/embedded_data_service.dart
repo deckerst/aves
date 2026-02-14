@@ -1,11 +1,11 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/services.dart';
-import 'package:aves/services/common/channel.dart';
 
 abstract class EmbeddedDataService {
   Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry);

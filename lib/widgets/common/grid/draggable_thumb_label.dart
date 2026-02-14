@@ -77,12 +77,12 @@ const double _thumbLabelMaxWidth = 144;
 const EdgeInsets _padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
 Widget _buildText(String text, {required bool isCrumb}) => Text(
-      text,
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: isCrumb ? 10 : 14,
-      ),
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-    );
+  text,
+  style: TextStyle(
+    color: Colors.black,
+    fontSize: isCrumb ? 10 : 14,
+  ),
+  softWrap: false,
+  overflow: TextOverflow.fade,
+  maxLines: 1,
+);

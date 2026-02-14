@@ -66,19 +66,21 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
               children: [
                 const _Header(),
                 const Divider(),
-                ..._lastPaths!.map((path) => ListTile(
-                      title: Text(path),
-                      dense: true,
-                      trailing: IconButton(
-                        icon: const Icon(AIcons.clear),
-                        onPressed: () async {
-                          await storageService.revokeDirectoryAccess(path);
-                          _load();
-                          setState(() {});
-                        },
-                        tooltip: context.l10n.settingsStorageAccessRevokeTooltip,
-                      ),
-                    )),
+                ..._lastPaths!.map(
+                  (path) => ListTile(
+                    title: Text(path),
+                    dense: true,
+                    trailing: IconButton(
+                      icon: const Icon(AIcons.clear),
+                      onPressed: () async {
+                        await storageService.revokeDirectoryAccess(path);
+                        _load();
+                        setState(() {});
+                      },
+                      tooltip: context.l10n.settingsStorageAccessRevokeTooltip,
+                    ),
+                  ),
+                ),
               ],
             );
           },

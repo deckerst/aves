@@ -79,7 +79,7 @@ class SourceStateSubtitle extends StatelessWidget {
                     text: '${progress.done}/${progress.total}',
                     style: TextStyle(color: theme.isDark ? Colors.white30 : Colors.black26),
                   ),
-                ]
+                ],
               ],
             ),
             softWrap: false,

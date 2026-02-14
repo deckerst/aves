@@ -5,6 +5,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/services/common/channel.dart';
+import 'package:aves/services/common/custom_exception.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
@@ -122,7 +123,11 @@ class PlatformMetadataEditService implements MetadataEditService {
     if (entry.isValid) {
       final code = e.code;
       final customException = CustomPlatformException.fromStandard(e);
-      if (code.endsWith('mp4largemoov')) {
+      if (code.endsWith('mp4fragmented')) {
+        await mp4Fragmented(customException);
+      } else if (code.endsWith('mp4zerosizebox')) {
+        await mp4ZeroSizeBox(customException);
+      } else if (code.endsWith('mp4largemoov')) {
         await mp4LargeMoov(customException);
       } else if (code.endsWith('mp4largeother')) {
         await mp4LargeOther(customException);
@@ -136,6 +141,16 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   // distinct exceptions to convince Crashlytics to split reports into distinct issues
   // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
+
+  Future<void> mp4Fragmented(CustomPlatformException e) {
+    debugPrint('mp4Fragmented $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> mp4ZeroSizeBox(CustomPlatformException e) {
+    debugPrint('mp4ZeroSizeBox $e');
+    return reportService.recordError(e);
+  }
 
   Future<void> mp4LargeMoov(CustomPlatformException e) {
     debugPrint('mp4LargeMoov $e');
@@ -151,30 +166,4 @@ class PlatformMetadataEditService implements MetadataEditService {
     debugPrint('fileNotFound $e');
     return reportService.recordError(e);
   }
-}
-
-class CustomPlatformException {
-  final String code;
-  final String? message;
-  final dynamic details;
-  final String? stacktrace;
-
-  CustomPlatformException({
-    required this.code,
-    this.message,
-    this.details,
-    this.stacktrace,
-  });
-
-  factory CustomPlatformException.fromStandard(PlatformException e) {
-    return CustomPlatformException(
-      code: e.code,
-      message: e.message,
-      details: e.details,
-      stacktrace: e.stacktrace,
-    );
-  }
-
-  @override
-  String toString() => '$runtimeType($code, $message, $details, $stacktrace)';
 }

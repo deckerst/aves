@@ -1,7 +1,6 @@
 package deckers.thibault.aves.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
@@ -146,7 +145,7 @@ object StorageUtils {
         val appSpecificPath = file.absolutePath
         val relativePathStartIndex = appSpecificPath.indexOf("Android/data")
         if (relativePathStartIndex < 0) return null
-        return appSpecificPath.substring(0, relativePathStartIndex)
+        return appSpecificPath.take(relativePathStartIndex)
     }
 
     private fun findPrimaryVolumePath(context: Context): String? {
@@ -189,43 +188,30 @@ object StorageUtils {
             val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET") ?: ""
             if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
                 // fix of empty raw emulated storage on marshmallow
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    lateinit var files: List<File>
-                    var validFiles: Boolean
-                    val retryInterval = 100L
-                    val maxDelay = 1000L
-                    var totalDelay = 0L
-                    do {
-                        // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
-                        // (e.g. on API 30 emulator) so we retry until the file system is ready.
-                        // It can also include `null` when there is a faulty SD card.
-                        val externalFilesDirs = context.getExternalFilesDirs(null)
-                        validFiles = !externalFilesDirs.contains(null)
-                        if (validFiles) {
-                            files = externalFilesDirs.filterNotNull()
-                        } else {
-                            Log.d(LOG_TAG, "External files dirs contain `null`. Retrying...")
-                            totalDelay += retryInterval
-                            try {
-                                Thread.sleep(retryInterval)
-                            } catch (e: InterruptedException) {
-                                Log.e(LOG_TAG, "insomnia", e)
-                            }
-                        }
-                    } while (!validFiles && totalDelay < maxDelay)
-                    paths.addAll(files.mapNotNull(::appSpecificVolumePath))
-                } else {
-                    // Primary physical SD-CARD (not emulated)
-                    val rawExternalStorage = System.getenv("EXTERNAL_STORAGE") ?: ""
-
-                    // Device has physical external storage; use plain paths.
-                    if (TextUtils.isEmpty(rawExternalStorage)) {
-                        // EXTERNAL_STORAGE undefined; falling back to default.
-                        paths.addAll(physicalPaths)
+                lateinit var files: List<File>
+                var validFiles: Boolean
+                val retryInterval = 100L
+                val maxDelay = 1000L
+                var totalDelay = 0L
+                do {
+                    // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
+                    // (e.g. on API 30 emulator) so we retry until the file system is ready.
+                    // It can also include `null` when there is a faulty SD card.
+                    val externalFilesDirs = context.getExternalFilesDirs(null)
+                    validFiles = !externalFilesDirs.contains(null)
+                    if (validFiles) {
+                        files = externalFilesDirs.filterNotNull()
                     } else {
-                        paths.add(rawExternalStorage)
+                        Log.d(LOG_TAG, "External files dirs contain `null`. Retrying...")
+                        totalDelay += retryInterval
+                        try {
+                            Thread.sleep(retryInterval)
+                        } catch (e: InterruptedException) {
+                            Log.e(LOG_TAG, "insomnia", e)
+                        }
                     }
-                }
+                } while (!validFiles && totalDelay < maxDelay)
+                paths.addAll(files.mapNotNull(::appSpecificVolumePath))
             } else {
                 // Device has emulated storage; external storage paths should have userId burned into them.
                 // /storage/emulated/[0,1,2,...]/
@@ -249,31 +235,6 @@ object StorageUtils {
         return paths.map { ensureTrailingSeparator(it) }.toTypedArray()
     }
 
-    // returns physicalPaths based on phone model
-    @SuppressLint("SdCardPath")
-    private val physicalPaths = arrayOf(
-        "/storage/sdcard0",
-        "/storage/sdcard1",                 //Motorola Xoom
-        "/storage/extsdcard",               //Samsung SGS3
-        "/storage/sdcard0/external_sdcard", //User request
-        "/mnt/extsdcard",
-        "/mnt/sdcard/external_sd",          //Samsung galaxy family
-        "/mnt/external_sd",
-        "/mnt/media_rw/sdcard1",            //4.4.2 on CyanogenMod S3
-        "/removable/microsd",               //Asus transformer prime
-        "/mnt/emmc",
-        "/storage/external_SD",             //LG
-        "/storage/ext_sd",                  //HTC One Max
-        "/storage/removable/sdcard1",       //Sony Xperia Z1
-        "/data/sdext",
-        "/data/sdext2",
-        "/data/sdext3",
-        "/data/sdext4",
-        "/sdcard1",                         //Sony Xperia Z
-        "/sdcard2",                         //HTC One M8s
-        "/storage/microsd"                  //ASUS ZenFone 2
-    )
-
     /**
      * Volume tree URIs
      */
@@ -283,15 +244,13 @@ object StorageUtils {
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
     // /storage/extSdCard/          -> 1234-5678 [Android 5.1.1, Samsung Galaxy Core Prime]
     private fun getVolumeUuidForDocumentUri(context: Context, anyPath: String): String? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            sm?.getStorageVolume(File(anyPath))?.let { volume ->
-                if (volume.isPrimary) {
-                    return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
-                }
-                volume.uuid?.let { uuid ->
-                    return uuid.uppercase(Locale.ROOT)
-                }
+        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        sm?.getStorageVolume(File(anyPath))?.let { volume ->
+            if (volume.isPrimary) {
+                return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
+            }
+            volume.uuid?.let { uuid ->
+                return uuid.uppercase(Locale.ROOT)
             }
         }
 
@@ -333,18 +292,16 @@ object StorageUtils {
             return getPrimaryVolumePath(context)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            if (sm != null) {
-                for (volumePath in getVolumePaths(context)) {
-                    try {
-                        val volume = sm.getStorageVolume(File(volumePath))
-                        if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
-                            return volumePath
-                        }
-                    } catch (_: Exception) {
-                        // ignore
+        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (sm != null) {
+            for (volumePath in getVolumePaths(context)) {
+                try {
+                    val volume = sm.getStorageVolume(File(volumePath))
+                    if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
+                        return volumePath
                     }
+                } catch (_: Exception) {
+                    // ignore
                 }
             }
         }
@@ -690,7 +647,7 @@ object StorageUtils {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
             Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
-            null
+            throw FileDescriptorException("failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
         }
     }
 
@@ -764,7 +721,7 @@ object StorageUtils {
     }
 
     fun removeTrailingSeparator(dirPath: String): String {
-        return if (dirPath.endsWith(File.separator)) dirPath.substring(0, dirPath.length - 1) else dirPath
+        return if (dirPath.endsWith(File.separator)) dirPath.dropLast(1) else dirPath
     }
 
     // `fullPath` should match "volumePath + relativeDir + fileName"
@@ -786,3 +743,5 @@ object StorageUtils {
         }
     }
 }
+
+class FileDescriptorException(message: String, cause: Throwable? = null) : IOException(message, cause)

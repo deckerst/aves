@@ -85,7 +85,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           hasBorder: true,
           borderRadius: 20,
           subheading: useTvLayout ? const SizedBox(height: 16) : null,
-        )
+        ),
       ],
       actions: [
         const CancelButton(),

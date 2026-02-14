@@ -209,9 +209,10 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun copyToClipboard(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.toUri()
         val label = call.argument<String>("label")
-        if (uri == null) {
+        val text = call.argument<String>("text")
+        val uri = call.argument<String>("uri")?.toUri()
+        if (text == null && uri == null) {
             result.error("copyToClipboard-args", "missing arguments", null)
             return
         }
@@ -222,7 +223,12 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             try {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
                 if (clipboard != null) {
-                    val clip = ClipData.newUri(context.contentResolver, label, getShareableUri(context, uri))
+                    val clip: ClipData
+                    if (uri != null) {
+                        clip = ClipData.newUri(context.contentResolver, label, getShareableUri(context, uri))
+                    } else {
+                        clip = ClipData.newPlainText(label, text)
+                    }
                     clipboard.setPrimaryClip(clip)
                     result.success(true)
                 } else {

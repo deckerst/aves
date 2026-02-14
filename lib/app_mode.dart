@@ -17,36 +17,36 @@ enum AppMode {
 
 extension ExtraAppMode on AppMode {
   bool get canNavigate => {
-        AppMode.main,
-        AppMode.pickCollectionFiltersExternal,
-        AppMode.pickSingleMediaExternal,
-        AppMode.pickMultipleMediaExternal,
-      }.contains(this);
+    AppMode.main,
+    AppMode.pickCollectionFiltersExternal,
+    AppMode.pickSingleMediaExternal,
+    AppMode.pickMultipleMediaExternal,
+  }.contains(this);
 
   bool get canEditEntry => {
-        AppMode.main,
-        AppMode.view,
-      }.contains(this);
+    AppMode.main,
+    AppMode.view,
+  }.contains(this);
 
   bool get canSelectMedia => {
-        AppMode.main,
-        AppMode.pickMultipleMediaExternal,
-      }.contains(this);
+    AppMode.main,
+    AppMode.pickMultipleMediaExternal,
+  }.contains(this);
 
   bool get canSelectFilter => {
-        AppMode.main,
-        AppMode.pickCollectionFiltersExternal,
-      }.contains(this);
+    AppMode.main,
+    AppMode.pickCollectionFiltersExternal,
+  }.contains(this);
 
   bool get canCreateFilter => {
-        AppMode.main,
-        AppMode.pickFilterInternal,
-      }.contains(this);
+    AppMode.main,
+    AppMode.pickFilterInternal,
+  }.contains(this);
 
   bool get isPickingMedia => {
-        AppMode.pickSingleMediaExternal,
-        AppMode.pickMultipleMediaExternal,
-        AppMode.pickFilteredMediaInternal,
-        AppMode.pickUnfilteredMediaInternal,
-      }.contains(this);
+    AppMode.pickSingleMediaExternal,
+    AppMode.pickMultipleMediaExternal,
+    AppMode.pickFilteredMediaInternal,
+    AppMode.pickUnfilteredMediaInternal,
+  }.contains(this);
 }

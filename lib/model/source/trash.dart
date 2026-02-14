@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -25,16 +26,18 @@ mixin TrashMixin on SourceBase {
 
     final processed = <ImageOpEvent>{};
     final opCompleter = Completer<Set<String>>();
-    mediaEditService.delete(entries: expiredEntries).listen(
-      processed.add,
-      onError: opCompleter.completeError,
-      onDone: () async {
-        final successOps = processed.where((e) => e.success).toSet();
-        final deletedOps = successOps.where((e) => !e.skipped).toSet();
-        final deletedUris = deletedOps.map((event) => event.uri).toSet();
-        opCompleter.complete(deletedUris);
-      },
-    );
+    mediaEditService
+        .delete(entries: expiredEntries)
+        .listen(
+          processed.add,
+          onError: opCompleter.completeError,
+          onDone: () async {
+            final successOps = processed.where((e) => e.success).toSet();
+            final deletedOps = successOps.where((e) => !e.skipped).toSet();
+            final deletedUris = deletedOps.map((event) => event.uri).toSet();
+            opCompleter.complete(deletedUris);
+          },
+        );
     return await opCompleter.future;
   }
 
@@ -48,10 +51,10 @@ mixin TrashMixin on SourceBase {
       final recoveryPath = pContext.join(androidFileUtils.picturesPath, AndroidFileUtils.recoveryDir);
       await Future.forEach(untrackedPaths, (untrackedPath) async {
         TrashDetails _buildTrashDetails(int id) => TrashDetails(
-              id: id,
-              path: untrackedPath,
-              dateMillis: DateTime.now().millisecondsSinceEpoch,
-            );
+          id: id,
+          path: untrackedPath,
+          dateMillis: DateTime.now().millisecondsSinceEpoch,
+        );
 
         final uri = Uri.file(untrackedPath).toString();
         final entry = allEntries.firstWhereOrNull((v) => v.uri == uri);
@@ -77,6 +80,13 @@ mixin TrashMixin on SourceBase {
             newEntries.add(sourceEntry);
           } else {
             await reportService.recordError('Failed to recover untracked bin item at uri=$uri');
+
+            // remove it, as it is likely not a valid media file
+            try {
+              await File(untrackedPath).delete();
+            } catch (error, stack) {
+              await reportService.recordError('Failed to remove invalid untracked bin item at path=$untrackedPath with error=$error\n$stack');
+            }
           }
         }
       });

@@ -18,7 +18,8 @@ class VideoCover extends StatefulWidget {
     AvesMagnifierController coverController,
     Size coverSize,
     ImageProvider videoCoverUriImage,
-  ) magnifierBuilder;
+  )
+  magnifierBuilder;
 
   const VideoCover({
     super.key,

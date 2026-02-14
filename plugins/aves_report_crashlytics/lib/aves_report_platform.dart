@@ -66,7 +66,7 @@ class PlatformReportService extends ReportService {
   }
 
   @override
-  Future<void> recordError(dynamic exception, [StackTrace? stack]) async {
+  Future<void> recordError(Object exception, [StackTrace? stack]) async {
     if (exception is PlatformException && stack != null) {
       stack = ReportService.buildReportStack(stack, level: 2);
     }

@@ -28,12 +28,13 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    )
-      ..value = 1
-      ..addListener(() => setState(() {}));
+    _controller =
+        AnimationController(
+            duration: widget.duration,
+            vsync: this,
+          )
+          ..value = 1
+          ..addListener(() => setState(() {}));
     _animation = CurvedAnimation(
       parent: _controller,
       curve: widget.curve,

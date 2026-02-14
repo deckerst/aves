@@ -108,25 +108,26 @@ class _TaskQueueOverlay extends StatelessWidget {
               color: Colors.indigo.shade900.withAlpha(0xCC),
               padding: const EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
-                  stream: servicePolicy.queueStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) return const SizedBox();
-                    final queuedEntries = <MapEntry<dynamic, int>>[];
-                    if (snapshot.hasData) {
-                      final state = snapshot.data!;
-                      queuedEntries.add(MapEntry('run', state.runningCount));
-                      queuedEntries.add(MapEntry('paused', state.pausedCount));
-                      queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));
-                    }
-                    queuedEntries.sort((a, b) => a.key.compareTo(b.key));
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(queuedEntries.map((kv) => '${kv.key}: ${kv.value}').join(', ')),
-                      ],
-                    );
-                  }),
+                stream: servicePolicy.queueStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return const SizedBox();
+                  final queuedEntries = <MapEntry<dynamic, int>>[];
+                  if (snapshot.hasData) {
+                    final state = snapshot.data!;
+                    queuedEntries.add(MapEntry('run', state.runningCount));
+                    queuedEntries.add(MapEntry('paused', state.pausedCount));
+                    queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));
+                  }
+                  queuedEntries.sort((a, b) => a.key.compareTo(b.key));
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(queuedEntries.map((kv) => '${kv.key}: ${kv.value}').join(', ')),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

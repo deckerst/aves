@@ -35,7 +35,7 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
   }
 
   @override
-  FutureOr onDispose() {
+  void onDispose() {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();

@@ -101,14 +101,15 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       _subscriptions.add(mediaSessionService.mediaCommands.listen(_onMediaCommand));
     }
     viewerController.startAutopilotAnimation(
-        vsync: this,
-        onUpdate: ({required scaleLevel}) {
-          final boundaries = _magnifierController.scaleBoundaries;
-          if (boundaries != null) {
-            final scale = boundaries.scaleForLevel(scaleLevel);
-            _magnifierController.update(scale: scale, source: ChangeSource.animation);
-          }
-        });
+      vsync: this,
+      onUpdate: ({required scaleLevel}) {
+        final boundaries = _magnifierController.scaleBoundaries;
+        if (boundaries != null) {
+          final scale = boundaries.scaleForLevel(scaleLevel);
+          _magnifierController.update(scale: scale, source: ChangeSource.animation);
+        }
+      },
+    );
   }
 
   void _unregisterWidget(EntryPageView oldWidget) {
@@ -231,7 +232,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
                     Shadow(
                       color: Colors.black,
                       blurRadius: 4,
-                    )
+                    ),
                   ],
                 );
                 VideoActionNotification(
@@ -418,7 +419,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
           onFling: _onFling,
-          onTap: (context, _, alignment, __) {
+          onTap: (context, _, alignment, _) {
             if (context.mounted) {
               _onTap(alignment: alignment);
             }
@@ -440,15 +441,16 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     final brightness = Theme.of(context).brightness;
     final outline = await WidgetOutline.systemBlackAndWhite.color(brightness);
 
-    final dragShadowBytes = await HomeWidgetPainter(
-      entry: entry,
-      devicePixelRatio: devicePixelRatio,
-    ).drawWidget(
-      sizeDip: dragShadowSize,
-      cornerRadiusPx: cornerRadiusPx,
-      outline: outline,
-      shape: WidgetShape.rrect,
-    );
+    final dragShadowBytes =
+        await HomeWidgetPainter(
+          entry: entry,
+          devicePixelRatio: devicePixelRatio,
+        ).drawWidget(
+          sizeDip: dragShadowSize,
+          cornerRadiusPx: cornerRadiusPx,
+          outline: outline,
+          shape: WidgetShape.rrect,
+        );
 
     await windowService.startGlobalDrag(entry.uri, entry.bestTitle, dragShadowSize, dragShadowBytes);
   }

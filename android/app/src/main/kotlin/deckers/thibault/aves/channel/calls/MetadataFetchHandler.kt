@@ -254,7 +254,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                         val sameNameDirs = dirEntry.value
                         val sameNameDirCount = sameNameDirs.size
-                        for (dirIndex in 0 until sameNameDirCount) {
+                        for (dirIndex in 0..<sameNameDirCount) {
                             val dir = sameNameDirs[dirIndex]
 
                             // directory name
@@ -673,8 +673,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             // in case there was no SubIFD directory
                             dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { metadataMap[KEY_DATE_MILLIS] = it }
                         }
-                        dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
-                            val orientation = it
+                        dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) { orientation ->
                             if (isFlippedForExifCode(orientation)) {
                                 flags = flags or MASK_IS_FLIPPED
                             }

@@ -1176,7 +1176,7 @@ abstract class ImageProvider {
         val newFields: FieldMap = hashMapOf()
         if (modifier.containsKey(TYPE_EXIF)) {
             val fields = modifier[TYPE_EXIF] as Map<*, *>?
-            if (fields != null && fields.isNotEmpty()) {
+            if (!fields.isNullOrEmpty()) {
                 if (!editExif(
                         context = context,
                         path = path,
@@ -1248,7 +1248,7 @@ abstract class ImageProvider {
 
         if (modifier.containsKey(TYPE_MP4)) {
             val fieldsToEdit = modifier[TYPE_MP4] as Map<*, *>?
-            if (fieldsToEdit != null && fieldsToEdit.isNotEmpty()) {
+            if (!fieldsToEdit.isNullOrEmpty()) {
                 if (!editMp4Metadata(
                         context = context,
                         path = path,

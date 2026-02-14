@@ -158,10 +158,12 @@ class _ContentState extends State<_Content> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: AppReference.buildLinks(context)
-              .map((v) => Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: v,
-                  ))
+              .map(
+                (v) => Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: v,
+                ),
+              )
               .toList(),
         );
       case _Section.credits:

@@ -79,61 +79,64 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
         // does not misinterpret content scrolling for page scrolling
         onNotification: (notification) => true,
         child: ValueListenableBuilder<Map<String, MetadataDirectory>>(
-            valueListenable: metadataNotifier,
-            builder: (context, metadata, child) {
-              Widget content;
-              if (metadata.isEmpty) {
-                content = const SizedBox();
-              } else {
-                final durations = context.watch<DurationsData>();
-                content = Column(
-                  children: AnimationConfiguration.toStaggeredList(
-                    duration: durations.staggeredAnimation,
-                    delay: durations.staggeredAnimationDelay * timeDilation,
-                    childAnimationBuilder: (child) => SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: child,
-                      ),
+          valueListenable: metadataNotifier,
+          builder: (context, metadata, child) {
+            Widget content;
+            if (metadata.isEmpty) {
+              content = const SizedBox();
+            } else {
+              final durations = context.watch<DurationsData>();
+              content = Column(
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: durations.staggeredAnimation,
+                  delay: durations.staggeredAnimationDelay * timeDilation,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
                     ),
-                    children: settings.useTvLayout
-                        ? [
-                            const SizedBox(height: 16),
-                            AvesOutlinedButton(
-                              label: MaterialLocalizations.of(context).moreButtonTooltip,
-                              onPressed: () {
-                                Navigator.maybeOf(context)?.push(
-                                  MaterialPageRoute(
-                                    settings: const RouteSettings(name: TvMetadataPage.routeName),
-                                    builder: (context) => TvMetadataPage(
-                                      entry: entry,
-                                      metadata: metadata,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ]
-                        : [
-                            const SectionRow(icon: AIcons.info),
-                            ...metadata.entries.map((kv) => MetadataDirTile(
-                                  entry: entry,
-                                  title: kv.key,
-                                  dir: kv.value,
-                                  expandedDirectoryNotifier: _expandedDirectoryNotifier,
-                                )),
-                          ],
                   ),
-                );
-              }
-
-              return AnimationLimiter(
-                // we update the limiter key after fetching the metadata of a new entry,
-                // in order to restart the staggered animation of the metadata section
-                key: ValueKey(metadata.length),
-                child: content,
+                  children: settings.useTvLayout
+                      ? [
+                          const SizedBox(height: 16),
+                          AvesOutlinedButton(
+                            label: MaterialLocalizations.of(context).moreButtonTooltip,
+                            onPressed: () {
+                              Navigator.maybeOf(context)?.push(
+                                MaterialPageRoute(
+                                  settings: const RouteSettings(name: TvMetadataPage.routeName),
+                                  builder: (context) => TvMetadataPage(
+                                    entry: entry,
+                                    metadata: metadata,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ]
+                      : [
+                          const SectionRow(icon: AIcons.info),
+                          ...metadata.entries.map(
+                            (kv) => MetadataDirTile(
+                              entry: entry,
+                              title: kv.key,
+                              dir: kv.value,
+                              expandedDirectoryNotifier: _expandedDirectoryNotifier,
+                            ),
+                          ),
+                        ],
+                ),
               );
-            }),
+            }
+
+            return AnimationLimiter(
+              // we update the limiter key after fetching the metadata of a new entry,
+              // in order to restart the staggered animation of the metadata section
+              key: ValueKey(metadata.length),
+              child: content,
+            );
+          },
+        ),
       ),
     );
   }

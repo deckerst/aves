@@ -250,10 +250,10 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       final iptc = await metadataFetchService.getIptc(this);
       if (iptc != null) {
         if (editTitle) {
-          editIptcValues(iptc, IPTC.applicationRecord, IPTC.objectName, {if (title != null) title});
+          editIptcValues(iptc, IPTC.applicationRecord, IPTC.objectName, {?title});
         }
         if (editDescription) {
-          editIptcValues(iptc, IPTC.applicationRecord, IPTC.captionAbstractTag, {if (description != null) description});
+          editIptcValues(iptc, IPTC.applicationRecord, IPTC.captionAbstractTag, {?description});
         }
         metadata[MetadataType.iptc] = iptc;
       }
@@ -471,21 +471,22 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       XmpNamespaces.gContainer,
     );
 
-    modified |= [
-      XmpAttributes.gCameraMicroVideo,
-      XmpAttributes.gCameraMicroVideoVersion,
-      XmpAttributes.gCameraMicroVideoOffset,
-      XmpAttributes.gCameraMicroVideoPresentationTimestampUs,
-      XmpAttributes.gCameraMotionPhoto,
-      XmpAttributes.gCameraMotionPhotoVersion,
-      XmpAttributes.gCameraMotionPhotoPresentationTimestampUs,
-    ].fold<bool>(modified, (prev, name) {
-      return prev |= XMP.removeElements(
-        descriptions,
-        name,
-        XmpNamespaces.gCamera,
-      );
-    });
+    modified |=
+        [
+          XmpAttributes.gCameraMicroVideo,
+          XmpAttributes.gCameraMicroVideoVersion,
+          XmpAttributes.gCameraMicroVideoOffset,
+          XmpAttributes.gCameraMicroVideoPresentationTimestampUs,
+          XmpAttributes.gCameraMotionPhoto,
+          XmpAttributes.gCameraMotionPhotoVersion,
+          XmpAttributes.gCameraMotionPhotoPresentationTimestampUs,
+        ].fold<bool>(modified, (prev, name) {
+          return prev |= XMP.removeElements(
+            descriptions,
+            name,
+            XmpNamespaces.gCamera,
+          );
+        });
 
     return modified;
   }

@@ -87,7 +87,7 @@ class VideoSubtitles extends StatelessWidget {
                                 TextSpan(
                                   text: text,
                                   style: const TextStyle(fontSize: 14),
-                                )
+                                ),
                               ],
                               outlineWidth: 1,
                               outlineColor: Colors.black,
@@ -116,11 +116,13 @@ class VideoSubtitles extends StatelessWidget {
                               style: style.copyWith(
                                 letterSpacing: letterSpacing != null ? letterSpacing * viewScale : null,
                                 shadows: shadows
-                                    ?.map((v) => Shadow(
-                                          color: v.color,
-                                          offset: v.offset * viewScale,
-                                          blurRadius: v.blurRadius * viewScale,
-                                        ))
+                                    ?.map(
+                                      (v) => Shadow(
+                                        color: v.color,
+                                        offset: v.offset * viewScale,
+                                        blurRadius: v.blurRadius * viewScale,
+                                      ),
+                                    )
                                     .toList(),
                               ),
                             );
@@ -183,7 +185,7 @@ class VideoSubtitles extends StatelessWidget {
                             final alignOffset = Offset(anchorOffsetX, anchorOffsetY);
                             final lineOffset = position * viewScale + viewPosition;
                             final translateOffset = viewOffset + lineOffset + alignOffset;
-                            transform.translate(translateOffset.dx, translateOffset.dy);
+                            transform.translateByDouble(translateOffset.dx, translateOffset.dy, 0, 1);
                           }
 
                           if (extraStyle.rotating) {
@@ -199,7 +201,7 @@ class VideoSubtitles extends StatelessWidget {
                           if (extraStyle.scaling) {
                             final x = extraStyle.scaleX ?? 1;
                             final y = extraStyle.scaleY ?? 1;
-                            transform.scale(x, y);
+                            transform.scaleByDouble(x, y, x, 1);
                           }
                           if (extraStyle.shearing) {
                             final x = extraStyle.shearX ?? 0;
@@ -242,9 +244,11 @@ class VideoSubtitles extends StatelessWidget {
                                 alignment: Alignment(alignX, alignY),
                                 child: TextBackgroundPainter(
                                   spans: spans,
-                                  style: DefaultTextStyle.of(context).style.merge(spans.first.style!.copyWith(
-                                        backgroundColor: settings.subtitleBackgroundColor,
-                                      )),
+                                  style: DefaultTextStyle.of(context).style.merge(
+                                    spans.first.style!.copyWith(
+                                      backgroundColor: settings.subtitleBackgroundColor,
+                                    ),
+                                  ),
                                   textAlign: textHAlign,
                                   child: child,
                                 ),
@@ -255,8 +259,8 @@ class VideoSubtitles extends StatelessWidget {
                           if (clip != null) {
                             final clipOffset = viewOffset + viewPosition;
                             final matrix = Matrix4.identity()
-                              ..translate(clipOffset.dx, clipOffset.dy)
-                              ..scale(viewScale, viewScale);
+                              ..translateByDouble(clipOffset.dx, clipOffset.dy, 0, 1)
+                              ..scaleByDouble(viewScale, viewScale, viewScale, 1);
                             final transform = matrix.storage;
                             child = ClipPath(
                               clipper: SubtitlePathClipper(
@@ -292,16 +296,16 @@ class SubtitlePathPainter extends CustomPainter {
     required this.scale,
     required Color? fillColor,
     required Color? strokeColor,
-  })  : fillPaint = fillColor != null
-            ? (Paint()
-              ..style = PaintingStyle.fill
-              ..color = fillColor)
-            : null,
-        strokePaint = strokeColor != null
-            ? (Paint()
-              ..style = PaintingStyle.stroke
-              ..color = strokeColor)
-            : null;
+  }) : fillPaint = fillColor != null
+           ? (Paint()
+               ..style = PaintingStyle.fill
+               ..color = fillColor)
+           : null,
+       strokePaint = strokeColor != null
+           ? (Paint()
+               ..style = PaintingStyle.stroke
+               ..color = strokeColor)
+           : null;
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -134,7 +134,7 @@ class AvesAppBar extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (bottom != null) bottom!,
+                  ?bottom,
                 ],
               ),
             ),

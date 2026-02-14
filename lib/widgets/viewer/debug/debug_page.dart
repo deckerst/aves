@@ -162,26 +162,30 @@ class ViewerDebugPage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: entry.cachedThumbnails
-          .expand((provider) => [
-                Text('Thumb extent: ${provider.key.extent}'),
-                Center(
-                  child: Image(
-                    image: provider,
-                    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                      return Container(
-                        foregroundDecoration: const BoxDecoration(
-                          border: Border.fromBorderSide(BorderSide(
+          .expand(
+            (provider) => [
+              Text('Thumb extent: ${provider.key.extent}'),
+              Center(
+                child: Image(
+                  image: provider,
+                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                    return Container(
+                      foregroundDecoration: const BoxDecoration(
+                        border: Border.fromBorderSide(
+                          BorderSide(
                             color: Colors.amber,
                             width: .1,
-                          )),
+                          ),
                         ),
-                        child: child,
-                      );
-                    },
-                  ),
+                      ),
+                      child: child,
+                    );
+                  },
                 ),
-                const SizedBox(height: 16),
-              ])
+              ),
+              const SizedBox(height: 16),
+            ],
+          )
           .toList(),
     );
   }

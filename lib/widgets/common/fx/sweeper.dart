@@ -89,16 +89,17 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
         opacity: isToggled && (_isAppearing || _angleAnimationController.status == AnimationStatus.forward) ? 1 : 0,
         duration: ADurations.sweeperOpacityAnimation,
         child: ValueListenableBuilder<double>(
-            valueListenable: _angleAnimationController,
-            builder: (context, value, child) {
-              return ClipPath(
-                clipper: _SweepClipPath(
-                  startAngle: _angle.value,
-                  sweepAngle: widget.sweepAngle,
-                ),
-                child: widget.builder(context),
-              );
-            }),
+          valueListenable: _angleAnimationController,
+          builder: (context, value, child) {
+            return ClipPath(
+              clipper: _SweepClipPath(
+                startAngle: _angle.value,
+                sweepAngle: widget.sweepAngle,
+              ),
+              child: widget.builder(context),
+            );
+          },
+        ),
       ),
     );
   }

@@ -62,17 +62,19 @@ class Favourites with ChangeNotifier {
     final ids = all;
     final paths = visibleEntries.where((entry) => ids.contains(entry.id)).map((entry) => entry.path).nonNulls.toSet();
     final byVolume = groupBy<String, StorageVolume?>(paths, androidFileUtils.getStorageVolume);
-    final jsonMap = Map.fromEntries(byVolume.entries.map((kv) {
-      final volume = kv.key?.path;
-      if (volume == null) return null;
-      final rootLength = volume.length;
-      final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
-      return MapEntry(volume, relativePaths);
-    }).nonNulls);
+    final jsonMap = Map.fromEntries(
+      byVolume.entries.map((kv) {
+        final volume = kv.key?.path;
+        if (volume == null) return null;
+        final rootLength = volume.length;
+        final relativePaths = kv.value.map((v) => v.substring(rootLength)).toList();
+        return MapEntry(volume, relativePaths);
+      }).nonNulls,
+    );
     return jsonMap.isNotEmpty ? jsonMap : null;
   }
 
-  void import(dynamic jsonMap, CollectionSource source) {
+  void import(Object jsonMap, CollectionSource source) {
     if (jsonMap is! Map) {
       debugPrint('failed to import favourites for jsonMap=$jsonMap');
       return;
@@ -81,20 +83,16 @@ class Favourites with ChangeNotifier {
     final visibleEntries = source.visibleEntries;
     final foundEntries = <AvesEntry>{};
     final missedPaths = <String>{};
-    jsonMap.forEach((volume, relativePaths) {
-      if (volume is String && relativePaths is List) {
-        relativePaths.forEach((relativePath) {
-          final path = pContext.join(volume, relativePath);
-          final entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path);
-          if (entry != null) {
-            foundEntries.add(entry);
-          } else {
-            missedPaths.add(path);
-          }
-        });
-      } else {
-        debugPrint('failed to import favourites for volume=$volume, relativePaths=${relativePaths.runtimeType}');
-      }
+    jsonMap.cast<String, List>().forEach((volume, relativePaths) {
+      relativePaths.cast<String?>().forEach((relativePath) {
+        final path = pContext.join(volume, relativePath);
+        final entry = visibleEntries.firstWhereOrNull((entry) => entry.path == path);
+        if (entry != null) {
+          foundEntries.add(entry);
+        } else {
+          missedPaths.add(path);
+        }
+      });
 
       if (foundEntries.isNotEmpty) {
         add(foundEntries);
@@ -124,6 +122,6 @@ class FavouriteRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': entryId,
-      };
+    'id': entryId,
+  };
 }

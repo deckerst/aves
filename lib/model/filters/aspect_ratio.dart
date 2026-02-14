@@ -38,11 +38,11 @@ class AspectRatioFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'threshold': threshold,
-        'op': op,
-        'reversed': reversed,
-      };
+    'type': type,
+    'threshold': threshold,
+    'op': op,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

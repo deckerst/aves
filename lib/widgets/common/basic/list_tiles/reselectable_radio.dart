@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 // `RadioListTile` that can trigger `onChanged` on tap when already selected, if `reselectable` is true
 class ReselectableRadioListTile<T> extends StatelessWidget {
   final T value;
-  final T groupValue;
-  final ValueChanged<T?>? onChanged;
   final bool toggleable;
   final bool reselectable;
   final Color? activeColor;
@@ -17,13 +15,9 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
   final ListTileControlAffinity controlAffinity;
   final bool autofocus;
 
-  bool get checked => value == groupValue;
-
   const ReselectableRadioListTile({
     super.key,
     required this.value,
-    required this.groupValue,
-    required this.onChanged,
     this.toggleable = false,
     this.reselectable = false,
     this.activeColor,
@@ -41,8 +35,6 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final Widget control = Radio<T>(
       value: value,
-      groupValue: groupValue,
-      onChanged: onChanged,
       toggleable: toggleable,
       activeColor: activeColor,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -58,6 +50,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
         leading = secondary;
         trailing = control;
     }
+    final groupRegistry = RadioGroup.maybeOf<T>(context);
     return MergeSemantics(
       child: ListTileTheme.merge(
         selectedColor: activeColor ?? Theme.of(context).colorScheme.primary,
@@ -68,15 +61,14 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
           trailing: trailing,
           isThreeLine: isThreeLine,
           dense: dense,
-          enabled: onChanged != null,
-          onTap: onChanged != null
+          enabled: groupRegistry != null,
+          onTap: groupRegistry != null
               ? () {
-                  if (toggleable && checked) {
-                    onChanged!(null);
-                    return;
-                  }
-                  if (reselectable || !checked) {
-                    onChanged!(value);
+                  final selected = value == groupRegistry.groupValue;
+                  if (toggleable && selected) {
+                    groupRegistry.onChanged(null);
+                  } else if (reselectable || !selected) {
+                    groupRegistry.onChanged(value);
                   }
                 }
               : null,

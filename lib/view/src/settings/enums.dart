@@ -176,6 +176,17 @@ extension ExtraVideoBackgroundModeView on VideoBackgroundMode {
   }
 }
 
+extension ExtraVideoHardwareAccelerationView on VideoHardwareAcceleration {
+  String getName(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      VideoHardwareAcceleration.disabled => l10n.settingsDisabled,
+      VideoHardwareAcceleration.enabled => l10n.settingsEnabled,
+      VideoHardwareAcceleration.forced => l10n.settingsForced,
+    };
+  }
+}
+
 extension ExtraVideoLoopModeView on VideoLoopMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;

@@ -77,10 +77,10 @@ class GridThemeData {
     required this.showRaw,
     required this.showTrash,
     required this.showVideoDuration,
-  })  : showLocated = locationIcon == ThumbnailOverlayLocationIcon.located,
-        showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated,
-        showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged,
-        showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged {
+  }) : showLocated = locationIcon == ThumbnailOverlayLocationIcon.located,
+       showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated,
+       showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged,
+       showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged {
     iconBuilder = (context, entry) {
       final located = entry.hasGps;
       final tagged = entry.tags.isNotEmpty;

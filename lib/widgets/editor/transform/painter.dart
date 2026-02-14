@@ -60,41 +60,29 @@ class CropperPainter extends CustomPainter {
       );
     }
 
-    canvas.drawPoints(
-        PointMode.polygon,
-        [
-          rect.topLeft.translate(0, handleLength),
-          rect.topLeft,
-          rect.topLeft.translate(handleLength, 0),
-        ],
-        cornerPaint);
+    canvas.drawPoints(PointMode.polygon, [
+      rect.topLeft.translate(0, handleLength),
+      rect.topLeft,
+      rect.topLeft.translate(handleLength, 0),
+    ], cornerPaint);
 
-    canvas.drawPoints(
-        PointMode.polygon,
-        [
-          rect.topRight.translate(-handleLength, 0),
-          rect.topRight,
-          rect.topRight.translate(0, handleLength),
-        ],
-        cornerPaint);
+    canvas.drawPoints(PointMode.polygon, [
+      rect.topRight.translate(-handleLength, 0),
+      rect.topRight,
+      rect.topRight.translate(0, handleLength),
+    ], cornerPaint);
 
-    canvas.drawPoints(
-        PointMode.polygon,
-        [
-          rect.bottomRight.translate(0, -handleLength),
-          rect.bottomRight,
-          rect.bottomRight.translate(-handleLength, 0),
-        ],
-        cornerPaint);
+    canvas.drawPoints(PointMode.polygon, [
+      rect.bottomRight.translate(0, -handleLength),
+      rect.bottomRight,
+      rect.bottomRight.translate(-handleLength, 0),
+    ], cornerPaint);
 
-    canvas.drawPoints(
-        PointMode.polygon,
-        [
-          rect.bottomLeft.translate(handleLength, 0),
-          rect.bottomLeft,
-          rect.bottomLeft.translate(0, -handleLength),
-        ],
-        cornerPaint);
+    canvas.drawPoints(PointMode.polygon, [
+      rect.bottomLeft.translate(handleLength, 0),
+      rect.bottomLeft,
+      rect.bottomLeft.translate(0, -handleLength),
+    ], cornerPaint);
   }
 
   @override

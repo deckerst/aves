@@ -109,10 +109,12 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         );
         if (toExport == null || toExport.isEmpty) return;
 
-        final allMap = Map.fromEntries(toExport.map((v) {
-          final jsonMap = v.export(source);
-          return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
-        }).nonNulls);
+        final allMap = Map.fromEntries(
+          toExport.map((v) {
+            final jsonMap = v.export(source);
+            return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
+          }).nonNulls,
+        );
         allMap[exportVersionKey] = exportVersion;
         final allJsonString = jsonEncode(allMap);
 
@@ -136,22 +138,17 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         if (bytes.isNotEmpty) {
           try {
             final allJsonString = utf8.decode(bytes);
-            final allJsonMap = jsonDecode(allJsonString);
+            final allJsonMap = jsonDecode(allJsonString) as Map<String, Object?>;
 
-            final version = allJsonMap[exportVersionKey];
-            final importable = <AppExportItem, dynamic>{};
+            final version = allJsonMap[exportVersionKey] as int?;
+            final importable = <AppExportItem, Object>{};
             if (version == null) {
               // backward compatibility before versioning
               importable[AppExportItem.settings] = allJsonMap;
             } else {
-              if (allJsonMap is! Map) {
-                debugPrint('failed to import app json=$allJsonMap');
-                showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
-                return;
-              }
               allJsonMap.keys.where((v) => v != exportVersionKey).forEach((k) {
                 try {
-                  importable[AppExportItem.values.byName(k)] = allJsonMap[k];
+                  importable[AppExportItem.values.byName(k)] = allJsonMap[k] as Object;
                 } catch (error, stack) {
                   debugPrint('failed to identify import app item=$k with error=$error\n$stack');
                 }
@@ -168,7 +165,10 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             if (toImport == null || toImport.isEmpty) return;
 
             await Future.forEach<AppExportItem>(toImport, (item) async {
-              return item.import(importable[item], source);
+              final jsonObject = importable[item];
+              if (jsonObject != null) {
+                await item.import(jsonObject, source);
+              }
             });
             showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
           } catch (error, stack) {

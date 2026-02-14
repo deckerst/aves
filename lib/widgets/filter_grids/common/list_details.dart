@@ -131,12 +131,14 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
     if (leadingIcons.isNotEmpty) {
       leading = Row(
         children: leadingIcons
-            .mapIndexed((i, child) => i > 0
-                ? Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 8),
-                    child: child,
-                  )
-                : child)
+            .mapIndexed(
+              (i, child) => i > 0
+                  ? Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 8),
+                      child: child,
+                    )
+                  : child,
+            )
             .toList(),
       );
     }

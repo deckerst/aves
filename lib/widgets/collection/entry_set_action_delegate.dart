@@ -267,13 +267,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         await showNoMatchingAppDialog(context);
       }
     } on TooManyItemsException catch (_) {
-      await showDialog(
+      await showWarningDialog(
         context: context,
-        builder: (context) => AvesDialog(
-          content: Text(context.l10n.tooManyItemsErrorDialogMessage),
-          actions: const [OkButton()],
-        ),
-        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+        message: context.l10n.tooManyItemsErrorDialogMessage,
       );
     }
   }
@@ -483,20 +479,22 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final editedOps = successOps.where((op) => !op.skipped).toSet();
         source.resumeMonitoring();
 
-        unawaited(source.refreshUris(editedOps.map((op) => op.uri).toSet()).then((_) {
-          // invalidate filters derived from values before edition
-          // this invalidation must happen after the source is refreshed,
-          // otherwise filter chips may eagerly rebuild in between with the old state
-          if (obsoleteCountryCodes.isNotEmpty) {
-            source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
-          }
-          if (obsoleteStateCodes.isNotEmpty) {
-            source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
-          }
-          if (obsoleteTags.isNotEmpty) {
-            source.invalidateTagFilterSummary(tags: obsoleteTags);
-          }
-        }));
+        unawaited(
+          source.refreshUris(editedOps.map((op) => op.uri).toSet()).then((_) {
+            // invalidate filters derived from values before edition
+            // this invalidation must happen after the source is refreshed,
+            // otherwise filter chips may eagerly rebuild in between with the old state
+            if (obsoleteCountryCodes.isNotEmpty) {
+              source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
+            }
+            if (obsoleteStateCodes.isNotEmpty) {
+              source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
+            }
+            if (obsoleteTags.isNotEmpty) {
+              source.invalidateTagFilterSummary(tags: obsoleteTags);
+            }
+          }),
+        );
 
         if (dataTypes.contains(EntryDataType.aspectRatio)) {
           source.onAspectRatioChanged();
@@ -521,8 +519,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<Set<AvesEntry>?> _getEditableTargetItems(
     BuildContext context, {
     required bool Function(AvesEntry entry) canEdit,
-  }) =>
-      _getEditableItems(context, _getTargetItems(context), canEdit: canEdit);
+  }) => _getEditableItems(context, _getTargetItems(context), canEdit: canEdit);
 
   Future<Set<AvesEntry>?> _getEditableItems(
     BuildContext context,
@@ -537,22 +534,22 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final unsupportedTypes = unsupported.map((entry) => entry.mimeType).toSet().map(MimeUtils.displayType).toList()..sort();
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+    final message = l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '));
+    if (supported.isEmpty) {
+      await showWarningDialog(
+        context: context,
+        message: message,
+      );
+      return null;
+    }
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.unsupportedTypeDialogMessage(unsupportedTypes.length, unsupportedTypes.join(', '))),
-        actions: [
-          const CancelButton(),
-          if (supported.isNotEmpty)
-            TextButton(
-              onPressed: () => Navigator.maybeOf(context)?.pop(true),
-              child: Text(l10n.continueButtonLabel),
-            ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return null;
+      message: message,
+      ok: l10n.continueButtonLabel,
+    )) {
+      return null;
+    }
 
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
@@ -619,21 +616,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   Future<void> removeLocation(BuildContext context, Set<AvesEntry> entries) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.genericDangerWarningDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.genericDangerWarningDialogMessage,
+      ok: l10n.applyButtonLabel,
+    )) {
+      return;
+    }
 
     final editableEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
     if (editableEntries == null || editableEntries.isEmpty) return;
@@ -703,9 +692,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> removeTags(BuildContext context, {required Set<AvesEntry> entries, required Set<String> tags}) async {
-    final newTagsByEntry = Map.fromEntries(entries.map((v) {
-      return MapEntry(v, v.tags.whereNot(tags.contains).toSet());
-    }));
+    final newTagsByEntry = Map.fromEntries(
+      entries.map((v) {
+        return MapEntry(v, v.tags.whereNot(tags.contains).toSet());
+      }),
+    );
 
     await _edit(context, entries, (entry) => entry.editTags(newTagsByEntry[entry]!));
   }

@@ -29,8 +29,8 @@ class OverlayDateRow extends StatelessWidget {
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized
-            ? entry.getResolutionText(locale)
-            : '';
+        ? entry.getResolutionText(locale)
+        : '';
 
     return Row(
       children: [

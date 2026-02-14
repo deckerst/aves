@@ -123,7 +123,7 @@ class ExpandableFilterRow extends StatelessWidget {
       layoutBuilder: (currentChild, previousChildren) => Stack(
         children: [
           ...previousChildren,
-          if (currentChild != null) currentChild,
+          ?currentChild,
         ],
       ),
       child: isExpanded ? _buildExpanded() : _buildCollapsed(),

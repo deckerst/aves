@@ -1,7 +1,7 @@
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/services.dart';
-import 'package:aves/services/common/channel.dart';
 
 class WallpaperService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/wallpaper');

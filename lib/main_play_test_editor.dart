@@ -7,11 +7,11 @@ import 'package:aves/model/app/intent.dart';
 
 @pragma('vm:entry-point')
 void main() => mainCommon(
-      AppFlavor.play,
-      debugIntentData: {
-        IntentDataKeys.action: IntentActions.edit,
-        IntentDataKeys.mimeType: 'image/*',
-        IntentDataKeys.uri: 'content://media/external/images/media/1000064996', // landscape
-        // IntentDataKeys.uri: 'content://media/external/images/media/1000064754', // portrait
-      },
-    );
+  AppFlavor.play,
+  debugIntentData: {
+    IntentDataKeys.action: IntentActions.edit,
+    IntentDataKeys.mimeType: 'image/*',
+    IntentDataKeys.uri: 'content://media/external/images/media/1000064996', // landscape
+    // IntentDataKeys.uri: 'content://media/external/images/media/1000064754', // portrait
+  },
+);

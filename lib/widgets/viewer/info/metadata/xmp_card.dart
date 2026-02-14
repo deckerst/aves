@@ -115,7 +115,7 @@ class _XmpCardState extends State<XmpCard> {
                         onPressed: index < indexedStructCount - 1 ? () => _setIndex(index + 1) : null,
                         tooltip: context.l10n.nextTooltip,
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),

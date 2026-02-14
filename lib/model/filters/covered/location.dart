@@ -96,7 +96,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
     }
     switch (level) {
       case LocationLevel.country:
-        if (_code != null && device.canRenderFlagEmojis) {
+        if (_code != null) {
           final flag = EmojiUtils.countryCodeToFlag(_code);
           if (flag != null) {
             return Text(

@@ -37,6 +37,7 @@ class HomeWidgetSettingsActivity : MainActivity() {
                     result.success(null)
                     saveWidget()
                 }
+
                 else -> result.notImplemented()
             }
         }

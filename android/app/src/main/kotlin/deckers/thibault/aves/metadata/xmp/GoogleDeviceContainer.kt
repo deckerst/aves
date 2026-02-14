@@ -18,7 +18,7 @@ class GoogleDeviceContainer {
     fun findItems(xmpMeta: XMPMeta) {
         val containerDirectoryPath = listOf(GoogleXMP.GDEVICE_CONTAINER_PROP_NAME, GoogleXMP.GDEVICE_CONTAINER_DIRECTORY_PROP_NAME)
         val count = xmpMeta.countPropPathArrayItems(containerDirectoryPath)
-        for (i in 1 until count + 1) {
+        for (i in 1..count) {
             val mimeType = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, GoogleXMP.GDEVICE_CONTAINER_ITEM_MIME_PROP_NAME))?.value
             val length = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, GoogleXMP.GDEVICE_CONTAINER_ITEM_LENGTH_PROP_NAME))?.value?.toLongOrNull()
             val dataUri = xmpMeta.getSafeStructField(containerDirectoryPath + listOf(i, GoogleXMP.GDEVICE_CONTAINER_ITEM_DATA_URI_PROP_NAME))?.value

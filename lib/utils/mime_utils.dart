@@ -6,6 +6,7 @@ class MimeUtils {
       case MimeTypes.art:
         return 'ART';
       case MimeTypes.ico:
+      case MimeTypes.icoX:
         return 'ICO';
       case MimeTypes.mov:
       case MimeTypes.movX:

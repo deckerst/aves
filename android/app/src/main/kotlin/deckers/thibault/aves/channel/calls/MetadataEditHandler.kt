@@ -3,11 +3,14 @@ package deckers.thibault.aves.channel.calls
 import android.content.ContextWrapper
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.metadata.Mp4FragmentedException
 import deckers.thibault.aves.metadata.Mp4TooLargeException
+import deckers.thibault.aves.metadata.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
+import deckers.thibault.aves.utils.FileDescriptorException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -196,7 +199,11 @@ private class MetadataOpCallback(
             } else {
                 "$errorCodeBase-mp4largeother"
             }
-        } else if (throwable is FileNotFoundException) {
+        } else if (throwable is Mp4FragmentedException) {
+            "$errorCodeBase-mp4fragmented"
+        } else if (throwable is Mp4ZeroSizeBoxException) {
+            "$errorCodeBase-mp4zerosizebox"
+        } else if (throwable is FileNotFoundException || throwable is FileDescriptorException) {
             "$errorCodeBase-filenotfound"
         } else {
             "$errorCodeBase-failure"

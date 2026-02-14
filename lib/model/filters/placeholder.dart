@@ -43,9 +43,9 @@ class PlaceholderFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'placeholder': placeholder,
-      };
+    'type': type,
+    'placeholder': placeholder,
+  };
 
   Future<String?> toTag(AvesEntry entry) async {
     switch (placeholder) {
@@ -76,7 +76,8 @@ class PlaceholderFilter extends CollectionFilter {
   }
 
   @override
-  EntryPredicate get positiveTest => (entry) => throw Exception('this is not a test');
+  EntryPredicate get positiveTest =>
+      (entry) => throw Exception('this is not a test');
 
   @override
   bool get exclusiveProp => false;

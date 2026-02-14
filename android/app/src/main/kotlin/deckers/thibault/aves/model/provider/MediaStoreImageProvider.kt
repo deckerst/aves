@@ -37,6 +37,7 @@ import deckers.thibault.aves.utils.StorageUtils.removeTrailingSeparator
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -47,7 +48,6 @@ import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class MediaStoreImageProvider : ImageProvider() {
     fun fetchAll(
@@ -406,7 +406,7 @@ class MediaStoreImageProvider : ImageProvider() {
             }
         } else if (uri.scheme?.lowercase(Locale.ROOT) == ContentResolver.SCHEME_FILE) {
             val uriFilePath = File(uri.path!!).path
-            // URI and path both point to the same non existent path
+            // URI and path both point to the same non-existent path
             if (uriFilePath == path) return
         }
 
@@ -908,7 +908,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     suspend fun scanNewPathByMediaStore(context: Context, path: String, mimeType: String): FieldMap =
-        suspendCoroutine { cont ->
+        suspendCancellableCoroutine { cont ->
             tryScanNewPathByMediaStore(
                 context = context,
                 path = path,

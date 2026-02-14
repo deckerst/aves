@@ -169,11 +169,11 @@ class Dependencies {
   ];
 
   static List<Dependency> flutterPlugins(AppFlavor flavor) => [
-        ..._flutterPluginsCommon,
-        if (flavor == AppFlavor.izzy) ..._flutterPluginsIzzyOnly,
-        if (flavor == AppFlavor.libre) ..._flutterPluginsLibreOnly,
-        if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,
-      ];
+    ..._flutterPluginsCommon,
+    if (flavor == AppFlavor.izzy) ..._flutterPluginsIzzyOnly,
+    if (flavor == AppFlavor.libre) ..._flutterPluginsLibreOnly,
+    if (flavor == AppFlavor.play) ..._flutterPluginsPlayOnly,
+  ];
 
   static const List<Dependency> flutterPackages = [
     Dependency(

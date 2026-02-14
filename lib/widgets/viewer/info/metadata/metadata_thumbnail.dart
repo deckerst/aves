@@ -34,26 +34,27 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ui.ImageDescriptor?>>(
-        future: _loader,
-        builder: (context, snapshot) {
-          if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data!.isNotEmpty) {
-            return Container(
-              alignment: AlignmentDirectional.topStart,
-              padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
-              child: Wrap(
-                children: snapshot.data!.map((descriptor) {
-                  if (descriptor == null) return const SizedBox();
-                  return Image(
-                    image: DescriptorImageProvider(
-                      descriptor,
-                      scale: MediaQuery.devicePixelRatioOf(context),
-                    ),
-                  );
-                }).toList(),
-              ),
-            );
-          }
-          return const SizedBox();
-        });
+      future: _loader,
+      builder: (context, snapshot) {
+        if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data!.isNotEmpty) {
+          return Container(
+            alignment: AlignmentDirectional.topStart,
+            padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
+            child: Wrap(
+              children: snapshot.data!.map((descriptor) {
+                if (descriptor == null) return const SizedBox();
+                return Image(
+                  image: DescriptorImageProvider(
+                    descriptor,
+                    scale: MediaQuery.devicePixelRatioOf(context),
+                  ),
+                );
+              }).toList(),
+            ),
+          );
+        }
+        return const SizedBox();
+      },
+    );
   }
 }

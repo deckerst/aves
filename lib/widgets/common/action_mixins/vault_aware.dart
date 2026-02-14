@@ -12,7 +12,6 @@ import 'package:aves/widgets/dialogs/filter_editors/pin_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
 import 'package:local_auth/local_auth.dart';
 
 mixin VaultAwareMixin on FeedbackMixin {
@@ -104,17 +103,11 @@ mixin VaultAwareMixin on FeedbackMixin {
             localizedReason: l10n.authenticateToConfigureVault,
           );
         } on PlatformException catch (e, stack) {
-          await showDialog(
+          await showWarningDialog(
             context: context,
-            builder: (context) => AvesDialog(
-              content: Text(e.message ?? l10n.genericFailureFeedback),
-              actions: const [OkButton()],
-            ),
-            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+            message: e.message ?? l10n.genericFailureFeedback,
           );
-          if (e.code != auth_error.notAvailable) {
-            await reportService.recordError(e, stack);
-          }
+          await reportService.recordError(e, stack);
         }
       case VaultLockType.pattern:
         final pattern = await showDialog<String>(

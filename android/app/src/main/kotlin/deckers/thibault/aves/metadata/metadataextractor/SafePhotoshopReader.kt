@@ -11,7 +11,6 @@ import com.drew.metadata.icc.IccReader
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.photoshop.PhotoshopDirectory
 import com.drew.metadata.photoshop.PhotoshopReader
-import java.util.Arrays
 
 // adapted from `PhotoshopReader` to prevent OOM from reading large XMP
 // as of `metadata-extractor` v2.18.0, there is no way to customize the Photoshop reader
@@ -92,7 +91,7 @@ class SafePhotoshopReader : PhotoshopReader() {
                         PhotoshopDirectory.TAG_XMP_DATA -> SafeXmpReader().extract(tagBytes, metadata, directory)
                         in 0x07D0..0x0BB6 -> {
                             clippingPathCount++
-                            tagBytes = Arrays.copyOf(tagBytes, tagBytes.size + description.length + 1)
+                            tagBytes = tagBytes.copyOf(tagBytes.size + description.length + 1)
                             // Append description(name) to end of byte array with 1 byte before the description representing the length
                             for (i in tagBytes.size - description.length - 1 until tagBytes.size) {
                                 if (i % (tagBytes.size - description.length - 1 + description.length) == 0) tagBytes[i] = description.length.toByte() else tagBytes[i] = description[i - (tagBytes.size - description.length - 1)].code.toByte()

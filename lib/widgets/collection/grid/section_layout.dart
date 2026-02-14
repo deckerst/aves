@@ -23,10 +23,10 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
     required super.tileAnimationDelay,
     required super.child,
   }) : super(
-          tileWidth: tileExtent,
-          tileHeight: tileExtent,
-          coverRatioResolver: (item) => item.displayAspectRatio,
-        );
+         tileWidth: tileExtent,
+         tileHeight: tileExtent,
+         coverRatioResolver: (item) => item.displayAspectRatio,
+       );
 
   @override
   bool get showHeaders => collection.showHeaders;

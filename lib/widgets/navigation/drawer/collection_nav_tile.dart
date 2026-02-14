@@ -68,16 +68,18 @@ class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMi
     }
 
     Navigator.maybeOf(context)?.pop();
-    unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
-      MaterialPageRoute(
-        settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          source: context.read<CollectionSource>(),
-          filters: _filters,
+    unawaited(
+      Navigator.maybeOf(context)?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: CollectionPage.routeName),
+          builder: (context) => CollectionPage(
+            source: context.read<CollectionSource>(),
+            filters: _filters,
+          ),
         ),
+        (route) => false,
       ),
-      (route) => false,
-    ));
+    );
   }
 }
 

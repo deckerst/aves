@@ -2,15 +2,12 @@ package deckers.thibault.aves.channel.calls
 
 import android.content.Context
 import android.os.Build
-import android.os.Environment
 import android.os.storage.StorageManager
-import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.getFolderSize
-import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -52,8 +49,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         internalCache += getFolderSize(context.codeCacheDir)
         val externalCache = context.externalCacheDirs.sumOf(::getFolderSize)
         val externalFilesDirs = context.getExternalFilesDirs(null)
-
-        val dataDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context.dataDir else File(context.applicationInfo.dataDir)
+        val dataDir = context.dataDir
 
         val database = getFolderSize(File(dataDir, "databases"))
         val flutter = getFolderSize(File(PathUtils.getDataDirectory(context)))
@@ -79,42 +75,21 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val volumes = ArrayList<Map<String, Any>>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            if (sm != null) {
-                for (volumePath in getVolumePaths(context)) {
-                    try {
-                        sm.getStorageVolume(File(volumePath))?.let {
-                            volumes.add(
-                                hashMapOf(
-                                    "path" to volumePath,
-                                    "description" to it.getDescription(context),
-                                    "isPrimary" to it.isPrimary,
-                                    "isRemovable" to it.isRemovable,
-                                    "state" to it.state,
-                                )
-                            )
-                        }
-                    } catch (_: Exception) {
-                        // ignore
-                    }
-                }
-            }
-        } else {
-            val primaryVolumePath = getPrimaryVolumePath(context)
+        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (sm != null) {
             for (volumePath in getVolumePaths(context)) {
-                val volumeFile = File(volumePath)
                 try {
-                    val isPrimary = volumePath == primaryVolumePath
-                    val isRemovable = Environment.isExternalStorageRemovable(volumeFile)
-                    volumes.add(
-                        hashMapOf(
-                            "path" to volumePath,
-                            "isPrimary" to isPrimary,
-                            "isRemovable" to isRemovable,
-                            "state" to EnvironmentCompat.getStorageState(volumeFile)
+                    sm.getStorageVolume(File(volumePath))?.let {
+                        volumes.add(
+                            hashMapOf(
+                                "path" to volumePath,
+                                "description" to it.getDescription(context),
+                                "isPrimary" to it.isPrimary,
+                                "isRemovable" to it.isRemovable,
+                                "state" to it.state,
+                            )
                         )
-                    )
+                    }
                 } catch (_: Exception) {
                     // ignore
                 }

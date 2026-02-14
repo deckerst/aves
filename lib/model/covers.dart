@@ -146,13 +146,14 @@ class Covers {
 
   Future<void> _removeEntryFromRows(Set<CoverRow> rows) {
     return Future.forEach<CoverRow>(
-        rows,
-        (row) => set(
-              filter: row.filter,
-              entryId: null,
-              packageName: row.packageName,
-              color: row.color,
-            ));
+      rows,
+      (row) => set(
+        filter: row.filter,
+        entryId: null,
+        packageName: row.packageName,
+        color: row.color,
+      ),
+    );
   }
 
   Future<void> moveEntry(AvesEntry entry) async {
@@ -245,10 +246,10 @@ class Covers {
 
           return {
             'filter': row.filter.toJson(),
-            if (volume != null) 'volume': volume,
-            if (relativePath != null) 'relativePath': relativePath,
-            if (packageName != null) 'packageName': packageName,
-            if (colorJson != null) 'color': colorJson,
+            'volume': ?volume,
+            'relativePath': ?relativePath,
+            'packageName': ?packageName,
+            'color': ?colorJson,
           };
         })
         .nonNulls
@@ -256,16 +257,16 @@ class Covers {
     return jsonList.isNotEmpty ? jsonList : null;
   }
 
-  void import(dynamic jsonList, CollectionSource source) {
+  void import(Object jsonList, CollectionSource source) {
     if (jsonList is! List) {
       debugPrint('failed to import covers for jsonMap=$jsonList');
       return;
     }
 
     final visibleEntries = source.visibleEntries;
-    jsonList.forEach((row) {
+    jsonList.cast<Map<String, Object?>>().forEach((row) {
       try {
-        final filter = CollectionFilter.fromJson(row['filter']);
+        final filter = CollectionFilter.fromJson(row['filter'] as String?);
         if (filter == null) {
           debugPrint('failed to import cover for row=$row');
           return;
@@ -336,9 +337,9 @@ class CoverRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'filter': filter.toJson(),
-        'entryId': entryId,
-        'packageName': packageName,
-        'color': color?.toJson(),
-      };
+    'filter': filter.toJson(),
+    'entryId': entryId,
+    'packageName': packageName,
+    'color': color?.toJson(),
+  };
 }

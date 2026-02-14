@@ -37,7 +37,7 @@ class EntryMapStyle extends Equatable {
 
     try {
       final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map<String, dynamic>) {
+      if (jsonMap is Map<String, Object?>) {
         return _fromMap(jsonMap);
       }
       debugPrint('failed to parse style from json=$jsonString');
@@ -50,20 +50,20 @@ class EntryMapStyle extends Equatable {
 
   String toJson() => jsonEncode(_toMap());
 
-  static EntryMapStyle _fromMap(Map<String, dynamic> jsonMap) {
+  static EntryMapStyle _fromMap(Map<String, Object?> jsonMap) {
     return EntryMapStyle(
-      key: jsonMap['key'],
-      name: jsonMap['name'],
-      isRaster: jsonMap['isRaster'],
-      url: jsonMap['url'],
-      subdomains: (jsonMap['subdomains'] as List<dynamic>?)?.cast<String>(),
-      userAgent: jsonMap['userAgent'],
-      needMobileService: jsonMap['needMobileService'],
-      isHeavy: jsonMap['isHeavy'],
+      key: jsonMap['key'] as String,
+      name: jsonMap['name'] as String?,
+      isRaster: jsonMap['isRaster'] as bool,
+      url: jsonMap['url'] as String?,
+      subdomains: (jsonMap['subdomains'] as List?)?.cast<String>(),
+      userAgent: jsonMap['userAgent'] as String?,
+      needMobileService: jsonMap['needMobileService'] as bool,
+      isHeavy: jsonMap['isHeavy'] as bool,
     );
   }
 
-  Map<String, dynamic> _toMap() {
+  Map<String, Object?> _toMap() {
     return {
       'key': key,
       'name': name,

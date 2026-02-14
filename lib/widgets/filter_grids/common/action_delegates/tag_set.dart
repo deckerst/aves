@@ -10,7 +10,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/tag_pick_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
@@ -109,30 +109,24 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
   }
 
   Future<void> _remove(BuildContext context) async {
-    final filters = getSelectedFilters(context).whereType<TagFilter>().toSet();
-
-    final source = context.read<CollectionSource>();
-    final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
-    final todoTags = filters.map((v) => v.tag).toSet();
-
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.genericDangerWarningDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
 
-    await EntrySetActionDelegate().removeTags(context, entries: todoEntries, tags: todoTags);
+    if (!await showConfirmationDialog(
+      context: context,
+      message: l10n.genericDangerWarningDialogMessage,
+      ok: l10n.applyButtonLabel,
+    )) {
+      return;
+    }
+
+    final filters = getSelectedFilters(context).whereType<TagFilter>().toSet();
+    final source = context.read<CollectionSource>();
+
+    await EntrySetActionDelegate().removeTags(
+      context,
+      entries: source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet(),
+      tags: filters.map((v) => v.tag).toSet(),
+    );
 
     browse(context);
   }

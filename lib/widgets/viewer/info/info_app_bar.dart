@@ -42,10 +42,10 @@ class InfoAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
     bool isVisible(EntryAction action) => actionDelegate.isVisible(
-          appMode: appMode,
-          targetEntry: entry,
-          action: action,
-        );
+      appMode: appMode,
+      targetEntry: entry,
+      action: action,
+    );
     final commonActions = EntryActions.commonMetadataActions.where(isVisible);
     final formatSpecificActions = EntryActions.formatSpecificMetadataActions.where(isVisible);
     final useTvLayout = settings.useTvLayout;
@@ -88,7 +88,7 @@ class InfoAppBar extends StatelessWidget {
                     if (isVisible(EntryAction.debug)) ...[
                       const PopupMenuDivider(),
                       _toMenuItem(context, EntryAction.debug, enabled: true),
-                    ]
+                    ],
                   ],
                   onSelected: (action) async {
                     // wait for the popup menu to hide before proceeding with the action

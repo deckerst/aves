@@ -25,7 +25,6 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.compatRemoveIf
 
 @GlideModule
 class AvesAppGlideModule : AppGlideModule() {
@@ -61,7 +60,7 @@ class AvesAppGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         // prevent ExifInterface error logs
         // cf https://github.com/bumptech/glide/issues/3383
-        registry.imageHeaderParsers.compatRemoveIf { parser: ImageHeaderParser? -> parser is ExifInterfaceImageHeaderParser }
+        registry.imageHeaderParsers.removeIf { parser: ImageHeaderParser? -> parser is ExifInterfaceImageHeaderParser }
     }
 
     override fun isManifestParsingEnabled(): Boolean = false

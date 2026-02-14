@@ -2,9 +2,9 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/src/settings/defaults.dart';
 
 mixin VideoSettings on SettingsAccess {
-  bool get enableVideoHardwareAcceleration => getBool(SettingKeys.enableVideoHardwareAccelerationKey) ?? SettingsDefaults.enableVideoHardwareAcceleration;
+  VideoHardwareAcceleration get videoHardwareAcceleration => getEnumOrDefault(SettingKeys.videoHardwareAccelerationKey, SettingsDefaults.videoHardwareAcceleration, VideoHardwareAcceleration.values);
 
-  set enableVideoHardwareAcceleration(bool newValue) => set(SettingKeys.enableVideoHardwareAccelerationKey, newValue);
+  set videoHardwareAcceleration(VideoHardwareAcceleration newValue) => set(SettingKeys.videoHardwareAccelerationKey, newValue.toString());
 
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(SettingKeys.videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 

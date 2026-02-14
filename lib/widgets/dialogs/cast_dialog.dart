@@ -23,10 +23,14 @@ class _CastDialogState extends State<CastDialog> {
 
     _dlnaManager.start().then((deviceManager) {
       deviceManager.devices.stream.listen((devices) {
-        _seenRenderers.addAll(Map.fromEntries(devices.entries.where((kv) => kv.value.info.deviceType == Upnp.upnpDeviceTypeMediaRenderer).map((kv) {
-          final device = kv.value;
-          return MapEntry(device.info.friendlyName, device);
-        })));
+        _seenRenderers.addAll(
+          Map.fromEntries(
+            devices.entries.where((kv) => kv.value.info.deviceType == Upnp.upnpDeviceTypeMediaRenderer).map((kv) {
+              final device = kv.value;
+              return MapEntry(device.info.friendlyName, device);
+            }),
+          ),
+        );
         setState(() {});
       });
     });
@@ -50,10 +54,12 @@ class _CastDialogState extends State<CastDialog> {
               child: CircularProgressIndicator(),
             ),
           ),
-        ..._seenRenderers.values.map((dev) => ListTile(
-              title: Text(dev.info.friendlyName),
-              onTap: () => Navigator.maybeOf(context)?.pop<DLNADevice>(dev),
-            )),
+        ..._seenRenderers.values.map(
+          (dev) => ListTile(
+            title: Text(dev.info.friendlyName),
+            onTap: () => Navigator.maybeOf(context)?.pop<DLNADevice>(dev),
+          ),
+        ),
       ],
       actions: const [
         CancelButton(),

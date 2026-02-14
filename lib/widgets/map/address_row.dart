@@ -58,12 +58,13 @@ class _MapAddressRowState extends State<MapAddressRow> {
         valueListenable: _addressLineNotifier,
         builder: (context, addressLine, child) {
           final entry = widget.entry;
-          final location = addressLine ??
+          final location =
+              addressLine ??
               (entry == null
                   ? AText.valueNotAvailable
                   : entry.hasAddress
-                      ? entry.shortAddress
-                      : settings.coordinateFormat.format(context, entry.latLng!));
+                  ? entry.shortAddress
+                  : settings.coordinateFormat.format(context, entry.latLng!));
           return Text.rich(
             TextSpan(
               children: [

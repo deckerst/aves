@@ -40,25 +40,30 @@ class EntryCache {
     ).evict();
 
     // evict low quality thumbnail (without specified extents)
-    await ThumbnailProvider(ThumbnailProviderKey(
-      uri: uri,
-      mimeType: mimeType,
-      pageId: pageId,
-      dateModifiedMillis: dateModifiedMillis ?? 0,
-      rotationDegrees: rotationDegrees,
-      isFlipped: isFlipped,
-    )).evict();
+    await ThumbnailProvider(
+      ThumbnailProviderKey(
+        uri: uri,
+        mimeType: mimeType,
+        pageId: pageId,
+        dateModifiedMillis: dateModifiedMillis ?? 0,
+        rotationDegrees: rotationDegrees,
+        isFlipped: isFlipped,
+      ),
+    ).evict();
 
     await Future.forEach<double>(
-        thumbnailRequestExtents,
-        (extent) => ThumbnailProvider(ThumbnailProviderKey(
-              uri: uri,
-              mimeType: mimeType,
-              pageId: pageId,
-              dateModifiedMillis: dateModifiedMillis ?? 0,
-              rotationDegrees: rotationDegrees,
-              isFlipped: isFlipped,
-              extent: extent,
-            )).evict());
+      thumbnailRequestExtents,
+      (extent) => ThumbnailProvider(
+        ThumbnailProviderKey(
+          uri: uri,
+          mimeType: mimeType,
+          pageId: pageId,
+          dateModifiedMillis: dateModifiedMillis ?? 0,
+          rotationDegrees: rotationDegrees,
+          isFlipped: isFlipped,
+          extent: extent,
+        ),
+      ).evict(),
+    );
   }
 }

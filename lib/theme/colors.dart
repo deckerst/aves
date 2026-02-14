@@ -32,7 +32,7 @@ class AvesColorsProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, AvesColorsData>(
-      update: (context, settings, __) {
+      update: (context, settings, _) {
         final isDark = Theme.of(context).isDark;
         var mode = settings.themeColorMode;
         if (!allowMonochrome && mode == AvesThemeColorMode.monochrome) {

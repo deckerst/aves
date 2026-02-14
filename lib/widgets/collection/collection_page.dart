@@ -65,11 +65,13 @@ class _CollectionPageState extends State<CollectionPage> {
       filters: widget.filters,
     );
     super.initState();
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.enableBinKey).listen((_) {
-      if (!settings.enableBin) {
-        _collection.removeFilter(TrashFilter.instance);
-      }
-    }));
+    _subscriptions.add(
+      settings.updateStream.where((event) => event.key == SettingKeys.enableBinKey).listen((_) {
+        if (!settings.enableBin) {
+          _collection.removeFilter(TrashFilter.instance);
+        }
+      }),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
   }
 
@@ -177,24 +179,21 @@ class _CollectionPageState extends State<CollectionPage> {
 
   Widget? _buildFab(BuildContext context, bool hasSelection) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
+    final l10n = context.l10n;
     switch (appMode) {
       case AppMode.pickMultipleMediaExternal:
         return hasSelection
             ? AvesFab(
-                tooltip: context.l10n.pickTooltip,
+                tooltip: l10n.pickTooltip,
                 onPressed: () async {
                   final items = context.read<Selection<AvesEntry>>().selectedItems;
                   final uris = items.map((entry) => entry.uri).toList();
                   try {
                     await IntentService.submitPickedItems(uris);
                   } on TooManyItemsException catch (_) {
-                    await showDialog(
+                    await showWarningDialog(
                       context: context,
-                      builder: (context) => AvesDialog(
-                        content: Text(context.l10n.tooManyItemsErrorDialogMessage),
-                        actions: const [OkButton()],
-                      ),
-                      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+                      message: l10n.tooManyItemsErrorDialogMessage,
                     );
                   }
                 },
@@ -202,7 +201,7 @@ class _CollectionPageState extends State<CollectionPage> {
             : null;
       case AppMode.pickCollectionFiltersExternal:
         return AvesFab(
-          tooltip: context.l10n.pickTooltip,
+          tooltip: l10n.pickTooltip,
           onPressed: () {
             final filters = _collection.filters;
             IntentService.submitPickedCollectionFilters(filters);

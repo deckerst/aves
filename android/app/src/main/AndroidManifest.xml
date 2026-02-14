@@ -102,17 +102,12 @@
         </intent>
     </queries>
 
-    <!--
-    as of Flutter v3.22.2, predictive back gesture does not work
-    as expected when extending `FlutterFragmentActivity`
-    so we disable `enableOnBackInvokedCallback`
-    -->
     <application
         android:allowBackup="true"
         android:appCategory="image"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:enableOnBackInvokedCallback="false"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/full_backup_content"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
@@ -120,7 +115,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:targetApi="tiramisu">
+        tools:targetApi="33">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -128,6 +123,7 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:supportsPictureInPicture="true"
+            android:taskAffinity=""
             android:theme="@style/NormalTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -145,6 +141,7 @@
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.provider.action.PICK_IMAGES" />
                 <action android:name="android.provider.action.REVIEW" />
                 <action android:name="android.provider.action.REVIEW_SECURE" />
                 <action android:name="com.android.camera.action.REVIEW" />
@@ -167,6 +164,7 @@
                 <action android:name="android.intent.action.PICK" />
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.provider.action.PICK_IMAGES" />
                 <action android:name="android.provider.action.REVIEW" />
                 <action android:name="android.provider.action.REVIEW_SECURE" />
                 <action android:name="com.android.camera.action.REVIEW" />
@@ -343,8 +341,16 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data
-            android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" />
     </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
 </manifest>

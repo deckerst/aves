@@ -1,4 +1,5 @@
 package deckers.thibault.aves.metadata.metadataextractor
+
 import com.drew.imaging.png.PngChunkType
 import com.drew.metadata.png.PngDirectory
 

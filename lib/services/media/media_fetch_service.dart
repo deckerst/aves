@@ -68,17 +68,22 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
-      final result = await _platformObject.invokeMethod('getEntry', <String, dynamic>{
-        'uri': uri,
-        'mimeType': mimeType,
-        'allowUnsized': allowUnsized,
-      }) as Map;
+      final result =
+          await _platformObject.invokeMethod('getEntry', <String, dynamic>{
+                'uri': uri,
+                'mimeType': mimeType,
+                'allowUnsized': allowUnsized,
+              })
+              as Map;
       AvesEntry.normalizeMimeTypeFields(result);
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
-      // do not report issues with media content as it is likely an obsolete Media Store entry
-      if (!uri.startsWith('content://media/') && !_isUnknownVisual(mimeType)) {
-        await reportService.recordError(e, stack);
+      // ignore media content URIs as it is likely an obsolete Media Store entry
+      if (!uri.startsWith('content://media/')) {
+        // ignore undecodable types
+        if (mimeType != null && !AppSupport.undecodableImages.contains(mimeType)) {
+          await reportService.recordError(e, stack);
+        }
       }
     }
     return null;
@@ -107,7 +112,9 @@ class PlatformMediaFetchService implements MediaFetchService {
     final opCompleter = Completer<Uint8List>();
     final sink = OutputBuffer();
     try {
-      _byteStream.receiveBroadcastStream(arguments).listen(
+      _byteStream
+          .receiveBroadcastStream(arguments)
+          .listen(
             (data) {
               final chunk = data as Uint8List;
               sink.add(chunk);
@@ -132,7 +139,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
       debugPrint('$runtimeType _getBytes failed with error=$e');
-      if (_isUnknownVisual(mimeType)) {
+      if (MimeTypes.isVisual(mimeType) && !_knownMediaTypes.contains(mimeType)) {
         await reportService.recordError(e, stack);
       }
     }
@@ -314,8 +321,6 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   // convenience methods
 
-  bool _isUnknownVisual(String? mimeType) => mimeType != null && !_knownMediaTypes.contains(mimeType) && MimeTypes.isVisual(mimeType);
-
   static const Set<String> _knownOpaqueImages = {
     MimeTypes.jpeg,
   };
@@ -327,9 +332,13 @@ class PlatformMediaFetchService implements MediaFetchService {
     MimeTypes.aviMSVideo,
     MimeTypes.aviVnd,
     MimeTypes.aviXMSVideo,
+    MimeTypes.dl,
+    MimeTypes.dv,
     MimeTypes.dvd,
     MimeTypes.flv,
     MimeTypes.flvX,
+    MimeTypes.gl,
+    MimeTypes.lsf,
     MimeTypes.mkv,
     MimeTypes.mkvX,
     MimeTypes.mov,

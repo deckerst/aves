@@ -29,6 +29,7 @@ class AIcons {
   static const explorer = Symbols.account_tree;
   static const folder = Symbols.folder;
   static final github = MdiIcons.github;
+  static const height = Symbols.fit_page_height;
   static const histogram = Symbols.area_chart;
   static const home = Symbols.home;
 
@@ -68,6 +69,7 @@ class AIcons {
   static const thumbnailBar = Symbols.view_carousel;
   static const volumeMin = Symbols.volume_mute;
   static const volumeMax = Symbols.volume_up;
+  static const width = Symbols.fit_page_width;
   static const zoomLevel = Symbols.loupe;
 
   // time/space

@@ -212,7 +212,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
       ),
       child: Column(
         children: [
-          if (extraBottomOverlay != null) extraBottomOverlay,
+          ?extraBottomOverlay,
           ViewerBottomOverlay(
             entries: [widget.entry],
             index: 0,

@@ -1,24 +1,5 @@
 package deckers.thibault.aves.utils
 
-import android.os.Build
-
-// compatibility extension for `removeIf` for API <24
-fun <E> MutableList<E>.compatRemoveIf(filter: (t: E) -> Boolean): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        this.removeIf(filter)
-    } else {
-        var removed = false
-        val each = this.iterator()
-        while (each.hasNext()) {
-            if (filter(each.next())) {
-                each.remove()
-                removed = true
-            }
-        }
-        return removed
-    }
-}
-
 // Boyer-Moore algorithm for pattern searching
 // Returns: an index of the first occurrence of the pattern or -1 if none is found.
 fun ByteArray.indexOfBytes(pattern: ByteArray, start: Int = 0): Int {

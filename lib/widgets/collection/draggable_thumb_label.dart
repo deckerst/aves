@@ -45,10 +45,9 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
                 ];
             }
           case EntrySortFactor.name:
-            final entryTitle = entry.bestTitle;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
-              if (entryTitle != null) entryTitle,
+              ?entry.bestTitle,
             ];
           case EntrySortFactor.rating:
             return [
@@ -68,7 +67,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
             final entryFilename = entry.filenameWithoutExtension;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
-              if (entryFilename != null) entryFilename,
+              ?entryFilename,
             ];
         }
       },

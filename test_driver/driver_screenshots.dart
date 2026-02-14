@@ -13,7 +13,7 @@ void main() => configureAndLaunch();
 
 Future<void> configureAndLaunch() async {
   enableFlutterDriverExtension();
-  await settings.init(monitorPlatformSettings: false);
+  await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
   settings
     // app
     ..hasAcceptedTerms = true

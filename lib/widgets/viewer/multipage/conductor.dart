@@ -47,7 +47,7 @@ class MultiPageConductor {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> _applyToAll(FutureOr Function(MultiPageController controller) action) => Future.forEach<MultiPageController>(_controllers, action);
+  Future<void> _applyToAll(void Function(MultiPageController controller) action) => Future.forEach<MultiPageController>(_controllers, action);
 
   Future<void> _disposeAll() => _applyToAll((controller) => controller.dispose());
 }

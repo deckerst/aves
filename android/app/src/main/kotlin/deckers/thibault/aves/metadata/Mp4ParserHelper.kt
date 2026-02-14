@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import deckers.thibault.aves.metadata.xmp.XMP
+import deckers.thibault.aves.utils.FileDescriptorException
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
@@ -11,6 +12,7 @@ import deckers.thibault.aves.utils.toByteArray
 import deckers.thibault.aves.utils.toHex
 import org.mp4parser.BasicContainer
 import org.mp4parser.Box
+import org.mp4parser.BoxParser
 import org.mp4parser.Container
 import org.mp4parser.IsoFile
 import org.mp4parser.PropertyBoxParserImpl
@@ -55,83 +57,96 @@ object Mp4ParserHelper {
         SAMSUNG_MAKERNOTE_BOX_TYPE,
     )
 
-    fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
+    fun <R> consumeIso(context: Context, uri: Uri, boxParser: BoxParser, consumer: (IsoFile) -> R): R {
         // we can skip uninteresting boxes with a seekable data source
-        val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
+        val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw FileDescriptorException("failed to open file descriptor for uri=$uri")
         pfd.use {
             FileInputStream(it.fileDescriptor).use { stream ->
                 stream.channel.use { channel ->
-                    val boxParser = PropertyBoxParserImpl().apply {
-                        // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
-                        // do not skip weird boxes (like trailing "0000" box), to fail fast if it is large
-                        val skippedTypes = listOf(
-                            // parsing `MediaDataBox` can take a long time
-                            MediaDataBox.TYPE,
-                        )
-                        setBoxSkipper { type, size ->
-                            if (skippedTypes.contains(type)) return@setBoxSkipper true
-                            if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
-                            false
+                    try {
+                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+                        return IsoFile(channel, boxParser).use(consumer)
+                    } catch (e: Exception) {
+                        val message = e.message
+                        if (message != null && message.startsWith("box size of zero")) {
+                            throw Mp4ZeroSizeBoxException(message, e)
                         }
-                    }
-                    // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
-                    IsoFile(channel, boxParser).use { isoFile ->
-                        val fragmented = isoFile.boxes.any { box -> box is MovieFragmentBox || box is SegmentIndexBox }
-                        if (fragmented) throw Exception("editing fragmented movies is not supported")
-
-                        val lastContentBox = isoFile.boxes.reversed().firstOrNull { box ->
-                            when {
-                                box == isoFile.movieBox -> false
-                                testXmpBox(box) -> false
-                                box is FreeBox -> false
-                                else -> true
-                            }
-                        }
-                        lastContentBox ?: throw Exception("failed to find last content box")
-                        val oldFileSize = isoFile.size
-                        var appendOffset = (isoFile.getBoxOffset { box -> box == lastContentBox })!! + lastContentBox.size
-
-                        val edits = arrayListOf<Pair<Long, ByteArray>>()
-                        fun addFreeBoxEdit(offset: Long, size: Long): Boolean {
-                            val boxSize = size.toInt() - 8
-                            if (boxSize > BOX_SIZE_DANGER_THRESHOLD) throw Exception("dangerous free box replacement for size=$boxSize")
-                            return edits.add(Pair(offset, FreeBox(boxSize).toBytes()))
-                        }
-
-                        // replace existing movie box by a free box
-                        isoFile.getBoxOffset { box -> box.type == MovieBox.TYPE }?.let { offset ->
-                            addFreeBoxEdit(offset, isoFile.movieBox.size)
-                        }
-
-                        // replace existing XMP box by a free box
-                        isoFile.getBoxOffset { box -> testXmpBox(box) }?.let { offset ->
-                            addFreeBoxEdit(offset, isoFile.xmpBox!!.size)
-                        }
-
-                        modifier(isoFile)
-
-                        // write edited movie box
-                        val movieBoxBytes = isoFile.movieBox.toBytes()
-                        edits.removeAll { (offset, _) -> offset == appendOffset }
-                        edits.add(Pair(appendOffset, movieBoxBytes))
-                        appendOffset += movieBoxBytes.size
-
-                        // write edited XMP box
-                        isoFile.xmpBox?.let { box ->
-                            edits.removeAll { (offset, _) -> offset == appendOffset }
-                            edits.add(Pair(appendOffset, box.toBytes()))
-                            appendOffset += box.size
-                        }
-
-                        // write trailing free box instead of truncating
-                        val trailing = oldFileSize - appendOffset
-                        if (trailing > 0) {
-                            addFreeBoxEdit(appendOffset, trailing)
-                        }
-                        return edits
+                        throw e
                     }
                 }
             }
+        }
+    }
+
+    fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
+        val boxParser = PropertyBoxParserImpl().apply {
+            // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
+            // do not skip weird boxes (like trailing "0000" box), to fail fast if it is large
+            val skippedTypes = listOf(
+                // parsing `MediaDataBox` can take a long time
+                MediaDataBox.TYPE,
+            )
+            setBoxSkipper { type, size ->
+                if (skippedTypes.contains(type)) return@setBoxSkipper true
+                if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
+                false
+            }
+        }
+
+        return consumeIso(context, uri, boxParser) { isoFile ->
+            val fragmented = isoFile.boxes.any { box -> box is MovieFragmentBox || box is SegmentIndexBox }
+            if (fragmented) throw Mp4FragmentedException("editing fragmented movies is not supported")
+
+            val lastContentBox = isoFile.boxes.reversed().firstOrNull { box ->
+                when {
+                    box == isoFile.movieBox -> false
+                    testXmpBox(box) -> false
+                    box is FreeBox -> false
+                    else -> true
+                }
+            }
+            lastContentBox ?: throw Exception("failed to find last content box")
+            val oldFileSize = isoFile.size
+            var appendOffset = (isoFile.getBoxOffset { box -> box == lastContentBox })!! + lastContentBox.size
+
+            val edits = arrayListOf<Pair<Long, ByteArray>>()
+            fun addFreeBoxEdit(offset: Long, size: Long): Boolean {
+                val boxSize = size.toInt() - 8
+                if (boxSize > BOX_SIZE_DANGER_THRESHOLD) throw Exception("dangerous free box replacement for size=$boxSize")
+                return edits.add(Pair(offset, FreeBox(boxSize).toBytes()))
+            }
+
+            // replace existing movie box by a free box
+            isoFile.getBoxOffset { box -> box.type == MovieBox.TYPE }?.let { offset ->
+                addFreeBoxEdit(offset, isoFile.movieBox.size)
+            }
+
+            // replace existing XMP box by a free box
+            isoFile.getBoxOffset { box -> testXmpBox(box) }?.let { offset ->
+                addFreeBoxEdit(offset, isoFile.xmpBox!!.size)
+            }
+
+            modifier(isoFile)
+
+            // write edited movie box
+            val movieBoxBytes = isoFile.movieBox.toBytes()
+            edits.removeAll { (offset, _) -> offset == appendOffset }
+            edits.add(Pair(appendOffset, movieBoxBytes))
+            appendOffset += movieBoxBytes.size
+
+            // write edited XMP box
+            isoFile.xmpBox?.let { box ->
+                edits.removeAll { (offset, _) -> offset == appendOffset }
+                edits.add(Pair(appendOffset, box.toBytes()))
+                appendOffset += box.size
+            }
+
+            // write trailing free box instead of truncating
+            val trailing = oldFileSize - appendOffset
+            if (trailing > 0) {
+                addFreeBoxEdit(appendOffset, trailing)
+            }
+            return@consumeIso edits
         }
     }
 
@@ -150,25 +165,18 @@ object Mp4ParserHelper {
     // returns the offset and data of the Samsung maker notes box
     fun getSamsungSefd(context: Context, uri: Uri): Pair<Long, ByteArray>? {
         try {
-            // we can skip uninteresting boxes with a seekable data source
-            val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
-            pfd.use {
-                FileInputStream(it.fileDescriptor).use { stream ->
-                    stream.channel.use { channel ->
-                        IsoFile(channel, metadataBoxParser()).use { isoFile ->
-                            var offset = 0L
-                            for (box in isoFile.boxes) {
-                                if (box is UnknownBox && box.type == SAMSUNG_MAKERNOTE_BOX_TYPE) {
-                                    if (!box.isParsed) {
-                                        box.parseDetails()
-                                    }
-                                    return Pair(offset + 8, box.data.toByteArray()) // skip 8 bytes for box header
-                                }
-                                offset += box.size
-                            }
+            return consumeIso(context, uri, metadataBoxParser()) { isoFile ->
+                var offset = 0L
+                for (box in isoFile.boxes) {
+                    if (box is UnknownBox && box.type == SAMSUNG_MAKERNOTE_BOX_TYPE) {
+                        if (!box.isParsed) {
+                            box.parseDetails()
                         }
+                        return@consumeIso Pair(offset + 8, box.data.toByteArray()) // skip 8 bytes for box header
                     }
+                    offset += box.size
                 }
+                return@consumeIso null
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to read sefd box", e)
@@ -328,17 +336,8 @@ object Mp4ParserHelper {
         if (mimeType != MimeTypes.MP4) return null
 
         try {
-            // we can skip uninteresting boxes with a seekable data source
-            val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
-            pfd.use {
-                FileInputStream(it.fileDescriptor).use { stream ->
-                    stream.channel.use { channel ->
-                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
-                        IsoFile(channel, metadataBoxParser()).use { isoFile ->
-                            return Path.getPath(isoFile.movieBox, UserDataBox.TYPE)
-                        }
-                    }
-                }
+            return consumeIso(context, uri, metadataBoxParser()) { isoFile ->
+                return@consumeIso Path.getPath(isoFile.movieBox, UserDataBox.TYPE)
             }
         } catch (e: NoClassDefFoundError) {
             Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
@@ -434,3 +433,7 @@ object Mp4ParserHelper {
 }
 
 class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)
+
+class Mp4FragmentedException(message: String) : RuntimeException(message)
+
+class Mp4ZeroSizeBoxException(message: String, cause: Throwable) : RuntimeException(message, cause)

@@ -20,10 +20,10 @@ class ViewerOverlayPage extends StatelessWidget {
     final useTvLayout = settings.useTvLayout;
 
     Widget _trailingIcon(BuildContext context, IconData data) => Icon(
-          data,
-          size: SettingSwitchTrailingIcon.getIconSize(context),
-          color: SettingSwitchTrailingIcon.getIconColor(context),
-        );
+      data,
+      size: SettingSwitchTrailingIcon.getIconSize(context),
+      color: SettingSwitchTrailingIcon.getIconColor(context),
+    );
 
     return AvesScaffold(
       appBar: AppBar(

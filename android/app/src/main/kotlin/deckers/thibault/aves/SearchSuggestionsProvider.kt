@@ -21,10 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class SearchSuggestionsProvider : ContentProvider() {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -87,33 +87,35 @@ class SearchSuggestionsProvider : ContentProvider() {
                         Log.d(LOG_TAG, "background channel is ready")
                         result.success(null)
                     }
+
                     else -> result.notImplemented()
                 }
             }
         }
 
         try {
-            return suspendCoroutine { cont ->
+            return suspendCancellableCoroutine { cont ->
                 defaultScope.launch {
                     FlutterUtils.runOnUiThread {
-                        backgroundChannel.invokeMethod("getSuggestions", hashMapOf(
-                            "query" to query,
-                            "locale" to Locale.getDefault().toString(),
-                            "use24hour" to DateFormat.is24HourFormat(context),
-                        ), object : MethodChannel.Result {
-                            override fun success(result: Any?) {
-                                @Suppress("unchecked_cast")
-                                cont.resume(result as List<FieldMap>)
-                            }
+                        backgroundChannel.invokeMethod(
+                            "getSuggestions", hashMapOf(
+                                "query" to query,
+                                "locale" to Locale.getDefault().toString(),
+                                "use24hour" to DateFormat.is24HourFormat(context),
+                            ), object : MethodChannel.Result {
+                                override fun success(result: Any?) {
+                                    @Suppress("unchecked_cast")
+                                    cont.resume(result as List<FieldMap>)
+                                }
 
-                            override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                                cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
-                            }
+                                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                                    cont.resumeWithException(Exception("$errorCode: $errorMessage\n$errorDetails"))
+                                }
 
-                            override fun notImplemented() {
-                                cont.resumeWithException(Exception("not implemented"))
-                            }
-                        })
+                                override fun notImplemented() {
+                                    cont.resumeWithException(Exception("not implemented"))
+                                }
+                            })
                     }
                 }
             }

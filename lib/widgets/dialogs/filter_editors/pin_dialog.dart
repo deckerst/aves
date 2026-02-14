@@ -70,13 +70,9 @@ class _PinDialogState extends State<PinDialog> {
         final match = _firstPin == pin;
         Navigator.maybeOf(context)?.pop<String>(match ? pin : null);
         if (!match) {
-          showDialog(
+          showWarningDialog(
             context: context,
-            builder: (context) => AvesDialog(
-              content: Text(context.l10n.genericFailureFeedback),
-              actions: const [OkButton()],
-            ),
-            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+            message: context.l10n.genericFailureFeedback,
           );
         }
       } else {

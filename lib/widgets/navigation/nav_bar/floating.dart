@@ -41,14 +41,14 @@ class _FloatingNavBarState extends State<FloatingNavBar> with SingleTickerProvid
       parent: _controller,
       curve: Curves.linear,
     );
-    _offset = Tween<Offset>(
-      begin: const Offset(0, 0),
-      end: const Offset(0, 1),
-    ).animate(_animation)
-      ..addListener(() {
-        if (!mounted) return;
-        setState(() {});
-      });
+    _offset =
+        Tween<Offset>(
+          begin: const Offset(0, 0),
+          end: const Offset(0, 1),
+        ).animate(_animation)..addListener(() {
+          if (!mounted) return;
+          setState(() {});
+        });
     _registerWidget(widget);
   }
 

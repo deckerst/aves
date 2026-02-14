@@ -43,17 +43,18 @@ class _ErrorViewState extends State<ErrorView> {
         // opaque to cover potential lower quality layer below
         color: EntryViewerPage.getBackground(context),
         child: FutureBuilder<bool>(
-            future: _exists,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
-              final exists = snapshot.data!;
-              return EmptyContent(
-                icon: exists ? AIcons.error : AIcons.broken,
-                text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,
-                alignment: Alignment.center,
-                safeBottom: false,
-              );
-            }),
+          future: _exists,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+            final exists = snapshot.data!;
+            return EmptyContent(
+              icon: exists ? AIcons.error : AIcons.broken,
+              text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,
+              alignment: Alignment.center,
+              safeBottom: false,
+            );
+          },
+        ),
       ),
     );
   }

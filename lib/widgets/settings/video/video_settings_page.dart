@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -34,7 +32,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
         ),
         child: SafeArea(
           child: FutureBuilder<List<SettingsTile>>(
-            future: Future.value(VideoSection(standalonePage: true).tiles(context)),
+            future: VideoSection(standalonePage: true).tiles(context),
             builder: (context, snapshot) {
               final tiles = snapshot.data;
               if (tiles == null) return const SizedBox();

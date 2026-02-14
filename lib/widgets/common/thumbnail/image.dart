@@ -202,7 +202,8 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
     final thumbnailHeight = extent;
     final double thumbnailWidth;
     if (isMosaic) {
-      thumbnailWidth = thumbnailHeight *
+      thumbnailWidth =
+          thumbnailHeight *
           entry.displayAspectRatio.clamp(
             MosaicSectionLayoutBuilder.minThumbnailAspectRatio,
             MosaicSectionLayoutBuilder.maxThumbnailAspectRatio,

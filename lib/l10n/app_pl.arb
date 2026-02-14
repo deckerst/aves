@@ -1640,5 +1640,9 @@
     "tagPickPageTitle": "Wybierz znacznik",
     "@tagPickPageTitle": {},
     "settingsViewerShowZoomLevel": "Pokaż poziom przybliżenia",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Włączono",
+    "@settingsEnabled": {},
+    "settingsForced": "Wymuszono",
+    "@settingsForced": {}
 }

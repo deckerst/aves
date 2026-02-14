@@ -1,5 +1,6 @@
 import 'package:aves/services/common/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -7,9 +8,10 @@ final Device device = Device._private();
 
 class Device {
   late final String _packageName, _packageVersion, _userAgent;
-  late final bool _canAuthenticateUser, _canPinShortcut;
-  late final bool _canRenderFlagEmojis, _canRenderSubdivisionFlagEmojis, _canRequestManageMedia, _canSetLockScreenWallpaper;
-  late final bool _hasGeocoder, _isDynamicColorAvailable, _isTelevision, _showPinShortcutFeedback, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
+  late final bool _canAuthenticateUser, _canPinShortcut, _showPinShortcutFeedback;
+  late final bool _canRenderSubdivisionFlagEmojis, _canRequestManageMedia;
+  late final bool _hasGeocoder, _isDynamicColorAvailable, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
+  late final bool _isPhysicalDevice, _isTelevision;
 
   String get packageName => _packageName;
 
@@ -21,17 +23,15 @@ class Device {
 
   bool get canPinShortcut => _canPinShortcut;
 
-  bool get canRenderFlagEmojis => _canRenderFlagEmojis;
-
   bool get canRenderSubdivisionFlagEmojis => _canRenderSubdivisionFlagEmojis;
 
   bool get canRequestManageMedia => _canRequestManageMedia;
 
-  bool get canSetLockScreenWallpaper => _canSetLockScreenWallpaper;
-
   bool get hasGeocoder => _hasGeocoder;
 
   bool get isDynamicColorAvailable => _isDynamicColorAvailable;
+
+  bool get isPhysicalDevice => _isPhysicalDevice;
 
   bool get isTelevision => _isTelevision;
 
@@ -50,6 +50,7 @@ class Device {
     _userAgent = '$_packageName/$_packageVersion';
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
+    _isPhysicalDevice = androidInfo.isPhysicalDevice;
     _isTelevision = androidInfo.systemFeatures.contains('android.software.leanback');
 
     final auth = LocalAuthentication();
@@ -57,14 +58,17 @@ class Device {
 
     final capabilities = await deviceService.getCapabilities();
     _canPinShortcut = capabilities['canPinShortcut'] ?? false;
-    _canRenderFlagEmojis = capabilities['canRenderFlagEmojis'] ?? false;
     _canRenderSubdivisionFlagEmojis = capabilities['canRenderSubdivisionFlagEmojis'] ?? false;
     _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;
-    _canSetLockScreenWallpaper = capabilities['canSetLockScreenWallpaper'] ?? false;
     _hasGeocoder = capabilities['hasGeocoder'] ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
     _supportPictureInPicture = capabilities['supportPictureInPicture'] ?? false;
+  }
+
+  @visibleForTesting
+  void initForTests() {
+    _isPhysicalDevice = false;
   }
 }

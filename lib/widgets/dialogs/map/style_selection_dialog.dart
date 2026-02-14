@@ -6,7 +6,7 @@ import 'package:aves/view/src/settings/enums.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/map/style_editor_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:aves_map/aves_map.dart';
@@ -48,43 +48,48 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
         ),
         body: SafeArea(
           bottom: false,
-          child: ListView(
-            children: [
-              ...defaultStyles.map((v) {
-                return SelectionRadioListTile(
-                  // key is expected by test driver
-                  key: Key(v.key),
-                  value: v,
-                  title: v.getName(context),
-                  needConfirmation: false,
-                  secondary: _getDefaultStylePreview(v),
-                  getGroupValue: () => _selectedValue,
-                  setGroupValue: _setGroupValue,
-                );
-              }),
-              ...customStyles.map((v) {
-                return SelectionRadioListTile(
-                  // key is expected by test driver
-                  key: Key(v.key),
-                  value: v,
-                  title: v.getName(context),
-                  needConfirmation: false,
-                  secondary: _buildCustomStyleButtons(v),
-                  getGroupValue: () => _selectedValue,
-                  setGroupValue: _setGroupValue,
-                );
-              }),
-              if (!settings.useTvLayout)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.only(top: 4, bottom: 8),
-                  child: AvesOutlinedButton(
-                    icon: const Icon(AIcons.add),
-                    label: l10n.mapStyleDialogAddStyle,
-                    onPressed: _add,
+          child: RadioGroup<EntryMapStyle>(
+            groupValue: _selectedValue,
+            onChanged: (v) {
+              // always update the group value even when popping afterwards,
+              // so that the group value can be used in pop handlers
+              // as well as the regular return value from navigation
+              _setGroupValue(v);
+              // validate without confirmation
+              Navigator.maybeOf(context)?.pop(v);
+            },
+            child: ListView(
+              children: [
+                ...defaultStyles.map((v) {
+                  return SelectionRadioListTile<EntryMapStyle>(
+                    // key is expected by test driver
+                    key: Key(v.key),
+                    value: v,
+                    title: v.getName(context),
+                    secondary: _getDefaultStylePreview(v),
+                  );
+                }),
+                ...customStyles.map((v) {
+                  return SelectionRadioListTile<EntryMapStyle>(
+                    // key is expected by test driver
+                    key: Key(v.key),
+                    value: v,
+                    title: v.getName(context),
+                    secondary: _buildCustomStyleButtons(v),
+                  );
+                }),
+                if (!settings.useTvLayout)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(top: 4, bottom: 8),
+                    child: AvesOutlinedButton(
+                      icon: const Icon(AIcons.add),
+                      label: l10n.mapStyleDialogAddStyle,
+                      onPressed: _add,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -161,21 +166,14 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
 
   Future<void> _remove(EntryMapStyle style) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.genericDangerWarningDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.genericDangerWarningDialogMessage,
+      ok: l10n.applyButtonLabel,
+    )) {
+      return;
+    }
 
     settings.customMapStyles = settings.customMapStyles..remove(style);
     if (_selectedValue == style) {

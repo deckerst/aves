@@ -8,11 +8,11 @@ mixin SettingsAccess {
 
   Stream<SettingsChangedEvent> get updateStream;
 
-  void notifyKeyChange(String key, dynamic oldValue, dynamic newValue);
+  void notifyKeyChange(String key, Object? oldValue, Object? newValue);
 
   void notifyListeners();
 
-  void set(String key, dynamic newValue) {
+  void set(String key, Object? newValue) {
     var oldValue = store.get(key);
     if (newValue == null) {
       store.remove(key);

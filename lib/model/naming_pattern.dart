@@ -67,6 +67,10 @@ class NamingPattern {
           }
         case NameNamingProcessor.key:
           processors.add(const NameNamingProcessor());
+        case WidthNamingProcessor.key:
+          processors.add(WidthNamingProcessor());
+        case HeightNamingProcessor.key:
+          processors.add(HeightNamingProcessor());
         case TagsNamingProcessor.key:
           processors.add(TagsNamingProcessor(processorOptions?.trim() ?? ''));
         default:
@@ -135,6 +139,9 @@ class NamingPattern {
 @immutable
 abstract class NamingProcessor extends Equatable {
   const NamingProcessor();
+
+  @override
+  List<Object?> get props => [];
 
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues);
 
@@ -222,13 +229,30 @@ class MetadataFieldNamingProcessor extends NamingProcessor {
 class NameNamingProcessor extends NamingProcessor {
   static const key = 'name';
 
-  @override
-  List<Object?> get props => [];
-
   const NameNamingProcessor();
 
   @override
   String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => entry.filenameWithoutExtension;
+}
+
+@immutable
+class WidthNamingProcessor extends NamingProcessor {
+  static const key = 'width';
+
+  @override
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+    return '${entry.displaySize.width.toInt()}';
+  }
+}
+
+@immutable
+class HeightNamingProcessor extends NamingProcessor {
+  static const key = 'height';
+
+  @override
+  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+    return '${entry.displaySize.height.toInt()}';
+  }
 }
 
 @immutable

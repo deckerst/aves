@@ -43,19 +43,20 @@ class _RenameDynamicAlbumDialogState extends State<RenameDynamicAlbumDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       content: ValueListenableBuilder<bool>(
-          valueListenable: _existsNotifier,
-          builder: (context, exists, child) {
-            return TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: context.l10n.renameAlbumDialogLabel,
-                helperText: exists ? context.l10n.dynamicAlbumAlreadyExists : '',
-              ),
-              autofocus: true,
-              onChanged: (_) => _validate(),
-              onSubmitted: (_) => _submit(context),
-            );
-          }),
+        valueListenable: _existsNotifier,
+        builder: (context, exists, child) {
+          return TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: context.l10n.renameAlbumDialogLabel,
+              helperText: exists ? context.l10n.dynamicAlbumAlreadyExists : '',
+            ),
+            autofocus: true,
+            onChanged: (_) => _validate(),
+            onSubmitted: (_) => _submit(context),
+          );
+        },
+      ),
       actions: [
         const CancelButton(),
         ValueListenableBuilder<bool>(

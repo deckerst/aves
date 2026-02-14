@@ -201,12 +201,12 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
     final selectedFilters = selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
-          action,
-          appMode: appMode,
-          isSelecting: isSelecting,
-          itemCount: itemCount,
-          selectedFilters: selectedFilters,
-        );
+      action,
+      appMode: appMode,
+      isSelecting: isSelecting,
+      itemCount: itemCount,
+      selectedFilters: selectedFilters,
+    );
 
     void onActionSelected(ChipSetAction action) {
       switch (action) {
@@ -266,7 +266,9 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
     ];
 
     return [
-      ...quickActions.where(isVisible).map(
+      ...quickActions
+          .where(isVisible)
+          .map(
             (action) => IconButton(
               icon: action.getIcon(),
               onPressed: () => onActionSelected(action),

@@ -10,11 +10,11 @@ abstract class SettingsSection {
 
   String title(BuildContext context);
 
-  FutureOr<List<SettingsTile>> tiles(BuildContext context);
+  Future<List<SettingsTile>> tiles(BuildContext context);
 
   Widget build(BuildContext sectionContext, ValueNotifier<String?> expandedNotifier) {
     return FutureBuilder<List<SettingsTile>>(
-      future: Future.value(tiles(sectionContext)),
+      future: tiles(sectionContext),
       builder: (tileContext, snapshot) {
         final tiles = snapshot.data;
         if (tiles == null) return const SizedBox();

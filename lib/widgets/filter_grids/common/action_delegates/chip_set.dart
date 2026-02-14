@@ -24,7 +24,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -298,7 +298,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  Future<void> _goToCollection(context) async {
+  Future<void> _goToCollection(BuildContext context) async {
     final filters = getSelectedFilters(context);
     if (filters.isEmpty) return;
 
@@ -372,21 +372,15 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   Future<void> _hide(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    final l10n = context.l10n;
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(context.l10n.hideFilterConfirmationDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.hideButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.hideFilterConfirmationDialogMessage,
+      ok: l10n.hideButtonLabel,
+    )) {
+      return;
+    }
 
     final filters = getSelectedFilters(context);
     if (!await unlockFilters(context, filters)) return;

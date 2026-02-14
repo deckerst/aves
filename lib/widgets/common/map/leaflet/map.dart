@@ -194,7 +194,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
                   child: const DotMarker(),
                   width: dotMarkerSize.width,
                   height: dotMarkerSize.height,
-                )
+                ),
             ],
           ),
         ),
@@ -221,7 +221,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         subdomains: style.subdomains,
         tileProvider: NetworkTileProvider(
           headers: {
-            if (userAgent != null) 'User-Agent': userAgent,
+            'User-Agent': ?userAgent,
           },
         ),
         // similar to `RetinaMode.isHighDensity` from `flutter_map`, but only rebuild for target aspect
@@ -264,11 +264,13 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     final trackColor = Theme.of(context).colorScheme.primary;
     return PolylineLayer(
       polylines: tracks
-          .map((v) => Polyline(
-                points: v,
-                strokeWidth: MapThemeData.trackWidth.toDouble(),
-                color: trackColor,
-              ))
+          .map(
+            (v) => Polyline(
+              points: v,
+              strokeWidth: MapThemeData.trackWidth.toDouble(),
+              color: trackColor,
+            ),
+          )
           .toList(),
     );
   }

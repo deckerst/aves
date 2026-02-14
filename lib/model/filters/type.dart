@@ -69,10 +69,10 @@ class TypeFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'itemType': itemType,
-        'reversed': reversed,
-      };
+    'type': type,
+    'itemType': itemType,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

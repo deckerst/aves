@@ -121,40 +121,51 @@ mixin CastMixin {
 }
 
 extension ExtraDLNADevice on DLNADevice {
-  Future<String> requestCustom({
+  Future<String?> requestCustom({
     required String serviceId,
     required String serviceType,
     required String action,
     required String data,
   }) async {
-    return DLNAHttp.post(
-      Uri.parse(controlURL(serviceId)),
-      Map.from({
-        'SOAPAction': '"$serviceType#$action"',
-        'Content-Type': 'text/xml',
-      }),
-      const Utf8Encoder().convert(data),
-    );
+    try {
+      return DLNAHttp.post(
+        Uri.parse(controlURL(serviceId)),
+        Map.from({
+          'SOAPAction': '"$serviceType#$action"',
+          'Content-Type': 'text/xml',
+        }),
+        const Utf8Encoder().convert(data),
+      );
+    } catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
-  Future<Map<String, UpnpProtocolInfo>> getProtocolInfo() async {
+  Future<Map<String, UpnpProtocolInfo>?> getProtocolInfo() async {
     final result = await requestCustom(
       serviceId: 'ConnectionManager',
       serviceType: Upnp.upnpServiceTypeConnectionManager,
       action: 'GetProtocolInfo',
       data: Upnp.getProtocolInfoActionXml(),
     );
-    final doc = XmlDocument.parse(result);
-    final sink = UpnpProtocolInfo(doc.findAllElements('Sink').first.innerText);
-    final source = UpnpProtocolInfo(doc.findAllElements('Source').first.innerText);
-    return {
-      'sink': sink,
-      'source': source,
-    };
+
+    if (result != null) {
+      final doc = XmlDocument.parse(result);
+      final sink = UpnpProtocolInfo(doc.findAllElements('Sink').first.innerText);
+      final source = UpnpProtocolInfo(doc.findAllElements('Source').first.innerText);
+      return {
+        'sink': sink,
+        'source': source,
+      };
+    }
+
+    return null;
   }
 
   Future<Set<String>?> getSinkSupportedMimeTypes() async {
-    final sinkProtocolInfo = (await getProtocolInfo())['sink'];
+    final protocolInfo = await getProtocolInfo();
+    final sinkProtocolInfo = protocolInfo?['sink'];
     if (sinkProtocolInfo != null) {
       final byProtocol = groupBy<UpnpProtocolInfoEntry, String>(sinkProtocolInfo.entries, (v) => v.protocol);
       final httpGet = byProtocol['http-get'];

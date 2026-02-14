@@ -58,7 +58,7 @@ object BitmapUtils {
             Bitmap.Config.RGB_565 -> BPP_RGB_565
             Bitmap.Config.ARGB_8888 -> BPP_ARGB_8888
             else -> {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && config == Bitmap.Config.RGBA_F16) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && config == Bitmap.Config.RGBA_F16) {
                     BPP_RGBA_F16
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && config == Bitmap.Config.RGBA_1010102) {
                     BPP_RGBA_1010102

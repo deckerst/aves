@@ -100,7 +100,7 @@ class SafeXmpReader : XmpReader() {
                         return pi.value
                     }
                 }
-            } catch (e: XMPException) {
+            } catch (_: XMPException) {
                 // Fail silently here: we had a reading issue, not a decoding issue.
             }
         }

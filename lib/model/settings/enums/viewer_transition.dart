@@ -37,13 +37,12 @@ class _ViewerTransitionRandomizer {
   static TransitionBuilder getBuilder(
     PageController pageController,
     int index,
-  ) =>
-      (context, child) {
-        final negative = pageController.hasClients && pageController.position.haveDimensions && (pageController.page! - index).isNegative;
-        final transition = _getTransition(negative ? index - 1 : index);
-        final builder = transition.builder(pageController, index);
-        return builder(context, child);
-      };
+  ) => (context, child) {
+    final negative = pageController.hasClients && pageController.position.haveDimensions && (pageController.page! - index).isNegative;
+    final transition = _getTransition(negative ? index - 1 : index);
+    final builder = transition.builder(pageController, index);
+    return builder(context, child);
+  };
 
   static ViewerTransition _getTransition(int transitionIndex) {
     var indexedTransition = _indexedTransitions.firstWhereOrNull((v) => v.$1 == transitionIndex);

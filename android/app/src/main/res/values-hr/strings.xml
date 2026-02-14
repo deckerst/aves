@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_widget_label">Okvir Slike</string>
+    <string name="wallpaper">Pozadina</string>
+    <string name="map_shortcut_short_label">Mapa</string>
+    <string name="search_shortcut_short_label">Pretraživanje</string>
+    <string name="videos_shortcut_short_label">Videosnimke</string>
+    <string name="analysis_channel_name">Skeniranje medija</string>
+    <string name="analysis_notification_default_title">Skeniram medije</string>
+    <string name="analysis_notification_action_stop">Stop</string>
+    <string name="app_name">Aves</string>
+</resources>

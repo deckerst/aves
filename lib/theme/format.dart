@@ -6,9 +6,9 @@ String formatDay(DateTime date, String locale) => DateFormat.yMMMd(locale).forma
 String formatTime(DateTime date, String locale, bool use24hour) => (use24hour ? DateFormat.Hm(locale) : DateFormat.jm(locale)).format(date);
 
 String formatDateTime(DateTime date, String locale, bool use24hour) => [
-      formatDay(date, locale),
-      formatTime(date, locale, use24hour),
-    ].join(AText.separator);
+  formatDay(date, locale),
+  formatTime(date, locale, use24hour),
+].join(AText.separator);
 
 String formatFriendlyDuration(Duration d) {
   final isNegative = d.isNegative;

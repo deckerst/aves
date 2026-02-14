@@ -194,7 +194,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.addShortcut:
         _addShortcut(context, targetEntry);
       case EntryAction.copyToClipboard:
-        appService.copyToClipboard(targetEntry.uri, targetEntry.bestTitle).then((success) {
+        appService.copyToClipboard(label: targetEntry.bestTitle, uri: targetEntry.uri).then((success) {
           if (success) {
             showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
           } else {
@@ -452,10 +452,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _move(BuildContext context, AvesEntry targetEntry, {required MoveType moveType}) => doMove(
-        context,
-        moveType: moveType,
-        entries: {targetEntry},
-      );
+    context,
+    moveType: moveType,
+    entries: {targetEntry},
+  );
 
   Future<void> _convert(BuildContext context, AvesEntry targetEntry) async {
     final options = await showDialog<EntryConvertOptions>(

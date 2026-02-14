@@ -21,10 +21,12 @@ class VideoPlaybackPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSwitchListTile(
-              selector: (context, s) => s.enableVideoHardwareAcceleration,
-              onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
-              title: context.l10n.settingsVideoEnableHardwareAcceleration,
+            SettingsSelectionListTile<VideoHardwareAcceleration>(
+              values: VideoHardwareAcceleration.values,
+              getName: (context, v) => v.getName(context),
+              selector: (context, s) => s.videoHardwareAcceleration,
+              onSelection: (v) => settings.videoHardwareAcceleration = v,
+              tileTitle: context.l10n.settingsVideoEnableHardwareAcceleration,
             ),
             SettingsSelectionListTile<VideoAutoPlayMode>(
               values: VideoAutoPlayMode.values,

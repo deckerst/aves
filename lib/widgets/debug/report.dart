@@ -59,7 +59,7 @@ class _DebugErrorReportingSectionState extends State<DebugErrorReportingSection>
           child: InfoRowGroup(
             info: reportService.state,
           ),
-        )
+        ),
       ],
     );
   }

@@ -70,6 +70,7 @@ class AvesApp extends StatefulWidget {
     'ckb', // Kurdish (Central)
     'he', // Hebrew
     'hi', // Hindi
+    'hr', // Croatian
     'kmr', // Kurdish (Northern)
     'ml', // Malayalam
     'my', // Burmese
@@ -83,6 +84,7 @@ class AvesApp extends StatefulWidget {
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
+  static final ValueNotifier<bool> isInPictureInPictureMode = ValueNotifier(false);
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
 
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
@@ -182,13 +184,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
   final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
-  // Flutter has various page transition implementations for Android:
-  // - `FadeUpwardsPageTransitionsBuilder` on Oreo / Android 8 / API 27 and below
-  // - `OpenUpwardsPageTransitionsBuilder` on Pie / Android 9 / API 28
-  // - `ZoomPageTransitionsBuilder` on Q / Android 10 / API 29 (default in Flutter v3.22.0)
-  // - `FadeForwardsPageTransitionsBuilder` on U / Android 14 / API 34
-  // - `PredictiveBackPageTransitionsBuilder` for Android 15 / API 35 intra-app predictive back (default to `ZoomPageTransitionsBuilder`)
-  static const _defaultPageTransitionsBuilder = FadeUpwardsPageTransitionsBuilder();
+  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
   static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
   static bool _exitedMainByPop = false;
@@ -200,11 +196,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     EquatableConfig.stringify = true;
     _appSetup = _setup();
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
-    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _mediaStoreSource.onStoreChanged(event as String?)));
-    _subscriptions.add(_newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?)));
-    _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((event) => _onAnalysisCompletion()));
-    _subscriptions.add(_errorChannel.receiveBroadcastStream().listen((event) => _onError(event as String?)));
-    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().listen((event) => _updateWindowMode()));
+    _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
+    _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
+    _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((_) => _onAnalysisCompletion()));
+    _subscriptions.add(_errorChannel.receiveBroadcastStream().cast<String>().listen(_onError));
+    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().cast<String>().listen(_onWindowChange));
     _updateCutoutInsets();
     _updateWindowMode();
     _appModeNotifier.addListener(_onAppModeChanged);
@@ -436,19 +432,28 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeMetrics() => _updateCutoutInsets();
-
-  @override
   void didChangeLocales(List<Locale>? locales) => _applyLocale();
 
-  Future<void> _updateCutoutInsets() async {
-    if (await windowService.isCutoutAware()) {
-      AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+  Future<void> _onWindowChange(String? code) async {
+    if (code == null) return;
+    switch (code) {
+      case 'cutout_insets':
+        await _updateCutoutInsets();
+        break;
+      case 'window_mode':
+        await _updateWindowMode();
+        break;
     }
   }
 
+  Future<void> _updateCutoutInsets() async {
+    AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+  }
+
   Future<void> _updateWindowMode() async {
-    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !(await windowService.isInPictureInPictureMode());
+    final isInPipMode = await windowService.isInPictureInPictureMode();
+    AvesApp.isInPictureInPictureMode.value = isInPipMode;
+    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !isInPipMode;
   }
 
   void _applyLocale() {
@@ -599,13 +604,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     void applyForceTvLayout() {
       _onTvLayoutChanged();
-      unawaited(_navigatorKey.currentState!.pushAndRemoveUntil(
-        MaterialPageRoute(
-          settings: const RouteSettings(name: HomePage.routeName),
-          builder: (_) => _getFirstPage(),
+      unawaited(
+        _navigatorKey.currentState!.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: HomePage.routeName),
+            builder: (_) => _getFirstPage(),
+          ),
+          (route) => false,
         ),
-        (route) => false,
-      ));
+      );
     }
 
     final settingStream = settings.updateStream;
@@ -630,7 +637,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Future<void> _setupErrorReporting() async {
     await reportService.init();
-    settings.updateStream.where((event) => event.key == SettingKeys.isErrorReportingAllowedKey).listen(
+    settings.updateStream
+        .where((event) => event.key == SettingKeys.isErrorReportingAllowedKey)
+        .listen(
           (_) => reportService.setCollectionEnabled(settings.isErrorReportingAllowed),
         );
     await reportService.setCollectionEnabled(settings.isErrorReportingAllowed);
@@ -641,18 +650,20 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       'build_mode': kReleaseMode
           ? 'release'
           : kProfileMode
-              ? 'profile'
-              : 'debug',
+          ? 'profile'
+          : 'debug',
       'has_mobile_services': mobileServices.isServiceAvailable,
       'is_television': device.isTelevision,
       'locales': WidgetsBinding.instance.platformDispatcher.locales.join(', '),
       'time_zone': '${now.timeZoneName} (${now.timeZoneOffset})',
     });
     await reportService.log('Launch');
-    setState(() => _navigatorObservers = [
-          AvesApp.pageRouteObserver,
-          ReportingRouteTracker(),
-        ]);
+    setState(
+      () => _navigatorObservers = [
+        AvesApp.pageRouteObserver,
+        ReportingRouteTracker(),
+      ],
+    );
   }
 
   // at this level `ModalRoute.of(context)` is null,
@@ -666,7 +677,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return currentRoute;
   }
 
-  void _onNewIntent(Map? intentData) {
+  void _onNewIntent(Map<dynamic, dynamic>? intentData) {
     reportService.log('New intent data=$intentData');
 
     if (_appModeNotifier.value == AppMode.main) {
@@ -694,10 +705,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
-      settings: const RouteSettings(name: HomePage.routeName),
-      builder: (_) => _getFirstPage(intentData: intentData),
-    ));
+    _navigatorKey.currentState!.pushReplacement(
+      DirectMaterialPageRoute(
+        settings: const RouteSettings(name: HomePage.routeName),
+        builder: (_) => _getFirstPage(intentData: intentData),
+      ),
+    );
   }
 
   Future<void> _onAnalysisCompletion() async {
@@ -707,7 +720,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onError(String? error) => reportService.recordError(error);
+  void _onError(String error) => reportService.recordError(error);
 
   void _onAppModeChanged() {
     final appMode = _appModeNotifier.value;

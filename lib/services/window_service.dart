@@ -1,8 +1,8 @@
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:aves/services/common/channel.dart';
 
 abstract class WindowService {
   Future<bool> isActivity();

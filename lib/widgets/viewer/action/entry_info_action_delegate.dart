@@ -17,7 +17,7 @@ import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
@@ -235,21 +235,14 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
 
   Future<void> _convertMotionPhotoToStillImage(BuildContext context, AvesEntry targetEntry) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.genericDangerWarningDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.genericDangerWarningDialogMessage,
+      ok: l10n.applyButtonLabel,
+    )) {
+      return;
+    }
 
     await edit(context, targetEntry, targetEntry.removeTrailerVideo);
   }

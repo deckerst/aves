@@ -64,8 +64,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
         title += ' ${dir.index}';
       }
       return MapEntry(title, dir);
-    }).toList()
-      ..sort((a, b) => compareAsciiUpperCase(a.key, b.key));
+    }).toList()..sort((a, b) => compareAsciiUpperCase(a.key, b.key));
 
     return titledDirectories;
   }
@@ -88,12 +87,17 @@ extension ExtraAvesEntryInfo on AvesEntry {
       if (allChapters.isNotEmpty) {
         allChapters.sortBy((v) => v[Keys.time] as num? ?? 0);
 
-        final chapterTags = SplayTreeMap.of(Map.fromEntries(allChapters.mapIndexed((i, chapter) {
-          final chapterNumber = i + 1;
-          final time = Duration(seconds: (chapter[Keys.time] as num? ?? 0).round());
-          final title = chapter[Keys.title] as String? ?? 'Chapter $chapterNumber';
-          return MapEntry('$chapterNumber${AText.separator}${formatFriendlyDuration(time)}', title);
-        })), compareNatural);
+        final chapterTags = SplayTreeMap.of(
+          Map.fromEntries(
+            allChapters.mapIndexed((i, chapter) {
+              final chapterNumber = i + 1;
+              final time = Duration(seconds: (chapter[Keys.time] as num? ?? 0).round());
+              final title = chapter[Keys.title] as String? ?? 'Chapter $chapterNumber';
+              return MapEntry('$chapterNumber${AText.separator}${formatFriendlyDuration(time)}', title);
+            }),
+          ),
+          compareNatural,
+        );
         directories.add(MetadataDirectory('Chapters', chapterTags));
       }
     }
@@ -168,12 +172,16 @@ extension ExtraAvesEntryInfo on AvesEntry {
   }
 
   SplayTreeMap<String, String> _toSortedTags(Map rawTags) {
-    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
-      var value = (tagKV.value as String? ?? '').trim();
-      if (value.isEmpty) return null;
-      final tagName = tagKV.key as String;
-      return MapEntry(tagName, value);
-    }).nonNulls));
+    final tags = SplayTreeMap.of(
+      Map.fromEntries(
+        rawTags.entries.map((tagKV) {
+          var value = (tagKV.value as String? ?? '').trim();
+          if (value.isEmpty) return null;
+          final tagName = tagKV.key as String;
+          return MapEntry(tagName, value);
+        }).nonNulls,
+      ),
+    );
     return tags;
   }
 }

@@ -99,22 +99,23 @@ class _BasicSectionState extends State<BasicSection> {
   Widget build(BuildContext context) {
     final entry = widget.entry;
     return AnimatedBuilder(
-        animation: entry.metadataChangeNotifier,
-        builder: (context, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _BasicInfo(entry: entry),
-              Focus(
-                focusNode: _chipFocusNode,
-                skipTraversal: true,
-                canRequestFocus: false,
-                child: _buildChips(context),
-              ),
-              _buildEditButtons(context),
-            ],
-          );
-        });
+      animation: entry.metadataChangeNotifier,
+      builder: (context, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _BasicInfo(entry: entry),
+            Focus(
+              focusNode: _chipFocusNode,
+              skipTraversal: true,
+              canRequestFocus: false,
+              child: _buildChips(context),
+            ),
+            _buildEditButtons(context),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildChips(BuildContext context) {
@@ -152,10 +153,12 @@ class _BasicSectionState extends State<BasicSection> {
             spacing: 8,
             runSpacing: 8,
             children: effectiveFilters
-                .map((filter) => AvesFilterChip(
-                      filter: filter,
-                      onTap: widget.onFilterSelection,
-                    ))
+                .map(
+                  (filter) => AvesFilterChip(
+                    filter: filter,
+                    onTap: widget.onFilterSelection,
+                  ),
+                )
                 .toList(),
           ),
         );
@@ -166,18 +169,21 @@ class _BasicSectionState extends State<BasicSection> {
   Widget _buildEditButtons(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final entry = widget.entry;
-    final children = [
-      EntryAction.editRating,
-      EntryAction.editTags,
-    ]
-        .where((v) => actionDelegate.isVisible(
-              appMode: appMode,
-              targetEntry: entry,
-              action: v,
-            ))
-        .where((v) => actionDelegate.canApply(entry, v))
-        .map((v) => _buildEditMetadataButton(context, v))
-        .toList();
+    final children =
+        [
+              EntryAction.editRating,
+              EntryAction.editTags,
+            ]
+            .where(
+              (v) => actionDelegate.isVisible(
+                appMode: appMode,
+                targetEntry: entry,
+                action: v,
+              ),
+            )
+            .where((v) => actionDelegate.canApply(entry, v))
+            .map((v) => _buildEditMetadataButton(context, v))
+            .toList();
 
     return children.isEmpty
         ? const SizedBox()
@@ -228,10 +234,12 @@ class _BasicSectionState extends State<BasicSection> {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                border: Border.fromBorderSide(BorderSide(
-                  color: isEditing ? Theme.of(context).disabledColor : context.select<AvesColorsData, Color>((v) => v.neutral),
-                  width: AvesFilterChip.outlineWidth,
-                )),
+                border: Border.fromBorderSide(
+                  BorderSide(
+                    color: isEditing ? Theme.of(context).disabledColor : context.select<AvesColorsData, Color>((v) => v.neutral),
+                    width: AvesFilterChip.outlineWidth,
+                  ),
+                ),
                 borderRadius: const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius)),
               ),
               child: button,
@@ -329,8 +337,8 @@ class _BasicInfoState extends State<_BasicInfo> {
                 if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale)),
                 l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
-                if (path != null) l10n.viewerInfoLabelPath: path,
-                if (ownerPackage != null) l10n.viewerInfoLabelOwner: ownerPackage,
+                l10n.viewerInfoLabelPath: ?path,
+                l10n.viewerInfoLabelOwner: ?ownerPackage,
               },
               spanBuilders: {
                 l10n.viewerInfoLabelOwner: _ownerHandler(ownerPackage),
@@ -353,31 +361,31 @@ class _BasicInfoState extends State<_BasicInfo> {
 
     final appName = appInventory.getCurrentAppName(ownerPackage) ?? ownerPackage;
     return (context, key, value) => [
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 2, end: 4),
-              child: ConstrainedBox(
-                // use constraints instead of sizing `Image`,
-                // so that it can collapse when handling an empty image
-                constraints: const BoxConstraints(
-                  maxWidth: iconSize,
-                  maxHeight: iconSize,
-                ),
-                child: Image(
-                  image: AppIconImage(
-                    packageName: ownerPackage,
-                    size: iconSize,
-                  ),
-                ),
+      WidgetSpan(
+        alignment: PlaceholderAlignment.middle,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(start: 2, end: 4),
+          child: ConstrainedBox(
+            // use constraints instead of sizing `Image`,
+            // so that it can collapse when handling an empty image
+            constraints: const BoxConstraints(
+              maxWidth: iconSize,
+              maxHeight: iconSize,
+            ),
+            child: Image(
+              image: AppIconImage(
+                packageName: ownerPackage,
+                size: iconSize,
               ),
             ),
           ),
-          TextSpan(
-            text: appName,
-            style: InfoRowGroup.valueStyle,
-          ),
-        ];
+        ),
+      ),
+      TextSpan(
+        text: appName,
+        style: InfoRowGroup.valueStyle,
+      ),
+    ];
   }
 
   String getRasterResolutionText(String locale) {

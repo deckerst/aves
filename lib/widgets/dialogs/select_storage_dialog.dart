@@ -39,8 +39,20 @@ class _SelectStorageDialogState extends State<SelectStorageDialog> {
     return AvesDialog(
       title: context.l10n.selectStorageVolumeDialogTitle,
       scrollableContent: [
-        ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
-        ...otherVolumes.map((volume) => _buildVolumeTile(context, volume)),
+        RadioGroup(
+          groupValue: _selectedVolume,
+          onChanged: (volume) {
+            _selectedVolume = volume!;
+            setState(() {});
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
+              ...otherVolumes.map((volume) => _buildVolumeTile(context, volume)),
+            ],
+          ),
+        ),
       ],
       actions: [
         const CancelButton(),
@@ -53,23 +65,18 @@ class _SelectStorageDialogState extends State<SelectStorageDialog> {
   }
 
   Widget _buildVolumeTile(BuildContext context, StorageVolume volume) => RadioListTile<StorageVolume>(
-        value: volume,
-        groupValue: _selectedVolume,
-        onChanged: (volume) {
-          _selectedVolume = volume!;
-          setState(() {});
-        },
-        title: Text(
-          volume.getDescription(context),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-        subtitle: Text(
-          volume.path,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      );
+    value: volume,
+    title: Text(
+      volume.getDescription(context),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+    subtitle: Text(
+      volume.path,
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+    ),
+  );
 }

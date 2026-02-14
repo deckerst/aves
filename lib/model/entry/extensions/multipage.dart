@@ -23,17 +23,19 @@ extension ExtraAvesEntryMultipage on AvesEntry {
       return MultiPageInfo(
         mainEntry: this,
         pages: stackedEntries!
-            .mapIndexed((index, entry) => SinglePageInfo(
-                  index: index,
-                  pageId: entry.id,
-                  isDefault: index == 0,
-                  uri: entry.uri,
-                  mimeType: entry.mimeType,
-                  width: entry.width,
-                  height: entry.height,
-                  rotationDegrees: entry.rotationDegrees,
-                  durationMillis: entry.durationMillis,
-                ))
+            .mapIndexed(
+              (index, entry) => SinglePageInfo(
+                index: index,
+                pageId: entry.id,
+                isDefault: index == 0,
+                uri: entry.uri,
+                mimeType: entry.mimeType,
+                width: entry.width,
+                height: entry.height,
+                rotationDegrees: entry.rotationDegrees,
+                durationMillis: entry.durationMillis,
+              ),
+            )
             .toList(),
       );
     } else {

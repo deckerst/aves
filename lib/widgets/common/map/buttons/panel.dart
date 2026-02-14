@@ -179,27 +179,31 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
     if (actions.length == 1) {
       child = _buildActionButton(context, actions.first, heroTag: heroTag);
     } else if (actions.length > 1) {
-      child = MapOverlayButton(builder: (context, visualDensity, child) {
-        final animations = context.read<Settings>().accessibilityAnimations;
-        return PopupMenuButton<MapAction>(
-          itemBuilder: (context) => actions
-              .map((action) => PopupMenuItem(
+      child = MapOverlayButton(
+        builder: (context, visualDensity, child) {
+          final animations = context.read<Settings>().accessibilityAnimations;
+          return PopupMenuButton<MapAction>(
+            itemBuilder: (context) => actions
+                .map(
+                  (action) => PopupMenuItem(
                     value: action,
                     child: MenuRow(
                       text: action.getText(context),
                       icon: action.getIcon(),
                     ),
-                  ))
-              .toList(),
-          onSelected: (action) async {
-            // wait for the popup menu to hide before proceeding with the action
-            await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-            _actionDelegate.onActionSelected(context, action);
-          },
-          iconSize: MapOverlayButton.iconSize(visualDensity),
-          popUpAnimationStyle: animations.popUpAnimationStyle,
-        );
-      });
+                  ),
+                )
+                .toList(),
+            onSelected: (action) async {
+              // wait for the popup menu to hide before proceeding with the action
+              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+              _actionDelegate.onActionSelected(context, action);
+            },
+            iconSize: MapOverlayButton.iconSize(visualDensity),
+            popUpAnimationStyle: animations.popUpAnimationStyle,
+          );
+        },
+      );
       child = _heroify(context, heroTag, child);
     }
     return child;

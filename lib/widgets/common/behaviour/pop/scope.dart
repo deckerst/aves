@@ -40,8 +40,8 @@ class APopHandler implements PopHandler {
   APopHandler({
     required bool Function(BuildContext context) canPop,
     required void Function(BuildContext context) onPopBlocked,
-  })  : _canPop = canPop,
-        _onPopBlocked = onPopBlocked;
+  }) : _canPop = canPop,
+       _onPopBlocked = onPopBlocked;
 
   @override
   bool canPop(BuildContext context) => _canPop(context);

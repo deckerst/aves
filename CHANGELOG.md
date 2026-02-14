@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.0"></a>[v1.14.0] - 2026-02-14
+
+### Added
+
+- Collection: allow using width/height when bulk renaming
+- Video: allow forcing hardware acceleration
+- Search: allow regex (wrapped in `/.../`) in query filter
+- Stats: export to CSV/JSON fields of filtered collection
+- predictive back gesture support (external only, intra-app support pending Flutter v3.42)
+
+### Changed
+
+- upgraded Flutter to stable v3.41.1
+- splash screen icon animation
+
+### Removed
+
+- support for Android API < 24 (Android 7.0 Nougat)
+
+### Fixed
+
+- inefficient PiP check causing high CPU usage
+
 ## <a id="v1.13.12"></a>[v1.13.12] - 2025-12-23
 
 ### Added

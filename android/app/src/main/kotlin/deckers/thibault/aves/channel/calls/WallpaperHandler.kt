@@ -4,7 +4,6 @@ import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_LOCK
 import android.app.WallpaperManager.FLAG_SYSTEM
 import android.content.ContextWrapper
-import android.os.Build
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -34,20 +33,14 @@ class WallpaperHandler(private val contextWrapper: ContextWrapper) : MethodCallH
         }
 
         val manager = WallpaperManager.getInstance(contextWrapper)
-        val supported = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || manager.isWallpaperSupported
-        val allowed = Build.VERSION.SDK_INT < Build.VERSION_CODES.N || manager.isSetWallpaperAllowed
-        if (!supported || !allowed) {
+        if (!manager.isWallpaperSupported || !manager.isSetWallpaperAllowed) {
             result.error("setWallpaper-unsupported", "failed because setting wallpaper is not allowed", null)
             return
         }
 
         bytes.inputStream().use { input ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val flags = (if (home) FLAG_SYSTEM else 0) or (if (lock) FLAG_LOCK else 0)
-                manager.setStream(input, null, true, flags)
-            } else {
-                manager.setStream(input)
-            }
+            val flags = (if (home) FLAG_SYSTEM else 0) or (if (lock) FLAG_LOCK else 0)
+            manager.setStream(input, null, true, flags)
         }
         result.success(true)
     }

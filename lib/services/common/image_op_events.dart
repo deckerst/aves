@@ -69,8 +69,8 @@ class ExportOpEvent extends MoveOpEvent {
     this.pageId,
     required super.newFields,
   }) : super(
-          deleted: false,
-        );
+         deleted: false,
+       );
 
   factory ExportOpEvent.fromMap(Map map) {
     final newFields = map['newFields'] ?? {};

@@ -180,9 +180,11 @@ class OverlayTextButton extends StatelessWidget {
           minimumSize: _minSize,
           iconColor: WidgetStateProperty.all<Color>(foreground),
           side: WidgetStateProperty.all<BorderSide>(AvesBorder.curvedSide(context)),
-          shape: WidgetStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
-          )),
+          shape: WidgetStateProperty.all<OutlinedBorder>(
+            const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
+            ),
+          ),
         ),
         child: child,
       ),

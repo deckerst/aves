@@ -39,10 +39,10 @@ class PathFilter extends CollectionFilter {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'path': path,
-        'reversed': reversed,
-      };
+    'type': type,
+    'path': path,
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => _test;

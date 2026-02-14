@@ -59,7 +59,7 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
   void didChangeDependencies() {
     _resolveImage();
 
-    if (TickerMode.of(context)) {
+    if (TickerMode.valuesOf(context).enabled) {
       _listenToStream();
     } else {
       _stopListeningToStream(keepStreamAlive: true);

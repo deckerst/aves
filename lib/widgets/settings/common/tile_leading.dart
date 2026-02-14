@@ -22,10 +22,12 @@ class SettingsTileLeading extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: Themes.firstLayerColor(context),
-        border: Border.fromBorderSide(BorderSide(
-          color: color,
-          width: AvesFilterChip.outlineWidth,
-        )),
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: color,
+            width: AvesFilterChip.outlineWidth,
+          ),
+        ),
         shape: BoxShape.circle,
       ),
       duration: ADurations.themeColorModeAnimation,

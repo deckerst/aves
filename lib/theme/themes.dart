@@ -91,22 +91,22 @@ class Themes {
   }
 
   static CheckboxThemeData _checkboxTheme(ColorScheme colors) => CheckboxThemeData(
-        side: BorderSide(width: 2.0, color: _unselectedWidgetColor(colors)),
-      );
+    side: BorderSide(width: 2.0, color: _unselectedWidgetColor(colors)),
+  );
 
   static DrawerThemeData _drawerTheme(ColorScheme colors) => DrawerThemeData(
-        backgroundColor: _schemeSecondLayer(colors),
-      );
+    backgroundColor: _schemeSecondLayer(colors),
+  );
 
   static IconThemeData _iconTheme(ColorScheme colors) => IconThemeData(
-        // increased weight (from default 400 to 600)
-        // applied to variable fonts from `material_symbols_icons`,
-        // to match the fixed-weight icons from `material_design_icons_flutter`
-        weight: 600,
-        grade: 0,
-        opticalSize: 48,
-        color: colors.onSurface,
-      );
+    // increased weight (from default 400 to 600)
+    // applied to variable fonts from `material_symbols_icons`,
+    // to match the fixed-weight icons from `material_design_icons_flutter`
+    weight: 600,
+    grade: 0,
+    opticalSize: 48,
+    color: colors.onSurface,
+  );
 
   static const _listTileTheme = ListTileThemeData(
     contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -136,37 +136,37 @@ class Themes {
 
   // adapted from M3 defaults
   static RadioThemeData _radioTheme(ColorScheme colors) => RadioThemeData(
-        fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-          if (states.contains(WidgetState.selected)) {
-            if (states.contains(WidgetState.disabled)) {
-              return colors.onSurface.withValues(alpha: .38);
-            }
-            return colors.primary;
-          }
-          if (states.contains(WidgetState.disabled)) {
-            return colors.onSurface.withValues(alpha: .38);
-          }
-          if (states.contains(WidgetState.pressed)) {
-            return colors.onSurface;
-          }
-          if (states.contains(WidgetState.hovered)) {
-            return colors.onSurface;
-          }
-          if (states.contains(WidgetState.focused)) {
-            return colors.onSurface;
-          }
-          return _unselectedWidgetColor(colors);
-        }),
-      );
+    fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+      if (states.contains(WidgetState.selected)) {
+        if (states.contains(WidgetState.disabled)) {
+          return colors.onSurface.withValues(alpha: .38);
+        }
+        return colors.primary;
+      }
+      if (states.contains(WidgetState.disabled)) {
+        return colors.onSurface.withValues(alpha: .38);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return colors.onSurface;
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return colors.onSurface;
+      }
+      if (states.contains(WidgetState.focused)) {
+        return colors.onSurface;
+      }
+      return _unselectedWidgetColor(colors);
+    }),
+  );
 
   static SliderThemeData _sliderTheme(ColorScheme colors) => SliderThemeData(
-        inactiveTrackColor: colors.primary.withValues(alpha: .24),
-      );
+    inactiveTrackColor: colors.primary.withValues(alpha: .24),
+  );
 
   static SnackBarThemeData _snackBarTheme(ColorScheme colors) => SnackBarThemeData(
-        actionTextColor: colors.primary,
-        behavior: SnackBarBehavior.floating,
-      );
+    actionTextColor: colors.primary,
+    behavior: SnackBarBehavior.floating,
+  );
 
   static const _tooltipTheme = TooltipThemeData(
     verticalOffset: 32,

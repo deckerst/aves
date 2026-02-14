@@ -33,15 +33,17 @@ class PanoramaOverlay extends StatelessWidget with FeedbackMixin {
               showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
             }
             if (info != null) {
-              unawaited(Navigator.maybeOf(context)?.push(
-                MaterialPageRoute(
-                  settings: const RouteSettings(name: PanoramaPage.routeName),
-                  builder: (context) => PanoramaPage(
-                    entry: entry,
-                    info: info,
+              unawaited(
+                Navigator.maybeOf(context)?.push(
+                  MaterialPageRoute(
+                    settings: const RouteSettings(name: PanoramaPage.routeName),
+                    builder: (context) => PanoramaPage(
+                      entry: entry,
+                      info: info,
+                    ),
                   ),
                 ),
-              ));
+              );
             }
           },
           child: Text(context.l10n.viewerOpenPanoramaButtonLabel),

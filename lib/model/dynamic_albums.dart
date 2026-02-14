@@ -118,13 +118,13 @@ class DynamicAlbums with ChangeNotifier {
     return jsonList.isNotEmpty ? jsonList : null;
   }
 
-  void import(dynamic jsonList) {
+  void import(Object jsonList) {
     if (jsonList is! List) {
       debugPrint('failed to import dynamic albums for jsonMap=$jsonList');
       return;
     }
 
-    jsonList.forEach((row) {
+    jsonList.cast<String?>().forEach((row) {
       final filter = CollectionFilter.fromJson(row);
       if (filter == null || filter is! DynamicAlbumFilter) {
         debugPrint('failed to import dynamic album for row=$row');
@@ -160,9 +160,9 @@ class DynamicAlbumRow extends Equatable {
   }
 
   Map<String, dynamic> toMap() => {
-        'name': name,
-        'filter': filter.toJson(),
-      };
+    'name': name,
+    'filter': filter.toJson(),
+  };
 }
 
 @immutable

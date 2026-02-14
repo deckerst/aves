@@ -60,13 +60,13 @@ object Helper {
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
 
     fun readMimeType(input: InputStream): String? {
-        val bufferedInputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
+        val bufferedInputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
         return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
     }
 
     @Throws(IOException::class, ImageProcessingException::class)
     fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?): com.drew.metadata.Metadata {
-        val inputStream = if (input is BufferedInputStream) input else BufferedInputStream(input)
+        val inputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(inputStream)
 
         // Providing the stream length is risky, as it may crash if it is incorrect.
@@ -296,7 +296,7 @@ object Helper {
         if (!modelTiePoints && !modelTransformation) return false
 
         val modelPixelScale = this.containsTag(ExifGeoTiffTags.TAG_MODEL_PIXEL_SCALE)
-        return !((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiePoints))
+        return !(modelTransformation && modelPixelScale)
     }
 
     // TODO TLAD use `GeoTiffDirectory` from the Java version of `metadata-extractor` when available
@@ -313,7 +313,7 @@ object Helper {
 
         fields[GeoTiffKeys.GEOTIFF_VERSION] = "$directoryVersion.$revision.$minorRevision"
 
-        (0 until numberOfKeys).forEach { j ->
+        (0..<numberOfKeys).forEach { _ ->
             val keyId = geoKeys[i++]
             val tiffTagLocation = geoKeys[i++]
             val valueCount = geoKeys[i++]

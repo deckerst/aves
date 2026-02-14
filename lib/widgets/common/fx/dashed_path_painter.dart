@@ -38,7 +38,8 @@ class DashedPathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(DashedPathPainter oldDelegate) => oldDelegate.originalPath != originalPath || oldDelegate.pathColor != pathColor || oldDelegate.strokeWidth != strokeWidth || oldDelegate.dashGapLength != dashGapLength || oldDelegate.dashLength != dashLength;
+  bool shouldRepaint(DashedPathPainter oldDelegate) =>
+      oldDelegate.originalPath != originalPath || oldDelegate.pathColor != pathColor || oldDelegate.strokeWidth != strokeWidth || oldDelegate.dashGapLength != dashGapLength || oldDelegate.dashLength != dashLength;
 
   Path _getDashedPath(
     Path originalPath,
@@ -74,13 +75,13 @@ class DashedPathProperties {
     required this.path,
     required double dashLength,
     required double dashGapLength,
-  })  : assert(dashLength > 0.0, 'dashLength must be > 0.0'),
-        assert(dashGapLength > 0.0, 'dashGapLength must be > 0.0'),
-        _dashLength = dashLength,
-        _remainingDashLength = dashLength,
-        _remainingDashGapLength = dashGapLength,
-        _previousWasDash = false,
-        extractedPathLength = 0.0;
+  }) : assert(dashLength > 0.0, 'dashLength must be > 0.0'),
+       assert(dashGapLength > 0.0, 'dashGapLength must be > 0.0'),
+       _dashLength = dashLength,
+       _remainingDashLength = dashLength,
+       _remainingDashGapLength = dashGapLength,
+       _previousWasDash = false,
+       extractedPathLength = 0.0;
 
   bool get addDashNext {
     if (!_previousWasDash || _remainingDashLength != _dashLength) {

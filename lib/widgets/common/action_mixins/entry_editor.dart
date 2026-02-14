@@ -9,7 +9,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_date_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_description_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
@@ -79,10 +79,13 @@ mixin EntryEditorMixin {
   Future<Map<AvesEntry, Set<String>>?> selectTags(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final oldTagsByEntry = Map.fromEntries(entries.map((v) {
-      return MapEntry(v, v.tags.map(TagFilter.new).toSet());
-    }));
-    final filtersByEntry = await Navigator.maybeOf(context)?.push<Map<AvesEntry, Set<CollectionFilter>>>(
+    final oldTagsByEntry = Map.fromEntries(
+      entries.map((v) {
+        return MapEntry(v, v.tags.map(TagFilter.new).toSet());
+      }),
+    );
+    final filtersByEntry =
+        await Navigator.maybeOf(context)?.push<Map<AvesEntry, Set<CollectionFilter>>>(
           MaterialPageRoute(
             settings: const RouteSettings(name: TagEditorPage.routeName),
             builder: (context) => TagEditorPage(
@@ -122,21 +125,14 @@ mixin EntryEditorMixin {
     if (types == null || types.isEmpty) return null;
 
     if (entries.any((entry) => entry.isMotionPhoto) && types.contains(MetadataType.xmp)) {
-      final confirmed = await showDialog<bool>(
+      final l10n = context.l10n;
+      if (!await showConfirmationDialog(
         context: context,
-        builder: (context) => AvesDialog(
-          content: Text(context.l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage),
-          actions: [
-            const CancelButton(),
-            TextButton(
-              onPressed: () => Navigator.maybeOf(context)?.pop(true),
-              child: Text(context.l10n.applyButtonLabel),
-            ),
-          ],
-        ),
-        routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-      );
-      if (confirmed == null || !confirmed) return null;
+        message: l10n.removeEntryMetadataMotionPhotoXmpWarningDialogMessage,
+        ok: l10n.applyButtonLabel,
+      )) {
+        return null;
+      }
     }
 
     return types;

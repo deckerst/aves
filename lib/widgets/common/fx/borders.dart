@@ -11,14 +11,14 @@ class AvesBorder {
   static double curvedBorderWidth(BuildContext context) => MediaQuery.devicePixelRatioOf(context) > 2 ? 0.5 : 1.0;
 
   static BorderSide straightSide(BuildContext context, {double? width}) => BorderSide(
-        color: _borderColor(context),
-        width: width ?? straightBorderWidth(context),
-      );
+    color: _borderColor(context),
+    width: width ?? straightBorderWidth(context),
+  );
 
   static BorderSide curvedSide(BuildContext context, {double? width}) => BorderSide(
-        color: _borderColor(context),
-        width: width ?? curvedBorderWidth(context),
-      );
+    color: _borderColor(context),
+    width: width ?? curvedBorderWidth(context),
+  );
 
   static Border border(BuildContext context, {double? width}) => Border.fromBorderSide(curvedSide(context, width: width));
 }

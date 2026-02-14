@@ -54,13 +54,9 @@ class _PatternDialogState extends State<PatternDialog> {
         final match = _firstPattern == pattern;
         Navigator.maybeOf(context)?.pop<String>(match ? pattern : null);
         if (!match) {
-          showDialog(
+          showWarningDialog(
             context: context,
-            builder: (context) => AvesDialog(
-              content: Text(context.l10n.genericFailureFeedback),
-              actions: const [OkButton()],
-            ),
-            routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+            message: context.l10n.genericFailureFeedback,
           );
         }
       } else {

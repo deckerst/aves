@@ -5,7 +5,7 @@ import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
@@ -27,24 +27,13 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
       case VideoResumptionMode.never:
         return 0;
       case VideoResumptionMode.ask:
-        final resume = await showDialog<bool>(
-              context: context,
-              builder: (context) => AvesDialog(
-                content: Text(context.l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime)))),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.maybeOf(context)?.pop(false),
-                    child: Text(context.l10n.videoStartOverButtonLabel),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                    child: Text(context.l10n.videoResumeButtonLabel),
-                  ),
-                ],
-              ),
-              routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
-            ) ??
-            false;
+        final l10n = context.l10n;
+        final resume = await showConfirmationDialog(
+          context: context,
+          message: l10n.videoResumeDialogMessage(formatFriendlyDuration(Duration(milliseconds: resumeTime))),
+          ok: l10n.videoResumeButtonLabel,
+          cancel: l10n.videoStartOverButtonLabel,
+        );
         return resume ? resumeTime : 0;
       case VideoResumptionMode.always:
         return resumeTime;
@@ -58,7 +47,7 @@ class DatabasePlaybackStateHandler extends PlaybackStateHandler {
         VideoPlaybackRow(
           entryId: entryId,
           resumeTimeMillis: position,
-        )
+        ),
       });
     } else {
       await localMediaDb.removeVideoPlayback({entryId});

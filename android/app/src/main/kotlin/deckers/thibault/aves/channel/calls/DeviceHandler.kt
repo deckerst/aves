@@ -54,18 +54,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getCapabilities(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val sdkInt = Build.VERSION.SDK_INT
         result.success(
             hashMapOf(
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
-                "canRenderFlagEmojis" to (sdkInt >= Build.VERSION_CODES.M),
-                "canRenderSubdivisionFlagEmojis" to (sdkInt >= Build.VERSION_CODES.O),
-                "canRequestManageMedia" to (sdkInt >= Build.VERSION_CODES.S),
-                "canSetLockScreenWallpaper" to (sdkInt >= Build.VERSION_CODES.N),
+                "canRenderSubdivisionFlagEmojis" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
+                "canRequestManageMedia" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
-                "showPinShortcutFeedback" to (sdkInt >= Build.VERSION_CODES.O),
-                "supportEdgeToEdgeUIMode" to (sdkInt >= Build.VERSION_CODES.Q),
+                "showPinShortcutFeedback" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
+                "supportEdgeToEdgeUIMode" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q),
                 "supportPictureInPicture" to supportPictureInPicture(),
             )
         )
@@ -84,16 +81,12 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "script" to locale.script,
         )
 
+        // when called from a window-less service, locales from `context.resources`
+        // do not reflect the current system settings, so we use `Resources.getSystem()` instead
+        val list = Resources.getSystem().configuration.locales
         val locales = ArrayList<FieldMap>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // when called from a window-less service, locales from `context.resources`
-            // do not reflect the current system settings, so we use `Resources.getSystem()` instead
-            val list = Resources.getSystem().configuration.locales
-            for (i in 0 until list.size()) {
-                locales.add(toMap(list.get(i)))
-            }
-        } else {
-            locales.add(toMap(Locale.getDefault()))
+        for (i in 0..<list.size()) {
+            locales.add(toMap(list.get(i)))
         }
         result.success(locales)
     }

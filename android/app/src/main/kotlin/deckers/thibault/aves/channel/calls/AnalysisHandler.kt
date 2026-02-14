@@ -2,7 +2,9 @@ package deckers.thibault.aves.channel.calls
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.core.content.edit
+import androidx.lifecycle.LifecycleOwner
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -10,7 +12,6 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import deckers.thibault.aves.AnalysisWorker
 import deckers.thibault.aves.utils.FlutterUtils
-import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AnalysisHandler(private val activity: FlutterFragmentActivity, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler {
+class AnalysisHandler<T>(private val activity: T, private val onAnalysisCompleted: () -> Unit) : MethodChannel.MethodCallHandler
+        where T : ContextWrapper,
+              T : LifecycleOwner {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

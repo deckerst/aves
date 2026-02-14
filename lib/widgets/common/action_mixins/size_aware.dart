@@ -74,19 +74,13 @@ mixin SizeAwareMixin {
   }
 
   Future<void> _showNotEnoughSpaceDialog(BuildContext context, int needed, int free, StorageVolume destinationVolume) async {
-    await showDialog(
+    final locale = context.locale;
+    final neededSize = formatFileSize(locale, needed);
+    final freeSize = formatFileSize(locale, free);
+    final volume = destinationVolume.getDescription(context);
+    await showWarningDialog(
       context: context,
-      builder: (context) {
-        final locale = context.locale;
-        final neededSize = formatFileSize(locale, needed);
-        final freeSize = formatFileSize(locale, free);
-        final volume = destinationVolume.getDescription(context);
-        return AvesDialog(
-          content: Text(context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
-          actions: const [OkButton()],
-        );
-      },
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
+      message: context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume),
     );
   }
 }

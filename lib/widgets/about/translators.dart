@@ -67,7 +67,7 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
         Shadow(
           color: color.withValues(alpha: 0),
           blurRadius: 0,
-        )
+        ),
       ],
     );
     final highlightStyle = TextStyle(
@@ -76,21 +76,22 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
         Shadow(
           color: color.withValues(alpha: 1),
           blurRadius: 3,
-        )
+        ),
       ],
     );
 
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.forward) {
-          _highlightedIndex = Random().nextInt(widget.spans.length);
-        }
-      })
-      ..repeat(reverse: true);
+    _controller =
+        AnimationController(
+            duration: const Duration(seconds: 1),
+            vsync: this,
+          )
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.forward) {
+              _highlightedIndex = Random().nextInt(widget.spans.length);
+            }
+          })
+          ..repeat(reverse: true);
     _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOutCubic,
@@ -110,10 +111,12 @@ class _RandomTextSpanHighlighterState extends State<_RandomTextSpanHighlighter> 
     return Text.rich(
       TextSpan(
         children: [
-          ...widget.spans.expandIndexed((i, v) => [
-                if (i != 0) const TextSpan(text: AText.separator),
-                TextSpan(text: '${Unicode.FSI}$v${Unicode.PDI}', style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
-              ])
+          ...widget.spans.expandIndexed(
+            (i, v) => [
+              if (i != 0) const TextSpan(text: AText.separator),
+              TextSpan(text: '${Unicode.FSI}$v${Unicode.PDI}', style: i == _highlightedIndex ? _animatedStyle.value : _baseStyle),
+            ],
+          ),
         ],
       ),
     );

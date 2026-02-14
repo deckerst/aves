@@ -133,11 +133,13 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         });
 
         source.resumeMonitoring();
-        unawaited(source.refreshUris(newUris).then((_) {
-          // transfer favourite status on exports
-          final newFavouriteEntries = source.allEntries.where((entry) => favouriteNewUris.contains(entry.uri)).toSet();
-          favourites.add(newFavouriteEntries);
-        }));
+        unawaited(
+          source.refreshUris(newUris).then((_) {
+            // transfer favourite status on exports
+            final newFavouriteEntries = source.allEntries.where((entry) => favouriteNewUris.contains(entry.uri)).toSet();
+            favourites.add(newFavouriteEntries);
+          }),
+        );
 
         // get navigator beforehand because
         // local context may be deactivated when action is triggered after navigation
@@ -216,9 +218,11 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
     final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return false;
 
-    final hasEnoughSpaceByDestination = await Future.wait(destinationAlbums.map((destinationAlbum) {
-      return checkFreeSpaceForMove(context, entries, destinationAlbum, moveType);
-    }));
+    final hasEnoughSpaceByDestination = await Future.wait(
+      destinationAlbums.map((destinationAlbum) {
+        return checkFreeSpaceForMove(context, entries, destinationAlbum, moveType);
+      }),
+    );
     if (hasEnoughSpaceByDestination.any((v) => !v)) return false;
 
     final l10n = context.l10n;
@@ -509,17 +513,19 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         targetFilters.removeWhere((f) => f is StoredAlbumFilter);
         targetFilters.add(StoredAlbumFilter(destinationAlbum, source.getStoredAlbumDisplayName(context, destinationAlbum)));
       }
-      unawaited(Navigator.maybeOf(context)?.pushAndRemoveUntil(
-        MaterialPageRoute(
-          settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (context) => CollectionPage(
-            source: source,
-            filters: targetFilters,
-            highlightTest: highlightTest,
+      unawaited(
+        Navigator.maybeOf(context)?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            settings: const RouteSettings(name: CollectionPage.routeName),
+            builder: (context) => CollectionPage(
+              source: source,
+              filters: targetFilters,
+              highlightTest: highlightTest,
+            ),
           ),
+          (route) => false,
         ),
-        (route) => false,
-      ));
+      );
     } else {
       // track in current page, without navigation
       await Future.delayed(ADurations.highlightScrollInitDelay);
@@ -544,19 +550,19 @@ class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
 
   @override
   List<Widget> build(BuildContext context) => [
-        Padding(
-          padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-          child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
-        ),
-        ValueListenableBuilder<bool>(
-          valueListenable: _setMetadataDate,
-          builder: (context, flag, child) => SwitchListTile(
-            value: flag,
-            onChanged: (v) => _setMetadataDate.value = v,
-            title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
-          ),
-        ),
-      ];
+    Padding(
+      padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
+      child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
+    ),
+    ValueListenableBuilder<bool>(
+      valueListenable: _setMetadataDate,
+      builder: (context, flag, child) => SwitchListTile(
+        value: flag,
+        onChanged: (v) => _setMetadataDate.value = v,
+        title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
+      ),
+    ),
+  ];
 
   @override
   void apply() => settings.setMetadataDateBeforeFileOp = _setMetadataDate.value;

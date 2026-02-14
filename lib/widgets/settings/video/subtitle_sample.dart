@@ -59,8 +59,8 @@ class SubtitleSample extends StatelessWidget {
                   builder: (context) => TextBackgroundPainter(
                     spans: textSpans,
                     style: DefaultTextStyle.of(context).style.copyWith(
-                          backgroundColor: settings.subtitleBackgroundColor,
-                        ),
+                      backgroundColor: settings.subtitleBackgroundColor,
+                    ),
                     textAlign: textAlign,
                     child: OutlinedText(
                       textSpans: textSpans,

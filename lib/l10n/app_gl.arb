@@ -1656,5 +1656,9 @@
     "mapStyleEditorDialogUserAgent": "User-Agent",
     "@mapStyleEditorDialogUserAgent": {},
     "settingsViewerShowZoomLevel": "Amosar nivel de zoom",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Activado",
+    "@settingsEnabled": {},
+    "settingsForced": "Forzado",
+    "@settingsForced": {}
 }

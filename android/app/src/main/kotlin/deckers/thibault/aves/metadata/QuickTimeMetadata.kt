@@ -32,7 +32,7 @@ object QuickTimeMetadata {
         val blockCount = BigInteger(bytes.copyOfRange(8, 10)).toInt()
         bytes = bytes.copyOfRange(10, boxHeader.boxDataSize)
 
-        for (i in 0 until blockCount) {
+        (0..<blockCount).forEach { _ ->
             val blockSize = BigInteger(bytes.copyOfRange(0, 2)).toInt()
             val blockType = BigInteger(bytes.copyOfRange(2, 6)).toInt()
             val language = parseLanguage(bytes.copyOfRange(6, 8))

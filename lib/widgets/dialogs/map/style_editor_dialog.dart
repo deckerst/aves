@@ -104,7 +104,7 @@ class _MapStyleEditorDialogState extends State<MapStyleEditorDialog> {
               child: Text(widget.initialValue != null ? l10n.applyButtonLabel : l10n.createButtonLabel),
             );
           },
-        )
+        ),
       ],
     );
   }

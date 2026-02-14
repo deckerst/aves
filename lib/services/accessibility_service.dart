@@ -45,7 +45,7 @@ class AccessibilityService {
     try {
       final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
         'originalTimeoutMillis': originalTimeoutMillis,
-        'content': ['icons', 'text']
+        'content': ['icons', 'text'],
       });
       if (result != null) return result as int;
     } on PlatformException catch (e, stack) {
@@ -59,7 +59,7 @@ class AccessibilityService {
     try {
       final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
         'originalTimeoutMillis': originalTimeoutMillis,
-        'content': ['controls', 'icons', 'text']
+        'content': ['controls', 'icons', 'text'],
       });
       if (result != null) return result as int;
     } on PlatformException catch (e, stack) {

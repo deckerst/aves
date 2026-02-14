@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,22 +82,10 @@ class _TagEditorPageState extends State<TagEditorPage> {
         if (didPop) return;
 
         final NavigatorState navigator = Navigator.of(context);
-        final confirmed = await showDialog<bool>(
-              context: context,
-              builder: (context) => AvesDialog(
-                content: Text(context.l10n.tagEditorDiscardDialogMessage),
-                actions: [
-                  const CancelButton(),
-                  TextButton(
-                    onPressed: () => Navigator.maybeOf(context)?.pop(true),
-                    child: Text(Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
-                  ),
-                ],
-              ),
-              routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-            ) ??
-            false;
-        if (confirmed) {
+        if (await showConfirmationDialog(
+          context: context,
+          message: context.l10n.tagEditorDiscardDialogMessage,
+        )) {
           navigator.pop();
         }
       },
@@ -199,8 +187,8 @@ class _TagEditorPageState extends State<TagEditorPage> {
                             showGenericIcon: false,
                             leadingBuilder: showCount
                                 ? (filter) => _TagCount(
-                                      count: sortedTags.firstWhere((kv) => kv.key == filter).value,
-                                    )
+                                    count: sortedTags.firstWhere((kv) => kv.key == filter).value,
+                                  )
                                 : null,
                             onTap: (filter) {
                               if (filtersByEntry.keys.length > 1) {
@@ -260,23 +248,22 @@ class _TagEditorPageState extends State<TagEditorPage> {
   }
 
   List<MapEntry<CollectionFilter, int>> _sortCurrentTags(Map<CollectionFilter, int> entryCountByTag) {
-    return entryCountByTag.entries.toList()
-      ..sort((kv1, kv2) {
-        final filter1 = kv1.key;
-        final filter2 = kv2.key;
+    return entryCountByTag.entries.toList()..sort((kv1, kv2) {
+      final filter1 = kv1.key;
+      final filter2 = kv2.key;
 
-        final recent1 = _userAddedFilters.indexOf(filter1);
-        final recent2 = _userAddedFilters.indexOf(filter2);
-        var c = recent2.compareTo(recent1);
-        if (c != 0) return c;
+      final recent1 = _userAddedFilters.indexOf(filter1);
+      final recent2 = _userAddedFilters.indexOf(filter2);
+      var c = recent2.compareTo(recent1);
+      if (c != 0) return c;
 
-        final count1 = kv1.value;
-        final count2 = kv2.value;
-        c = count2.compareTo(count1);
-        if (c != 0) return c;
+      final count1 = kv1.value;
+      final count2 = kv2.value;
+      c = count2.compareTo(count1);
+      if (c != 0) return c;
 
-        return filter1.compareTo(filter2);
-      });
+      return filter1.compareTo(filter2);
+    });
   }
 
   bool get _isModified {
@@ -365,9 +352,11 @@ class _TagCount extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
       decoration: BoxDecoration(
-        border: Border.fromBorderSide(BorderSide(
-          color: DefaultTextStyle.of(context).style.color!,
-        )),
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: DefaultTextStyle.of(context).style.color!,
+          ),
+        ),
         borderRadius: const BorderRadius.all(Radius.circular(123)),
       ),
       child: Text(

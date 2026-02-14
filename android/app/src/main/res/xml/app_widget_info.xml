@@ -11,4 +11,4 @@
     android:updatePeriodMillis="3600000"
     android:widgetCategory="home_screen"
     android:widgetFeatures="reconfigurable"
-    tools:targetApi="s" />
+    tools:targetApi="31" />

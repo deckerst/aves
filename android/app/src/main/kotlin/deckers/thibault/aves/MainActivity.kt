@@ -7,12 +7,14 @@ import android.appwidget.AppWidgetManager
 import android.content.ClipData
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.TransactionTooLargeException
+import android.os.ext.SdkExtensions
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -80,7 +82,7 @@ open class MainActivity : FlutterFragmentActivity() {
     private lateinit var intentStreamHandler: IntentStreamHandler
     private lateinit var analysisStreamHandler: AnalysisStreamHandler
     internal lateinit var intentDataMap: MutableMap<String, Any?>
-    private lateinit var analysisHandler: AnalysisHandler
+    private lateinit var analysisHandler: AnalysisHandler<MainActivity>
     private lateinit var mediaSessionHandler: MediaSessionHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -234,27 +236,44 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
+    @Deprecated("Deprecated in android.app.Activity")
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
+        @Suppress("deprecation")
         super.onMultiWindowModeChanged(isInMultiWindowMode)
-        notifyWindowModeChanged()
+        notifyWindowModeChange()
     }
 
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean, newConfig: Configuration) {
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig)
-        notifyWindowModeChanged()
+        notifyWindowModeChange()
     }
 
+    @Deprecated("Deprecated in android.app.Activity")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        @Suppress("deprecation")
         super.onPictureInPictureModeChanged(isInPictureInPictureMode)
-        notifyWindowModeChanged()
+        notifyWindowModeChange()
     }
 
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        notifyWindowModeChanged()
+        notifyWindowModeChange()
     }
 
-    private fun notifyWindowModeChanged() = windowChangeStreamHandler.notifyWindowModeChange()
+    private var lastCutoutInsetsDpi = RectF()
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val cutoutInsetsDpi = ActivityWindowHandler.getCutoutInsetsDpi(this)
+        if (lastCutoutInsetsDpi != cutoutInsetsDpi) {
+            lastCutoutInsetsDpi = cutoutInsetsDpi
+            notifyCutoutInsetsChange()
+        }
+    }
+
+    private fun notifyWindowModeChange() = windowChangeStreamHandler.notifyWindowModeChange()
+
+    private fun notifyCutoutInsetsChange() = windowChangeStreamHandler.notifyCutoutInsetsChange()
 
     override fun onNewIntent(intent: Intent) {
         Log.i(LOG_TAG, "onNewIntent intent=$intent")
@@ -320,9 +339,7 @@ open class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun onScopedStoragePermissionResult(resultCode: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            pendingScopedStoragePermissionCompleter?.complete(resultCode == RESULT_OK)
-        }
+        pendingScopedStoragePermissionCompleter?.complete(resultCode == RESULT_OK)
     }
 
     open fun extractIntentData(intent: Intent?): FieldMap {
@@ -371,7 +388,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     if (action == MediaStore.ACTION_REVIEW_SECURE) {
                         val uris = ArrayList<String>()
                         intent.clipData?.let { clipData ->
-                            for (i in 0 until clipData.itemCount) {
+                            for (i in 0..<clipData.itemCount) {
                                 clipData.getItemAt(i).uri?.let { uris.add(it.toString()) }
                             }
                         }
@@ -399,12 +416,34 @@ open class MainActivity : FlutterFragmentActivity() {
                 }
             }
 
-            Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
+            Intent.ACTION_GET_CONTENT,
+            Intent.ACTION_PICK,
+            MediaStore.ACTION_PICK_IMAGES -> {
+                // common intent extras
+                var allowMultiple = intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+                val mimeTypes = intent.getStringArrayExtra(Intent.EXTRA_MIME_TYPES)?.toList()
+                val pickLocalOnly = intent.getBooleanExtra(Intent.EXTRA_LOCAL_ONLY, false)
+
+                // MediaStore picker intent extras
+                var pickImagesMax = 0
+                var pickInOrder = false
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
+                        pickImagesMax = intent.getIntExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 0)
+                    }
+                    if (SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 12) {
+                        pickInOrder = intent.getBooleanExtra(MediaStore.EXTRA_PICK_IMAGES_IN_ORDER, false)
+                    }
+                }
+                allowMultiple = allowMultiple || pickImagesMax > 0
+
                 return hashMapOf(
                     INTENT_DATA_KEY_ACTION to INTENT_ACTION_PICK_ITEMS,
                     INTENT_DATA_KEY_MIME_TYPE to intent.type,
-                    INTENT_DATA_KEY_MIME_TYPES to intent.getStringArrayExtra(Intent.EXTRA_MIME_TYPES)?.toList(),
-                    INTENT_DATA_KEY_ALLOW_MULTIPLE to intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false),
+                    INTENT_DATA_KEY_MIME_TYPES to mimeTypes,
+                    INTENT_DATA_KEY_ALLOW_MULTIPLE to allowMultiple,
+                    INTENT_DATA_KEY_PICK_IN_ORDER to pickInOrder,
+                    INTENT_DATA_KEY_PICK_LOCAL_ONLY to pickLocalOnly,
                 )
             }
 
@@ -605,6 +644,8 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_MIME_TYPE = "mimeType"
         const val INTENT_DATA_KEY_MIME_TYPES = "mimeTypes"
         const val INTENT_DATA_KEY_PAGE = "page"
+        const val INTENT_DATA_KEY_PICK_IN_ORDER = "pickInOrder"
+        const val INTENT_DATA_KEY_PICK_LOCAL_ONLY = "pickLocalOnly"
         const val INTENT_DATA_KEY_QUERY = "query"
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"

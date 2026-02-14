@@ -1,0 +1,174 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="100dp"
+            android:height="100dp"
+            android:viewportWidth="100"
+            android:viewportHeight="100">
+            <group android:name="breast_group">
+                <path
+                    android:name="breast_path"
+                    android:fillAlpha="0"
+                    android:fillColor="#e0e0e0"
+                    android:pathData="m53.43,44.71 l8.31,8.31a1.46,1.46 0,0 1,-0 2.08l-8.31,8.31a1.46,1.46 0,0 1,-2.08 0l-8.31,-8.31a1.46,1.46 0,0 1,0 -2.08l8.31,-8.31a1.46,1.46 0,0 1,2.08 0z"
+                    android:strokeWidth="1.53902"
+                    android:strokeColor="#000000" />
+            </group>
+            <group android:name="head_group">
+                <path
+                    android:name="head_path"
+                    android:fillAlpha="0"
+                    android:fillColor="#ffc11f"
+                    android:pathData="m55.45,40.62a1.47,1.47 0,0 0,0 2.08l8.31,8.31a1.47,1.47 0,0 0,2.08 0l8.31,-8.31a1.47,1.47 0,0 0,0 -2.08l-4.12,-4.12a7.39,7.39 0,0 0,-10.44 0zM63.65,40.51a1.62,1.62 0,0 1,2.29 0,1.62 1.62,0 0,1 0,2.29 1.62,1.62 0,0 1,-2.29 0,1.62 1.62,0 0,1 0,-2.29z"
+                    android:strokeWidth="1.53902"
+                    android:strokeColor="#000000" />
+            </group>
+            <group android:name="wing_group">
+                <path
+                    android:name="wing_path"
+                    android:fillAlpha="0"
+                    android:fillColor="@color/ic_launcher_flavour"
+                    android:pathData="m37.26,28.54 l12.13,12.13a1.47,1.47 0,0 1,0 2.08l-8.31,8.31a1.47,1.47 0,0 1,-2.08 0l-5.39,-5.39a11.47,11.47 0,0 1,0 -16.22l0.9,-0.9a1.94,1.94 0,0 1,2.74 0z"
+                    android:strokeWidth="1.5"
+                    android:strokeColor="#000000" />
+            </group>
+            <group android:name="tail_group">
+                <path
+                    android:name="tail_path"
+                    android:fillAlpha="0"
+                    android:fillColor="#ef435a"
+                    android:pathData="m41.03,57.12 l8.31,8.31a1.47,1.47 0,0 1,0 2.08l-3.97,3.97a7.6,7.6 0,0 1,-10.75 0l-3.97,-3.97a1.47,1.47 0,0 1,0 -2.08l8.31,-8.31a1.47,1.47 0,0 1,2.08 0z"
+                    android:strokeWidth="1.5"
+                    android:strokeColor="#000000" />
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="breast_path">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:propertyName="trimPathEnd"
+                    android:valueTo="1" />
+                <objectAnimator
+                    android:duration="600"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:valueTo="1" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="head_path">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:propertyName="trimPathEnd"
+                    android:valueTo="1" />
+                <objectAnimator
+                    android:duration="600"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:valueTo="1" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="wing_path">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:propertyName="trimPathEnd"
+                    android:valueTo="1" />
+                <objectAnimator
+                    android:duration="600"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:valueTo="1" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="tail_path">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:propertyName="trimPathEnd"
+                    android:valueTo="1" />
+                <objectAnimator
+                    android:duration="600"
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:valueTo="1" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="head_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateX"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="400"
+                    android:valueTo=".5dp" />
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateY"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="400"
+                    android:valueTo="-.5dp" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="wing_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateX"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="500"
+                    android:valueTo="-.5dp" />
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateY"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="500"
+                    android:valueTo="-.5dp" />
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="tail_group">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateX"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="600"
+                    android:valueTo="-.5dp" />
+                <objectAnimator
+                    android:duration="400"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+                    android:propertyName="translateY"
+                    android:repeatCount="-1"
+                    android:repeatMode="reverse"
+                    android:startOffset="600"
+                    android:valueTo=".5dp" />
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

@@ -48,7 +48,7 @@ class MpfReader : JpegSegmentMetadataReader, MetadataReader {
         offset += 2
         // - MP Index Fields (Overall Structure Info.)
         var imageCount = 0
-        for (tag in 0..<tagCount) {
+        (0..<tagCount).forEach { _ ->
             when (val tagId = reader.getUInt16(offset)) {
                 MpfDirectory.TAG_MPF_VERSION -> directory.setString(tagId, reader.getString(offset + 8, 4, Charsets.US_ASCII))
                 MpfDirectory.TAG_NUMBER_OF_IMAGES -> {

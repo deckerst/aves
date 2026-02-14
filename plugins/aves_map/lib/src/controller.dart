@@ -6,12 +6,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 class AvesMapController {
-  final StreamController _streamController = StreamController.broadcast();
+  final StreamController<AvesMapEvent> _streamController = StreamController.broadcast();
   ZoomedBounds? _idleBounds;
 
   ZoomedBounds? get idleBounds => _idleBounds;
 
-  Stream<dynamic> get _events => _streamController.stream;
+  Stream<AvesMapEvent> get _events => _streamController.stream;
 
   Stream<MapControllerMoveEvent> get moveCommands => _events.where((event) => event is MapControllerMoveEvent).cast<MapControllerMoveEvent>();
 
@@ -54,24 +54,26 @@ class AvesMapController {
   void notifyMarkerLocationChange() => _streamController.add(MapMarkerLocationChangeEvent());
 }
 
-class MapControllerMoveEvent {
+abstract class AvesMapEvent {}
+
+class MapControllerMoveEvent extends AvesMapEvent {
   final LatLng latLng;
 
   MapControllerMoveEvent(this.latLng);
 }
 
-class MapControllerZoomEvent {
+class MapControllerZoomEvent extends AvesMapEvent {
   final double delta;
 
   MapControllerZoomEvent(this.delta);
 }
 
-class MapControllerRotationResetEvent {}
+class MapControllerRotationResetEvent extends AvesMapEvent {}
 
-class MapIdleUpdate {
+class MapIdleUpdate extends AvesMapEvent {
   final ZoomedBounds bounds;
 
   MapIdleUpdate(this.bounds);
 }
 
-class MapMarkerLocationChangeEvent {}
+class MapMarkerLocationChangeEvent extends AvesMapEvent {}

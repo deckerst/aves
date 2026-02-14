@@ -27,10 +27,10 @@ class VolumeRelativeDirectory extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap() => {
-        'volumePath': volumePath,
-        'relativeDir': relativeDir,
-      };
+  Map<String, String> toMap() => {
+    'volumePath': volumePath,
+    'relativeDir': relativeDir,
+  };
 
   VolumeRelativeDirectory copyWith({
     String? volumePath,

@@ -15,11 +15,12 @@ extension ExtraWidgetShape on WidgetShape {
       case WidgetShape.bumpyRows:
         return _buildBumpyRowsPath(rect);
       case WidgetShape.circle:
-        return Path()
-          ..addOval(Rect.fromCircle(
+        return Path()..addOval(
+          Rect.fromCircle(
             center: rect.center,
             radius: rect.shortestSide / 2,
-          ));
+          ),
+        );
       case WidgetShape.concaveSquare:
         return _buildConcaveSquarePath(rect);
       case WidgetShape.heart:
@@ -130,13 +131,14 @@ extension ExtraWidgetShape on WidgetShape {
   Path _buildTearRectPath(Rect rect, {required double topLeftRadiusPx, required double topRightRadiusPx}) {
     final topLeftRadius = Radius.circular(topLeftRadiusPx);
     final topRightRadius = Radius.circular(topRightRadiusPx);
-    return Path()
-      ..addRRect(BorderRadius.only(
+    return Path()..addRRect(
+      BorderRadius.only(
         topLeft: topLeftRadius,
         topRight: topRightRadius,
         bottomLeft: topRightRadius,
         bottomRight: topLeftRadius,
-      ).toRRect(rect));
+      ).toRRect(rect),
+    );
   }
 
   Path _buildWavyCirclePath(Rect rect, int bumpCount, double amplitudeFactor, {double angleOffset = 0}) {

@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.6.0 <4.0.0" # incoherent dartfmt from 3.7.0
+  sdk: ">=3.11.0 <4.0.0"
 resolution: workspace
 
 dependencies:
@@ -20,13 +20,6 @@ dependencies:
   media_kit_libs_android_video:
   media_kit_video:
   path:
-
-dependency_overrides:
-  media_kit_video:
-    git:
-      url: https://github.com/deckerst/media-kit.git
-      ref: flutter_v3.27
-      path: media_kit_video
 
 dev_dependencies:
   flutter_lints:

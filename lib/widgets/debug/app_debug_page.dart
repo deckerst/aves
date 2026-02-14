@@ -50,12 +50,14 @@ class AppDebugPage extends StatelessWidget {
                 // key is expected by test driver
                 key: const Key('appbar-menu-button'),
                 itemBuilder: (context) => AppDebugAction.values
-                    .map((v) => PopupMenuItem(
-                          // key is expected by test driver
-                          key: Key('menu-${v.name}'),
-                          value: v,
-                          child: MenuRow(text: v.name),
-                        ))
+                    .map(
+                      (v) => PopupMenuItem(
+                        // key is expected by test driver
+                        key: Key('menu-${v.name}'),
+                        value: v,
+                        child: MenuRow(text: v.name),
+                      ),
+                    )
                     .toList(),
                 onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action

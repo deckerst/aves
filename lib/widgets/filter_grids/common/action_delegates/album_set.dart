@@ -28,7 +28,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_dynamic_album_dialog.dart';
@@ -304,12 +303,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       return details?.useBin ?? settings.enableBin;
     });
     await Future.forEach(
-        byBinUsage.entries,
-        (kv) => _doDelete(
-              context: context,
-              filters: kv.value.toSet(),
-              enableBin: kv.key,
-            ));
+      byBinUsage.entries,
+      (kv) => _doDelete(
+        context: context,
+        filters: kv.value.toSet(),
+        enableBin: kv.key,
+      ),
+    );
     browse(context);
   }
 
@@ -343,21 +343,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final l10n = context.l10n;
     final todoCount = todoEntries.length;
 
-    final confirmed = await showDialog<bool>(
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.deleteButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount),
+      ok: l10n.deleteButtonLabel,
+    )) {
+      return;
+    }
 
     settings.pinnedFilters = settings.pinnedFilters..removeAll(filters);
     source.forgetNewAlbums(todoAlbums);
@@ -414,21 +406,14 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
   Future<void> _removeDynamicAlbum(BuildContext context) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(l10n.genericDangerWarningDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(l10n.applyButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.genericDangerWarningDialogMessage,
+      ok: l10n.applyButtonLabel,
+    )) {
+      return;
+    }
 
     final albumFilters = _getSelectedDynamicAlbumFilters(context);
     final names = albumFilters.map((v) => v.name).toSet();

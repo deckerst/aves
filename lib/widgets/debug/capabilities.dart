@@ -47,10 +47,8 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
                 info: {
                   'canAuthenticateUser': '${device.canAuthenticateUser}',
                   'canPinShortcut': '${device.canPinShortcut}',
-                  'canRenderFlagEmojis': '${device.canRenderFlagEmojis}',
                   'canRenderSubdivisionFlagEmojis': '${device.canRenderSubdivisionFlagEmojis}',
                   'canRequestManageMedia': '${device.canRequestManageMedia}',
-                  'canSetLockScreenWallpaper': '${device.canSetLockScreenWallpaper}',
                   'hasGeocoder': '${device.hasGeocoder}',
                   'isDynamicColorAvailable': '${device.isDynamicColorAvailable}',
                   'isTelevision': '${device.isTelevision}',

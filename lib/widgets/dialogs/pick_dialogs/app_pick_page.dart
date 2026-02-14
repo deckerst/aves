@@ -84,61 +84,61 @@ class _AppPickPageState extends State<AppPickPage> {
                     final showNoneOption = upQuery.isEmpty;
                     final itemCount = visiblePackages.length + (showNoneOption ? 1 : 0);
                     return Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          if (showNoneOption) {
-                            if (index == 0) {
-                              return ReselectableRadioListTile<String?>(
-                                value: '',
-                                groupValue: _selectedValue,
-                                onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
-                                reselectable: true,
-                                title: Text(
-                                  context.l10n.appPickDialogNone,
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                  maxLines: 1,
-                                ),
-                              );
+                      child: RadioGroup<String?>(
+                        groupValue: _selectedValue,
+                        onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            if (showNoneOption) {
+                              if (index == 0) {
+                                return ReselectableRadioListTile<String?>(
+                                  value: '',
+                                  reselectable: true,
+                                  title: Text(
+                                    context.l10n.appPickDialogNone,
+                                    softWrap: false,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                  ),
+                                );
+                              }
+                              index--;
                             }
-                            index--;
-                          }
 
-                          final package = visiblePackages[index];
-                          return ReselectableRadioListTile<String?>(
-                            value: package.packageName,
-                            groupValue: _selectedValue,
-                            onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
-                            reselectable: true,
-                            title: Text.rich(
-                              TextSpan(
-                                children: [
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.only(end: 16),
-                                      child: Image(
-                                        image: AppIconImage(
-                                          packageName: package.packageName,
-                                          size: iconSize,
+                            final package = visiblePackages[index];
+                            return ReselectableRadioListTile<String?>(
+                              value: package.packageName,
+                              reselectable: true,
+                              title: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      alignment: PlaceholderAlignment.middle,
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.only(end: 16),
+                                        child: Image(
+                                          image: AppIconImage(
+                                            packageName: package.packageName,
+                                            size: iconSize,
+                                          ),
+                                          width: iconSize,
+                                          height: iconSize,
                                         ),
-                                        width: iconSize,
-                                        height: iconSize,
                                       ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: _displayName(package),
-                                  ),
-                                ],
+                                    TextSpan(
+                                      text: _displayName(package),
+                                    ),
+                                  ],
+                                ),
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
                               ),
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                            ),
-                          );
-                        },
-                        itemCount: itemCount,
+                            );
+                          },
+                          itemCount: itemCount,
+                        ),
                       ),
                     );
                   },

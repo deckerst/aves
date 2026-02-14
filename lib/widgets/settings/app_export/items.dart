@@ -29,16 +29,16 @@ extension ExtraAppExportItem on AppExportItem {
     };
   }
 
-  Future<void> import(dynamic jsonMap, CollectionSource source) async {
+  Future<void> import(Object jsonObject, CollectionSource source) async {
     switch (this) {
       case AppExportItem.covers:
-        covers.import(jsonMap, source);
+        covers.import(jsonObject, source);
       case AppExportItem.dynamicAlbums:
-        dynamicAlbums.import(jsonMap);
+        dynamicAlbums.import(jsonObject);
       case AppExportItem.favourites:
-        favourites.import(jsonMap, source);
+        favourites.import(jsonObject, source);
       case AppExportItem.settings:
-        await settings.import(jsonMap);
+        await settings.import(jsonObject);
         albumGrouping.setGroups(settings.albumGroups);
         tagGrouping.setGroups(settings.tagGroups);
     }

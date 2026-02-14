@@ -86,31 +86,31 @@ class AGestureDetector extends StatelessWidget {
     this.supportedDevices,
     this.longPressTimeout = kLongPressTimeout,
   }) : assert(() {
-          final bool haveVerticalDrag = onVerticalDragStart != null || onVerticalDragUpdate != null || onVerticalDragEnd != null;
-          final bool haveHorizontalDrag = onHorizontalDragStart != null || onHorizontalDragUpdate != null || onHorizontalDragEnd != null;
-          final bool havePan = onPanStart != null || onPanUpdate != null || onPanEnd != null;
-          final bool haveScale = onScaleStart != null || onScaleUpdate != null || onScaleEnd != null;
-          if (havePan || haveScale) {
-            if (havePan && haveScale) {
-              throw FlutterError.fromParts(<DiagnosticsNode>[
-                ErrorSummary('Incorrect GestureDetector arguments.'),
-                ErrorDescription(
-                  'Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan.',
-                ),
-                ErrorHint('Just use the scale gesture recognizer.'),
-              ]);
-            }
-            final String recognizer = havePan ? 'pan' : 'scale';
-            if (haveVerticalDrag && haveHorizontalDrag) {
-              throw FlutterError(
-                'Incorrect GestureDetector arguments.\n'
-                'Simultaneously having a vertical drag gesture recognizer, a horizontal drag gesture recognizer, and a $recognizer gesture recognizer '
-                'will result in the $recognizer gesture recognizer being ignored, since the other two will catch all drags.',
-              );
-            }
-          }
-          return true;
-        }());
+         final bool haveVerticalDrag = onVerticalDragStart != null || onVerticalDragUpdate != null || onVerticalDragEnd != null;
+         final bool haveHorizontalDrag = onHorizontalDragStart != null || onHorizontalDragUpdate != null || onHorizontalDragEnd != null;
+         final bool havePan = onPanStart != null || onPanUpdate != null || onPanEnd != null;
+         final bool haveScale = onScaleStart != null || onScaleUpdate != null || onScaleEnd != null;
+         if (havePan || haveScale) {
+           if (havePan && haveScale) {
+             throw FlutterError.fromParts(<DiagnosticsNode>[
+               ErrorSummary('Incorrect GestureDetector arguments.'),
+               ErrorDescription(
+                 'Having both a pan gesture recognizer and a scale gesture recognizer is redundant; scale is a superset of pan.',
+               ),
+               ErrorHint('Just use the scale gesture recognizer.'),
+             ]);
+           }
+           final String recognizer = havePan ? 'pan' : 'scale';
+           if (haveVerticalDrag && haveHorizontalDrag) {
+             throw FlutterError(
+               'Incorrect GestureDetector arguments.\n'
+               'Simultaneously having a vertical drag gesture recognizer, a horizontal drag gesture recognizer, and a $recognizer gesture recognizer '
+               'will result in the $recognizer gesture recognizer being ignored, since the other two will catch all drags.',
+             );
+           }
+         }
+         return true;
+       }());
 
   /// The widget below this widget in the tree.
   ///
@@ -822,7 +822,17 @@ class AGestureDetector extends StatelessWidget {
     final DeviceGestureSettings? gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
     final ScrollBehavior configuration = ScrollConfiguration.of(context);
 
-    if (onTapDown != null || onTapUp != null || onTap != null || onTapCancel != null || onSecondaryTap != null || onSecondaryTapDown != null || onSecondaryTapUp != null || onSecondaryTapCancel != null || onTertiaryTapDown != null || onTertiaryTapUp != null || onTertiaryTapCancel != null) {
+    if (onTapDown != null ||
+        onTapUp != null ||
+        onTap != null ||
+        onTapCancel != null ||
+        onSecondaryTap != null ||
+        onSecondaryTapDown != null ||
+        onSecondaryTapUp != null ||
+        onSecondaryTapCancel != null ||
+        onTertiaryTapDown != null ||
+        onTertiaryTapUp != null ||
+        onTertiaryTapCancel != null) {
       gestures[TapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
         () => TapGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices),
         (instance) {
@@ -858,7 +868,27 @@ class AGestureDetector extends StatelessWidget {
       );
     }
 
-    if (onLongPressDown != null || onLongPressCancel != null || onLongPress != null || onLongPressStart != null || onLongPressMoveUpdate != null || onLongPressUp != null || onLongPressEnd != null || onSecondaryLongPressDown != null || onSecondaryLongPressCancel != null || onSecondaryLongPress != null || onSecondaryLongPressStart != null || onSecondaryLongPressMoveUpdate != null || onSecondaryLongPressUp != null || onSecondaryLongPressEnd != null || onTertiaryLongPressDown != null || onTertiaryLongPressCancel != null || onTertiaryLongPress != null || onTertiaryLongPressStart != null || onTertiaryLongPressMoveUpdate != null || onTertiaryLongPressUp != null || onTertiaryLongPressEnd != null) {
+    if (onLongPressDown != null ||
+        onLongPressCancel != null ||
+        onLongPress != null ||
+        onLongPressStart != null ||
+        onLongPressMoveUpdate != null ||
+        onLongPressUp != null ||
+        onLongPressEnd != null ||
+        onSecondaryLongPressDown != null ||
+        onSecondaryLongPressCancel != null ||
+        onSecondaryLongPress != null ||
+        onSecondaryLongPressStart != null ||
+        onSecondaryLongPressMoveUpdate != null ||
+        onSecondaryLongPressUp != null ||
+        onSecondaryLongPressEnd != null ||
+        onTertiaryLongPressDown != null ||
+        onTertiaryLongPressCancel != null ||
+        onTertiaryLongPress != null ||
+        onTertiaryLongPressStart != null ||
+        onTertiaryLongPressMoveUpdate != null ||
+        onTertiaryLongPressUp != null ||
+        onTertiaryLongPressEnd != null) {
       gestures[LongPressGestureRecognizer] = GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
         () => LongPressGestureRecognizer(duration: longPressTimeout, debugOwner: this, supportedDevices: supportedDevices),
         (instance) {

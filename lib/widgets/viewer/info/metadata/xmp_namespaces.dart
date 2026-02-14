@@ -88,20 +88,21 @@ class XmpNamespace extends Equatable {
   String get displayTitle => XmpNamespaceView.nsTitles[nsUri] ?? (nsPrefix.isEmpty ? nsUri : '${nsPrefix.substring(0, nsPrefix.length - 1)} ($nsUri)');
 
   List<Widget> buildNamespaceSection(BuildContext context) {
-    final props = rawProps.entries
-        .map((kv) {
-          final key = kv.key;
-          if (skippedProps.any((pattern) => pattern.allMatches(key).isNotEmpty)) {
-            return null;
-          }
-          final prop = XmpProp(key, kv.value);
-          var extracted = false;
-          cards.forEach((card) => extracted |= card.extract(prop));
-          return extracted ? null : prop;
-        })
-        .nonNulls
-        .toList()
-      ..sort();
+    final props =
+        rawProps.entries
+            .map((kv) {
+              final key = kv.key;
+              if (skippedProps.any((pattern) => pattern.allMatches(key).isNotEmpty)) {
+                return null;
+              }
+              final prop = XmpProp(key, kv.value);
+              var extracted = false;
+              cards.forEach((card) => extracted |= card.extract(prop));
+              return extracted ? null : prop;
+            })
+            .nonNulls
+            .toList()
+          ..sort();
 
     final content = [
       if (props.isNotEmpty)
@@ -133,7 +134,7 @@ class XmpNamespace extends Equatable {
                   color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
                 ),
               ),
-            ...content
+            ...content,
           ]
         : [];
   }
@@ -156,14 +157,16 @@ class XmpProp implements Comparable<XmpProp> {
   XmpProp(this.path, this.value) : displayKey = formatKey(path);
 
   static String formatKey(String propPath) {
-    return propPath.splitMapJoin(XMP.structFieldSeparator,
-        onMatch: (match) => ' ${match.group(0)} ',
-        onNonMatch: (s) {
-          // strip namespace
-          final key = s.split(XMP.propNamespaceSeparator).last;
-          // format
-          return key.replaceAll('_', ' ').toSentenceCase();
-        });
+    return propPath.splitMapJoin(
+      XMP.structFieldSeparator,
+      onMatch: (match) => ' ${match.group(0)} ',
+      onNonMatch: (s) {
+        // strip namespace
+        final key = s.split(XMP.propNamespaceSeparator).last;
+        // format
+        return key.replaceAll('_', ' ').toSentenceCase();
+      },
+    );
   }
 
   @override
@@ -190,8 +193,8 @@ class XmpCardData {
     String? title,
     this.spanBuilders,
     this.cards,
-  })  : indexed = pattern.pattern.contains(r'\[(\d+)\]'),
-        title = title ?? XmpProp.formatKey(titlePattern.firstMatch(pattern.pattern)!.group(1)!);
+  }) : indexed = pattern.pattern.contains(r'\[(\d+)\]'),
+       title = title ?? XmpProp.formatKey(titlePattern.firstMatch(pattern.pattern)!.group(1)!);
 
   XmpCardData cloneEmpty() {
     return XmpCardData(

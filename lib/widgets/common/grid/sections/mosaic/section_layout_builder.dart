@@ -47,12 +47,14 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {
     final sectionLayouts = sections.keys
-        .map((sectionKey) => buildSectionLayout(
-              headerExtent: showHeaders ? getHeaderExtent(context, sectionKey) : 0.0,
-              sectionKey: sectionKey,
-              section: sections[sectionKey]!,
-              animate: animate,
-            ))
+        .map(
+          (sectionKey) => buildSectionLayout(
+            headerExtent: showHeaders ? getHeaderExtent(context, sectionKey) : 0.0,
+            sectionKey: sectionKey,
+            section: sections[sectionKey]!,
+            animate: animate,
+          ),
+        )
         .toList();
 
     return MosaicSectionedListLayout<T>(
@@ -160,13 +162,15 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
       }
 
       height += bottom;
-      rows.add(MosaicRowLayout(
-        firstIndex: firstIndex,
-        lastIndex: i - 1,
-        minOffset: minOffset,
-        height: height,
-        itemWidths: items.map((item) => availableWidth * coverRatioResolver(item) / ratioSum).toList(),
-      ));
+      rows.add(
+        MosaicRowLayout(
+          firstIndex: firstIndex,
+          lastIndex: i - 1,
+          minOffset: minOffset,
+          height: height,
+          itemWidths: items.map((item) => availableWidth * coverRatioResolver(item) / ratioSum).toList(),
+        ),
+      );
       firstIndex = i;
       minOffset += height;
       ratioMin = double.infinity;

@@ -10,7 +10,7 @@ object UriUtils {
     fun Uri.tryParseId(): Long? {
         try {
             return ContentUris.parseId(this)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Log.w(LOG_TAG, "failed to parse ID from contentUri=$this")
         }
         return null

@@ -25,7 +25,7 @@ class LinearPercentIndicatorText extends StatelessWidget {
           style: TextStyle(
             shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
           ),
-        )
+        ),
       ],
       outlineColor: Themes.firstLayerColor(context),
     );

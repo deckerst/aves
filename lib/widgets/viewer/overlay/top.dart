@@ -60,12 +60,12 @@ class ViewerTopOverlay extends StatelessWidget {
         final viewInsetsPadding = (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero);
 
         Widget _decorateCornerChild(Widget child) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8) + const EdgeInsets.only(top: 8),
-              child: FadeTransition(
-                opacity: scale,
-                child: child,
-              ),
-            );
+          padding: const EdgeInsets.symmetric(horizontal: 8) + const EdgeInsets.only(top: 8),
+          child: FadeTransition(
+            opacity: scale,
+            child: child,
+          ),
+        );
 
         final startCornerChildren = [
           if (settings.showOverlayZoomLevel)
@@ -185,24 +185,29 @@ class ZoomLevelIndicator extends StatelessWidget {
           type: MaterialType.button,
           borderRadius: borderRadius,
           color: Themes.overlayBackgroundColor(brightness: Theme.of(context).brightness, blurred: blurred),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            foregroundDecoration: BoxDecoration(
-              border: border,
-              borderRadius: borderRadius,
-            ),
-            child: ValueListenableBuilder<ViewState>(
-              valueListenable: viewStateNotifier,
-              builder: (context, viewState, child) {
-                final zoom = ((viewState.scale ?? 0) * zoomScaleFactor).round();
-                return Text(
+          child: ValueListenableBuilder<ViewState>(
+            valueListenable: viewStateNotifier,
+            builder: (context, viewState, child) {
+              final viewportSize = viewState.viewportSize;
+              final contentSize = viewState.contentSize;
+              if ((viewportSize == null || viewportSize.isEmpty) || (contentSize == null || contentSize.isEmpty)) {
+                return const SizedBox();
+              }
+              final zoom = ((viewState.scale ?? 0) * zoomScaleFactor).round();
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                foregroundDecoration: BoxDecoration(
+                  border: border,
+                  borderRadius: borderRadius,
+                ),
+                child: Text(
                   '$zoom${context.l10n.lengthUnitPercent}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        shadows: ViewerDetailOverlayContent.shadows(context),
-                      ),
-                );
-              },
-            ),
+                    shadows: ViewerDetailOverlayContent.shadows(context),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

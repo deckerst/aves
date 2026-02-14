@@ -59,17 +59,23 @@ mixin AlbumMixin on SourceBase {
           specialAlbums.add(album);
       }
     }
-    return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) => MapEntry(
+    return Map.fromEntries(
+      [...specialAlbums, ...appAlbums, ...regularAlbums].map(
+        (album) => MapEntry(
           album,
           entries.firstWhereOrNull((entry) => entry.directory == album),
-        )));
+        ),
+      ),
+    );
   }
 
   void updateDirectories() {
-    addDirectories(albums: {
-      ...visibleEntries.map((entry) => entry.directory),
-      ...vaults.all.map((v) => v.path),
-    });
+    addDirectories(
+      albums: {
+        ...visibleEntries.map((entry) => entry.directory),
+        ...vaults.all.map((v) => v.path),
+      },
+    );
     cleanEmptyAlbums();
   }
 

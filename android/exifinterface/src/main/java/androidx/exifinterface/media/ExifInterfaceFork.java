@@ -90,7 +90,7 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 /*
- * Forked from 'androidx.exifinterface:exifinterface:1.4.1'
+ * Forked from 'androidx.exifinterface:exifinterface:1.4.2'
  * Named differently to let ExifInterface be loaded as subdependency.
  * cf https://maven.google.com/web/index.html?q=exifinterface#androidx.exifinterface:exifinterface
  * cf https://github.com/androidx/androidx/tree/androidx-main/exifinterface/exifinterface/src/main/java/androidx/exifinterface/media
@@ -5877,8 +5877,13 @@ public class ExifInterfaceFork {
             if (marker != MARKER) {
                 throw new IOException("Invalid marker:" + Integer.toHexString(marker & 0xff));
             }
-            ++bytesRead;
-            marker = in.readByte();
+
+            // JPEG spec permits padding with 0xFF fill bytes before any marker.
+            do {
+                ++bytesRead;
+                marker = in.readByte();
+            } while(marker == MARKER);
+
             if (DEBUG) {
                 Log.d(TAG, "Found JPEG segment indicator: " + Integer.toHexString(marker & 0xff));
             }
@@ -6649,7 +6654,10 @@ public class ExifInterfaceFork {
             if (marker != MARKER) {
                 throw new IOException("Invalid marker");
             }
-            marker = dataInputStream.readByte();
+            // Skip 0xFF fill bytes
+            do {
+                marker = dataInputStream.readByte();
+            } while (marker == MARKER);
             switch (marker) {
                 case MARKER_APP1: {
                     int length = dataInputStream.readUnsignedShort() - 2;

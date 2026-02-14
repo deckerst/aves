@@ -35,11 +35,11 @@ class _ShareButtonState extends ChooserQuickButtonState<ShareButton, ShareAction
   bool get hasChooser => super.hasChooser && options.isNotEmpty;
 
   List<ShareAction> get options => [
-        if (widget.entries.any((entry) => entry.isMotionPhoto)) ...[
-          ShareAction.imageOnly,
-          ShareAction.videoOnly,
-        ],
-      ];
+    if (widget.entries.any((entry) => entry.isMotionPhoto)) ...[
+      ShareAction.imageOnly,
+      ShareAction.videoOnly,
+    ],
+  ];
 
   @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {

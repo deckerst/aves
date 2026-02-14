@@ -14,7 +14,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
@@ -118,21 +118,15 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
   }
 
   Future<void> _hide(BuildContext context, CollectionFilter filter) async {
-    final confirmed = await showDialog<bool>(
+    final l10n = context.l10n;
+
+    if (!await showConfirmationDialog(
       context: context,
-      builder: (context) => AvesDialog(
-        content: Text(context.l10n.hideFilterConfirmationDialogMessage),
-        actions: [
-          const CancelButton(),
-          TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(true),
-            child: Text(context.l10n.hideButtonLabel),
-          ),
-        ],
-      ),
-      routeSettings: const RouteSettings(name: AvesDialog.confirmationRouteName),
-    );
-    if (confirmed == null || !confirmed) return;
+      message: l10n.hideFilterConfirmationDialogMessage,
+      ok: l10n.hideButtonLabel,
+    )) {
+      return;
+    }
 
     if (!await unlockFilter(context, filter)) return;
 

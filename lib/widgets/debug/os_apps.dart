@@ -107,7 +107,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                         );
                       },
                     );
-                  })
+                  }),
                 ],
               );
             },

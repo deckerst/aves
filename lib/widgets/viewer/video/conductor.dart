@@ -97,7 +97,7 @@ class VideoConductor {
     playingVideoControllerNotifier.value = getPlayingController();
   }
 
-  Future<void> _applyToAll(FutureOr Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
+  Future<void> _applyToAll(Future Function(AvesVideoController controller) action) => Future.forEach<AvesVideoController>(_controllers, action);
 
   Future<void> _disposeAll() => _applyToAll(_disposeController);
 

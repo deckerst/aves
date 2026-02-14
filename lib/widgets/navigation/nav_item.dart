@@ -107,9 +107,9 @@ class AvesNavItem extends Equatable {
     switch (route) {
       case CollectionPage.routeName:
         return (context) => CollectionPage(
-              source: context.read<CollectionSource>(),
-              filters: filters,
-            );
+          source: context.read<CollectionSource>(),
+          filters: filters,
+        );
       case AlbumListPage.routeName:
         return (_) => const AlbumListPage(initialGroup: null);
       case CountryListPage.routeName:
@@ -142,10 +142,10 @@ class AvesNavItem extends Equatable {
   }
 
   Map<String, dynamic> _toMap() => {
-        'route': route,
-        if (filters != null) 'filters': filters?.map((v) => v.toJson()).toList(),
-        if (path != null) 'path': path,
-      };
+    'route': route,
+    if (filters != null) 'filters': filters?.map((v) => v.toJson()).toList(),
+    if (path != null) 'path': path,
+  };
 
   String toJson() => jsonEncode(_toMap());
 

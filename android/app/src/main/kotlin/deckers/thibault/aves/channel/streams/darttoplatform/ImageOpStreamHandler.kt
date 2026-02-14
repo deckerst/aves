@@ -139,7 +139,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val copy = arguments["copy"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
         val rawEntryMap = arguments["entriesByDestination"] as Map<*, *>?
-        if (copy == null || nameConflictStrategy == null || rawEntryMap == null || rawEntryMap.isEmpty()) {
+        if (copy == null || nameConflictStrategy == null || rawEntryMap.isNullOrEmpty()) {
             error("move-args", "missing arguments", null)
             return
         }
@@ -179,7 +179,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         }
 
         val rawEntryMap = arguments["entriesToNewName"] as Map<*, *>?
-        if (rawEntryMap == null || rawEntryMap.isEmpty()) {
+        if (rawEntryMap.isNullOrEmpty()) {
             error("rename-args", "missing arguments", null)
             return
         }

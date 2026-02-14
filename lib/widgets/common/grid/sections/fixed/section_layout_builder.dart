@@ -31,12 +31,14 @@ class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {
     final sectionLayouts = sections.keys
-        .map((sectionKey) => buildSectionLayout(
-              headerExtent: showHeaders ? getHeaderExtent(context, sectionKey) : 0.0,
-              sectionKey: sectionKey,
-              section: sections[sectionKey]!,
-              animate: animate,
-            ))
+        .map(
+          (sectionKey) => buildSectionLayout(
+            headerExtent: showHeaders ? getHeaderExtent(context, sectionKey) : 0.0,
+            sectionKey: sectionKey,
+            section: sections[sectionKey]!,
+            animate: animate,
+          ),
+        )
         .toList();
 
     return FixedExtentSectionedListLayout<T>(

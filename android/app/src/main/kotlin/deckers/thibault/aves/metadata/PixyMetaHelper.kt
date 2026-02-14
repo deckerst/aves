@@ -59,7 +59,7 @@ object PixyMetaHelper {
     }
 
     fun getIptc(input: InputStream): List<FieldMap>? {
-        val iptc = Metadata.readMetadata(input)[MetadataType.IPTC] as IPTC? ?: return null
+        val iptc = Metadata.readMetadata(input)[MetadataType.IPTC] as? IPTC? ?: return null
 
         val iptcDataList = ArrayList<FieldMap>()
         iptc.dataSets.forEach { dataSetEntry ->
@@ -136,15 +136,15 @@ object PixyMetaHelper {
                 if (pixyIptc != null) {
                     // reopen input to read from start
                     StorageUtils.openInputStream(context, targetUri)?.use { input ->
-                        val iptcs = pixyIptc!!.dataSets.flatMap { it.value }
+                        val iptcs = pixyIptc.dataSets.flatMap { it.value }
                         Metadata.insertIPTC(input, output, iptcs)
                     }
                 }
                 if (pixyXmp != null) {
                     // reopen input to read from start
                     StorageUtils.openInputStream(context, targetUri)?.use { input ->
-                        val xmpString = pixyXmp!!.xmpDocString()
-                        val extendedXmp = if (pixyXmp!!.hasExtendedXmp()) pixyXmp!!.extendedXmpDocString() else null
+                        val xmpString = pixyXmp.xmpDocString()
+                        val extendedXmp = if (pixyXmp.hasExtendedXmp()) pixyXmp.extendedXmpDocString() else null
                         setXmp(input, output, xmpString, if (targetMimeType == MimeTypes.JPEG) extendedXmp else null)
                     }
                 }

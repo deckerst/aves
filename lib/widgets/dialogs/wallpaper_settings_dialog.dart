@@ -1,4 +1,3 @@
-import 'package:aves/model/device.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -23,21 +22,26 @@ class _WallpaperSettingsDialogState extends State<WallpaperSettingsDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       scrollableContent: [
-        if (device.canSetLockScreenWallpaper)
-          ...WallpaperTarget.values.map((value) {
-            return SelectionRadioListTile(
-              value: value,
-              title: value.getName(context),
-              needConfirmation: true,
-              getGroupValue: () => _selectedTarget,
-              setGroupValue: (v) => setState(() => _selectedTarget = v),
-            );
-          }),
-        SwitchListTile(
-          value: _useScrollEffect,
-          onChanged: (v) => setState(() => _useScrollEffect = v),
-          title: Text(context.l10n.wallpaperUseScrollEffect),
-        )
+        RadioGroup<WallpaperTarget>(
+          groupValue: _selectedTarget,
+          onChanged: (volume) => setState(() => _selectedTarget = volume!),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...WallpaperTarget.values.map((value) {
+                return SelectionRadioListTile<WallpaperTarget>(
+                  value: value,
+                  title: value.getName(context),
+                );
+              }),
+              SwitchListTile(
+                value: _useScrollEffect,
+                onChanged: (v) => setState(() => _useScrollEffect = v),
+                title: Text(context.l10n.wallpaperUseScrollEffect),
+              ),
+            ],
+          ),
+        ),
       ],
       actions: [
         const CancelButton(),

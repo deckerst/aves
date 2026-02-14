@@ -48,26 +48,43 @@ class _AvesSingleSelectionDialogState<T> extends State<AvesSingleSelectionDialog
     return AvesDialog(
       title: title,
       scrollableContent: [
-        if (verticalPadding != 0) SizedBox(height: verticalPadding),
-        if (message != null)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(message),
+        RadioGroup<T>(
+          groupValue: _selectedValue,
+          onChanged: (v) {
+            // always update the group value even when popping afterwards,
+            // so that the group value can be used in pop handlers
+            // as well as the regular return value from navigation
+            _selectedValue = v as T;
+            if (!needConfirmation) {
+              // validate without confirmation
+              Navigator.maybeOf(context)?.pop(v);
+            } else {
+              setState(() {});
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (verticalPadding != 0) SizedBox(height: verticalPadding),
+              if (message != null)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(message),
+                ),
+              ...widget.options.entries.map((kv) {
+                final radioValue = kv.key;
+                final radioTitle = kv.value;
+                return SelectionRadioListTile(
+                  value: radioValue,
+                  title: radioTitle,
+                  optionSubtitleBuilder: widget.optionSubtitleBuilder,
+                  dense: widget.dense,
+                );
+              }),
+              if (verticalPadding != 0) SizedBox(height: verticalPadding),
+            ],
           ),
-        ...widget.options.entries.map((kv) {
-          final radioValue = kv.key;
-          final radioTitle = kv.value;
-          return SelectionRadioListTile(
-            value: radioValue,
-            title: radioTitle,
-            optionSubtitleBuilder: widget.optionSubtitleBuilder,
-            needConfirmation: needConfirmation,
-            dense: widget.dense,
-            getGroupValue: () => _selectedValue,
-            setGroupValue: (v) => setState(() => _selectedValue = v),
-          );
-        }),
-        if (verticalPadding != 0) SizedBox(height: verticalPadding),
+        ),
       ],
       actions: [
         const CancelButton(),

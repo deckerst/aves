@@ -6,6 +6,6 @@ class HighlightInfoProvider extends ChangeNotifierProvider<HighlightInfo> {
     super.key,
     super.child,
   }) : super(
-          create: (context) => HighlightInfo(),
-        );
+         create: (context) => HighlightInfo(),
+       );
 }

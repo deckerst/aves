@@ -527,12 +527,14 @@ class _InkResponseStateWidget extends StatefulWidget {
     properties.add(IterableProperty<String>('gestures', gestures, ifEmpty: '<none>'));
     properties.add(DiagnosticsProperty<MouseCursor>('mouseCursor', mouseCursor));
     properties.add(DiagnosticsProperty<bool>('containedInkWell', containedInkWell, level: DiagnosticLevel.fine));
-    properties.add(DiagnosticsProperty<BoxShape>(
-      'highlightShape',
-      highlightShape,
-      description: '${containedInkWell ? "clipped to " : ""}$highlightShape',
-      showName: false,
-    ));
+    properties.add(
+      DiagnosticsProperty<BoxShape>(
+        'highlightShape',
+        highlightShape,
+        description: '${containedInkWell ? "clipped to " : ""}$highlightShape',
+        showName: false,
+      ),
+    );
   }
 }
 
@@ -726,7 +728,8 @@ class _InkResponseState extends State<_InkResponseStateWidget> with AutomaticKee
 
     if (value) {
       if (highlight == null) {
-        final Color resolvedOverlayColor = widget.overlayColor?.resolve(statesController.value) ??
+        final Color resolvedOverlayColor =
+            widget.overlayColor?.resolve(statesController.value) ??
             switch (type) {
               // Use the backwards compatible defaults
               _HighlightType.pressed => widget.highlightColor ?? Theme.of(context).highlightColor,

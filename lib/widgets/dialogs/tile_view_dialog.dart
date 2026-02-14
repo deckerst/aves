@@ -155,7 +155,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
-        )
+        ),
       ],
     );
   }
@@ -185,7 +185,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
                 showHighlight: false,
               ),
             ),
-            if (trailing != null) trailing,
+            ?trailing,
           ],
         ),
       ),
@@ -231,7 +231,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     selector,
-                    if (bottom != null) bottom,
+                    ?bottom,
                   ],
                 ),
               ),

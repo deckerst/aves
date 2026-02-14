@@ -102,7 +102,7 @@ object MimeTypes {
         else -> true
     }
 
-    // as of `ExifInterface` v1.4.1, method `isSupportedMimeType` reports no support for AVIF,
+    // as of `ExifInterface` v1.4.2, method `isSupportedMimeType` reports no support for AVIF,
     // but documentation reports:
     // * Supported for reading: JPEG, PNG, WebP, HEIC, DNG, CR2, NEF, NRW, ARW, RW2, ORF, PEF, SRW, RAF, AVIF (on API 31+).
     // * Supported for writing: JPEG, PNG, WebP.

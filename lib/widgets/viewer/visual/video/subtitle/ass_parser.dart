@@ -9,23 +9,25 @@ class AssParser {
   // but specs for its usage are yet to be found
   static final overridePattern = RegExp(r'{\*?(.*?)}');
 
-  static final tagPattern = RegExp(r'('
-      r'1a|2a|3a|4a'
-      r'|1c|2c|3c|4c'
-      r'|alpha|an|a'
-      r'|be|blur|bord|b'
-      r'|clip|c'
-      r'|fade|fad|fax|fay|fe|fn'
-      r'|frx|fry|frz|fr|fscx|fscy|fsp|fs'
-      r'|iclip|i'
-      r'|kf|ko|k|K'
-      r'|move|org'
-      r'|pbo|pos|p'
-      r'|q|r'
-      r'|shad|s'
-      r'|t|u'
-      r'|xbord|xshad|ybord|yshad'
-      r')');
+  static final tagPattern = RegExp(
+    r'('
+    r'1a|2a|3a|4a'
+    r'|1c|2c|3c|4c'
+    r'|alpha|an|a'
+    r'|be|blur|bord|b'
+    r'|clip|c'
+    r'|fade|fad|fax|fay|fe|fn'
+    r'|frx|fry|frz|fr|fscx|fscy|fsp|fs'
+    r'|iclip|i'
+    r'|kf|ko|k|K'
+    r'|move|org'
+    r'|pbo|pos|p'
+    r'|q|r'
+    r'|shad|s'
+    r'|t|u'
+    r'|xbord|xshad|ybord|yshad'
+    r')',
+  );
 
   // &H<aa>
   static final alphaPattern = RegExp('&H(..)');
@@ -54,13 +56,15 @@ class AssParser {
     overrideMatches.forEach((overrideMatch) {
       if (i != overrideMatch.start) {
         final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, overrideMatch.start));
-        spans.add(StyledSubtitleSpan(
-          textSpan: TextSpan(
-            text: spanText,
-            style: textStyle,
+        spans.add(
+          StyledSubtitleSpan(
+            textSpan: TextSpan(
+              text: spanText,
+              style: textStyle,
+            ),
+            extraStyle: extraStyle,
           ),
-          extraStyle: extraStyle,
-        ));
+        );
       }
       i = overrideMatch.end;
       final tags = overrideMatch.group(1);
@@ -75,14 +79,17 @@ class AssParser {
                 final a = _parseAlpha(param);
                 if (a != null) {
                   textStyle = textStyle.copyWith(
-                      color: textStyle.color?.withAlpha(a),
-                      shadows: textStyle.shadows
-                          ?.map((v) => Shadow(
-                                color: v.color.withAlpha(a),
-                                offset: v.offset,
-                                blurRadius: v.blurRadius,
-                              ))
-                          .toList());
+                    color: textStyle.color?.withAlpha(a),
+                    shadows: textStyle.shadows
+                        ?.map(
+                          (v) => Shadow(
+                            color: v.color.withAlpha(a),
+                            offset: v.offset,
+                            blurRadius: v.blurRadius,
+                          ),
+                        )
+                        .toList(),
+                  );
                   extraStyle = extraStyle.copyWith(
                     borderColor: extraStyle.borderColor?.withAlpha(a),
                   );
@@ -106,13 +113,16 @@ class AssParser {
                 final a = _parseAlpha(param);
                 if (a != null) {
                   textStyle = textStyle.copyWith(
-                      shadows: textStyle.shadows
-                          ?.map((v) => Shadow(
-                                color: v.color.withAlpha(a),
-                                offset: v.offset,
-                                blurRadius: v.blurRadius,
-                              ))
-                          .toList());
+                    shadows: textStyle.shadows
+                        ?.map(
+                          (v) => Shadow(
+                            color: v.color.withAlpha(a),
+                            offset: v.offset,
+                            blurRadius: v.blurRadius,
+                          ),
+                        )
+                        .toList(),
+                  );
                 }
               }
             case 'a':
@@ -170,13 +180,16 @@ class AssParser {
                 final color = _parseColor(param);
                 if (color != null) {
                   textStyle = textStyle.copyWith(
-                      shadows: textStyle.shadows
-                          ?.map((v) => Shadow(
-                                color: color.withValues(alpha: v.color.a),
-                                offset: v.offset,
-                                blurRadius: v.blurRadius,
-                              ))
-                          .toList());
+                    shadows: textStyle.shadows
+                        ?.map(
+                          (v) => Shadow(
+                            color: color.withValues(alpha: v.color.a),
+                            offset: v.offset,
+                            blurRadius: v.blurRadius,
+                          ),
+                        )
+                        .toList(),
+                  );
                 }
               }
             case 'clip':
@@ -325,13 +338,15 @@ class AssParser {
     });
     if (i != text.length) {
       final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i));
-      spans.add(StyledSubtitleSpan(
-        textSpan: TextSpan(
-          text: spanText,
-          style: textStyle,
+      spans.add(
+        StyledSubtitleSpan(
+          textSpan: TextSpan(
+            text: spanText,
+            style: textStyle,
+          ),
+          extraStyle: extraStyle,
         ),
-        extraStyle: extraStyle,
-      ));
+      );
     }
     return line;
   }
@@ -531,11 +546,12 @@ class AssParser {
           final points = params.map(double.tryParse).nonNulls.toList();
           if (points.length == 4) {
             paths = [
-              Path()
-                ..addRect(Rect.fromPoints(
+              Path()..addRect(
+                Rect.fromPoints(
                   Offset(points[0], points[1]),
                   Offset(points[2], points[3]),
-                ))
+                ),
+              ),
             ];
           }
         } else {

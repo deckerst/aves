@@ -301,10 +301,13 @@ class VideoMetadataFormatter {
                 }
               }
             case Keys.compatibleBrands:
-              final formattedBrands = RegExp(r'.{4}').allMatches(value).map((m) {
-                final brand = m.group(0)!;
-                return _formatBrand(brand);
-              }).join(', ');
+              final formattedBrands = RegExp(r'.{4}')
+                  .allMatches(value)
+                  .map((m) {
+                    final brand = m.group(0)!;
+                    return _formatBrand(brand);
+                  })
+                  .join(', ');
               save('Compatible Brands', formattedBrands);
             case Keys.creationTime:
               save('Creation Time', _formatDate(value));

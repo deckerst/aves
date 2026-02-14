@@ -59,12 +59,12 @@ class OverlaySnackBar extends StatefulWidget {
     this.dismissDirection = DismissDirection.down,
     this.clipBehavior = Clip.hardEdge,
     required this.onDismiss,
-  })  : assert(elevation == null || elevation >= 0.0),
-        assert(
-          width == null || margin == null,
-          'Width and margin can not be used together',
-        ),
-        assert(actionOverflowThreshold == null || (actionOverflowThreshold >= 0 && actionOverflowThreshold <= 1), 'Action overflow threshold must be between 0 and 1 inclusive');
+  }) : assert(elevation == null || elevation >= 0.0),
+       assert(
+         width == null || margin == null,
+         'Width and margin can not be used together',
+       ),
+       assert(actionOverflowThreshold == null || (actionOverflowThreshold >= 0 && actionOverflowThreshold <= 1), 'Action overflow threshold must be between 0 and 1 inclusive');
 
   @override
   State<OverlaySnackBar> createState() => _OverlaySnackBarState();
@@ -383,28 +383,28 @@ class _SnackbarDefaultsM3 extends SnackBarThemeData {
 
   @override
   Color get actionTextColor => WidgetStateColor.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) {
-          return _colors.inversePrimary;
-        }
-        if (states.contains(WidgetState.pressed)) {
-          return _colors.inversePrimary;
-        }
-        if (states.contains(WidgetState.hovered)) {
-          return _colors.inversePrimary;
-        }
-        if (states.contains(WidgetState.focused)) {
-          return _colors.inversePrimary;
-        }
-        return _colors.inversePrimary;
-      });
+    if (states.contains(WidgetState.disabled)) {
+      return _colors.inversePrimary;
+    }
+    if (states.contains(WidgetState.pressed)) {
+      return _colors.inversePrimary;
+    }
+    if (states.contains(WidgetState.hovered)) {
+      return _colors.inversePrimary;
+    }
+    if (states.contains(WidgetState.focused)) {
+      return _colors.inversePrimary;
+    }
+    return _colors.inversePrimary;
+  });
 
   @override
   Color get disabledActionTextColor => _colors.inversePrimary;
 
   @override
   TextStyle get contentTextStyle => Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: _colors.onInverseSurface,
-      );
+    color: _colors.onInverseSurface,
+  );
 
   @override
   double get elevation => 6.0;

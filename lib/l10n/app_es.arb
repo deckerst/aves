@@ -1448,5 +1448,9 @@
     "settingsNavigationBottomActionEditorBanner": "Toque y mantenga para mover botones y seleccionar qué acciones se mostrarán en la barra de navegación inferior.",
     "@settingsNavigationBottomActionEditorBanner": {},
     "settingsViewerShowZoomLevel": "Mostrar nivel de zoom",
-    "@settingsViewerShowZoomLevel": {}
+    "@settingsViewerShowZoomLevel": {},
+    "settingsEnabled": "Activado",
+    "@settingsEnabled": {},
+    "settingsForced": "Forzado",
+    "@settingsForced": {}
 }

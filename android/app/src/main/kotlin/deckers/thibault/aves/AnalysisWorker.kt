@@ -56,7 +56,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
                 workCont = cont
                 cont.invokeOnCancellation {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        val stopReasonString = when(stopReason) {
+                        val stopReasonString = when (stopReason) {
                             WorkInfo.STOP_REASON_CANCELLED_BY_APP -> "CANCELLED_BY_APP"
                             WorkInfo.STOP_REASON_FOREGROUND_SERVICE_TIMEOUT -> "FOREGROUND_SERVICE_TIMEOUT"
                             else -> "[$stopReason]"
@@ -180,11 +180,7 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     }
 
     private fun createForegroundInfo(title: String? = null, message: String? = null): ForegroundInfo {
-        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
+        val pendingIntentFlags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         val openAppIntent = Intent(applicationContext, MainActivity::class.java).let {
             PendingIntent.getActivity(applicationContext, MainActivity.OPEN_FROM_ANALYSIS_SERVICE, it, pendingIntentFlags)
         }
@@ -206,8 +202,8 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
         // from Android 14 (API 34), foreground service type is mandatory for long-running workers:
         // https://developer.android.com/guide/background/persistent/how-to/long-running
         return when {
-            Build.VERSION.SDK_INT >= 35 -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
-            Build.VERSION.SDK_INT == 34 -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROCESSING)
+            Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
             else -> ForegroundInfo(NOTIFICATION_ID, notification)
         }
     }

@@ -42,8 +42,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
-import org.mp4parser.IsoFile
-import java.io.FileInputStream
 import java.io.IOException
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
@@ -77,6 +75,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     private fun getContextDirs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val dirs = hashMapOf(
             "cacheDir" to context.cacheDir,
+            "dataDir" to context.dataDir,
             "filesDir" to context.filesDir,
             "obbDir" to context.obbDir,
             "externalCacheDir" to context.externalCacheDir,
@@ -84,9 +83,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "codeCacheDir" to context.codeCacheDir,
             "noBackupFilesDir" to context.noBackupFilesDir,
         ).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                put("dataDir", context.dataDir)
-            }
         }.mapValues { it.value?.path }.toMutableMap()
         dirs["externalCacheDirs"] = context.externalCacheDirs.joinToString { it.path }
         dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it?.path ?: "null" }
@@ -191,7 +187,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             val metadataMap = HashMap<String, Any?>()
             val columnCount = cursor.columnCount
             val columnNames = cursor.columnNames
-            for (i in 0 until columnCount) {
+            for (i in 0..<columnCount) {
                 val key = columnNames[i]
                 try {
                     metadataMap[key] = when (cursor.getType(i)) {
@@ -319,16 +315,8 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         val sb = StringBuilder()
         if (mimeType == MimeTypes.MP4 || MimeTypes.isIsoBMFFImage(mimeType)) {
             try {
-                // we can skip uninteresting boxes with a seekable data source
-                val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw Exception("failed to open file descriptor for uri=$uri")
-                pfd.use {
-                    FileInputStream(it.fileDescriptor).use { stream ->
-                        stream.channel.use { channel ->
-                            IsoFile(channel, Mp4ParserHelper.metadataBoxParser()).use { isoFile ->
-                                isoFile.dumpBoxes(sb)
-                            }
-                        }
-                    }
+                Mp4ParserHelper.consumeIso(context, uri, Mp4ParserHelper.metadataBoxParser()) { isoFile ->
+                    isoFile.dumpBoxes(sb)
                 }
             } catch (e: Exception) {
                 result.error("getMp4ParserDump-exception", e.message, e.stackTraceToString())
@@ -380,7 +368,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             TiffBitmapFactory.decodeFileDescriptor(fd, options)
             metadataMap["0"] = tiffOptionsToMap(options)
             val dirCount = options.outDirectoryCount
-            for (page in 1 until dirCount) {
+            for (page in 1..<dirCount) {
                 fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
                 if (fd == null) {
                     result.error("getTiffStructure-fd", "failed to get file descriptor", null)

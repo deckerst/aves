@@ -841,6 +841,8 @@
   "settingsSystemDefault": "System default",
   "settingsDefault": "Default",
   "settingsDisabled": "Disabled",
+  "settingsEnabled": "Enabled",
+  "settingsForced": "Forced",
   "settingsAskEverytime": "Ask everytime",
   "settingsModificationWarningDialogMessage": "Other settings will be modified.",
 

@@ -58,28 +58,31 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
       body: GestureAreaProtectorStack(
         child: SafeArea(
           bottom: false,
-          child: Builder(builder: (context) {
-            return NotificationListener<SelectFilterNotification>(
-              onNotification: (notification) {
-                onFilterSelection(notification.filter);
-                return true;
-              },
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: 8) +
-                    EdgeInsets.only(
-                      bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
-                    ),
-                child: FilterTable(
-                  totalEntryCount: totalEntryCount,
-                  entryCountMap: entryCountMap,
-                  filterBuilder: filterBuilder,
-                  sortByCount: sortByCount,
-                  maxRowCount: null,
-                  onFilterSelection: onFilterSelection,
+          child: Builder(
+            builder: (context) {
+              return NotificationListener<SelectFilterNotification>(
+                onNotification: (notification) {
+                  onFilterSelection(notification.filter);
+                  return true;
+                },
+                child: SingleChildScrollView(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8) +
+                      EdgeInsets.only(
+                        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                      ),
+                  child: FilterTable(
+                    totalEntryCount: totalEntryCount,
+                    entryCountMap: entryCountMap,
+                    filterBuilder: filterBuilder,
+                    sortByCount: sortByCount,
+                    maxRowCount: null,
+                    onFilterSelection: onFilterSelection,
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -94,7 +97,7 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
       });
     }
 
-    final csv = const ListToCsvConverter().convert([
+    final csvContent = csv.encode([
       [title, '#'],
       ...sortedEntries.map((kv) {
         final filter = filterBuilder(kv.key);
@@ -108,14 +111,14 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
             label = filter.getLabel(context);
         }
         return [label, count];
-      })
+      }),
     ]);
 
     const mimeType = MimeTypes.csv;
     final success = await storageService.createFile(
       'aves-stats-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
       mimeType,
-      Uint8List.fromList(utf8.encode(csv)),
+      Uint8List.fromList(utf8.encode(csvContent)),
     );
     if (success != null) {
       if (success) {

@@ -18,20 +18,20 @@ class SubtitleStyle extends Equatable with Diagnosticable {
 
   @override
   List<Object?> get props => [
-        hAlign,
-        vAlign,
-        borderColor,
-        borderWidth,
-        edgeBlur,
-        rotationX,
-        rotationY,
-        rotationZ,
-        scaleX,
-        scaleY,
-        shearX,
-        shearY,
-        drawingPaths?.length,
-      ];
+    hAlign,
+    vAlign,
+    borderColor,
+    borderWidth,
+    edgeBlur,
+    rotationX,
+    rotationY,
+    rotationZ,
+    scaleX,
+    scaleY,
+    shearX,
+    shearY,
+    drawingPaths?.length,
+  ];
 
   const SubtitleStyle({
     this.hAlign,

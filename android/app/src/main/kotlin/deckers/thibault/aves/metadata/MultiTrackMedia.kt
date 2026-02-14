@@ -40,7 +40,7 @@ object MultiTrackMedia {
             extractor.setDataSource(context, uri, null)
             val trackCount = extractor.trackCount
             var imageIndex = 0
-            for (i in 0 until trackCount) {
+            for (i in 0..<trackCount) {
                 val trackFormat = extractor.getTrackFormat(i)
                 if (trackIndex == i) {
                     return imageIndex

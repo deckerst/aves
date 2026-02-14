@@ -73,11 +73,11 @@ class SectionHeader<T> extends StatelessWidget {
                     sectionKey: sectionKey,
                     browsingBuilder: leading != null
                         ? (context) => Container(
-                              width: leadingSize.width,
-                              height: leadingSize.height,
-                              margin: leadingMargin,
-                              child: leading,
-                            )
+                            width: leadingSize.width,
+                            height: leadingSize.height,
+                            margin: leadingMargin,
+                            child: leading,
+                          )
                         : null,
                     onPressed: onTap,
                   ),

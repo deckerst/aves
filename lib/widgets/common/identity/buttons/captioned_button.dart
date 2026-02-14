@@ -24,10 +24,10 @@ class CaptionedButton extends StatefulWidget {
     this.autofocus = false,
     this.showCaption = true,
     required this.onPressed,
-  })  : assert(icon != null || iconButtonBuilder != null),
-        assert(caption != null || captionText != null),
-        iconButtonBuilder = iconButtonBuilder ?? ((_, focusNode) => IconButton(icon: icon!, onPressed: onPressed, focusNode: focusNode)),
-        captionText = captionText ?? CaptionedButtonText(text: caption!, enabled: onPressed != null);
+  }) : assert(icon != null || iconButtonBuilder != null),
+       assert(caption != null || captionText != null),
+       iconButtonBuilder = iconButtonBuilder ?? ((_, focusNode) => IconButton(icon: icon!, onPressed: onPressed, focusNode: focusNode)),
+       captionText = captionText ?? CaptionedButtonText(text: caption!, enabled: onPressed != null);
 
   @override
   State<CaptionedButton> createState() => _CaptionedButtonState();

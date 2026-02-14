@@ -311,7 +311,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                     Shadow(
                       color: trailingChangeShadowColor.withAlpha(0),
                       blurRadius: 0,
-                    )
+                    ),
                   ],
                 ),
                 changedStyle: trailingStyle.copyWith(
@@ -319,7 +319,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                     Shadow(
                       color: trailingChangeShadowColor,
                       blurRadius: 3,
-                    )
+                    ),
                   ],
                 ),
                 duration: context.read<DurationsData>().formTextStyleTransition,

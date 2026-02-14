@@ -53,7 +53,7 @@ class EmptyContent extends StatelessWidget {
                   size: 64,
                   color: color,
                 ),
-                const SizedBox(height: 16)
+                const SizedBox(height: 16),
               ],
               if (text.isNotEmpty)
                 Text(
@@ -64,7 +64,7 @@ class EmptyContent extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-              if (bottom != null) bottom!,
+              ?bottom,
             ],
           ),
         ),

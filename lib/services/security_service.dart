@@ -1,6 +1,6 @@
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
-import 'package:aves/services/common/channel.dart';
 
 abstract class SecurityService {
   Future<bool> writeValue<T>(String key, T? value);

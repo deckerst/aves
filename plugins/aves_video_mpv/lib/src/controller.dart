@@ -127,7 +127,7 @@ class MpvVideoController extends AvesVideoController {
     _subscriptions.add(playerStream.error.listen((v) => debugPrint('libmpv error: $v')));
 
     final settingsStream = settings.updateStream;
-    _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.enableVideoHardwareAccelerationKey).listen((_) => _initController()));
+    _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.videoHardwareAccelerationKey).listen((_) => _initController()));
     _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.videoLoopModeKey).listen((_) => _applyLoop()));
 
     final path = entry.path;
@@ -181,10 +181,21 @@ class MpvVideoController extends AvesVideoController {
 
   void _initController() {
     _firstFrameRendered = false;
+    final hardwareAcceleration = settings.videoHardwareAcceleration;
+    String hwdec;
+    switch (settings.videoHardwareAcceleration) {
+      case VideoHardwareAcceleration.disabled:
+        hwdec = 'no';
+      case VideoHardwareAcceleration.enabled:
+        hwdec = 'auto-safe';
+      case VideoHardwareAcceleration.forced:
+        hwdec = 'mediacodec';
+    }
     _controllerNotifier.value = VideoController(
       _instance,
       configuration: VideoControllerConfiguration(
-        enableHardwareAcceleration: settings.enableVideoHardwareAcceleration,
+        hwdec: hwdec,
+        enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
       ),
     )..waitUntilFirstFrameRendered.then((v) {
         _firstFrameRendered = true;

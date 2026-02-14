@@ -37,11 +37,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.nio.ByteBuffer
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlin.math.roundToInt
 
 class HomeWidgetProvider : AppWidgetProvider() {
@@ -136,7 +136,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
 
         initFlutterEngine(context)
         try {
-            val props = suspendCoroutine { cont ->
+            val props = suspendCancellableCoroutine { cont ->
                 defaultScope.launch {
                     FlutterUtils.runOnUiThread {
                         tryDrawWidget(params, cont, 0)
@@ -263,16 +263,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, "widget://$widgetId".toUri(), context, HomeWidgetProvider::class.java)
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(widgetId))
 
-        return PendingIntent.getBroadcast(
-            context,
-            0,
-            intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
-        )
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun buildOpenAppIntent(context: Context, widgetId: Int): PendingIntent {
@@ -280,16 +271,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         val intent = Intent(MainActivity.INTENT_ACTION_WIDGET_OPEN, "widget://$widgetId".toUri(), context, MainActivity::class.java)
             .putExtra(MainActivity.EXTRA_KEY_WIDGET_ID, widgetId)
 
-        return PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
-        )
+        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     companion object {

@@ -3,7 +3,6 @@ package deckers.thibault.aves.aves_screen_state
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink

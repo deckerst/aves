@@ -32,11 +32,11 @@ class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredF
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': type,
-        'name': name,
-        'filter': filter.toJson(),
-        'reversed': reversed,
-      };
+    'type': type,
+    'name': name,
+    'filter': filter.toJson(),
+    'reversed': reversed,
+  };
 
   @override
   EntryPredicate get positiveTest => filter.test;

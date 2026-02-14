@@ -10,8 +10,8 @@ class CheckeredPainter extends CustomPainter {
     Color dark = const Color(0xFF666666),
     this.checkSize = 20,
     this.offset = Offset.zero,
-  })  : lightPaint = Paint()..color = light,
-        darkPaint = Paint()..color = dark;
+  }) : lightPaint = Paint()..color = light,
+       darkPaint = Paint()..color = dark;
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -111,9 +111,9 @@ class SettingKeys {
   static const imageBackgroundKey = 'image_background';
 
   // video
-  static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
-  static const videoBackgroundModeKey = 'video_background_mode';
   static const videoAutoPlayModeKey = 'video_auto_play_mode';
+  static const videoBackgroundModeKey = 'video_background_mode';
+  static const videoHardwareAccelerationKey = 'video_hardware_acceleration';
   static const videoLoopModeKey = 'video_loop';
   static const videoResumptionModeKey = 'video_resumption_mode';
   static const videoControlActionsKey = 'video_control_actions';

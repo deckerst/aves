@@ -73,3 +73,18 @@ class MetadataTypes {
     MetadataType.jpegDucky,
   };
 }
+
+enum ExportableEntryField {
+  uri,
+  path,
+  title,
+  date,
+  size,
+  resolution,
+  width,
+  height,
+  duration,
+  coordinates,
+  address,
+  tags,
+}

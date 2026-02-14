@@ -9,6 +9,7 @@ class TextDropdownButton<T> extends StatefulWidget {
   final bool isExpanded;
   final double? itemHeight;
   final Color? dropdownColor;
+  final EdgeInsetsGeometry? padding;
   final ValueChanged<T?>? onChanged;
 
   const TextDropdownButton({
@@ -21,6 +22,7 @@ class TextDropdownButton<T> extends StatefulWidget {
     this.isExpanded = false,
     this.itemHeight = kMinInteractiveDimension,
     this.dropdownColor,
+    this.padding,
     required this.onChanged,
   });
 
@@ -33,16 +35,20 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
   Widget build(BuildContext context) {
     return DropdownButton(
       items: widget.values
-          .map((v) => DropdownMenuItem<T>(
-                value: v,
-                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
-              ))
+          .map(
+            (v) => DropdownMenuItem<T>(
+              value: v,
+              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
+            ),
+          )
           .toList(),
       selectedItemBuilder: (context) => widget.values
-          .map((v) => DropdownMenuItem<T>(
-                value: v,
-                child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
-              ))
+          .map(
+            (v) => DropdownMenuItem<T>(
+              value: v,
+              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
+            ),
+          )
           .toList(),
       value: widget.value,
       style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
@@ -50,6 +56,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
       isExpanded: widget.isExpanded,
       itemHeight: widget.itemHeight,
       dropdownColor: widget.dropdownColor,
+      padding: widget.padding,
       onChanged: widget.onChanged,
     );
   }

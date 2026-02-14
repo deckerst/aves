@@ -62,14 +62,16 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
 
     if (!MimeTypes.isImage(mimeType) && !MimeTypes.isVideo(mimeType)) {
       // open with another app
-      unawaited(appService.open(uri, mimeType, forceChooser: true).then((success) {
-        if (!success) {
-          // fallback to sharing, so that the file can be saved somewhere
-          appService.shareSingle(uri, mimeType).then((success) {
-            if (!success) showNoMatchingAppDialog(context);
-          });
-        }
-      }));
+      unawaited(
+        appService.open(uri, mimeType, forceChooser: true).then((success) {
+          if (!success) {
+            // fallback to sharing, so that the file can be saved somewhere
+            appService.shareSingle(uri, mimeType).then((success) {
+              if (!success) showNoMatchingAppDialog(context);
+            });
+          }
+        }),
+      );
       return;
     }
 

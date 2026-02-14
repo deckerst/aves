@@ -66,15 +66,16 @@ class HomeWidgetPainter {
 
   static void drawOutline(ui.Canvas canvas, ui.Path outlinePath, double devicePixelRatio, Color color) {
     canvas.drawPath(
-        outlinePath,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = color
-          ..strokeWidth = AvesFilterChip.outlineWidth * devicePixelRatio * 2
-          ..strokeCap = StrokeCap.round);
+      outlinePath,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = color
+        ..strokeWidth = AvesFilterChip.outlineWidth * devicePixelRatio * 2
+        ..strokeCap = StrokeCap.round,
+    );
   }
 
-  FutureOr<ui.Image?> _getEntryImage(AvesEntry? entry, double extent) async {
+  Future<ui.Image?> _getEntryImage(AvesEntry? entry, double extent) async {
     if (entry == null) return null;
 
     final provider = entry.getThumbnail(extent: extent);

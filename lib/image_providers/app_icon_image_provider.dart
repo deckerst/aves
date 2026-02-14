@@ -19,11 +19,13 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 
   @override
   Future<AppIconImageKey> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture<AppIconImageKey>(AppIconImageKey(
-      packageName: packageName,
-      size: size,
-      scale: scale,
-    ));
+    return SynchronousFuture<AppIconImageKey>(
+      AppIconImageKey(
+        packageName: packageName,
+        size: size,
+        scale: scale,
+      ),
+    );
   }
 
   @override

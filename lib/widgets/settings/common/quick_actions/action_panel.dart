@@ -19,10 +19,12 @@ class ActionPanel extends StatelessWidget {
     return AnimatedContainer(
       foregroundDecoration: BoxDecoration(
         color: color.withValues(alpha: .2),
-        border: Border.fromBorderSide(BorderSide(
-          color: color,
-          width: highlight ? 2 : 1,
-        )),
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: color,
+            width: highlight ? 2 : 1,
+          ),
+        ),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       margin: const EdgeInsets.all(16),
