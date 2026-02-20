@@ -59,7 +59,7 @@ Future<void> _init() async {
   await localMediaDb.init();
   await device.init();
   await mobileServices.init();
-  await settings.init(monitorPlatformSettings: false);
+  await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
   await reportService.init();
   videoMetadataFetcher.init();
 

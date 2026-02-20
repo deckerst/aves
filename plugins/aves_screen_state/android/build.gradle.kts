@@ -2,17 +2,14 @@ group = "deckers.thibault.aves.aves_screen_state"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val agp_version = "8.13.2"
-    val kotlin_version = "2.3.0"
-
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:$agp_version")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath(libs.gradle)
+        classpath(libs.kotlin.gradlePlugin)
     }
 }
 
@@ -24,6 +21,9 @@ allprojects {
 }
 
 plugins {
+    // TODO TLAD find how to use `alias(libs.plugins.android.library)` without error:
+    // > The request for this plugin could not be satisfied because the plugin is already
+    // on the classpath with an unknown version, so compatibility cannot be checked.
     id("com.android.library")
     id("kotlin-android")
 }

@@ -2,8 +2,8 @@ import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
@@ -24,11 +24,17 @@ if (keystorePropertiesFile.exists()) {
     // for release using credentials in environment variables set up by GitHub Actions
     // warning: in property file, single quotes should be escaped with a backslash
     // but they should not be escaped when stored in env variables
-    keystoreProperties["storeFile"] = System.getenv("AVES_STORE_FILE") ?: "<NONE>"
-    keystoreProperties["storePassword"] = System.getenv("AVES_STORE_PASSWORD") ?: "<NONE>"
-    keystoreProperties["keyAlias"] = System.getenv("AVES_KEY_ALIAS") ?: "<NONE>"
-    keystoreProperties["keyPassword"] = System.getenv("AVES_KEY_PASSWORD") ?: "<NONE>"
-    keystoreProperties["googleApiKey"] = System.getenv("AVES_GOOGLE_API_KEY") ?: "<NONE>"
+    val env = System.getenv()
+    fun getEnv(propKey: String, envKey: String) {
+        if (envKey in env) {
+            keystoreProperties[propKey] = env[envKey]
+        }
+    }
+    getEnv("storeFile", "AVES_STORE_FILE")
+    getEnv("storePassword", "AVES_STORE_PASSWORD")
+    getEnv("keyAlias", "AVES_KEY_ALIAS")
+    getEnv("keyPassword", "AVES_KEY_PASSWORD")
+    getEnv("googleApiKey", "AVES_GOOGLE_API_KEY")
 }
 
 android {
@@ -57,11 +63,15 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+        val storeFilePath = keystoreProperties["storeFile"] as String?
+        if (storeFilePath != null) {
+            println("Create signing config for release using file=$storeFilePath")
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(storeFilePath)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
         }
     }
 
@@ -110,7 +120,11 @@ android {
         }
 
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            if (signingConfigs.names.contains("release")) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                println("Skip release signing as it is not configured")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -181,44 +195,43 @@ repositories {
 
 dependencies {
     // cf https://developer.android.com/studio/write/java8-support#library-desugaring
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    coreLibraryDesugaring(libs.android.desugarJdkLibs)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation(libs.kotlinx.coroutines.android)
 
-    implementation("androidx.annotation:annotation:1.9.1")
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-process:2.10.0")
-    implementation("androidx.media:media:1.7.1")
-    implementation("androidx.multidex:multidex:2.0.1")
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.multidex)
     // Jetpack `security-crypto` library is deprecated:
     // https://developer.android.com/privacy-and-security/cryptography#security-crypto-jetpack-deprecated
-    implementation("androidx.security:security-crypto:1.1.0")
-    implementation("androidx.work:work-runtime:2.11.1")
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.work.runtime)
 
-    val glideVersion = "5.0.5"
-    implementation("com.commonsware.cwac:document:0.5.0")
-    implementation("com.drewnoakes:metadata-extractor:2.19.0")
-    implementation("com.github.bumptech.glide:glide:$glideVersion")
-    implementation("com.google.android.material:material:1.13.0")
+    implementation(libs.commonsware.cwac)
+    implementation(libs.metadata.extractor)
+    implementation(libs.glide)
+    implementation(libs.google.material)
     // SLF4J implementation for `mp4parser`
-    implementation("org.slf4j:slf4j-simple:2.0.17")
+    implementation(libs.slf4j)
 
     // forked, built by JitPack:
     // - https://jitpack.io/p/deckerst/Android-TiffBitmapFactory
     // - https://jitpack.io/p/deckerst/androidsvg
     // - https://jitpack.io/p/deckerst/mp4parser
     // - https://jitpack.io/p/deckerst/pixymeta-android
-    implementation("com.github.deckerst:Android-TiffBitmapFactory:424b18a4ae")
-    implementation("com.github.deckerst:androidsvg:c7e58e8e59")
-    implementation("com.github.deckerst.mp4parser:isoparser:c2898f1832")
-    implementation("com.github.deckerst.mp4parser:muxer:c2898f1832")
-    implementation("com.github.deckerst:pixymeta-android:f4513291b7")
+    implementation(libs.deckerst.tiffbitmapfactory)
+    implementation(libs.deckerst.androidsvg)
+    implementation(libs.deckerst.mp4parser.isoparser)
+    implementation(libs.deckerst.mp4parser.muxer)
+    implementation(libs.deckerst.pixymeta)
     implementation(project(":exifinterface"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:6.0.2")
+    testImplementation(libs.junit)
 
-    ksp("com.github.bumptech.glide:ksp:$glideVersion")
+    ksp(libs.glideKsp)
 
     compileOnly(rootProject.findProject(":streams_channel")!!)
 }

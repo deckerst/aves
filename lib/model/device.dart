@@ -1,6 +1,5 @@
 import 'package:aves/services/common/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -65,10 +64,5 @@ class Device {
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
     _supportPictureInPicture = capabilities['supportPictureInPicture'] ?? false;
-  }
-
-  @visibleForTesting
-  void initForTests() {
-    _isPhysicalDevice = false;
   }
 }

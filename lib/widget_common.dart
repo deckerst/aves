@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/widget_outline.dart';
@@ -23,8 +22,7 @@ void widgetMainCommon(AppFlavor flavor) async {
   debugPrint('Widget main start');
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
-  await device.init();
-  await settings.init(monitorPlatformSettings: false);
+  await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
   await reportService.init();
 
   debugPrint('Widget channel method handling setup');

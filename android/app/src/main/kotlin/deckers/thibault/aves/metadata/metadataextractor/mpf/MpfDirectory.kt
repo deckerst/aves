@@ -20,8 +20,8 @@ class MpfDirectory : Directory() {
         const val TAG_MPF_VERSION = 0xb000
         const val TAG_NUMBER_OF_IMAGES = 0xb001
         const val TAG_MP_ENTRY = 0xb002
-        private const val TAG_IMAGE_UID_LIST = 0xb003
-        private const val TAG_TOTAL_FRAMES = 0xb004
+        const val TAG_IMAGE_UID_LIST = 0xb003
+        const val TAG_TOTAL_FRAMES = 0xb004
 
         private val _tagNameMap = HashMap<Int, String>().apply {
             put(TAG_MPF_VERSION, "MPF Version")

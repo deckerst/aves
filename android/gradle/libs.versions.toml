@@ -1,0 +1,66 @@
+[versions]
+androidDesugarJdkLibs = "2.1.5"
+# AGP and tools should be updated together
+androidGradlePlugin = "8.13.2"
+androidSvg = "c7e58e8e59"
+androidxAnnotation = "1.9.1"
+androidxAppcompat = "1.7.1"
+androidxCoreKtx = "1.17.0"
+androidxLifecycle = "2.10.0"
+androidxMedia = "1.7.1"
+androidxMultidex = "2.0.1"
+androidxSecurity = "1.1.0"
+androidxWork = "2.11.1"
+commonswareCwac = "0.5.0"
+firebase = "3.0.6"
+glide = "5.0.5"
+gms = "4.4.4"
+jspecify = "1.0.0"
+junit = "6.0.3"
+kotlin = "2.3.0"
+kotlinxCoroutines = "1.10.2"
+ksp = "2.3.5"
+material = "1.13.0"
+metadataExtractor = "2.19.0"
+mp4parser = "c2898f1832"
+pixymeta = "f4513291b7"
+slf4j = "2.0.17"
+tiffBitmapFactory = "424b18a4ae"
+reproducibleBuilds = "1.1"
+
+[libraries]
+android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidxAnnotation" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
+androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidxLifecycle" }
+androidx-media = { module = "androidx.media:media", version.ref = "androidxMedia" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidxSecurity" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidxWork" }
+commonsware-cwac = { module = "com.commonsware.cwac:document", version.ref = "commonswareCwac" }
+deckerst-androidsvg = { module = "com.github.deckerst:androidsvg", version.ref = "androidSvg" }
+deckerst-mp4parser-isoparser = { module = "com.github.deckerst.mp4parser:isoparser", version.ref = "mp4parser" }
+deckerst-mp4parser-muxer = { module = "com.github.deckerst.mp4parser:muxer", version.ref = "mp4parser" }
+deckerst-pixymeta = { module = "com.github.deckerst:pixymeta-android", version.ref = "pixymeta" }
+deckerst-tiffbitmapfactory = { module = "com.github.deckerst:Android-TiffBitmapFactory", version.ref = "tiffBitmapFactory" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glideKsp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+google-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase" }
+google-gms = { module = "com.google.gms:google-services", version.ref = "gms" }
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+junit = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+metadata-extractor = { module = "com.drewnoakes:metadata-extractor", version.ref = "metadataExtractor" }
+slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase" }
+google-gms = { id = "com.google.gms.google-services", version.ref = "gms" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+reproducible-builds = { id = "org.gradlex.reproducible-builds", version.ref = "reproducibleBuilds" }

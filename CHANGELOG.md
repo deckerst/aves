@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.1"></a>[v1.14.1] - 2026-02-21
+
+### Changed
+
+- upgraded Flutter to stable v3.41.2
+
+### Fixed
+
+- widget rendering failing because of setting sanitization
+- panorama rendering regression by reverting switch from Skia to Impeller
+
 ## <a id="v1.14.0"></a>[v1.14.0] - 2026-02-14
 
 ### Added

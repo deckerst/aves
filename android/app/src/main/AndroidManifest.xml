@@ -70,12 +70,6 @@
     `android.permission.USE_BIOMETRIC` by `io.flutter.plugins.localauth`, to unlock vaults (API >=28)
     -->
 
-    <!--
-    allow install on API 21, despite the `minSdk` declared in dependencies:
-    - FFmpegKit for Flutter is from API 24 (when not LTS)
-    -->
-    <uses-sdk tools:overrideLibrary="com.arthenica.ffmpegkit.flutter" />
-
     <!-- from Android 11 (API 30), we should define <queries> to make other apps visible to this app -->
     <queries>
         <intent>
@@ -341,6 +335,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- panorama rendering with `flutter_cube` is broken with Impeller, cf #1961 -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

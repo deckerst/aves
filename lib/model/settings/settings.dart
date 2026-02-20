@@ -85,7 +85,7 @@ class Settings
 
   Future<void> init({
     required bool monitorPlatformSettings,
-    bool shouldSanitize = true,
+    required bool shouldSanitize,
   }) async {
     await store.init();
     resetAppliedLocale();

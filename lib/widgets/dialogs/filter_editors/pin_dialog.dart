@@ -18,7 +18,7 @@ class PinDialog extends StatefulWidget {
 }
 
 class _PinDialogState extends State<PinDialog> {
-  final _controller = TextEditingController();
+  final _controller = PinInputController();
   bool _confirming = false;
   String? _firstPin;
 
@@ -30,7 +30,6 @@ class _PinDialogState extends State<PinDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return AvesDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -38,25 +37,15 @@ class _PinDialogState extends State<PinDialog> {
           Text(_confirming ? context.l10n.pinDialogConfirm : context.l10n.pinDialogEnter),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: PinCodeTextField(
-              appContext: context,
+            child: MaterialPinField(
               length: 4,
-              controller: _controller,
-              obscureText: true,
-              onChanged: (v) {},
-              onCompleted: _submit,
-              animationType: AnimationType.scale,
+              pinController: _controller,
               keyboardType: TextInputType.number,
               autoFocus: true,
               autoDismissKeyboard: !widget.needConfirmation || _confirming,
-              pinTheme: PinTheme(
-                activeColor: colorScheme.onSurface,
-                inactiveColor: colorScheme.onSurface,
-                selectedColor: colorScheme.primary,
-                selectedFillColor: colorScheme.primary,
-                borderRadius: BorderRadius.circular(8),
-                shape: PinCodeFieldShape.box,
-              ),
+              obscureText: true,
+              onChanged: (v) {},
+              onCompleted: _submit,
             ),
           ),
         ],

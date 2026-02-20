@@ -34,7 +34,7 @@ class PanoramaPage extends StatefulWidget {
 
 class _PanoramaPageState extends State<PanoramaPage> {
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
-  final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(SensorControl.None);
+  final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(SensorControl.none);
 
   AvesEntry get entry => widget.entry;
 
@@ -139,9 +139,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   valueListenable: _sensorControl,
                   builder: (context, sensorControl, child) {
                     return IconButton(
-                      icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
+                      icon: Icon(sensorControl == SensorControl.none ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
                       onPressed: _toggleSensor,
-                      tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
+                      tooltip: sensorControl == SensorControl.none ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
                     );
                   },
                 ),
@@ -155,11 +155,11 @@ class _PanoramaPageState extends State<PanoramaPage> {
 
   void _toggleSensor() {
     switch (_sensorControl.value) {
-      case SensorControl.None:
-        _sensorControl.value = SensorControl.AbsoluteOrientation;
-      case SensorControl.AbsoluteOrientation:
-      case SensorControl.Orientation:
-        _sensorControl.value = SensorControl.None;
+      case SensorControl.none:
+        _sensorControl.value = SensorControl.absoluteOrientation;
+      case SensorControl.absoluteOrientation:
+      case SensorControl.orientation:
+        _sensorControl.value = SensorControl.none;
     }
   }
 

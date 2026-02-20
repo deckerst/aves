@@ -1,4 +1,5 @@
 plugins {
+    // TODO TLAD find how to use `alias(libs.plugins.android.library)`
     id("com.android.library")
 }
 
@@ -27,6 +28,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.9.1")
-    implementation("org.jspecify:jspecify:1.0.0")
+    implementation(libs.androidx.annotation)
+    implementation(libs.jspecify)
 }
