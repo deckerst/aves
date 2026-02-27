@@ -72,7 +72,7 @@ jobs:
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
 
       - name: Generate artifact attestation
-        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26
         with:
           subject-path: 'outputs/*'
 
