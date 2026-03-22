@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
 // cf charts.DateTimeTickFormatter factory internals for default formats

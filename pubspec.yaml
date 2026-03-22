@@ -64,13 +64,12 @@ dependencies:
     path: plugins/aves_ui
   aves_utils:
     path: plugins/aves_utils
-  charts_flutter:
-    git:
-      # https://github.com/fzyzcjy/charts.git master commit de76a46 (Sep 26, 2022) is incompatible with Flutter v3.10
-      url: https://github.com/deckerst/flutter_google_charts.git
-      ref: aves
-      path: charts_flutter
   collection:
+  community_charts_flutter:
+    git:
+      url: https://github.com/deckerst/flutter_community_charts.git
+      ref: aves
+      path: community_charts_flutter
   connectivity_plus:
   country_code:
   csv:
