@@ -729,5 +729,6 @@
     "tagPickPageTitle": "选择标签",
     "settingsViewerShowZoomLevel": "显示缩放级别",
     "settingsEnabled": "已启用",
-    "settingsForced": "已强制"
+    "settingsForced": "已强制",
+    "collectionActionExportGpx": "导出 GPX"
 }

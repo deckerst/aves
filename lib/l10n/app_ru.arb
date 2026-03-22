@@ -729,5 +729,6 @@
     "mapStyleEditorDialogUserAgent": "User-Agent",
     "settingsEnabled": "Включено",
     "settingsForced": "Принудительно",
-    "settingsViewerShowZoomLevel": "Показать уровень приближения"
+    "settingsViewerShowZoomLevel": "Показать уровень приближения",
+    "collectionActionExportGpx": "Экспорт GPX"
 }
