@@ -102,6 +102,12 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     }
   }
 
+  @override
+  void dispose() {
+    _selection.dispose();
+    super.dispose();
+  }
+
   static List<_EntryByDate>? _computeInterpolatedData(_DataInterpolationArg arg) {
     final firstDate = arg.firstDate;
     final lastDate = arg.lastDate;

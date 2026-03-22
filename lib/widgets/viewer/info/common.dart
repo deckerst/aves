@@ -171,6 +171,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);
     paragraph.dispose();
+
     return width;
   }
 

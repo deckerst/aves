@@ -58,12 +58,15 @@ class ShareQuickChooser extends StatelessWidget {
     return options
         .map((action) {
           final text = action.getText(context);
+
           final paragraph = RenderParagraph(
             TextSpan(text: text, style: textStyle),
             textDirection: textDirection,
             textScaler: textScaler,
           )..layout(const BoxConstraints(), parentUsesSize: true);
           final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+          paragraph.dispose();
+
           return iconSize + MenuRow.leadingPadding.horizontal + labelWidth + _itemPadding.horizontal;
         })
         .reduce(max);

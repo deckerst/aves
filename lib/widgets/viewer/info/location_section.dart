@@ -62,6 +62,7 @@ class _LocationSectionState extends State<LocationSection> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _mapController.dispose();
     super.dispose();
   }
 
