@@ -42,7 +42,7 @@ abstract class MetadataFetchService {
 
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
 
-  Future<Map<String, dynamic>> getFields(AvesEntry entry, Set<MetadataField> fields);
+  Future<Map<String, Object?>> getFields(AvesEntry entry, Set<MetadataField> fields);
 }
 
 class PlatformMetadataFetchService implements MetadataFetchService {
@@ -84,7 +84,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitle': XMP title (string)
         final result =
-            await _channel.invokeMethod('getCatalogMetadata', <String, dynamic>{
+            await _channel.invokeMethod('getCatalogMetadata', <String, Object?>{
                   'mimeType': entry.mimeType,
                   'uri': entry.uri,
                   'path': entry.path,
@@ -119,7 +119,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'focalLength' (double),
         // 'iso' (int),
         final result =
-            await _channel.invokeMethod('getOverlayMetadata', <String, dynamic>{
+            await _channel.invokeMethod('getOverlayMetadata', <String, Object?>{
                   'mimeType': entry.mimeType,
                   'uri': entry.uri,
                   'sizeBytes': entry.sizeBytes,
@@ -138,7 +138,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry) async {
     try {
       final result =
-          await _channel.invokeMethod('getGeoTiffInfo', <String, dynamic>{
+          await _channel.invokeMethod('getGeoTiffInfo', <String, Object?>{
                 'mimeType': entry.mimeType,
                 'uri': entry.uri,
                 'sizeBytes': entry.sizeBytes,
@@ -154,7 +154,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry) async {
     try {
-      final result = await _channel.invokeMethod('getMultiPageInfo', <String, dynamic>{
+      final result = await _channel.invokeMethod('getMultiPageInfo', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -184,7 +184,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
       // 'fullPanoWidth' (int), 'fullPanoHeight' (int)
       final result =
-          await _channel.invokeMethod('getPanoramaInfo', <String, dynamic>{
+          await _channel.invokeMethod('getPanoramaInfo', <String, Object?>{
                 'mimeType': entry.mimeType,
                 'uri': entry.uri,
                 'sizeBytes': entry.sizeBytes,
@@ -200,7 +200,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<List<Map<String, dynamic>>?> getIptc(AvesEntry entry) async {
     try {
-      final result = await _channel.invokeMethod('getIptc', <String, dynamic>{
+      final result = await _channel.invokeMethod('getIptc', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
       });
@@ -214,7 +214,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<AvesXmp?> getXmp(AvesEntry entry) async {
     try {
-      final result = await _channel.invokeMethod('getXmp', <String, dynamic>{
+      final result = await _channel.invokeMethod('getXmp', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -234,7 +234,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
     if (exists != null) return SynchronousFuture(exists);
 
     try {
-      exists = await _channel.invokeMethod('hasContentResolverProp', <String, dynamic>{
+      exists = await _channel.invokeMethod('hasContentResolverProp', <String, Object?>{
         'prop': prop,
       });
     } on PlatformException catch (e, stack) {
@@ -263,7 +263,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<DateTime?> getDate(AvesEntry entry, MetadataField field) async {
     try {
-      final result = await _channel.invokeMethod('getDate', <String, dynamic>{
+      final result = await _channel.invokeMethod('getDate', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -279,16 +279,16 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   }
 
   @override
-  Future<Map<String, dynamic>> getFields(AvesEntry entry, Set<MetadataField> fields) async {
+  Future<Map<String, Object?>> getFields(AvesEntry entry, Set<MetadataField> fields) async {
     if (fields.isNotEmpty && !entry.isSvg) {
       try {
-        final result = await _channel.invokeMethod('getFields', <String, dynamic>{
+        final result = await _channel.invokeMethod('getFields', <String, Object?>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
           'sizeBytes': entry.sizeBytes,
           'fields': fields.map((v) => v.toPlatform).toList(),
         });
-        if (result != null) return (result as Map).cast<String, dynamic>();
+        if (result is Map) return result.cast<String, Object?>();
       } on PlatformException catch (e, stack) {
         await _processPlatformException(entry, e, stack);
       }

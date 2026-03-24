@@ -66,7 +66,7 @@ class PlatformStorageService implements StorageService {
   Future<Map<String, int>> getDataUsage() async {
     try {
       final result = await _platform.invokeMethod('getDataUsage');
-      if (result != null) return (result as Map).cast<String, int>();
+      if (result is Map) return result.cast<String, int>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -87,7 +87,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<String> getExternalCacheDirectory() async {
     try {
-      final result = await _platform.invokeMethod('getCacheDirectory', <String, dynamic>{
+      final result = await _platform.invokeMethod('getCacheDirectory', <String, Object?>{
         'external': true,
       });
       return result as String;
@@ -100,7 +100,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Set<String>> getUntrackedTrashPaths(Iterable<String> knownPaths) async {
     try {
-      final result = await _platform.invokeMethod('getUntrackedTrashPaths', <String, dynamic>{
+      final result = await _platform.invokeMethod('getUntrackedTrashPaths', <String, Object?>{
         'knownPaths': knownPaths.toList(),
       });
       return (result as List).cast<String>().toSet();
@@ -113,7 +113,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Set<String>> getUntrackedVaultPaths(String vaultName, Iterable<String> knownPaths) async {
     try {
-      final result = await _platform.invokeMethod('getUntrackedVaultPaths', <String, dynamic>{
+      final result = await _platform.invokeMethod('getUntrackedVaultPaths', <String, Object?>{
         'vault': vaultName,
         'knownPaths': knownPaths.toList(),
       });
@@ -138,7 +138,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<int?> getFreeSpace(StorageVolume volume) async {
     try {
-      final result = await _platform.invokeMethod('getFreeSpace', <String, dynamic>{
+      final result = await _platform.invokeMethod('getFreeSpace', <String, Object?>{
         'path': volume.path,
       });
       return result as int?;
@@ -162,7 +162,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
-      final result = await _platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
+      final result = await _platform.invokeMethod('getInaccessibleDirectories', <String, Object?>{
         'dirPaths': dirPaths.toList(),
       });
       if (result != null) {
@@ -198,7 +198,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<void> revokeDirectoryAccess(String path) async {
     try {
-      await _platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
+      await _platform.invokeMethod('revokeDirectoryAccess', <String, Object?>{
         'path': path,
       });
     } on PlatformException catch (e, stack) {
@@ -210,7 +210,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<int> deleteEmptyRegularDirectories(Set<String> dirPaths) async {
     try {
-      final result = await _platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
+      final result = await _platform.invokeMethod('deleteEmptyDirectories', <String, Object?>{
         'dirPaths': dirPaths.where((v) => covers.effectiveAlbumType(v) == AlbumType.regular).toList(),
       });
       if (result != null) return result as int;
@@ -256,7 +256,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories) async {
     try {
-      final result = await _platform.invokeMethod('canInsertMedia', <String, dynamic>{
+      final result = await _platform.invokeMethod('canInsertMedia', <String, Object?>{
         'directories': directories.map((v) => v.toMap()).toList(),
       });
       if (result != null) return result as bool;

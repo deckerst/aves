@@ -49,7 +49,7 @@ class PlatformDeviceService implements DeviceService {
   Future<Map<String, dynamic>> getCapabilities() async {
     try {
       final result = await _platform.invokeMethod('getCapabilities');
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -79,7 +79,7 @@ class PlatformDeviceService implements DeviceService {
   @override
   Future<void> setLocaleConfig(List<Locale> locales) async {
     try {
-      await _platform.invokeMethod('setLocaleConfig', <String, dynamic>{
+      await _platform.invokeMethod('setLocaleConfig', <String, Object?>{
         'locales': locales.map((v) => v.toLanguageTag()).toList(),
       });
     } on PlatformException catch (e, stack) {

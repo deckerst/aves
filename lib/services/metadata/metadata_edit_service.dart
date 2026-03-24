@@ -32,11 +32,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
-      final result = await _platform.invokeMethod('rotate', <String, dynamic>{
+      final result = await _platform.invokeMethod('rotate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'clockwise': clockwise,
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -47,10 +47,10 @@ class PlatformMetadataEditService implements MetadataEditService {
   Future<Map<String, dynamic>> flip(AvesEntry entry) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
-      final result = await _platform.invokeMethod('flip', <String, dynamic>{
+      final result = await _platform.invokeMethod('flip', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -60,13 +60,13 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
-      final result = await _platform.invokeMethod('editDate', <String, dynamic>{
+      final result = await _platform.invokeMethod('editDate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftSeconds': modifier.shiftSeconds,
         'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).nonNulls.toList(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -80,12 +80,12 @@ class PlatformMetadataEditService implements MetadataEditService {
     bool autoCorrectTrailerOffset = true,
   }) async {
     try {
-      final result = await _platform.invokeMethod('editMetadata', <String, dynamic>{
+      final result = await _platform.invokeMethod('editMetadata', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'metadata': metadata.map((type, value) => MapEntry(type.toPlatform, value)),
         'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -95,10 +95,10 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry) async {
     try {
-      final result = await _platform.invokeMethod('removeTrailerVideo', <String, dynamic>{
+      final result = await _platform.invokeMethod('removeTrailerVideo', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -108,11 +108,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
     try {
-      final result = await _platform.invokeMethod('removeTypes', <String, dynamic>{
+      final result = await _platform.invokeMethod('removeTypes', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'types': types.map((v) => v.toPlatform).toList(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }

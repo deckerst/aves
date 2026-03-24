@@ -53,7 +53,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<void> keepScreenOn(bool on) async {
     try {
-      await _platform.invokeMethod('keepScreenOn', <String, dynamic>{
+      await _platform.invokeMethod('keepScreenOn', <String, Object?>{
         'on': on,
       });
     } on PlatformException catch (e, stack) {
@@ -64,7 +64,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<void> secureScreen(bool on) async {
     try {
-      await _platform.invokeMethod('secureScreen', <String, dynamic>{
+      await _platform.invokeMethod('secureScreen', <String, Object?>{
         'on': on,
       });
     } on PlatformException catch (e, stack) {
@@ -132,7 +132,7 @@ class PlatformWindowService implements WindowService {
   Future<void> requestOrientation([Orientation? orientation]) async {
     Future<void> apply(int orientationCode) async {
       try {
-        await _platform.invokeMethod('requestOrientation', <String, dynamic>{
+        await _platform.invokeMethod('requestOrientation', <String, Object?>{
           'orientation': orientationCode,
         });
       } on PlatformException catch (e, stack) {
@@ -218,7 +218,7 @@ class PlatformWindowService implements WindowService {
   Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) async {
     // TODO TLAD [hdr] enable when ready
     // try {
-    //   await _platform.invokeMethod('setColorMode', <String, dynamic>{
+    //   await _platform.invokeMethod('setColorMode', <String, Object?>{
     //     'wideColorGamut': wideColorGamut,
     //     'hdr': hdr,
     //   });
@@ -230,7 +230,7 @@ class PlatformWindowService implements WindowService {
   @override
   Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes) async {
     try {
-      final result = await _platform.invokeMethod('startGlobalDrag', <String, dynamic>{
+      final result = await _platform.invokeMethod('startGlobalDrag', <String, Object?>{
         'uri': uri,
         'label': label,
         'shadowWidthDip': shadowSize.width,

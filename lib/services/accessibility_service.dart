@@ -43,7 +43,7 @@ class AccessibilityService {
   static Future<int> getRecommendedTimeToRead(Duration originalTimeoutDuration) async {
     final originalTimeoutMillis = originalTimeoutDuration.inMilliseconds;
     try {
-      final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
+      final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, Object?>{
         'originalTimeoutMillis': originalTimeoutMillis,
         'content': ['icons', 'text'],
       });
@@ -57,7 +57,7 @@ class AccessibilityService {
   static Future<int> getRecommendedTimeToTakeAction(Duration originalTimeoutDuration) async {
     final originalTimeoutMillis = originalTimeoutDuration.inMilliseconds;
     try {
-      final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, dynamic>{
+      final result = await _platform.invokeMethod('getRecommendedTimeoutMillis', <String, Object?>{
         'originalTimeoutMillis': originalTimeoutMillis,
         'content': ['controls', 'icons', 'text'],
       });

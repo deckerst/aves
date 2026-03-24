@@ -59,7 +59,7 @@ class PlatformMediaEditService implements MediaEditService {
   @override
   Future<void> cancelFileOp(String opId) async {
     try {
-      await _platform.invokeMethod('cancelFileOp', <String, dynamic>{
+      await _platform.invokeMethod('cancelFileOp', <String, Object?>{
         'opId': opId,
       });
     } on PlatformException catch (e, stack) {
@@ -170,7 +170,7 @@ class PlatformMediaEditService implements MediaEditService {
     required NameConflictStrategy nameConflictStrategy,
   }) async {
     try {
-      final result = await _platform.invokeMethod('captureFrame', <String, dynamic>{
+      final result = await _platform.invokeMethod('captureFrame', <String, Object?>{
         'uri': entry.uri,
         'desiredName': desiredName,
         'exif': exif,
@@ -178,7 +178,7 @@ class PlatformMediaEditService implements MediaEditService {
         'destinationPath': destinationAlbum,
         'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

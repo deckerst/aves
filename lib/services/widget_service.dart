@@ -18,7 +18,7 @@ class WidgetService {
 
   static Future<bool> update(int widgetId) async {
     try {
-      await _updateChannel.invokeMethod('update', <String, dynamic>{
+      await _updateChannel.invokeMethod('update', <String, Object?>{
         'widgetId': widgetId,
       });
       return true;

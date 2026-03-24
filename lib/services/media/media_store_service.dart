@@ -28,7 +28,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
     try {
-      final result = await _platform.invokeMethod('checkObsoleteContentIds', <String, dynamic>{
+      final result = await _platform.invokeMethod('checkObsoleteContentIds', <String, Object?>{
         'knownContentIds': knownContentIds,
       });
       return (result as List).cast<int>();
@@ -41,7 +41,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
     try {
-      final result = await _platform.invokeMethod('checkObsoletePaths', <String, dynamic>{
+      final result = await _platform.invokeMethod('checkObsoletePaths', <String, Object?>{
         'knownPathById': knownPathById,
       });
       return (result as List).cast<int>();
@@ -54,7 +54,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<List<String>> getChangedUris(int sinceGeneration) async {
     try {
-      final result = await _platform.invokeMethod('getChangedUris', <String, dynamic>{
+      final result = await _platform.invokeMethod('getChangedUris', <String, Object?>{
         'sinceGeneration': sinceGeneration,
       });
       return (result as List).cast<String>();
@@ -100,7 +100,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   @override
   Future<Uri?> scanFile(String path, String mimeType) async {
     try {
-      final result = await _platform.invokeMethod('scanFile', <String, dynamic>{
+      final result = await _platform.invokeMethod('scanFile', <String, Object?>{
         'path': path,
         'mimeType': mimeType,
       });

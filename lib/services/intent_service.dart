@@ -14,7 +14,7 @@ class IntentService {
     try {
       // returns nullable map with 'action' and possibly 'uri' 'mimeType'
       final result = await _platform.invokeMethod('getIntentData');
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, dynamic>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -23,7 +23,7 @@ class IntentService {
 
   static Future<void> submitPickedItems(List<String> uris) async {
     try {
-      await _platform.invokeMethod('submitPickedItems', <String, dynamic>{
+      await _platform.invokeMethod('submitPickedItems', <String, Object?>{
         'uris': uris,
       });
     } on PlatformException catch (e, stack) {
@@ -37,7 +37,7 @@ class IntentService {
 
   static Future<void> submitPickedCollectionFilters(Set<CollectionFilter>? filters) async {
     try {
-      await _platform.invokeMethod('submitPickedCollectionFilters', <String, dynamic>{
+      await _platform.invokeMethod('submitPickedCollectionFilters', <String, Object?>{
         'filters': filters?.map((filter) => filter.toJson()).toList(),
       });
     } on PlatformException catch (e, stack) {

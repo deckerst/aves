@@ -19,7 +19,7 @@ class PlatformGeocodingService implements GeocodingService {
   @override
   Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
     try {
-      final result = await _channelIsolate.invokeMethod('getAddress', <String, dynamic>{
+      final result = await _channelIsolate.invokeMethod('getAddress', <String, Object?>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
         'localeLanguageTag': locale.toLanguageTag(),

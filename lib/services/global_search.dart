@@ -14,7 +14,7 @@ class GlobalSearch {
 
   static Future<void> registerCallback() async {
     try {
-      await _platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, Object?>{
         // callback needs to be annotated with `@pragma('vm:entry-point')` to work in release mode
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });

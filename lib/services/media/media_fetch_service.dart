@@ -69,7 +69,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
       final result =
-          await _platformObject.invokeMethod('getEntry', <String, dynamic>{
+          await _platformObject.invokeMethod('getEntry', <String, Object?>{
                 'uri': uri,
                 'mimeType': mimeType,
                 'allowUnsized': allowUnsized,
