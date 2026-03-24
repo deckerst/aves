@@ -133,18 +133,18 @@ class AvesNavItem extends Equatable {
 
   // serialization
 
-  static AvesNavItem _fromMap(Map<String, dynamic> json) {
+  static AvesNavItem _fromMap(Map<String, Object?> json) {
     return AvesNavItem(
-      route: json['route'],
+      route: json['route'] as String,
       filters: (json['filters'] as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet(),
-      path: json['path'],
+      path: json['path'] as String?,
     );
   }
 
-  Map<String, dynamic> _toMap() => {
+  Map<String, Object?> _toMap() => {
     'route': route,
-    if (filters != null) 'filters': filters?.map((v) => v.toJson()).toList(),
-    if (path != null) 'path': path,
+    if (filters != null) 'filters': filters!.map((v) => v.toJson()).toList(),
+    'path': ?path,
   };
 
   String toJson() => jsonEncode(_toMap());
@@ -154,7 +154,7 @@ class AvesNavItem extends Equatable {
 
     try {
       final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map<String, dynamic>) {
+      if (jsonMap is Map<String, Object?>) {
         return _fromMap(jsonMap);
       }
       debugPrint('failed to parse navigation item from json=$jsonString');

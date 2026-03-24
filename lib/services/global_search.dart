@@ -47,7 +47,7 @@ Future<void> _init() async {
   await _channel.invokeMethod('initialized');
 }
 
-Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
+Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
   final suggestions = <Map<String, String?>>[];
   if (args is Map) {
     final query = args['query'];

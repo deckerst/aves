@@ -556,7 +556,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     return child;
   }
 
-  bool _handleNotification(dynamic notification) {
+  bool _handleNotification(Notification notification) {
     if (notification is SelectFilterNotification) {
       _goToCollection(notification.filter);
     } else if (notification is CastNotification) {

@@ -75,7 +75,7 @@ class VideoMetadataFormatter {
     if (durationMicros is num) {
       fields[EntryFields.durationMillis] = (durationMicros / 1000).round();
     } else {
-      final duration = _parseDuration(mediaInfo[Keys.duration]);
+      final duration = _parseDuration(mediaInfo[Keys.duration] as String?);
       if (duration != null && duration > Duration.zero) {
         fields[EntryFields.durationMillis] = duration.inMilliseconds;
       }
@@ -90,7 +90,7 @@ class VideoMetadataFormatter {
     final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
 
     if (entry.mimeType == MimeTypes.avif) {
-      final duration = _parseDuration(mediaInfo[Keys.duration]);
+      final duration = _parseDuration(mediaInfo[Keys.duration] as String?);
       if (duration == null || duration == Duration.zero) return null;
 
       catalogMetadata = catalogMetadata.copyWith(isAnimated: true);
@@ -98,14 +98,15 @@ class VideoMetadataFormatter {
 
     // only consider values with at least 8 characters (yyyymmdd),
     // ignoring unset values like `0`, as well as year values like `2021`
-    bool isDefined(dynamic value) => value is String && value.length >= 8;
+    bool isDefined(Object? value) => value is String && value.length >= 8;
 
-    var dateString = mediaInfo[Keys.date];
-    if (!isDefined(dateString)) {
-      dateString = mediaInfo[Keys.creationTime];
+    Object? rawDate = mediaInfo[Keys.date];
+    if (!isDefined(rawDate)) {
+      rawDate = mediaInfo[Keys.creationTime];
     }
     int? dateMillis;
-    if (isDefined(dateString)) {
+    if (isDefined(rawDate)) {
+      final dateString = rawDate as String;
       dateMillis = parseVideoDate(dateString);
       if (dateMillis == null && !isAmbiguousDate(dateString)) {
         await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
@@ -166,7 +167,7 @@ class VideoMetadataFormatter {
   // pattern to extract optional language code suffix, e.g. 'location-eng'
   static final keyWithLanguagePattern = RegExp(r'^(.*)-([a-z]{3})$');
 
-  static Map<String, String> formatInfo(Map info) {
+  static Map<String, String> formatInfo(Map<String, Object?> info) {
     final dir = <String, String>{};
     final streamType = info[Keys.streamType];
     final codec = info[Keys.codecName];
@@ -194,7 +195,7 @@ class VideoMetadataFormatter {
               }
             }
           }
-          key = (key ?? (kv.key as String)).toLowerCase();
+          key = (key ?? kv.key).toLowerCase();
 
           void save(String key, dynamic value) {
             if (value != null) {
@@ -226,8 +227,10 @@ class VideoMetadataFormatter {
             case Keys.tbrDen:
               break;
             case Keys.androidCaptureFramerate:
-              final captureFps = double.parse(value);
-              save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3)} FPS');
+              if (value is String) {
+                final captureFps = double.parse(value);
+                save('Capture Frame Rate', '${roundToPrecision(captureFps, decimals: 3)} FPS');
+              }
             case Keys.androidManufacturer:
               save('Android Manufacturer', value);
             case Keys.androidModel:
@@ -244,7 +247,7 @@ class VideoMetadataFormatter {
             case Keys.channelLayout:
               save('Channel Layout', _formatChannelLayout(value));
             case Keys.codecName:
-              if (value != 'none') {
+              if (value is String && value != 'none') {
                 save('Format', _formatCodecName(value));
               }
             case Keys.codecPixelFormat:
@@ -275,7 +278,7 @@ class VideoMetadataFormatter {
               save('Color Transfer', value.toString().toUpperCase());
             case Keys.codecProfileId:
               {
-                final profile = int.tryParse(value);
+                final profile = value is String ? int.tryParse(value) : null;
                 if (profile != null) {
                   String? profileString;
                   switch (codec) {
@@ -284,7 +287,13 @@ class VideoMetadataFormatter {
                       {
                         final levelValue = info[Keys.codecLevel];
                         if (levelValue != null) {
-                          final level = levelValue is int ? levelValue : int.tryParse(levelValue) ?? 0;
+                          int? level;
+                          if (levelValue is int) {
+                            level = levelValue;
+                          } else if (levelValue is String) {
+                            level = int.tryParse(levelValue);
+                          }
+                          level ??= 0;
                           if (codec == Codecs.h264) {
                             profileString = H264.formatProfile(profile, level);
                           } else {
@@ -301,31 +310,44 @@ class VideoMetadataFormatter {
                 }
               }
             case Keys.compatibleBrands:
-              final formattedBrands = RegExp(r'.{4}')
-                  .allMatches(value)
-                  .map((m) {
-                    final brand = m.group(0)!;
-                    return _formatBrand(brand);
-                  })
-                  .join(', ');
-              save('Compatible Brands', formattedBrands);
+              if (value is String) {
+                final formattedBrands = RegExp(r'.{4}')
+                    .allMatches(value)
+                    .map((m) {
+                      final brand = m.group(0)!;
+                      return _formatBrand(brand);
+                    })
+                    .join(', ');
+                save('Compatible Brands', formattedBrands);
+              }
             case Keys.creationTime:
-              save('Creation Time', _formatDate(value));
+              if (value is String) {
+                save('Creation Time', _formatDate(value));
+              }
             case Keys.date:
               if (value is String && value != '0') {
                 final charCount = value.length;
                 save(charCount == 4 ? 'Year' : 'Date', value);
               }
             case Keys.duration:
-              save('Duration', _formatDuration(value));
+              if (value is String) {
+                save('Duration', _formatDuration(value));
+              }
             case Keys.durationMicros:
-              if (value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
+              if (value is int && value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
             case Keys.extraDataSize:
               save('Extra Data Size', _formatFilesize(value));
             case Keys.fps:
-              save('Frame Rate', '${roundToPrecision(info[Keys.fps], decimals: 3)} FPS');
+              final fps = info[Keys.fps];
+              if (fps is double) {
+                save('Frame Rate', '${roundToPrecision(fps, decimals: 3)} FPS');
+              }
             case Keys.fpsDen:
-              save('Frame Rate', '${roundToPrecision(info[Keys.fpsNum] / info[Keys.fpsDen], decimals: 3)} FPS');
+              final fpsNum = info[Keys.fpsNum];
+              final fpsDen = info[Keys.fpsDen];
+              if (fpsNum is num && fpsDen is num) {
+                save('Frame Rate', '${roundToPrecision(fpsNum / fpsDen, decimals: 3)} FPS');
+              }
             case Keys.frameCount:
               save('Frame Count', value);
             case Keys.gamma:
@@ -335,11 +357,15 @@ class VideoMetadataFormatter {
             case Keys.hearingImpaired:
               save('Hearing impaired', value);
             case Keys.language:
-              if (value != 'und') save('Language', _formatLanguage(value));
+              if (value is String && value != 'und') save('Language', _formatLanguage(value));
             case Keys.location:
-              save('Location', _formatLocation(value));
+              if (value is String) {
+                save('Location', _formatLocation(value));
+              }
             case Keys.majorBrand:
-              save('Major Brand', _formatBrand(value));
+              if (value is String) {
+                save('Major Brand', _formatBrand(value));
+              }
             case Keys.mediaFormat:
               save('Format', value.toString().splitMapJoin(',', onMatch: (s) => ', ', onNonMatch: _formatCodecName));
             case Keys.minorVersion:
@@ -375,17 +401,23 @@ class VideoMetadataFormatter {
             case Keys.sourceOshash:
               save('Source OSHash', value);
             case Keys.startMicros:
-              if (value != 0) save('Start', formatPreciseDuration(Duration(microseconds: value)));
+              if (value is int && value != 0) save('Start', formatPreciseDuration(Duration(microseconds: value)));
             case Keys.startPts:
               save('Start PTS', value);
             case Keys.startTime:
-              save('Start', _formatDuration(value));
+              if (value is String) {
+                save('Start', _formatDuration(value));
+              }
             case Keys.statisticsWritingApp:
               save('Stats Writing App', value);
             case Keys.statisticsWritingDateUtc:
-              save('Stats Writing Date', _formatDate(value));
+              if (value is String) {
+                save('Stats Writing Date', _formatDate(value));
+              }
             case Keys.stereo3dMode:
-              save('Stereo 3D Mode', _formatStereo3dMode(value));
+              if (value is String) {
+                save('Stereo 3D Mode', _formatStereo3dMode(value));
+              }
             case Keys.timeBase:
               save('Time Base', value);
             case Keys.track:

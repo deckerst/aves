@@ -133,7 +133,7 @@ class Analyzer with WidgetsBindingObserver {
     reportService.log('Analyzer memory pressure');
   }
 
-  Future<void> start(dynamic args) async {
+  Future<void> start(Object? args) async {
     List<int>? entryIds;
     var force = false;
     if (args is Map) {

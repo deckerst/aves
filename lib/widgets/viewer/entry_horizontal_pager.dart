@@ -99,7 +99,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  bool _handleNotification(dynamic notification) {
+  bool _handleNotification(Notification notification) {
     if (notification is ShowPreviousVideoNotification) {
       _showPreviousVideo();
     } else if (notification is ShowNextVideoNotification) {

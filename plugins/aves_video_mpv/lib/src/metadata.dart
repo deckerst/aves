@@ -18,7 +18,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   void init() => MediaKit.ensureInitialized();
 
   @override
-  Future<Map> getMetadata(AvesEntryBase entry) async {
+  Future<Map<String, Object?>> getMetadata(AvesEntryBase entry) async {
     final player = Player(
       configuration: PlayerConfiguration(
         logLevel: MPVLogLevel.warn,
@@ -59,7 +59,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
     final timeoutMillis = entry.mimeType.startsWith('image') ? probeTimeoutImage : probeTimeoutVideo;
     await Future.any([videoDecodedCompleter.future, Future.delayed(Duration(milliseconds: timeoutMillis))]);
 
-    final fields = <String, dynamic>{};
+    final fields = <String, Object?>{};
 
     final videoParams = player.state.videoParams;
     if (videoParams.par == null) {
@@ -92,7 +92,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
           final tracksJson = jsonDecode(tracks);
           if (tracksJson is List && tracksJson.isNotEmpty) {
             fields[Keys.streams] = tracksJson.whereType<Map>().map((stream) {
-              return _normalizeStream(stream.cast<String, dynamic>(), videoParams);
+              return _normalizeStream(stream.cast<String, Object?>(), videoParams);
             }).toList();
           }
         } catch (error) {
@@ -120,7 +120,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
     return fields;
   }
 
-  Map<String, dynamic> _normalizeStream(Map<String, dynamic> stream, VideoParams videoParams) {
+  Map<String, Object?> _normalizeStream(Map<String, Object?> stream, VideoParams videoParams) {
     void replaceKey(String k1, String k2) {
       final v = stream.remove(k1);
       if (v != null) {
@@ -164,14 +164,14 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
         stream[Keys.streamType] = MediaStreamTypes.audio;
       case mpvTypeVideo:
         stream[Keys.streamType] = MediaStreamTypes.video;
-        if (isImage) {
+        if (isImage is bool && isImage) {
           stream.remove(Keys.fps);
         }
 
         // Some video properties are not in the video track props but accessible via `video-params` (or `video-out-params`).
         // These parameters are already stored in the player state, as `videoParams`.
         // Parameters `sigPeak` and `averageBpp` are ignored.
-        final videoParamsTags = <String, dynamic>{
+        final videoParamsTags = <String, Object?>{
           Keys.alpha: videoParams.alpha,
           Keys.chromaLocation: videoParams.chromaLocation,
           Keys.codecPixelFormat: videoParams.pixelformat,
