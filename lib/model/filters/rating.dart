@@ -32,11 +32,11 @@ class RatingFilter extends CollectionFilter {
     reversed: reversed,
   );
 
-  factory RatingFilter.fromMap(Map<String, dynamic> json) {
+  factory RatingFilter.fromMap(Map<String, Object?> json) {
     return RatingFilter(
-      json['rating'] ?? 0,
-      op: json['op'] ?? opEqual,
-      reversed: json['reversed'] ?? false,
+      json['rating'] as int? ?? 0,
+      op: json['op'] as String? ?? opEqual,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 

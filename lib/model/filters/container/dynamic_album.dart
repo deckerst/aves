@@ -19,14 +19,14 @@ class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredF
 
   DynamicAlbumFilter(this.name, this.filter, {super.reversed = false});
 
-  static DynamicAlbumFilter? fromMap(Map<String, dynamic> json) {
-    final filter = CollectionFilter.fromJson(json['filter']);
+  static DynamicAlbumFilter? fromMap(Map<String, Object?> json) {
+    final filter = CollectionFilter.fromJson(json['filter'] as String?);
     if (filter == null) return null;
 
     return DynamicAlbumFilter(
-      json['name'],
+      json['name'] as String,
       filter,
-      reversed: json['reversed'] ?? false,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 

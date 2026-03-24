@@ -21,8 +21,8 @@ class FavouriteFilter extends CollectionFilter {
 
   const FavouriteFilter._private({super.reversed = false});
 
-  factory FavouriteFilter.fromMap(Map<String, dynamic> json) {
-    final reversed = json['reversed'] ?? false;
+  factory FavouriteFilter.fromMap(Map<String, Object?> json) {
+    final reversed = json['reversed'] as bool? ?? false;
     return reversed ? instanceReversed : instance;
   }
 

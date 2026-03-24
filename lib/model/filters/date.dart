@@ -45,12 +45,12 @@ class DateFilter extends CollectionFilter {
     }
   }
 
-  factory DateFilter.fromMap(Map<String, dynamic> json) {
+  factory DateFilter.fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
       DateLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? DateLevel.ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
-      reversed: json['reversed'] ?? false,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 

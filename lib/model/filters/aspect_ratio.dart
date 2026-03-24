@@ -28,11 +28,11 @@ class AspectRatioFilter extends CollectionFilter {
     }
   }
 
-  factory AspectRatioFilter.fromMap(Map<String, dynamic> json) {
+  factory AspectRatioFilter.fromMap(Map<String, Object?> json) {
     return AspectRatioFilter(
       json['threshold'] as double,
       json['op'] as String,
-      reversed: json['reversed'] ?? false,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 

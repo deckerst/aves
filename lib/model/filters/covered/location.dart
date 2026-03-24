@@ -43,11 +43,11 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
     }
   }
 
-  factory LocationFilter.fromMap(Map<String, dynamic> json) {
+  factory LocationFilter.fromMap(Map<String, Object?> json) {
     return LocationFilter(
       LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
-      json['location'],
-      reversed: json['reversed'] ?? false,
+      json['location'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
