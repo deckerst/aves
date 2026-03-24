@@ -45,7 +45,7 @@ class SetOrFilter extends CollectionFilter with ContainerFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'filters': _filters.map((v) => v.toJson()).toList(),
     'reversed': reversed,

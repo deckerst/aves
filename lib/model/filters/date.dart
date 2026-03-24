@@ -55,7 +55,7 @@ class DateFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'level': level.toString(),
     'date': date?.toIso8601String(),

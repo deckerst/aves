@@ -31,7 +31,7 @@ class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredF
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'name': name,
     'filter': filter.toJson(),

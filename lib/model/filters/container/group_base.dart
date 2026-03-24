@@ -57,7 +57,7 @@ abstract class GroupBaseFilter extends CollectionFilter with ContainerFilter, Co
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': category,
     'uri': uri.toString(),
     'filter': filter.toJson(),

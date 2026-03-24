@@ -23,7 +23,7 @@ class TrashFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'reversed': reversed,
   };

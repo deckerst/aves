@@ -37,7 +37,7 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'album': album,
     'uniqueName': displayName,

@@ -84,7 +84,7 @@ class QueryFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'query': query,
     'reversed': reversed,

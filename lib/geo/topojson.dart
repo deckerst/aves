@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 
 // cf https://github.com/topojson/topojson-specification
 class TopoJson {
-  Future<Topology?> parse(String jsonData) async {
+  Future<Topology?> parse(String jsonString) async {
     try {
       return Isolate.run<Topology>(() {
-        final data = jsonDecode(jsonData) as Map<String, dynamic>;
-        return Topology.parse(data);
+        final jsonMap = jsonDecode(jsonString) as Map<String, Object?>;
+        return Topology.parse(jsonMap);
       });
     } catch (error, stack) {
       debugPrint('failed to parse TopoJSON with error=$error\n$stack');

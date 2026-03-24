@@ -30,7 +30,7 @@ class TagFilter extends CollectionFilter with CoveredFilter, TagBaseFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'tag': tag,
     'reversed': reversed,

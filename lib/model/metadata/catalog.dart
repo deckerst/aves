@@ -108,7 +108,7 @@ class CatalogMetadata {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'id': id,
     'mimeType': mimeType,
     'dateMillis': dateMillis,

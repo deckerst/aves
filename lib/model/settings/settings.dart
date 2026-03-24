@@ -262,8 +262,11 @@ class Settings
   set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.key);
 
   LatLng? get mapDefaultCenter {
-    final json = getString(SettingKeys.mapDefaultCenterKey);
-    return json != null ? LatLng.fromJson(jsonDecode(json)) : null;
+    final jsonString = getString(SettingKeys.mapDefaultCenterKey);
+    if (jsonString == null) return null;
+
+    final jsonMap = jsonDecode(jsonString) as Map<String, Object?>;
+    return LatLng.fromJson(jsonMap);
   }
 
   set mapDefaultCenter(LatLng? newValue) => set(SettingKeys.mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);

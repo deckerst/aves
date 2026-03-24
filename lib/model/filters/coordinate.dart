@@ -33,7 +33,7 @@ class CoordinateFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'sw': sw.toJson(),
     'ne': ne.toJson(),

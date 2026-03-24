@@ -336,7 +336,7 @@ class CoverRow extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'filter': filter.toJson(),
     'entryId': entryId,
     'packageName': packageName,
