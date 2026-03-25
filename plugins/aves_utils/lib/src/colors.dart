@@ -42,7 +42,7 @@ extension ExtraColor on Color {
 
     try {
       final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map<String, dynamic>) {
+      if (jsonMap is Map<String, Object?>) {
         return _fromMap(jsonMap);
       }
       debugPrint('failed to parse color from json=$jsonString');
@@ -52,7 +52,7 @@ extension ExtraColor on Color {
     return null;
   }
 
-  Map<String, dynamic> _toMap() => {
+  Map<String, Object?> _toMap() => {
     'a': a,
     'r': r,
     'g': g,
@@ -60,7 +60,7 @@ extension ExtraColor on Color {
     'colorSpace': colorSpace.name,
   };
 
-  static Color _fromMap(Map<String, dynamic> map) {
+  static Color _fromMap(Map<String, Object?> map) {
     return Color.from(
       alpha: map['a'] as double,
       red: map['r'] as double,

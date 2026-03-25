@@ -116,7 +116,7 @@ class PlatformAppService implements AppService {
     try {
       final opCompleter = Completer<Map?>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'edit',
             'uri': uri,
             'mimeType': mimeType,

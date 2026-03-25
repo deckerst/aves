@@ -272,7 +272,7 @@ class PlatformStorageService implements StorageService {
     try {
       final opCompleter = Completer<bool>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'requestDirectoryAccess',
             'path': path,
           })
@@ -298,7 +298,7 @@ class PlatformStorageService implements StorageService {
     try {
       final opCompleter = Completer<bool>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'requestMediaFileAccess',
             'uris': uris,
             'mimeTypes': mimeTypes,
@@ -331,7 +331,7 @@ class PlatformStorageService implements StorageService {
     try {
       final opCompleter = Completer<bool?>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'createFile',
             'name': name,
             'mimeType': mimeType,
@@ -359,7 +359,7 @@ class PlatformStorageService implements StorageService {
       final opCompleter = Completer<Uint8List>();
       final sink = OutputBuffer();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'openFile',
             'mimeType': mimeType,
           })
@@ -388,7 +388,7 @@ class PlatformStorageService implements StorageService {
     try {
       final opCompleter = Completer<bool?>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'copyFile',
             'name': name,
             'mimeType': mimeType,

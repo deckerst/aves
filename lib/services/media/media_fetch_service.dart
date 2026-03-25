@@ -89,8 +89,8 @@ class PlatformMediaFetchService implements MediaFetchService {
     return null;
   }
 
-  Map<String, dynamic> _requestToArgs(ImageRequest request, {required bool decoded}) {
-    return <String, dynamic>{
+  Map<String, Object?> _requestToArgs(ImageRequest request, {required bool decoded}) {
+    return <String, Object?>{
       'op': 'getFullImage',
       'decoded': decoded,
       'uri': request.uri,
@@ -104,7 +104,7 @@ class PlatformMediaFetchService implements MediaFetchService {
 
   Future<Uint8List> _getBytes({
     required String mimeType,
-    required Map<String, dynamic> arguments,
+    required Map<String, Object?> arguments,
     BytesReceivedCallback? onBytesReceived,
     int? sizeBytes,
   }) async {
@@ -229,7 +229,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     Object? taskKey,
     int? priority,
   }) {
-    final args = <String, dynamic>{
+    final args = <String, Object?>{
       'op': 'getRegion',
       'decoded': decoded,
       'uri': request.uri,
@@ -265,7 +265,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     Object? taskKey,
     int? priority,
   }) {
-    final args = <String, dynamic>{
+    final args = <String, Object?>{
       'op': 'getThumbnail',
       'decoded': decoded,
       'uri': request.uri,

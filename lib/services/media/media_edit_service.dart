@@ -74,7 +74,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'delete',
             'id': opId,
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
@@ -96,7 +96,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'move',
             'id': opId,
             'entriesByDestination': entriesByDestination.map((destination, entries) => MapEntry(destination, entries.map((entry) => entry.toPlatformEntryMap()).toList())),
@@ -120,7 +120,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'mimeType': options.mimeType,
@@ -147,7 +147,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'rename',
             'id': opId,
             'entriesToNewName': entriesToNewName.map((entry, name) => MapEntry(entry.toPlatformEntryMap(), name)),

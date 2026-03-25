@@ -49,7 +49,7 @@ class IntentService {
     try {
       final opCompleter = Completer<Set<CollectionFilter>?>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'pickCollectionFilters',
             'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
           })

@@ -80,7 +80,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) {
     try {
       return _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'knownEntries': knownEntries,
             'directory': directory,
           })
