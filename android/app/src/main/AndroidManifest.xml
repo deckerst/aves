@@ -343,13 +343,6 @@
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
-        <!--
-        cf flag definition: https://github.com/flutter/flutter/blob/c06a62f04f947e0804fdbb637167cc206389de24/engine/src/flutter/shell/platform/android/io/flutter/embedding/engine/FlutterEngineFlags.java#L195
-        cf engine flag enum values: https://github.com/flutter/flutter/blob/c06a62f04f947e0804fdbb637167cc206389de24/engine/src/flutter/common/settings.h#L370
-        cf effect in Android shell: https://github.com/flutter/flutter/blob/c06a62f04f947e0804fdbb637167cc206389de24/engine/src/flutter/shell/platform/android/android_shell_holder.cc#L93-->
-        <meta-data
-            android:name="io.flutter.embedding.android.MergedPlatformUIThread"
-            android:value="disabled" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
