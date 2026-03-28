@@ -233,7 +233,7 @@ class Covers {
 
   // import/export
 
-  List<Map<String, dynamic>>? export(CollectionSource source) {
+  List<Map<String, String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
     final jsonList = all
         .map((row) {

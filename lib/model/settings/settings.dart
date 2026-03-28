@@ -332,7 +332,7 @@ class Settings
 
   // import/export
 
-  Map<String, dynamic> export() => Map.fromEntries(
+  Map<String, Object?> export() => Map.fromEntries(
     store.getKeys().whereNot(SettingKeys.isInternalKey).map((k) => MapEntry(k, store.get(k))),
   );
 
