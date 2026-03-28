@@ -199,8 +199,10 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
   }
 
   Future<void> _saveLogs() async {
-    final result = await Process.run('logcat', ['-d']);
-    final logs = result.stdout;
+    String logs = await _infoLoader;
+    logs += '\n--------------------------------------------------------------------------------\n';
+    logs += (await Process.run('logcat', ['-d'])).stdout as String;
+
     final success = await storageService.createFile(
       'aves-logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',
       MimeTypes.plainText,
