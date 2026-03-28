@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
@@ -176,6 +177,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
     final storageGrants = await storageService.getGrantedDirectories();
+    final source = context.read<CollectionSource>();
     return [
       'Package: ${device.packageName}',
       'Installer: ${packageInfo.installerStore}',
@@ -192,6 +194,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
       'Storage grants: ${storageGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',
+      'Collection: ${source.allEntries.length} items, ${source.rawAlbums.length} albums, ${source.sortedTags.length} tags',
     ].join('\n');
   }
 
