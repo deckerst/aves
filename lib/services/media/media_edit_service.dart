@@ -39,10 +39,10 @@ abstract class MediaEditService {
     required Map<AvesEntry, String> entriesToNewName,
   });
 
-  Future<Map<String, dynamic>> captureFrame(
+  Future<Map<String, Object?>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
-    required Map<String, dynamic> exif,
+    required Map<String, Object> exif,
     required Uint8List bytes,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
@@ -161,10 +161,10 @@ class PlatformMediaEditService implements MediaEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> captureFrame(
+  Future<Map<String, Object?>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
-    required Map<String, dynamic> exif,
+    required Map<String, Object?> exif,
     required Uint8List bytes,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
@@ -178,7 +178,7 @@ class PlatformMediaEditService implements MediaEditService {
         'destinationPath': destinationAlbum,
         'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

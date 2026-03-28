@@ -56,13 +56,13 @@ class Device {
     _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
 
     final capabilities = await deviceService.getCapabilities();
-    _canPinShortcut = capabilities['canPinShortcut'] ?? false;
-    _canRenderSubdivisionFlagEmojis = capabilities['canRenderSubdivisionFlagEmojis'] ?? false;
-    _canRequestManageMedia = capabilities['canRequestManageMedia'] ?? false;
-    _hasGeocoder = capabilities['hasGeocoder'] ?? false;
-    _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] ?? false;
-    _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] ?? false;
-    _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] ?? false;
-    _supportPictureInPicture = capabilities['supportPictureInPicture'] ?? false;
+    _canPinShortcut = capabilities['canPinShortcut'] as bool? ?? false;
+    _canRenderSubdivisionFlagEmojis = capabilities['canRenderSubdivisionFlagEmojis'] as bool? ?? false;
+    _canRequestManageMedia = capabilities['canRequestManageMedia'] as bool? ?? false;
+    _hasGeocoder = capabilities['hasGeocoder'] as bool? ?? false;
+    _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] as bool? ?? false;
+    _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] as bool? ?? false;
+    _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] as bool? ?? false;
+    _supportPictureInPicture = capabilities['supportPictureInPicture'] as bool? ?? false;
   }
 }

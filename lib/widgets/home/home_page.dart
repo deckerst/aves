@@ -48,8 +48,7 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   static const routeName = '/';
 
-  // untyped map as it is coming from the platform
-  final Map? intentData;
+  final Map<String, Object?>? intentData;
 
   const HomePage({
     super.key,
@@ -106,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
       var appMode = AppMode.main;
       var error = false;
-      final intentData = widget.intentData ?? await IntentService.getIntentData();
+      final Map<String, Object?> intentData = widget.intentData ?? await IntentService.getIntentData();
       final intentAction = intentData[IntentDataKeys.action] as String?;
       _initialFilters = null;
       _initialExplorerPath = null;

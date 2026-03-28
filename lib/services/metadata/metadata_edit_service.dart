@@ -12,31 +12,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataEditService {
-  Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
+  Future<Map<String, Object?>> rotate(AvesEntry entry, {required bool clockwise});
 
-  Future<Map<String, dynamic>> flip(AvesEntry entry);
+  Future<Map<String, Object?>> flip(AvesEntry entry);
 
-  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier);
+  Future<Map<String, Object?>> editExifDate(AvesEntry entry, DateModifier modifier);
 
-  Future<Map<String, dynamic>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier, {bool autoCorrectTrailerOffset = true});
+  Future<Map<String, Object?>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier, {bool autoCorrectTrailerOffset = true});
 
-  Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry);
+  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry);
 
-  Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types);
+  Future<Map<String, Object?>> removeTypes(AvesEntry entry, Set<MetadataType> types);
 }
 
 class PlatformMetadataEditService implements MetadataEditService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/metadata_edit');
 
   @override
-  Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise}) async {
+  Future<Map<String, Object?>> rotate(AvesEntry entry, {required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await _platform.invokeMethod('rotate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'clockwise': clockwise,
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -44,13 +44,13 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> flip(AvesEntry entry) async {
+  Future<Map<String, Object?>> flip(AvesEntry entry) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await _platform.invokeMethod('flip', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -58,7 +58,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> editExifDate(AvesEntry entry, DateModifier modifier) async {
+  Future<Map<String, Object?>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
       final result = await _platform.invokeMethod('editDate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
@@ -66,7 +66,7 @@ class PlatformMetadataEditService implements MetadataEditService {
         'shiftSeconds': modifier.shiftSeconds,
         'fields': modifier.fields.where((v) => v.type == MetadataType.exif).map((v) => v.toPlatform).nonNulls.toList(),
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -74,7 +74,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> editMetadata(
+  Future<Map<String, Object?>> editMetadata(
     AvesEntry entry,
     Map<MetadataType, dynamic> metadata, {
     bool autoCorrectTrailerOffset = true,
@@ -85,7 +85,7 @@ class PlatformMetadataEditService implements MetadataEditService {
         'metadata': metadata.map((type, value) => MapEntry(type.toPlatform, value)),
         'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -93,12 +93,12 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> removeTrailerVideo(AvesEntry entry) async {
+  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('removeTrailerVideo', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
@@ -106,13 +106,13 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
+  Future<Map<String, Object?>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
     try {
       final result = await _platform.invokeMethod('removeTypes', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'types': types.map((v) => v.toPlatform).toList(),
       });
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }

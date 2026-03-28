@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 abstract class DeviceService {
   Future<bool> canManageMedia();
 
-  Future<Map<String, dynamic>> getCapabilities();
+  Future<Map<String, Object?>> getCapabilities();
 
   Future<List<Locale>> getLocales();
 
@@ -46,10 +46,10 @@ class PlatformDeviceService implements DeviceService {
   }
 
   @override
-  Future<Map<String, dynamic>> getCapabilities() async {
+  Future<Map<String, Object?>> getCapabilities() async {
     try {
       final result = await _platform.invokeMethod('getCapabilities');
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

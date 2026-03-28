@@ -10,11 +10,11 @@ class IntentService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/intent');
   static final _stream = AvesStreamsChannel('deckers.thibault/aves/activity_result_stream');
 
-  static Future<Map<String, dynamic>> getIntentData() async {
+  static Future<Map<String, Object?>> getIntentData() async {
     try {
       // returns nullable map with 'action' and possibly 'uri' 'mimeType'
       final result = await _platform.invokeMethod('getIntentData');
-      if (result is Map) return result.cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

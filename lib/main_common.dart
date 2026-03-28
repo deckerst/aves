@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-void mainCommon(AppFlavor flavor, {Map? debugIntentData}) {
+void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
   // debugProfilePlatformChannels = true;
 
   //  HttpClient.enableTimelineLogging = true; // enable network traffic logging

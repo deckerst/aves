@@ -24,7 +24,7 @@ abstract class AppService {
 
   Future<bool> copyToClipboard({String? label, String? text, String? uri});
 
-  Future<Map<String, dynamic>> edit(String uri, String mimeType);
+  Future<Map<String, Object?>> edit(String uri, String mimeType);
 
   Future<bool> open(String uri, String mimeType, {required bool forceChooser});
 
@@ -112,7 +112,7 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
+  Future<Map<String, Object?>> edit(String uri, String mimeType) async {
     try {
       final opCompleter = Completer<Map?>();
       _stream
@@ -132,7 +132,7 @@ class PlatformAppService implements AppService {
       // `await` here, so that `completeError` will be caught below
       final result = await opCompleter.future;
       if (result == null) return {'error': 'cancelled'};
-      return result.cast<String, dynamic>();
+      return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       if (e.code != 'edit-resolve') {
         await reportService.recordError(e, stack);

@@ -103,7 +103,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       final rotationDegrees = entry.rotationDegrees;
       final dateTimeMillis = entry.catalogMetadata?.dateMillis;
       final latLng = entry.latLng;
-      final exif = {
+      final exif = <String, num>{
         if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
         if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
         if (latLng != null) ...{
