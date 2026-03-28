@@ -84,7 +84,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
   // using the default controller conflicts
   // with bottom nav bar primary scroll monitoring
   final ScrollController _scrollController = ScrollController();
-  late Future<List<dynamic>> _profileSwitchFuture;
+  late Future<List<Object>> _profileSwitchFuture;
   bool _profileSwitchPermissionRequested = false;
 
   CollectionLens? get currentCollection => widget.currentCollection;
@@ -257,17 +257,15 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                   ),
                 ],
               ),
-              FutureBuilder<List<dynamic>>(
+              FutureBuilder<List<Object>>(
                 future: _profileSwitchFuture,
                 builder: (context, snapshot) {
                   final flags = snapshot.data;
                   if (flags == null) return const SizedBox();
 
-                  final [
-                    bool canRequestInteractAcrossProfiles,
-                    bool canSwitchProfile,
-                    String profileSwitchingLabel,
-                  ] = flags;
+                  final canRequestInteractAcrossProfiles = flags[0] as bool;
+                  final canSwitchProfile = flags[1] as bool;
+                  final profileSwitchingLabel = flags[2] as String;
                   if ((!canRequestInteractAcrossProfiles && !canSwitchProfile) || profileSwitchingLabel.isEmpty) return const SizedBox();
 
                   return OutlinedButton(

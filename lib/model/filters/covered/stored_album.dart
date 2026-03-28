@@ -31,7 +31,7 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
   factory StoredAlbumFilter.fromMap(Map<String, Object?> json) {
     return StoredAlbumFilter(
       json['album'] as String,
-      json['uniqueName'] as String,
+      json['uniqueName'] as String?,
       reversed: json['reversed'] as bool? ?? false,
     );
   }

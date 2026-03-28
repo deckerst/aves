@@ -357,9 +357,9 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     if (jsonString == null || jsonString.isEmpty) return null;
 
     final jsonMap = jsonDecode(jsonString);
-    if (jsonMap is! Map<String, Object?>) return null;
+    if (jsonMap is! Map) return null;
 
-    return jsonMap.map((parent, children) {
+    return jsonMap.cast<String, Object?>().map((parent, children) {
       final Uri? parentUri = Uri.tryParse(parent);
       final Set<Uri> childrenUris = children is Iterable ? children.whereType<String>().map(Uri.tryParse).nonNulls.toSet() : {};
       return MapEntry(parentUri, childrenUris);

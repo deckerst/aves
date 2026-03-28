@@ -117,8 +117,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
     try {
       final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map<String, Object?>) {
-        return _fromMap(jsonMap);
+      if (jsonMap is Map) {
+        return _fromMap(jsonMap.cast<String, Object?>());
       }
       debugPrint('failed to parse filter from json=$jsonString');
     } catch (error) {

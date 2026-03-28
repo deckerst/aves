@@ -13,7 +13,8 @@ class DebugCapabilitiesSection extends StatefulWidget {
 }
 
 class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> with AutomaticKeepAliveClientMixin {
-  late final Future<List<dynamic>> _appFuture, _windowFuture;
+  late final Future<List<Object>> _appFuture;
+  late final Future<List<bool>> _windowFuture;
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
             ],
           ),
         ),
-        FutureBuilder<List<dynamic>>(
+        FutureBuilder<List<bool>>(
           future: _windowFuture,
           builder: (context, snapshot) {
             final data = snapshot.data;
@@ -93,18 +94,17 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
             );
           },
         ),
-        FutureBuilder<List<dynamic>>(
+        FutureBuilder<List<Object>>(
           future: _appFuture,
           builder: (context, snapshot) {
             final data = snapshot.data;
             if (data == null) {
               return const SizedBox();
             }
-            final [
-              bool canInteractAcrossProfiles,
-              bool canRequestInteractAcrossProfiles,
-              List<String> targetUserProfiles,
-            ] = data;
+
+            final canInteractAcrossProfiles = data[0] as bool;
+            final canRequestInteractAcrossProfiles = data[1] as bool;
+            final targetUserProfiles = data[2] as List<String>;
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),

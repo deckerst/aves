@@ -39,16 +39,19 @@ void widgetMainCommon(AppFlavor flavor) async {
   });
 }
 
-Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
-  final widgetId = args['widgetId'] as int;
-  final sizesDip = (args['sizesDip'] as List).cast<Map>().map((kv) {
+Future<Map<String, Object>> _drawWidget(Object? args) async {
+  if (args is! Map) return {};
+
+  final argMap = args.cast<String, Object?>();
+  final widgetId = argMap['widgetId'] as int;
+  final sizesDip = (argMap['sizesDip'] as List).cast<Map>().map((kv) {
     return Size(kv['widthDip'] as double, kv['heightDip'] as double);
   }).toList();
-  final cornerRadiusPx = args['cornerRadiusPx'] as double?;
-  final devicePixelRatio = args['devicePixelRatio'] as double;
-  final drawEntryImage = args['drawEntryImage'] as bool;
-  final reuseEntry = args['reuseEntry'] as bool;
-  final isSystemThemeDark = args['isSystemThemeDark'] as bool;
+  final cornerRadiusPx = argMap['cornerRadiusPx'] as double?;
+  final devicePixelRatio = argMap['devicePixelRatio'] as double;
+  final drawEntryImage = argMap['drawEntryImage'] as bool;
+  final reuseEntry = argMap['reuseEntry'] as bool;
+  final isSystemThemeDark = argMap['isSystemThemeDark'] as bool;
 
   await reportService.log('Draw widget with widgetId=$widgetId');
 
@@ -60,7 +63,7 @@ Future<Map<String, dynamic>> _drawWidget(dynamic args) async {
     entry: entry,
     devicePixelRatio: devicePixelRatio,
   );
-  final bytesBySizeDip = <Map<String, dynamic>>[];
+  final bytesBySizeDip = <Map<String, Object>>[];
   await Future.forEach(sizesDip, (sizeDip) async {
     final bytes = await painter.drawWidget(
       sizeDip: sizeDip,

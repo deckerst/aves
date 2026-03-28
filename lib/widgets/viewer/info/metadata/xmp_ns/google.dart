@@ -29,8 +29,9 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
                   onTap: (context) {
                     final pattern = RegExp(r'(.+):(.+)([(\d)])?');
                     final props = dataProp.path.split('/').expand((part) {
+                      final expandedPart = <Object?>[];
                       var match = pattern.firstMatch(part);
-                      if (match == null) return [];
+                      if (match == null) return expandedPart;
 
                       // ignore namespace prefix
                       final propName = match.group(2);
@@ -39,10 +40,11 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
                       final indexString = match.groupCount >= 4 ? match.group(4) : null;
                       final index = indexString != null ? int.tryParse(indexString) : null;
                       if (index != null) {
-                        return [prop, index];
+                        expandedPart.addAll([prop, index]);
                       } else {
-                        return [prop];
+                        expandedPart.add(prop);
                       }
+                      return expandedPart;
                     }).toList();
                     return OpenEmbeddedDataNotification.xmp(
                       props: props,

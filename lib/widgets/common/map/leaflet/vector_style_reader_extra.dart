@@ -8,28 +8,30 @@ import 'package:vector_tile_renderer/vector_tile_renderer.dart';
 
 extension ExtraStyleReader on StyleReader {
   Future<Style> readExtra({required bool skipSources}) async {
-    final styleText = await _httpGet(uri);
-    final style = await compute(jsonDecode, styleText);
-    if (style is! Map<String, dynamic>) {
+    final styleJsonString = await _httpGet(uri);
+    final styleJsonDecoded = await compute(jsonDecode, styleJsonString);
+    if (styleJsonDecoded is! Map) {
       throw _invalidStyle(uri);
     }
-    final sources = style['sources'] as Map<String, dynamic>;
-    final Map<String, VectorTileProvider> providerByName = skipSources ? {} : await readProviderByName(sources);
-    final name = style['name'] as String?;
 
-    final center = style['center'];
+    final styleMap = styleJsonDecoded.cast<String, Object?>();
+    final sources = (styleMap['sources'] as Map).cast<String, Object?>();
+    final Map<String, VectorTileProvider> providerByName = skipSources ? {} : await readProviderByName(sources);
+    final name = styleMap['name'] as String?;
+
+    final center = styleMap['center'];
     LatLng? centerPoint;
     if (center is List && center.length == 2) {
       centerPoint = LatLng((center[1] as num).toDouble(), (center[0] as num).toDouble());
     }
 
-    double? zoom = (style['zoom'] as num?)?.toDouble();
+    double? zoom = (styleMap['zoom'] as num?)?.toDouble();
     if (zoom != null && zoom < 2) {
       zoom = null;
       centerPoint = null;
     }
 
-    final spriteUri = style['sprite'];
+    final spriteUri = styleMap['sprite'];
     SpriteStyle? sprites;
     if (spriteUri is String && spriteUri.trim().isNotEmpty) {
       final spriteUris = [
@@ -37,23 +39,24 @@ extension ExtraStyleReader on StyleReader {
         _SpriteUri(json: '$spriteUri.json?secure', image: '$spriteUri.png?secure'),
       ];
       for (final spriteUri in spriteUris) {
-        dynamic spritesJson;
         try {
-          final spritesJsonText = await _httpGet(spriteUri.json);
-          spritesJson = await compute(jsonDecode, spritesJsonText);
+          final spritesJsonString = await _httpGet(spriteUri.json);
+          final spritesJsonDecoded = await compute(jsonDecode, spritesJsonString);
+          if (spritesJsonDecoded is! Map) continue;
+
+          final spritesMap = spritesJsonDecoded.cast<String, Object?>();
+          sprites = SpriteStyle(
+            atlasProvider: () => _loadBinary(spriteUri.image),
+            index: SpriteIndexReader(logger: logger).read(spritesMap),
+          );
         } catch (e) {
           logger.log(() => 'error reading sprite uri: ${spriteUri.json}');
-          continue;
         }
-        sprites = SpriteStyle(
-          atlasProvider: () => _loadBinary(spriteUri.image),
-          index: SpriteIndexReader(logger: logger).read(spritesJson),
-        );
         break;
       }
     }
     return Style(
-      theme: ThemeReader(logger: logger).read(style),
+      theme: ThemeReader(logger: logger).read(styleMap),
       providers: TileProviders(providerByName),
       sprites: sprites,
       name: name,
@@ -62,30 +65,36 @@ extension ExtraStyleReader on StyleReader {
     );
   }
 
-  static Future<Map<String, VectorTileProvider>> readProviderByName(Map<String, dynamic> sources) async {
+  static Future<Map<String, VectorTileProvider>> readProviderByName(Map<String, Object?> sources) async {
     final providers = <String, VectorTileProvider>{};
     final sourceEntries = sources.entries.toList();
-    for (final entry in sourceEntries) {
-      final type = TileProviderType.values.where((e) => e.name == entry.value['type']).firstOrNull;
+    for (final sourceEntry in sourceEntries) {
+      var source = sourceEntry.value;
+      if (source is! Map) continue;
+
+      final sourceType = source['type'] as String?;
+      final sourceUrl = source['url'] as String?;
+
+      final type = TileProviderType.values.where((e) => e.name == sourceType).firstOrNull;
       if (type == null) continue;
-      dynamic source;
-      var entryUrl = entry.value['url'] as String?;
-      if (entryUrl != null) {
-        final sourceUrl = entryUrl;
-        source = await compute(jsonDecode, await _httpGet(sourceUrl));
-        if (source is! Map) {
+
+      if (sourceUrl != null) {
+        final sourceJsonString = await _httpGet(sourceUrl);
+        final sourceDecoded = await compute(jsonDecode, sourceJsonString);
+        if (sourceDecoded is! Map) {
           throw _invalidStyle(sourceUrl);
         }
-      } else {
-        source = entry.value;
+        source = sourceDecoded;
       }
-      final entryTiles = source['tiles'];
-      final maxzoom = source['maxzoom'] as int? ?? 14;
-      final minzoom = source['minzoom'] as int? ?? 1;
-      if (entryTiles is List && entryTiles.isNotEmpty) {
-        final tileUri = entryTiles[0] as String;
-        final tileUrl = tileUri;
-        providers[entry.key] = NetworkVectorTileProvider(type: type, urlTemplate: tileUrl, maximumZoom: maxzoom, minimumZoom: minzoom);
+
+      final sourceTiles = source['tiles'] as List? ?? [];
+      if (sourceTiles.isNotEmpty) {
+        providers[sourceEntry.key] = NetworkVectorTileProvider(
+          type: type,
+          urlTemplate: sourceTiles[0] as String,
+          maximumZoom: source['maxzoom'] as int? ?? 14,
+          minimumZoom: source['minzoom'] as int? ?? 1,
+        );
       }
     }
     if (providers.isEmpty) {
