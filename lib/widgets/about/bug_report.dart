@@ -20,6 +20,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
+import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -199,9 +200,15 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
   }
 
   Future<void> _saveLogs() async {
-    String logs = await _infoLoader;
-    logs += '\n--------------------------------------------------------------------------------\n';
-    logs += (await Process.run('logcat', ['-d'])).stdout as String;
+    final contentInfo = await _infoLoader;
+    final contentSettings = const JsonEncoder.withIndent('  ').convert(AppExportItem.settings.export(context.read<CollectionSource>()));
+    final contentLog = (await Process.run('logcat', ['-d'])).stdout as String;
+
+    final logs = [
+      contentInfo,
+      contentSettings,
+      contentLog,
+    ].join('\n--------------------------------------------------------------------------------\n');
 
     final success = await storageService.createFile(
       'aves-logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',

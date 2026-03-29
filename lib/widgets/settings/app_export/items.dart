@@ -20,7 +20,7 @@ extension ExtraAppExportItem on AppExportItem {
     };
   }
 
-  dynamic export(CollectionSource source) {
+  Object? export(CollectionSource source) {
     return switch (this) {
       AppExportItem.covers => covers.export(source),
       AppExportItem.dynamicAlbums => dynamicAlbums.export(),
