@@ -39,7 +39,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "deckers.thibault.aves"
-    compileSdk = 36
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -49,13 +49,16 @@ android {
     }
 
     kotlin {
-        jvmToolchain(17)
+        // Gradle looks up toolchain JDKs (for this app and each of its modules)
+        // among locally installed JDKs (including in `~/.gradle/jdks/` and `~/jdks`)
+        // and download them from configured repositories if necessary.
+        jvmToolchain(21)
     }
 
     defaultConfig {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
-        targetSdk = 36
+        targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["googleApiKey"] = keystoreProperties["googleApiKey"] ?: "<NONE>"
@@ -236,7 +239,7 @@ dependencies {
     compileOnly(rootProject.findProject(":streams_channel")!!)
 }
 
-if (rootProject.extra["aves.useCrashlytics"] as Boolean) {
+if (rootProject.extra["aves_useCrashlytics"] as Boolean) {
     println("Building flavor with Crashlytics plugin")
     apply(plugin = "com.google.gms.google-services")
     apply(plugin = "com.google.firebase.crashlytics")

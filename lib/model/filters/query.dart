@@ -76,15 +76,15 @@ class QueryFilter extends CollectionFilter {
     _test = not ? (entry) => !testTitle(entry) : testTitle;
   }
 
-  factory QueryFilter.fromMap(Map<String, dynamic> json) {
+  factory QueryFilter.fromMap(Map<String, Object?> json) {
     return QueryFilter(
-      json['query'],
-      reversed: json['reversed'] ?? false,
+      json['query'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'query': query,
     'reversed': reversed,

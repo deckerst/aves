@@ -105,7 +105,7 @@ class _BottomNavigationActionEditorPageState extends State<BottomNavigationActio
 
   Future<void> _onActionSelected(BuildContext context, _EditorAction action) async {
     switch (action) {
-      case _EditorAction.addAlbum:
+      case .addAlbum:
         final albumFilter = await pickAlbum(
           context: context,
           moveType: null,
@@ -114,7 +114,7 @@ class _BottomNavigationActionEditorPageState extends State<BottomNavigationActio
         );
         if (albumFilter == null) return;
         _controller.add(AvesNavItem(route: CollectionPage.routeName, filters: {albumFilter}));
-      case _EditorAction.addTag:
+      case .addTag:
         final tagFilter = await pickTag(
           context: context,
           chipTypes: ChipType.values,

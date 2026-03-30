@@ -34,7 +34,7 @@ class TrashDetails extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'id': id,
     'path': path,
     'dateMillis': dateMillis,

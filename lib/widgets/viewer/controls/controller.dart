@@ -69,7 +69,7 @@ class ViewerController with CastMixin {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    entryNotifier.removeListener(_onEntryChanged);
+    entryNotifier.dispose();
     windowService.setColorMode(wideColorGamut: false, hdr: false);
     _autopilotNotifier.dispose();
     _clearAutopilotAnimations();

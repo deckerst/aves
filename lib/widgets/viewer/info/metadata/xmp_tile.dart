@@ -28,9 +28,9 @@ class _XmpDirTileBodyState extends State<XmpDirTileBody> {
   void initState() {
     super.initState();
     _tags = Map.from(widget.tags)..remove(schemaRegistryPrefixesKey);
-    final prefixesJson = widget.allTags[schemaRegistryPrefixesKey];
-    final Map<String, dynamic> prefixesDecoded = prefixesJson != null ? jsonDecode(prefixesJson) : {};
-    _schemaRegistryPrefixes = Map.fromEntries(prefixesDecoded.entries.map((kv) => MapEntry(kv.key, kv.value as String)));
+    final jsonString = widget.allTags[schemaRegistryPrefixesKey];
+    final prefixesDecoded = jsonString != null ? jsonDecode(jsonString) as Map<String, Object?> : null;
+    _schemaRegistryPrefixes = Map.fromEntries((prefixesDecoded ?? {}).entries.map((kv) => MapEntry(kv.key, kv.value as String)));
   }
 
   @override

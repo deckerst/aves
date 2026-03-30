@@ -79,11 +79,11 @@ class ScaleLayerWidget extends StatelessWidget {
     late final double distanceMeters;
     late final String displayDistance;
     switch (options.unitSystem) {
-      case UnitSystem.metric:
+      case .metric:
         // meters
         distanceMeters = scaleMeters[scaleLevel];
         displayDistance = distanceMeters >= metersInAKilometer ? '${(distanceMeters / metersInAKilometer).toStringAsFixed(0)} km' : '${distanceMeters.toStringAsFixed(0)} m';
-      case UnitSystem.imperial:
+      case .imperial:
         if (scaleLevel < 15) {
           // miles
           final distanceMiles = scaleMeters[scaleLevel + 1] / 1000;

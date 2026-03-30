@@ -135,6 +135,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);
     final height = paragraph.getMaxIntrinsicHeight(double.infinity);
     paragraph.dispose();
+
     return Size(width, height);
   }
 

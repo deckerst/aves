@@ -20,11 +20,19 @@ class VideoABRepeatOverlay extends StatefulWidget {
 }
 
 class _VideoABRepeatOverlayState extends State<VideoABRepeatOverlay> {
+  final ValueNotifier<ABRepeat?> _internalAbRepeatNotifier = ValueNotifier(null);
+
   Animation<double> get scale => widget.scale;
 
   AvesVideoController? get controller => widget.controller;
 
-  ValueNotifier<ABRepeat?> get abRepeatNotifier => controller?.abRepeatNotifier ?? ValueNotifier(null);
+  ValueNotifier<ABRepeat?> get abRepeatNotifier => controller?.abRepeatNotifier ?? _internalAbRepeatNotifier;
+
+  @override
+  void dispose() {
+    _internalAbRepeatNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

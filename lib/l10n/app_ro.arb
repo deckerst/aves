@@ -947,5 +947,7 @@
     "mapStyleEditorDialogSubdomains": "Subdomenii",
     "settingsEnabled": "Activat",
     "settingsForced": "Forțat",
-    "settingsViewerShowZoomLevel": "Arată nivelul de proximitate"
+    "settingsViewerShowZoomLevel": "Arată nivelul de proximitate",
+    "collectionActionExportGpx": "Exportă GPX",
+    "mapStyleEditorDialogUserAgent": "Agent-Utilizator"
 }

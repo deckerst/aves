@@ -41,12 +41,15 @@ mixin FilterQuickChooserMixin<T> {
           final filter = buildFilter(context, option);
           final icon = filter.iconBuilder(context, iconSize, allowGenericIcon: _chipAllowGenericIcon);
           final label = filter.getLabel(context);
+
           final paragraph = RenderParagraph(
             TextSpan(text: label, style: textStyle),
             textDirection: textDirection,
             textScaler: textScaler,
           )..layout(const BoxConstraints(), parentUsesSize: true);
           final labelWidth = paragraph.getMaxIntrinsicWidth(double.infinity);
+          paragraph.dispose();
+
           double chipWidth = labelWidth + _chipPadding * 4;
           if (icon != null) {
             chipWidth += iconSize + _chipPadding;

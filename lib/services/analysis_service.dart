@@ -23,7 +23,7 @@ class AnalysisService {
 
   static Future<void> registerCallback() async {
     try {
-      await _platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, Object?>{
         // callback needs to be annotated with `@pragma('vm:entry-point')` to work in release mode
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
@@ -39,7 +39,7 @@ class AnalysisService {
 
     await reportService.log('Start analysis service${entryIds != null ? ' for ${entryIds.length} items' : ''}');
     try {
-      await _platform.invokeMethod('startAnalysis', <String, dynamic>{
+      await _platform.invokeMethod('startAnalysis', <String, Object?>{
         'entryIds': entryIds,
         'force': force,
       });
@@ -133,7 +133,7 @@ class Analyzer with WidgetsBindingObserver {
     reportService.log('Analyzer memory pressure');
   }
 
-  Future<void> start(dynamic args) async {
+  Future<void> start(Object? args) async {
     List<int>? entryIds;
     var force = false;
     if (args is Map) {
@@ -168,12 +168,12 @@ class Analyzer with WidgetsBindingObserver {
 
   Future<void> _onServiceStateChanged() async {
     switch (serviceState) {
-      case AnalyzerState.running:
+      case .running:
         break;
-      case AnalyzerState.stopping:
+      case .stopping:
         await _stopPlatformService();
         _serviceStateNotifier.value = AnalyzerState.stopped;
-      case AnalyzerState.stopped:
+      case .stopped:
         _controller?.enableStopSignal();
         _stopUpdateTimer();
     }
@@ -195,7 +195,7 @@ class Analyzer with WidgetsBindingObserver {
     final progressive = progress.total != 0 && sourceState != SourceState.locatingCountries;
 
     try {
-      await _channel.invokeMethod('updateNotification', <String, dynamic>{
+      await _channel.invokeMethod('updateNotification', <String, Object?>{
         'title': title,
         'message': progressive ? '${progress.done}/${progress.total}' : null,
       });

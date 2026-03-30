@@ -3,19 +3,19 @@ import 'package:aves_model/aves_model.dart';
 extension ExtraMetadataFieldView on MetadataField {
   String get title {
     switch (this) {
-      case MetadataField.exifDate:
+      case .exifDate:
         return 'Exif date';
-      case MetadataField.exifDateOriginal:
+      case .exifDateOriginal:
         return 'Exif original date';
-      case MetadataField.exifDateDigitized:
+      case .exifDateDigitized:
         return 'Exif digitized date';
-      case MetadataField.exifGpsDatestamp:
+      case .exifGpsDatestamp:
         return 'Exif GPS date';
-      case MetadataField.exifMake:
+      case .exifMake:
         return 'Exif make';
-      case MetadataField.exifModel:
+      case .exifModel:
         return 'Exif model';
-      case MetadataField.xmpXmpCreateDate:
+      case .xmpXmpCreateDate:
         return 'XMP xmp:CreateDate';
       default:
         return name;

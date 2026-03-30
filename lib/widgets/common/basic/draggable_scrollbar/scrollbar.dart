@@ -170,6 +170,8 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   @override
   void dispose() {
+    _thumbOffsetNotifier.dispose();
+    _viewOffsetNotifier.dispose();
     _thumbAnimation.dispose();
     _thumbAnimationController.dispose();
     _labelAnimation.dispose();

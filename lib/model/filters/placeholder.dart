@@ -35,14 +35,14 @@ class PlaceholderFilter extends CollectionFilter {
     }
   }
 
-  factory PlaceholderFilter.fromMap(Map<String, dynamic> json) {
+  factory PlaceholderFilter.fromMap(Map<String, Object?> json) {
     return PlaceholderFilter._private(
-      json['placeholder'],
+      json['placeholder'] as String,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'placeholder': placeholder,
   };

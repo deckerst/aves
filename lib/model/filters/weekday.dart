@@ -18,15 +18,15 @@ class WeekDayFilter extends CollectionFilter {
     _test = (entry) => entry.bestDate?.weekday == weekday;
   }
 
-  factory WeekDayFilter.fromMap(Map<String, dynamic> json) {
+  factory WeekDayFilter.fromMap(Map<String, Object?> json) {
     return WeekDayFilter(
       json['weekday'] as int,
-      reversed: json['reversed'] ?? false,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'weekday': weekday,
     'reversed': reversed,

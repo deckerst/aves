@@ -30,15 +30,15 @@ class PathFilter extends CollectionFilter {
     };
   }
 
-  factory PathFilter.fromMap(Map<String, dynamic> json) {
+  factory PathFilter.fromMap(Map<String, Object?> json) {
     return PathFilter(
-      json['path'],
-      reversed: json['reversed'] ?? false,
+      json['path'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'path': path,
     'reversed': reversed,

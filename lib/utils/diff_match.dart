@@ -271,13 +271,13 @@ class DiffMatchPatch {
     final text_insert = StringBuffer();
     while (pointer < diffs.length) {
       switch (diffs[pointer].operation) {
-        case Operation.insert:
+        case .insert:
           count_insert++;
           text_insert.write(diffs[pointer].text);
-        case Operation.delete:
+        case .delete:
           count_delete++;
           text_delete.write(diffs[pointer].text);
-        case Operation.equal:
+        case .equal:
           // Upon reaching an equality, check for prior redundancies.
           if (count_delete >= 1 && count_insert >= 1) {
             // Delete the offending records and add the merged ones.
@@ -1006,15 +1006,15 @@ class DiffMatchPatch {
     int commonlength;
     while (pointer < diffs.length) {
       switch (diffs[pointer].operation) {
-        case Operation.insert:
+        case .insert:
           count_insert++;
           text_insert += diffs[pointer].text;
           pointer++;
-        case Operation.delete:
+        case .delete:
           count_delete++;
           text_delete += diffs[pointer].text;
           pointer++;
-        case Operation.equal:
+        case .equal:
           // Upon reaching an equality, check for prior redundancies.
           if (count_delete + count_insert > 1) {
             if (count_delete != 0 && count_insert != 0) {
@@ -1145,15 +1145,15 @@ class DiffMatchPatch {
     for (Diff aDiff in diffs) {
       String text = aDiff.text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '&para;<br>');
       switch (aDiff.operation) {
-        case Operation.insert:
+        case .insert:
           html.write('<ins style="background:#e6ffe6;">');
           html.write(text);
           html.write('</ins>');
-        case Operation.delete:
+        case .delete:
           html.write('<del style="background:#ffe6e6;">');
           html.write(text);
           html.write('</del>');
-        case Operation.equal:
+        case .equal:
           html.write('<span>');
           html.write(text);
           html.write('</span>');
@@ -1198,11 +1198,11 @@ class DiffMatchPatch {
     int deletions = 0;
     for (Diff aDiff in diffs) {
       switch (aDiff.operation) {
-        case Operation.insert:
+        case .insert:
           insertions += aDiff.text.length;
-        case Operation.delete:
+        case .delete:
           deletions += aDiff.text.length;
-        case Operation.equal:
+        case .equal:
           // A deletion and an insertion is one substitution.
           levenshtein += max(insertions, deletions);
           insertions = 0;
@@ -1223,15 +1223,15 @@ class DiffMatchPatch {
     final text = StringBuffer();
     for (Diff aDiff in diffs) {
       switch (aDiff.operation) {
-        case Operation.insert:
+        case .insert:
           text.write('+');
           text.write(Uri.encodeFull(aDiff.text));
           text.write('\t');
-        case Operation.delete:
+        case .delete:
           text.write('-');
           text.write(aDiff.text.length);
           text.write('\t');
-        case Operation.equal:
+        case .equal:
           text.write('=');
           text.write(aDiff.text.length);
           text.write('\t');

@@ -405,11 +405,11 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       if (controller != null) {
         bool toggle;
         switch (intent.type) {
-          case TvPlayPauseType.play:
+          case .play:
             toggle = !controller.isPlaying;
-          case TvPlayPauseType.pause:
+          case .pause:
             toggle = controller.isPlaying;
-          case TvPlayPauseType.toggle:
+          case .toggle:
             toggle = true;
         }
         if (toggle) {

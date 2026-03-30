@@ -100,7 +100,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
   void _onActionSelected(SettingsAction action) async {
     final source = context.read<CollectionSource>();
     switch (action) {
-      case SettingsAction.export:
+      case .export:
         final toExport = await showDialog<Set<AppExportItem>>(
           context: context,
           builder: (context) => AppExportItemSelectionDialog(
@@ -131,7 +131,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         }
-      case SettingsAction.import:
+      case .import:
         // specifying the JSON MIME type to restrict openable files is correct in theory,
         // but older devices (e.g. SM-P580, API 27) that do not recognize JSON files as such would filter them out
         final bytes = await storageService.openFile();

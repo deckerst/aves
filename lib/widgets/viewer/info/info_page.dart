@@ -231,6 +231,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
                 basicSection,
                 locationSection,
               ],
+              addAutomaticKeepAlives: true,
             ),
           );
 

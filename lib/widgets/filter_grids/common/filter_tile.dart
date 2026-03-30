@@ -103,8 +103,8 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
     final _onTap = onTap;
 
     switch (tileLayout) {
-      case TileLayout.mosaic:
-      case TileLayout.grid:
+      case .mosaic:
+      case .grid:
         return FilterChipGridDecorator<T, FilterGridItem<T>>(
           gridItem: gridItem,
           extent: chipExtent,
@@ -122,7 +122,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
             heroType: heroType,
           ),
         );
-      case TileLayout.list:
+      case .list:
         Widget child = Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

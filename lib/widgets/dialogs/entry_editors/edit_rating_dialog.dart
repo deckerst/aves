@@ -123,11 +123,11 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
   void _submit(BuildContext context) {
     late int entryRating;
     switch (_action) {
-      case _RatingAction.set:
+      case .set:
         entryRating = _rating;
-      case _RatingAction.rejected:
+      case .rejected:
         entryRating = -1;
-      case _RatingAction.unrated:
+      case .unrated:
         entryRating = 0;
     }
     Navigator.maybeOf(context)?.pop(entryRating);

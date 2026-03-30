@@ -425,9 +425,9 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
 
     final bool? success;
     switch (target) {
-      case ExportTarget.clipboard:
+      case .clipboard:
         success = await appService.copyToClipboard(text: body);
-      case ExportTarget.file:
+      case .file:
         success = await storageService.createFile(
           'aves-stats-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
           mimeType,
@@ -445,32 +445,32 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
 
   static Object? _exportEntryField(ExportableEntryField field, AvesEntry entry, String locale) {
     switch (field) {
-      case ExportableEntryField.uri:
+      case .uri:
         return entry.uri;
-      case ExportableEntryField.path:
+      case .path:
         return entry.path;
-      case ExportableEntryField.title:
+      case .title:
         return entry.bestTitle;
-      case ExportableEntryField.date:
+      case .date:
         return entry.bestDate?.toIso8601String();
-      case ExportableEntryField.size:
+      case .size:
         return entry.sizeBytes;
-      case ExportableEntryField.resolution:
+      case .resolution:
         return entry.getResolutionText(locale);
-      case ExportableEntryField.width:
+      case .width:
         return entry.displaySize.width.toInt();
-      case ExportableEntryField.height:
+      case .height:
         return entry.displaySize.height.toInt();
-      case ExportableEntryField.duration:
+      case .duration:
         final durationMillis = entry.durationMillis ?? 0;
         return durationMillis > 0 ? durationMillis : null;
-      case ExportableEntryField.coordinates:
+      case .coordinates:
         final latLng = entry.latLng;
         return latLng != null ? '${latLng.latitude},${latLng.longitude}' : null;
-      case ExportableEntryField.address:
+      case .address:
         final shortAddress = entry.shortAddress;
         return shortAddress.isNotEmpty ? shortAddress : null;
-      case ExportableEntryField.tags:
+      case .tags:
         return entry.tags.join(';');
     }
   }
@@ -522,6 +522,7 @@ class _LocationIndicator extends StatelessWidget {
                   // are centered even when the center child has larger height
                   alignment: Alignment.center,
                   children: [
+                    // TODO TLAD [memory] `LinearPercentIndicator` should dispose its internally created `CurvedAnimation`
                     LinearPercentIndicator(
                       percent: withGpsPercent,
                       lineHeight: lineHeight,

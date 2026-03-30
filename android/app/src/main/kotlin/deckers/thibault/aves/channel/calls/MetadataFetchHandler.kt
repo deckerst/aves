@@ -568,13 +568,60 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
+    /**
+     * - `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`, `avif` as `mov`)
+     * - the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `heif` as `tiff`, `tiff` as `srw`)
+     * - `context.getContentResolver().getType()` sometimes returns an incorrect value
+     * - `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
+     * - file extension is unreliable
+     * In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd`/`mov`/`zip`
+     * (false positives, false negatives), in which case we trust the file extension
+     */
+    private fun resolveMimeType(
+        sourceMimeType: String,
+        uri: Uri,
+        path: String?,
+        sizeBytes: Long?,
+    ): String {
+        var mimeType = sourceMimeType
+        if (canReadWithMetadataExtractor(sourceMimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
+                    val metadata = Helper.safeRead(input, sizeBytes)
+                    for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
+                        if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
+                            mimeType = MimeTypes.TIFF
+                        } else {
+                            // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
+                                if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
+                                    mimeType = it
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$sourceMimeType uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$sourceMimeType uri=$uri", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$sourceMimeType uri=$uri", e)
+            }
+        }
+        return mimeType
+    }
+
     private fun getCatalogMetadataByMetadataExtractor(
-        mimeType: String,
+        sourceMimeType: String,
         uri: Uri,
         path: String?,
         sizeBytes: Long?,
         metadataMap: HashMap<String, Any>,
     ) {
+        val mimeType = resolveMimeType(sourceMimeType, uri, path, sizeBytes)
+        metadataMap[KEY_MIME_TYPE] = mimeType
+
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         var foundExif = false
         var foundXmp = false
@@ -637,27 +684,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val metadata = Helper.safeRead(input, sizeBytes)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
-
-                    // File type
-                    for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // * `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`, `avif` as `mov`)
-                        // * the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
-                        // * `context.getContentResolver().getType()` sometimes returns an incorrect value
-                        // * `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
-                        // * file extension is unreliable
-                        // In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd`/`mov`/`zip` (false positives, false negatives),
-                        // in which case we trust the file extension
-                        // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                        if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
-                            metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
-                        } else {
-                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                                if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
-                                    metadataMap[KEY_MIME_TYPE] = it
-                                }
-                            }
-                        }
-                    }
 
                     // EXIF
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {

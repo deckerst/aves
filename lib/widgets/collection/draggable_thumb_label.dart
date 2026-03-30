@@ -6,7 +6,6 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,44 +25,44 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       offsetY: offsetY,
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
-          case EntrySortFactor.date:
+          case .date:
             final date = entry.bestDate;
             switch (collection.sectionFactor) {
-              case EntrySectionFactor.album:
+              case .album:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, date),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
-              case EntrySectionFactor.month:
-              case EntrySectionFactor.none:
+              case .month:
+              case .none:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, date),
                 ];
-              case EntrySectionFactor.day:
+              case .day:
                 return [
                   DraggableThumbLabel.formatDayThumbLabel(context, date),
                 ];
             }
-          case EntrySortFactor.name:
+          case .name:
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               ?entry.bestTitle,
             ];
-          case EntrySortFactor.rating:
+          case .rating:
             return [
               RatingFilter.formatRating(context, entry.rating),
               DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
             ];
-          case EntrySortFactor.size:
+          case .size:
             final sizeBytes = entry.sizeBytes;
             return [
               if (sizeBytes != null) formatFileSize(context.locale, sizeBytes, round: 0),
             ];
-          case EntrySortFactor.duration:
+          case .duration:
             return [
               if (entry.durationMillis != null) entry.durationText,
             ];
-          case EntrySortFactor.path:
+          case .path:
             final entryFilename = entry.filenameWithoutExtension;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),

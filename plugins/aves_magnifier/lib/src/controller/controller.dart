@@ -83,11 +83,13 @@ class AvesMagnifierController {
     assert((scale ?? 0) >= 0);
 
     previousState = currentState;
-    _setState(MagnifierState(
-      position: position,
-      scale: scale,
-      source: source,
-    ));
+    _setState(
+      MagnifierState(
+        position: position,
+        scale: scale,
+        source: source,
+      ),
+    );
   }
 
   void setScaleState(ScaleState newValue, ChangeSource source, {Offset? childFocalPoint}) {
@@ -131,13 +133,13 @@ class AvesMagnifierController {
     if (boundaries == null) return null;
 
     switch (scaleState) {
-      case ScaleState.initial:
-      case ScaleState.zoomedIn:
-      case ScaleState.zoomedOut:
+      case .initial:
+      case .zoomedIn:
+      case .zoomedOut:
         return boundaries.clampScale(boundaries.initialScale);
-      case ScaleState.covering:
+      case .covering:
         return boundaries.clampScale(ScaleLevel.scaleForCovering(boundaries.viewportSize, boundaries.contentSize));
-      case ScaleState.originalSize:
+      case .originalSize:
         return boundaries.clampScale(boundaries.originalScale);
     }
   }

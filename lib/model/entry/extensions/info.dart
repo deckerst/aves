@@ -123,7 +123,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
         }
       }
 
-      final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
+      final allStreams = (mediaInfo[Keys.streams] as List).cast<Map<String, Object?>>();
       final attachmentStreams = allStreams.where((stream) => stream[Keys.streamType] == MediaStreamTypes.attachment).toList();
       final knownStreams = allStreams.whereNot(attachmentStreams.contains);
 
@@ -133,7 +133,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
 
         final colors = context.read<AvesColorsData>();
         for (final stream in knownStreams) {
-          final index = (stream[Keys.index] ?? 0) + 1;
+          final index = ((stream[Keys.index] as int?) ?? 0) + 1;
           final typeText = getTypeText(stream);
           final dirName = [
             'Stream ${index.toString().padLeft(indexDigits, '0')}',
@@ -155,7 +155,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
           if (!formatCount.containsKey(codec)) {
             formatCount[codec] = [];
           }
-          formatCount[codec]!.add(stream[Keys.filename]);
+          formatCount[codec]!.add(stream[Keys.filename] as String?);
         }
         if (formatCount.isNotEmpty) {
           final rawTags = formatCount.map((key, value) {

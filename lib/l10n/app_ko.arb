@@ -729,5 +729,6 @@
     "settingsNavigationBottomActionEditorBanner": "버튼을 길게 누른 후 이동하여 하단 탐색 모음에 표시될 버튼을 선택하세요.",
     "settingsViewerShowZoomLevel": "확대 수준 표시",
     "settingsEnabled": "사용함",
-    "settingsForced": "강제"
+    "settingsForced": "강제",
+    "collectionActionExportGpx": "GPX 내보내기"
 }

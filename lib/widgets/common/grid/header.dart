@@ -143,6 +143,7 @@ class SectionHeader<T> extends StatelessWidget {
     final leadingFontSize = leadingSize.height;
     final textScaleFactor = textScaler.scale(leadingFontSize) / leadingFontSize;
     final maxContentWidth = maxWidth - (SectionHeader.padding.horizontal + SectionHeader.margin.horizontal);
+
     final paragraph = RenderParagraph(
       TextSpan(
         children: [
@@ -166,6 +167,7 @@ class SectionHeader<T> extends StatelessWidget {
     )..layout(BoxConstraints(maxWidth: maxContentWidth), parentUsesSize: true);
     final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);
     paragraph.dispose();
+
     return height;
   }
 

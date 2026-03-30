@@ -19,11 +19,14 @@ pluginManagement {
 // Settings plugins (`Plugin<Settings>`) must be applied in the settings script.
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+
+    // provide a repository to download additional JDKs
+    // e.g. for java/kotlin `jvmToolchain` defined in build scripts
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    // define versions
-    // TODO TLAD find how to use `alias(libs.plugins.android.application)`
+
+    // define versions (Gradle version catalog cannot be referenced here)
     id("com.android.application") version "8.13.2" apply false
-    id("org.jetbrains.kotlin.android") version "2.3.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.3.10" apply false
 }
 
 include(":app")

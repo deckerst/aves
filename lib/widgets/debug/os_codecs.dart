@@ -43,21 +43,22 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+
               final codecs = snapshot.data!.map((codec) {
                 return codec.map((k, v) => MapEntry(k.toString(), v.toString()));
-              }).toList()..sort((a, b) => compareAsciiUpperCase(a['supportedTypes'] ?? '', b['supportedTypes'] ?? ''));
+              }).toList()..sort((a, b) => compareNatural(a['rank'] ?? '', b['rank'] ?? ''));
               final byEncoder = groupBy<Map<String, String>, bool>(codecs, (v) => v['isEncoder'] == 'true');
               final decoders = byEncoder[false] ?? [];
               final encoders = byEncoder[true] ?? [];
+
               Widget _toCodecColumn(List<Map<String, String>> codecs) => ValueListenableBuilder<String>(
                 valueListenable: _queryNotifier,
                 builder: (context, query, child) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: codecs.expand((v) {
-                    final types = v['supportedTypes'];
-                    return (query.isEmpty || types == null || types.contains(query))
+                  children: codecs.expand((codecInfo) {
+                    return (query.isEmpty || codecInfo.keys.any((key) => key.contains(query)))
                         ? [
-                            InfoRowGroup(info: Map.fromEntries(v.entries.where((kv) => kv.key != 'isEncoder'))),
+                            InfoRowGroup(info: Map.fromEntries(codecInfo.entries.where((kv) => kv.key != 'isEncoder'))),
                             const Divider(),
                           ]
                         : <Widget>[];

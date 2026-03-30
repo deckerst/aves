@@ -143,7 +143,7 @@ abstract class NamingProcessor extends Equatable {
   @override
   List<Object?> get props => [];
 
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues);
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues);
 
   Set<MetadataField> getRequiredFields() => {};
 }
@@ -158,7 +158,7 @@ class LiteralNamingProcessor extends NamingProcessor {
   const LiteralNamingProcessor(this.text);
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => text;
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) => text;
 }
 
 @immutable
@@ -173,7 +173,7 @@ class DateNamingProcessor extends NamingProcessor {
   DateNamingProcessor(String pattern, String locale) : format = DateFormat(pattern, locale);
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     final date = entry.bestDate;
     return date != null ? format.format(date) : null;
   }
@@ -192,7 +192,7 @@ class TagsNamingProcessor extends NamingProcessor {
   TagsNamingProcessor(String separator) : separator = separator.isEmpty ? defaultSeparator : separator;
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     return entry.tags.join(separator);
   }
 }
@@ -220,7 +220,7 @@ class MetadataFieldNamingProcessor extends NamingProcessor {
   Set<MetadataField> getRequiredFields() => {field}.nonNulls.toSet();
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     return fieldValues[field?.toPlatform]?.toString();
   }
 }
@@ -232,7 +232,7 @@ class NameNamingProcessor extends NamingProcessor {
   const NameNamingProcessor();
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => entry.filenameWithoutExtension;
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) => entry.filenameWithoutExtension;
 }
 
 @immutable
@@ -240,7 +240,7 @@ class WidthNamingProcessor extends NamingProcessor {
   static const key = 'width';
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     return '${entry.displaySize.width.toInt()}';
   }
 }
@@ -250,7 +250,7 @@ class HeightNamingProcessor extends NamingProcessor {
   static const key = 'height';
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     return '${entry.displaySize.height.toInt()}';
   }
 }
@@ -273,7 +273,7 @@ class CounterNamingProcessor extends NamingProcessor {
   });
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) => '${index + start}'.padLeft(padding, '0');
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) => '${index + start}'.padLeft(padding, '0');
 }
 
 @immutable
@@ -295,7 +295,7 @@ class HashNamingProcessor extends NamingProcessor {
   Set<MetadataField> getRequiredFields() => {function}.nonNulls.toSet();
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, dynamic> fieldValues) {
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {
     return fieldValues[function?.toPlatform]?.toString();
   }
 }

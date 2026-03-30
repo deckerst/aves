@@ -24,18 +24,22 @@ class AvesDot extends StatelessWidget {
     final innerBorderRadius = BorderRadius.all(innerRadius);
 
     final outerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: outerBorderColor,
-        width: outerBorderWidth,
-      )),
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: outerBorderColor,
+          width: outerBorderWidth,
+        ),
+      ),
       borderRadius: outerBorderRadius,
     );
 
     final innerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: innerBorderColor,
-        width: innerBorderWidth,
-      )),
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: innerBorderColor,
+          width: innerBorderWidth,
+        ),
+      ),
       borderRadius: innerBorderRadius,
     );
 

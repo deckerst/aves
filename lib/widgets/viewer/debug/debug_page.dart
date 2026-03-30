@@ -8,6 +8,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
+import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,18 +54,6 @@ class ViewerDebugPage extends StatelessWidget {
   }
 
   Widget _buildEntryTabView() {
-    String toDateValue(int? time, {int factor = 1}) {
-      var value = '$time';
-      if (time != null && time > 0) {
-        try {
-          value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
-        } catch (error) {
-          value += ' (invalid DateTime})';
-        }
-      }
-      return value;
-    }
-
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -90,16 +79,16 @@ class ViewerDebugPage extends StatelessWidget {
           info: {
             'trashed': '${entry.trashed}',
             'trashPath': '${entry.trashDetails?.path}',
-            'trashDateMillis': '${entry.trashDetails?.dateMillis}',
+            'trashDateMillis': ViewerDebugUtils.toDateValue(entry.trashDetails?.dateMillis),
           },
         ),
         const Divider(),
         InfoRowGroup(
           info: {
-            'catalogDateMillis': toDateValue(entry.catalogDateMillis),
-            'dateAddedSecs': toDateValue(entry.dateAddedSecs, factor: 1000),
-            'dateModifiedMillis': toDateValue(entry.dateModifiedMillis),
-            'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
+            'catalogDateMillis': ViewerDebugUtils.toDateValue(entry.catalogDateMillis),
+            'dateAddedSecs': ViewerDebugUtils.toDateValue(entry.dateAddedSecs, factor: 1000),
+            'dateModifiedMillis': ViewerDebugUtils.toDateValue(entry.dateModifiedMillis),
+            'sourceDateTakenMillis': ViewerDebugUtils.toDateValue(entry.sourceDateTakenMillis),
             'bestDate': '${entry.bestDate}',
           },
         ),

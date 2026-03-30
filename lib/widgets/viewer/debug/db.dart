@@ -5,6 +5,7 @@ import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class _DbTabState extends State<DbTab> {
                 if (data != null)
                   InfoRowGroup(
                     info: {
-                      'dateMillis': '$data',
+                      'dateMillis': ViewerDebugUtils.toDateValue(data),
                     },
                   ),
               ],
@@ -170,7 +171,7 @@ class _DbTabState extends State<DbTab> {
                   ),
                   InfoRowGroup(
                     info: {
-                      'dateMillis': '${data.dateMillis}',
+                      'dateMillis': ViewerDebugUtils.toDateValue(data.dateMillis),
                       'path': data.path,
                     },
                   ),

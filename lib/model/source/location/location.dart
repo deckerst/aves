@@ -25,8 +25,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
 
   Future<void> loadAddresses({Set<int>? ids}) async {
     final saved = await (ids != null ? localMediaDb.loadAddressesById(ids) : localMediaDb.loadAddresses());
-    final idMap = entryById;
-    saved.forEach((metadata) => idMap[metadata.id]?.addressDetails = metadata);
+    saved.forEach((metadata) => getEntryById(metadata.id)?.addressDetails = metadata);
     invalidateEntries();
     onAddressMetadataChanged();
   }

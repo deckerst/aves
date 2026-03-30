@@ -14,7 +14,7 @@ class GlobalSearch {
 
   static Future<void> registerCallback() async {
     try {
-      await _platform.invokeMethod('registerCallback', <String, dynamic>{
+      await _platform.invokeMethod('registerCallback', <String, Object?>{
         // callback needs to be annotated with `@pragma('vm:entry-point')` to work in release mode
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
@@ -47,7 +47,7 @@ Future<void> _init() async {
   await _channel.invokeMethod('initialized');
 }
 
-Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
+Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
   final suggestions = <Map<String, String?>>[];
   if (args is Map) {
     final query = args['query'];

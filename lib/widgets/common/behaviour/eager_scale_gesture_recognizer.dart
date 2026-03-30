@@ -120,7 +120,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   /// are multiple listeners competing for the gesture. In that case, the
   /// gesture arena waits to determine whether or not the gesture is a scale
   /// gesture before giving the gesture to this GestureRecognizer. This happens
-  /// in the case of nested GestureDetectors, for example.
+  /// in the case .
   ///
   /// Defaults to [DragStartBehavior.down].
   ///
@@ -553,13 +553,13 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   void didStopTrackingLastPointer(int pointer) {
     switch (_state) {
-      case _ScaleState.possible:
+      case .possible:
         resolve(GestureDisposition.rejected);
-      case _ScaleState.ready:
+      case .ready:
         assert(false); // We should have not seen a pointer yet
-      case _ScaleState.accepted:
+      case .accepted:
         break;
-      case _ScaleState.started:
+      case .started:
         assert(false); // We should be in the accepted state when user is done
     }
     _state = _ScaleState.ready;

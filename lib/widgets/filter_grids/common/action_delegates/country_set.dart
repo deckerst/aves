@@ -45,7 +45,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
     required Set<LocationFilter> selectedFilters,
   }) {
     switch (action) {
-      case ChipSetAction.showCountryStates:
+      case .showCountryStates:
         return isSelecting;
       default:
         return super.isVisible(
@@ -66,7 +66,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
     required Set<LocationFilter> selectedFilters,
   }) {
     switch (action) {
-      case ChipSetAction.showCountryStates:
+      case .showCountryStates:
         return selectedFilters.any((v) => GeoStates.stateCountryCodes.contains(v.code));
       default:
         return super.canApply(
@@ -83,7 +83,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // single/multiple filters
-      case ChipSetAction.showCountryStates:
+      case .showCountryStates:
         _showStates(context);
         browse(context);
       default:

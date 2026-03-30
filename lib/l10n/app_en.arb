@@ -636,6 +636,7 @@
   "collectionActionMove": "Move to album",
   "collectionActionRescan": "Rescan",
   "collectionActionEdit": "Edit",
+  "collectionActionExportGpx": "Export GPX",
 
   "collectionSearchTitlesHintText": "Search titles",
 

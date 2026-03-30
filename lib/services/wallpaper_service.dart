@@ -8,7 +8,7 @@ class WallpaperService {
 
   static Future<bool> set(Uint8List bytes, WallpaperTarget target) async {
     try {
-      await _platform.invokeMethod('setWallpaper', <String, dynamic>{
+      await _platform.invokeMethod('setWallpaper', <String, Object?>{
         'bytes': bytes,
         'home': {WallpaperTarget.home, WallpaperTarget.homeLock}.contains(target),
         'lock': {WallpaperTarget.lock, WallpaperTarget.homeLock}.contains(target),

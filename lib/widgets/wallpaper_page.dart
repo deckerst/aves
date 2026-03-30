@@ -130,19 +130,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
-      onNotification: (dynamic notification) {
-        if (notification is ToggleOverlayNotification) {
-          _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
-        } else if (notification is VideoActionNotification) {
-          _onVideoAction(
-            context: context,
-            entry: notification.entry,
-            controller: notification.controller,
-            action: notification.action,
-          );
-        }
-        return true;
-      },
+      onNotification: _handleNotification,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final viewSize = Size(constraints.maxWidth, constraints.maxHeight);
@@ -164,6 +152,20 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
         },
       ),
     );
+  }
+
+  bool _handleNotification(Notification notification) {
+    if (notification is ToggleOverlayNotification) {
+      _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
+    } else if (notification is VideoActionNotification) {
+      _onVideoAction(
+        context: context,
+        entry: notification.entry,
+        controller: notification.controller,
+        action: notification.action,
+      );
+    }
+    return true;
   }
 
   Widget _buildBottomOverlay(Size viewSize) {

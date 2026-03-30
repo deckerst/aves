@@ -302,30 +302,30 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     // as the effective fields for the other actions will depend on
     // whether each item supports Exif edition
     switch (_action) {
-      case DateEditAction.setCustom:
+      case .setCustom:
         return DateModifier.setCustom(const {}, _customDateTime);
-      case DateEditAction.copyField:
+      case .copyField:
         return DateModifier.copyField(_copyFieldSource);
-      case DateEditAction.copyItem:
+      case .copyItem:
         return DateModifier.setCustom(const {}, copyItemDate);
-      case DateEditAction.extractFromTitle:
+      case .extractFromTitle:
         return DateModifier.extractFromTitle();
-      case DateEditAction.shift:
+      case .shift:
         return DateModifier.shift(_fields, _timeShiftController.value.inSeconds);
-      case DateEditAction.remove:
+      case .remove:
         return DateModifier.remove(_fields);
     }
   }
 
   void _validate() {
     switch (_action) {
-      case DateEditAction.setCustom:
-      case DateEditAction.copyField:
-      case DateEditAction.copyItem:
-      case DateEditAction.extractFromTitle:
+      case .setCustom:
+      case .copyField:
+      case .copyItem:
+      case .extractFromTitle:
         _isValidNotifier.value = true;
-      case DateEditAction.shift:
-      case DateEditAction.remove:
+      case .shift:
+      case .remove:
         _isValidNotifier.value = _fields.isNotEmpty;
     }
   }

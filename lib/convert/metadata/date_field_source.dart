@@ -3,15 +3,15 @@ import 'package:aves_model/aves_model.dart';
 extension ExtraDateFieldSourceConvert on DateFieldSource {
   MetadataField? toMetadataField() {
     switch (this) {
-      case DateFieldSource.fileModifiedDate:
+      case .fileModifiedDate:
         return null;
-      case DateFieldSource.exifDate:
+      case .exifDate:
         return MetadataField.exifDate;
-      case DateFieldSource.exifDateOriginal:
+      case .exifDateOriginal:
         return MetadataField.exifDateOriginal;
-      case DateFieldSource.exifDateDigitized:
+      case .exifDateDigitized:
         return MetadataField.exifDateDigitized;
-      case DateFieldSource.exifGpsDate:
+      case .exifGpsDate:
         return MetadataField.exifGpsDatestamp;
     }
   }

@@ -59,8 +59,5 @@ slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase" }
-google-gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 reproducible-builds = { id = "org.gradlex.reproducible-builds", version.ref = "reproducibleBuilds" }

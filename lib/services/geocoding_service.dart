@@ -1,19 +1,25 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:aves/services/common/channel.dart';
+import 'package:aves/services/common/channel_isolate.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:aves/services/common/channel.dart';
 
-class GeocodingService {
-  static const _platform = AvesMethodChannel('deckers.thibault/aves/geocoding');
+abstract class GeocodingService {
+  Future<List<Address>> getAddress(LatLng coordinates, Locale locale);
+}
 
-  // geocoding requires Google Play Services
-  static Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
+// geocoding requires Google Play Services
+class PlatformGeocodingService implements GeocodingService {
+  final _channelIsolate = ChannelIsolate(AvesChannels.geocoding);
+
+  @override
+  Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
     try {
-      final result = await _platform.invokeMethod('getAddress', <String, dynamic>{
+      final result = await _channelIsolate.invokeMethod('getAddress', <String, Object?>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
         'localeLanguageTag': locale.toLanguageTag(),
@@ -21,7 +27,7 @@ class GeocodingService {
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,
       });
-      return (result as List).cast<Map>().map(Address.fromMap).toList();
+      if (result != null) return (result as List).cast<Map>().map(Address.fromMap).toList();
     } on PlatformException catch (_) {
       // do not report
     }

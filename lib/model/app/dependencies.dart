@@ -177,9 +177,9 @@ class Dependencies {
 
   static const List<Dependency> flutterPackages = [
     Dependency(
-      name: 'Charts (Aves fork)',
+      name: 'Community Charts (Aves fork)',
       license: apache2,
-      sourceUrl: 'https://github.com/deckerst/flutter_google_charts',
+      sourceUrl: 'https://github.com/deckerst/flutter_community_charts',
     ),
     Dependency(
       name: 'Custom rounded rectangle border',
@@ -217,9 +217,14 @@ class Dependencies {
       sourceUrl: 'https://github.com/foresightmobile/flutter_markdown_plus',
     ),
     Dependency(
-      name: 'Flutter Staggered Animations',
+      name: 'Flutter Staggered Animations (Aves fork)',
       license: mit,
-      sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
+      sourceUrl: 'https://github.com/deckerst/flutter_staggered_animations',
+    ),
+    Dependency(
+      name: 'Material Color Utilities',
+      license: apache2,
+      sourceUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart',
     ),
     Dependency(
       name: 'Material Design Icons Flutter',
@@ -235,11 +240,6 @@ class Dependencies {
       name: 'Overlay Support',
       license: apache2,
       sourceUrl: 'https://github.com/boyan01/overlay_support',
-    ),
-    Dependency(
-      name: 'Palette Generator',
-      license: bsd3,
-      sourceUrl: 'https://github.com/flutter/packages/tree/main/packages/palette_generator',
     ),
     Dependency(
       name: 'Panorama (Aves fork)',

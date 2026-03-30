@@ -115,7 +115,7 @@ class EditorControlPanel extends StatelessWidget {
 
   Widget _buildActionPanel(BuildContext context, EditorAction action) {
     switch (action) {
-      case EditorAction.transform:
+      case .transform:
         return TransformControlPanel(
           entry: entry,
           onCancel: () => _cancelAction(context),

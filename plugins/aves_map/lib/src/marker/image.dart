@@ -47,18 +47,22 @@ class ImageMarker extends StatelessWidget {
     final innerBorderColor = MapThemeData.markerThemedInnerBorderColor(isDark);
 
     final outerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: outerBorderColor,
-        width: outerBorderWidth,
-      )),
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: outerBorderColor,
+          width: outerBorderWidth,
+        ),
+      ),
       borderRadius: outerBorderRadius,
     );
 
     final innerDecoration = BoxDecoration(
-      border: Border.fromBorderSide(BorderSide(
-        color: innerBorderColor,
-        width: innerBorderWidth,
-      )),
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: innerBorderColor,
+          width: innerBorderWidth,
+        ),
+      ),
       borderRadius: innerBorderRadius,
     );
 

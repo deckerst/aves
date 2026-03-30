@@ -85,6 +85,7 @@ class AIcons {
   static const country = Symbols.flag;
   static const state = Symbols.flag;
   static const place = Symbols.place;
+  static const route = Symbols.route;
 
   // view
   static const section = Symbols.subheader;

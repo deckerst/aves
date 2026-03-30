@@ -24,7 +24,7 @@ abstract class AppService {
 
   Future<bool> copyToClipboard({String? label, String? text, String? uri});
 
-  Future<Map<String, dynamic>> edit(String uri, String mimeType);
+  Future<Map<String, Object?>> edit(String uri, String mimeType);
 
   Future<bool> open(String uri, String mimeType, {required bool forceChooser});
 
@@ -82,7 +82,7 @@ class PlatformAppService implements AppService {
   @override
   Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size) async {
     try {
-      final result = await _platform.invokeMethod('getAppIcon', <String, dynamic>{
+      final result = await _platform.invokeMethod('getAppIcon', <String, Object?>{
         'packageName': packageName,
         'sizeDip': size,
       });
@@ -99,7 +99,7 @@ class PlatformAppService implements AppService {
   @override
   Future<bool> copyToClipboard({String? label, String? text, String? uri}) async {
     try {
-      final result = await _platform.invokeMethod('copyToClipboard', <String, dynamic>{
+      final result = await _platform.invokeMethod('copyToClipboard', <String, Object?>{
         'label': label,
         'text': text,
         'uri': uri,
@@ -112,11 +112,11 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<Map<String, dynamic>> edit(String uri, String mimeType) async {
+  Future<Map<String, Object?>> edit(String uri, String mimeType) async {
     try {
       final opCompleter = Completer<Map?>();
       _stream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'edit',
             'uri': uri,
             'mimeType': mimeType,
@@ -132,7 +132,7 @@ class PlatformAppService implements AppService {
       // `await` here, so that `completeError` will be caught below
       final result = await opCompleter.future;
       if (result == null) return {'error': 'cancelled'};
-      return result.cast<String, dynamic>();
+      return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       if (e.code != 'edit-resolve') {
         await reportService.recordError(e, stack);
@@ -144,7 +144,7 @@ class PlatformAppService implements AppService {
   @override
   Future<bool> open(String uri, String mimeType, {required bool forceChooser}) async {
     try {
-      final result = await _platform.invokeMethod('open', <String, dynamic>{
+      final result = await _platform.invokeMethod('open', <String, Object?>{
         'uri': uri,
         'mimeType': mimeType,
         'forceChooser': forceChooser,
@@ -159,7 +159,7 @@ class PlatformAppService implements AppService {
   @override
   Future<bool> openMap(LatLng latLng) async {
     try {
-      final result = await _platform.invokeMethod('openMap', <String, dynamic>{
+      final result = await _platform.invokeMethod('openMap', <String, Object?>{
         'geoUri': toGeoUri(latLng),
       });
       if (result != null) return result as bool;
@@ -172,7 +172,7 @@ class PlatformAppService implements AppService {
   @override
   Future<bool> setAs(String uri, String mimeType) async {
     try {
-      final result = await _platform.invokeMethod('setAs', <String, dynamic>{
+      final result = await _platform.invokeMethod('setAs', <String, Object?>{
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -204,7 +204,7 @@ class PlatformAppService implements AppService {
 
   Future<bool> _share(Map<String, List<String>> urisByMimeType) async {
     try {
-      final result = await _platform.invokeMethod('share', <String, dynamic>{
+      final result = await _platform.invokeMethod('share', <String, Object?>{
         'urisByMimeType': urisByMimeType,
       });
       if (result != null) return result as bool;
@@ -255,7 +255,7 @@ class PlatformAppService implements AppService {
       }
     }
     try {
-      await _platform.invokeMethod('pinShortcut', <String, dynamic>{
+      await _platform.invokeMethod('pinShortcut', <String, Object?>{
         'label': label,
         'iconBytes': iconBytes,
         'route': route,

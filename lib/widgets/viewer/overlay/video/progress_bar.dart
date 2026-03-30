@@ -30,6 +30,7 @@ class VideoProgressBar extends StatefulWidget {
 class _VideoProgressBarState extends State<VideoProgressBar> {
   final GlobalKey _progressBarKey = GlobalKey(debugLabel: 'video-progress-bar');
   bool _playingOnDragStart = false;
+  final ValueNotifier<ABRepeat?> _internalAbRepeatNotifier = ValueNotifier(null);
 
   static const double radius = 123;
 
@@ -39,7 +40,13 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   bool get isPlaying => controller?.isPlaying ?? false;
 
-  ValueNotifier<ABRepeat?> get abRepeatNotifier => controller?.abRepeatNotifier ?? ValueNotifier(null);
+  ValueNotifier<ABRepeat?> get abRepeatNotifier => controller?.abRepeatNotifier ?? _internalAbRepeatNotifier;
+
+  @override
+  void dispose() {
+    _internalAbRepeatNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

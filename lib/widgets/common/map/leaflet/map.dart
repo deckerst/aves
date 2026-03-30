@@ -95,6 +95,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _leafletMapController.dispose();
     super.dispose();
   }
 

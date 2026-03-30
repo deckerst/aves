@@ -24,6 +24,7 @@ enum EntrySetAction {
   move,
   rename,
   convert,
+  exportGpx,
   toggleFavourite,
   rotateCCW,
   rotateCW,
@@ -79,7 +80,6 @@ class EntrySetActions {
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.rename,
-    EntrySetAction.convert,
     EntrySetAction.toggleFavourite,
     null,
     EntrySetAction.map,
@@ -87,7 +87,7 @@ class EntrySetActions {
     EntrySetAction.stats,
     null,
     EntrySetAction.rescan,
-    // editing actions are in their subsection
+    // export and editing actions are in their subsections
   ];
 
   // exclude bin related actions
@@ -97,8 +97,9 @@ class EntrySetActions {
     EntrySetAction.copy,
     EntrySetAction.move,
     EntrySetAction.rename,
-    EntrySetAction.convert,
     EntrySetAction.toggleFavourite,
+    EntrySetAction.convert,
+    EntrySetAction.exportGpx,
     EntrySetAction.map,
     EntrySetAction.slideshow,
     EntrySetAction.stats,
@@ -125,5 +126,10 @@ class EntrySetActions {
     EntrySetAction.editRating,
     EntrySetAction.editTags,
     EntrySetAction.removeMetadata,
+  ];
+
+  static const export = [
+    EntrySetAction.convert,
+    EntrySetAction.exportGpx,
   ];
 }

@@ -4,7 +4,6 @@ import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
@@ -304,7 +303,7 @@ class _AddressRowState extends State<_AddressRow> {
 
   Future<String?> _getAddressLine(LatLng? location) async {
     if (location != null && await availability.canLocatePlaces) {
-      final addresses = await GeocodingService.getAddress(location, settings.appliedLocale);
+      final addresses = await geocodingService.getAddress(location, settings.appliedLocale);
       if (addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;

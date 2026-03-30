@@ -55,26 +55,26 @@ Future<bool> showSkippableConfirmationDialog({
 
 bool _shouldConfirm(ConfirmationDialog type) {
   switch (type) {
-    case ConfirmationDialog.createVault:
+    case .createVault:
       return settings.confirmCreateVault;
-    case ConfirmationDialog.deleteForever:
+    case .deleteForever:
       return settings.confirmDeleteForever;
-    case ConfirmationDialog.moveToBin:
+    case .moveToBin:
       return settings.confirmMoveToBin;
-    case ConfirmationDialog.moveUndatedItems:
+    case .moveUndatedItems:
       return settings.confirmMoveUndatedItems;
   }
 }
 
 void _skipConfirmation(ConfirmationDialog type) {
   switch (type) {
-    case ConfirmationDialog.createVault:
+    case .createVault:
       settings.confirmCreateVault = false;
-    case ConfirmationDialog.deleteForever:
+    case .deleteForever:
       settings.confirmDeleteForever = false;
-    case ConfirmationDialog.moveToBin:
+    case .moveToBin:
       settings.confirmMoveToBin = false;
-    case ConfirmationDialog.moveUndatedItems:
+    case .moveUndatedItems:
       settings.confirmMoveUndatedItems = false;
   }
 }

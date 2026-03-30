@@ -233,7 +233,7 @@ class Covers {
 
   // import/export
 
-  List<Map<String, dynamic>>? export(CollectionSource source) {
+  List<Map<String, String>>? export(CollectionSource source) {
     final visibleEntries = source.visibleEntries;
     final jsonList = all
         .map((row) {
@@ -336,7 +336,7 @@ class CoverRow extends Equatable {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'filter': filter.toJson(),
     'entryId': entryId,
     'packageName': packageName,

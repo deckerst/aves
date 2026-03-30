@@ -199,7 +199,7 @@ class _EditorImageState extends State<EditorImage> {
 
   static double _getActionPanInertia(EditorAction? action) {
     switch (action) {
-      case EditorAction.transform:
+      case .transform:
         return 0;
       case null:
         return AvesMagnifier.defaultPanInertia;
@@ -208,13 +208,13 @@ class _EditorImageState extends State<EditorImage> {
 
   static double _getActionScrimOpacity(EditorAction? action, TransformActivity activity) {
     switch (action) {
-      case EditorAction.transform:
+      case .transform:
         switch (activity) {
-          case TransformActivity.none:
+          case .none:
             return .9;
-          case TransformActivity.pan:
-          case TransformActivity.resize:
-          case TransformActivity.straighten:
+          case .pan:
+          case .resize:
+          case .straighten:
             return .6;
         }
       case null:

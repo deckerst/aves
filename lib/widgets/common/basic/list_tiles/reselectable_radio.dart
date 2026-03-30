@@ -42,11 +42,11 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
     );
     Widget? leading, trailing;
     switch (controlAffinity) {
-      case ListTileControlAffinity.leading:
-      case ListTileControlAffinity.platform:
+      case .leading:
+      case .platform:
         leading = control;
         trailing = secondary;
-      case ListTileControlAffinity.trailing:
+      case .trailing:
         leading = secondary;
         trailing = control;
     }

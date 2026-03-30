@@ -1,3 +1,4 @@
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,10 +17,16 @@ class ABRepeat {
   int clamp(int position) => (start != null && end != null) ? position.clamp(start!, end!) : position;
 }
 
-mixin ABRepeatMixin {
+mixin ABRepeatMixin on Disposer {
   int get currentPosition;
 
   ValueNotifier<ABRepeat?> abRepeatNotifier = ValueNotifier(null);
+
+  @override
+  void dispose() {
+    abRepeatNotifier.dispose();
+    super.dispose();
+  }
 
   void toggleABRepeat() => _setAbRepeat(abRepeatNotifier.value != null ? null : ABRepeat());
 

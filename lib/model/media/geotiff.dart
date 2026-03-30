@@ -143,13 +143,16 @@ class MappedGeoTiff with MapOverlay {
 
     final picture = recorder.endRecording();
     final tileImage = await picture.toImage(_mapServiceTileSize, _mapServiceTileSize);
-    final byteData = await tileImage.toByteData(format: ui.ImageByteFormat.png);
-    if (byteData == null) return null;
+    picture.dispose();
+
+    final imageData = await tileImage.toByteData(format: ui.ImageByteFormat.png);
+    tileImage.dispose();
+    if (imageData == null) return null;
 
     return MapTile(
       width: tileImage.width,
       height: tileImage.height,
-      data: byteData.buffer.asUint8List(),
+      data: imageData.buffer.asUint8List(),
     );
   }
 

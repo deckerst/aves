@@ -210,7 +210,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
 
     void onActionSelected(ChipSetAction action) {
       switch (action) {
-        case ChipSetAction.createGroup:
+        case .createGroup:
           final parentGroupUri = context.read<FilterGroupNotifier>().value;
           _createGroup(parentGroupUri);
         default:

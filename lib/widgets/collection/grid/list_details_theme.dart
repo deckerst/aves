@@ -55,6 +55,7 @@ class EntryListDetailsTheme extends StatelessWidget {
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
+        captionLineHeightParagraph.dispose();
 
         var titleMaxLines = 1;
         var showDate = false;

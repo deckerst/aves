@@ -45,6 +45,7 @@ class TileExtentController {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
+    extentNotifier.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();

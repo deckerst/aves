@@ -36,20 +36,20 @@ class InteractiveTile extends StatelessWidget {
       onTap: () {
         final appMode = context.read<ValueNotifier<AppMode>>().value;
         switch (appMode) {
-          case AppMode.main:
+          case .main:
             final selection = context.read<Selection<AvesEntry>>();
             if (selection.isSelecting) {
               selection.toggleSelection(entry);
             } else {
               OpenViewerNotification(entry).dispatch(context);
             }
-          case AppMode.pickSingleMediaExternal:
+          case .pickSingleMediaExternal:
             IntentService.submitPickedItems([entry.uri]);
-          case AppMode.pickMultipleMediaExternal:
+          case .pickMultipleMediaExternal:
             final selection = context.read<Selection<AvesEntry>>();
             selection.toggleSelection(entry);
-          case AppMode.pickFilteredMediaInternal:
-          case AppMode.pickUnfilteredMediaInternal:
+          case .pickFilteredMediaInternal:
+          case .pickUnfilteredMediaInternal:
             Navigator.maybeOf(context)?.pop(entry);
           default:
             break;
@@ -93,10 +93,10 @@ class Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (tileLayout) {
-      case TileLayout.mosaic:
-      case TileLayout.grid:
+      case .mosaic:
+      case .grid:
         return _buildThumbnail();
-      case TileLayout.list:
+      case .list:
         return Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

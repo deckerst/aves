@@ -60,7 +60,7 @@ import 'package:url_launcher/url_launcher.dart' as ul;
 
 class AvesApp extends StatefulWidget {
   final AppFlavor flavor;
-  final Map? debugIntentData;
+  final Map<String, Object?>? debugIntentData;
 
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
@@ -413,16 +413,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     reportService.log('Lifecycle ${state.name}');
     AvesApp.lifecycleStateNotifier.value = state;
     switch (state) {
-      case AppLifecycleState.inactive:
+      case .inactive:
         switch (_appModeNotifier.value) {
-          case AppMode.main:
-          case AppMode.pickSingleMediaExternal:
-          case AppMode.pickMultipleMediaExternal:
+          case .main:
+          case .pickSingleMediaExternal:
+          case .pickMultipleMediaExternal:
             _saveTopEntries();
           default:
             break;
         }
-      case AppLifecycleState.resumed:
+      case .resumed:
         availability.onResume();
         RecentlyAddedFilter.updateNow();
         _mediaStoreSource.checkForChanges();
@@ -473,7 +473,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
   }
 
-  Widget _getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
+  Widget _getFirstPage({Map<String, Object?>? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
   Size? _getScreenSize(BuildContext context) {
     final view = View.of(context);
@@ -582,10 +582,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     void _applyMaxBrightness() {
       try {
         switch (settings.maxBrightness) {
-          case MaxBrightness.never:
-          case MaxBrightness.viewerOnly:
+          case .never:
+          case .viewerOnly:
             AvesApp.screenBrightness?.resetApplicationScreenBrightness();
-          case MaxBrightness.always:
+          case .always:
             AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
         }
       } on PlatformException catch (e, stack) {
@@ -677,7 +677,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return currentRoute;
   }
 
-  void _onNewIntent(Map<dynamic, dynamic>? intentData) {
+  void _onNewIntent(Map? intentData) {
     reportService.log('New intent data=$intentData');
 
     if (_appModeNotifier.value == AppMode.main) {
@@ -708,7 +708,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _navigatorKey.currentState!.pushReplacement(
       DirectMaterialPageRoute(
         settings: const RouteSettings(name: HomePage.routeName),
-        builder: (_) => _getFirstPage(intentData: intentData),
+        builder: (_) => _getFirstPage(intentData: intentData?.cast<String, Object?>()),
       ),
     );
   }
@@ -726,7 +726,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     final appMode = _appModeNotifier.value;
     debugPrint('App mode set to $appMode');
     switch (appMode) {
-      case AppMode.screenSaver:
+      case .screenSaver:
         // we cannot modify brightness without access to the activity
         _screenBrightness = null;
       default:

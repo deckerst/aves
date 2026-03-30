@@ -118,11 +118,11 @@ class AvesFilterChip extends StatefulWidget {
           ...ChipAction.values.where((action) => actionDelegate.isVisible(action, filter: filter)).map((action) {
             late String text;
             switch (action) {
-              case ChipAction.reverse:
+              case .reverse:
                 text = filter.reversed ? context.l10n.chipActionFilterIn : context.l10n.chipActionFilterOut;
-              case ChipAction.ratingOrGreater:
+              case .ratingOrGreater:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrGreater);
-              case ChipAction.ratingOrLower:
+              case .ratingOrLower:
                 text = RatingFilter.formatRatingRange(context, (filter as RatingFilter).rating, RatingFilter.opOrLower);
               default:
                 text = action.getText(context);

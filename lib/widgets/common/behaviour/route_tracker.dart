@@ -14,5 +14,5 @@ class ReportingRouteTracker extends NavigatorObserver {
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) => reportService.log('Nav replace to ${_name(newRoute)}');
 
-  String _name(Route<dynamic>? route) => route?.settings.name ?? 'unnamed ${route?.runtimeType}';
+  String _name(Route<Object?>? route) => route?.settings.name ?? 'unnamed ${route?.runtimeType}';
 }

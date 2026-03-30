@@ -142,9 +142,9 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
   void _onAdjustValueIntent(_AdjustValueIntent intent) {
     late int delta;
     switch (intent.type) {
-      case _ValueAdjustmentType.up:
+      case .up:
         delta = -1;
-      case _ValueAdjustmentType.down:
+      case .down:
         delta = 1;
     }
     final targetItem = _controller.selectedItem + delta;

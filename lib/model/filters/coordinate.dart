@@ -24,16 +24,16 @@ class CoordinateFilter extends CollectionFilter {
     _test = (entry) => GeoUtils.contains(sw, ne, entry.latLng);
   }
 
-  factory CoordinateFilter.fromMap(Map<String, dynamic> json) {
+  factory CoordinateFilter.fromMap(Map<String, Object?> json) {
     return CoordinateFilter(
-      LatLng.fromJson(json['sw']),
-      LatLng.fromJson(json['ne']),
-      reversed: json['reversed'] ?? false,
+      LatLng.fromJson(json['sw'] as Map<String, Object?>),
+      LatLng.fromJson(json['ne'] as Map<String, Object?>),
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'sw': sw.toJson(),
     'ne': ne.toJson(),

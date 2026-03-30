@@ -3,7 +3,6 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +97,7 @@ class _MapAddressRowState extends State<MapAddressRow> {
 
   Future<String?> _getAddressLine(AvesEntry? entry) async {
     if (entry != null && await availability.canLocatePlaces) {
-      final addresses = await GeocodingService.getAddress(entry.latLng!, settings.appliedLocale);
+      final addresses = await geocodingService.getAddress(entry.latLng!, settings.appliedLocale);
       if (addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;

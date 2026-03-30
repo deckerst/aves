@@ -280,8 +280,9 @@ class MediaStoreImageProvider : ImageProvider() {
                                     EntryFields.CONTENT_ID to id,
                                 )
 
-                                if (isHeic(mimeType)) {
+                                if (isHeic(mimeType) || mimeType == MimeTypes.TIFF) {
                                     // The reported size for some HEIC images is simply incorrect.
+                                    // Some HEIC images are detected as TIFF.
                                     try {
                                         StorageUtils.openInputStream(context, itemUri)?.use { input ->
                                             val options = BitmapFactory.Options().apply {

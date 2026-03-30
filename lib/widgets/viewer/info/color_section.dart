@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'dart:math';
-import 'dart:ui' as ui;
+import 'dart:typed_data';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
@@ -9,11 +9,11 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' as flex;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 
 class ColorSectionSliver extends StatefulWidget {
@@ -85,41 +85,36 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
     );
   }
 
-  // `PaletteGenerator.fromImage()` directly blocks the main isolate,
+  // Extracting colors directly may block the main isolate,
   // so we use another isolate to compute the palette
   Future<List<Color>> _loadPalette(ImageProvider provider) async {
     final stream = provider.resolve(ImageConfiguration.empty);
-    final imageCompleter = Completer<ui.Image>();
+    final imageInfoCompleter = Completer<ImageInfo>();
     late ImageStreamListener listener;
     listener = ImageStreamListener((info, _) {
       stream.removeListener(listener);
-      imageCompleter.complete(info.image);
+      imageInfoCompleter.complete(info);
     });
+
     stream.addListener(listener);
-    final image = await imageCompleter.future;
-    final imageData = await image.toByteData();
+    final imageInfo = await imageInfoCompleter.future;
+    final imageData = await imageInfo.image.toByteData();
+    imageInfo.dispose();
+
     if (imageData == null) {
       throw StateError('Failed to encode the image.');
     }
 
-    final encodedImage = EncodedImage(
-      imageData,
-      width: image.width,
-      height: image.height,
-    );
-    final generator = await _getPaletteGenerator(encodedImage);
-    return generator.paletteColors.map((v) => v.color).toList();
+    return await _extractColors(imageData);
   }
 
   // the isolate does not start unless called from a static method
-  static Future<PaletteGenerator> _getPaletteGenerator(EncodedImage encodedImage) {
-    // `Isolate.run()` closure supports passing `EncodedImage` but not `ui.Image`
+  static Future<List<Color>> _extractColors(ByteData encodedImage) {
+    // `Isolate.run()` closure supports passing `ByteData` but not `ui.Image`
     return Isolate.run(
-      () => PaletteGenerator.fromByteData(
-        encodedImage,
+      () => ColorExtractor.extract(
+        imageBytes: encodedImage,
         maximumColorCount: 10,
-        // do not use the default palette filter
-        filters: [],
       ),
     );
   }

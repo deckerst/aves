@@ -25,6 +25,7 @@ class MimeTypes {
   static const djvu = 'image/vnd.djvu';
   static const dwg = 'image/vnd.dwg';
   static const dxf = 'image/vnd.dxf';
+  static const jng = 'image/x-jng';
   static const jpeg2000 = 'image/jp2';
   static const jpx = 'image/jpx';
   static const jxl = 'image/jxl';
@@ -95,6 +96,7 @@ class MimeTypes {
 
   // non-media
   static const csv = 'text/csv';
+  static const gpx = 'application/gpx+xml';
   static const json = 'application/json';
   static const octetStream = 'application/octet-stream';
   static const plainText = 'text/plain';
@@ -163,6 +165,7 @@ class MimeTypes {
     bmp: '.bmp',
     csv: '.csv',
     gif: '.gif',
+    gpx: '.gpx',
     jpeg: '.jpg',
     json: '.json',
     png: '.png',

@@ -12,6 +12,30 @@ class DebugLeakingSection extends StatefulWidget {
 
   @override
   State<DebugLeakingSection> createState() => _DebugLeakingSectionState();
+
+  static Future<void> printLeakReportsOfType(LeakType type) => LeakTracking.collectLeaks().then((leaks) {
+    final reports = leaks.byType[type] ?? [];
+    printLeakReport(type, reports);
+  });
+
+  static void printLeakReport(LeakType type, List<LeakReport> reports) {
+    debugPrint('* leak type=$type, ${reports.length} reports');
+    groupBy(reports, (report) => report.type).forEach((reportType, typedReports) {
+      debugPrint('  * report type=$reportType');
+      groupBy(typedReports, (report) => report.trackedClass).forEach((trackedClass, classedReports) {
+        debugPrint('    trackedClass=$trackedClass reports=${classedReports.length}');
+        classedReports.forEach((report) {
+          final phase = report.phase;
+          final retainingPath = report.retainingPath;
+          final detailedPath = report.detailedPath;
+          final context = report.context;
+          if (phase != null || retainingPath != null || detailedPath != null || context != null) {
+            debugPrint('      phase=$phase retainingPath=$retainingPath detailedPath=$detailedPath context=$context');
+          }
+        });
+      });
+    });
+  }
 }
 
 class _DebugLeakingSectionState extends State<DebugLeakingSection> with AutomaticKeepAliveClientMixin {
@@ -46,31 +70,43 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
           },
           title: const Text('Show leak report overlay'),
         ),
-        ElevatedButton(
-          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-            LeakTracking.phase = const PhaseSettings(
-              ignoredLeaks: _leakIgnoreConfig,
-              leakDiagnosticConfig: LeakDiagnosticConfig(
-                collectRetainingPathForNotGCed: true,
-                collectStackTraceOnStart: true,
-                collectStackTraceOnDisposal: true,
+        Wrap(
+          spacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ...LeakType.values.map(
+              (type) => ElevatedButton(
+                onPressed: () => DebugLeakingSection.printLeakReportsOfType(type),
+                child: Text(type.name),
               ),
-            );
-          }),
-          child: const Text('Track leaks with stacks'),
-        ),
-        ElevatedButton(
-          onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-            LeakTracking.phase = const PhaseSettings(
-              ignoredLeaks: _leakIgnoreConfig,
-              leakDiagnosticConfig: LeakDiagnosticConfig(
-                collectRetainingPathForNotGCed: true,
-                collectStackTraceOnStart: false,
-                collectStackTraceOnDisposal: false,
-              ),
-            );
-          }),
-          child: const Text('Track leaks without stacks'),
+            ),
+            ElevatedButton(
+              onPressed: () => LeakTracking.collectLeaks().then((leaks) {
+                LeakTracking.phase = const PhaseSettings(
+                  ignoredLeaks: _leakIgnoreConfig,
+                  leakDiagnosticConfig: LeakDiagnosticConfig(
+                    collectRetainingPathForNotGCed: true,
+                    collectStackTraceOnStart: true,
+                    collectStackTraceOnDisposal: true,
+                  ),
+                );
+              }),
+              child: const Text('Track GC w/ stacks'),
+            ),
+            ElevatedButton(
+              onPressed: () => LeakTracking.collectLeaks().then((leaks) {
+                LeakTracking.phase = const PhaseSettings(
+                  ignoredLeaks: _leakIgnoreConfig,
+                  leakDiagnosticConfig: LeakDiagnosticConfig(
+                    collectRetainingPathForNotGCed: true,
+                    collectStackTraceOnStart: false,
+                    collectStackTraceOnDisposal: false,
+                  ),
+                );
+              }),
+              child: const Text('Track GC w/o stacks'),
+            ),
+          ],
         ),
       ],
     );
@@ -116,10 +152,7 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                           padding: WidgetStateProperty.all(const EdgeInsets.all(6)),
                           minimumSize: WidgetStateProperty.all(Size.zero),
                         ),
-                        onPressed: () => LeakTracking.collectLeaks().then((leaks) {
-                          final reports = leaks.byType[type] ?? [];
-                          _printLeaks(type, reports);
-                        }),
+                        onPressed: () => DebugLeakingSection.printLeakReportsOfType(type),
                         child: Text(type.name),
                       );
                     }),
@@ -157,24 +190,5 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
         ),
       ),
     );
-  }
-
-  void _printLeaks(LeakType type, List<LeakReport> reports) {
-    debugPrint('* leak type=$type, ${reports.length} reports');
-    groupBy(reports, (report) => report.type).forEach((reportType, typedReports) {
-      debugPrint('  * report type=$reportType');
-      groupBy(typedReports, (report) => report.trackedClass).forEach((trackedClass, classedReports) {
-        debugPrint('    trackedClass=$trackedClass reports=${classedReports.length}');
-        classedReports.forEach((report) {
-          final phase = report.phase;
-          final retainingPath = report.retainingPath;
-          final detailedPath = report.detailedPath;
-          final context = report.context;
-          if (phase != null || retainingPath != null || detailedPath != null || context != null) {
-            debugPrint('      phase=$phase retainingPath=$retainingPath detailedPath=$detailedPath context=$context');
-          }
-        });
-      });
-    });
   }
 }

@@ -100,23 +100,61 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getCodecs(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        fun displayNum(n: Int): String {
+            var s = "$n"
+            if (s.endsWith("000")) s = "${n / 1000}K"
+            if (s.endsWith("000K")) s = "${n / 1000000}M"
+            return s
+        }
+
         fun getFields(info: MediaCodecInfo): FieldMap {
             val fields: FieldMap = hashMapOf(
                 "name" to info.name,
                 "isEncoder" to info.isEncoder,
-                "supportedTypes" to info.supportedTypes.joinToString(", "),
             )
+            for (mimeType in info.supportedTypes) {
+                var desc: String? = null
+                val cap = info.getCapabilitiesForType(mimeType)
+                cap.audioCapabilities?.let { cap ->
+                    desc = listOf(
+                        Pair("BitrateRange", cap.bitrateRange),
+                    ).filter { it.second != null }.joinToString(", ") { "${it.first}=${it.second}" }
+                }
+                cap.videoCapabilities?.let { cap ->
+                    desc = arrayListOf<Pair<String, Any?>>(
+                        Pair("BitrateMax", displayNum(cap.bitrateRange.upper)),
+                    ).apply {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            add(Pair("PerformancePoints", cap.supportedPerformancePoints?.let { points ->
+                                "[${points.joinToString(", ") { it.toString().removePrefix("PerformancePoint") }}]"
+                            }))
+                        }
+                    }.filter { it.second != null }.joinToString(", ") { "${it.first}=${it.second}" }
+                }
+                fields[mimeType] = desc
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (info.canonicalName != info.name) fields["canonicalName"] = info.canonicalName
-                if (info.isAlias) fields["isAlias"] to info.isAlias
-                if (info.isHardwareAccelerated) fields["isHardwareAccelerated"] to info.isHardwareAccelerated
-                if (info.isSoftwareOnly) fields["isSoftwareOnly"] to info.isSoftwareOnly
-                if (info.isVendor) fields["isVendor"] to info.isVendor
+
+                val flags = ArrayList<String>()
+                if (info.isAlias) flags.add("alias")
+                if (info.isHardwareAccelerated) flags.add("hardware accelerated")
+                if (info.isSoftwareOnly) flags.add("software only")
+                if (info.isVendor) flags.add("vendor")
+                if (flags.isNotEmpty()) fields["flags"] = flags.joinToString(", ")
             }
             return fields
         }
 
-        val codecs = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos.map(::getFields).toList()
+        val regularCodecs = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+        val codecs = ArrayList<FieldMap>()
+        codecs.addAll(regularCodecs.mapIndexed { index, info ->
+            getFields(info).apply { put("rank", index) }
+        })
+        val otherCodecs = MediaCodecList(MediaCodecList.ALL_CODECS).codecInfos.filterNot(regularCodecs::contains).toTypedArray()
+        codecs.addAll(otherCodecs.mapIndexed { index, info ->
+            getFields(info).apply { put("rank", "non-regular $index") }
+        })
         result.success(codecs)
     }
 

@@ -7,72 +7,72 @@ extension ExtraMetadataSyntheticFieldConvert on MetadataSyntheticField {
 extension ExtraMetadataFieldConvert on MetadataField {
   MetadataType get type {
     switch (this) {
-      case MetadataField.exifDate:
-      case MetadataField.exifDateOriginal:
-      case MetadataField.exifDateDigitized:
-      case MetadataField.exifGpsAltitude:
-      case MetadataField.exifGpsAltitudeRef:
-      case MetadataField.exifGpsAreaInformation:
-      case MetadataField.exifGpsDatestamp:
-      case MetadataField.exifGpsDestBearing:
-      case MetadataField.exifGpsDestBearingRef:
-      case MetadataField.exifGpsDestDistance:
-      case MetadataField.exifGpsDestDistanceRef:
-      case MetadataField.exifGpsDestLatitude:
-      case MetadataField.exifGpsDestLatitudeRef:
-      case MetadataField.exifGpsDestLongitude:
-      case MetadataField.exifGpsDestLongitudeRef:
-      case MetadataField.exifGpsDifferential:
-      case MetadataField.exifGpsDOP:
-      case MetadataField.exifGpsHPositioningError:
-      case MetadataField.exifGpsImgDirection:
-      case MetadataField.exifGpsImgDirectionRef:
-      case MetadataField.exifGpsLatitude:
-      case MetadataField.exifGpsLatitudeRef:
-      case MetadataField.exifGpsLongitude:
-      case MetadataField.exifGpsLongitudeRef:
-      case MetadataField.exifGpsMapDatum:
-      case MetadataField.exifGpsMeasureMode:
-      case MetadataField.exifGpsProcessingMethod:
-      case MetadataField.exifGpsSatellites:
-      case MetadataField.exifGpsSpeed:
-      case MetadataField.exifGpsSpeedRef:
-      case MetadataField.exifGpsStatus:
-      case MetadataField.exifGpsTimestamp:
-      case MetadataField.exifGpsTrack:
-      case MetadataField.exifGpsTrackRef:
-      case MetadataField.exifGpsVersionId:
-      case MetadataField.exifImageDescription:
-      case MetadataField.exifMake:
-      case MetadataField.exifModel:
-      case MetadataField.exifUserComment:
+      case .exifDate:
+      case .exifDateOriginal:
+      case .exifDateDigitized:
+      case .exifGpsAltitude:
+      case .exifGpsAltitudeRef:
+      case .exifGpsAreaInformation:
+      case .exifGpsDatestamp:
+      case .exifGpsDestBearing:
+      case .exifGpsDestBearingRef:
+      case .exifGpsDestDistance:
+      case .exifGpsDestDistanceRef:
+      case .exifGpsDestLatitude:
+      case .exifGpsDestLatitudeRef:
+      case .exifGpsDestLongitude:
+      case .exifGpsDestLongitudeRef:
+      case .exifGpsDifferential:
+      case .exifGpsDOP:
+      case .exifGpsHPositioningError:
+      case .exifGpsImgDirection:
+      case .exifGpsImgDirectionRef:
+      case .exifGpsLatitude:
+      case .exifGpsLatitudeRef:
+      case .exifGpsLongitude:
+      case .exifGpsLongitudeRef:
+      case .exifGpsMapDatum:
+      case .exifGpsMeasureMode:
+      case .exifGpsProcessingMethod:
+      case .exifGpsSatellites:
+      case .exifGpsSpeed:
+      case .exifGpsSpeedRef:
+      case .exifGpsStatus:
+      case .exifGpsTimestamp:
+      case .exifGpsTrack:
+      case .exifGpsTrackRef:
+      case .exifGpsVersionId:
+      case .exifImageDescription:
+      case .exifMake:
+      case .exifModel:
+      case .exifUserComment:
         return MetadataType.exif;
-      case MetadataField.mp4GpsCoordinates:
-      case MetadataField.mp4RotationDegrees:
-      case MetadataField.mp4Xmp:
+      case .mp4GpsCoordinates:
+      case .mp4RotationDegrees:
+      case .mp4Xmp:
         return MetadataType.mp4;
-      case MetadataField.xmpXmpCreateDate:
+      case .xmpXmpCreateDate:
         return MetadataType.xmp;
-      case MetadataField.hashMd5:
-      case MetadataField.hashSha1:
-      case MetadataField.hashSha256:
+      case .hashMd5:
+      case .hashSha1:
+      case .hashSha256:
         return MetadataType.file;
     }
   }
 
   String? get toPlatform {
     switch (type) {
-      case MetadataType.exif:
+      case .exif:
         return _toExifInterfaceTag();
-      case MetadataType.file:
+      case .file:
         return name;
       default:
         switch (this) {
-          case MetadataField.mp4GpsCoordinates:
+          case .mp4GpsCoordinates:
             return 'gpsCoordinates';
-          case MetadataField.mp4RotationDegrees:
+          case .mp4RotationDegrees:
             return 'rotationDegrees';
-          case MetadataField.mp4Xmp:
+          case .mp4Xmp:
             return 'xmp';
           default:
             return null;
@@ -82,83 +82,83 @@ extension ExtraMetadataFieldConvert on MetadataField {
 
   String? _toExifInterfaceTag() {
     switch (this) {
-      case MetadataField.exifDate:
+      case .exifDate:
         return 'DateTime';
-      case MetadataField.exifDateOriginal:
+      case .exifDateOriginal:
         return 'DateTimeOriginal';
-      case MetadataField.exifDateDigitized:
+      case .exifDateDigitized:
         return 'DateTimeDigitized';
-      case MetadataField.exifGpsAltitude:
+      case .exifGpsAltitude:
         return 'GPSAltitude';
-      case MetadataField.exifGpsAltitudeRef:
+      case .exifGpsAltitudeRef:
         return 'GPSAltitudeRef';
-      case MetadataField.exifGpsAreaInformation:
+      case .exifGpsAreaInformation:
         return 'GPSAreaInformation';
-      case MetadataField.exifGpsDatestamp:
+      case .exifGpsDatestamp:
         return 'GPSDateStamp';
-      case MetadataField.exifGpsDestBearing:
+      case .exifGpsDestBearing:
         return 'GPSDestBearing';
-      case MetadataField.exifGpsDestBearingRef:
+      case .exifGpsDestBearingRef:
         return 'GPSDestBearingRef';
-      case MetadataField.exifGpsDestDistance:
+      case .exifGpsDestDistance:
         return 'GPSDestDistance';
-      case MetadataField.exifGpsDestDistanceRef:
+      case .exifGpsDestDistanceRef:
         return 'GPSDestDistanceRef';
-      case MetadataField.exifGpsDestLatitude:
+      case .exifGpsDestLatitude:
         return 'GPSDestLatitude';
-      case MetadataField.exifGpsDestLatitudeRef:
+      case .exifGpsDestLatitudeRef:
         return 'GPSDestLatitudeRef';
-      case MetadataField.exifGpsDestLongitude:
+      case .exifGpsDestLongitude:
         return 'GPSDestLongitude';
-      case MetadataField.exifGpsDestLongitudeRef:
+      case .exifGpsDestLongitudeRef:
         return 'GPSDestLongitudeRef';
-      case MetadataField.exifGpsDifferential:
+      case .exifGpsDifferential:
         return 'GPSDifferential';
-      case MetadataField.exifGpsDOP:
+      case .exifGpsDOP:
         return 'GPSDOP';
-      case MetadataField.exifGpsHPositioningError:
+      case .exifGpsHPositioningError:
         return 'GPSHPositioningError';
-      case MetadataField.exifGpsImgDirection:
+      case .exifGpsImgDirection:
         return 'GPSImgDirection';
-      case MetadataField.exifGpsImgDirectionRef:
+      case .exifGpsImgDirectionRef:
         return 'GPSImgDirectionRef';
-      case MetadataField.exifGpsLatitude:
+      case .exifGpsLatitude:
         return 'GPSLatitude';
-      case MetadataField.exifGpsLatitudeRef:
+      case .exifGpsLatitudeRef:
         return 'GPSLatitudeRef';
-      case MetadataField.exifGpsLongitude:
+      case .exifGpsLongitude:
         return 'GPSLongitude';
-      case MetadataField.exifGpsLongitudeRef:
+      case .exifGpsLongitudeRef:
         return 'GPSLongitudeRef';
-      case MetadataField.exifGpsMapDatum:
+      case .exifGpsMapDatum:
         return 'GPSMapDatum';
-      case MetadataField.exifGpsMeasureMode:
+      case .exifGpsMeasureMode:
         return 'GPSMeasureMode';
-      case MetadataField.exifGpsProcessingMethod:
+      case .exifGpsProcessingMethod:
         return 'GPSProcessingMethod';
-      case MetadataField.exifGpsSatellites:
+      case .exifGpsSatellites:
         return 'GPSSatellites';
-      case MetadataField.exifGpsSpeed:
+      case .exifGpsSpeed:
         return 'GPSSpeed';
-      case MetadataField.exifGpsSpeedRef:
+      case .exifGpsSpeedRef:
         return 'GPSSpeedRef';
-      case MetadataField.exifGpsStatus:
+      case .exifGpsStatus:
         return 'GPSStatus';
-      case MetadataField.exifGpsTimestamp:
+      case .exifGpsTimestamp:
         return 'GPSTimeStamp';
-      case MetadataField.exifGpsTrack:
+      case .exifGpsTrack:
         return 'GPSTrack';
-      case MetadataField.exifGpsTrackRef:
+      case .exifGpsTrackRef:
         return 'GPSTrackRef';
-      case MetadataField.exifGpsVersionId:
+      case .exifGpsVersionId:
         return 'GPSVersionID';
-      case MetadataField.exifImageDescription:
+      case .exifImageDescription:
         return 'ImageDescription';
-      case MetadataField.exifMake:
+      case .exifMake:
         return 'Make';
-      case MetadataField.exifModel:
+      case .exifModel:
         return 'Model';
-      case MetadataField.exifUserComment:
+      case .exifUserComment:
         return 'UserComment';
       default:
         return null;

@@ -22,15 +22,15 @@ class TagFilter extends CollectionFilter with CoveredFilter, TagBaseFilter {
     }
   }
 
-  factory TagFilter.fromMap(Map<String, dynamic> json) {
+  factory TagFilter.fromMap(Map<String, Object?> json) {
     return TagFilter(
-      json['tag'],
-      reversed: json['reversed'] ?? false,
+      json['tag'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'tag': tag,
     'reversed': reversed,

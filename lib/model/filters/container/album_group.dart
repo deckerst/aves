@@ -18,7 +18,7 @@ class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
 
   factory AlbumGroupFilter.empty(Uri uri) => AlbumGroupFilter(uri, SetOrFilter(const {}));
 
-  static AlbumGroupFilter? fromMap(Map<String, dynamic> json) {
+  static AlbumGroupFilter? fromMap(Map<String, Object?> json) {
     final props = GroupBaseFilter.fromMap(json);
     if (props == null) return null;
 

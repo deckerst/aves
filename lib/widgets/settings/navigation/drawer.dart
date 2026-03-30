@@ -58,12 +58,15 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
     _typeItems.addAll(userTypeLinks);
     _typeItems.addAll(NavigationDrawerEditorPage.collectionFilterOptions.where((v) => !userTypeLinks.contains(v)));
 
-    _albumItems.addAll(AppDrawer.effectiveAlbumBookmarks(context));
-
     final userPageLinks = settings.drawerPageBookmarks;
     _visiblePages.addAll(userPageLinks);
     _pageItems.addAll(userPageLinks);
     _pageItems.addAll(NavigationDrawerEditorPage.pageOptions.where((v) => !userPageLinks.contains(v)));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // delayed as `context` should not be used within `initState`
+      _albumItems.addAll(AppDrawer.effectiveAlbumBookmarks(context));
+    });
   }
 
   @override

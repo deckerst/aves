@@ -23,39 +23,39 @@ class DateFilter extends CollectionFilter {
   DateFilter(this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
     switch (level) {
-      case DateLevel.y:
+      case .y:
         _test = (entry) => entry.bestDate?.isAtSameYearAs(_effectiveDate) ?? false;
-      case DateLevel.ym:
+      case .ym:
         _test = (entry) => entry.bestDate?.isAtSameMonthAs(_effectiveDate) ?? false;
-      case DateLevel.ymd:
+      case .ymd:
         _test = (entry) => entry.bestDate?.isAtSameDayAs(_effectiveDate) ?? false;
-      case DateLevel.md:
+      case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
         _test = (entry) {
           final bestDate = entry.bestDate;
           return bestDate != null && bestDate.month == month && bestDate.day == day;
         };
-      case DateLevel.m:
+      case .m:
         final month = _effectiveDate.month;
         _test = (entry) => entry.bestDate?.month == month;
-      case DateLevel.d:
+      case .d:
         final day = _effectiveDate.day;
         _test = (entry) => entry.bestDate?.day == day;
     }
   }
 
-  factory DateFilter.fromMap(Map<String, dynamic> json) {
+  factory DateFilter.fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
       DateLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? DateLevel.ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
-      reversed: json['reversed'] ?? false,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'level': level.toString(),
     'date': date?.toIso8601String(),
@@ -80,17 +80,17 @@ class DateFilter extends CollectionFilter {
 
   static bool isCompatibleLevel(DateLevel a, DateLevel b) {
     switch (a) {
-      case DateLevel.y:
+      case .y:
         return {DateLevel.md, DateLevel.m, DateLevel.d}.contains(b);
-      case DateLevel.ym:
+      case .ym:
         return DateLevel.d == b;
-      case DateLevel.ymd:
+      case .ymd:
         return false;
-      case DateLevel.md:
+      case .md:
         return DateLevel.y == b;
-      case DateLevel.m:
+      case .m:
         return {DateLevel.y, DateLevel.d}.contains(b);
-      case DateLevel.d:
+      case .d:
         return {DateLevel.y, DateLevel.ym, DateLevel.m}.contains(b);
     }
   }
@@ -102,21 +102,21 @@ class DateFilter extends CollectionFilter {
   String getLabel(BuildContext context) {
     final locale = context.locale;
     switch (level) {
-      case DateLevel.y:
+      case .y:
         return DateFormat.y(locale).format(_effectiveDate);
-      case DateLevel.ym:
+      case .ym:
         return DateFormat.yMMM(locale).format(_effectiveDate);
-      case DateLevel.ymd:
+      case .ymd:
         return formatDay(_effectiveDate, locale);
-      case DateLevel.md:
+      case .md:
         if (date != null) {
           return DateFormat.MMMd(locale).format(_effectiveDate);
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
-      case DateLevel.m:
+      case .m:
         return DateFormat.MMMM(locale).format(_effectiveDate);
-      case DateLevel.d:
+      case .d:
         return DateFormat.d(locale).format(_effectiveDate);
     }
   }

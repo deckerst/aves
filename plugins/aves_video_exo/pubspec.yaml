@@ -1,0 +1,23 @@
+name: aves_video_exo
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.11.4 <4.0.0"
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+  aves_model:
+    path: ../aves_model
+  aves_video:
+    path: ../aves_video
+  aves_utils:
+    path: ../aves_utils
+  video_player:
+
+dev_dependencies:
+  flutter_lints:
+
+flutter:

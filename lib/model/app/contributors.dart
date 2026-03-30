@@ -165,6 +165,10 @@ class Contributors {
     Contributor('abc0922001', 'abc0922001@hotmail.com'),
     Contributor('Morkovka21Vek', 'morkovka21vek@gmail.com'),
     Contributor('Valentin Ljuba', '7fnndt50@anonaddy.me'),
+    Contributor('Ghost of Sparta', 'makesocialfoss32@keemail.me'),
+    Contributor('Víctor Humet Salado', 'ressaguer@proton.me'),
+    Contributor('traaduttore', 'traaduttore@users.noreply.hosted.weblate.org'),
+    Contributor('sgchr', 'pr3dali3n@gmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali

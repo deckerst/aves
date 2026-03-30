@@ -246,9 +246,12 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
         displayRegion.height.toDouble(),
       );
       image = await picture.toImage(renderSize.width.round(), renderSize.height.round());
+      picture.dispose();
     }
 
     // bytes should be compressed to be decodable on the platform side
-    return await image.toByteData(format: ui.ImageByteFormat.png).then((v) => v?.buffer.asUint8List());
+    final imageData = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    return imageData?.buffer.asUint8List();
   }
 }

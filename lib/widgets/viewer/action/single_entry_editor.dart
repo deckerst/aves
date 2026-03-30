@@ -7,17 +7,20 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin {
+mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditorMixin {
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   Future<void> edit(BuildContext context, AvesEntry targetEntry, Future<Set<EntryDataType>> Function() apply) async {
     if (!await checkStoragePermission(context, {targetEntry})) return;
+
+    if (!await checkUndatedItems(context, {targetEntry})) return;
 
     // check before applying, because it relies on provider
     // but the widget tree may be disposed if the user navigated away

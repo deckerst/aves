@@ -65,7 +65,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   static PopupMenuEntry<ChipSetAction> toMenuItem(BuildContext context, ChipSetAction action, {required bool enabled}) {
     late Widget child;
     switch (action) {
-      case ChipSetAction.toggleTitleSearch:
+      case .toggleTitleSearch:
         child = TitleSearchToggler(
           queryEnabled: context.read<Query>().enabled,
           isMenuItem: true,
@@ -440,7 +440,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   }) {
     final onPressed = enabled ? () => _onActionSelected(context, action, actionDelegate) : null;
     switch (action) {
-      case ChipSetAction.toggleTitleSearch:
+      case .toggleTitleSearch:
         // `Query` may not be available during hero
         return Selector<Query?, bool>(
           selector: (context, query) => query?.enabled ?? false,
@@ -468,7 +468,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     required bool enabled,
   }) {
     switch (action) {
-      case ChipSetAction.toggleTitleSearch:
+      case .toggleTitleSearch:
         return TitleSearchTogglerCaption(
           enabled: enabled,
         );

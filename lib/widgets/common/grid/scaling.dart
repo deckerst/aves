@@ -121,10 +121,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     _metadata = metadata;
 
     switch (tileLayout) {
-      case TileLayout.mosaic:
+      case .mosaic:
         _startSize = Size.square(tileExtentController.extentNotifier.value);
-      case TileLayout.grid:
-      case TileLayout.list:
+      case .grid:
+      case .list:
         _startSize = renderMetaData.size;
     }
     _scaledSizeNotifier = ValueNotifier(_startSize!);
@@ -138,7 +138,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
     final halfSize = _startSize! / 2;
     switch (tileLayout) {
-      case TileLayout.mosaic:
+      case .mosaic:
         _overlayEntry = OverlayEntry(
           builder: (context) => MosaicScaleOverlay(
             contentRect: contentRect,
@@ -148,8 +148,8 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             itemBuilder: widget.mosaicItemBuilder,
           ),
         );
-      case TileLayout.grid:
-      case TileLayout.list:
+      case .grid:
+      case .list:
         final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
         _overlayEntry = OverlayEntry(
           builder: (context) => TileExtentControllerProvider(
@@ -179,11 +179,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 
     final s = details.scale;
     switch (tileLayout) {
-      case TileLayout.mosaic:
-      case TileLayout.grid:
+      case .mosaic:
+      case .grid:
         final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
         _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
-      case TileLayout.list:
+      case .list:
         final scaledHeight = (_startSize!.height * s).clamp(_extentMin!, _extentMax!);
         _scaledSizeNotifier!.value = Size(_startSize!.width, scaledHeight);
     }
@@ -207,10 +207,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     // sanitize and update grid layout if necessary
     late final double preferredExtent;
     switch (tileLayout) {
-      case TileLayout.mosaic:
-      case TileLayout.grid:
+      case .mosaic:
+      case .grid:
         preferredExtent = scaledSize.width;
-      case TileLayout.list:
+      case .list:
         preferredExtent = scaledSize.height;
     }
     final newExtent = tileExtentController.setUserPreferredExtent(preferredExtent);

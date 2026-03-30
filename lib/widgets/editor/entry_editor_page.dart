@@ -90,7 +90,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
                       valueListenable: _actionNotifier,
                       builder: (context, action, child) {
                         switch (action) {
-                          case EditorAction.transform:
+                          case .transform:
                             return Cropper(
                               magnifierController: _magnifierController,
                               transformController: _transformController,
@@ -119,7 +119,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
 
   void _onActionChanged() {
     switch (_actionNotifier.value) {
-      case EditorAction.transform:
+      case .transform:
         _transformController.reset();
         _marginNotifier.value = Cropper.imageMargin;
       default:

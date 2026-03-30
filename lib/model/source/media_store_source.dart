@@ -200,7 +200,10 @@ class MediaStoreSource extends CollectionSource {
     // recover untracked trash items
     debugPrint('$runtimeType load ${stopwatch.elapsed} recover untracked entries');
     if (directory == null) {
-      newEntries.addAll(await recoverUntrackedTrashItems());
+      final recoveredEntries = await recoverUntrackedTrashItems();
+      // set media store as origin of recovered items, because they would be managed by it if restored
+      recoveredEntries.forEach((entry) => entry.origin = EntryOrigins.mediaStoreContent);
+      newEntries.addAll(recoveredEntries);
     }
 
     // verify paths because some apps move files without updating their `last modified date`

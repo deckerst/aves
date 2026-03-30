@@ -28,13 +28,13 @@ enum ScaleState {
 
 ScaleState defaultScaleStateCycle(ScaleState actual) {
   switch (actual) {
-    case ScaleState.initial:
+    case .initial:
       return ScaleState.covering;
-    case ScaleState.covering:
+    case .covering:
       return ScaleState.originalSize;
-    case ScaleState.originalSize:
-    case ScaleState.zoomedIn:
-    case ScaleState.zoomedOut:
+    case .originalSize:
+    case .zoomedIn:
+    case .zoomedOut:
       return ScaleState.initial;
   }
 }

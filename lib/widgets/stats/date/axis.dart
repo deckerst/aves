@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
 // cf charts.DateTimeTickFormatter factory internals for default formats
@@ -18,11 +18,11 @@ class TimeAxisSpec {
     required DateTime last,
   }) {
     switch (level) {
-      case DateLevel.ymd:
+      case .ymd:
         return TimeAxisSpec.days(locale, first, last);
-      case DateLevel.ym:
+      case .ym:
         return TimeAxisSpec.months(locale, first, last);
-      case DateLevel.y:
+      case .y:
       default:
         return TimeAxisSpec.years(locale, first, last);
     }

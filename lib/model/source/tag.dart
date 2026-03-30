@@ -19,8 +19,7 @@ mixin TagMixin on SourceBase {
 
   Future<void> loadCatalogMetadata({Set<int>? ids}) async {
     final saved = await (ids != null ? localMediaDb.loadCatalogMetadataById(ids) : localMediaDb.loadCatalogMetadata());
-    final idMap = entryById;
-    saved.forEach((metadata) => idMap[metadata.id]?.catalogMetadata = metadata);
+    saved.forEach((metadata) => getEntryById(metadata.id)?.catalogMetadata = metadata);
     invalidateEntries();
     onCatalogMetadataChanged();
   }

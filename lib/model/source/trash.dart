@@ -16,8 +16,7 @@ mixin TrashMixin on SourceBase {
 
   Future<void> loadTrashDetails() async {
     final saved = await localMediaDb.loadAllTrashDetails();
-    final idMap = entryById;
-    saved.forEach((details) => idMap[details.id]?.trashDetails = details);
+    saved.forEach((details) => getEntryById(details.id)?.trashDetails = details);
   }
 
   Future<Set<String>> deleteExpiredTrash() async {

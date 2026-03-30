@@ -18,9 +18,9 @@ class Themes {
     required bool blurred,
   }) {
     switch (brightness) {
-      case Brightness.dark:
+      case .dark:
         return blurred ? Colors.black26 : Colors.black45;
-      case Brightness.light:
+      case .light:
         return blurred ? Colors.white54 : const Color(0xCCFFFFFF);
     }
   }

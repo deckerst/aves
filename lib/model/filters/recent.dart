@@ -27,13 +27,13 @@ class RecentlyAddedFilter extends CollectionFilter {
     updateNow();
   }
 
-  factory RecentlyAddedFilter.fromMap(Map<String, dynamic> json) {
-    final reversed = json['reversed'] ?? false;
+  factory RecentlyAddedFilter.fromMap(Map<String, Object?> json) {
+    final reversed = json['reversed'] as bool? ?? false;
     return reversed ? instanceReversed : instance;
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'reversed': reversed,
   };

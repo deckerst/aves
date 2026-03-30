@@ -83,48 +83,48 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
-      case ChipSetAction.configureView:
+      case .configureView:
         return true;
-      case ChipSetAction.select:
+      case .select:
         return appMode.canSelectFilter && !isSelecting;
-      case ChipSetAction.selectAll:
+      case .selectAll:
         return isSelecting && selectedItemCount < itemCount;
-      case ChipSetAction.selectNone:
+      case .selectNone:
         return isSelecting && selectedItemCount == itemCount;
       // browsing
-      case ChipSetAction.search:
+      case .search:
         return !useTvLayout && appMode.canNavigate && !isSelecting;
-      case ChipSetAction.toggleTitleSearch:
+      case .toggleTitleSearch:
         return !useTvLayout && !isSelecting;
-      case ChipSetAction.createGroup:
-      case ChipSetAction.createAlbum:
-      case ChipSetAction.createVault:
+      case .createGroup:
+      case .createAlbum:
+      case .createVault:
         return false;
       // browsing or selecting
-      case ChipSetAction.map:
-      case ChipSetAction.slideshow:
-      case ChipSetAction.stats:
+      case .map:
+      case .slideshow:
+      case .stats:
         return isMain;
       // selecting (single/multiple filters)
-      case ChipSetAction.hide:
+      case .hide:
         return isMain;
-      case ChipSetAction.pin:
+      case .pin:
         return isMain && (!hasSelection || !settings.pinnedFilters.containsAll(selectedFilters));
-      case ChipSetAction.unpin:
+      case .unpin:
         return isMain && (hasSelection && settings.pinnedFilters.containsAll(selectedFilters));
-      case ChipSetAction.showCollection:
+      case .showCollection:
         return appMode.canNavigate;
-      case ChipSetAction.delete:
-      case ChipSetAction.remove:
-      case ChipSetAction.group:
-      case ChipSetAction.lockVault:
-      case ChipSetAction.showCountryStates:
+      case .delete:
+      case .remove:
+      case .group:
+      case .lockVault:
+      case .showCountryStates:
         return false;
       // selecting (single filter)
-      case ChipSetAction.setCover:
+      case .setCover:
         return isMain;
-      case ChipSetAction.rename:
-      case ChipSetAction.configureVault:
+      case .rename:
+      case .configureVault:
         return false;
     }
   }
@@ -141,38 +141,38 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
     switch (action) {
       // general
-      case ChipSetAction.select:
+      case .select:
         return hasItems;
-      case ChipSetAction.configureView:
-      case ChipSetAction.selectAll:
-      case ChipSetAction.selectNone:
+      case .configureView:
+      case .selectAll:
+      case .selectNone:
       // browsing
-      case ChipSetAction.search:
-      case ChipSetAction.toggleTitleSearch:
-      case ChipSetAction.createGroup:
-      case ChipSetAction.createAlbum:
-      case ChipSetAction.createVault:
+      case .search:
+      case .toggleTitleSearch:
+      case .createGroup:
+      case .createAlbum:
+      case .createVault:
         return true;
       // browsing or selecting
-      case ChipSetAction.map:
-      case ChipSetAction.slideshow:
-      case ChipSetAction.stats:
+      case .map:
+      case .slideshow:
+      case .stats:
         return (!isSelecting && hasItems) || (isSelecting && hasSelection);
       // selecting (single/multiple filters)
-      case ChipSetAction.delete:
-      case ChipSetAction.remove:
-      case ChipSetAction.hide:
-      case ChipSetAction.pin:
-      case ChipSetAction.unpin:
-      case ChipSetAction.group:
-      case ChipSetAction.lockVault:
-      case ChipSetAction.showCountryStates:
-      case ChipSetAction.showCollection:
+      case .delete:
+      case .remove:
+      case .hide:
+      case .pin:
+      case .unpin:
+      case .group:
+      case .lockVault:
+      case .showCountryStates:
+      case .showCollection:
         return hasSelection;
       // selecting (single filter)
-      case ChipSetAction.rename:
-      case ChipSetAction.setCover:
-      case ChipSetAction.configureVault:
+      case .rename:
+      case .setCover:
+      case .configureVault:
         return selectedItemCount == 1;
     }
   }
@@ -181,54 +181,54 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
-      case ChipSetAction.configureView:
+      case .configureView:
         configureView(context);
-      case ChipSetAction.select:
+      case .select:
         context.read<Selection<FilterGridItem<T>>>().select();
-      case ChipSetAction.selectAll:
+      case .selectAll:
         context.read<Selection<FilterGridItem<T>>>().addToSelection(allItems);
-      case ChipSetAction.selectNone:
+      case .selectNone:
         context.read<Selection<FilterGridItem<T>>>().clearSelection();
       // browsing
-      case ChipSetAction.search:
+      case .search:
         _goToSearch(context);
-      case ChipSetAction.toggleTitleSearch:
+      case .toggleTitleSearch:
         final routeName = context.currentRouteName!;
         settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));
         context.read<Query>().toggle();
-      case ChipSetAction.createGroup:
-      case ChipSetAction.createAlbum:
-      case ChipSetAction.createVault:
+      case .createGroup:
+      case .createAlbum:
+      case .createVault:
         break;
       // browsing or selecting
-      case ChipSetAction.map:
+      case .map:
         _goToMap(context);
-      case ChipSetAction.slideshow:
+      case .slideshow:
         _goToSlideshow(context);
-      case ChipSetAction.stats:
+      case .stats:
         _goToStats(context);
       // selecting (single/multiple filters)
-      case ChipSetAction.hide:
+      case .hide:
         _hide(context);
-      case ChipSetAction.pin:
+      case .pin:
         settings.pinnedFilters = settings.pinnedFilters..addAll(getSelectedFilters(context));
         browse(context);
-      case ChipSetAction.unpin:
+      case .unpin:
         settings.pinnedFilters = settings.pinnedFilters..removeAll(getSelectedFilters(context));
         browse(context);
-      case ChipSetAction.showCollection:
+      case .showCollection:
         _goToCollection(context);
-      case ChipSetAction.delete:
-      case ChipSetAction.remove:
-      case ChipSetAction.group:
-      case ChipSetAction.lockVault:
-      case ChipSetAction.showCountryStates:
+      case .delete:
+      case .remove:
+      case .group:
+      case .lockVault:
+      case .showCountryStates:
         break;
       // selecting (single filter)
-      case ChipSetAction.setCover:
+      case .setCover:
         _setCover(context);
-      case ChipSetAction.rename:
-      case ChipSetAction.configureVault:
+      case .rename:
+      case .configureVault:
         break;
     }
   }
@@ -386,6 +386,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     if (!await unlockFilters(context, filters)) return;
 
     settings.changeFilterVisibility(filters, false);
+    lockFilters(filters);
 
     browse(context);
   }

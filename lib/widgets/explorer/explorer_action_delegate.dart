@@ -28,22 +28,22 @@ class ExplorerActionDelegate with FeedbackMixin {
     final isMain = appMode == AppMode.main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
-      case ExplorerAction.addShortcut:
+      case .addShortcut:
         return isMain && device.canPinShortcut;
-      case ExplorerAction.setHome:
+      case .setHome:
         return isMain && !useTvLayout;
-      case ExplorerAction.hide:
-      case ExplorerAction.stats:
+      case .hide:
+      case .stats:
         return isMain;
     }
   }
 
   bool canApply(ExplorerAction action) {
     switch (action) {
-      case ExplorerAction.addShortcut:
-      case ExplorerAction.setHome:
-      case ExplorerAction.hide:
-      case ExplorerAction.stats:
+      case .addShortcut:
+      case .setHome:
+      case .hide:
+      case .stats:
         return true;
     }
   }
@@ -51,13 +51,13 @@ class ExplorerActionDelegate with FeedbackMixin {
   void onActionSelected(BuildContext context, ExplorerAction action) {
     reportService.log('$runtimeType handles $action');
     switch (action) {
-      case ExplorerAction.addShortcut:
+      case .addShortcut:
         _addShortcut(context);
-      case ExplorerAction.setHome:
+      case .setHome:
         _setHome(context);
-      case ExplorerAction.hide:
+      case .hide:
         _hide(context);
-      case ExplorerAction.stats:
+      case .stats:
         _goToStats(context);
     }
   }

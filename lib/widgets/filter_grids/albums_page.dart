@@ -167,7 +167,7 @@ class AlbumListPage extends StatelessWidget {
 
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>>{};
     switch (settings.albumSectionFactor) {
-      case AlbumChipSectionFactor.importance:
+      case .importance:
         final groupKey = AlbumImportanceSectionKey.group(context);
         final specialKey = AlbumImportanceSectionKey.special(context);
         final appsKey = AlbumImportanceSectionKey.apps(context);
@@ -179,11 +179,11 @@ class AlbumListPage extends StatelessWidget {
           switch (filter) {
             case StoredAlbumFilter _:
               switch (covers.effectiveAlbumType(filter.album)) {
-                case AlbumType.regular:
+                case .regular:
                   return regularKey;
-                case AlbumType.app:
+                case .app:
                   return appsKey;
-                case AlbumType.vault:
+                case .vault:
                   return vaultKey;
                 default:
                   return specialKey;
@@ -205,7 +205,7 @@ class AlbumListPage extends StatelessWidget {
           if (sections.containsKey(dynamicKey)) dynamicKey: sections[dynamicKey]!,
           if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
         };
-      case AlbumChipSectionFactor.mimeType:
+      case .mimeType:
         final visibleEntries = source.visibleEntries;
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final matches = visibleEntries.where(kv.filter.test);
@@ -215,12 +215,12 @@ class AlbumListPage extends StatelessWidget {
           if (!hasImage && hasVideo) return MimeTypeSectionKey.videos(context);
           return MimeTypeSectionKey.mixed(context);
         });
-      case AlbumChipSectionFactor.volume:
+      case .volume:
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final filter = kv.filter;
           return StorageVolumeSectionKey(context, filter is StoredAlbumFilter ? filter.storageVolume : null);
         });
-      case AlbumChipSectionFactor.none:
+      case .none:
         return {
           if (sortedMapEntries.isNotEmpty)
             const ChipSectionKey(): [

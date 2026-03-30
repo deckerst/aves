@@ -9,13 +9,13 @@ publish_to: none
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.14.1+165
+version: 1.14.2+166
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.41.2
-  sdk: ">=3.11.0 <4.0.0"
+  flutter: 3.41.6
+  sdk: ">=3.11.4 <4.0.0"
 
 workspace:
   - plugins/aves_magnifier
@@ -29,6 +29,7 @@ workspace:
   - plugins/aves_ui
   - plugins/aves_utils
   - plugins/aves_video
+  - plugins/aves_video_exo
   - plugins/aves_video_mpv
 
 # use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
@@ -55,19 +56,20 @@ dependencies:
     path: plugins/aves_services_google
   aves_video:
     path: plugins/aves_video
+  #  aves_video_exo:
+  #    path: plugins/aves_video_exo
   aves_video_mpv:
     path: plugins/aves_video_mpv
   aves_ui:
     path: plugins/aves_ui
   aves_utils:
     path: plugins/aves_utils
-  charts_flutter:
-    git:
-      # https://github.com/fzyzcjy/charts.git master commit de76a46 (Sep 26, 2022) is incompatible with Flutter v3.10
-      url: https://github.com/deckerst/flutter_google_charts.git
-      ref: aves
-      path: charts_flutter
   collection:
+  community_charts_flutter:
+    git:
+      url: https://github.com/deckerst/flutter_community_charts.git
+      ref: aves
+      path: community_charts_flutter
   connectivity_plus:
   country_code:
   csv:
@@ -91,6 +93,9 @@ dependencies:
   flutter_map:
   flutter_markdown_plus:
   flutter_staggered_animations:
+    git:
+      url: https://github.com/deckerst/flutter_staggered_animations
+      ref: aves
   get_it:
   gpx:
   http:
@@ -98,12 +103,12 @@ dependencies:
   latlong2:
   leak_tracker:
   local_auth:
+  material_color_utilities:
   material_design_icons_flutter:
   material_symbols_icons:
   network_info_plus:
   overlay_support:
   package_info_plus:
-  palette_generator: # discontinued on 2025/04/30
   panorama:
     git:
       url: https://github.com/deckerst/aves_panorama.git
@@ -136,9 +141,11 @@ dependencies:
   xml:
 
 dependency_overrides:
-  # `shared_preferences_android` v2.4.20 depends on `androidx.datastore:datastore` v1.2.0, embedding
-  # native lib `libdatastore_shared_counter.so` which is not 16KB aligned for `x86_64` and `arm64-v8a`
-  shared_preferences_android: 2.4.18
+  media_kit_video:
+    git:
+      url: https://github.com/deckerst/media-kit.git
+      path: media_kit_video
+      ref: video_controller_disposal
 
 dev_dependencies:
   flutter_test:

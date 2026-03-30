@@ -47,7 +47,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
   Future<void> locatePlace({required bool background, required bool force, required Locale geocoderLocale}) async {
     if (!hasGps || (hasFineAddress && !force)) return;
     try {
-      Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
+      Future<List<Address>> call() => geocodingService.getAddress(latLng!, geocoderLocale);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -77,7 +77,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
     if (!hasGps) return null;
 
     try {
-      final addresses = await GeocodingService.getAddress(latLng!, geocoderLocale);
+      final addresses = await geocodingService.getAddress(latLng!, geocoderLocale);
       if (addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;

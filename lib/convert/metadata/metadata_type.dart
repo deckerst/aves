@@ -3,27 +3,27 @@ import 'package:aves_model/aves_model.dart';
 extension ExtraMetadataTypeConvert on MetadataType {
   String get toPlatform {
     switch (this) {
-      case MetadataType.comment:
+      case .comment:
         return 'comment';
-      case MetadataType.exif:
+      case .exif:
         return 'exif';
-      case MetadataType.iccProfile:
+      case .iccProfile:
         return 'icc_profile';
-      case MetadataType.iptc:
+      case .iptc:
         return 'iptc';
-      case MetadataType.jfif:
+      case .jfif:
         return 'jfif';
-      case MetadataType.jpegAdobe:
+      case .jpegAdobe:
         return 'jpeg_adobe';
-      case MetadataType.jpegDucky:
+      case .jpegDucky:
         return 'jpeg_ducky';
-      case MetadataType.mp4:
+      case .mp4:
         return 'mp4';
-      case MetadataType.photoshopIrb:
+      case .photoshopIrb:
         return 'photoshop_irb';
-      case MetadataType.xmp:
+      case .xmp:
         return 'xmp';
-      case MetadataType.file:
+      case .file:
         return 'file';
     }
   }

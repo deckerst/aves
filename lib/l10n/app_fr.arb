@@ -729,5 +729,6 @@
     "tagPickPageTitle": "Sélection",
     "settingsViewerShowZoomLevel": "Afficher le niveau de zoom",
     "settingsEnabled": "Activé",
-    "settingsForced": "Forcé"
+    "settingsForced": "Forcé",
+    "collectionActionExportGpx": "Exporter en GPX"
 }

@@ -190,7 +190,7 @@ class AGestureDetector extends StatelessWidget {
   /// A pointer that will trigger a tap with a secondary button has stopped
   /// contacting the screen at a particular location.
   ///
-  /// This triggers in the case of the tap gesture winning. If the tap gesture
+  /// This triggers in the case . If the tap gesture
   /// did not win, [onSecondaryTapCancel] is called instead.
   ///
   /// See also:
@@ -226,7 +226,7 @@ class AGestureDetector extends StatelessWidget {
   /// A pointer that will trigger a tap with a tertiary button has stopped
   /// contacting the screen at a particular location.
   ///
-  /// This triggers in the case of the tap gesture winning. If the tap gesture
+  /// This triggers in the case . If the tap gesture
   /// did not win, [onTertiaryTapCancel] is called instead.
   ///
   /// See also:

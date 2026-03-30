@@ -98,8 +98,10 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 
   late AnimationController _positionAnimationController;
   late Animation<Offset> _positionAnimation;
+  late CurvedAnimation _panningCurvedAnimation;
 
   static const _flingPointerKind = PointerDeviceKind.unknown;
+  static const panningAnimationCurve = Curves.easeOutCubic;
 
   @override
   void initState() {
@@ -108,6 +110,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       ..addListener(handleScaleAnimation)
       ..addStatusListener(onAnimationStatus);
     _positionAnimationController = AnimationController(vsync: this)..addListener(handlePositionAnimate);
+    _panningCurvedAnimation = CurvedAnimation(parent: _positionAnimationController, curve: panningAnimationCurve);
     _registerWidget(widget);
     // force delegate scale computing on initialization
     // so that it does not happen lazily at the beginning of a scale animation
@@ -123,14 +126,20 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       _registerWidget(widget);
     }
 
-    if (oldWidget.allowOriginalScaleBeyondRange != widget.allowOriginalScaleBeyondRange || oldWidget.minScale != widget.minScale || oldWidget.maxScale != widget.maxScale || oldWidget.initialScale != widget.initialScale || oldWidget.contentSize != widget.contentSize) {
-      controller.setScaleBoundaries((controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
-        allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
-        minScale: widget.minScale,
-        maxScale: widget.maxScale,
-        initialScale: widget.initialScale,
-        contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : null,
-      ));
+    if (oldWidget.allowOriginalScaleBeyondRange != widget.allowOriginalScaleBeyondRange ||
+        oldWidget.minScale != widget.minScale ||
+        oldWidget.maxScale != widget.maxScale ||
+        oldWidget.initialScale != widget.initialScale ||
+        oldWidget.contentSize != widget.contentSize) {
+      controller.setScaleBoundaries(
+        (controller.scaleBoundaries ?? ScaleBoundaries.zero).copyWith(
+          allowOriginalScaleBeyondRange: widget.allowOriginalScaleBeyondRange,
+          minScale: widget.minScale,
+          maxScale: widget.maxScale,
+          initialScale: widget.initialScale,
+          contentSize: widget.contentSize.isEmpty == false ? widget.contentSize : null,
+        ),
+      );
     }
   }
 
@@ -138,6 +147,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
   void dispose() {
     _unregisterWidget(widget);
     _scaleAnimationController.dispose();
+    _panningCurvedAnimation.dispose();
     _positionAnimationController.dispose();
     super.dispose();
   }
@@ -303,10 +313,9 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
         );
         if (currentPosition != newPosition) {
           final tween = Tween<Offset>(begin: currentPosition, end: newPosition);
-          const curve = Curves.easeOutCubic;
-          _positionAnimation = tween.animate(CurvedAnimation(parent: _positionAnimationController, curve: curve));
+          _positionAnimation = tween.animate(_panningCurvedAnimation);
           _positionAnimationController
-            ..duration = _getAnimationDurationForVelocity(curve: curve, tween: tween, targetPixelPerSecond: pps)
+            ..duration = _getAnimationDurationForVelocity(curve: panningAnimationCurve, tween: tween, targetPixelPerSecond: pps)
             ..forward(from: 0.0);
         }
       }
@@ -543,12 +552,13 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equ
   }
 }
 
-typedef MagnifierTapCallback = Function(
-  BuildContext context,
-  MagnifierState state,
-  Alignment alignment,
-  Offset childTapPosition,
-);
+typedef MagnifierTapCallback =
+    Function(
+      BuildContext context,
+      MagnifierState state,
+      Alignment alignment,
+      Offset childTapPosition,
+    );
 typedef MagnifierDoubleTapPredicate = bool Function(Offset localPosition);
 typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
 typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);

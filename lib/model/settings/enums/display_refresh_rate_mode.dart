@@ -13,11 +13,11 @@ extension ExtraDisplayRefreshRateMode on DisplayRefreshRateMode {
 
     debugPrint('Apply display refresh rate: $name');
     switch (this) {
-      case DisplayRefreshRateMode.auto:
+      case .auto:
         await FlutterDisplayMode.setPreferredMode(DisplayMode.auto);
-      case DisplayRefreshRateMode.highest:
+      case .highest:
         await FlutterDisplayMode.setHighRefreshRate();
-      case DisplayRefreshRateMode.lowest:
+      case .lowest:
         await FlutterDisplayMode.setLowRefreshRate();
     }
   }

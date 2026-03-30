@@ -57,9 +57,9 @@ class _HomeOption {
   String getName(BuildContext context) {
     final pageName = page.getName(context);
     switch (page) {
-      case HomePageSetting.collection:
+      case .collection:
         return customCollection.isNotEmpty ? context.l10n.setHomeCustom : pageName;
-      case HomePageSetting.explorer:
+      case .explorer:
         return customExplorerPath != null ? context.l10n.setHomeCustom : pageName;
       default:
         return pageName;
@@ -68,10 +68,10 @@ class _HomeOption {
 
   String? getDetails(BuildContext context) {
     switch (page) {
-      case HomePageSetting.collection:
+      case .collection:
         final filters = customCollection;
         return filters.isNotEmpty ? [context.l10n.collectionPageTitle, filters.map((v) => v.getLabel(context)).join(', ')].join(AText.separator) : null;
-      case HomePageSetting.explorer:
+      case .explorer:
         final path = customExplorerPath;
         return path != null ? [context.l10n.explorerPageTitle, pContext.basename(path)].join(AText.separator) : null;
       default:

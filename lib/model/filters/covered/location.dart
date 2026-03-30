@@ -33,34 +33,34 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
       _test = (entry) => !entry.hasGps;
     } else {
       switch (level) {
-        case LocationLevel.country:
+        case .country:
           _test = (entry) => entry.addressDetails?.countryCode == _code;
-        case LocationLevel.state:
+        case .state:
           _test = (entry) => entry.addressDetails?.stateCode == _code;
-        case LocationLevel.place:
+        case .place:
           _test = (entry) => entry.addressDetails?.place == _location;
       }
     }
   }
 
-  factory LocationFilter.fromMap(Map<String, dynamic> json) {
+  factory LocationFilter.fromMap(Map<String, Object?> json) {
     return LocationFilter(
       LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
-      json['location'],
-      reversed: json['reversed'] ?? false,
+      json['location'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() {
+  Map<String, Object?> toMap() {
     String location = _location;
     switch (level) {
-      case LocationLevel.country:
-      case LocationLevel.state:
+      case .country:
+      case .state:
         if (_code != null) {
           location = _nameAndCode;
         }
-      case LocationLevel.place:
+      case .place:
         break;
     }
     return {
@@ -95,7 +95,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
       return Icon(AIcons.locationUnlocated, size: size);
     }
     switch (level) {
-      case LocationLevel.country:
+      case .country:
         if (_code != null) {
           final flag = EmojiUtils.countryCodeToFlag(_code);
           if (flag != null) {
@@ -107,7 +107,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
           }
         }
         return Icon(AIcons.country, size: size);
-      case LocationLevel.state:
+      case .state:
         if (_code != null && device.canRenderSubdivisionFlagEmojis) {
           final flag = EmojiUtils.stateCodeToFlag(_code);
           if (flag != null) {
@@ -119,7 +119,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
           }
         }
         return Icon(AIcons.state, size: size);
-      case LocationLevel.place:
+      case .place:
         return Icon(AIcons.place, size: size);
     }
   }

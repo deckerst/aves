@@ -35,15 +35,15 @@ class MissingFilter extends CollectionFilter {
     }
   }
 
-  factory MissingFilter.fromMap(Map<String, dynamic> json) {
+  factory MissingFilter.fromMap(Map<String, Object?> json) {
     return MissingFilter._private(
-      json['metadataType'],
-      reversed: json['reversed'] ?? false,
+      json['metadataType'] as String,
+      reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, Object?> toMap() => {
     'type': type,
     'metadataType': metadataType,
     'reversed': reversed,

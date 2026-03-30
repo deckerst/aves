@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -17,6 +18,7 @@ class DebugOSAppSection extends StatefulWidget {
 class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKeepAliveClientMixin {
   late Future<Set<Package>> _loader;
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
+  final Map<String, Future<Color>> _colorLoaders = {};
 
   static const iconSize = 20.0;
 
@@ -60,6 +62,10 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                         if ({package.packageName, ...package.potentialDirs}.none((v) => v.toLowerCase().contains(query.toLowerCase()))) {
                           return const SizedBox();
                         }
+                        final colorLoader = _colorLoaders.putIfAbsent(
+                          package.packageName,
+                          () async => await AvesColorsData.appColorFromPackageName(package.packageName),
+                        );
                         return Text.rich(
                           TextSpan(
                             children: [
@@ -77,6 +83,25 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                               TextSpan(
                                 text: ' ${package.packageName}\n',
                                 style: InfoRowGroup.keyStyle(context),
+                              ),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: FutureBuilder<Color>(
+                                  future: colorLoader,
+                                  builder: (context, snapshot) {
+                                    return Container(
+                                      foregroundDecoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: snapshot.data ?? Colors.transparent,
+                                          width: 2,
+                                        ),
+                                        borderRadius: const BorderRadius.all(Radius.circular(6)),
+                                      ),
+                                      width: 20,
+                                      height: 20,
+                                    );
+                                  },
+                                ),
                               ),
                               WidgetSpan(
                                 alignment: PlaceholderAlignment.middle,

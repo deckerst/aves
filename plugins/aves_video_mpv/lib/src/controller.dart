@@ -13,10 +13,10 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as p;
 
 class MpvVideoController extends AvesVideoController {
-  late Player _instance;
+  late Player _mkPlayer;
   late VideoStatus _status;
   bool _firstFrameRendered = false, _abRepeatSeeking = false;
-  final ValueNotifier<VideoController?> _controllerNotifier = ValueNotifier(null);
+  final ValueNotifier<VideoController?> _mkControllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
@@ -54,7 +54,7 @@ class MpvVideoController extends AvesVideoController {
     _status = VideoStatus.idle;
     _statusStreamController.add(_status);
 
-    _instance = Player(
+    _mkPlayer = Player(
       configuration: PlayerConfiguration(
         title: entry.bestTitle ?? entry.uri,
         libass: false,
@@ -75,14 +75,15 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Future<void> dispose() async {
-    await super.dispose();
-
     _stopListening();
     _stopStreamFetchTimer();
     await _statusStreamController.close();
     await _timedTextStreamController.close();
-    await _instance.dispose();
-    _controllerNotifier.dispose();
+    await _mkPlayer.dispose();
+
+    final _mkController = _mkControllerNotifier.value;
+    _mkControllerNotifier.dispose();
+    _mkController?.dispose();
 
     _completedNotifier.dispose();
     canCaptureFrameNotifier.dispose();
@@ -90,37 +91,53 @@ class MpvVideoController extends AvesVideoController {
     canSetSpeedNotifier.dispose();
     canSelectStreamNotifier.dispose();
     sarNotifier.dispose();
+
+    await super.dispose();
   }
 
   void _startListening() {
     _subscriptions.add(statusStream.listen((v) => _status = v));
 
-    final playerStream = _instance.stream;
-    _subscriptions.add(playerStream.completed.listen((completed) {
-      if (completed) {
-        _statusStreamController.add(VideoStatus.completed);
-        _completedNotifier.notify();
-      }
-    }));
-    _subscriptions.add(playerStream.playing.listen((playing) {
-      if (status == VideoStatus.idle) return;
-      _statusStreamController.add(playing ? VideoStatus.playing : VideoStatus.paused);
-    }));
-    _subscriptions.add(playerStream.position.listen((v) {
-      final abRepeat = abRepeatNotifier.value;
-      if (abRepeat != null && status == VideoStatus.playing) {
-        final start = abRepeat.start;
-        final end = abRepeat.end;
-        if (start != null && end != null) {
-          if (v.inMilliseconds < end) {
-            _abRepeatSeeking = false;
-          } else if (!_abRepeatSeeking) {
-            _abRepeatSeeking = true;
-            _instance.seek(Duration(milliseconds: start));
+    final playerStream = _mkPlayer.stream;
+    _subscriptions.add(
+      playerStream.completed.listen((completed) {
+        if (completed) {
+          _statusStreamController.add(VideoStatus.completed);
+          _completedNotifier.notify();
+
+          // the player incorrectly loop for some videos
+          // even when the playlist mode is configured not to loop
+          // so we explicitly stop on completion
+          final shouldStop = _mkPlayer.platform?.state.playlistMode == PlaylistMode.none;
+          if (shouldStop) {
+            pause();
           }
         }
-      }
-    }));
+      }),
+    );
+    _subscriptions.add(
+      playerStream.playing.listen((playing) {
+        if (status == VideoStatus.idle) return;
+        _statusStreamController.add(playing ? VideoStatus.playing : VideoStatus.paused);
+      }),
+    );
+    _subscriptions.add(
+      playerStream.position.listen((v) {
+        final abRepeat = abRepeatNotifier.value;
+        if (abRepeat != null && status == VideoStatus.playing) {
+          final start = abRepeat.start;
+          final end = abRepeat.end;
+          if (start != null && end != null) {
+            if (v.inMilliseconds < end) {
+              _abRepeatSeeking = false;
+            } else if (!_abRepeatSeeking) {
+              _abRepeatSeeking = true;
+              _mkPlayer.seek(Duration(milliseconds: start));
+            }
+          }
+        }
+      }),
+    );
     _subscriptions.add(playerStream.subtitle.listen((v) => _timedTextStreamController.add(v.isEmpty ? null : v[0])));
     _subscriptions.add(playerStream.videoParams.listen((v) => sarNotifier.value = v.par));
     _subscriptions.add(playerStream.log.listen((v) => debugPrint('libmpv log: $v')));
@@ -135,16 +152,20 @@ class MpvVideoController extends AvesVideoController {
       final videoBasename = _pContext.basenameWithoutExtension(path);
       // list subtitle files in the same directory
       // some files may be visible to the app (e.g. SRT) while others may not (e.g. SUB, VTT)
-      _subscriptions.add(File(path).parent.list().where((v) => v is File && _isSubtitle(v.path)).listen((v) {
-        final subtitleBasename = _pContext.basename(v.path);
-        if (subtitleBasename.startsWith(videoBasename)) {
-          _externalSubtitleTracks.add(SubtitleTrack.uri(
-            v.uri.toString(),
-            title: 'File ${subtitleBasename.substring(videoBasename.length)}',
-          ));
-          _externalSubtitleTracks.sort((a, b) => a.title!.compareTo(b.title!));
-        }
-      }));
+      _subscriptions.add(
+        File(path).parent.list().where((v) => v is File && _isSubtitle(v.path)).listen((v) {
+          final subtitleBasename = _pContext.basename(v.path);
+          if (subtitleBasename.startsWith(videoBasename)) {
+            _externalSubtitleTracks.add(
+              SubtitleTrack.uri(
+                v.uri.toString(),
+                title: 'File ${subtitleBasename.substring(videoBasename.length)}',
+              ),
+            );
+            _externalSubtitleTracks.sort((a, b) => a.title!.compareTo(b.title!));
+          }
+        }),
+      );
     }
   }
 
@@ -156,11 +177,11 @@ class MpvVideoController extends AvesVideoController {
 
   Future<void> _applyLoop() async {
     final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
-    await _instance.setPlaylistMode(loopEnabled ? PlaylistMode.single : PlaylistMode.none);
+    await _mkPlayer.setPlaylistMode(loopEnabled ? PlaylistMode.single : PlaylistMode.none);
   }
 
   Future<void> _init({int startMillis = 0}) async {
-    final playing = _instance.state.playing;
+    final playing = _mkPlayer.state.playing;
 
     // Audio quality is better with `audiotrack` than `opensles` (the default).
     // Calling `setAudioDevice` does not seem to work.
@@ -169,14 +190,14 @@ class MpvVideoController extends AvesVideoController {
     // cf https://github.com/media-kit/media-kit/issues/1061
 
     await _applyLoop();
-    await _instance.open(Media(entry.uri), play: playing);
-    await _instance.setSubtitleTrack(SubtitleTrack.no());
+    await _mkPlayer.open(Media(entry.uri), play: playing);
+    await _mkPlayer.setSubtitleTrack(SubtitleTrack.no());
     if (startMillis > 0) {
       await seekTo(startMillis);
     }
 
     _fetchStreams();
-    _statusStreamController.add(_instance.state.playing ? VideoStatus.playing : VideoStatus.paused);
+    _statusStreamController.add(_mkPlayer.state.playing ? VideoStatus.playing : VideoStatus.paused);
   }
 
   void _initController() {
@@ -184,23 +205,28 @@ class MpvVideoController extends AvesVideoController {
     final hardwareAcceleration = settings.videoHardwareAcceleration;
     String hwdec;
     switch (settings.videoHardwareAcceleration) {
-      case VideoHardwareAcceleration.disabled:
+      case .disabled:
         hwdec = 'no';
-      case VideoHardwareAcceleration.enabled:
+      case .enabled:
         hwdec = 'auto-safe';
-      case VideoHardwareAcceleration.forced:
+      case .forced:
         hwdec = 'mediacodec';
     }
-    _controllerNotifier.value = VideoController(
-      _instance,
-      configuration: VideoControllerConfiguration(
-        hwdec: hwdec,
-        enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
-      ),
-    )..waitUntilFirstFrameRendered.then((v) {
-        _firstFrameRendered = true;
-        _statusStreamController.add(_status);
-      });
+    final oldController = _mkControllerNotifier.value;
+    final newController =
+        VideoController(
+            _mkPlayer,
+            configuration: VideoControllerConfiguration(
+              hwdec: hwdec,
+              enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
+            ),
+          )
+          ..waitUntilFirstFrameRendered.then((v) {
+            _firstFrameRendered = true;
+            _statusStreamController.add(_status);
+          });
+    _mkControllerNotifier.value = newController;
+    oldController?.dispose();
   }
 
   @override
@@ -209,11 +235,11 @@ class MpvVideoController extends AvesVideoController {
   @override
   Future<void> play() async {
     await untilReady;
-    await _instance.play();
+    await _mkPlayer.play();
   }
 
   @override
-  Future<void> pause() => _instance.pause();
+  Future<void> pause() => _mkPlayer.pause();
 
   @override
   Future<void> seekTo(int targetMillis) async {
@@ -226,12 +252,12 @@ class MpvVideoController extends AvesVideoController {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
-    await _instance.seek(Duration(milliseconds: targetMillis));
+    await _mkPlayer.seek(Duration(milliseconds: targetMillis));
   }
 
   @override
   Future<void> skipFrames(int frameCount) async {
-    final platform = _instance.platform;
+    final platform = _mkPlayer.platform;
     if (platform is NativePlayer) {
       if (frameCount > 0) {
         await platform.command(['frame-step']);
@@ -253,51 +279,51 @@ class MpvVideoController extends AvesVideoController {
   Stream<VideoStatus> get statusStream => _statusStreamController.stream;
 
   @override
-  Stream<double> get volumeStream => _instance.stream.volume;
+  Stream<double> get volumeStream => _mkPlayer.stream.volume;
 
   @override
-  Stream<double> get speedStream => _instance.stream.rate;
+  Stream<double> get speedStream => _mkPlayer.stream.rate;
 
   @override
   bool get isReady {
     switch (_status) {
-      case VideoStatus.error:
-      case VideoStatus.idle:
-      case VideoStatus.initialized:
+      case .error:
+      case .idle:
+      case .initialized:
         return false;
-      case VideoStatus.paused:
-      case VideoStatus.playing:
-      case VideoStatus.completed:
+      case .paused:
+      case .playing:
+      case .completed:
         return _firstFrameRendered;
     }
   }
 
   @override
-  int get duration => _instance.state.duration.inMilliseconds;
+  int get duration => _mkPlayer.state.duration.inMilliseconds;
 
   @override
-  int get currentPosition => _instance.state.position.inMilliseconds;
+  int get currentPosition => _mkPlayer.state.position.inMilliseconds;
 
   @override
-  Stream<int> get positionStream => _instance.stream.position.map((pos) => pos.inMilliseconds);
+  Stream<int> get positionStream => _mkPlayer.stream.position.map((pos) => pos.inMilliseconds);
 
   @override
   Stream<String?> get timedTextStream => _timedTextStreamController.stream;
 
   @override
-  bool get isMuted => _instance.state.volume == 0;
+  bool get isMuted => _mkPlayer.state.volume == 0;
 
   @override
-  Future<void> mute(bool muted) => _instance.setVolume(muted ? 0 : 100);
+  Future<void> mute(bool muted) => _mkPlayer.setVolume(muted ? 0 : 100);
 
   @override
-  double get speed => _instance.state.rate;
+  double get speed => _mkPlayer.state.rate;
 
   @override
-  set speed(double speed) => _instance.setRate(speed);
+  set speed(double speed) => _mkPlayer.setRate(speed);
 
   @override
-  Future<Uint8List?> captureFrame() => _instance.screenshot();
+  Future<Uint8List?> captureFrame() => _mkPlayer.screenshot();
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
@@ -310,20 +336,21 @@ class MpvVideoController extends AvesVideoController {
         // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
         final dar = entry.displayAspectRatio * sar;
         return ValueListenableBuilder<VideoController?>(
-            valueListenable: _controllerNotifier,
-            builder: (context, controller, child) {
-              if (controller == null) return const SizedBox();
-              return Video(
-                controller: controller,
-                fill: Colors.transparent,
-                aspectRatio: dar,
-                controls: NoVideoControls,
-                wakelock: false,
-                subtitleViewConfiguration: const SubtitleViewConfiguration(
-                  visible: false,
-                ),
-              );
-            });
+          valueListenable: _mkControllerNotifier,
+          builder: (context, controller, child) {
+            if (controller == null) return const SizedBox();
+            return Video(
+              controller: controller,
+              fill: Colors.transparent,
+              aspectRatio: dar,
+              controls: NoVideoControls,
+              wakelock: false,
+              subtitleViewConfiguration: const SubtitleViewConfiguration(
+                visible: false,
+              ),
+            );
+          },
+        );
       },
     );
   }
@@ -333,7 +360,7 @@ class MpvVideoController extends AvesVideoController {
   // `auto` and `no` are the first 2 tracks in the player state track lists
   static const int fakeTrackCount = 2;
 
-  Tracks get _tracks => _instance.state.tracks;
+  Tracks get _tracks => _mkPlayer.state.tracks;
 
   List<VideoTrack> get _videoTracks => _tracks.video.skip(fakeTrackCount).toList();
 
@@ -380,21 +407,21 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
-    final track = _instance.state.track;
+    final track = _mkPlayer.state.track;
     switch (type) {
-      case MediaStreamType.video:
+      case .video:
         final video = track.video;
         if (video != VideoTrack.no()) {
           final index = video == VideoTrack.auto() ? 0 : _videoTracks.indexOf(video);
           return video.toAves(index);
         }
-      case MediaStreamType.audio:
+      case .audio:
         final audio = track.audio;
         if (audio != AudioTrack.no()) {
           final index = audio == AudioTrack.auto() ? 0 : _audioTracks.indexOf(audio);
           return audio.toAves(index);
         }
-      case MediaStreamType.text:
+      case .text:
         final subtitle = track.subtitle;
         if (subtitle != SubtitleTrack.no()) {
           final index = subtitle == SubtitleTrack.auto() ? 0 : _subtitleTracks.indexOf(subtitle);
@@ -414,28 +441,28 @@ class MpvVideoController extends AvesVideoController {
       if (newIndex != null) {
         // select track
         switch (type) {
-          case MediaStreamType.video:
-            await _instance.setVideoTrack(_videoTracks[selected.index ?? 0]);
+          case .video:
+            await _mkPlayer.setVideoTrack(_videoTracks[selected.index ?? 0]);
             break;
-          case MediaStreamType.audio:
-            await _instance.setAudioTrack(_audioTracks[selected.index ?? 0]);
+          case .audio:
+            await _mkPlayer.setAudioTrack(_audioTracks[selected.index ?? 0]);
             break;
-          case MediaStreamType.text:
-            await _instance.setSubtitleTrack(_subtitleTracks[selected.index ?? 0]);
+          case .text:
+            await _mkPlayer.setSubtitleTrack(_subtitleTracks[selected.index ?? 0]);
             break;
         }
       }
     } else if (current != null) {
       // deselect track
       switch (type) {
-        case MediaStreamType.video:
-          await _instance.setVideoTrack(VideoTrack.no());
+        case .video:
+          await _mkPlayer.setVideoTrack(VideoTrack.no());
           break;
-        case MediaStreamType.audio:
-          await _instance.setAudioTrack(AudioTrack.no());
+        case .audio:
+          await _mkPlayer.setAudioTrack(AudioTrack.no());
           break;
-        case MediaStreamType.text:
-          await _instance.setSubtitleTrack(SubtitleTrack.no());
+        case .text:
+          await _mkPlayer.setSubtitleTrack(SubtitleTrack.no());
           break;
       }
     }

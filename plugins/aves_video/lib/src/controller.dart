@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +17,7 @@ abstract class AvesVideoControllerFactory {
   });
 }
 
-abstract class AvesVideoController with ABRepeatMixin {
+abstract class AvesVideoController extends Disposer with ABRepeatMixin {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
   final VideoSettings settings;
@@ -41,16 +42,16 @@ abstract class AvesVideoController with ABRepeatMixin {
     entry.visualChangeNotifier.addListener(onVisualChanged);
   }
 
-  @mustCallSuper
+  @override
   Future<void> dispose() async {
     assert(!_disposed);
     _disposed = true;
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    abRepeatNotifier.dispose();
     _entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
+    super.dispose();
   }
 
   Future<void> _savePlaybackState() async {

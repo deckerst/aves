@@ -47,6 +47,7 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
     _nameFieldFocusNode.removeListener(_onFocus);
     _nameFieldFocusNode.dispose();
     _directoryExistsNotifier.dispose();
+    _albumExistsNotifier.dispose();
     _isValidNotifier.dispose();
     super.dispose();
   }

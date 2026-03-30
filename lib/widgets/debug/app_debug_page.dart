@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/location.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/debug/cache.dart';
 import 'package:aves/widgets/debug/capabilities.dart';
@@ -72,22 +74,28 @@ class AppDebugPage extends StatelessWidget {
         body: AvesPopScope(
           handlers: [tvNavigationPopHandler],
           child: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.all(8),
-              children: const [
-                DebugGeneralSection(),
-                DebugLeakingSection(),
-                DebugCacheSection(),
-                DebugCapabilitiesSection(),
-                DebugColorSection(),
-                DebugAppDatabaseSection(),
-                DebugErrorReportingSection(),
-                DebugSettingsSection(),
-                DebugOSAppSection(),
-                DebugOSCodecSection(),
-                DebugOSPathSection(),
-                DebugOSStorageSection(),
-              ],
+            bottom: false,
+            child: Selector<MediaQueryData, double>(
+              selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
+              builder: (context, mqPaddingBottom, child) {
+                return ListView(
+                  padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                  children: const [
+                    DebugGeneralSection(),
+                    DebugLeakingSection(),
+                    DebugCacheSection(),
+                    DebugCapabilitiesSection(),
+                    DebugColorSection(),
+                    DebugAppDatabaseSection(),
+                    DebugErrorReportingSection(),
+                    DebugSettingsSection(),
+                    DebugOSAppSection(),
+                    DebugOSCodecSection(),
+                    DebugOSPathSection(),
+                    DebugOSStorageSection(),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -97,7 +105,7 @@ class AppDebugPage extends StatelessWidget {
 
   Future<void> _onActionSelected(BuildContext context, AppDebugAction action) async {
     switch (action) {
-      case AppDebugAction.prepScreenshotThumbnails:
+      case .prepScreenshotThumbnails:
         // get source beforehand, as widget may be unmounted during action handling
         final source = context.read<CollectionSource>();
         settings.changeFilterVisibility(settings.hiddenFilters, true);
@@ -106,17 +114,17 @@ class AppDebugPage extends StatelessWidget {
         }, false);
         await favourites.clear();
         await favourites.add(source.visibleEntries);
-      case AppDebugAction.prepScreenshotStats:
+      case .prepScreenshotStats:
         settings.changeFilterVisibility(settings.hiddenFilters, true);
         settings.changeFilterVisibility({
           PathFilter('/storage/emulated/0/Pictures/Dev'),
         }, false);
-      case AppDebugAction.prepScreenshotCountries:
+      case .prepScreenshotCountries:
         settings.changeFilterVisibility({
           LocationFilter(LocationLevel.country, 'Belgium;BE'),
           LocationFilter(LocationLevel.country, 'Croatia;HR'),
         }, false);
-      case AppDebugAction.mediaStoreScanDir:
+      case .mediaStoreScanDir:
         // scan files copied from test assets
         // we do it via the app instead of broadcasting via ADB
         // because `MEDIA_SCANNER_SCAN_FILE` intent got deprecated in API 29
@@ -124,7 +132,7 @@ class AppDebugPage extends StatelessWidget {
           context: context,
           builder: (context) => const MediaStoreScanDirDialog(),
         );
-      case AppDebugAction.greenScreen:
+      case .greenScreen:
         await Navigator.maybeOf(context)?.push(
           MaterialPageRoute(
             builder: (context) => const Scaffold(

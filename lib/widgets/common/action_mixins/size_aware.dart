@@ -32,12 +32,12 @@ mixin SizeAwareMixin {
     late int needed;
     int sumSize(int sum, AvesEntry entry) => sum + (entry.sizeBytes ?? 0);
     switch (moveType) {
-      case MoveType.copy:
-      case MoveType.export:
+      case .copy:
+      case .export:
         needed = selection.fold(0, sumSize);
-      case MoveType.move:
-      case MoveType.toBin:
-      case MoveType.fromBin:
+      case .move:
+      case .toBin:
+      case .fromBin:
         // when moving, we only need space for the entries that are not already on the destination volume
         final byVolume = groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).whereNotNullKey();
         final otherVolumes = byVolume.keys.where((volume) => volume != destinationVolume);

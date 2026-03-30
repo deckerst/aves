@@ -58,29 +58,29 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
-      case EntryAction.videoCaptureFrame:
+      case .videoCaptureFrame:
         await _captureFrame(context, entry, controller);
-      case EntryAction.videoToggleMute:
+      case .videoToggleMute:
         await controller.mute(!controller.isMuted);
-      case EntryAction.videoSelectStreams:
+      case .videoSelectStreams:
         await _showStreamSelectionDialog(context, controller);
-      case EntryAction.videoSetSpeed:
+      case .videoSetSpeed:
         await _showSpeedDialog(context, controller);
-      case EntryAction.videoABRepeat:
+      case .videoABRepeat:
         controller.toggleABRepeat();
-      case EntryAction.videoSettings:
+      case .videoSettings:
         await _showSettings(context, controller);
-      case EntryAction.videoTogglePlay:
+      case .videoTogglePlay:
         await _togglePlayPause(context, controller);
-      case EntryAction.videoReplay10:
+      case .videoReplay10:
         await controller.seekTo(max(controller.currentPosition - 10000, 0));
-      case EntryAction.videoSkip10:
+      case .videoSkip10:
         await controller.seekTo(controller.currentPosition + 10000);
-      case EntryAction.videoShowPreviousFrame:
+      case .videoShowPreviousFrame:
         await controller.skipFrames(-1);
-      case EntryAction.videoShowNextFrame:
+      case .videoShowNextFrame:
         await controller.skipFrames(1);
-      case EntryAction.openVideoPlayer:
+      case .openVideoPlayer:
         await appService.open(entry.uri, entry.mimeTypeAnySubtype, forceChooser: false).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
@@ -103,7 +103,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       final rotationDegrees = entry.rotationDegrees;
       final dateTimeMillis = entry.catalogMetadata?.dateMillis;
       final latLng = entry.latLng;
-      final exif = {
+      final exif = <String, num>{
         if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
         if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
         if (latLng != null) ...{
@@ -225,18 +225,19 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (controller.isPlaying) {
       await controller.pause();
     } else {
+      final hidingTimeDelay = context.read<DurationsData>().iconAnimation + ADurations.videoOverlayHideDelay;
       final resumeTimeMillis = await controller.getResumeTime(context);
       if (resumeTimeMillis != null) {
         await controller.seekTo(resumeTimeMillis);
       } else {
         await controller.play();
       }
-      if (context.mounted) {
-        // hide overlay
-        _overlayHidingTimer = Timer(context.read<DurationsData>().iconAnimation + ADurations.videoOverlayHideDelay, () {
+      // hide overlay
+      _overlayHidingTimer = Timer(hidingTimeDelay, () {
+        if (context.mounted) {
           const ToggleOverlayNotification(visible: false).dispatch(context);
-        });
-      }
+        }
+      });
     }
   }
 

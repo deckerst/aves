@@ -8,7 +8,6 @@ import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
 import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class CollectionSectionHeader extends StatelessWidget {
@@ -38,36 +37,36 @@ class CollectionSectionHeader extends StatelessWidget {
 
   Widget? _buildHeader(BuildContext context) {
     switch (collection.sortFactor) {
-      case EntrySortFactor.date:
+      case .date:
         switch (collection.sectionFactor) {
-          case EntrySectionFactor.album:
+          case .album:
             return _buildAlbumHeader(context);
-          case EntrySectionFactor.month:
+          case .month:
             return MonthSectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               date: (sectionKey as EntryDateSectionKey).date,
               selectable: selectable,
             );
-          case EntrySectionFactor.day:
+          case .day:
             return DaySectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               date: (sectionKey as EntryDateSectionKey).date,
               selectable: selectable,
             );
-          case EntrySectionFactor.none:
+          case .none:
             break;
         }
-      case EntrySortFactor.name:
-      case EntrySortFactor.path:
+      case .name:
+      case .path:
         return _buildAlbumHeader(context);
-      case EntrySortFactor.rating:
+      case .rating:
         return RatingSectionHeader<AvesEntry>(
           key: ValueKey(sectionKey),
           rating: (sectionKey as EntryRatingSectionKey).rating,
           selectable: selectable,
         );
-      case EntrySortFactor.size:
-      case EntrySortFactor.duration:
+      case .size:
+      case .duration:
         break;
     }
     return null;

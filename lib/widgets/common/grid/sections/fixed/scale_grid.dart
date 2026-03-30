@@ -31,9 +31,9 @@ class FixedExtentGridPainter extends CustomPainter {
     late final int deltaColumn;
     late final Shader strokeShader;
     switch (tileLayout) {
-      case TileLayout.mosaic:
+      case .mosaic:
         return;
-      case TileLayout.grid:
+      case .grid:
         chipCenter = tileCenter;
         chipSize = tileSize;
         deltaColumn = 2;
@@ -49,7 +49,7 @@ class FixedExtentGridPainter extends CustomPainter {
             1,
           ],
         );
-      case TileLayout.list:
+      case .list:
         chipSize = Size.square(tileSize.shortestSide);
         final chipCenterToEdge = chipSize.width / 2;
         chipCenter = Offset(textDirection == TextDirection.rtl ? size.width - (chipCenterToEdge + horizontalPadding) : chipCenterToEdge + horizontalPadding, tileCenter.dy);

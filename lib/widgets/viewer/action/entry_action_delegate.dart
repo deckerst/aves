@@ -18,6 +18,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -44,7 +45,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, SingleEntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin, SingleEntryEditorMixin, VaultAwareMixin {
   final AvesEntry mainEntry, pageEntry;
   final CollectionLens? collection;
   final EntryInfoActionDelegate _metadataActionDelegate = EntryInfoActionDelegate();
@@ -57,10 +58,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }) {
     if (mainEntry.trashed) {
       switch (action) {
-        case EntryAction.delete:
-        case EntryAction.restore:
+        case .delete:
+        case .restore:
           return true;
-        case EntryAction.debug:
+        case .debug:
           return !kReleaseMode;
         default:
           return false;
@@ -69,75 +70,75 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
       final canWrite = appMode.canEditEntry && !settings.isReadOnly;
       switch (action) {
-        case EntryAction.toggleFavourite:
+        case .toggleFavourite:
           return collection != null;
-        case EntryAction.delete:
-        case EntryAction.rename:
-        case EntryAction.move:
+        case .delete:
+        case .rename:
+        case .move:
           return canWrite && targetEntry.canEdit;
-        case EntryAction.copy:
+        case .copy:
           return canWrite;
-        case EntryAction.rotateCCW:
-        case EntryAction.rotateCW:
+        case .rotateCCW:
+        case .rotateCW:
           return canWrite && targetEntry.canRotate;
-        case EntryAction.flip:
+        case .flip:
           return canWrite && targetEntry.canFlip;
-        case EntryAction.convert:
+        case .convert:
           return canWrite && !targetEntry.isPureVideo;
-        case EntryAction.print:
+        case .print:
           return !targetEntry.isPureVideo;
-        case EntryAction.openMap:
+        case .openMap:
           return !settings.useTvLayout && targetEntry.hasGps;
-        case EntryAction.viewSource:
+        case .viewSource:
           return targetEntry.isSvg;
-        case EntryAction.videoCaptureFrame:
+        case .videoCaptureFrame:
           return canWrite && targetEntry.isPureVideo;
-        case EntryAction.lockViewer:
-        case EntryAction.videoToggleMute:
+        case .lockViewer:
+        case .videoToggleMute:
           return !settings.useTvLayout && targetEntry.isPureVideo;
-        case EntryAction.videoSelectStreams:
-        case EntryAction.videoSetSpeed:
-        case EntryAction.videoABRepeat:
-        case EntryAction.videoSettings:
-        case EntryAction.videoTogglePlay:
-        case EntryAction.videoReplay10:
-        case EntryAction.videoSkip10:
-        case EntryAction.videoShowPreviousFrame:
-        case EntryAction.videoShowNextFrame:
-        case EntryAction.openVideoPlayer:
+        case .videoSelectStreams:
+        case .videoSetSpeed:
+        case .videoABRepeat:
+        case .videoSettings:
+        case .videoTogglePlay:
+        case .videoReplay10:
+        case .videoSkip10:
+        case .videoShowPreviousFrame:
+        case .videoShowNextFrame:
+        case .openVideoPlayer:
           return targetEntry.isPureVideo;
-        case EntryAction.rotateScreen:
+        case .rotateScreen:
           return !settings.useTvLayout && settings.isRotationLocked;
-        case EntryAction.addShortcut:
+        case .addShortcut:
           return device.canPinShortcut;
-        case EntryAction.edit:
+        case .edit:
           return canWrite;
-        case EntryAction.copyToClipboard:
-        case EntryAction.open:
-        case EntryAction.setAs:
-        case EntryAction.cast:
+        case .copyToClipboard:
+        case .open:
+        case .setAs:
+        case .cast:
           return !settings.useTvLayout;
-        case EntryAction.info:
-        case EntryAction.share:
+        case .info:
+        case .share:
           return true;
-        case EntryAction.restore:
+        case .restore:
           return false;
-        case EntryAction.editDate:
-        case EntryAction.editLocation:
-        case EntryAction.editTitleDescription:
-        case EntryAction.editRating:
-        case EntryAction.editTags:
-        case EntryAction.removeMetadata:
-        case EntryAction.exportMetadata:
-        case EntryAction.showGeoTiffOnMap:
-        case EntryAction.convertMotionPhotoToStillImage:
-        case EntryAction.viewMotionPhotoVideo:
+        case .editDate:
+        case .editLocation:
+        case .editTitleDescription:
+        case .editRating:
+        case .editTags:
+        case .removeMetadata:
+        case .exportMetadata:
+        case .showGeoTiffOnMap:
+        case .convertMotionPhotoToStillImage:
+        case .viewMotionPhotoVideo:
           return _metadataActionDelegate.isVisible(
             appMode: appMode,
             targetEntry: targetEntry,
             action: action,
           );
-        case EntryAction.debug:
+        case .debug:
           return !kReleaseMode;
       }
     }
@@ -146,24 +147,24 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   bool canApply(EntryAction action) {
     final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
     switch (action) {
-      case EntryAction.rotateCCW:
-      case EntryAction.rotateCW:
-      case EntryAction.flip:
-      case EntryAction.editDate:
-      case EntryAction.editLocation:
-      case EntryAction.editTitleDescription:
-      case EntryAction.editRating:
-      case EntryAction.editTags:
-      case EntryAction.removeMetadata:
-      case EntryAction.exportMetadata:
-      case EntryAction.showGeoTiffOnMap:
-      case EntryAction.convertMotionPhotoToStillImage:
-      case EntryAction.viewMotionPhotoVideo:
+      case .rotateCCW:
+      case .rotateCW:
+      case .flip:
+      case .editDate:
+      case .editLocation:
+      case .editTitleDescription:
+      case .editRating:
+      case .editTags:
+      case .removeMetadata:
+      case .exportMetadata:
+      case .showGeoTiffOnMap:
+      case .convertMotionPhotoToStillImage:
+      case .viewMotionPhotoVideo:
         return _metadataActionDelegate.canApply(targetEntry, action);
-      case EntryAction.convert:
-      case EntryAction.rename:
-      case EntryAction.copy:
-      case EntryAction.move:
+      case .convert:
+      case .rename:
+      case .copy:
+      case .move:
         return !availability.isLocked;
       default:
         return true;
@@ -189,11 +190,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final targetEntry = _getTargetEntry(context, action);
 
     switch (action) {
-      case EntryAction.info:
+      case .info:
         ShowInfoPageNotification().dispatch(context);
-      case EntryAction.addShortcut:
+      case .addShortcut:
         _addShortcut(context, targetEntry);
-      case EntryAction.copyToClipboard:
+      case .copyToClipboard:
         appService.copyToClipboard(label: targetEntry.bestTitle, uri: targetEntry.uri).then((success) {
           if (success) {
             showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
@@ -201,51 +202,51 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
           }
         });
-      case EntryAction.delete:
+      case .delete:
         _delete(context, targetEntry);
-      case EntryAction.restore:
+      case .restore:
         _move(context, targetEntry, moveType: MoveType.fromBin);
-      case EntryAction.convert:
+      case .convert:
         _convert(context, targetEntry);
-      case EntryAction.print:
+      case .print:
         EntryPrinter(targetEntry).print(context);
-      case EntryAction.rename:
+      case .rename:
         _rename(context, targetEntry);
-      case EntryAction.copy:
+      case .copy:
         _move(context, targetEntry, moveType: MoveType.copy);
-      case EntryAction.move:
+      case .move:
         _move(context, targetEntry, moveType: MoveType.move);
-      case EntryAction.share:
+      case .share:
         appService.shareEntries({targetEntry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-      case EntryAction.toggleFavourite:
+      case .toggleFavourite:
         targetEntry.toggleFavourite();
       // raster
-      case EntryAction.rotateCCW:
+      case .rotateCCW:
         _rotate(context, targetEntry, clockwise: false);
-      case EntryAction.rotateCW:
+      case .rotateCW:
         _rotate(context, targetEntry, clockwise: true);
-      case EntryAction.flip:
+      case .flip:
         _flip(context, targetEntry);
       // vector
-      case EntryAction.viewSource:
+      case .viewSource:
         _goToSourceViewer(context, targetEntry);
-      case EntryAction.lockViewer:
+      case .lockViewer:
         const LockViewNotification(locked: true).dispatch(context);
       // video
-      case EntryAction.videoCaptureFrame:
-      case EntryAction.videoToggleMute:
-      case EntryAction.videoSelectStreams:
-      case EntryAction.videoSetSpeed:
-      case EntryAction.videoABRepeat:
-      case EntryAction.videoSettings:
-      case EntryAction.videoTogglePlay:
-      case EntryAction.videoReplay10:
-      case EntryAction.videoSkip10:
-      case EntryAction.videoShowPreviousFrame:
-      case EntryAction.videoShowNextFrame:
-      case EntryAction.openVideoPlayer:
+      case .videoCaptureFrame:
+      case .videoToggleMute:
+      case .videoSelectStreams:
+      case .videoSetSpeed:
+      case .videoABRepeat:
+      case .videoSettings:
+      case .videoTogglePlay:
+      case .videoReplay10:
+      case .videoSkip10:
+      case .videoShowPreviousFrame:
+      case .videoShowNextFrame:
+      case .openVideoPlayer:
         final controller = context.read<VideoConductor>().getController(targetEntry);
         if (controller != null) {
           VideoActionNotification(
@@ -254,7 +255,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             action: action,
           ).dispatch(context);
         }
-      case EntryAction.edit:
+      case .edit:
         appService.edit(targetEntry.uri, targetEntry.mimeType).then((fields) async {
           final error = fields['error'] as String?;
           if (error == null) {
@@ -265,37 +266,37 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             await showNoMatchingAppDialog(context);
           }
         });
-      case EntryAction.open:
+      case .open:
         appService.open(targetEntry.uri, targetEntry.mimeTypeAnySubtype, forceChooser: true).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-      case EntryAction.openMap:
+      case .openMap:
         appService.openMap(targetEntry.latLng!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-      case EntryAction.setAs:
+      case .setAs:
         appService.setAs(targetEntry.uri, targetEntry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
-      case EntryAction.cast:
+      case .cast:
         const CastNotification(true).dispatch(context);
       // platform
-      case EntryAction.rotateScreen:
+      case .rotateScreen:
         _rotateScreen(context);
       // metadata
-      case EntryAction.editDate:
-      case EntryAction.editLocation:
-      case EntryAction.editTitleDescription:
-      case EntryAction.editRating:
-      case EntryAction.editTags:
-      case EntryAction.removeMetadata:
-      case EntryAction.exportMetadata:
-      case EntryAction.showGeoTiffOnMap:
-      case EntryAction.convertMotionPhotoToStillImage:
-      case EntryAction.viewMotionPhotoVideo:
+      case .editDate:
+      case .editLocation:
+      case .editTitleDescription:
+      case .editRating:
+      case .editTags:
+      case .removeMetadata:
+      case .exportMetadata:
+      case .showGeoTiffOnMap:
+      case .convertMotionPhotoToStillImage:
+      case .viewMotionPhotoVideo:
         _metadataActionDelegate.onActionSelected(context, targetEntry, collection, action);
       // debug
-      case EntryAction.debug:
+      case .debug:
         _goToDebug(context, targetEntry);
     }
   }
@@ -356,12 +357,12 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   Future<void> quickShare(BuildContext context, ShareAction action) async {
     switch (action) {
-      case ShareAction.imageOnly:
+      case .imageOnly:
         if (mainEntry.isMotionPhoto) {
           final fields = await embeddedDataService.extractMotionPhotoImage(mainEntry);
           await _shareMotionPhotoPart(context, fields);
         }
-      case ShareAction.videoOnly:
+      case .videoOnly:
         if (mainEntry.isMotionPhoto) {
           final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
           await _shareMotionPhotoPart(context, fields);
@@ -466,9 +467,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (options == null) return;
 
     switch (options.action) {
-      case EntryConvertAction.convert:
+      case .convert:
         await doExport(context, {targetEntry}, options);
-      case EntryConvertAction.convertMotionPhotoToStillImage:
+      case .convertMotionPhotoToStillImage:
         await _metadataActionDelegate.onActionSelected(context, targetEntry, collection, EntryAction.convertMotionPhotoToStillImage);
     }
   }

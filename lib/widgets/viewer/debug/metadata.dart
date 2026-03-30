@@ -6,7 +6,7 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
-import 'package:aves/services/geocoding_service.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class _MetadataTabState extends State<MetadataTab> {
     _pixyMetaLoader = AndroidDebugService.getPixyMetadata(entry);
     _tiffStructureLoader = AndroidDebugService.getTiffStructure(entry);
     _addressLoader = entry.hasGps
-        ? GeocodingService.getAddress(entry.latLng!, settings.appliedLocale).then((addresses) {
+        ? geocodingService.getAddress(entry.latLng!, settings.appliedLocale).then((addresses) {
             if (addresses.isNotEmpty) {
               final address = addresses.first;
               return {

@@ -18,7 +18,7 @@ class TagGroupFilter extends GroupBaseFilter with TagBaseFilter {
 
   factory TagGroupFilter.empty(Uri uri) => TagGroupFilter(uri, SetOrFilter(const {}));
 
-  static TagGroupFilter? fromMap(Map<String, dynamic> json) {
+  static TagGroupFilter? fromMap(Map<String, Object?> json) {
     final props = GroupBaseFilter.fromMap(json);
     if (props == null) return null;
 

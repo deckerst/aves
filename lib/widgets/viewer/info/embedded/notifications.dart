@@ -6,7 +6,7 @@ enum EmbeddedDataSource { googleDevice, motionPhotoVideo, mpf, videoCover, xmp }
 @immutable
 class OpenEmbeddedDataNotification extends Notification {
   final EmbeddedDataSource source;
-  final List<dynamic>? props;
+  final List<Object?>? props;
   final String? mimeType, dataUri;
   final int? mpfId;
 
@@ -39,7 +39,7 @@ class OpenEmbeddedDataNotification extends Notification {
   );
 
   factory OpenEmbeddedDataNotification.xmp({
-    required List<dynamic> props,
+    required List<Object?> props,
     required String mimeType,
   }) => OpenEmbeddedDataNotification._private(
     source: EmbeddedDataSource.xmp,

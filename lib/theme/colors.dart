@@ -3,9 +3,10 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:palette_generator/palette_generator.dart';
+import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:provider/provider.dart';
 
 class AColors {
@@ -73,20 +74,27 @@ abstract class AvesColorsData {
   }
 
   Future<Color>? appColor(String album) {
-    if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
+    final appColor = _appColors[album];
+    if (appColor != null) {
+      return SynchronousFuture(appColor);
+    }
 
     final packageName = covers.effectiveAlbumPackage(album);
     if (packageName == null) return null;
 
-    return PaletteGenerator.fromImageProvider(
-      AppIconImage(packageName: packageName, size: 24),
-    ).then((palette) async {
-      // `dominantColor` is most representative but can have low contrast with a dark background
-      // `vibrantColor` is usually representative and has good contrast with a dark background
-      final color = palette.vibrantColor?.color ?? palette.dominantColor?.color ?? fromString(album);
+    return appColorFromPackageName(packageName).then((color) {
       _appColors[album] = color;
       return color;
     });
+  }
+
+  static Future<Color> appColorFromPackageName(String packageName) async {
+    final appIconImage = AppIconImage(packageName: packageName, size: 24);
+    final scheme = await ColorExtractor.getDynamicScheme(
+      provider: appIconImage,
+      dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+    );
+    return Color(MaterialDynamicColors.primaryFixedDim.getArgb(scheme));
   }
 
   void clearAppColor(String album) => _appColors.remove(album);

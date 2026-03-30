@@ -60,7 +60,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   const CollectionFilter({required this.reversed});
 
-  static CollectionFilter? _fromMap(Map<String, dynamic> jsonMap) {
+  static CollectionFilter? _fromMap(Map<String, Object?> jsonMap) {
     final type = jsonMap['type'];
     switch (type) {
       case AlbumGroupFilter.type:
@@ -117,8 +117,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
     try {
       final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map<String, dynamic>) {
-        return _fromMap(jsonMap);
+      if (jsonMap is Map) {
+        return _fromMap(jsonMap.cast<String, Object?>());
       }
       debugPrint('failed to parse filter from json=$jsonString');
     } catch (error) {
@@ -128,7 +128,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     return null;
   }
 
-  Map<String, dynamic> toMap();
+  Map<String, Object?> toMap();
 
   String toJson() => jsonEncode(toMap());
 
@@ -211,7 +211,7 @@ abstract class DummyCollectionFilter extends CollectionFilter {
   List<Object?> get props => throw UnimplementedError();
 
   @override
-  Map<String, dynamic> toMap() => throw UnimplementedError();
+  Map<String, Object?> toMap() => throw UnimplementedError();
 
   @override
   String get universalLabel => throw UnimplementedError();

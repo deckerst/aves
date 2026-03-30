@@ -39,10 +39,10 @@ abstract class MediaEditService {
     required Map<AvesEntry, String> entriesToNewName,
   });
 
-  Future<Map<String, dynamic>> captureFrame(
+  Future<Map<String, Object?>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
-    required Map<String, dynamic> exif,
+    required Map<String, Object> exif,
     required Uint8List bytes,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
@@ -59,7 +59,7 @@ class PlatformMediaEditService implements MediaEditService {
   @override
   Future<void> cancelFileOp(String opId) async {
     try {
-      await _platform.invokeMethod('cancelFileOp', <String, dynamic>{
+      await _platform.invokeMethod('cancelFileOp', <String, Object?>{
         'opId': opId,
       });
     } on PlatformException catch (e, stack) {
@@ -74,7 +74,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'delete',
             'id': opId,
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
@@ -96,7 +96,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'move',
             'id': opId,
             'entriesByDestination': entriesByDestination.map((destination, entries) => MapEntry(destination, entries.map((entry) => entry.toPlatformEntryMap()).toList())),
@@ -120,7 +120,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'mimeType': options.mimeType,
@@ -147,7 +147,7 @@ class PlatformMediaEditService implements MediaEditService {
   }) {
     try {
       return _opStream
-          .receiveBroadcastStream(<String, dynamic>{
+          .receiveBroadcastStream(<String, Object?>{
             'op': 'rename',
             'id': opId,
             'entriesToNewName': entriesToNewName.map((entry, name) => MapEntry(entry.toPlatformEntryMap(), name)),
@@ -161,16 +161,16 @@ class PlatformMediaEditService implements MediaEditService {
   }
 
   @override
-  Future<Map<String, dynamic>> captureFrame(
+  Future<Map<String, Object?>> captureFrame(
     AvesEntry entry, {
     required String desiredName,
-    required Map<String, dynamic> exif,
+    required Map<String, Object?> exif,
     required Uint8List bytes,
     required String destinationAlbum,
     required NameConflictStrategy nameConflictStrategy,
   }) async {
     try {
-      final result = await _platform.invokeMethod('captureFrame', <String, dynamic>{
+      final result = await _platform.invokeMethod('captureFrame', <String, Object?>{
         'uri': entry.uri,
         'desiredName': desiredName,
         'exif': exif,
@@ -178,7 +178,7 @@ class PlatformMediaEditService implements MediaEditService {
         'destinationPath': destinationAlbum,
         'nameConflictStrategy': nameConflictStrategy.toPlatform(),
       });
-      if (result != null) return (result as Map).cast<String, dynamic>();
+      if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

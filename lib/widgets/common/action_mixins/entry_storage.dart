@@ -6,12 +6,10 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
-import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -25,7 +23,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -40,7 +38,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin {
   // returns whether it completed the action (with or without failures)
   Future<bool> doExport(BuildContext context, Set<AvesEntry> targetEntries, EntryConvertOptions options) async {
     final destinationAlbumFilter = await pickAlbum(
@@ -253,7 +251,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
 
-    if ({MoveType.move, MoveType.copy, MoveType.toBin}.contains(moveType) && !await _checkUndatedItems(context, entries)) return false;
+    if ({MoveType.move, MoveType.copy, MoveType.toBin}.contains(moveType) && !await checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -377,9 +375,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     final entriesByDestination = <String, Set<AvesEntry>>{};
     switch (moveType) {
-      case MoveType.copy:
-      case MoveType.move:
-      case MoveType.export:
+      case .copy:
+      case .move:
+      case .export:
         final destinationAlbumFilter = await pickAlbum(
           context: context,
           moveType: moveType,
@@ -393,9 +391,9 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
           ..remove(destinationAlbum)
           ..insert(0, destinationAlbum);
         entriesByDestination[destinationAlbum] = entries;
-      case MoveType.toBin:
+      case .toBin:
         entriesByDestination[AndroidFileUtils.trashDirPath] = entries;
-      case MoveType.fromBin:
+      case .fromBin:
         groupBy<AvesEntry, String?>(entries, (e) => e.directory).forEach((originAlbum, dirEntries) {
           if (originAlbum != null) {
             entriesByDestination[originAlbum] = dirEntries.toSet();
@@ -424,7 +422,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
 
     if (!await checkStoragePermission(context, entries)) return false;
 
-    if (!await _checkUndatedItems(context, entries)) return false;
+    if (!await checkUndatedItems(context, entries)) return false;
 
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
@@ -459,38 +457,6 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
         }
       },
     );
-    return true;
-  }
-
-  Future<bool> _checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
-    final undatedItems = entries.where((entry) {
-      if (!entry.isCatalogued) return false;
-      final dateMillis = entry.catalogMetadata?.dateMillis;
-      return dateMillis == null || dateMillis == 0;
-    }).toSet();
-    if (undatedItems.isNotEmpty) {
-      final confirmationDialogDelegate = MoveUndatedConfirmationDialogDelegate();
-      final confirmed = await showSkippableConfirmationDialog(
-        context: context,
-        type: ConfirmationDialog.moveUndatedItems,
-        delegate: confirmationDialogDelegate,
-        confirmationButtonLabel: context.l10n.continueButtonLabel,
-      );
-      confirmationDialogDelegate.dispose();
-      if (!confirmed) return false;
-
-      if (settings.setMetadataDateBeforeFileOp) {
-        final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
-        if (entriesToDate.isNotEmpty) {
-          await EntrySetActionDelegate().editDate(
-            context,
-            entries: entriesToDate,
-            modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
-            showResult: false,
-          );
-        }
-      }
-    }
     return true;
   }
 
@@ -535,35 +501,4 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
       }
     }
   }
-}
-
-class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
-  final ValueNotifier<bool> _setMetadataDate = ValueNotifier(false);
-
-  MoveUndatedConfirmationDialogDelegate() {
-    _setMetadataDate.value = settings.setMetadataDateBeforeFileOp;
-  }
-
-  void dispose() {
-    _setMetadataDate.dispose();
-  }
-
-  @override
-  List<Widget> build(BuildContext context) => [
-    Padding(
-      padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-      child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
-    ),
-    ValueListenableBuilder<bool>(
-      valueListenable: _setMetadataDate,
-      builder: (context, flag, child) => SwitchListTile(
-        value: flag,
-        onChanged: (v) => _setMetadataDate.value = v,
-        title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
-      ),
-    ),
-  ];
-
-  @override
-  void apply() => settings.setMetadataDateBeforeFileOp = _setMetadataDate.value;
 }

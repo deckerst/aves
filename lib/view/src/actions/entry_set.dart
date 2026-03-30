@@ -34,6 +34,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.move => l10n.collectionActionMove,
       EntrySetAction.rename => l10n.entryActionRename,
       EntrySetAction.convert => l10n.entryActionConvert,
+      EntrySetAction.exportGpx => l10n.collectionActionExportGpx,
       EntrySetAction.toggleFavourite =>
         // different data depending on toggle state
         l10n.entryActionAddFavourite,
@@ -80,6 +81,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       EntrySetAction.move => AIcons.move,
       EntrySetAction.rename => AIcons.rename,
       EntrySetAction.convert => AIcons.convert,
+      EntrySetAction.exportGpx => AIcons.route,
       EntrySetAction.toggleFavourite =>
         // different data depending on toggle state
         AIcons.favourite,
