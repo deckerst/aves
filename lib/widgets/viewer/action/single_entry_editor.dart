@@ -17,10 +17,15 @@ import 'package:provider/provider.dart';
 mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditorMixin {
   bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
-  Future<void> edit(BuildContext context, AvesEntry targetEntry, Future<Set<EntryDataType>> Function() apply) async {
+  Future<void> edit(
+    BuildContext context,
+    AvesEntry targetEntry,
+    Future<Set<EntryDataType>> Function() apply, {
+    bool shouldCheckUndatedItems = true,
+  }) async {
     if (!await checkStoragePermission(context, {targetEntry})) return;
 
-    if (!await checkUndatedItems(context, {targetEntry})) return;
+    if (shouldCheckUndatedItems && !await checkUndatedItems(context, {targetEntry})) return;
 
     // check before applying, because it relies on provider
     // but the widget tree may be disposed if the user navigated away

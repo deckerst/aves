@@ -139,7 +139,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final modifier = await selectDateModifier(context, {targetEntry}, collection);
     if (modifier == null) return;
 
-    await edit(context, targetEntry, () => targetEntry.editDate(modifier));
+    await edit(context, targetEntry, () => targetEntry.editDate(modifier), shouldCheckUndatedItems: false);
   }
 
   Future<void> _editLocation(BuildContext context, AvesEntry targetEntry, CollectionLens? collection) async {

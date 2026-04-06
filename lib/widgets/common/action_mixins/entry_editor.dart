@@ -175,7 +175,6 @@ mixin EntryEditorMixin {
             entries: entriesToDate,
             modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
             showResult: false,
-            isFixingUndated: true,
           );
         }
       }

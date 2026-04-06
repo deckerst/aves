@@ -524,15 +524,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     BuildContext context,
     Set<AvesEntry> todoEntries,
     Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
+    bool shouldCheckUndatedItems = true,
     bool showResult = true,
-    bool isFixingUndated = false,
   }) async {
     final selectionDirs = todoEntries.map((e) => e.directory).nonNulls.toSet();
     final todoCount = todoEntries.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoEntries)) return;
 
-    if (!isFixingUndated && !await checkUndatedItems(context, todoEntries)) return;
+    if (shouldCheckUndatedItems && !await checkUndatedItems(context, todoEntries)) return;
 
     Set<String> obsoleteTags = todoEntries.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls.toSet();
@@ -656,7 +656,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     Set<AvesEntry>? entries,
     DateModifier? modifier,
     bool showResult = true,
-    bool isFixingUndated = false,
   }) async {
     entries ??= await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditDate);
     if (entries == null || entries.isEmpty) return;
@@ -667,7 +666,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
     if (modifier == null) return;
 
-    await _edit(context, entries, (entry) => entry.editDate(modifier!), showResult: showResult, isFixingUndated: isFixingUndated);
+    await _edit(context, entries, (entry) => entry.editDate(modifier!), shouldCheckUndatedItems: false, showResult: showResult);
   }
 
   Future<void> _editLocation(BuildContext context) async {
