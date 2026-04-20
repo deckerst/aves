@@ -108,7 +108,7 @@ jobs:
           name: appbundle
 
       - name: Release to beta channel
-        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
+        uses: r0adkll/upload-google-play@7f5b759879c088a86faf85d18779f7f14e79a086 # v1.1.4
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: deckers.thibault.aves
