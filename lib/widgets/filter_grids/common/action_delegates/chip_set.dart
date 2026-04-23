@@ -233,7 +233,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     }
   }
 
-  void browse(BuildContext context) => context.read<Selection<FilterGridItem<T>>?>()?.browse();
+  void browse(BuildContext context) {
+    context.read<Selection<FilterGridItem<T>>?>()?.browse();
+  }
 
   Set<T> getSelectedFilters(BuildContext context) {
     final selection = context.read<Selection<FilterGridItem<T>>>();
