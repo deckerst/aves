@@ -87,7 +87,8 @@ class MimeTypes {
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const gl = 'video/gl';
-  static const lsf = 'x-la-asf';
+  static const lsf = 'video/x-la-asf';
+  static const m4s = 'video/iso.segment';
   static const mkv = 'video/mkv';
   static const mkvX = 'video/x-matroska';
   static const mov = 'video/quicktime';
