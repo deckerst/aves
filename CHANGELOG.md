@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - improved cataloguing for AVIF still images (requires rescan)
 
+### Removed
+
+- Viewer: no longer hide overlay on playing video
+
 ## <a id="v1.14.3"></a>[v1.14.3] - 2026-04-06
 
 ### Fixed

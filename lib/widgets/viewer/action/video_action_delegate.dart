@@ -9,7 +9,6 @@ import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -27,10 +26,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:provider/provider.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  Timer? _overlayHidingTimer;
   final CollectionLens? collection;
 
   VideoActionDelegate({
@@ -49,12 +46,10 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    stopOverlayHidingTimer();
   }
 
   Future<void> onActionSelected(BuildContext context, AvesEntry entry, AvesVideoController controller, EntryAction action) async {
     // make sure overlay is not disappearing when selecting an action
-    stopOverlayHidingTimer();
     const ToggleOverlayNotification(visible: true).dispatch(context);
 
     switch (action) {
@@ -225,21 +220,12 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (controller.isPlaying) {
       await controller.pause();
     } else {
-      final hidingTimeDelay = context.read<DurationsData>().iconAnimation + ADurations.videoOverlayHideDelay;
       final resumeTimeMillis = await controller.getResumeTime(context);
       if (resumeTimeMillis != null) {
         await controller.seekTo(resumeTimeMillis);
       } else {
         await controller.play();
       }
-      // hide overlay
-      _overlayHidingTimer = Timer(hidingTimeDelay, () {
-        if (context.mounted) {
-          const ToggleOverlayNotification(visible: false).dispatch(context);
-        }
-      });
     }
   }
-
-  void stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
 }

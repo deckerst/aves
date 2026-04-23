@@ -597,7 +597,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       // the popup menu button is disposed and menu items are ineffective,
       // so we make sure overlay stays visible
       _overlayVisible.value = true;
-      _videoActionDelegate.stopOverlayHidingTimer();
       dismissFeedback(context);
     } else if (notification is ToggleOverlayNotification) {
       _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
