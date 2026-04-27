@@ -61,8 +61,6 @@ jobs:
           cp build/app/outputs/bundle/libreRelease/*.aab outputs
           ./flutterw build apk -t lib/main_libre.dart --flavor libre --split-per-abi
           cp build/app/outputs/apk/libre/release/*.apk outputs
-          ./flutterw build apk -t lib/main_libre.dart --flavor libre_rom
-          cp build/app/outputs/apk/libre_rom/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
