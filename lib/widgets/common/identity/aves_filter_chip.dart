@@ -162,7 +162,6 @@ class AvesFilterChip extends StatefulWidget {
 
 class _AvesFilterChipState extends State<AvesFilterChip> {
   final Set<StreamSubscription> _subscriptions = {};
-  late Future<Color> _colorFuture;
   late Color _outlineColor;
   late bool _tapped;
   Offset? _tapPosition;
@@ -212,13 +211,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   }
 
   void _initColorLoader() {
-    // For app albums, `filter.color` yields a regular async `Future` the first time
-    // but it yields a `SynchronousFuture` when called again on a known album.
-    // This works fine to avoid a frame with no Future data, for new widgets.
-    // However, when the user moves away and back to a page with a chip using the async future,
-    // the existing widget FutureBuilder cycles again from the start, with a frame in `waiting` state and no data.
-    // So we save the result of the Future to a local variable because of this specific case.
-    _colorFuture = filter.color(context);
     _outlineColor = context.read<AvesColorsData>().neutral;
   }
 
@@ -374,7 +366,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               borderRadius: borderRadius,
               longPressTimeout: settings.longPressTimeout,
               child: FutureBuilder<Color>(
-                future: _colorFuture,
+                future: filter.color(context),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     _outlineColor = snapshot.data!;

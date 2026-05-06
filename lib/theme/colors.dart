@@ -60,31 +60,23 @@ abstract class AvesColorsData {
 
   Color? fromBrandColor(Color? color);
 
-  final Map<String, Color> _stringColors = {}, _appColors = {};
+  final Map<String, Future<Color>?> _appColors = {};
+  final Map<String, Color> _stringColors = {};
 
   Color fromString(String string) {
-    var color = _stringColors[string];
-    if (color == null) {
+    return _stringColors.putIfAbsent(string, () {
       final hash = string.codeUnits.fold<int>(0, (prev, v) => prev = v + ((prev << 5) - prev));
       final hue = (hash % 360).toDouble();
-      color = fromHue(hue);
-      _stringColors[string] = color;
-    }
-    return color;
+      return fromHue(hue);
+    });
   }
 
   Future<Color>? appColor(String album) {
-    final appColor = _appColors[album];
-    if (appColor != null) {
-      return SynchronousFuture(appColor);
-    }
-
     final packageName = covers.effectiveAlbumPackage(album);
     if (packageName == null) return null;
 
-    return appColorFromPackageName(packageName).then((color) {
-      _appColors[album] = color;
-      return color;
+    return _appColors.putIfAbsent(album, () {
+      return appColorFromPackageName(packageName);
     });
   }
 
