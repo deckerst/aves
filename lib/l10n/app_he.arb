@@ -1,206 +1,131 @@
 {
-  "appName": "אייבז",
-  "@appName": {},
-  "welcomeMessage": "ברוך הבא לאייבז",
-  "@welcomeMessage": {},
-  "welcomeOptional": "אופציונלי",
-  "@welcomeOptional": {},
-  "welcomeTermsToggle": "אני מסכימ/ה לתנאים",
-  "@welcomeTermsToggle": {},
-  "chipActionShowCollection": "הצג באוסף",
-  "@chipActionShowCollection": {},
-  "chipActionGoToAlbumPage": "הצג באלבום",
-  "@chipActionGoToAlbumPage": {},
-  "chipActionFilterIn": "סנן לבתוך",
-  "@chipActionFilterIn": {},
-  "chipActionFilterOut": "סנן החוצה",
-  "@chipActionFilterOut": {},
-  "chipActionPin": "הצמד למעלה",
-  "@chipActionPin": {},
-  "chipActionUnpin": "בטל הצמד למעלה",
-  "@chipActionUnpin": {},
-  "chipActionRename": "שנה שם",
-  "@chipActionRename": {},
-  "applyTooltip": "החל",
-  "@applyTooltip": {},
-  "changeTooltip": "שינוי",
-  "@changeTooltip": {},
-  "clearTooltip": "ניקוי",
-  "@clearTooltip": {},
-  "previousTooltip": "הקודם",
-  "@previousTooltip": {},
-  "nextTooltip": "הבא",
-  "@nextTooltip": {},
-  "resetTooltip": "אפס",
-  "@resetTooltip": {},
-  "saveTooltip": "שמור",
-  "@saveTooltip": {},
-  "pickTooltip": "בחר",
-  "@pickTooltip": {},
-  "chipActionGoToPlacePage": "הצג במקומות",
-  "@chipActionGoToPlacePage": {},
-  "chipActionGoToTagPage": "הצג בתגיות",
-  "@chipActionGoToTagPage": {},
-  "chipActionDecompose": "פיצול",
-  "@chipActionDecompose": {},
-  "chipActionHide": "הסתר",
-  "@chipActionHide": {},
-  "chipActionLock": "נעל",
-  "@chipActionLock": {},
-  "applyButtonLabel": "החל",
-  "@applyButtonLabel": {},
-  "nextButtonLabel": "הבא",
-  "@nextButtonLabel": {},
-  "showButtonLabel": "הצג",
-  "@showButtonLabel": {},
-  "hideButtonLabel": "הסתר",
-  "@hideButtonLabel": {},
-  "continueButtonLabel": "המשך",
-  "@continueButtonLabel": {},
-  "cancelTooltip": "ביטול",
-  "@cancelTooltip": {},
-  "columnCount": "{count, plural, =1{{count} עמודה} other{{count} עמודות}}",
-  "@columnCount": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "itemCount": "{count, plural, =1{{count} פריט} other{{count} פריטים}}",
-  "@itemCount": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "focalLength": "{length} mm",
-  "@focalLength": {
-    "placeholders": {
-      "length": {
-        "type": "String",
-        "example": "5.4"
-      }
-    }
-  },
-  "deleteButtonLabel": "מחק",
-  "@deleteButtonLabel": {},
-  "doubleBackExitMessage": "כדי לצאת הקש שוב על \"חזרה\".",
-  "@doubleBackExitMessage": {},
-  "doNotAskAgain": "אל תשאל שוב",
-  "@doNotAskAgain": {},
-  "sourceStateLocatingPlaces": "טוען מקומות",
-  "@sourceStateLocatingPlaces": {},
-  "chipActionRemove": "הסר",
-  "@chipActionRemove": {},
-  "timeSeconds": "{count, plural, =1{{count} שניה} other{{count} שניות}}",
-  "@timeSeconds": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "timeMinutes": "{count, plural, =1{{count} דקה} other{{count} דקות}}",
-  "@timeMinutes": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "timeDays": "{count, plural, =1{{count} יום} other{{count} ימים}}",
-  "@timeDays": {
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "saveCopyButtonLabel": "שמור עותק",
-  "@saveCopyButtonLabel": {},
-  "chipActionGoToCountryPage": "הצג במדינות",
-  "@chipActionGoToCountryPage": {},
-  "chipActionDelete": "מחק",
-  "@chipActionDelete": {},
-  "hideTooltip": "הסתר",
-  "@hideTooltip": {},
-  "showTooltip": "הצג",
-  "@showTooltip": {},
-  "sourceStateLoading": "טוען",
-  "@sourceStateLoading": {},
-  "sourceStateCataloguing": "מקטלג",
-  "@sourceStateCataloguing": {},
-  "actionRemove": "הסרה",
-  "@actionRemove": {},
-  "sourceStateLocatingCountries": "טוען מדינות",
-  "@sourceStateLocatingCountries": {},
-  "stopTooltip": "עצור",
-  "@stopTooltip": {},
-  "chipActionGoToExplorerPage": "הצג בסייר",
-  "@chipActionGoToExplorerPage": {},
-  "chipActionSetCover": "הגדר עטיפה",
-  "@chipActionSetCover": {},
-  "chipActionCreateAlbum": "צור אלבום",
-  "@chipActionCreateAlbum": {},
-  "chipActionShowCountryStates": "הצג סטטיסטיקות",
-  "@chipActionShowCountryStates": {},
-  "createButtonLabel": "צור",
-  "@createButtonLabel": {},
-  "chipActionGroup": "קבוצה",
-  "@chipActionGroup": {},
-  "chipActionCreateGroup": "צור קבוצה",
-  "@chipActionCreateGroup": {},
-  "chipActionCreateVault": "צור כספת",
-  "@chipActionCreateVault": {},
-  "newGroupDialogTitle": "קבוצה חדשה",
-  "@newGroupDialogTitle": {},
-  "groupAlreadyExists": "הקבוצה כבר קיימת",
-  "@groupAlreadyExists": {},
-  "entryActionDelete": "מחיקה",
-  "@entryActionDelete": {},
-  "entryActionConvert": "המרה",
-  "@entryActionConvert": {},
-  "entryActionRotateCCW": "סובב נגד כיוון השעון",
-  "@entryActionRotateCCW": {},
-  "entryActionShare": "שיתוף",
-  "@entryActionShare": {},
-  "entryActionShareVideoOnly": "שיתוף וידיאו בלבד‍",
-  "@entryActionShareVideoOnly": {},
-  "videoActionSelectStreams": "בחר מסלולים",
-  "@videoActionSelectStreams": {},
-  "videoActionShowPreviousFrame": "הצג פריים קודם",
-  "@videoActionShowPreviousFrame": {},
-  "videoActionShowNextFrame": "הצג פריים הבא",
-  "@videoActionShowNextFrame": {},
-  "chipActionConfigureVault": "הגדרת כספת",
-  "@chipActionConfigureVault": {},
-  "entryActionCopyToClipboard": "הועתק ללוח",
-  "@entryActionCopyToClipboard": {},
-  "entryActionShareImageOnly": "שיתוף תמונה בלבד",
-  "@entryActionShareImageOnly": {},
-  "entryActionRotateCW": "סובב עם כיוון השעון",
-  "@entryActionRotateCW": {},
-  "entryActionFlip": "הפוך אופקית",
-  "@entryActionFlip": {},
-  "entryActionPrint": "הדפסה",
-  "@entryActionPrint": {},
-  "entryActionViewSource": "מקור וידאו",
-  "@entryActionViewSource": {},
-  "entryActionShowGeoTiffOnMap": "הצג כשכבת מפה",
-  "@entryActionShowGeoTiffOnMap": {},
-  "entryActionInfo": "מידע",
-  "@entryActionInfo": {},
-  "entryActionExport": "ייצוא",
-  "@entryActionExport": {},
-  "entryActionRename": "שינוי שם",
-  "@entryActionRename": {},
-  "entryActionRestore": "שחזור",
-  "@entryActionRestore": {}
+    "appName": "אייבז",
+    "welcomeMessage": "ברוך הבא לאייבז",
+    "welcomeOptional": "אופציונלי",
+    "welcomeTermsToggle": "אני מסכימ/ה לתנאים",
+    "chipActionShowCollection": "הצג באוסף",
+    "chipActionGoToAlbumPage": "הצג באלבום",
+    "chipActionFilterIn": "סנן לבתוך",
+    "chipActionFilterOut": "סנן החוצה",
+    "chipActionPin": "הצמד למעלה",
+    "chipActionUnpin": "בטל הצמד למעלה",
+    "chipActionRename": "שנה שם",
+    "applyTooltip": "החל",
+    "changeTooltip": "שינוי",
+    "clearTooltip": "ניקוי",
+    "previousTooltip": "הקודם",
+    "nextTooltip": "הבא",
+    "resetTooltip": "אפס",
+    "saveTooltip": "שמור",
+    "pickTooltip": "בחר",
+    "chipActionGoToPlacePage": "הצג במקומות",
+    "chipActionGoToTagPage": "הצג בתגיות",
+    "chipActionDecompose": "פיצול",
+    "chipActionHide": "הסתר",
+    "chipActionLock": "נעל",
+    "applyButtonLabel": "החל",
+    "nextButtonLabel": "הבא",
+    "showButtonLabel": "הצג",
+    "hideButtonLabel": "הסתר",
+    "continueButtonLabel": "המשך",
+    "cancelTooltip": "ביטול",
+    "columnCount": "{count, plural, =1{{count} עמודה} other{{count} עמודות}}",
+    "@columnCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "itemCount": "{count, plural, =1{{count} פריט} other{{count} פריטים}}",
+    "@itemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "focalLength": "{length} mm",
+    "@focalLength": {
+        "placeholders": {
+            "length": {
+                "type": "String",
+                "example": "5.4"
+            }
+        }
+    },
+    "deleteButtonLabel": "מחק",
+    "doubleBackExitMessage": "כדי לצאת הקש שוב על \"חזרה\".",
+    "doNotAskAgain": "אל תשאל שוב",
+    "sourceStateLocatingPlaces": "טוען מקומות",
+    "chipActionRemove": "הסר",
+    "timeSeconds": "{count, plural, =1{{count} שניה} other{{count} שניות}}",
+    "@timeSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "timeMinutes": "{count, plural, =1{{count} דקה} other{{count} דקות}}",
+    "@timeMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "timeDays": "{count, plural, =1{{count} יום} other{{count} ימים}}",
+    "@timeDays": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "saveCopyButtonLabel": "שמור עותק",
+    "chipActionGoToCountryPage": "הצג במדינות",
+    "chipActionDelete": "מחק",
+    "hideTooltip": "הסתר",
+    "showTooltip": "הצג",
+    "sourceStateLoading": "טוען",
+    "sourceStateCataloguing": "מקטלג",
+    "actionRemove": "הסרה",
+    "sourceStateLocatingCountries": "טוען מדינות",
+    "stopTooltip": "עצור",
+    "chipActionGoToExplorerPage": "הצג בסייר",
+    "chipActionSetCover": "הגדר עטיפה",
+    "chipActionCreateAlbum": "צור אלבום",
+    "chipActionShowCountryStates": "הצג סטטיסטיקות",
+    "createButtonLabel": "צור",
+    "chipActionGroup": "העברת קבוצה",
+    "chipActionCreateGroup": "צור קבוצה",
+    "chipActionCreateVault": "צור כספת",
+    "newGroupDialogTitle": "קבוצה חדשה",
+    "groupAlreadyExists": "הקבוצה כבר קיימת",
+    "entryActionDelete": "מחיקה",
+    "entryActionConvert": "המרה",
+    "entryActionRotateCCW": "סובב נגד כיוון השעון",
+    "entryActionShare": "שיתוף",
+    "entryActionShareVideoOnly": "שיתוף וידיאו בלבד‍",
+    "videoActionSelectStreams": "בחר מסלולים",
+    "videoActionShowPreviousFrame": "הצג פריים קודם",
+    "videoActionShowNextFrame": "הצג פריים הבא",
+    "chipActionConfigureVault": "הגדרת כספת",
+    "entryActionCopyToClipboard": "הועתק ללוח",
+    "entryActionShareImageOnly": "שיתוף תמונה בלבד",
+    "entryActionRotateCW": "סובב עם כיוון השעון",
+    "entryActionFlip": "הפוך אופקית",
+    "entryActionPrint": "הדפסה",
+    "entryActionViewSource": "מקור וידאו",
+    "entryActionShowGeoTiffOnMap": "הצג כשכבת מפה",
+    "entryActionInfo": "מידע",
+    "entryActionExport": "ייצוא",
+    "entryActionRename": "שינוי שם",
+    "entryActionRestore": "שחזור"
 }
