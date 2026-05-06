@@ -292,6 +292,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         child: Builder(
                           builder: (context) {
                             return MediaQuery(
+                              // depending on `MediaQuery` as an `InheritedWidget` means that the whole `MaterialApp`
+                              // will rebuild on any change, including on `viewInsets` transient changes,
+                              // when focusing on a text field and the keyboard pops in and out.
                               data: MediaQuery.of(context).copyWith(
                                 // disable accessible navigation, as it impacts snack bar action timer
                                 // for all users of apps registered as accessibility services,

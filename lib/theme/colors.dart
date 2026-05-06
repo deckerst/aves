@@ -24,6 +24,8 @@ class AvesColorsProvider extends StatelessWidget {
   final bool allowMonochrome;
   final Widget child;
 
+  static final Map<(AvesThemeColorMode, bool), AvesColorsData> _schemeCache = {};
+
   const AvesColorsProvider({
     super.key,
     this.allowMonochrome = true,
@@ -39,10 +41,12 @@ class AvesColorsProvider extends StatelessWidget {
         if (!allowMonochrome && mode == AvesThemeColorMode.monochrome) {
           mode = AvesThemeColorMode.polychrome;
         }
-        return switch (mode) {
-          AvesThemeColorMode.monochrome => isDark ? _MonochromeOnDark() : _MonochromeOnLight(),
-          AvesThemeColorMode.polychrome => isDark ? NeonOnDark() : PastelOnLight(),
-        };
+        return _schemeCache.putIfAbsent((mode, isDark), () {
+          return switch (mode) {
+            .monochrome => isDark ? _MonochromeOnDark() : _MonochromeOnLight(),
+            .polychrome => isDark ? _NeonOnDark() : _PastelOnLight(),
+          };
+        });
       },
       child: child,
     );
@@ -173,7 +177,7 @@ class _MonochromeOnLight extends _Monochrome {
   Color get neutral => AvesColorsData._neutralOnLight;
 }
 
-class NeonOnDark extends AvesColorsData {
+class _NeonOnDark extends AvesColorsData {
   @override
   Color get neutral => AvesColorsData._neutralOnDark;
 
@@ -184,7 +188,7 @@ class NeonOnDark extends AvesColorsData {
   Color? fromBrandColor(Color? color) => color;
 }
 
-class PastelOnLight extends AvesColorsData {
+class _PastelOnLight extends AvesColorsData {
   @override
   Color get neutral => AvesColorsData._neutralOnLight;
 
