@@ -20,6 +20,10 @@ All notable changes to this project will be documented in this file.
 
 - build: `libre_rom` flavor, now redundant with `libre` flavor
 
+### Fixed
+
+- sorting by name mixed filters/groups without sections
+
 ## <a id="v1.14.3"></a>[v1.14.3] - 2026-04-06
 
 ### Fixed

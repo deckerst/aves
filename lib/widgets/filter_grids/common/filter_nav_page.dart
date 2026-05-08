@@ -19,6 +19,7 @@ import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +64,8 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   }
 
   static int compareFiltersByName(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
-    return a.filter.compareTo(b.filter);
+    // assume we compare context-independent labels
+    return compareAsciiUpperCaseNatural(a.filter.universalLabel, b.filter.universalLabel);
   }
 
   static int compareFiltersByPath<T extends CollectionFilter>(FilterGridItem<T> a, FilterGridItem<T> b) {
