@@ -145,9 +145,14 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
                 source: widget.source,
                 title: widget.title,
                 actionDelegate: widget.actionDelegate,
-                isEmpty: widget.filterSections.isEmpty,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 scrollController: scrollController,
+                onGroupCrumbTap: (context, filter) {
+                  final selection = context.read<Selection<FilterGridItem<T>>?>();
+                  if (selection == null || !selection.isSelecting) {
+                    Navigator.maybeOf(context)?.push(_buildCollectionPageRoute(filter));
+                  }
+                },
               ),
               appBarHeightNotifier: _appBarHeightNotifier,
               scrollController: scrollController,
@@ -176,20 +181,23 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
                   if (filter is GroupBaseFilter) {
                     context.read<FilterGroupNotifier>().value = filter.uri;
                   } else {
-                    final route = MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        source: context.read<CollectionSource>(),
-                        filters: {gridItem.filter},
-                      ),
-                    );
-                    navigate(route);
+                    navigate(_buildCollectionPageRoute(filter));
                   }
                 }
               },
             ),
           );
         },
+      ),
+    );
+  }
+
+  Route _buildCollectionPageRoute(CollectionFilter filter) {
+    return MaterialPageRoute(
+      settings: const RouteSettings(name: CollectionPage.routeName),
+      builder: (context) => CollectionPage(
+        source: context.read<CollectionSource>(),
+        filters: {filter},
       ),
     );
   }

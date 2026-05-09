@@ -93,6 +93,8 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
 
   bool get isPickingGroup => albumChipTypes.length == 1 && albumChipTypes.contains(AlbumChipType.group);
 
+  bool get canPickGroupFromCrumbLine => albumChipTypes == AlbumChipType.values;
+
   String get title {
     final l10n = context.l10n;
     if (isPickingGroup) {
@@ -145,9 +147,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                             title: title,
                             actionDelegate: AlbumChipSetActionDelegate(gridItems),
                             actionsBuilder: _buildActions,
-                            isEmpty: false,
                             appBarHeightNotifier: _appBarHeightNotifier,
                             scrollController: scrollController,
+                            onGroupCrumbTap: canPickGroupFromCrumbLine ? _pickFilter : null,
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
                           scrollController: scrollController,

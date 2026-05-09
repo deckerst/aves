@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/container/album_group.dart';
-import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -356,14 +355,8 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
               (filter) => AlbumNavTile(
                 filter: filter,
                 isSelected: () {
-                  if (currentFilters == null || currentFilters.length > 1) return false;
-                  final currentFilter = currentFilters.firstOrNull;
-                  if (currentFilter is StoredAlbumFilter && filter is StoredAlbumFilter) {
-                    return currentFilter.album == filter.album;
-                  } else if (currentFilter is DynamicAlbumFilter && filter is DynamicAlbumFilter) {
-                    return currentFilter.name == filter.name;
-                  }
-                  return false;
+                  if (currentFilters == null || currentFilters.length != 1) return false;
+                  return currentFilters.firstOrNull == filter;
                 },
               ),
             ),

@@ -82,6 +82,8 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
 
   bool get isPickingGroup => chipTypes.length == 1 && chipTypes.contains(ChipType.group);
 
+  bool get canPickGroupFromCrumbLine => chipTypes == ChipType.values;
+
   String get title {
     final l10n = context.l10n;
     if (isPickingGroup) {
@@ -129,9 +131,9 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
                             title: title,
                             actionDelegate: TagChipSetActionDelegate(gridItems),
                             actionsBuilder: _buildActions,
-                            isEmpty: false,
                             appBarHeightNotifier: _appBarHeightNotifier,
                             scrollController: scrollController,
+                            onGroupCrumbTap: canPickGroupFromCrumbLine ? _pickFilter : null,
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
                           scrollController: scrollController,

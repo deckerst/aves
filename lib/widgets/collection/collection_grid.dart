@@ -558,7 +558,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                         }
                         return scrollOffset;
                       },
-                      crumbsBuilder: () => _getCrumbs(sectionLayouts),
+                      scrollCrumbsBuilder: () => _getScrollCrumbs(sectionLayouts),
                       padding: EdgeInsets.only(
                         // padding to keep scroll thumb between app bar above and nav bar below
                         top: appBarHeight,
@@ -673,7 +673,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   void _stopScrollMonitoringTimer() => _scrollMonitoringTimer?.cancel();
 
-  Map<double, String> _getCrumbs(List<SectionLayout> sectionLayouts) {
+  Map<double, String> _getScrollCrumbs(List<SectionLayout> sectionLayouts) {
     final crumbs = <double, String>{};
     if (sectionLayouts.length <= 1) return crumbs;
 

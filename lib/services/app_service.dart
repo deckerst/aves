@@ -55,9 +55,10 @@ class PlatformAppService implements AppService {
     'com.google.android.apps.photos': {'Google Photos'},
     'com.kakao.talk': {'KakaoTalkDownload'},
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
+    'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'},
     'nekox.messenger': {'NekoX'},
     'org.telegram.messenger': {'Telegram Images', 'Telegram Video'},
-    'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'},
+    'ru.tech.imageresizershrinker': {'ImageToolbox'},
   };
 
   @override

@@ -6,8 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Albums/Tags: filter collection with current group from crumb line
 - Cataloguing: improved metadata parsing for AVIF still images (requires rescan)
-- Navigation: option to add recycle bin to bottom navigation bar
+- Navigation: allow adding album/tag group to bottom navigation bar
+- Navigation: allow adding recycle bin to bottom navigation bar
+- Navigation: allow adding album group to drawer
 - Lao translation (thanks BoneNI)
 
 ### Changed

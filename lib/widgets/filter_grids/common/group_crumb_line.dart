@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 class FilterGroupCrumbLine extends StatelessWidget {
   final Uri? groupUri;
   final void Function(Uri? groupUri) onTap;
+  final WidgetBuilder? lastCrumbBuilder;
 
   const FilterGroupCrumbLine({
     super.key,
     required this.groupUri,
     required this.onTap,
+    required this.lastCrumbBuilder,
   });
 
   @override
@@ -20,6 +22,7 @@ class FilterGroupCrumbLine extends StatelessWidget {
       split: _split,
       combine: _combine,
       onTap: onTap,
+      lastCrumbBuilder: lastCrumbBuilder,
     );
   }
 

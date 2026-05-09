@@ -38,7 +38,7 @@ class DraggableScrollbar extends StatefulWidget {
   /// The background color of the label and thumb
   final Color backgroundColor;
 
-  final Map<double, String> Function()? crumbsBuilder;
+  final Map<double, String> Function()? scrollCrumbsBuilder;
 
   final Size scrollThumbSize;
 
@@ -74,7 +74,7 @@ class DraggableScrollbar extends StatefulWidget {
     required this.scrollThumbBuilder,
     required this.controller,
     this.dragOffsetSnapper,
-    this.crumbsBuilder,
+    this.scrollCrumbsBuilder,
     this.padding = EdgeInsets.zero,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
     this.scrollbarTimeToFade = const Duration(milliseconds: 1000),
@@ -163,7 +163,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
   void didUpdateWidget(covariant DraggableScrollbar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.crumbsBuilder != widget.crumbsBuilder) {
+    if (oldWidget.scrollCrumbsBuilder != widget.scrollCrumbsBuilder) {
       _percentCrumbs = null;
     }
   }
@@ -340,7 +340,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   void _updateViewportCrumbs() {
     _viewportCrumbs.clear();
-    final crumbsBuilder = widget.crumbsBuilder;
+    final crumbsBuilder = widget.scrollCrumbsBuilder;
     if (crumbsBuilder != null) {
       final maxOffset = thumbMaxScrollExtent;
       final position = controller.position;
