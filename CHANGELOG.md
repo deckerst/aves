@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Navigation: allow adding album/tag group to bottom navigation bar
 - Navigation: allow adding recycle bin to bottom navigation bar
 - Navigation: allow adding album group to drawer
+- Explorer: show bottom navigation bar
 - Lao translation (thanks BoneNI)
 
 ### Changed

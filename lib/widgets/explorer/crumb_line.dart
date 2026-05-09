@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class ExplorerCrumbLine extends StatelessWidget {
   final VolumeRelativeDirectory? directory;
   final void Function(VolumeRelativeDirectory? combinedPath) onTap;
+  final WidgetBuilder? lastCrumbBuilder;
 
   const ExplorerCrumbLine({
     super.key,
     required this.directory,
     required this.onTap,
+    required this.lastCrumbBuilder,
   });
 
   @override
@@ -21,6 +23,7 @@ class ExplorerCrumbLine extends StatelessWidget {
       split: _split,
       combine: _combine,
       onTap: onTap,
+      lastCrumbBuilder: lastCrumbBuilder,
     );
   }
 
