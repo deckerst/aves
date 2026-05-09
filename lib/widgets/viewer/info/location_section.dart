@@ -107,8 +107,8 @@ class _LocationSectionState extends State<LocationSection> {
               openMapPage: collection != null ? _openMapPage : null,
             ),
           ),
-          AnimatedBuilder(
-            animation: entry.addressChangeNotifier,
+          ListenableBuilder(
+            listenable: entry.addressChangeNotifier,
             builder: (context, child) {
               final filters = <LocationFilter>[];
               if (entry.hasAddress) {

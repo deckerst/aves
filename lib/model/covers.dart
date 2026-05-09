@@ -23,8 +23,6 @@ import 'package:synchronized/synchronized.dart';
 
 final Covers covers = Covers._private();
 
-typedef CoverProps = (int? entryId, String? packageName, Color? color);
-
 class Covers {
   final Set<StreamSubscription> _subscriptions = {};
   final _lock = Lock();
@@ -41,6 +39,9 @@ class Covers {
 
   Set<CoverRow> _rows = {};
 
+  final Map<String, AlbumType> _effectiveAlbumTypeCache = {};
+  final Map<String, String?> _effectiveAlbumPackageCache = {};
+
   // do not subscribe to events from other modules in constructor
   // so that modules can subscribe to each other
   Covers._private();
@@ -50,6 +51,11 @@ class Covers {
     _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _updateCoveredDynamicAlbums(e.changes)));
     _subscriptions.add(albumGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
     _subscriptions.add(tagGrouping.eventBus.on<GroupUriChangedEvent>().listen((e) => _updateCoveredGroup(e.oldGroupUri, e.newGroupUri)));
+
+    androidFileUtils.albumTypesChangeNotifier.addListener(_invalidateEffectiveAlbumPropCache);
+    appInventory.areAppNamesReadyNotifier.addListener(_invalidateEffectiveAlbumPropCache);
+    vaults.lockStateChangeNotifier.addListener(_invalidateEffectiveAlbumPropCache);
+    _invalidateEffectiveAlbumPropCache();
   }
 
   int get count => _rows.length;
@@ -60,7 +66,7 @@ class Covers {
     if (filter is StoredAlbumFilter && vaults.isLocked(filter.album)) return null;
 
     final row = _rows.firstWhereOrNull((row) => row.filter == filter);
-    return row != null ? (row.entryId, row.packageName, row.color) : null;
+    return row?.coverProps;
   }
 
   Future<CoverProps?> remove(CollectionFilter filter, {bool notify = true}) async {
@@ -69,10 +75,9 @@ class Covers {
       await set(filter: filter, entryId: null, packageName: null, color: null);
 
       if (notify) {
-        final (entryId, packageName, color) = props;
-        if (entryId != null) _entryChangeStreamController.add({filter});
-        if (packageName != null) _packageChangeStreamController.add({filter});
-        if (color != null) _colorChangeStreamController.add({filter});
+        if (props.entryId != null) _entryChangeStreamController.add({filter});
+        if (props.packageName != null) _packageChangeStreamController.add({filter});
+        if (props.color != null) _colorChangeStreamController.add({filter});
       }
     }
     return props;
@@ -86,10 +91,9 @@ class Covers {
     for (final filter in filters) {
       final props = await remove(filter, notify: false);
       if (notify && props != null) {
-        final (entryId, packageName, color) = props;
-        if (entryId != null) entryIdChanged.add(filter);
-        if (packageName != null) packageNameChanged.add(filter);
-        if (color != null) colorChanged.add(filter);
+        if (props.entryId != null) entryIdChanged.add(filter);
+        if (props.packageName != null) packageNameChanged.add(filter);
+        if (props.color != null) colorChanged.add(filter);
       }
     }
 
@@ -121,22 +125,25 @@ class Covers {
     _rows.removeAll(oldRows);
     await localMediaDb.removeCovers({filter});
 
-    final oldRow = oldRows.firstOrNull;
-    final oldEntry = oldRow?.entryId;
-    final oldPackage = oldRow?.packageName;
-    final oldColor = oldRow?.color;
+    final oldCoverProps = oldRows.firstOrNull?.coverProps;
+    final oldEntry = oldCoverProps?.entryId;
+    final oldPackage = oldCoverProps?.packageName;
+    final oldColor = oldCoverProps?.color;
 
     if (entryId != null || packageName != null || color != null) {
       final row = CoverRow(
         filter: filter,
-        entryId: entryId,
-        packageName: packageName,
-        color: color,
+        coverProps: CoverProps(
+          entryId,
+          packageName,
+          color,
+        ),
       );
       _rows.add(row);
       await localMediaDb.addCovers({row});
     }
 
+    _invalidateEffectiveAlbumPropCache();
     if (notify) {
       if (oldEntry != entryId) _entryChangeStreamController.add({filter});
       if (oldPackage != packageName) _packageChangeStreamController.add({filter});
@@ -150,42 +157,52 @@ class Covers {
       (row) => set(
         filter: row.filter,
         entryId: null,
-        packageName: row.packageName,
-        color: row.color,
+        packageName: row.coverProps.packageName,
+        color: row.coverProps.color,
       ),
     );
   }
 
   Future<void> moveEntry(AvesEntry entry) async {
     final entryId = entry.id;
-    await _removeEntryFromRows(_rows.where((row) => row.entryId == entryId && !row.filter.test(entry)).toSet());
+    await _removeEntryFromRows(_rows.where((row) => row.coverProps.entryId == entryId && !row.filter.test(entry)).toSet());
   }
 
   Future<void> removeIds(Set<int> entryIds) async {
-    await _removeEntryFromRows(_rows.where((row) => entryIds.contains(row.entryId)).toSet());
+    await _removeEntryFromRows(_rows.where((row) => entryIds.contains(row.coverProps.entryId)).toSet());
   }
 
   Future<void> clear() async {
     await localMediaDb.clearCovers();
     _rows.clear();
 
+    _invalidateEffectiveAlbumPropCache();
     _entryChangeStreamController.add(null);
     _packageChangeStreamController.add(null);
     _colorChangeStreamController.add(null);
   }
 
+  void _invalidateEffectiveAlbumPropCache() {
+    _effectiveAlbumTypeCache.clear();
+    _effectiveAlbumPackageCache.clear();
+  }
+
   AlbumType effectiveAlbumType(String albumPath) {
-    final filterPackage = of(StoredAlbumFilter(albumPath, null))?.$2;
-    if (filterPackage != null) {
-      return filterPackage.isEmpty ? AlbumType.regular : AlbumType.app;
-    } else {
-      return androidFileUtils.getAlbumType(albumPath);
-    }
+    return _effectiveAlbumTypeCache.putIfAbsent(albumPath, () {
+      final filterPackage = of(StoredAlbumFilter(albumPath, null))?.packageName;
+      if (filterPackage != null) {
+        return filterPackage.isEmpty ? AlbumType.regular : AlbumType.app;
+      } else {
+        return androidFileUtils.getAlbumType(albumPath);
+      }
+    });
   }
 
   String? effectiveAlbumPackage(String albumPath) {
-    final filterPackage = of(StoredAlbumFilter(albumPath, null))?.$2;
-    return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
+    return _effectiveAlbumPackageCache.putIfAbsent(albumPath, () {
+      final filterPackage = of(StoredAlbumFilter(albumPath, null))?.packageName;
+      return filterPackage ?? appInventory.getAlbumAppPackageName(albumPath);
+    });
   }
 
   Future<void> _updateCoveredDynamicAlbums(Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes) async {
@@ -198,9 +215,9 @@ class Covers {
         if (cover != null && newFilter != null) {
           await covers.set(
             filter: newFilter,
-            entryId: cover.$1,
-            packageName: cover.$2,
-            color: cover.$3,
+            entryId: cover.entryId,
+            packageName: cover.packageName,
+            color: cover.color,
             notify: true,
           );
         }
@@ -220,9 +237,9 @@ class Covers {
           if (cover != null && newFilter != null) {
             await covers.set(
               filter: newFilter,
-              entryId: cover.$1,
-              packageName: cover.$2,
-              color: cover.$3,
+              entryId: cover.entryId,
+              packageName: cover.packageName,
+              color: cover.color,
               notify: true,
             );
           }
@@ -237,12 +254,13 @@ class Covers {
     final visibleEntries = source.visibleEntries;
     final jsonList = all
         .map((row) {
-          final entryId = row.entryId;
+          final cover = row.coverProps;
+          final entryId = cover.entryId;
           final path = visibleEntries.firstWhereOrNull((entry) => entryId == entry.id)?.path;
           final volume = androidFileUtils.getStorageVolume(path)?.path;
           final relativePath = volume != null ? path?.substring(volume.length) : null;
-          final packageName = row.packageName;
-          final colorJson = row.color?.toJson();
+          final packageName = cover.packageName;
+          final colorJson = cover.color?.toJson();
 
           return {
             'filter': row.filter.toJson(),
@@ -304,20 +322,28 @@ class Covers {
 }
 
 @immutable
-class CoverRow extends Equatable {
-  final CollectionFilter filter;
+class CoverProps extends Equatable {
   final int? entryId;
   final String? packageName;
   final Color? color;
 
   @override
-  List<Object?> get props => [filter, entryId, packageName, color];
+  List<Object?> get props => [entryId, packageName, color];
+
+  const CoverProps(this.entryId, this.packageName, this.color);
+}
+
+@immutable
+class CoverRow extends Equatable {
+  final CollectionFilter filter;
+  final CoverProps coverProps;
+
+  @override
+  List<Object?> get props => [filter, coverProps];
 
   const CoverRow({
     required this.filter,
-    required this.entryId,
-    required this.packageName,
-    required this.color,
+    required this.coverProps,
   });
 
   static CoverRow? fromMap(Map map) {
@@ -330,16 +356,18 @@ class CoverRow extends Equatable {
 
     return CoverRow(
       filter: filter,
-      entryId: entryId,
-      packageName: packageName,
-      color: ExtraColor.fromJson(colorJson),
+      coverProps: CoverProps(
+        entryId,
+        packageName,
+        ExtraColor.fromJson(colorJson),
+      ),
     );
   }
 
   Map<String, Object?> toMap() => {
     'filter': filter.toJson(),
-    'entryId': entryId,
-    'packageName': packageName,
-    'color': color?.toJson(),
+    'entryId': coverProps.entryId,
+    'packageName': coverProps.packageName,
+    'color': coverProps.color?.toJson(),
   };
 }

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
@@ -108,17 +110,22 @@ class _SearchPageState extends State<SearchPage> {
     Widget leading = Center(child: widget.delegate.buildLeading(context));
     Widget title = DefaultTextStyle.merge(
       style: const TextStyle(fontFeatures: [FontFeature.disable('smcp')]),
-      child: TextField(
-        controller: widget.delegate.queryTextController,
-        focusNode: _searchFieldFocusNode,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: widget.delegate.searchFieldLabel,
-          hintStyle: theme.inputDecorationTheme.hintStyle,
+      child: Semantics(
+        inputType: SemanticsInputType.search,
+        child: TextField(
+          controller: widget.delegate.queryTextController,
+          focusNode: _searchFieldFocusNode,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: widget.delegate.searchFieldLabel,
+            hintStyle: theme.inputDecorationTheme.hintStyle,
+          ),
+          textInputAction: widget.delegate.textInputAction,
+          style: widget.delegate.searchFieldStyle ?? Themes.searchFieldStyle(context),
+          autocorrect: widget.delegate.autocorrect,
+          enableSuggestions: widget.delegate.enableSuggestions,
+          onSubmitted: (_) => widget.delegate.showResults(context),
         ),
-        textInputAction: TextInputAction.search,
-        style: Themes.searchFieldStyle(context),
-        onSubmitted: (_) => widget.delegate.showResults(context),
       ),
     );
     Widget body;

@@ -132,6 +132,7 @@ class _TvLicensePageState extends State<TvLicensePage> {
 }
 
 // adapted from Flutter `_LicenseData` in `/material/about.dart`
+// unmodified, modulo format & lints
 class _LicenseData {
   final List<LicenseEntry> licenses = <LicenseEntry>[];
   final Map<String, List<int>> packageLicenseBindings = <String, List<int>>{};
@@ -170,7 +171,7 @@ class _LicenseData {
   void sortPackages([int Function(String a, String b)? compare]) {
     packages.sort(
       compare ??
-          (a, b) {
+          (String a, String b) {
             // Based on how LicenseRegistry currently behaves, the first package
             // returned is the end user application license. This should be
             // presented first in the list. So here we make sure that first package
@@ -214,7 +215,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
   bool _loaded = false;
 
   Future<void> _initLicenses() async {
-    int debugFlowId = -1;
+    var debugFlowId = -1;
     assert(() {
       final Flow flow = Flow.begin();
       Timeline.timeSync('_initLicenses()', () {}, flow: flow);
@@ -222,7 +223,9 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
       return true;
     }());
     for (final LicenseEntry license in widget.licenseEntries) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       assert(() {
         Timeline.timeSync('_initLicenses()', () {}, flow: Flow.step(debugFlowId));
         return true;
@@ -232,19 +235,16 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
         Priority.animation,
         debugLabel: 'License',
       );
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
-        _licenses.add(
-          const Padding(
-            padding: EdgeInsets.all(18),
-            child: Divider(),
-          ),
-        );
-        for (final LicenseParagraph paragraph in paragraphs) {
+        _licenses.add(const Padding(padding: EdgeInsets.all(18.0), child: Divider()));
+        for (final paragraph in paragraphs) {
           if (paragraph.indent == LicenseParagraph.centeredIndent) {
             _licenses.add(
               Padding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
                   paragraph.text,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -256,7 +256,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
             assert(paragraph.indent >= 0);
             _licenses.add(
               Padding(
-                padding: EdgeInsetsDirectional.only(top: 8, start: 16.0 * paragraph.indent),
+                padding: EdgeInsetsDirectional.only(top: 8.0, start: 16.0 * paragraph.indent),
                 child: Text(paragraph.text),
               ),
             );
@@ -281,15 +281,13 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
     final String title = widget.packageName;
     final String subtitle = localizations.licensesPackageDetailText(widget.licenseEntries.length);
     final double pad = _getGutterSize(context);
-    final EdgeInsets padding = EdgeInsets.only(left: pad, right: pad, bottom: pad);
-    final List<Widget> listWidgets = <Widget>[
+    final padding = EdgeInsets.only(left: pad, right: pad, bottom: pad);
+    final listWidgets = <Widget>[
       ..._licenses,
       if (!_loaded)
         const Padding(
-          padding: EdgeInsets.symmetric(vertical: 24),
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+          padding: EdgeInsets.symmetric(vertical: 24.0),
+          child: Center(child: CircularProgressIndicator()),
         ),
     ];
 
@@ -309,8 +307,8 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
           child: Material(
             color: Themes.firstLayerColor(context),
             elevation: 4.0,
-            child: Container(
-              constraints: BoxConstraints.loose(const Size.fromWidth(600.0)),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600.0),
               child: Localizations.override(
                 locale: const Locale('en', 'US'),
                 context: context,
@@ -318,11 +316,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
                   // A Scrollbar is built-in below.
                   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                   child: Scrollbar(
-                    child: ListView(
-                      primary: true,
-                      padding: padding,
-                      children: listWidgets,
-                    ),
+                    child: ListView(primary: true, padding: padding, children: listWidgets),
                   ),
                 ),
               ),
@@ -347,27 +341,26 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
           ),
           SliverPadding(
             padding: padding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => Localizations.override(
+            sliver: SliverList.builder(
+              itemCount: listWidgets.length,
+              itemBuilder: (context, index) {
+                return Localizations.override(
                   locale: const Locale('en', 'US'),
                   context: context,
                   child: listWidgets[index],
-                ),
-                childCount: listWidgets.length,
-              ),
+                );
+              },
             ),
           ),
         ],
       );
     }
-    return DefaultTextStyle(
-      style: theme.textTheme.bodySmall!,
-      child: page,
-    );
+    return DefaultTextStyle(style: theme.textTheme.bodySmall!, child: page);
   }
 }
 
+// adapted from Flutter `_PackageLicensePageTitle` in `/material/about.dart`
+// unmodified, modulo format & lints
 class _PackageLicensePageTitle extends StatelessWidget {
   const _PackageLicensePageTitle({
     required this.title,
@@ -401,4 +394,4 @@ const int _materialGutterThreshold = 720;
 const double _wideGutterSize = 24.0;
 const double _narrowGutterSize = 12.0;
 
-double _getGutterSize(BuildContext context) => MediaQuery.sizeOf(context).width >= _materialGutterThreshold ? _wideGutterSize : _narrowGutterSize;
+double _getGutterSize(BuildContext context) => MediaQuery.widthOf(context) >= _materialGutterThreshold ? _wideGutterSize : _narrowGutterSize;

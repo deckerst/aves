@@ -103,8 +103,8 @@ class _DurationDialogState extends State<DurationDialog> {
             ],
             actions: [
               const CancelButton(),
-              AnimatedBuilder(
-                animation: Listenable.merge([_minutes, _seconds]),
+              ListenableBuilder(
+                listenable: Listenable.merge([_minutes, _seconds]),
                 builder: (context, child) {
                   final isValid = _minutes.value > 0 || _seconds.value > 0;
                   return TextButton(

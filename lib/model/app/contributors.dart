@@ -170,6 +170,10 @@ class Contributors {
     Contributor('traaduttore', 'traaduttore@users.noreply.hosted.weblate.org'),
     Contributor('sgchr', 'pr3dali3n@gmail.com'),
     Contributor('Zhafran Galeel', 'zhafgaleel@gmail.com'),
+    Contributor('BoneNI', 'bounkirdni@gmail.com'),
+    Contributor('kheno', 'kheno@go9.be'),
+    Contributor('Francisco Serrador', 'fserrador@gmail.com'),
+    Contributor('Remy Rose', 'rem.klajis@gmail.com'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Alvi Khan', 'aveenalvi@gmail.com'), // Bengali
@@ -179,6 +183,7 @@ class Contributors {
     // Contributor('s2W', 'dmrmarketingemail@yahoo.com'), // Croatian
     // Contributor('Idj', 'joneltmp+goahn@gmail.com'), // Hebrew
     // Contributor('elid', 'shopisrael12@gmail.com'), // Hebrew
+    // Contributor('Omer I.S.', 'omeritzicschwartz@gmail.com'), // Hebrew
     // Contributor('Rohit Burman', 'rohitburman31p@rediffmail.com'), // Hindi
     // Contributor('AJ07', 'ajaykumarmeena676@gmail.com'), // Hindi
     // Contributor('Sartaj', 'ssaarrttaajj111@gmail.com'), // Hindi

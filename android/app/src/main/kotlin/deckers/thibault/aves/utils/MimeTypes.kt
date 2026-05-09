@@ -16,6 +16,7 @@ object MimeTypes {
     const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
+    private const val JPEG2000 = "image/jp2"
     const val PNG = "image/png"
     const val PSD_VND = "image/vnd.adobe.photoshop"
     const val PSD_X = "image/x-photoshop"
@@ -95,9 +96,9 @@ object MimeTypes {
         else -> false
     }
 
-    // as of `metadata-extractor` v2.14.0
+    // as of `metadata-extractor` v2.20.0
     fun canReadWithMetadataExtractor(mimeType: String?) = when (mimeType) {
-        DJVU, SVG, WBMP -> false
+        DJVU, JPEG2000, SVG, WBMP -> false
         MKV, MP2T, MP2TS, OGV, WEBM -> false
         else -> true
     }

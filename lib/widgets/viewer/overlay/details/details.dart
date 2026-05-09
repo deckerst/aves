@@ -151,8 +151,8 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: pageEntry.metadataChangeNotifier,
+    return ListenableBuilder(
+      listenable: pageEntry.metadataChangeNotifier,
       builder: (context, child) => DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
           shadows: shadows(context),

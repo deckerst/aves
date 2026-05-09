@@ -225,8 +225,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildAlbumFilters(CollectionFilterPredicate containQuery) {
-    return AnimatedBuilder(
-      animation: dynamicAlbums,
+    return ListenableBuilder(
+      listenable: dynamicAlbums,
       builder: (context, child) => StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {

@@ -50,8 +50,8 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
       },
       onLeave: (data) => _setPanelHighlight(false),
       builder: (context, accepted, rejected) {
-        return AnimatedBuilder(
-          animation: Listenable.merge([quickActionsChangeNotifier, draggedAvailableAction]),
+        return ListenableBuilder(
+          listenable: Listenable.merge([quickActionsChangeNotifier, draggedAvailableAction]),
           builder: (context, child) {
             return Padding(
               padding: padding,

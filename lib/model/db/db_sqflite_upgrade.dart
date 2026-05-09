@@ -485,9 +485,11 @@ class LocalMediaDbUpgrader {
         final color = colorValue != null ? Color(colorValue) : null;
         final row = CoverRow(
           filter: filter,
-          entryId: map['entryId'] as int?,
-          packageName: map['packageName'] as String?,
-          color: color,
+          coverProps: CoverProps(
+            map['entryId'] as int?,
+            map['packageName'] as String?,
+            color,
+          ),
         );
         rows.add(row);
       }

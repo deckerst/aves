@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 // adapted from Flutter `_ImageState` in `/widgets/image.dart`
-// and `DecorationImagePainter` in `/painting/decoration_image.dart`
+// and `paintImage` in `/painting/decoration_image.dart`
 // to transition between 2 different fits during hero animation:
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1
@@ -35,7 +35,10 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
   bool _isListeningToStream = false;
   bool _wasSynchronouslyLoaded = false;
   late DisposableBuildContext<State<TransitionImage>> _scrollAwareContext;
+  Object? _lastException;
   ImageStreamCompleterHandle? _completerHandle;
+
+  bool _isPaused = false;
 
   @override
   void initState() {
@@ -59,10 +62,12 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
   void didChangeDependencies() {
     _resolveImage();
 
-    if (TickerMode.valuesOf(context).enabled) {
-      _listenToStream();
-    } else {
+    _isPaused = !TickerMode.valuesOf(context).enabled || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
+
+    if (_isPaused) {
       _stopListeningToStream(keepStreamAlive: true);
+    } else {
+      _listenToStream();
     }
 
     super.didChangeDependencies();
@@ -73,6 +78,7 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
     super.didUpdateWidget(oldWidget);
     if (widget.image != oldWidget.image) {
       _resolveImage();
+      _listenToStream();
     }
   }
 
@@ -95,7 +101,21 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
 
   ImageStreamListener _getListener({bool recreateListener = false}) {
     if (_imageStreamListener == null || recreateListener) {
-      _imageStreamListener = ImageStreamListener(_handleImageFrame);
+      _lastException = null;
+      _imageStreamListener = ImageStreamListener(
+        _handleImageFrame,
+        onError: kDebugMode
+            ? (error, stackTrace) {
+                setState(() {
+                  _lastException = error;
+                });
+                assert(() {
+                  // ignore: only_throw_errors, since we're just proxying the error.
+                  throw error; // Ensures the error message is printed to the console.
+                }());
+              }
+            : null,
+      );
     }
     return _imageStreamListener!;
   }
@@ -103,13 +123,22 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
   void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall) {
     setState(() {
       _replaceImage(info: imageInfo);
+      _lastException = null;
       _wasSynchronouslyLoaded = _wasSynchronouslyLoaded | synchronousCall;
     });
+    if (_isPaused) {
+      _stopListeningToStream(keepStreamAlive: true);
+    }
   }
 
   void _replaceImage({required ImageInfo? info}) {
     final ImageInfo? oldImageInfo = _imageInfo;
-    SchedulerBinding.instance.addPostFrameCallback((_) => oldImageInfo?.dispose());
+    if (oldImageInfo != null) {
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => oldImageInfo.dispose(),
+        debugLabel: 'TransitionImage.disposeOldInfo',
+      );
+    }
     _imageInfo = info;
   }
 
@@ -141,11 +170,10 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
       return;
     }
 
+    _isListeningToStream = true;
     _imageStream!.addListener(_getListener());
     _completerHandle?.dispose();
     _completerHandle = null;
-
-    _isListeningToStream = true;
   }
 
   /// Stops listening to the image stream, if this state object has attached a
@@ -168,8 +196,34 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
     _isListeningToStream = false;
   }
 
+  Widget _debugBuildErrorWidget(BuildContext context, Object error) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        const Positioned.fill(child: Placeholder(color: Color(0xCF8D021F))),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: FittedBox(
+            child: Text(
+              '$error',
+              textAlign: TextAlign.center,
+              textDirection: TextDirection.ltr,
+              style: const TextStyle(shadows: <Shadow>[Shadow(blurRadius: 1.0)]),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_lastException != null) {
+      if (kDebugMode) {
+        return _debugBuildErrorWidget(context, _lastException!);
+      }
+    }
+
     return ValueListenableBuilder<double>(
       valueListenable: widget.animation,
       builder: (context, t, child) => CustomPaint(
@@ -194,7 +248,7 @@ class _TransitionImagePainter extends CustomPainter {
 
   static final _paint = Paint()
     ..isAntiAlias = false
-    ..filterQuality = FilterQuality.low;
+    ..filterQuality = FilterQuality.medium;
   static const _alignment = Alignment.center;
 
   const _TransitionImagePainter({
@@ -228,12 +282,9 @@ class _TransitionImagePainter extends CustomPainter {
     final dx = halfWidthDelta + _alignment.x * halfWidthDelta;
     final dy = halfHeightDelta + _alignment.y * halfHeightDelta;
     final destinationPosition = Offset(dx, dy);
-
     final destinationRect = destinationPosition & destinationSize;
-    final sourceRect = _alignment.inscribe(
-      sourceSize,
-      Offset.zero & inputSize,
-    );
+
+    final sourceRect = _alignment.inscribe(sourceSize, Offset.zero & inputSize);
     if (background != null) {
       // deflate to avoid background artifact around opaque image
       canvas.drawRect(destinationRect.deflate(1), Paint()..color = background!);

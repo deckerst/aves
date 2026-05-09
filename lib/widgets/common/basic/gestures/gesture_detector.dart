@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-// as of Flutter v3.27.1, `GestureDetector` does not allow setting long press delay
+// as of Flutter v3.41.9, `GestureDetector` does not allow setting long press delay
 // adapted from Flutter `GestureDetector` in `/widgets/gesture_detector.dart`
 class AGestureDetector extends StatelessWidget {
   /// Creates a widget that detects gestures.
@@ -24,6 +24,7 @@ class AGestureDetector extends StatelessWidget {
     this.onTapDown,
     this.onTapUp,
     this.onTap,
+    this.onTapMove,
     this.onTapCancel,
     this.onSecondaryTap,
     this.onSecondaryTapDown,
@@ -100,7 +101,7 @@ class AGestureDetector extends StatelessWidget {
                ErrorHint('Just use the scale gesture recognizer.'),
              ]);
            }
-           final String recognizer = havePan ? 'pan' : 'scale';
+           final recognizer = havePan ? 'pan' : 'scale';
            if (haveVerticalDrag && haveHorizontalDrag) {
              throw FlutterError(
                'Incorrect GestureDetector arguments.\n'
@@ -152,6 +153,15 @@ class AGestureDetector extends StatelessWidget {
   ///    regarding the pointer position.
   final GestureTapCallback? onTap;
 
+  /// A pointer that triggered a tap has moved.
+  ///
+  /// This triggers when the pointer moves after the tap gesture has been recognized.
+  ///
+  /// See also:
+  ///
+  ///  * [kPrimaryButton], the button this callback responds to.
+  final GestureTapMoveCallback? onTapMove;
+
   /// The pointer that previously triggered [onTapDown] will not end up causing
   /// a tap.
   ///
@@ -190,7 +200,7 @@ class AGestureDetector extends StatelessWidget {
   /// A pointer that will trigger a tap with a secondary button has stopped
   /// contacting the screen at a particular location.
   ///
-  /// This triggers in the case . If the tap gesture
+  /// This triggers in the case of the tap gesture winning. If the tap gesture
   /// did not win, [onSecondaryTapCancel] is called instead.
   ///
   /// See also:
@@ -226,7 +236,7 @@ class AGestureDetector extends StatelessWidget {
   /// A pointer that will trigger a tap with a tertiary button has stopped
   /// contacting the screen at a particular location.
   ///
-  /// This triggers in the case . If the tap gesture
+  /// This triggers in the case of the tap gesture winning. If the tap gesture
   /// did not win, [onTertiaryTapCancel] is called instead.
   ///
   /// See also:
@@ -818,7 +828,7 @@ class AGestureDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<Type, GestureRecognizerFactory> gestures = <Type, GestureRecognizerFactory>{};
+    final gestures = <Type, GestureRecognizerFactory>{};
     final DeviceGestureSettings? gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
     final ScrollBehavior configuration = ScrollConfiguration.of(context);
 
@@ -940,7 +950,10 @@ class AGestureDetector extends StatelessWidget {
 
     if (onHorizontalDragDown != null || onHorizontalDragStart != null || onHorizontalDragUpdate != null || onHorizontalDragEnd != null || onHorizontalDragCancel != null) {
       gestures[HorizontalDragGestureRecognizer] = GestureRecognizerFactoryWithHandlers<HorizontalDragGestureRecognizer>(
-        () => HorizontalDragGestureRecognizer(debugOwner: this, supportedDevices: supportedDevices),
+        () => HorizontalDragGestureRecognizer(
+          debugOwner: this,
+          supportedDevices: supportedDevices,
+        ),
         (instance) {
           instance
             ..onDown = onHorizontalDragDown

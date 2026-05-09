@@ -64,6 +64,9 @@ class PathFilter extends CollectionFilter {
   }
 
   @override
+  String getTooltip(BuildContext context) => path;
+
+  @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.path, size: size);
 
   @override

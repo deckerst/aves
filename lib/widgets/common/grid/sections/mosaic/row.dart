@@ -111,7 +111,7 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
       return;
     }
     final thumbnailHeight = rowLayout.height - spacing;
-    size = Size(constraints.maxWidth, rowLayout.height);
+    size = Size(constraints.maxWidth, constraints.maxHeight);
     final flipMainAxis = textDirection == TextDirection.rtl;
     var i = 0;
     double offsetX = flipMainAxis ? size.width : 0;

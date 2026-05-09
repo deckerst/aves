@@ -100,17 +100,6 @@ android {
             dimension = "store"
             applicationIdSuffix = ".libre"
         }
-
-        create("libre_rom") {
-            // integration in custom ROM
-            dimension = "store"
-            applicationIdSuffix = ".libre"
-
-            packaging {
-                // disable compression for native libraries (.so files)
-                jniLibs.useLegacyPackaging = false
-            }
-        }
     }
 
     buildTypes {
@@ -173,6 +162,15 @@ android {
                 }
             }
         }
+    }
+}
+
+androidComponents {
+    onVariants(selector().withFlavor("store", "izzy")) { variant ->
+        // uncompressed native libraries are recommended:
+        // https://developer.android.com/build/releases/agp-4-2-0-release-notes#compress-native-libs-dsl
+        // but compressed native libraries yield smaller APK files, following Izzy's policy
+        variant.packaging.jniLibs.useLegacyPackaging = true
     }
 }
 

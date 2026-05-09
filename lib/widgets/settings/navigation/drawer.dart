@@ -2,6 +2,7 @@ import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
+import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -25,6 +26,7 @@ class NavigationDrawerEditorPage extends StatefulWidget {
   static final List<CollectionFilter?> collectionFilterOptions = [
     null,
     RecentlyAddedFilter.instance,
+    TrashFilter.instance,
     ...CollectionSearchDelegate.typeFilters,
     MimeFilter(MimeTypes.svg),
   ];
@@ -56,7 +58,7 @@ class _NavigationDrawerEditorPageState extends State<NavigationDrawerEditorPage>
     final userTypeLinks = settings.drawerTypeBookmarks;
     _visibleTypes.addAll(userTypeLinks);
     _typeItems.addAll(userTypeLinks);
-    _typeItems.addAll(NavigationDrawerEditorPage.collectionFilterOptions.where((v) => !userTypeLinks.contains(v)));
+    _typeItems.addAll(NavigationDrawerEditorPage.collectionFilterOptions.where((v) => !userTypeLinks.contains(v) && v != TrashFilter.instance));
 
     final userPageLinks = settings.drawerPageBookmarks;
     _visiblePages.addAll(userPageLinks);

@@ -28,6 +28,15 @@ class MosaicSectionLayout extends SectionLayout {
   }
 
   @override
+  double indexToMainAxisExtent(int index) {
+    index -= bodyFirstIndex;
+    if (index < 0) return headerExtent;
+    if (index >= rows.length) return 0;
+    final row = rows[index];
+    return row.maxOffset - row.minOffset;
+  }
+
+  @override
   int getMinChildIndexForScrollOffset(double scrollOffset) {
     scrollOffset -= bodyMinOffset;
     if (scrollOffset < 0) return firstIndex;

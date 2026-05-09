@@ -73,8 +73,8 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
               selector: (context, s) => s.animate,
               builder: (context, animate, child) {
                 if (!animate) return child!;
-                return AnimatedBuilder(
-                  animation: pageController,
+                return ListenableBuilder(
+                  listenable: pageController,
                   builder: viewerController.transition.builder(pageController, index),
                   child: child,
                 );

@@ -154,8 +154,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           widget.onImagePageRequested();
           return true;
         },
-        child: AnimatedBuilder(
-          animation: verticalPager,
+        child: ListenableBuilder(
+          listenable: verticalPager,
           builder: (context, child) {
             return Visibility(
               visible: verticalPager.page! > 1,

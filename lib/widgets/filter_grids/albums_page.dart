@@ -52,11 +52,11 @@ class AlbumListPage extends StatelessWidget {
               return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4) && eq.equals(t1.$5, t2.$5));
             },
             builder: (context, s, child) {
-              return ValueListenableBuilder<bool>(
-                valueListenable: appInventory.areAppNamesReadyNotifier,
-                builder: (context, areAppNamesReady, child) {
-                  return AnimatedBuilder(
-                    animation: Listenable.merge({albumGrouping, dynamicAlbums}),
+              return ListenableBuilder(
+                listenable: appInventory.areAppNamesReadyNotifier,
+                builder: (context, child) {
+                  return ListenableBuilder(
+                    listenable: Listenable.merge({albumGrouping, dynamicAlbums}),
                     builder: (context, child) => StreamBuilder(
                       stream: source.eventBus.on<AlbumsChangedEvent>(),
                       builder: (context, snapshot) {

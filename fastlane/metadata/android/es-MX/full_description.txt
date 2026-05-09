@@ -1,4 +1,4 @@
-<i>Aves</i> puede manejar todo tipo de imágenes y videos, incluyendo los típicos JPEG y MP4, pero además cosas mas exóticas como <b>TIFF multipágina, SVG, viejos AVI y más</b>! Inspecciona su colección multimedia para identificar <b>fotos en movimiento</b>, <b>panoramas</b> (conocidas como fotos esféricas), <b>videos en 360°</b> y también archivos <b>GeoTIFF</b>.
+<i>Aves</i> puede manejar todo tipo de imágenes y videos, incluyendo los típicos JPEG y MP4, pero además cosas mas exóticas como <b>TIFF multi‐página, SVG, los AVI antiguos y más</b>! Inspecciona su colección multimedia para identificar <b>fotos en movimiento</b>, <b>panoramas</b> (conocidas como fotos esféricas), <b>vídeos en 360°</b> y también archivos <b>GeoTIFF</b>.
 
 La <b>navegación y búsqueda</b> son las partes más importantes de <i>Aves</i>. Su propósito es que los usuarios puedan fácilmente ir de álbumes a fotos, etiquetas, mapas, etc.
 

@@ -75,9 +75,9 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
             ValueListenableBuilder<CollectionLens?>(
               valueListenable: widget.regionCollectionNotifier,
               builder: (context, regionCollection, child) {
-                return AnimatedBuilder(
+                return ListenableBuilder(
                   // update when entries are added/removed
-                  animation: regionCollection ?? ChangeNotifier(),
+                  listenable: regionCollection ?? ChangeNotifier(),
                   builder: (context, child) {
                     final regionEntries = regionCollection?.sortedEntries ?? [];
                     return ThumbnailScroller(

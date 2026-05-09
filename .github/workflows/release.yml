@@ -18,7 +18,7 @@ jobs:
       id-token: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
         with:
           egress-policy: audit
 
@@ -61,8 +61,6 @@ jobs:
           cp build/app/outputs/bundle/libreRelease/*.aab outputs
           ./flutterw build apk -t lib/main_libre.dart --flavor libre --split-per-abi
           cp build/app/outputs/apk/libre/release/*.apk outputs
-          ./flutterw build apk -t lib/main_libre.dart --flavor libre_rom
-          cp build/app/outputs/apk/libre_rom/release/*.apk outputs
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
@@ -84,7 +82,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload app bundle
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: appbundle
           path: outputs/app-play-release.aab
@@ -95,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
         with:
           egress-policy: audit
 
@@ -108,7 +106,7 @@ jobs:
           name: appbundle
 
       - name: Release to beta channel
-        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: deckers.thibault.aves

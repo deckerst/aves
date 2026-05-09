@@ -350,8 +350,8 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                       extent: thumbnailExtent,
                       child: FilterListDetailsTheme(
                         extent: thumbnailExtent,
-                        child: AnimatedBuilder(
-                          animation: vaults,
+                        child: ListenableBuilder(
+                          listenable: vaults.lockStateChangeNotifier,
                           builder: (context, child) {
                             return SectionedFilterListLayoutProvider<T>(
                               sections: visibleSections,

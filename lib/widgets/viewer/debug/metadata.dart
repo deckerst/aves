@@ -30,7 +30,7 @@ class _MetadataTabState extends State<MetadataTab> {
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
-  static const millisecondTimestampKeys = ['datetaken', 'datetime'];
+  static const millisecondTimestampKeys = ['datetaken', 'datetime', 'inferred_date'];
 
   AvesEntry get entry => widget.entry;
 

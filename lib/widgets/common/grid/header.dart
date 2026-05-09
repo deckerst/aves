@@ -131,7 +131,7 @@ class SectionHeader<T> extends StatelessWidget {
     }
   }
 
-  // TODO TLAD [perf] cache header extent computation?
+  // TODO TLAD [perf] cache header extent computation? (depends on subsystems, e.g. covers for album type)
   static double getPreferredHeight({
     required BuildContext context,
     required double maxWidth,

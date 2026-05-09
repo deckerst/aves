@@ -19,6 +19,7 @@ import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,7 +64,8 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   }
 
   static int compareFiltersByName(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
-    return a.filter.compareTo(b.filter);
+    // assume we compare context-independent labels
+    return compareAsciiUpperCaseNatural(a.filter.universalLabel, b.filter.universalLabel);
   }
 
   static int compareFiltersByPath<T extends CollectionFilter>(FilterGridItem<T> a, FilterGridItem<T> b) {
@@ -143,9 +145,14 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
                 source: widget.source,
                 title: widget.title,
                 actionDelegate: widget.actionDelegate,
-                isEmpty: widget.filterSections.isEmpty,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 scrollController: scrollController,
+                onGroupCrumbTap: (context, filter) {
+                  final selection = context.read<Selection<FilterGridItem<T>>?>();
+                  if (selection == null || !selection.isSelecting) {
+                    Navigator.maybeOf(context)?.push(_buildCollectionPageRoute(filter));
+                  }
+                },
               ),
               appBarHeightNotifier: _appBarHeightNotifier,
               scrollController: scrollController,
@@ -174,20 +181,23 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
                   if (filter is GroupBaseFilter) {
                     context.read<FilterGroupNotifier>().value = filter.uri;
                   } else {
-                    final route = MaterialPageRoute(
-                      settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) => CollectionPage(
-                        source: context.read<CollectionSource>(),
-                        filters: {gridItem.filter},
-                      ),
-                    );
-                    navigate(route);
+                    navigate(_buildCollectionPageRoute(filter));
                   }
                 }
               },
             ),
           );
         },
+      ),
+    );
+  }
+
+  Route _buildCollectionPageRoute(CollectionFilter filter) {
+    return MaterialPageRoute(
+      settings: const RouteSettings(name: CollectionPage.routeName),
+      builder: (context) => CollectionPage(
+        source: context.read<CollectionSource>(),
+        filters: {filter},
       ),
     );
   }

@@ -87,7 +87,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
         _onFilterVisibilityChanged(newlyVisibleFilters);
       }
     });
-    vaults.addListener(_onVaultsChanged);
+    vaults.lockStateChangeNotifier.addListener(_onVaultsChanged);
   }
 
   @mustCallSuper
@@ -95,7 +95,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    vaults.removeListener(_onVaultsChanged);
+    vaults.lockStateChangeNotifier.removeListener(_onVaultsChanged);
     _disposeAllEntries();
   }
 
@@ -305,9 +305,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     final existingCover = covers.of(oldFilter);
     await covers.set(
       filter: newFilter,
-      entryId: existingCover?.$1,
-      packageName: existingCover?.$2,
-      color: existingCover?.$3,
+      entryId: existingCover?.entryId,
+      packageName: existingCover?.packageName,
+      color: existingCover?.color,
     );
 
     renameNewAlbum(sourceAlbum, destinationAlbum);
@@ -610,7 +610,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   AvesEntry? coverEntry(CollectionFilter filter) {
-    final id = covers.of(filter)?.$1;
+    final id = covers.of(filter)?.entryId;
     if (id != null) {
       final entry = visibleEntries.firstWhereOrNull((entry) => entry.id == id);
       if (entry != null) return entry;

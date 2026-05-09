@@ -19,7 +19,7 @@ class FilterBar extends StatefulWidget {
   FilterBar({
     super.key,
     required Set<CollectionFilter> filters,
-    this.interactive = true,
+    required this.interactive,
     this.onTap,
     this.onRemove,
   }) : filters = List<CollectionFilter>.from(filters)..sort();
@@ -155,7 +155,9 @@ class _Chip extends StatelessWidget {
           heroType: HeroType.always,
           onTap: onTap,
           onRemove: onRemove,
-          onLongPress: interactive ? AvesFilterChip.showDefaultLongPressMenu : null,
+          onLongPress: (context, filter, tapPosition) {
+            AvesFilterChip.showDefaultLongPressMenu(context, filter, tapPosition, canNavigate: interactive);
+          },
         ),
       ),
     );

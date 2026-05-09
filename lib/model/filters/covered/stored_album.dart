@@ -69,7 +69,7 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
   @override
   Future<Color> color(BuildContext context) {
     // custom color has precedence over others, even custom app color
-    final customColor = covers.of(this)?.$3;
+    final customColor = covers.of(this)?.color;
     if (customColor != null) return SynchronousFuture(customColor);
 
     final colors = context.read<AvesColorsData>();

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 // adapted from Flutter `_OutputBuffer` in `/foundation/consolidate_response.dart`
+// unmodified, modulo format & lints
 class OutputBuffer extends ByteConversionSinkBase {
   List<List<int>>? _chunks = <List<int>>[];
   int _contentLength = 0;
@@ -21,7 +22,7 @@ class OutputBuffer extends ByteConversionSinkBase {
       return;
     }
     _bytes = Uint8List(_contentLength);
-    int offset = 0;
+    var offset = 0;
     for (final List<int> chunk in _chunks!) {
       _bytes!.setRange(offset, offset + chunk.length, chunk);
       offset += chunk.length;

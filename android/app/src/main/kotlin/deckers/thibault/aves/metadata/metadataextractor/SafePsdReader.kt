@@ -5,8 +5,8 @@ import com.drew.metadata.Metadata
 import com.drew.metadata.photoshop.PsdHeaderDirectory
 import java.io.IOException
 
-// adapted from `PsdReader` to prevent OOM from reading large XMP
-// as of `metadata-extractor` v2.18.0, there is no way to customize the Photoshop reader
+// adapted from `metadata-extractor` v2.20.0 `PsdReader` to prevent OOM from reading large XMP
+// as of `metadata-extractor` v2.20.0, there is no way to customize the Photoshop reader
 // without copying the whole `extract` function
 class SafePsdReader {
     fun extract(reader: SequentialReader, metadata: Metadata) {

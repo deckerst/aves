@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
@@ -44,9 +45,9 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   final String title;
   final CSAD actionDelegate;
   final ActionsBuilder<T, CSAD>? actionsBuilder;
-  final bool isEmpty;
   final ValueNotifier<double> appBarHeightNotifier;
   final ScrollController scrollController;
+  final void Function(BuildContext context, T filter)? onGroupCrumbTap;
 
   const FilterGridAppBar({
     super.key,
@@ -54,9 +55,9 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
     required this.title,
     required this.actionDelegate,
     this.actionsBuilder,
-    required this.isEmpty,
     required this.appBarHeightNotifier,
     required this.scrollController,
+    required this.onGroupCrumbTap,
   });
 
   @override
@@ -200,10 +201,24 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
                         child: Selector<FilterGroupNotifier, Uri?>(
                           selector: (context, notifier) => notifier.value,
                           builder: (context, groupUri, child) {
+                            WidgetBuilder? lastCrumbBuilder;
+                            final onGroupCrumbTap = widget.onGroupCrumbTap;
+                            if (onGroupCrumbTap != null) {
+                              final grouping = groupUri != null ? FilterGrouping.forUri(groupUri) : null;
+                              final groupFilter = grouping?.uriToFilter(groupUri);
+                              if (groupFilter is T) {
+                                lastCrumbBuilder = (context) => AvesFilterChip(
+                                  filter: groupFilter,
+                                  onTap: (_) => onGroupCrumbTap(context, groupFilter),
+                                  onLongPress: null,
+                                );
+                              }
+                            }
                             return FilterGroupCrumbLine(
                               key: const Key('crumbs'),
                               groupUri: groupUri,
                               onTap: (uri) => context.read<FilterGroupNotifier?>()?.value = uri,
+                              lastCrumbBuilder: lastCrumbBuilder,
                             );
                           },
                         ),

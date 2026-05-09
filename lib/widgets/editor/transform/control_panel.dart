@@ -68,8 +68,8 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
       children: [
         SizedBox(
           height: CropControlPanel.preferredHeight(context),
-          child: AnimatedBuilder(
-            animation: _tabController,
+          child: ListenableBuilder(
+            listenable: _tabController,
             builder: (context, child) {
               return AnimatedSwitcher(
                 duration: context.select<DurationsData, Duration>((v) => v.formTransition),

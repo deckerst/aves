@@ -16,6 +16,7 @@ class Selection<T> extends ChangeNotifier {
   void browse() {
     if (!_isSelecting) return;
     _isSelecting = false;
+    _selectedItems.clear();
     notifyListeners();
   }
 

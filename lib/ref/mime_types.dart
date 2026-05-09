@@ -18,6 +18,7 @@ class MimeTypes {
   static const wbmp = 'image/vnd.wap.wbmp';
 
   // unsupported
+  static const aces = 'image/aces'; // https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
   static const art = 'image/x-jg';
   static const cdr = 'image/x-coreldraw';
   static const cdrt = 'image/x-coreldrawtemplate';
@@ -25,20 +26,27 @@ class MimeTypes {
   static const djvu = 'image/vnd.djvu';
   static const dwg = 'image/vnd.dwg';
   static const dxf = 'image/vnd.dxf';
+  static const emf = 'image/emf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const jng = 'image/x-jng';
   static const jpeg2000 = 'image/jp2';
   static const jpx = 'image/jpx';
   static const jxl = 'image/jxl';
   static const pat = 'image/x-coreldrawpattern';
   static const pcx = 'image/x-pcx';
-  static const pnm = 'image/x-portable-anymap';
-  static const ppm = 'image/x-portable-pixmap';
+  static const pbm = 'image/x-portable-bitmap'; // https://en.wikipedia.org/wiki/Netpbm
+  static const pgm = 'image/x-portable-graymap'; // https://en.wikipedia.org/wiki/Netpbm
+  static const pnm = 'image/x-portable-anymap'; // https://en.wikipedia.org/wiki/Netpbm
+  static const ppm = 'image/x-portable-pixmap'; // https://en.wikipedia.org/wiki/Netpbm
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
+  static const ras = 'image/x-cmu-raster';
   static const rgbe = 'image/vnd.radiance';
+  static const sgif = 'image/vnd.sealedmedia.softseal.gif';
   static const tap = 'image/vnd.tencent.tap';
   static const vtf = 'image/vnd.valve.source.texture';
-  static const wmf = 'image/wmf';
+  static const wmf = 'image/wmf'; // https://en.wikipedia.org/wiki/Windows_Metafile
+  static const xbm = 'image/x-xbitmap'; // https://en.wikipedia.org/wiki/X_BitMap
+  static const xpm = 'image/x-xpixmap'; // https://en.wikipedia.org/wiki/X_PixMap
 
   // RAW
   static const arw = 'image/x-sony-arw';
@@ -79,7 +87,8 @@ class MimeTypes {
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const gl = 'video/gl';
-  static const lsf = 'x-la-asf';
+  static const lsf = 'video/x-la-asf';
+  static const m4s = 'video/iso.segment';
   static const mkv = 'video/mkv';
   static const mkvX = 'video/x-matroska';
   static const mov = 'video/quicktime';

@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 mixin CoveredFilter on CollectionFilter {
   @override
   Future<Color> color(BuildContext context) {
-    final customColor = covers.of(this)?.$3;
+    final customColor = covers.of(this)?.color;
     if (customColor != null) {
       return SynchronousFuture(customColor);
     }

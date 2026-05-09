@@ -11,7 +11,7 @@ mixin AppSettings on SettingsAccess {
   static const int recentFilterHistoryMax = 20;
 
   void initAppSettings() {
-    vaults.addListener(_onVaultsChanged);
+    vaults.lockStateChangeNotifier.addListener(_onVaultsChanged);
   }
 
   bool get hasAcceptedTerms => getBool(SettingKeys.hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;

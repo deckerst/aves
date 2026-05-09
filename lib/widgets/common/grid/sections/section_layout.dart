@@ -31,6 +31,8 @@ abstract class SectionLayout extends Equatable {
 
   double indexToLayoutOffset(int index);
 
+  double indexToMainAxisExtent(int index);
+
   int getMinChildIndexForScrollOffset(double scrollOffset);
 
   int getMaxChildIndexForScrollOffset(double scrollOffset);

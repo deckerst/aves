@@ -35,9 +35,9 @@ import java.util.Locale
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `PngMetadataReader` to:
-// - prevent OOM from reading large chunks. As of `metadata-extractor` v2.18.0, there is no way to customize the reader
-// without copying `desiredChunkTypes` and the whole `processChunk` function.
+// adapted from `metadata-extractor` v2.20.0 `PngMetadataReader` to:
+// - prevent OOM from reading large chunks (there is no way to customize the reader
+// without copying `desiredChunkTypes` and the whole `processChunk` function).
 // - parse `acTL` chunk to identify animated PNGs.
 object SafePngMetadataReader {
     private val LOG_TAG = LogUtils.createTag<SafePngMetadataReader>()
@@ -153,7 +153,7 @@ object SafePngMetadataReader {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
             // Profile Name is 1-79 bytes, followed by the 1 byte null character
-            val profileNameBytes = reader.getNullTerminatedBytes(79 + 1)
+            val profileNameBytes = reader.getNullTerminatedBytes(79 + 1, false)
             val directory = PngDirectory(PngChunkType.iCCP)
             directory.setStringValue(PngDirectory.TAG_ICC_PROFILE_NAME, StringValue(profileNameBytes, latin1Encoding))
             val compressionMethod = reader.int8
@@ -183,13 +183,13 @@ object SafePngMetadataReader {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
             // Keyword is 1-79 bytes, followed by the 1 byte null character
-            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, latin1Encoding)
+            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, latin1Encoding, false)
             val keyword = keywordsv.toString()
 
             // bytes left for text is:
             // total bytes length - (Keyword length + null byte)
             val bytesLeft = bytes.size - (keywordsv.bytes.size + 1)
-            val value = reader.getNullTerminatedStringValue(bytesLeft, latin1Encoding)
+            val value = reader.getNullTerminatedStringValue(bytesLeft, latin1Encoding, false)
             val textPairs: MutableList<KeyValuePair> = ArrayList()
             textPairs.add(KeyValuePair(keyword, value))
             val directory = PngDirectory(PngChunkType.tEXt)
@@ -199,7 +199,7 @@ object SafePngMetadataReader {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
             // Keyword is 1-79 bytes, followed by the 1 byte null character
-            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, latin1Encoding)
+            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, latin1Encoding, false)
             val keyword = keywordsv.toString()
             val compressionMethod = reader.int8
 
@@ -236,20 +236,20 @@ object SafePngMetadataReader {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
             // Keyword is 1-79 bytes, followed by the 1 byte null character
-            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, utf8Encoding)
+            val keywordsv = reader.getNullTerminatedStringValue(79 + 1, utf8Encoding, false)
             val keyword = keywordsv.toString()
             val compressionFlag = reader.int8
             val compressionMethod = reader.int8
             // TODO we currently ignore languageTagBytes and translatedKeywordBytes
-            val languageTagBytes = reader.getNullTerminatedBytes(bytes.size)
-            val translatedKeywordBytes = reader.getNullTerminatedBytes(bytes.size)
+            val languageTagBytes = reader.getNullTerminatedBytes(bytes.size, false)
+            val translatedKeywordBytes = reader.getNullTerminatedBytes(bytes.size, false)
 
             // bytes left for compressed text is:
             // total bytes length - (Keyword length + null byte + comp flag byte + comp method byte + lang length + null byte + translated length + null byte)
             val bytesLeft = bytes.size - (keywordsv.bytes.size + 1 + 1 + 1 + languageTagBytes.size + 1 + translatedKeywordBytes.size + 1)
             var textBytes: ByteArray? = null
             if (compressionFlag.toInt() == 0) {
-                textBytes = reader.getNullTerminatedBytes(bytesLeft)
+                textBytes = reader.getNullTerminatedBytes(bytesLeft, false)
             } else if (compressionFlag.toInt() == 1) {
                 if (compressionMethod.toInt() == 0) {
                     try {

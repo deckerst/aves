@@ -307,8 +307,8 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                         },
                       ),
                     ),
-                    AnimatedBuilder(
-                      animation: controller,
+                    ListenableBuilder(
+                      listenable: controller,
                       builder: (context, child) => _quickActions.isEmpty
                           ? Center(
                               child: Text(
@@ -444,8 +444,8 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
       ),
     );
 
-    child = AnimatedBuilder(
-      animation: Listenable.merge([_draggedQuickAction, _draggedAvailableAction]),
+    child = ListenableBuilder(
+      listenable: Listenable.merge([_draggedQuickAction, _draggedAvailableAction]),
       builder: (context, child) {
         final dragged = _draggedQuickAction.value == action || _draggedAvailableAction.value == action;
         if (dragged) {

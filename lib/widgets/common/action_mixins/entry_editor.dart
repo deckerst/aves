@@ -13,6 +13,9 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/about/app_ref.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -198,7 +201,16 @@ class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
   List<Widget> build(BuildContext context) => [
     Padding(
       padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-      child: Text(context.l10n.moveUndatedConfirmationDialogMessage),
+      child: Row(
+        children: [
+          Expanded(child: Text(context.l10n.moveUndatedConfirmationDialogMessage)),
+          IconButton(
+            icon: const Icon(AIcons.help),
+            onPressed: () => AvesApp.launchUrl('${AppReference.avesGithub}/wiki/FAQ#whats-in-a-date'),
+            tooltip: 'FAQ',
+          ),
+        ],
+      ),
     ),
     ValueListenableBuilder<bool>(
       valueListenable: _setMetadataDate,

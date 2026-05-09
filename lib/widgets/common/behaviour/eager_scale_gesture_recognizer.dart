@@ -120,13 +120,13 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   /// are multiple listeners competing for the gesture. In that case, the
   /// gesture arena waits to determine whether or not the gesture is a scale
   /// gesture before giving the gesture to this GestureRecognizer. This happens
-  /// in the case .
+  /// in the case of nested GestureDetectors, for example.
   ///
   /// Defaults to [DragStartBehavior.down].
   ///
   /// See also:
   ///
-  /// * https://flutter.dev/docs/development/ui/advanced/gestures#gesture-disambiguation,
+  /// * https://flutter.dev/to/gesture-disambiguation,
   ///   which provides more information about the gesture arena.
   DragStartBehavior dragStartBehavior;
 
@@ -138,7 +138,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   ///
   /// See also:
   ///
-  /// * https://flutter.dev/docs/development/ui/advanced/gestures#gesture-disambiguation,
+  /// * https://flutter.dev/to/gesture-disambiguation,
   ///   which provides more information about the gesture arena.
   GestureScaleStartCallback? onStart;
 
@@ -178,7 +178,10 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   /// Typically this is the number of fingers being used to pan the widget using the gesture
   /// recognizer.
   int get pointerCount {
-    return _pointerPanZooms.length + _pointerQueue.length;
+    // PointerPanZoom protocol doesn't contain the exact number of pointers
+    // used on the trackpad, as it isn't exposed by all platforms. However, it
+    // will always be at least two.
+    return (2 * _pointerPanZooms.length) + _pointerQueue.length;
   }
 
   late Offset _initialFocalPoint;
@@ -200,6 +203,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   final Map<int, _PointerPanZoomData> _pointerPanZooms = <int, _PointerPanZoomData>{};
   double _initialPanZoomScaleFactor = 1;
   double _initialPanZoomRotationFactor = 0;
+  Duration? _initialEventTimestamp;
 
   double get _pointerScaleFactor => _initialSpan > 0.0 ? _currentSpan / _initialSpan : 1.0;
 
@@ -232,7 +236,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   }
 
   double _computeRotationFactor() {
-    double factor = 0.0;
+    var factor = 0.0;
     if (_initialLine != null && _currentLine != null) {
       final double fx = _initialLine!.pointerStartLocation.dx;
       final double fy = _initialLine!.pointerStartLocation.dy;
@@ -260,6 +264,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   void addAllowedPointer(PointerDownEvent event) {
     super.addAllowedPointer(event);
     _velocityTrackers[event.pointer] = VelocityTracker.withKind(event.kind);
+    _initialEventTimestamp = event.timeStamp;
     if (_state == _ScaleState.ready) {
       _state = _ScaleState.possible;
       _initialSpan = 0.0;
@@ -279,6 +284,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     super.addAllowedPointerPanZoom(event);
     startTrackingPointer(event.pointer, event.transform);
     _velocityTrackers[event.pointer] = VelocityTracker.withKind(event.kind);
+    _initialEventTimestamp = event.timeStamp;
     if (_state == _ScaleState.ready) {
       _state = _ScaleState.possible;
       _initialPanZoomScaleFactor = 1.0;
@@ -289,8 +295,8 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   void handleEvent(PointerEvent event) {
     assert(_state != _ScaleState.ready);
-    bool didChangeConfiguration = false;
-    bool shouldStartIfAccepted = false;
+    var didChangeConfiguration = false;
+    var shouldStartIfAccepted = false;
     if (event is PointerMoveEvent) {
       final VelocityTracker tracker = _velocityTrackers[event.pointer]!;
       if (!event.synthesized) {
@@ -350,20 +356,14 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     for (final _PointerPanZoomData p in _pointerPanZooms.values) {
       focalPoint += p.focalPoint;
     }
-    _currentFocalPoint = pointerCount > 0 ? focalPoint / pointerCount.toDouble() : Offset.zero;
+    _currentFocalPoint = focalPoint / math.max(1, _pointerLocations.length + _pointerPanZooms.length).toDouble();
 
     if (previousFocalPoint == null) {
-      _localFocalPoint = PointerEvent.transformPosition(
-        _lastTransform,
-        _currentFocalPoint!,
-      );
+      _localFocalPoint = PointerEvent.transformPosition(_lastTransform, _currentFocalPoint!);
       _delta = Offset.zero;
     } else {
       final Offset localPreviousFocalPoint = _localFocalPoint;
-      _localFocalPoint = PointerEvent.transformPosition(
-        _lastTransform,
-        _currentFocalPoint!,
-      );
+      _localFocalPoint = PointerEvent.transformPosition(_lastTransform, _currentFocalPoint!);
       _delta = _localFocalPoint - localPreviousFocalPoint;
     }
 
@@ -380,9 +380,9 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     // Span is the average deviation from focal point. Horizontal and vertical
     // spans are the average deviations from the focal point's horizontal and
     // vertical coordinates, respectively.
-    double totalDeviation = 0.0;
-    double totalHorizontalDeviation = 0.0;
-    double totalVerticalDeviation = 0.0;
+    var totalDeviation = 0.0;
+    var totalHorizontalDeviation = 0.0;
+    var totalVerticalDeviation = 0.0;
     for (final int pointer in _pointerLocations.keys) {
       totalDeviation += (pointerFocalPoint - _pointerLocations[pointer]!).distance;
       totalHorizontalDeviation += (pointerFocalPoint.dx - _pointerLocations[pointer]!.dx).abs();
@@ -443,18 +443,41 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
         if (_isFlingGesture(velocity)) {
           final Offset pixelsPerSecond = velocity.pixelsPerSecond;
           if (pixelsPerSecond.distanceSquared > kMaxFlingVelocity * kMaxFlingVelocity) {
-            velocity = Velocity(pixelsPerSecond: (pixelsPerSecond / pixelsPerSecond.distance) * kMaxFlingVelocity);
+            velocity = Velocity(
+              pixelsPerSecond: (pixelsPerSecond / pixelsPerSecond.distance) * kMaxFlingVelocity,
+            );
           }
-          invokeCallback<void>('onEnd', () => onEnd!(ScaleEndDetails(velocity: velocity, scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1, pointerCount: pointerCount)));
+          invokeCallback<void>(
+            'onEnd',
+            () => onEnd!(
+              ScaleEndDetails(
+                velocity: velocity,
+                scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1,
+                pointerCount: pointerCount,
+              ),
+            ),
+          );
         } else {
-          invokeCallback<void>('onEnd', () => onEnd!(ScaleEndDetails(scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1, pointerCount: pointerCount)));
+          invokeCallback<void>(
+            'onEnd',
+            () => onEnd!(
+              ScaleEndDetails(
+                scaleVelocity: _scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1,
+                pointerCount: pointerCount,
+              ),
+            ),
+          );
         }
       }
       _state = _ScaleState.accepted;
-      _scaleVelocityTracker = VelocityTracker.withKind(PointerDeviceKind.touch); // arbitrary PointerDeviceKind
+      _scaleVelocityTracker = VelocityTracker.withKind(
+        PointerDeviceKind.touch,
+      ); // arbitrary PointerDeviceKind
       return false;
     }
-    _scaleVelocityTracker = VelocityTracker.withKind(PointerDeviceKind.touch); // arbitrary PointerDeviceKind
+    _scaleVelocityTracker = VelocityTracker.withKind(
+      PointerDeviceKind.touch,
+    ); // arbitrary PointerDeviceKind
     return true;
   }
 
@@ -480,6 +503,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     }
 
     if (_state == _ScaleState.accepted && shouldStartIfAccepted) {
+      _initialEventTimestamp = event.timeStamp;
       _state = _ScaleState.started;
       _dispatchOnStartCallbackIfNeeded();
     }
@@ -498,6 +522,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
               rotation: _computeRotationFactor(),
               pointerCount: pointerCount,
               focalPointDelta: _delta,
+              sourceTimeStamp: event.timeStamp,
             ),
           );
         });
@@ -514,10 +539,17 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
             focalPoint: _currentFocalPoint!,
             localFocalPoint: _localFocalPoint,
             pointerCount: pointerCount,
+            sourceTimeStamp: _initialEventTimestamp,
+            kind: _pointerQueue.isNotEmpty
+                ? getKindForPointer(_pointerQueue.first)
+                : _pointerPanZooms.isNotEmpty
+                ? getKindForPointer(_pointerPanZooms.keys.first)
+                : null,
           ),
         );
       });
     }
+    _initialEventTimestamp = null;
   }
 
   @override
@@ -553,13 +585,13 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   @override
   void didStopTrackingLastPointer(int pointer) {
     switch (_state) {
-      case .possible:
+      case _ScaleState.possible:
         resolve(GestureDisposition.rejected);
-      case .ready:
+      case _ScaleState.ready:
         assert(false); // We should have not seen a pointer yet
-      case .accepted:
+      case _ScaleState.accepted:
         break;
-      case .started:
+      case _ScaleState.started:
         assert(false); // We should be in the accepted state when user is done
     }
     _state = _ScaleState.ready;

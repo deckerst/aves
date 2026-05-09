@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/crumb_line.dart';
@@ -15,6 +19,7 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
 import 'package:aves/widgets/explorer/crumb_line.dart';
@@ -43,6 +48,8 @@ class ExplorerAppBar extends StatefulWidget {
 class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObserver {
   Set<StorageVolume> get _volumes => androidFileUtils.storageVolumes;
 
+  String? _pathOf(VolumeRelativeDirectory? dir) => dir != null ? pContext.join(dir.volumePath, dir.relativeDir) : null;
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +66,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
   Widget build(BuildContext context) {
     return AvesAppBar(
       contentHeight: appBarContentHeight,
-      pinned: true,
+      pinned: false,
       leading: const DrawerButton(),
       title: _buildAppBarTitle(context),
       actions: _buildActions,
@@ -71,11 +78,24 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
             height: CrumbLine.getPreferredHeight(MediaQuery.textScalerOf(context)),
             child: ValueListenableBuilder<VolumeRelativeDirectory?>(
               valueListenable: widget.directoryNotifier,
-              builder: (context, directory, child) {
+              builder: (context, contentsDirectory, child) {
+                WidgetBuilder? lastCrumbBuilder;
+                final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
+                if (canNavigate) {
+                  final dirPath = _pathOf(contentsDirectory);
+                  if (dirPath != null) {
+                    lastCrumbBuilder = (context) => AvesFilterChip(
+                      filter: PathFilter(dirPath),
+                      onTap: (filter) => _goToCollectionPage(context, filter),
+                      onLongPress: null,
+                    );
+                  }
+                }
                 return ExplorerCrumbLine(
                   key: const Key('crumbs'),
-                  directory: directory,
+                  directory: contentsDirectory,
                   onTap: widget.goToDir,
+                  lastCrumbBuilder: lastCrumbBuilder,
                 );
               },
             ),
@@ -202,6 +222,18 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           searchFieldLabel: context.l10n.searchCollectionFieldHint,
           searchFieldStyle: Themes.searchFieldStyle(context),
           source: context.read<CollectionSource>(),
+        ),
+      ),
+    );
+  }
+
+  void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: CollectionPage.routeName),
+        builder: (context) => CollectionPage(
+          source: context.read<CollectionSource>(),
+          filters: {filter},
         ),
       ),
     );

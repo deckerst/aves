@@ -100,6 +100,7 @@ mixin FeedbackMixin {
                       )
                     : null,
                 animation: kAlwaysCompleteAnimation,
+                persist: false,
                 dismissDirection: DismissDirection.horizontal,
                 onDismiss: () => dismissFeedback(context),
               ),

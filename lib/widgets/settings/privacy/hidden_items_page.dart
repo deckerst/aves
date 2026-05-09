@@ -74,7 +74,9 @@ class HiddenItemsPage extends StatelessWidget {
                                         maxWidth: constraints.maxWidth,
                                         onTap: onRemove,
                                         onRemove: onRemove,
-                                        onLongPress: null,
+                                        onLongPress: (context, filter, tapPosition) {
+                                          AvesFilterChip.showDefaultLongPressMenu(context, filter, tapPosition, canNavigate: false);
+                                        },
                                       ),
                                       const Spacer(),
                                     ],

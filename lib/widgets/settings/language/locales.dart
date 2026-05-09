@@ -27,6 +27,7 @@ class SupportedLocales {
     'ja': '日本語',
     'kn': 'ಕನ್ನಡ',
     'ko': '한국어',
+    'lo': 'ພາສາລາວ',
     'lt': 'Lietuvių',
     'nb': 'Norsk (Bokmål)',
     'nn': 'Norsk (Nynorsk)',

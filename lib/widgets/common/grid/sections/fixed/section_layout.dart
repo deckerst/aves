@@ -26,6 +26,13 @@ class FixedExtentSectionLayout extends SectionLayout {
   }
 
   @override
+  double indexToMainAxisExtent(int index) {
+    index -= bodyFirstIndex;
+    if (index < 0) return headerExtent;
+    return mainAxisStride;
+  }
+
+  @override
   int getMinChildIndexForScrollOffset(double scrollOffset) {
     scrollOffset -= bodyMinOffset;
     if (mainAxisStride == 0 || !scrollOffset.isFinite || scrollOffset < 0) return firstIndex;

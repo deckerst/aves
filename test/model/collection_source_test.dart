@@ -169,7 +169,7 @@ void main() {
 
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.$1, image1.id);
+    expect(covers.of(albumFilter)?.entryId, image1.id);
 
     await covers.set(filter: albumFilter, entryId: null, packageName: null, color: null);
     expect(covers.count, 0);
@@ -197,7 +197,7 @@ void main() {
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.$1, image1.id);
+    expect(covers.of(albumFilter)?.entryId, image1.id);
   });
 
   test('favourites and covers are cleared when removing entries', () async {
@@ -306,17 +306,20 @@ void main() {
     await image1.toggleFavourite();
     var albumFilter = StoredAlbumFilter(sourceAlbum, 'whatever');
     await covers.set(filter: albumFilter, entryId: image1.id, packageName: null, color: null);
-    await source.renameStoredAlbum(sourceAlbum, destinationAlbum, {
-      image1
-    }, {
-      FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
-    });
+    await source.renameStoredAlbum(
+      sourceAlbum,
+      destinationAlbum,
+      {image1},
+      {
+        FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
+      },
+    );
     albumFilter = StoredAlbumFilter(destinationAlbum, 'whatever');
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
-    expect(covers.of(albumFilter)?.$1, image1.id);
+    expect(covers.of(albumFilter)?.entryId, image1.id);
   });
 
   testWidgets('unique album names', (tester) async {

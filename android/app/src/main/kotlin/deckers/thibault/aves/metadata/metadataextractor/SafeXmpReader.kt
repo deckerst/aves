@@ -19,7 +19,7 @@ import java.io.IOException
 import java.util.Locale
 
 class SafeXmpReader : XmpReader() {
-    // adapted from `XmpReader` to detect and skip large extended XMP
+    // adapted from `metadata-extractor` v2.20.0 `XmpReader` to detect and skip large extended XMP
     override fun readJpegSegments(segments: Iterable<ByteArray>, metadata: Metadata, segmentType: JpegSegmentType) {
         val preambleLength = XMP_JPEG_PREAMBLE.length
         val extensionPreambleLength = XMP_EXTENSION_JPEG_PREAMBLE.length
@@ -61,7 +61,7 @@ class SafeXmpReader : XmpReader() {
         }
     }
 
-    // adapted from `XmpReader` to provide different parsing options
+    // adapted from `metadata-extractor` v2.20.0 `XmpReader` to provide different parsing options
     // and to detect large XMP when extracted directly (e.g. from Photoshop reader)
     override fun extract(xmpBytes: ByteArray, offset: Int, length: Int, metadata: Metadata, parentDirectory: Directory?) {
         val totalSize = xmpBytes.size
@@ -87,7 +87,7 @@ class SafeXmpReader : XmpReader() {
         if (!directory.isEmpty) metadata.addDirectory(directory)
     }
 
-    // adapted from `XmpReader` because original is private
+    // adapted from `metadata-extractor` v2.20.0 `XmpReader` because original is private
     private fun getExtendedXMPGUID(metadata: Metadata): String? {
         val xmpDirectories = metadata.getDirectoriesOfType(XmpDirectory::class.java)
         for (directory in xmpDirectories) {
@@ -107,7 +107,7 @@ class SafeXmpReader : XmpReader() {
         return null
     }
 
-    // adapted from `XmpReader` to prevent large allocation
+    // adapted from `metadata-extractor` v2.20.0 `XmpReader` to prevent large allocation
     private fun processExtendedXMPChunk(metadata: Metadata, segmentBytes: ByteArray, extendedXMPGUID: String, extendedXMPBufferIn: ByteArray?, onDangerSize: (fullLength: Int) -> Unit): ByteArray? {
         var extendedXMPBuffer: ByteArray? = extendedXMPBufferIn
         val extensionPreambleLength = XMP_EXTENSION_JPEG_PREAMBLE.length
@@ -132,6 +132,17 @@ class SafeXmpReader : XmpReader() {
                     }
                     if (extendedXMPBuffer.size == fullLength) {
                         System.arraycopy(segmentBytes, totalOffset, extendedXMPBuffer, chunkOffset, segmentLength - totalOffset)
+                        val copyLength = segmentLength - totalOffset
+                        // Validate bounds before arraycopy to prevent ArrayIndexOutOfBoundsException.
+                        // Check for negative chunkOffset (from uint32 > Integer.MAX_VALUE) and use
+                        // subtraction instead of addition to avoid integer overflow.
+                        if (chunkOffset < 0 || chunkOffset > extendedXMPBuffer.size - copyLength) {
+                            val directory = XmpDirectory()
+                            directory.addError(String.format(Locale.ROOT, "Extended XMP chunk would write beyond buffer bounds (offset=%d, length=%d, buffer size=%d)", chunkOffset, copyLength, extendedXMPBuffer.size))
+                            metadata.addDirectory(directory)
+                        } else {
+                            System.arraycopy(segmentBytes, totalOffset, extendedXMPBuffer, chunkOffset, copyLength)
+                        }
                     } else {
                         val directory = XmpDirectory()
                         directory.addError(String.format(Locale.ROOT, "Inconsistent length for the Extended XMP buffer: %d instead of %d", fullLength, extendedXMPBuffer.size))

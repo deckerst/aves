@@ -194,8 +194,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       // cancel notification bubbling so that the draggable scroll bar
       // does not misinterpret filter bar scrolling for collection scrolling
       onNotification: (notification) => true,
-      child: AnimatedBuilder(
-        animation: collection.filterChangeNotifier,
+      child: ListenableBuilder(
+        listenable: collection.filterChangeNotifier,
         builder: (context, child) {
           final canRemoveFilters = appMode != AppMode.pickFilteredMediaInternal;
           return Selector<Query, bool>(
@@ -246,6 +246,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                             },
                             child: FilterBar(
                               filters: visibleFilters,
+                              interactive: true,
                               onTap: onFilterTap,
                               onRemove: onFilterTap,
                             ),

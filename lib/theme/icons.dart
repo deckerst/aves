@@ -29,6 +29,7 @@ class AIcons {
   static const explorer = Symbols.account_tree;
   static const folder = Symbols.folder;
   static final github = MdiIcons.github;
+  static const help = Symbols.help;
   static const height = Symbols.fit_page_height;
   static const histogram = Symbols.area_chart;
   static const home = Symbols.home;

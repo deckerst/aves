@@ -24,6 +24,8 @@ class AvesColorsProvider extends StatelessWidget {
   final bool allowMonochrome;
   final Widget child;
 
+  static final Map<(AvesThemeColorMode, bool), AvesColorsData> _schemeCache = {};
+
   const AvesColorsProvider({
     super.key,
     this.allowMonochrome = true,
@@ -39,10 +41,12 @@ class AvesColorsProvider extends StatelessWidget {
         if (!allowMonochrome && mode == AvesThemeColorMode.monochrome) {
           mode = AvesThemeColorMode.polychrome;
         }
-        return switch (mode) {
-          AvesThemeColorMode.monochrome => isDark ? _MonochromeOnDark() : _MonochromeOnLight(),
-          AvesThemeColorMode.polychrome => isDark ? NeonOnDark() : PastelOnLight(),
-        };
+        return _schemeCache.putIfAbsent((mode, isDark), () {
+          return switch (mode) {
+            .monochrome => isDark ? _MonochromeOnDark() : _MonochromeOnLight(),
+            .polychrome => isDark ? _NeonOnDark() : _PastelOnLight(),
+          };
+        });
       },
       child: child,
     );
@@ -60,31 +64,23 @@ abstract class AvesColorsData {
 
   Color? fromBrandColor(Color? color);
 
-  final Map<String, Color> _stringColors = {}, _appColors = {};
+  final Map<String, Future<Color>?> _appColors = {};
+  final Map<String, Color> _stringColors = {};
 
   Color fromString(String string) {
-    var color = _stringColors[string];
-    if (color == null) {
+    return _stringColors.putIfAbsent(string, () {
       final hash = string.codeUnits.fold<int>(0, (prev, v) => prev = v + ((prev << 5) - prev));
       final hue = (hash % 360).toDouble();
-      color = fromHue(hue);
-      _stringColors[string] = color;
-    }
-    return color;
+      return fromHue(hue);
+    });
   }
 
   Future<Color>? appColor(String album) {
-    final appColor = _appColors[album];
-    if (appColor != null) {
-      return SynchronousFuture(appColor);
-    }
-
     final packageName = covers.effectiveAlbumPackage(album);
     if (packageName == null) return null;
 
-    return appColorFromPackageName(packageName).then((color) {
-      _appColors[album] = color;
-      return color;
+    return _appColors.putIfAbsent(album, () {
+      return appColorFromPackageName(packageName);
     });
   }
 
@@ -181,7 +177,7 @@ class _MonochromeOnLight extends _Monochrome {
   Color get neutral => AvesColorsData._neutralOnLight;
 }
 
-class NeonOnDark extends AvesColorsData {
+class _NeonOnDark extends AvesColorsData {
   @override
   Color get neutral => AvesColorsData._neutralOnDark;
 
@@ -192,7 +188,7 @@ class NeonOnDark extends AvesColorsData {
   Color? fromBrandColor(Color? color) => color;
 }
 
-class PastelOnLight extends AvesColorsData {
+class _PastelOnLight extends AvesColorsData {
   @override
   Color get neutral => AvesColorsData._neutralOnLight;
 

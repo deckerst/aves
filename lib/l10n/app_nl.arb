@@ -730,5 +730,6 @@
     "tagPickPageTitle": "Label kiezen",
     "settingsViewerShowZoomLevel": "Zoom niveau tonen",
     "settingsForced": "Gedwongen",
-    "settingsEnabled": "Ingeschakeld"
+    "settingsEnabled": "Ingeschakeld",
+    "collectionActionExportGpx": "Exporteer GPX"
 }

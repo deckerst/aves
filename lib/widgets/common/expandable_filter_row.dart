@@ -3,7 +3,9 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:flutter/material.dart';
 
 class TitledExpandableFilterRow extends StatelessWidget {
@@ -102,6 +104,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   static const double horizontalPadding = 8;
   static const double verticalPadding = 8;
+  static const int topFilterCount = 50;
 
   const ExpandableFilterRow({
     super.key,
@@ -126,28 +129,17 @@ class ExpandableFilterRow extends StatelessWidget {
           ?currentChild,
         ],
       ),
-      child: isExpanded ? _buildExpanded() : _buildCollapsed(),
-    );
-  }
-
-  Widget _buildExpanded() {
-    return Container(
-      key: const Key('wrap'),
-      padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-      // specify transparent as a workaround to prevent
-      // chip border clipping when the floating app bar is fading
-      color: Colors.transparent,
-      child: Wrap(
-        spacing: horizontalPadding,
-        runSpacing: verticalPadding,
-        children: filters.map(_buildChip).toList(),
-      ),
+      child: isExpanded
+          ? _ExpandedFilterRow(
+              filters: filters,
+              chipBuilder: _buildChip,
+            )
+          : _buildCollapsed(),
     );
   }
 
   Widget _buildCollapsed() {
-    final list = Container(
-      key: const Key('list'),
+    return Container(
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
@@ -162,7 +154,6 @@ class ExpandableFilterRow extends StatelessWidget {
         itemCount: filters.length,
       ),
     );
-    return list;
   }
 
   Widget _buildChip(CollectionFilter filter) {
@@ -176,6 +167,59 @@ class ExpandableFilterRow extends StatelessWidget {
       onTap: onTap,
       onRemove: onRemove,
       onLongPress: onLongPress,
+    );
+  }
+}
+
+class _ExpandedFilterRow extends StatefulWidget {
+  final List<CollectionFilter> filters;
+  final Widget Function(CollectionFilter filter) chipBuilder;
+
+  const _ExpandedFilterRow({required this.filters, required this.chipBuilder});
+
+  @override
+  State<_ExpandedFilterRow> createState() => _ExpandedFilterRowState();
+}
+
+class _ExpandedFilterRowState extends State<_ExpandedFilterRow> {
+  late final ValueNotifier<bool> _showAllNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _showAllNotifier = ValueNotifier(widget.filters.length <= ExpandableFilterRow.topFilterCount);
+  }
+
+  @override
+  void dispose() {
+    _showAllNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: ExpandableFilterRow.horizontalPadding),
+      // specify transparent as a workaround to prevent
+      // chip border clipping when the floating app bar is fading
+      color: Colors.transparent,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _showAllNotifier,
+        builder: (context, showAll, child) {
+          return Wrap(
+            spacing: ExpandableFilterRow.horizontalPadding,
+            runSpacing: ExpandableFilterRow.verticalPadding,
+            children: [
+              ...(showAll ? widget.filters : widget.filters.take(ExpandableFilterRow.topFilterCount)).map(widget.chipBuilder),
+              if (!showAll)
+                AvesOutlinedButton(
+                  label: Themes.asButtonLabel(MaterialLocalizations.of(context).moreButtonTooltip),
+                  onPressed: () => _showAllNotifier.value = true,
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

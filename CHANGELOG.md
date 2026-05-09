@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
+
+### Added
+
+- Albums/Tags: filter collection with current group from crumb line
+- Cataloguing: improved metadata parsing for AVIF still images (requires rescan)
+- Navigation: allow adding album/tag group to bottom navigation bar
+- Navigation: allow adding recycle bin to bottom navigation bar
+- Navigation: allow adding album group to drawer
+- Explorer: show bottom navigation bar
+- Lao translation (thanks BoneNI)
+
+### Changed
+
+- Viewer: no longer hide overlay on playing video
+- build: package compressed native libraries for `izzy` flavor
+- upgraded Flutter to stable v3.41.9
+
+### Removed
+
+- build: `libre_rom` flavor, now redundant with `libre` flavor
+
+### Fixed
+
+- sorting by name mixed filters/groups without sections
+
 ## <a id="v1.14.3"></a>[v1.14.3] - 2026-04-06
 
 ### Fixed
@@ -24,7 +50,7 @@ All notable changes to this project will be documented in this file.
 
 - cataloguing items having wrong type from Media Store
 - video player incorrectly looping when configured otherwise
-- recovered items staying in bin forever
+- recovered items staying in recycle bin forever
 - undated item handling for some file operations
 
 ## <a id="v1.14.1"></a>[v1.14.1] - 2026-02-21
@@ -120,7 +146,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- saving metadata date when moving items to bin
+- saving metadata date when moving items to recycle bin
 - rescanning items in vaults
 - grouping when renaming album
 - thumbnail orientation for some RAW formats
@@ -1186,7 +1212,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: optional gesture to show previous/next item
 - Albums / Countries / Tags: live title filter
-- option to hide confirmation message after moving items to the bin
+- option to hide confirmation message after moving items to the recycle bin
 - Collection / Info: edit description via Exif / IPTC / XMP
 - Info: read XMP from HEIF on Android >=11
 - Collection: support HEIF motion photos on Android >=11
@@ -1347,7 +1373,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - storage write access for Android <11
-- various bin related fixes
+- various recycle bin related fixes
 - Viewer: apply video settings change without leaving the viewer
 
 ## <a id="v1.6.1"></a>[v1.6.1] - 2022-02-23

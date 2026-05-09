@@ -7,23 +7,24 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_screen_state/aves_screen_state.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 final Vaults vaults = Vaults._private();
 
-class Vaults extends ChangeNotifier {
+class Vaults {
   final Set<StreamSubscription> _subscriptions = {};
   Set<VaultDetails> _rows = {};
   final Set<String> _unlockedDirPaths = {};
 
+  final AChangeNotifier contentChangeNotifier = AChangeNotifier();
+  final AChangeNotifier lockStateChangeNotifier = AChangeNotifier();
+
   static const _fileScheme = 'file';
 
-  Vaults._private() {
-    if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
-  }
+  Vaults._private();
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllVaults();
@@ -32,14 +33,15 @@ class Vaults extends ChangeNotifier {
     if (screenStateStream != null) {
       _subscriptions.add(screenStateStream.where((event) => event == ScreenStateEvent.off).listen((event) => _onScreenOff()));
     }
+    _onContentChanged();
   }
 
-  @override
   void dispose() {
+    contentChangeNotifier.dispose();
+    lockStateChangeNotifier.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    super.dispose();
   }
 
   Set<VaultDetails> get all => Set.unmodifiable(_rows);
@@ -52,6 +54,8 @@ class Vaults extends ChangeNotifier {
     _rows.add(details);
     _vaultDirPaths = null;
     _unlockedDirPaths.add(details.path);
+
+    _onContentChanged();
     _onLockStateChanged();
   }
 
@@ -66,6 +70,8 @@ class Vaults extends ChangeNotifier {
     _rows.removeAll(details);
     _vaultDirPaths = null;
     _unlockedDirPaths.removeAll(dirPaths);
+
+    _onContentChanged();
     _onLockStateChanged();
   }
 
@@ -91,6 +97,8 @@ class Vaults extends ChangeNotifier {
     _unlockedDirPaths
       ..remove(oldDirPath)
       ..add(newDirPath);
+
+    _onContentChanged();
     _onLockStateChanged();
   }
 
@@ -104,12 +112,16 @@ class Vaults extends ChangeNotifier {
     _rows
       ..remove(oldDetails)
       ..add(newDetails);
+
+    _onContentChanged();
   }
 
   Future<void> clear() async {
     await localMediaDb.clearVaults();
     _rows.clear();
     _vaultDirPaths = null;
+
+    _onContentChanged();
   }
 
   Set<String>? _vaultDirPaths;
@@ -186,8 +198,12 @@ class Vaults extends ChangeNotifier {
 
   bool get needProtection => _unlockedDirPaths.isNotEmpty;
 
+  void _onContentChanged() {
+    contentChangeNotifier.notify();
+  }
+
   void _onLockStateChanged() {
     windowService.secureScreen(needProtection);
-    notifyListeners();
+    lockStateChangeNotifier.notify();
   }
 }

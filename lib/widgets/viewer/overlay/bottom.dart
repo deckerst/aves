@@ -171,8 +171,8 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
     final multiPageController = widget.multiPageController;
     final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
 
-    return AnimatedBuilder(
-      animation: Listenable.merge([
+    return ListenableBuilder(
+      listenable: Listenable.merge([
         mainEntry.metadataChangeNotifier,
         pageEntry.metadataChangeNotifier,
       ]),

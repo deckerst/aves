@@ -92,8 +92,8 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
         ),
         Padding(
           padding: contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
-          child: AnimatedBuilder(
-            animation: Listenable.merge([_albumExistsNotifier, _directoryExistsNotifier]),
+          child: ListenableBuilder(
+            listenable: Listenable.merge([_albumExistsNotifier, _directoryExistsNotifier]),
             builder: (context, child) {
               var helperText = '';
               if (_albumExistsNotifier.value) {

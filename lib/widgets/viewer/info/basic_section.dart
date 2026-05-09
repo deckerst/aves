@@ -99,8 +99,8 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   Widget build(BuildContext context) {
     super.build(context);
     final entry = widget.entry;
-    return AnimatedBuilder(
-      animation: entry.metadataChangeNotifier,
+    return ListenableBuilder(
+      listenable: entry.metadataChangeNotifier,
       builder: (context, child) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,8 +140,8 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       if (entry.rating != 0) RatingFilter(entry.rating),
       ...tags.map(TagFilter.new),
     };
-    return AnimatedBuilder(
-      animation: favourites,
+    return ListenableBuilder(
+      listenable: favourites,
       builder: (context, child) {
         final effectiveFilters = [
           ...filters,

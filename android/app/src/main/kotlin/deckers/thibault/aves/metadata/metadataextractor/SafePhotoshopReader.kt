@@ -12,8 +12,8 @@ import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.photoshop.PhotoshopDirectory
 import com.drew.metadata.photoshop.PhotoshopReader
 
-// adapted from `PhotoshopReader` to prevent OOM from reading large XMP
-// as of `metadata-extractor` v2.18.0, there is no way to customize the Photoshop reader
+// adapted from `metadata-extractor` v2.20.0 `PhotoshopReader` to prevent OOM from reading large XMP
+// as of `metadata-extractor` v2.20.0, there is no way to customize the Photoshop reader
 // without copying the whole `extract` function
 class SafePhotoshopReader : PhotoshopReader() {
     override fun extract(reader: SequentialReader, length: Int, metadata: Metadata, parentDirectory: Directory?) {
