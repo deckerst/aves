@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - selecting stacks across Collection page and viewer
 - Albums/Tags: cyclic group cleanup
 - Map: inconsistent viewer collection when changing orientation
+- Viewer: video progress bar layout when limited by controls
 
 ## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
 

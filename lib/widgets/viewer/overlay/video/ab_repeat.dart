@@ -1,7 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:aves/widgets/viewer/overlay/bottom.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +63,7 @@ class _VideoABRepeatOverlayState extends State<VideoABRepeatOverlay> {
           );
         }
         return Row(
-          textDirection: ViewerBottomOverlay.actionsDirection,
+          mainAxisSize: .min,
           children: [
             const Spacer(),
             OverlayButton(

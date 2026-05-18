@@ -14,7 +14,7 @@ class VideoControlRow extends StatelessWidget {
   final bool canOpenVideoPlayer;
   final Function(EntryAction value) onActionSelected;
 
-  static const double padding = 8;
+  static const double edgeButtonPadding = 3;
   static const Radius radius = Radius.circular(123);
 
   const VideoControlRow({
@@ -27,39 +27,58 @@ class VideoControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<Settings, List<EntryAction>>(
-      selector: (context, s) => s.videoControlActions,
-      builder: (context, actions, child) {
-        return Padding(
-          padding: EdgeInsets.only(left: actions.isEmpty ? 0 : padding),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            textDirection: ViewerBottomOverlay.actionsDirection,
-            children: actions.map((action) {
-              // null radius yields a circular button
-              BorderRadius? borderRadius;
-              if (actions.length > 1) {
-                // zero radius yields a square button
-                borderRadius = BorderRadius.zero;
-                if (action == actions.first) {
-                  borderRadius = const BorderRadius.horizontal(left: radius);
-                } else if (action == actions.last) {
-                  borderRadius = const BorderRadius.horizontal(right: radius);
-                }
-              }
-              return _buildOverlayButton(context, action, borderRadius);
-            }).toList(),
-          ),
+    final actions = context.select<Settings, List<EntryAction>>((v) => v.videoControlActions);
+    return Row(
+      mainAxisSize: .min,
+      textDirection: ViewerBottomOverlay.actionsDirection,
+      children: actions.map((action) {
+        // null radius yields a circular button
+        BorderRadius? borderRadius;
+        if (actions.length > 1) {
+          // zero radius yields a square button
+          borderRadius = BorderRadius.zero;
+          if (action == actions.first) {
+            borderRadius = const BorderRadius.horizontal(left: radius);
+          } else if (action == actions.last) {
+            borderRadius = const BorderRadius.horizontal(right: radius);
+          }
+        }
+        return _VideoOverlayButton(
+          controller: controller,
+          scale: scale,
+          canOpenVideoPlayer: canOpenVideoPlayer,
+          onActionSelected: onActionSelected,
+          action: action,
+          borderRadius: borderRadius,
         );
-      },
+      }).toList(),
     );
   }
 
-  Widget _buildOverlayButton(
-    BuildContext context,
-    EntryAction action,
-    BorderRadius? borderRadius,
-  ) {
+  static double computeWidth(BuildContext context, List<EntryAction> actions) {
+    return actions.length * OverlayButton.getSize(context) + (actions.isEmpty ? 0 : 2 * edgeButtonPadding);
+  }
+}
+
+class _VideoOverlayButton extends StatelessWidget {
+  final AvesVideoController? controller;
+  final Animation<double> scale;
+  final bool canOpenVideoPlayer;
+  final Function(EntryAction value) onActionSelected;
+  final EntryAction action;
+  final BorderRadius? borderRadius;
+
+  const _VideoOverlayButton({
+    required this.controller,
+    required this.scale,
+    required this.canOpenVideoPlayer,
+    required this.onActionSelected,
+    required this.action,
+    required this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     Widget child;
     if (action == EntryAction.videoTogglePlay) {
       child = PlayToggler(
@@ -69,17 +88,18 @@ class VideoControlRow extends StatelessWidget {
     } else {
       final enabled = action == EntryAction.openVideoPlayer ? canOpenVideoPlayer : true;
       child = IconButton(
-        icon: action.getIcon(),
         onPressed: enabled ? () => onActionSelected(action) : null,
         tooltip: action.getText(context),
+        icon: action.getIcon(),
       );
     }
 
-    if (borderRadius != null) {
+    final _borderRadius = borderRadius;
+    if (_borderRadius != null) {
       child = Padding(
         padding: EdgeInsets.only(
-          left: borderRadius.topLeft.x > 0 ? padding / 3 : 0,
-          right: borderRadius.topRight.x > 0 ? padding / 3 : 0,
+          left: _borderRadius.topLeft.x > 0 ? VideoControlRow.edgeButtonPadding : 0,
+          right: _borderRadius.topRight.x > 0 ? VideoControlRow.edgeButtonPadding : 0,
         ),
         child: child,
       );
@@ -87,7 +107,7 @@ class VideoControlRow extends StatelessWidget {
 
     return OverlayButton(
       scale: scale,
-      borderRadius: borderRadius,
+      borderRadius: _borderRadius,
       child: child,
     );
   }

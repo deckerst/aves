@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
@@ -10,6 +11,7 @@ import 'package:aves/widgets/viewer/overlay/video/progress_bar.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final AvesEntry entry;
@@ -38,6 +40,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   Stream<VideoStatus> get statusStream => controller?.statusStream ?? Stream.value(VideoStatus.idle);
 
+  static const double _padding = 8;
+  static const double _progressOverControlsWidthThreshold = 160;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
@@ -61,31 +66,54 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
           );
         }
 
-        return Column(
-          children: [
-            VideoABRepeatOverlay(
-              controller: controller,
-              scale: scale,
-            ),
-            const SizedBox(height: 8),
-            Row(
+        final progressBar = VideoProgressBar(
+          controller: controller,
+          scale: scale,
+        );
+        final controls = VideoControlRow(
+          controller: controller,
+          scale: scale,
+          canOpenVideoPlayer: !entry.trashed,
+          onActionSelected: widget.onActionSelected,
+        );
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            var progressOverControls = false;
+            final actions = context.select<Settings, List<EntryAction>>((v) => v.videoControlActions);
+            if (actions.isNotEmpty) {
+              final availableWidth = constraints.maxWidth - _padding - VideoControlRow.computeWidth(context, actions);
+              progressOverControls = availableWidth < _progressOverControlsWidthThreshold;
+            }
+            final progressAndControls = progressOverControls
+                ? [
+                    progressBar,
+                    const SizedBox(height: _padding),
+                    controls,
+                  ]
+                : [
+                    Row(
+                      textDirection: ViewerBottomOverlay.actionsDirection,
+                      children: [
+                        Expanded(child: progressBar),
+                        if (actions.isNotEmpty) const SizedBox(width: _padding),
+                        controls,
+                      ],
+                    ),
+                  ];
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               textDirection: ViewerBottomOverlay.actionsDirection,
               children: [
-                Expanded(
-                  child: VideoProgressBar(
-                    controller: controller,
-                    scale: scale,
-                  ),
-                ),
-                VideoControlRow(
+                VideoABRepeatOverlay(
                   controller: controller,
                   scale: scale,
-                  canOpenVideoPlayer: !entry.trashed,
-                  onActionSelected: widget.onActionSelected,
                 ),
+                const SizedBox(height: _padding),
+                ...progressAndControls,
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
