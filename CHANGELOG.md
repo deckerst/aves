@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Map: inconsistent viewer collection when changing orientation
 - Viewer: video progress bar layout when limited by controls
 - Viewer: animated playback when "Remove animations" is enabled in Android
+- Albums/Tags: navigation requiring double tap when animations are disabled
 
 ## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
 

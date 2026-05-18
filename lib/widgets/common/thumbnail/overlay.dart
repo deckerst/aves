@@ -104,9 +104,12 @@ class ThumbnailZoomOverlay extends StatelessWidget {
               alignment: alignment,
               child: GestureDetector(
                 onTap: onZoom,
+                // use a `Container` with a dummy color to make it expand
+                // so that we can also detect taps around its child
                 child: Container(
                   alignment: alignment,
                   padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+                  color: Colors.transparent,
                   width: interactiveDimension,
                   height: interactiveDimension,
                   child: Icon(
