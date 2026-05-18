@@ -300,6 +300,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 // for all users of apps registered as accessibility services,
                                 // even though they are not for accessibility purposes (like TalkBack is)
                                 accessibleNavigation: false,
+                                // disabling animations at the framework level is problematic (e.g. GIF playback)
+                                // so we handle it through the app settings and more fine-grained behaviour
+                                disableAnimations: false,
                               ),
                               child: MaterialApp(
                                 navigatorKey: _navigatorKey,
