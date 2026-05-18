@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: video progress bar layout when limited by controls
 - Viewer: animated playback when "Remove animations" is enabled in Android
 - Albums/Tags: navigation requiring double tap when animations are disabled
+- Viewer: shooting details overlay not refreshed on item deletion
 
 ## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
 

@@ -51,7 +51,7 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
   AvesEntry? entryForIndex(int index) => index < entries.length ? entries[index] : null;
 
   late Future<OverlayMetadata> _detailLoader;
-  AvesEntry? _lastEntry;
+  AvesEntry? _requestEntry;
   OverlayMetadata _lastDetails = const OverlayMetadata();
 
   @override
@@ -63,18 +63,17 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
   @override
   void didUpdateWidget(covariant ViewerDetailOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final newEntry = entryForIndex(widget.index);
-    if (newEntry != entryForIndex(oldWidget.index) && newEntry != _lastEntry) {
+    if (entryForIndex(widget.index) != _requestEntry) {
       _initDetailLoader();
     }
   }
 
   void _initDetailLoader() {
-    final requestEntry = entry;
-    if (requestEntry == null) {
+    _requestEntry = entry;
+    if (_requestEntry == null) {
       _detailLoader = SynchronousFuture(const OverlayMetadata());
     } else {
-      _detailLoader = metadataFetchService.getOverlayMetadata(requestEntry, {
+      _detailLoader = metadataFetchService.getOverlayMetadata(_requestEntry!, {
         if (settings.showOverlayShootingDetails) ...{
           MetadataSyntheticField.aperture,
           MetadataSyntheticField.exposureTime,
@@ -96,10 +95,9 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
             _lastDetails = snapshot.data!;
-            _lastEntry = entry;
           }
-          if (_lastEntry == null) return const SizedBox();
-          final mainEntry = _lastEntry!;
+          if (_requestEntry == null) return const SizedBox();
+          final mainEntry = _requestEntry!;
 
           final multiPageController = widget.multiPageController;
           Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
