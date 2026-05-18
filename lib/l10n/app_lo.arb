@@ -510,8 +510,6 @@
     "aboutLinkPolicy": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
     "aboutBugSectionTitle": "ລາຍງານບັນຫາ",
     "aboutBugSaveLogInstruction": "ບັນທຶກລັອກຂອງແອັບໃສ່ໄຟລ໌",
-    "aboutBugCopyInfoInstruction": "ສຳເນົາຂໍ້ມູນລະບົບ",
-    "aboutBugCopyInfoButton": "ສຳເນົາ",
     "aboutBugReportInstruction": "ລາຍງານໃນ GitHub ພ້ອມລັອກ ແລະ ຂໍ້ມູນລະບົບ",
     "aboutBugReportButton": "ລາຍງານ",
     "aboutDataUsageSectionTitle": "ການໃຊ້ຂໍ້ມູນ",

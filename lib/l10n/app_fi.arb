@@ -465,8 +465,6 @@
     "removeEntryMetadataDialogMore": "Lisää",
     "aboutBugSectionTitle": "Ohjelmointivirhe raportti",
     "aboutBugSaveLogInstruction": "Tallenna sovelluksen lokitiedot",
-    "aboutBugCopyInfoInstruction": "Kopioi järjestelmän tiedot",
-    "aboutBugCopyInfoButton": "Kopioi",
     "aboutBugReportInstruction": "Raportoi GitHub:issa sovelluksen lokitiedoilla ja järjestelmän tiedoilla",
     "aboutBugReportButton": "Raportoi",
     "aboutDataUsageSectionTitle": "Datan Käyttö",

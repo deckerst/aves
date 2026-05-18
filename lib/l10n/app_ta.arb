@@ -378,8 +378,6 @@
     "editEntryDialogCopyFromItem": "பிற உருப்படியிலிருந்து நகலெடு",
     "durationDialogHours": "மணிகள்",
     "aboutBugSaveLogInstruction": "பயன்பாட்டு பதிவுகளை ஒரு கோப்பில் சேமி",
-    "aboutBugCopyInfoInstruction": "கணினி தகவல்களை நகலெடு",
-    "aboutBugCopyInfoButton": "நகலெடு",
     "collectionActionAddShortcut": "குறுக்குவழியைச் சேர்",
     "collectionActionSetHome": "வீட்டாக அமை",
     "collectionSearchTitlesHintText": "தலைப்புகளைத் தேடு",

@@ -245,8 +245,6 @@
     "aboutLinkLicense": "Licentie",
     "aboutBugSectionTitle": "Foutmelding",
     "aboutBugSaveLogInstruction": "Sla applicatielogs op in een bestand",
-    "aboutBugCopyInfoInstruction": "Systeeminformatie kopiëren",
-    "aboutBugCopyInfoButton": "Kopieer",
     "aboutBugReportInstruction": "Melden op GitHub met de logs en systeeminformatie",
     "aboutBugReportButton": "Melden",
     "aboutCreditsSectionTitle": "Dankbetuiging",

@@ -247,8 +247,6 @@
     "aboutLinkPolicy": "Datenschutzrichtlinie",
     "aboutBugSectionTitle": "Fehlerbericht",
     "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
-    "aboutBugCopyInfoInstruction": "Systeminformationen kopieren",
-    "aboutBugCopyInfoButton": "Kopieren",
     "aboutBugReportInstruction": "Bericht auf GitHub mit den Protokollen und Systeminformationen",
     "aboutBugReportButton": "Bericht",
     "aboutCreditsSectionTitle": "Kredite",

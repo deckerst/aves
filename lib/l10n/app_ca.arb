@@ -256,8 +256,6 @@
     "aboutLinkLicense": "Llicència",
     "aboutBugSectionTitle": "Informe d’error",
     "aboutBugSaveLogInstruction": "Desa els registres de l’aplicació en un fitxer",
-    "aboutBugCopyInfoInstruction": "Copia la informació del sistema",
-    "aboutBugCopyInfoButton": "Copia",
     "aboutBugReportInstruction": "Reporta a GitHub amb els logs i la informació del sistema",
     "aboutBugReportButton": "Informe",
     "aboutDataUsageSectionTitle": "Ús de dades",

@@ -236,8 +236,6 @@
     "aboutLinkPolicy": "Política de privacidad",
     "aboutBugSectionTitle": "Reporte de errores",
     "aboutBugSaveLogInstruction": "Guardar registros de la aplicación a un archivo",
-    "aboutBugCopyInfoInstruction": "Copiar información del sistema",
-    "aboutBugCopyInfoButton": "Copiar",
     "aboutBugReportInstruction": "Reportar en GitHub con los registros y la información del sistema",
     "aboutBugReportButton": "Reportar",
     "aboutCreditsSectionTitle": "Créditos",
