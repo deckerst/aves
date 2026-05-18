@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+typedef ToSelectableItems<T> = Set<T> Function(T item);
+
 class Selection<T> extends ChangeNotifier {
+  late final Iterable<T> Function(Iterable<T> items) _expandToSelectableItems;
+
   bool _isSelecting = false;
 
   bool get isSelecting => _isSelecting;
@@ -11,8 +15,14 @@ class Selection<T> extends ChangeNotifier {
 
   Set<T> get selectedItems => Set.unmodifiable(_selectedItems);
 
-  Selection() {
+  Selection({required ToSelectableItems<T>? toSelectableItems}) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+
+    if (toSelectableItems != null) {
+      _expandToSelectableItems = (items) => items.expand(toSelectableItems);
+    } else {
+      _expandToSelectableItems = (items) => items;
+    }
   }
 
   void browse() {
@@ -31,20 +41,24 @@ class Selection<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isSelected(Iterable<T> items) => items.every(_selectedItems.contains);
+  bool isSelected(Iterable<T> items) => _expandToSelectableItems(items).every(_selectedItems.contains);
+
+  int countSelectable(Iterable<T> items) => _expandToSelectableItems(items).length;
+
+  int countSelected(Iterable<T> items) => _expandToSelectableItems(items).where(_selectedItems.contains).length;
 
   void addToSelection(Iterable<T> items) {
     if (items.isEmpty) return;
 
     select();
-    _selectedItems.addAll(items);
+    _selectedItems.addAll(_expandToSelectableItems(items));
     notifyListeners();
   }
 
   void removeFromSelection(Iterable<T> items) {
     if (items.isEmpty) return;
 
-    _selectedItems.removeAll(items);
+    _selectedItems.removeAll(_expandToSelectableItems(items));
     notifyListeners();
   }
 
@@ -55,7 +69,14 @@ class Selection<T> extends ChangeNotifier {
 
   void toggleSelection(T item) {
     if (!_isSelecting) select();
-    if (!_selectedItems.remove(item)) _selectedItems.add(item);
+
+    final selectableItems = _expandToSelectableItems({item});
+    final selected = isSelected(selectableItems);
+    if (selected) {
+      _selectedItems.removeAll(selectableItems);
+    } else {
+      _selectedItems.addAll(selectableItems);
+    }
     notifyListeners();
   }
 }

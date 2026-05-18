@@ -89,6 +89,7 @@ class _CollectionPageState extends State<CollectionPage> {
     final useTvLayout = settings.useTvLayout;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return SelectionProvider<AvesEntry>(
+      toSelectableItems: (entry) => entry.toSelectableItems(),
       child: Selector<Selection<AvesEntry>, bool>(
         selector: (context, selection) => selection.selectedItemCount > 0,
         builder: (context, hasSelection, child) {

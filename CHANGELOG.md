@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- selecting stacks across Collection page and viewer
 - Albums/Tags: cyclic group cleanup
 - Map: inconsistent viewer collection when changing orientation
 

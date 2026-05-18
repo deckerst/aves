@@ -48,6 +48,8 @@ class AvesEntry with AvesEntryBase {
   // synthetic stack of related entries, e.g. burst shots or raw/developed pairs
   List<AvesEntry>? stackedEntries;
 
+  Set<AvesEntry> toSelectableItems() => stackedEntries != null ? Set.unmodifiable(stackedEntries!) : {this};
+
   @override
   final AChangeNotifier visualChangeNotifier = AChangeNotifier();
 
