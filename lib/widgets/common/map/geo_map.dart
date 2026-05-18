@@ -233,7 +233,7 @@ class _GeoMapState extends State<GeoMap> {
 
         final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
         child = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             // TODO TLAD [flutter vNext] wrap into `BackdropGroup`
             mapHeight != null

@@ -35,7 +35,7 @@ class EntryListDetails extends StatelessWidget {
         data: detailsTheme.iconTheme,
         child: Column(
           mainAxisSize: .min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Text(
               entry.bestTitle ?? context.l10n.viewerInfoUnknown,

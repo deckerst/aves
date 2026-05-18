@@ -82,7 +82,7 @@ class _PopupMenuExpansionPanelState<T> extends State<PopupMenuExpansionPanel<T>>
                 );
               },
               body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const PopupMenuDivider(height: 0),
                   ...widget.items,

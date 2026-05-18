@@ -54,7 +54,7 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
               Widget _toCodecColumn(List<Map<String, String>> codecs) => ValueListenableBuilder<String>(
                 valueListenable: _queryNotifier,
                 builder: (context, query, child) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: codecs.expand((codecInfo) {
                     return (query.isEmpty || codecInfo.keys.any((key) => key.contains(query)))
                         ? [
@@ -66,7 +66,7 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
                 ),
               );
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   QueryBar(queryNotifier: _queryNotifier),
                   const HighlightTitle(title: 'Decoders'),

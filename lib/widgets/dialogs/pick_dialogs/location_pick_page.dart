@@ -188,7 +188,7 @@ class _LocationInfo extends StatelessWidget {
                 Expanded(
                   child: Column(
                     mainAxisSize: .min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       _AddressRow(location: location),
                       const SizedBox(height: _interRowPadding),

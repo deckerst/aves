@@ -302,7 +302,7 @@ class OverlayIcon extends StatelessWidget {
           ? iconChild
           : Row(
               mainAxisSize: .min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: .center,
               children: [
                 iconChild,
                 const SizedBox(width: 2),

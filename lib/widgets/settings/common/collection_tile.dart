@@ -35,7 +35,7 @@ class SettingsCollectionTile extends StatelessWidget {
               child: Row(
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       Text(
                         l10n.settingsCollectionTile,

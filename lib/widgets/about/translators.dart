@@ -17,7 +17,7 @@ class AboutTranslators extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           AboutSectionTitle(text: context.l10n.aboutTranslatorsSectionTitle),
           const SizedBox(height: 8),

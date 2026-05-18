@@ -123,7 +123,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                       Padding(
                         padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: .end,
                           children: [
                             Expanded(
                               child: TextField(

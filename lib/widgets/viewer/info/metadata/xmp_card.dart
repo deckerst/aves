@@ -85,12 +85,12 @@ class _XmpCardState extends State<XmpCard> {
           final cards = data.$2;
 
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     Expanded(
                       child: HighlightTitle(

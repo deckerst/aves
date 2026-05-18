@@ -206,7 +206,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     final child = isPortrait
         ? Column(
             mainAxisSize: .min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               label,
               Padding(
@@ -222,13 +222,13 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           )
         : Row(
             mainAxisSize: .min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Expanded(child: label),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     selector,
                     ?bottom,

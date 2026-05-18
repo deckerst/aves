@@ -128,8 +128,8 @@ class _TvButtonRowContent extends StatelessWidget {
       selector: (context, vc) => vc.getController(pageEntry),
       builder: (context, videoController, child) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: .center,
+          crossAxisAlignment: .start,
           textDirection: ViewerBottomOverlay.actionsDirection,
           children:
               [

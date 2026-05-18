@@ -103,7 +103,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       listenable: entry.metadataChangeNotifier,
       builder: (context, child) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             _BasicInfo(entry: entry),
             Focus(

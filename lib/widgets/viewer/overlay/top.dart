@@ -99,7 +99,7 @@ class ViewerTopOverlay extends StatelessWidget {
 
         return Column(
           mainAxisSize: .min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             if (showInfo)
               GestureDetector(
@@ -134,19 +134,19 @@ class ViewerTopOverlay extends StatelessWidget {
                 right: viewInsetsPadding.right,
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   if (startCornerChildren.isNotEmpty)
                     Column(
                       mainAxisSize: .min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: startCornerChildren.map(_decorateCornerChild).toList(),
                     ),
                   const Spacer(),
                   if (endCornerChildren.isNotEmpty)
                     Column(
                       mainAxisSize: .min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: endCornerChildren.map(_decorateCornerChild).toList(),
                     ),
                 ],

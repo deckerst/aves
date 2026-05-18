@@ -131,8 +131,8 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
           final legend = SizedBox(
             width: dim,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: .center,
+              crossAxisAlignment: .start,
               children: seriesData
                   .map(
                     (d) => InkWell(

@@ -207,14 +207,14 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
             ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               const SizedBox(height: 6),
               Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: Wrap(
                   spacing: 16,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     const AvesLogo(size: 48),
                     OutlinedText(

@@ -132,7 +132,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
           child: Column(
             key: ValueKey(_action),
             mainAxisSize: .min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: .stretch,
             children: [
               if (_action == EntryConvertAction.convert) ..._buildConvertContent(context),
               if (_action == EntryConvertAction.convertMotionPhotoToStillImage) const SizedBox(height: 16),
@@ -217,7 +217,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
       Padding(
         padding: contentHorizontalPadding,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
+          crossAxisAlignment: .baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
             Expanded(

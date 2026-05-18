@@ -217,7 +217,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     final basicAndLocationSliver = locationAtTop
         ? SliverToBoxAdapter(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Expanded(child: basicSection),
                 const SizedBox(width: 8),

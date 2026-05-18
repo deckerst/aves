@@ -73,7 +73,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
                 left: padding,
                 right: padding,
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: padding),

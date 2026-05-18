@@ -102,7 +102,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           ] else
                             Flexible(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: .spaceEvenly,
                                 children: [
                                   Flexible(
                                     child: Padding(
@@ -167,7 +167,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final switches = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: MarkdownContainer.mobileMaxWidth),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           SwitchListTile(
             key: const Key('apps-checkbox'),

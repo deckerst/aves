@@ -41,7 +41,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               const HighlightTitle(title: 'Device'),
               InfoRowGroup(
@@ -78,7 +78,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const HighlightTitle(title: 'Window'),
                   InfoRowGroup(
@@ -109,7 +109,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const HighlightTitle(title: 'App'),
                   InfoRowGroup(

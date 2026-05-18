@@ -27,7 +27,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
       alignment: AlignmentDirectional.bottomStart,
       child: Column(
         mainAxisSize: .min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: children,
       ),
     );

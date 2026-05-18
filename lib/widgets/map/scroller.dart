@@ -66,7 +66,7 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
     return Stack(
       children: [
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             SafeArea(
               top: false,

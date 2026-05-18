@@ -140,7 +140,7 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
       width: availableWidth,
       child: Column(
         mainAxisSize: .min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           viewerButtonRow,
         ],
@@ -185,8 +185,8 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
 
   Widget _buildTvButtonRowContent(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .start,
       textDirection: ViewerBottomOverlay.actionsDirection,
       children: _actions.map((action) {
         return CaptionedButton(

@@ -26,7 +26,7 @@ class MapInfoRow extends StatelessWidget {
                 Expanded(
                   child: Column(
                     mainAxisSize: .min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       MapAddressRow(entry: entry),
                       const SizedBox(height: _interRowPadding),

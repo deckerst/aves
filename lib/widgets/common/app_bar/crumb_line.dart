@@ -95,7 +95,7 @@ class _CrumbLineState<T> extends State<CrumbLine<T>> {
             color: Colors.transparent,
             child: Row(
               mainAxisSize: .min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: .center,
               children: [
                 _buildText(text),
                 Icon(

@@ -283,7 +283,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Expanded(
             child: Column(
@@ -336,7 +336,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
                 Expanded(
                   child: Column(
                     mainAxisSize: .min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       Text(l10n.editEntryLocationDialogTimeShift),
                       AvesCaption(_formatShiftDuration(_gpxShift)),

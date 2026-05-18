@@ -26,7 +26,7 @@ class _WallpaperSettingsDialogState extends State<WallpaperSettingsDialog> {
           groupValue: _selectedTarget,
           onChanged: (volume) => setState(() => _selectedTarget = volume!),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               ...WallpaperTarget.values.map((value) {
                 return SelectionRadioListTile<WallpaperTarget>(

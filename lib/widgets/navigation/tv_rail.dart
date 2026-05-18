@@ -144,7 +144,7 @@ class _TvRailState extends State<TvRail> {
           );
 
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: .center,
             children: [
               const SizedBox(height: 8),
               header,

@@ -124,7 +124,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
         );
       case .list:
         Widget child = Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: .stretch,
           children: [
             FilterChipGridDecorator<T, FilterGridItem<T>>(
               gridItem: gridItem,

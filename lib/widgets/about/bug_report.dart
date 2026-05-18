@@ -90,7 +90,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.saveTooltip, _saveLogs),
           _buildStep(2, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),

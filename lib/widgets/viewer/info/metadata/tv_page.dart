@@ -80,7 +80,7 @@ class _TvMetadataPageState extends State<TvMetadataPage> {
 
           return SafeArea(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 const SizedBox(width: 16),
                 Focus(

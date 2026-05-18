@@ -76,7 +76,7 @@ class TitledExpandableFilterRow extends StatelessWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         header,
         ExpandableFilterRow(

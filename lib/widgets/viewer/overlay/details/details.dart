@@ -164,7 +164,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
           padding: padding,
           child: Column(
             mainAxisSize: .min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: _buildRows(context),
           ),
         ),

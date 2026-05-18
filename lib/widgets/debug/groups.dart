@@ -26,7 +26,7 @@ class _DebugGroupsSectionState extends State<DebugGroupsSection> with AutomaticK
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const HighlightTitle(title: 'Albums (Grouping)'),
                   InfoRowGroup(
@@ -42,7 +42,7 @@ class _DebugGroupsSectionState extends State<DebugGroupsSection> with AutomaticK
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const HighlightTitle(title: 'Tags (Grouping)'),
                   InfoRowGroup(

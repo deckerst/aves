@@ -191,7 +191,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final actionsWidget = Padding(
       padding: AvesDialog.actionsPadding,
       child: OverflowBar(
-        alignment: MainAxisAlignment.end,
+        alignment: .end,
         spacing: AvesDialog.buttonPadding.horizontal / 2,
         overflowAlignment: OverflowBarAlignment.end,
         children: [
@@ -217,7 +217,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             mainAxisSize: .min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: .stretch,
             children: [
               Flexible(child: contentWidget),
               actionsWidget,

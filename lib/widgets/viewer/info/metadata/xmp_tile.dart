@@ -49,7 +49,7 @@ class _XmpDirTileBodyState extends State<XmpDirTileBody> {
           ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: sections.expand((section) => section.buildNamespaceSection(context)).toList(),
     );
   }

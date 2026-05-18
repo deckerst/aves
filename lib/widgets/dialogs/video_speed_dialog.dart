@@ -36,7 +36,7 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
       horizontalContentPadding: 4,
       content: Column(
         mainAxisSize: .min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),

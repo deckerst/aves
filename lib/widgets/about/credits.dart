@@ -11,7 +11,7 @@ class AboutCredits extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           AboutSectionTitle(text: context.l10n.aboutCreditsSectionTitle),
           const SizedBox(height: 8),

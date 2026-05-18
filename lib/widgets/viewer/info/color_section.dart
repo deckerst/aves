@@ -46,7 +46,7 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
 
           final durations = context.watch<DurationsData>();
           return Wrap(
-            alignment: WrapAlignment.center,
+            alignment: .center,
             children: AnimationConfiguration.toStaggeredList(
               duration: durations.staggeredAnimation,
               delay: durations.staggeredAnimationDelay * timeDilation,

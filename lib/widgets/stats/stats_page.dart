@@ -153,8 +153,8 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
             final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
             final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
             final mimeDonuts = Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: .center,
+              crossAxisAlignment: .center,
               children: [
                 MimeDonut(
                   icon: AIcons.image,

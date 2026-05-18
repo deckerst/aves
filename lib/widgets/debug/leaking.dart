@@ -72,7 +72,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
         ),
         Wrap(
           spacing: 4,
-          crossAxisAlignment: WrapCrossAlignment.center,
+          crossAxisAlignment: .center,
           children: [
             ...LeakType.values.map(
               (type) => ElevatedButton(
@@ -137,10 +137,10 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
             color: Colors.indigo.shade900.withAlpha(0xCC),
             child: Column(
               mainAxisSize: .min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     IconButton(
                       onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
@@ -159,7 +159,7 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                   ],
                 ),
                 Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     StreamBuilder(
                       stream: Stream.periodic(const Duration(seconds: 1)),
@@ -172,7 +172,7 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                   ],
                 ),
                 Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     StreamBuilder(
                       stream: Stream.periodic(const Duration(seconds: 1)),

@@ -102,7 +102,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                     ),
                   ];
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: .end,
               textDirection: ViewerBottomOverlay.actionsDirection,
               children: [
                 VideoABRepeatOverlay(

@@ -71,7 +71,7 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
                 DataUsageDonut.external: data['externalCache'] ?? 0,
               };
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   DataUsageDonut(
                     title: l10n.aboutDataUsageData,

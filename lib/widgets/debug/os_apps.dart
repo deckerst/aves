@@ -52,7 +52,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
               final enabledTheme = IconTheme.of(context);
               final disabledTheme = enabledTheme.merge(const IconThemeData(opacity: .2));
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   QueryBar(queryNotifier: _queryNotifier),
                   ...packages.map((package) {

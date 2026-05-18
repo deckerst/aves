@@ -25,7 +25,7 @@ class SectionRow extends StatelessWidget {
       ),
     );
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: .center,
       children: [
         buildDivider(),
         Padding(

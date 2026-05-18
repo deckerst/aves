@@ -20,9 +20,9 @@ class AppReference extends StatelessWidget {
           _buildAvesLine(context),
           const SizedBox(height: 16),
           Wrap(
-            alignment: WrapAlignment.center,
+            alignment: .center,
             spacing: 16,
-            crossAxisAlignment: WrapCrossAlignment.center,
+            crossAxisAlignment: .center,
             children: AppReference.buildLinks(context),
           ),
         ],

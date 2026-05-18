@@ -21,7 +21,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: .min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         title,
         ValueListenableBuilder<SourceState>(

@@ -270,7 +270,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
       content = Row(
         mainAxisSize: decoration != null ? .max : .min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: .center,
         children: [
           ?leading,
           if (leading != null && showText) SizedBox(width: padding),

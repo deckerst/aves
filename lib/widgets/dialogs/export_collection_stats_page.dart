@@ -54,7 +54,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> {
       ),
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: .stretch,
           children: [
             Expanded(
               child: ListView(
@@ -87,7 +87,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> {
                 valueListenable: _isValidNotifier,
                 builder: (context, isValid, child) {
                   return Wrap(
-                    alignment: WrapAlignment.end,
+                    alignment: .end,
                     spacing: 16,
                     children: [
                       AvesOutlinedButton(
