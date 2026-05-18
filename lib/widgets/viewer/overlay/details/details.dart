@@ -44,36 +44,20 @@ class ViewerDetailOverlay extends StatefulWidget {
 }
 
 class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
-  List<AvesEntry> get entries => widget.entries;
-
-  AvesEntry? get entry => entryForIndex(widget.index);
-
-  AvesEntry? entryForIndex(int index) => index < entries.length ? entries[index] : null;
-
   late Future<OverlayMetadata> _detailLoader;
   AvesEntry? _requestEntry;
   OverlayMetadata _lastDetails = const OverlayMetadata();
 
   @override
-  void initState() {
-    super.initState();
-    _initDetailLoader();
-  }
-
-  @override
   void didUpdateWidget(covariant ViewerDetailOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (entryForIndex(widget.index) != _requestEntry) {
-      _initDetailLoader();
-    }
   }
 
-  void _initDetailLoader() {
-    _requestEntry = entry;
-    if (_requestEntry == null) {
+  void _updateDetailLoader(AvesEntry? entry) {
+    if (entry == null) {
       _detailLoader = SynchronousFuture(const OverlayMetadata());
     } else {
-      _detailLoader = metadataFetchService.getOverlayMetadata(_requestEntry!, {
+      _detailLoader = metadataFetchService.getOverlayMetadata(entry, {
         if (settings.showOverlayShootingDetails) ...{
           MetadataSyntheticField.aperture,
           MetadataSyntheticField.exposureTime,
@@ -83,40 +67,52 @@ class _ViewerDetailOverlayState extends State<ViewerDetailOverlay> {
         if (settings.showOverlayDescription) MetadataSyntheticField.description,
       });
     }
+    _requestEntry = entry;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: FutureBuilder<OverlayMetadata>(
+    final collectionEntries = widget.entries;
+    final collectionSize = collectionEntries.length;
+    final mainEntryIndex = widget.index;
+    final mainEntry = mainEntryIndex < collectionSize ? collectionEntries[mainEntryIndex] : null;
+    final multiPageController = widget.multiPageController;
+
+    Widget _buildContent({AvesEntry? pageEntry}) {
+      final contentEntry = pageEntry ?? mainEntry;
+      if (contentEntry != _requestEntry) {
+        _updateDetailLoader(contentEntry);
+      }
+
+      return FutureBuilder(
         future: _detailLoader,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
             _lastDetails = snapshot.data!;
           }
           if (_requestEntry == null) return const SizedBox();
-          final mainEntry = _requestEntry!;
 
-          final multiPageController = widget.multiPageController;
-          Widget _buildContent({AvesEntry? pageEntry}) => ViewerDetailOverlayContent(
-            pageEntry: pageEntry ?? mainEntry,
+          return ViewerDetailOverlayContent(
+            pageEntry: _requestEntry!,
             details: _lastDetails,
-            position: widget.hasCollection ? '${widget.index + 1}/${entries.length}' : null,
+            position: widget.hasCollection ? '${mainEntryIndex + 1}/$collectionSize' : null,
             availableWidth: widget.availableSize.width,
             multiPageController: multiPageController,
             expandedNotifier: widget.expandedNotifier,
           );
-
-          return multiPageController != null
-              ? PageEntryBuilder(
-                  multiPageController: multiPageController,
-                  builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
-                )
-              : _buildContent();
         },
-      ),
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: multiPageController != null
+          ? PageEntryBuilder(
+              multiPageController: multiPageController,
+              builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+            )
+          : _buildContent(),
     );
   }
 }
@@ -187,9 +183,10 @@ class ViewerDetailOverlayContent extends StatelessWidget {
       collectionPosition: position,
       multiPageController: multiPageController,
     );
+    final positionTitleIsNotEmpty = position != null || multiPageController != null || pageEntry.bestTitle != null;
 
     final rows = <Widget>[];
-    if (positionTitle.isNotEmpty) {
+    if (positionTitleIsNotEmpty) {
       rows.add(
         OverlayRowExpander(
           expandedNotifier: expandedNotifier,

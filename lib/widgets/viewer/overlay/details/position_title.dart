@@ -17,17 +17,15 @@ class OverlayPositionTitleRow extends StatelessWidget {
     required this.multiPageController,
   });
 
-  String? get title => entry.bestTitle;
-
-  bool get isNotEmpty => collectionPosition != null || multiPageController != null || title != null;
-
   @override
   Widget build(BuildContext context) {
+    final _title = entry.bestTitle;
+
     Text toText({String? pagePosition}) => Text(
       [
         if (collectionPosition != null) collectionPosition,
         ?pagePosition,
-        if (title != null) '${Unicode.FSI}$title${Unicode.PDI}',
+        if (_title != null) '${Unicode.FSI}$_title${Unicode.PDI}',
       ].join(AText.separator),
     );
 

@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: animated playback when "Remove animations" is enabled in Android
 - Albums/Tags: navigation requiring double tap when animations are disabled
 - Viewer: shooting details overlay not refreshed on item deletion
+- Viewer: shooting details overlay not refreshed across burst items
 
 ## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
 
