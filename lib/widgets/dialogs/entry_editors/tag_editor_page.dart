@@ -169,7 +169,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                             constraints: const BoxConstraints(minHeight: AvesFilterChip.minChipHeight),
                             child: Center(
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisSize: .min,
                                 children: [
                                   Icon(AIcons.tagUntagged, color: untaggedColor),
                                   const SizedBox(width: 8),

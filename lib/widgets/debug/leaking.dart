@@ -136,7 +136,7 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
           child: Container(
             color: Colors.indigo.shade900.withAlpha(0xCC),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Wrap(

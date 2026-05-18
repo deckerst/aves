@@ -35,7 +35,7 @@ class _VideoSpeedDialogState extends State<VideoSpeedDialog> {
     return AvesDialog(
       horizontalContentPadding: 4,
       content: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(

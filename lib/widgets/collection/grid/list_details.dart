@@ -34,7 +34,7 @@ class EntryListDetails extends StatelessWidget {
       child: IconTheme.merge(
         data: detailsTheme.iconTheme,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(

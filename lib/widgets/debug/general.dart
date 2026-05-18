@@ -120,7 +120,7 @@ class _TaskQueueOverlay extends StatelessWidget {
                   }
                   queuedEntries.sort((a, b) => a.key.compareTo(b.key));
                   return Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(queuedEntries.map((kv) => '${kv.key}: ${kv.value}').join(', ')),

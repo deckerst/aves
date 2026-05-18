@@ -139,7 +139,7 @@ class _SlideshowButtonsState extends State<SlideshowButtons> {
     return SizedBox(
       width: availableWidth,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           viewerButtonRow,

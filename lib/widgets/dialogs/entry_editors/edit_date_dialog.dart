@@ -111,7 +111,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                   transitionBuilder: AvesTransitions.formTransitionBuilder,
                   child: Column(
                     key: ValueKey(_action),
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     children: [
                       if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
                       if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),

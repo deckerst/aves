@@ -252,7 +252,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           );
         },
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             const SizedBox(height: 8),
             const Divider(height: 0),
@@ -311,7 +311,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         child: Row(
           children: [
             Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children:
                   [
                         MapAction.selectStyle,
@@ -525,7 +525,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       items: [
         PopupMenuItem(
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               markerBuilder(context),
               const SizedBox(width: 16),

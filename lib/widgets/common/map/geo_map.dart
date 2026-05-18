@@ -219,7 +219,7 @@ class _GeoMapState extends State<GeoMap> {
             child: OverlayTextButton(
               onPressed: () => MapActionDelegate.selectStyle(context),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   const Icon(AIcons.layers),
                   const SizedBox(width: 8),

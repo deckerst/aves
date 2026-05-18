@@ -20,7 +20,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         title,

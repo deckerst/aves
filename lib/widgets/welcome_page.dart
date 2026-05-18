@@ -61,7 +61,7 @@ class _WelcomePageState extends State<WelcomePage> {
               final durations = context.watch<DurationsData>();
               final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
               return Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: _toStaggeredList(
                   duration: durations.staggeredAnimation,
                   delay: durations.staggeredAnimationDelay * timeDilation,
@@ -148,7 +148,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ]
           : [
               Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   const AvesLogo(size: 48),
                   const SizedBox(width: 16),

@@ -32,7 +32,7 @@ class LinkChip extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               if (leading != null) ...[
                 leading!,

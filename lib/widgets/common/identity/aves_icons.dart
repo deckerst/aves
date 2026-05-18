@@ -301,7 +301,7 @@ class OverlayIcon extends StatelessWidget {
       child: text == null
           ? iconChild
           : Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 iconChild,

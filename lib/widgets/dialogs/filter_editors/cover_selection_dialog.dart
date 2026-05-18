@@ -156,7 +156,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
           return DefaultTabController(
             length: 1 + (showAppTab ? 1 : 0) + (showColorTab ? 1 : 0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Material(
                   borderRadius: const BorderRadius.vertical(
@@ -216,7 +216,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         return ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Flexible(child: contentWidget),
@@ -418,7 +418,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
       key: key,
       height: tabBarHeight(context),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Icon(
             icon,

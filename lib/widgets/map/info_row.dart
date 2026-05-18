@@ -25,7 +25,7 @@ class MapInfoRow extends StatelessWidget {
             ? [
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MapAddressRow(entry: entry),
@@ -45,7 +45,7 @@ class MapInfoRow extends StatelessWidget {
         return Opacity(
           opacity: entry != null ? 1 : 0,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               const SizedBox(width: iconPadding),
               const DotMarker(),

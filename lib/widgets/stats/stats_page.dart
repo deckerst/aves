@@ -251,7 +251,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.size),
           const SizedBox(width: 16),
@@ -267,7 +267,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.videoPlay),
           const SizedBox(width: 16),
@@ -314,7 +314,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       header = Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             header,
             const SizedBox(width: 16),
@@ -513,7 +513,7 @@ class _LocationIndicator extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               const Icon(AIcons.location),
               Expanded(

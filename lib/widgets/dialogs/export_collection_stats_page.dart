@@ -65,7 +65,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   Text(l10n.exportEntryDialogFormat),
                   const SizedBox(width: 16),

@@ -52,7 +52,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
         padding: _padding,
         child: lines.length > 1
             ? Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: lines.map((v) => _buildText(v, isCrumb: false)).toList(),
               )

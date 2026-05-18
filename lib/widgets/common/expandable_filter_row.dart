@@ -48,7 +48,7 @@ class TitledExpandableFilterRow extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 header,
                 const SizedBox(width: 16),

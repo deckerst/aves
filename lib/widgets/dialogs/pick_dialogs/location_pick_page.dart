@@ -109,7 +109,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       children: [
         Expanded(child: _buildMap()),
         Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             const SizedBox(height: 8),
             const Divider(height: 0),
@@ -187,7 +187,7 @@ class _LocationInfo extends StatelessWidget {
             ? [
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _AddressRow(location: location),
@@ -207,7 +207,7 @@ class _LocationInfo extends StatelessWidget {
         return Opacity(
           opacity: location != null ? 1 : 0,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               const SizedBox(width: iconPadding),
               const DotMarker(),
@@ -263,7 +263,7 @@ class _AddressRowState extends State<_AddressRow> {
   Widget build(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         const SizedBox(width: _LocationInfo.iconPadding),
         Icon(AIcons.location, size: _LocationInfo.getIconSize(context)),

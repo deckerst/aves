@@ -114,7 +114,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                 ),
                 Center(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     children: [
                       widget.title,
                       Text(
@@ -139,7 +139,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                       onTap: onTap != null ? () => onTap(d) : null,
                       borderRadius: const BorderRadius.all(Radius.circular(123)),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           Icon(AIcons.circle, fill: 1, color: colorize(context, d)),
                           const SizedBox(width: 8),
@@ -172,11 +172,11 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
           ];
           return availableWidth > minWidth * 2
               ? Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: children,
                 )
               : Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: children,
                 );
         },

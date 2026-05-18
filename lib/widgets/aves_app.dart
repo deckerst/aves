@@ -401,7 +401,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.error),
           const SizedBox(height: 16),

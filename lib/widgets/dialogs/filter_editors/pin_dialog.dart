@@ -32,7 +32,7 @@ class _PinDialogState extends State<PinDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       content: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Text(_confirming ? context.l10n.pinDialogConfirm : context.l10n.pinDialogEnter),
           Padding(

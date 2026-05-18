@@ -94,7 +94,7 @@ class _CrumbLineState<T> extends State<CrumbLine<T>> {
             // so that we can also detect taps around the title `Text`
             color: Colors.transparent,
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildText(text),

@@ -45,7 +45,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
       ),
       margin: FilterListDetailsTheme.contentMargin,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text.rich(

@@ -154,7 +154,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
                 width: widget.contentWidth?.call(context),
                 margin: const EdgeInsetsDirectional.only(start: _selectorMargin),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: [
                     scrollable
                         ? ListenableBuilder(

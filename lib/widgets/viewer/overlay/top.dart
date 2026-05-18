@@ -98,7 +98,7 @@ class ViewerTopOverlay extends StatelessWidget {
         ];
 
         return Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showInfo)
@@ -138,14 +138,14 @@ class ViewerTopOverlay extends StatelessWidget {
                 children: [
                   if (startCornerChildren.isNotEmpty)
                     Column(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: .min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: startCornerChildren.map(_decorateCornerChild).toList(),
                     ),
                   const Spacer(),
                   if (endCornerChildren.isNotEmpty)
                     Column(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: .min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: endCornerChildren.map(_decorateCornerChild).toList(),
                     ),

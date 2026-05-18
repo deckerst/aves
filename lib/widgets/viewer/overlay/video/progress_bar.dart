@@ -99,7 +99,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                           alignment: Alignment.center,
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: .min,
                             children: [
                               Row(
                                 children: [

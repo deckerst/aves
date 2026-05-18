@@ -222,7 +222,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
         return SizedBox(
           width: availableWidth,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (showMultiPageOverlay && !collapsedPageScroller)

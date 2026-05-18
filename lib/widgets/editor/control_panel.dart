@@ -77,10 +77,10 @@ class EditorControlPanel extends StatelessWidget {
 
   Widget _buildTopLevelPanel(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             ...actions.map(
               (action) => Padding(

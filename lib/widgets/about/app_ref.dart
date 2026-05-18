@@ -34,7 +34,7 @@ class AppReference extends StatelessWidget {
     final locale = context.locale;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         AvesLogo(
           size: textScaler.scale(_getAppTitleStyle(locale).fontSize!) * 1.3,

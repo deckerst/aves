@@ -269,7 +269,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           : null;
 
       content = Row(
-        mainAxisSize: decoration != null ? MainAxisSize.max : MainAxisSize.min,
+        mainAxisSize: decoration != null ? .max : .min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ?leading,
@@ -297,7 +297,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       final details = widget.details;
       if (details != null) {
         content = Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             content,
             Flexible(child: details),

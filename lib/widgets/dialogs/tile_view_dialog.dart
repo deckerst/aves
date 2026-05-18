@@ -205,7 +205,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final child = isPortrait
         ? Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               label,
@@ -221,7 +221,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             ],
           )
         : Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(child: label),
