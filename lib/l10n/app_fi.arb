@@ -961,5 +961,6 @@
     "aboutLinkPolicy": "Yksityisyyskäytäntö",
     "settingsViewerShowZoomLevel": "Näytä suurennuksen taso",
     "settingsEnabled": "Käytössä",
-    "settingsForced": "Pakotettu"
+    "settingsForced": "Pakotettu",
+    "collectionActionExportGpx": "Vie GPX"
 }

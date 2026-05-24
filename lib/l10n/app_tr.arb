@@ -726,5 +726,7 @@
     "settingsNavigationBottomActionEditorPageTitle": "Alt Gezinme",
     "settingsNavigationBottomActionEditorBanner": "Düğmeleri hareket ettirmek ve alt gezinme çubuğunda hangi eylemlerin görüntüleneceğini seçmek için dokunup basılı tutun.",
     "settingsViewerShowZoomLevel": "Yakınlaştırma seviyesini göster",
-    "settingsEnabled": "Etkin"
+    "settingsEnabled": "Etkin",
+    "settingsForced": "Zorla",
+    "collectionActionExportGpx": "GPX Dışa Aktar"
 }

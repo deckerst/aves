@@ -724,5 +724,7 @@
     "mapStyleDialogAddStyle": "Προσθέστε στυλ",
     "mapStyleEditorDialogName": "Όνομα",
     "mapStyleEditorDialogUrl": "URL",
-    "mapStyleEditorDialogUserAgent": "Πρόγραμμα-χρήστη"
+    "mapStyleEditorDialogUserAgent": "Πρόγραμμα-χρήστη",
+    "collectionActionExportGpx": "Εξαγωγή GPX",
+    "settingsEnabled": "Ενεργοποιημένο"
 }
