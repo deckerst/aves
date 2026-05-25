@@ -19,6 +19,7 @@ class MpvVideoController extends AvesVideoController {
   final ValueNotifier<VideoController?> _mkControllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   final List<SubtitleTrack> _externalSubtitleTracks = [];
@@ -235,7 +236,7 @@ class MpvVideoController extends AvesVideoController {
   void _onPlayerLog(PlayerLog log) {
     debugPrint('libmpv log: $log');
     if (log.prefix == 'cplayer' && log.level == 'warn' && log.text == 'Audio device underrun detected.') {
-      // TODO TLAD dispose other controllers
+      _eventStreamController.add(LagEvent());
     }
   }
 
@@ -289,6 +290,9 @@ class MpvVideoController extends AvesVideoController {
   @override
   Stream<VideoStatus> get statusStream => _statusStreamController.stream;
 
+  @override
+  Stream<VideoEvent> get eventStream => _eventStreamController.stream;
+  
   @override
   Stream<double> get volumeStream => _mkPlayer.stream.volume;
 

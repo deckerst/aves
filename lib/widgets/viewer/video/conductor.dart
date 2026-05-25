@@ -16,7 +16,8 @@ import 'package:leak_tracker/leak_tracker.dart';
 class VideoConductor {
   final CollectionLens? _collection;
   final List<AvesVideoController> _controllers = [];
-  final Map<AvesVideoController, StreamSubscription> _subscriptions = {};
+  final Map<AvesVideoController, StreamSubscription> _statusSubscriptions = {};
+  final Map<AvesVideoController, StreamSubscription> _eventSubscriptions = {};
   final PlaybackStateHandler _playbackStateHandler = DatabasePlaybackStateHandler();
 
   final ValueNotifier<AvesVideoController?> playingVideoControllerNotifier = ValueNotifier(null);
@@ -60,7 +61,8 @@ class VideoConductor {
         playbackStateHandler: _playbackStateHandler,
         settings: settings,
       );
-      _subscriptions[controller] = controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event));
+      _statusSubscriptions[controller] = controller.statusStream.listen((event) => _onControllerStatusChanged(entry, controller!, event));
+      _eventSubscriptions[controller] = controller.eventStream.listen((event) => _onControllerEvent(entry, controller!, event));
     }
     _controllers.insert(0, controller);
     return controller;
@@ -97,6 +99,15 @@ class VideoConductor {
     playingVideoControllerNotifier.value = getPlayingController();
   }
 
+  Future<void> _onControllerEvent(AvesEntry entry, AvesVideoController controller, VideoEvent event) async {
+    if (event is LagEvent) {
+      debugPrint('Video lag detected: disposing video controllers, keeping only the one for entry=$entry');
+      final otherControllers = List.of(_controllers)..remove(controller);
+      _controllers.removeWhere(otherControllers.contains);
+      await Future.forEach<AvesVideoController>(otherControllers, _disposeController);
+    }
+  }
+
   Future<void> _applyToAll(Future Function(AvesVideoController controller) action) {
     // local copy to prevent concurrent modification
     return Future.forEach<AvesVideoController>(List.of(_controllers), action);
@@ -109,7 +120,8 @@ class VideoConductor {
   Future<void> muteAll(bool muted) => _applyToAll((controller) => controller.mute(muted));
 
   Future<void> _disposeController(AvesVideoController controller) async {
-    await _subscriptions.remove(controller)?.cancel();
+    await _statusSubscriptions.remove(controller)?.cancel();
+    await _eventSubscriptions.remove(controller)?.cancel();
     await controller.dispose();
   }
 }

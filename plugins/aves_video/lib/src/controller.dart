@@ -79,6 +79,8 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin {
 
   Stream<VideoStatus> get statusStream;
 
+  Stream<VideoEvent> get eventStream;
+
   Stream<double> get volumeStream;
 
   Stream<double> get speedStream;
@@ -154,6 +156,10 @@ enum VideoStatus {
   completed,
   error,
 }
+
+class VideoEvent {}
+
+class LagEvent extends VideoEvent {}
 
 abstract class PlaybackStateHandler {
   Future<int?> getResumeTime({required int entryId, required BuildContext context});

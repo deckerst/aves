@@ -12,6 +12,7 @@ class ExoVideoController extends AvesVideoController {
   late VideoStatus _status;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   final StreamController<VideoPlayerValue> _playerValueStreamController = StreamController.broadcast();
@@ -162,6 +163,9 @@ class ExoVideoController extends AvesVideoController {
 
   @override
   Stream<VideoStatus> get statusStream => _statusStreamController.stream;
+
+  @override
+  Stream<VideoEvent> get eventStream => _eventStreamController.stream;
 
   @override
   Stream<double> get volumeStream => _playerValueStreamController.stream.map((v) => v.volume).distinct();
