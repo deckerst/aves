@@ -927,6 +927,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
+    unawaited(mediaFetchService.clearDecoders());
+    unawaited(deviceService.requestGarbageCollection());
+
     // delay to prevent white/black flash on page transition
     // from a viewer with a transparent background and no system UI
     // to a regular page with system UI

@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.decoding.RegionFetcher
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -23,6 +24,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> ioScope.launch { safe(call, result, ::getEntry) }
+            "clearDecoders" -> ioScope.launch { safe(call, result, ::clearDecoders) }
             "clearImageDiskCache" -> ioScope.launch { safe(call, result, ::clearImageDiskCache) }
             "clearImageMemoryCache" -> ioScope.launch { safe(call, result, ::clearImageMemoryCache) }
             else -> result.notImplemented()
@@ -48,6 +50,11 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
         })
+    }
+
+    private fun clearDecoders(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        RegionFetcher.clearDecoders()
+        result.success(null)
     }
 
     private fun clearImageDiskCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

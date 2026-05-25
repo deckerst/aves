@@ -45,6 +45,8 @@ abstract class MediaFetchService {
     int? priority,
   });
 
+  Future<void> clearDecoders();
+
   Future<void> clearImageDiskCache();
 
   Future<void> clearImageMemoryCache();
@@ -290,6 +292,15 @@ class PlatformMediaFetchService implements MediaFetchService {
       priority: priority ?? (request.extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
+  }
+
+  @override
+  Future<void> clearDecoders() async {
+    try {
+      return _platformObject.invokeMethod('clearDecoders');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
   }
 
   @override
