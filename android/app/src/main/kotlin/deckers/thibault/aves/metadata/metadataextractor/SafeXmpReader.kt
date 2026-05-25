@@ -175,6 +175,7 @@ class SafeXmpReader : XmpReader() {
         // tighter node limits for faster loading
         val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(
             mapOf(
+                "crs:Dabs" to 20,
                 "photoshop:DocumentAncestors" to 200,
                 "xmpMM:History" to 200,
             )
