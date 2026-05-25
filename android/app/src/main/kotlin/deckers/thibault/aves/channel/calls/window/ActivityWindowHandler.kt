@@ -155,7 +155,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             }
 
             val scaleToFit = Matrix()
-            val src = RectF(0f, 0f, bitmap.getWidth().toFloat(), bitmap.getHeight().toFloat())
+            val src = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             val dst = RectF(0f, 0f, heightPx.toFloat(), heightPx.toFloat())
             scaleToFit.setRectToRect(src, dst, ScaleToFit.CENTER)
 

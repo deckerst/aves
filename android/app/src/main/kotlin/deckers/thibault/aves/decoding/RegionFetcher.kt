@@ -22,6 +22,8 @@ import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.locks.ReentrantLock
@@ -161,7 +163,7 @@ class RegionFetcher internal constructor(
             .submit()
 
         try {
-            val bitmap = target.get()
+            val bitmap = withContext(Dispatchers.IO) { target.get() }
             val tempFile = StorageUtils.createTempFile(context).apply {
                 outputStream().use { output ->
                     val encodedExport = bitmap.compress(exportFormat, 100, output)
