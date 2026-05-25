@@ -126,5 +126,16 @@ To run the app:
 # ./flutterw run -t lib/main_play.dart --flavor play
 ```
 
+To debug the app Kotlin code, if attaching the debugger from Android Studio fails:
+1) open `android` folder in Android Studio,
+2) `Edit Configurations...`,
+3) select configuration `app`,
+4) select tab `Debugger`
+5) select tab `LLDB Post Attach Commands`
+6) add:
+```
+process handle SIGSEGV --pass true --stop false --notify true
+```
+
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [Build badge]: https://img.shields.io/github/actions/workflow/status/deckerst/aves/quality-check.yml?branch=develop
