@@ -16,6 +16,9 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import deckers.thibault.aves.channel.calls.AppAdapterHandler.Companion.getShareableUri
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
@@ -84,6 +87,28 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             return
         }
         activity.requestedOrientation = orientation
+        result.success(true)
+    }
+
+    override fun showSystemUI(call: MethodCall, result: MethodChannel.Result) {
+        val visible = call.argument<Boolean>("visible")
+        if (visible == null) {
+            result.error("showSystemUI-args", "missing arguments", null)
+            return
+        }
+
+        val window = activity.window
+        WindowCompat.enableEdgeToEdge(window)
+
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        val types = WindowInsetsCompat.Type.systemBars()
+        if (visible) {
+            insetsController.show(types)
+            insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+        } else {
+            insetsController.hide(types)
+            insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
         result.success(true)
     }
 

@@ -922,7 +922,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       await windowService.keepScreenOn(false);
     }
     await mediaSessionService.release();
-    await _showSystemUI(context, true);
+    await windowService.showSystemUI(true);
     AvesApp.setSystemUIStyle(theme);
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
@@ -933,7 +933,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     // delay to prevent white/black flash on page transition
     // from a viewer with a transparent background and no system UI
     // to a regular page with system UI
-    await Future.delayed(const Duration(milliseconds: 50));
+    await Future.delayed(const Duration(milliseconds: 150));
   }
 
   // overlay
@@ -958,7 +958,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (_viewLocked.value) {
         await _startOverlayHidingTimer();
       } else {
-        await _showSystemUI(context, true);
+        await windowService.showSystemUI(true);
         AvesApp.setSystemUIStyle(Theme.of(context));
       }
       if (animate) {
@@ -973,7 +973,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;
       });
-      await _showSystemUI(context, false);
+      await windowService.showSystemUI(false);
       if (animate) {
         await _overlayAnimationController.reverse();
       } else {
@@ -988,10 +988,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   Future<void> _onViewLockedChanged() async {
     if (_viewLocked.value) {
-      await _showSystemUI(context, false);
+      await windowService.showSystemUI(false);
       await _startOverlayHidingTimer();
     } else {
-      await _showSystemUI(context, true);
+      await windowService.showSystemUI(true);
       AvesApp.setSystemUIStyle(Theme.of(context));
       _stopOverlayHidingTimer();
       _overlayVisible.value = true;
@@ -1005,18 +1005,4 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   void _stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
-
-  Future<void> _showSystemUI(BuildContext context, bool show) async {
-    final appMode = context.read<ValueNotifier<AppMode>>().value;
-    if (appMode == AppMode.screenSaver) {
-      // as of Flutter v3.22.1, calls to `SystemChrome.setEnabledSystemUIMode` hang when app is used as a screen saver
-      return;
-    }
-
-    if (show) {
-      await AvesApp.showSystemUI();
-    } else {
-      await AvesApp.hideSystemUI();
-    }
-  }
 }

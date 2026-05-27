@@ -122,6 +122,8 @@ class AvesApp extends StatefulWidget {
     // so the nav bar is opaque, even when requesting `SystemUiMode.edgeToEdge` from Flutter
     // or setting `android:windowTranslucentNavigation` in Android themes.
     final navBarColor = device.supportEdgeToEdgeUIMode ? Colors.transparent : backgroundColor;
+
+    // on Android >=15 (API >=35), setting colors here has no effect
     return SystemUiOverlayStyle(
       systemNavigationBarColor: navBarColor,
       systemNavigationBarDividerColor: navBarColor,
@@ -133,18 +135,6 @@ class AvesApp extends StatefulWidget {
       statusBarIconBrightness: barBrightness,
       systemStatusBarContrastEnforced: false,
     );
-  }
-
-  static Future<void> showSystemUI() async {
-    if (device.supportEdgeToEdgeUIMode) {
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    } else {
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    }
-  }
-
-  static Future<void> hideSystemUI() async {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
   static Future<void> launchUrl(String? urlString) async {
@@ -257,7 +247,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             builder: (context, snapshot) {
               final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
               if (initialized) {
-                AvesApp.showSystemUI();
+                windowService.showSystemUI(true);
               }
               final home = initialized
                   ? _getFirstPage(intentData: widget.debugIntentData)
