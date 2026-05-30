@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
-  AvesMethodChannel.kDebug = kDebugMode || kProfileMode;
+  AvesMethodChannel.kDebug = kDebugMode;
   debugProfilePlatformChannels = false;
 
   //  HttpClient.enableTimelineLogging = true; // enable network traffic logging

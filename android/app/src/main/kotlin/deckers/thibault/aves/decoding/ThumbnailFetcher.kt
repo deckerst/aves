@@ -9,7 +9,6 @@ import android.util.Log
 import android.util.Size
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.scale
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,6 +19,7 @@ import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
+import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.SVG
@@ -34,22 +34,21 @@ import kotlin.math.roundToInt
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
-    uri: String,
+    private val uri: Uri,
     private val pageId: Int?,
     private val decoded: Boolean,
     private val mimeType: String,
     private val dateModifiedMillis: Long,
     private val rotationDegrees: Int,
     private val isFlipped: Boolean,
-    width: Int?,
-    height: Int?,
-    private val defaultSize: Int,
-    private val quality: Int,
+    widthDip: Double?,
+    heightDip: Double?,
     private val result: ByteSink,
 ) {
-    private val uri: Uri = uri.toUri()
-    private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
-    private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
+    private val density = context.devicePixelRatio()
+    private val defaultSize = (DEFAULT_SIZE_DIP * density).roundToInt()
+    private val width: Int = if (widthDip?.takeIf { it > 0 } != null) (widthDip * density).roundToInt() else defaultSize
+    private val height: Int = if (heightDip?.takeIf { it > 0 } != null) (heightDip * density).roundToInt() else defaultSize
     private val svgFetch = mimeType == SVG
     private val tiffFetch = mimeType == MimeTypes.TIFF
     private val multiPageFetch = pageId != null && MultiPageImage.isSupported(mimeType)
@@ -122,7 +121,7 @@ class ThumbnailFetcher internal constructor(
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private fun getByResolver(): Bitmap? {
+    fun getByResolver(): Bitmap? {
         val resolver = context.contentResolver
         var bitmap: Bitmap? = resolver.loadThumbnail(uri, Size(width, height), null)
         if (needRotationAfterContentResolverThumbnail(mimeType)) {
@@ -131,7 +130,7 @@ class ThumbnailFetcher internal constructor(
         return bitmap
     }
 
-    private fun getByMediaStore(): Bitmap? {
+    fun getByMediaStore(): Bitmap? {
         val contentId = uri.tryParseId() ?: return null
         val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
@@ -148,10 +147,10 @@ class ThumbnailFetcher internal constructor(
         }
     }
 
-    private fun getByGlide(): Bitmap? {
+    fun getByGlide(): Bitmap? {
         // add signature to ignore cache for images which got modified but kept the same URI
         var options = RequestOptions()
-            .format(if (quality == 100) DecodeFormat.PREFER_ARGB_8888 else DecodeFormat.PREFER_RGB_565)
+            .format(DecodeFormat.PREFER_ARGB_8888)
             .signature(ObjectKey("$dateModifiedMillis-$rotationDegrees-$isFlipped-$width-$pageId"))
             .override(width, height)
         if (isVideo(mimeType)) {
@@ -178,5 +177,6 @@ class ThumbnailFetcher internal constructor(
     companion object {
         private val LOG_TAG = LogUtils.createTag<ThumbnailFetcher>()
         private const val BITMAP_SIZE_DANGER_THRESHOLD = 20 * (1 shl 20) // MiB
+        private const val DEFAULT_SIZE_DIP: Double = 64.0
     }
 }

@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Albums/Tags: navigation requiring double tap when animations are disabled
 - Viewer: shooting details overlay not refreshed on item deletion
 - Viewer: shooting details overlay not refreshed across burst items
+- Collection: video thumbnail loading on Android 17
 
 ## <a id="v1.14.4"></a>[v1.14.4] - 2026-05-09
 

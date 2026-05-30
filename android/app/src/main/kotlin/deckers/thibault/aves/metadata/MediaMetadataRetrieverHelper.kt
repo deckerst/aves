@@ -86,6 +86,11 @@ object MediaMetadataRetrieverHelper {
         if (value != null) save(value)
     }
 
+    fun MediaMetadataRetriever.getSafeFloat(tag: Int, save: (value: Float) -> Unit) {
+        val value = this.extractMetadata(tag)?.toFloatOrNull()
+        if (value != null) save(value)
+    }
+
     fun MediaMetadataRetriever.getSafeDateMillis(tag: Int, save: (value: Long) -> Unit) {
         val dateString = this.extractMetadata(tag)
         val dateMillis = Metadata.parseVideoMetadataDate(dateString)

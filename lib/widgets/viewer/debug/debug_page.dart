@@ -1,13 +1,13 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
-import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
+import 'package:aves/widgets/viewer/debug/thumbnails.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/foundation.dart';
@@ -30,7 +30,7 @@ class ViewerDebugPage extends StatelessWidget {
       (const Tab(text: 'Entry'), _buildEntryTabView()),
       if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) (const Tab(text: 'DB'), DbTab(entry: entry)),
       (const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
-      (const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
+      (const Tab(icon: Icon(AIcons.image)), ThumbnailsTab(entry: entry)),
     ];
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -144,38 +144,6 @@ class ViewerDebugPage extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildThumbnailsTabView() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: entry.cachedThumbnails
-          .expand(
-            (provider) => [
-              Text('Thumb extent: ${provider.key.extent}'),
-              Center(
-                child: Image(
-                  image: provider,
-                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                    return Container(
-                      foregroundDecoration: const BoxDecoration(
-                        border: Border.fromBorderSide(
-                          BorderSide(
-                            color: Colors.amber,
-                            width: .1,
-                          ),
-                        ),
-                      ),
-                      child: child,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-          )
-          .toList(),
     );
   }
 }

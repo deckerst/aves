@@ -1,3 +1,4 @@
+import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/channel.dart';
@@ -186,4 +187,27 @@ class AndroidDebugService {
     }
     return {};
   }
+
+  // bytes are expected to be in a basic format decodable by Flutter
+  static Future<Uint8List?> getThumbnail(ThumbnailProviderKey request, ThumbnailMethod method) async {
+    try {
+      final result = await _platform.invokeMethod('getThumbnail', <String, Object?>{
+        'uri': request.uri,
+        'pageId': request.pageId,
+        'mimeType': request.mimeType,
+        'dateModifiedMillis': request.dateModifiedMillis,
+        'rotationDegrees': request.rotationDegrees,
+        'isFlipped': request.isFlipped,
+        'widthDip': request.extent,
+        'heightDip': request.extent,
+        'method': method.name,
+      });
+      if (result != null) return result as Uint8List;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
 }
+
+enum ThumbnailMethod { resolver, mediaStore, glide }
