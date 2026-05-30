@@ -7,11 +7,11 @@ extension ExtraMapActionView on MapAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      MapAction.selectStyle => l10n.mapStyleTooltip,
-      MapAction.openMapApp => l10n.entryActionOpenMap,
-      MapAction.zoomIn => l10n.mapZoomInTooltip,
-      MapAction.zoomOut => l10n.mapZoomOutTooltip,
-      MapAction.addShortcut => l10n.collectionActionAddShortcut,
+      .selectStyle => l10n.mapStyleTooltip,
+      .openMapApp => l10n.entryActionOpenMap,
+      .zoomIn => l10n.mapZoomInTooltip,
+      .zoomOut => l10n.mapZoomOutTooltip,
+      .addShortcut => l10n.collectionActionAddShortcut,
     };
   }
 
@@ -19,11 +19,11 @@ extension ExtraMapActionView on MapAction {
 
   IconData _getIconData() {
     return switch (this) {
-      MapAction.selectStyle => AIcons.layers,
-      MapAction.openMapApp => AIcons.openOutside,
-      MapAction.zoomIn => AIcons.zoomIn,
-      MapAction.zoomOut => AIcons.zoomOut,
-      MapAction.addShortcut => AIcons.addShortcut,
+      .selectStyle => AIcons.layers,
+      .openMapApp => AIcons.openOutside,
+      .zoomIn => AIcons.zoomIn,
+      .zoomOut => AIcons.zoomOut,
+      .addShortcut => AIcons.addShortcut,
     };
   }
 }

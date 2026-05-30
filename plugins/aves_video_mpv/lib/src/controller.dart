@@ -19,6 +19,7 @@ class MpvVideoController extends AvesVideoController {
   final ValueNotifier<VideoController?> _mkControllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   final List<SubtitleTrack> _externalSubtitleTracks = [];
@@ -41,7 +42,7 @@ class MpvVideoController extends AvesVideoController {
   final ValueNotifier<bool> canSetSpeedNotifier = ValueNotifier(true);
 
   @override
-  final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> canSelectTrackNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
@@ -76,7 +77,7 @@ class MpvVideoController extends AvesVideoController {
   @override
   Future<void> dispose() async {
     _stopListening();
-    _stopStreamFetchTimer();
+    _stopTrackFetchTimer();
     await _statusStreamController.close();
     await _timedTextStreamController.close();
     await _mkPlayer.dispose();
@@ -89,7 +90,7 @@ class MpvVideoController extends AvesVideoController {
     canCaptureFrameNotifier.dispose();
     canMuteNotifier.dispose();
     canSetSpeedNotifier.dispose();
-    canSelectStreamNotifier.dispose();
+    canSelectTrackNotifier.dispose();
     sarNotifier.dispose();
 
     await super.dispose();
@@ -140,8 +141,8 @@ class MpvVideoController extends AvesVideoController {
     );
     _subscriptions.add(playerStream.subtitle.listen((v) => _timedTextStreamController.add(v.isEmpty ? null : v[0])));
     _subscriptions.add(playerStream.videoParams.listen((v) => sarNotifier.value = v.par));
-    _subscriptions.add(playerStream.log.listen((v) => debugPrint('libmpv log: $v')));
-    _subscriptions.add(playerStream.error.listen((v) => debugPrint('libmpv error: $v')));
+    _subscriptions.add(playerStream.log.listen(_onPlayerLog));
+    _subscriptions.add(playerStream.error.listen(_onPlayerError));
 
     final settingsStream = settings.updateStream;
     _subscriptions.add(settingsStream.where((event) => event.key == SettingKeys.videoHardwareAccelerationKey).listen((_) => _initController()));
@@ -196,7 +197,7 @@ class MpvVideoController extends AvesVideoController {
       await seekTo(startMillis);
     }
 
-    _fetchStreams();
+    _fetchTracks();
     _statusStreamController.add(_mkPlayer.state.playing ? VideoStatus.playing : VideoStatus.paused);
   }
 
@@ -231,6 +232,17 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   void onVisualChanged() => _init(startMillis: currentPosition);
+
+  void _onPlayerLog(PlayerLog log) {
+    debugPrint('libmpv log: $log');
+    if (log.prefix == 'cplayer' && log.level == 'warn' && log.text == 'Audio device underrun detected.') {
+      _eventStreamController.add(LagEvent());
+    }
+  }
+
+  void _onPlayerError(String error) {
+    debugPrint('libmpv error: $error');
+  }
 
   @override
   Future<void> play() async {
@@ -278,6 +290,9 @@ class MpvVideoController extends AvesVideoController {
   @override
   Stream<VideoStatus> get statusStream => _statusStreamController.stream;
 
+  @override
+  Stream<VideoEvent> get eventStream => _eventStreamController.stream;
+  
   @override
   Stream<double> get volumeStream => _mkPlayer.stream.volume;
 
@@ -355,7 +370,7 @@ class MpvVideoController extends AvesVideoController {
     );
   }
 
-  // streams (aka tracks)
+  // tracks
 
   // `auto` and `no` are the first 2 tracks in the player state track lists
   static const int fakeTrackCount = 2;
@@ -375,7 +390,7 @@ class MpvVideoController extends AvesVideoController {
   }
 
   @override
-  List<MediaStreamSummary> get streams {
+  List<MediaTrackSummary> get tracks {
     return {
       ..._videoTracks.mapIndexed((i, v) => v.toAves(i)),
       ..._audioTracks.mapIndexed((i, v) => v.toAves(i)),
@@ -383,30 +398,30 @@ class MpvVideoController extends AvesVideoController {
     }.toList();
   }
 
-  Timer? _streamFetchTimer;
+  Timer? _trackFetchTimer;
 
-  void _stopStreamFetchTimer() {
-    _streamFetchTimer?.cancel();
-    _streamFetchTimer = null;
+  void _stopTrackFetchTimer() {
+    _trackFetchTimer?.cancel();
+    _trackFetchTimer = null;
   }
 
-  void _fetchStreams() {
-    _stopStreamFetchTimer();
-    _streamFetchTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+  void _fetchTracks() {
+    _stopTrackFetchTimer();
+    _trackFetchTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       if (status != VideoStatus.error) {
         if (_videoTracks.isEmpty && _audioTracks.isEmpty) return;
 
-        final videoStreamCount = _videoTracks.length;
-        final audioStreamCount = _audioTracks.length;
-        final textStreamCount = _subtitleTracks.length;
-        canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
+        final videoTrackCount = _videoTracks.length;
+        final audioTrackCount = _audioTracks.length;
+        final textTrackCount = _subtitleTracks.length;
+        canSelectTrackNotifier.value = videoTrackCount > 1 || audioTrackCount > 1 || textTrackCount > 0;
       }
-      _stopStreamFetchTimer();
+      _stopTrackFetchTimer();
     });
   }
 
   @override
-  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
+  Future<MediaTrackSummary?> getSelectedTrack(MediaTrackType type) async {
     final track = _mkPlayer.state.track;
     switch (type) {
       case .video:
@@ -432,8 +447,8 @@ class MpvVideoController extends AvesVideoController {
   }
 
   @override
-  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected) async {
-    final current = await getSelectedStream(type);
+  Future<void> selectTrack(MediaTrackType type, MediaTrackSummary? selected) async {
+    final current = await getSelectedTrack(type);
     if (current == selected) return;
 
     if (selected != null) {

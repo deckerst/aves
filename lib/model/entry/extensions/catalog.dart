@@ -72,7 +72,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
 
     final afterAvailableHeapSize = await deviceService.getAvailableHeapSize();
     final diff = beforeAvailableHeapSize - afterAvailableHeapSize;
-    const largeHeapUsageThreshold = 15 * (1 << 20); // MB
+    const largeHeapUsageThreshold = 15 * (1 << 20); // MiB
 
     if (diff > largeHeapUsageThreshold) {
       debugPrint('Large heap usage (${diff}B) from cataloguing entry=$this size=$sizeBytes');

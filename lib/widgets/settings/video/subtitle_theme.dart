@@ -26,7 +26,7 @@ class SubtitleThemePage extends StatelessWidget {
         child: Consumer<Settings>(
           builder: (context, settings, child) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 const Padding(
                   padding: EdgeInsets.all(16),

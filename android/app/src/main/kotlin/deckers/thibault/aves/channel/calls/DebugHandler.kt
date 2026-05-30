@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaCodecInfo
 import android.media.MediaCodecList
@@ -15,6 +16,9 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
+import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
+import deckers.thibault.aves.decoding.ThumbnailFetcher
 import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
@@ -23,7 +27,9 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -43,6 +49,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
+import java.io.InputStream
+import java.util.Date
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 class DebugHandler(private val context: Context) : MethodCallHandler {
@@ -68,6 +76,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "getMp4ParserDump" -> ioScope.launch { safe(call, result, ::getMp4ParserDump) }
             "getPixyMetadata" -> ioScope.launch { safe(call, result, ::getPixyMetadata) }
             "getTiffStructure" -> ioScope.launch { safe(call, result, ::getTiffStructure) }
+            "getThumbnail" -> ioScope.launch { safeSuspend(call, result, ::getThumbnail) }
             else -> result.notImplemented()
         }
     }
@@ -452,6 +461,83 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         "XResolution" to options.outXResolution.toString(),
         "YResolution" to options.outYResolution.toString(),
     )
+
+    private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
+        val method = call.argument<String>("method")
+        val uri = call.argument<String>(EntryFields.URI)?.toUri()
+        val pageId = call.argument<Int>("pageId")
+        val mimeType = call.argument<String>(EntryFields.MIME_TYPE)
+        val dateModifiedMillis = call.argument<Number>(EntryFields.DATE_MODIFIED_MILLIS)?.toLong()
+        val rotationDegrees = call.argument<Int>(EntryFields.ROTATION_DEGREES)
+        val isFlipped = call.argument<Boolean>(EntryFields.IS_FLIPPED)
+        val widthDip = call.argument<Number>("widthDip")?.toDouble()
+        val heightDip = call.argument<Number>("heightDip")?.toDouble()
+
+        if (method == null || uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
+            result.error("getThumbnail-args", "missing arguments", null)
+            return
+        }
+
+        val decoded = false
+
+        // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
+        val fetcher = ThumbnailFetcher(
+            context = context,
+            uri = uri,
+            pageId = pageId,
+            decoded = decoded,
+            mimeType = mimeType,
+            dateModifiedMillis = dateModifiedMillis ?: (Date().time),
+            rotationDegrees = rotationDegrees,
+            isFlipped = isFlipped,
+            widthDip = widthDip,
+            heightDip = heightDip,
+            result = object : ByteSink {
+                override fun streamBytes(inputStream: InputStream): Boolean {
+                    Log.w(LOG_TAG, "this fetcher should not return bytes via stream")
+                    return false
+                }
+
+                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+                    result.error(errorCode, errorMessage, errorDetails)
+                }
+            },
+        )
+
+        var bitmap: Bitmap? = null
+        var exception: Exception? = null
+
+        try {
+            bitmap = when (method) {
+                "resolver" -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        fetcher.getByResolver()
+                    } else {
+                        null
+                    }
+                }
+
+                "mediaStore" -> fetcher.getByMediaStore()
+                "glide" -> fetcher.getByGlide()
+                else -> null
+            }
+        } catch (e: Exception) {
+            exception = e
+        }
+
+        // do not recycle bitmaps fetched from `ContentResolver` or Glide as their lifecycle is unknown
+        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
+
+        if (bytes == null) {
+            var errorDetails: String? = exception?.message
+            if (errorDetails?.isNotEmpty() == true) {
+                errorDetails = errorDetails.split(Regex("\n"), 2).first()
+            }
+            result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
+        } else {
+            result.success(bytes)
+        }
+    }
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<DebugHandler>()

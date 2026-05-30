@@ -61,7 +61,7 @@ class XMP {
     return '${offsetMinutes.isNegative ? '-' : '+'}${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
   }
 
-  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', asciiLocale).format(date)}${_xmpTimeZoneDesignator(date)}';
+  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', kAsciiLocale).format(date)}${_xmpTimeZoneDesignator(date)}';
 
   static String? getString(
     List<XmlNode> nodes,

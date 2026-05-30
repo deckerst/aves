@@ -264,10 +264,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void _browse(BuildContext context) {
-    context.read<Selection<AvesEntry>?>()?.browse();
-  }
-
   Set<AvesEntry> _getTargetItems(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
     final groupedEntries = (selection.isSelecting ? selection.selectedItems : context.read<CollectionLens>().sortedEntries);
@@ -294,8 +290,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final controller = AnalysisController(canStartService: true, force: true);
     final collection = context.read<CollectionLens>();
     collection.source.analyze(controller, entries: entries).then((_) => controller.dispose());
-
-    _browse(context);
   }
 
   Future<void> _delete(BuildContext context) async {
@@ -304,18 +298,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final details = vaults.getVault(entry.directory);
       return details?.useBin ?? settings.enableBin;
     });
-    var completed = true;
     await Future.forEach(byBinUsage.entries, (kv) async {
-      completed &= await doDelete(
+      await doDelete(
         context: context,
         entries: kv.value.toSet(),
         enableBin: kv.key,
       );
     });
-
-    if (completed) {
-      _browse(context);
-    }
   }
 
   // returns whether it completed the action (with or without failures)
@@ -376,26 +365,18 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!await unlockAlbum(context, destinationAlbum)) return;
 
     final entries = _getTargetItems(context);
-    final completed = await doQuickMove(
+    await doQuickMove(
       context,
       moveType: copy ? MoveType.copy : MoveType.move,
       entriesByDestination: {
         destinationAlbum: entries,
       },
     );
-
-    if (completed) {
-      _browse(context);
-    }
   }
 
   Future<void> _move(BuildContext context, {required MoveType moveType}) async {
     final entries = _getTargetItems(context);
-    final completed = await doMove(context, moveType: moveType, entries: entries);
-
-    if (completed) {
-      _browse(context);
-    }
+    await doMove(context, moveType: moveType, entries: entries);
   }
 
   Future<void> _rename(BuildContext context) async {
@@ -416,11 +397,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       return MapEntry(entry, '$newName${entry.extension}');
     });
     final entriesToNewName = Map.fromEntries(await Future.wait(namingFutures)).whereNotNullValue();
-    final completed = await rename(context, entriesToNewName: entriesToNewName, persist: true);
-
-    if (completed) {
-      _browse(context);
-    }
+    await rename(context, entriesToNewName: entriesToNewName, persist: true);
   }
 
   Future<void> _convert(BuildContext context) async {
@@ -435,10 +412,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     switch (options.action) {
       case .convert:
-        final completed = await doExport(context, entries, options);
-        if (completed) {
-          _browse(context);
-        }
+        await doExport(context, entries, options);
       case .convertMotionPhotoToStillImage:
         final todoEntries = entries.where((entry) => entry.isMotionPhoto).toSet();
         await _edit(context, todoEntries, (entry) => entry.removeTrailerVideo());
@@ -496,7 +470,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final body = GpxWriter().asString(gpx);
     const mimeType = MimeTypes.gpx;
     final success = await storageService.createFile(
-      'aves-gpx-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(dateTime)}${MimeTypes.extensionFor(mimeType)}',
+      'aves-gpx-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(dateTime)}${MimeTypes.extensionFor(mimeType)}',
       mimeType,
       Uint8List.fromList(utf8.encode(body)),
     );
@@ -516,8 +490,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     } else {
       await favourites.add(entries);
     }
-
-    _browse(context);
   }
 
   Future<void> _edit(
@@ -594,7 +566,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
       },
     );
-    _browse(context);
   }
 
   Future<Set<AvesEntry>?> _getEditableTargetItems(

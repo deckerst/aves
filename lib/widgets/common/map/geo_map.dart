@@ -117,6 +117,7 @@ class _GeoMapState extends State<GeoMap> {
 
   @override
   void dispose() {
+    _boundsNotifier.dispose();
     _clusterChangeNotifier.dispose();
     _unregisterWidget(widget);
     super.dispose();
@@ -218,7 +219,7 @@ class _GeoMapState extends State<GeoMap> {
             child: OverlayTextButton(
               onPressed: () => MapActionDelegate.selectStyle(context),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   const Icon(AIcons.layers),
                   const SizedBox(width: 8),
@@ -232,7 +233,7 @@ class _GeoMapState extends State<GeoMap> {
 
         final mapHeight = context.select<MapThemeData, double?>((v) => v.mapHeight);
         child = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             // TODO TLAD [flutter vNext] wrap into `BackdropGroup`
             mapHeight != null
@@ -405,8 +406,12 @@ class _GeoMapState extends State<GeoMap> {
       points: markers,
       // use lambda instead of tear-off because of runtime exception when using
       // `T Function(BaseCluster, double, double)` for `T Function(BaseCluster?, double?, double?)`
-      // ignore: unnecessary_lambdas
-      createCluster: (base, lng, lat) => GeoEntry<AvesEntry>.createCluster(base, lng, lat),
+      createCluster: (BaseCluster? base, double? lng, double? lat) {
+        if (base != null && lng != null && lat != null) {
+          return GeoEntry<AvesEntry>.createCluster(base, lng, lat);
+        }
+        throw Exception('Cluster creation arguments should not be null: base=$base lng=$lng, lat=$lat');
+      },
     );
   }
 

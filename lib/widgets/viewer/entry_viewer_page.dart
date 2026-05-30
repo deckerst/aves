@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 class EntryViewerPage extends StatefulWidget {
   static const routeName = '/viewer';
 
+  // provided collection should be a new instance specifically created
+  // for the `EntryViewerPage` widget, so it can be safely disposed here
   final CollectionLens? collection;
   final AvesEntry initialEntry;
 

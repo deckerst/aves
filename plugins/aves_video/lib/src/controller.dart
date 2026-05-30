@@ -79,6 +79,8 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin {
 
   Stream<VideoStatus> get statusStream;
 
+  Stream<VideoEvent> get eventStream;
+
   Stream<double> get volumeStream;
 
   Stream<double> get speedStream;
@@ -119,7 +121,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin {
 
   ValueNotifier<bool> get canSetSpeedNotifier;
 
-  ValueNotifier<bool> get canSelectStreamNotifier;
+  ValueNotifier<bool> get canSelectTrackNotifier;
 
   ValueNotifier<double?> get sarNotifier;
 
@@ -133,11 +135,11 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin {
 
   set speed(double speed);
 
-  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected);
+  Future<void> selectTrack(MediaTrackType type, MediaTrackSummary? selected);
 
-  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type);
+  Future<MediaTrackSummary?> getSelectedTrack(MediaTrackType type);
 
-  List<MediaStreamSummary> get streams;
+  List<MediaTrackSummary> get tracks;
 
   Future<Uint8List?> captureFrame();
 
@@ -154,6 +156,10 @@ enum VideoStatus {
   completed,
   error,
 }
+
+class VideoEvent {}
+
+class LagEvent extends VideoEvent {}
 
 abstract class PlaybackStateHandler {
   Future<int?> getResumeTime({required int entryId, required BuildContext context});

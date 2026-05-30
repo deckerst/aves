@@ -8,6 +8,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
@@ -81,14 +82,7 @@ class _MetadataTabState extends State<MetadataTab> {
           final key = k.toString();
           var value = v?.toString() ?? 'null';
           if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is int && v != 0) {
-            if (secondTimestampKeys.contains(key)) {
-              v *= 1000;
-            }
-            try {
-              value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-            } catch (error) {
-              value += ' (invalid DateTime})';
-            }
+            value = ViewerDebugUtils.toDateValue(v, factor: secondTimestampKeys.contains(key) ? 1000 : 1);
           }
           if (key == 'xmp' && v != null && v is Uint8List) {
             value = String.fromCharCodes(v);
@@ -169,7 +163,7 @@ class _MetadataTabState extends State<MetadataTab> {
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: snapshot.data!.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),
               );
             },

@@ -56,7 +56,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
             return Padding(
               padding: padding,
               child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
+                alignment: .spaceEvenly,
                 spacing: spacing,
                 runSpacing: runSpacing,
                 children: allActions.map((action) {

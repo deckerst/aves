@@ -237,8 +237,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
             scroller = FadeTransition(
               opacity: _scrollerSize,
               child: SizeTransition(
+                axis: Axis.vertical,
                 sizeFactor: _scrollerSize,
-                axisAlignment: 1.0,
+                alignment: const Alignment(-1, 1),
                 child: child,
               ),
             );
@@ -252,7 +253,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           );
         },
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             const SizedBox(height: 8),
             const Divider(height: 0),
@@ -311,7 +312,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
         child: Row(
           children: [
             Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children:
                   [
                         MapAction.selectStyle,
@@ -431,14 +432,17 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   void _goToViewer(AvesEntry? initialEntry) {
     if (initialEntry == null) return;
 
+    // derive a stable collection out of the route builder,
+    // as the region collection may change on rebuild,
+    // when the map view size updates on device rotation
+    final viewerCollection = regionCollection?.copyWith(
+      listenToSource: false,
+    );
     final appModeNotifier = context.read<ValueNotifier<AppMode>>();
     Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
-          final viewerCollection = regionCollection?.copyWith(
-            listenToSource: false,
-          );
           // propagate app mode from the map page, as it could be locally overridden
           // and differ from the real app mode above the `Navigator`
           return ListenableProvider<ValueNotifier<AppMode>>.value(
@@ -522,7 +526,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
       items: [
         PopupMenuItem(
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               markerBuilder(context),
               const SizedBox(width: 16),

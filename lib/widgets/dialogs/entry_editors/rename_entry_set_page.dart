@@ -78,12 +78,12 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
       ),
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: .end,
                 children: [
                   Expanded(
                     child: TextField(
@@ -185,7 +185,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: .start,
                             children: [
                               Text(
                                 sourceName,

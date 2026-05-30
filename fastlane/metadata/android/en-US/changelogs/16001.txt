@@ -1,5 +1,0 @@
-In v1.13.9:
-- drag and drop media in multi-window mode
-- select new shapes for your widgets
-- enjoy the app in Finnish
-Full changelog available on GitHub

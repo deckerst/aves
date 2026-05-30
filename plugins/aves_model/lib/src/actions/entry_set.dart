@@ -38,98 +38,98 @@ enum EntrySetAction {
 }
 
 class EntrySetActions {
-  static const general = [
-    EntrySetAction.configureView,
-    EntrySetAction.select,
-    EntrySetAction.selectAll,
-    EntrySetAction.selectNone,
+  static const general = <EntrySetAction>[
+    .configureView,
+    .select,
+    .selectAll,
+    .selectNone,
   ];
 
   // `null` items are converted to dividers
-  static const pageBrowsing = [
-    EntrySetAction.searchCollection,
-    EntrySetAction.toggleTitleSearch,
-    EntrySetAction.addDynamicAlbum,
-    EntrySetAction.addShortcut,
-    EntrySetAction.setHome,
+  static const pageBrowsing = <EntrySetAction?>[
+    .searchCollection,
+    .toggleTitleSearch,
+    .addDynamicAlbum,
+    .addShortcut,
+    .setHome,
     null,
-    EntrySetAction.map,
-    EntrySetAction.slideshow,
-    EntrySetAction.stats,
+    .map,
+    .slideshow,
+    .stats,
     null,
-    EntrySetAction.rescan,
-    EntrySetAction.emptyBin,
+    .rescan,
+    .emptyBin,
   ];
 
   // exclude bin related actions
-  static const collectionEditorBrowsing = [
-    EntrySetAction.searchCollection,
-    EntrySetAction.toggleTitleSearch,
-    EntrySetAction.map,
-    EntrySetAction.slideshow,
-    EntrySetAction.stats,
+  static const collectionEditorBrowsing = <EntrySetAction>[
+    .searchCollection,
+    .toggleTitleSearch,
+    .map,
+    .slideshow,
+    .stats,
     // only available as a quick action
-    EntrySetAction.selectAll,
+    .selectAll,
   ];
 
   // `null` items are converted to dividers
-  static const pageSelection = [
-    EntrySetAction.share,
-    EntrySetAction.delete,
-    EntrySetAction.restore,
-    EntrySetAction.copy,
-    EntrySetAction.move,
-    EntrySetAction.rename,
-    EntrySetAction.toggleFavourite,
+  static const pageSelection = <EntrySetAction?>[
+    .share,
+    .delete,
+    .restore,
+    .copy,
+    .move,
+    .rename,
+    .toggleFavourite,
     null,
-    EntrySetAction.map,
-    EntrySetAction.slideshow,
-    EntrySetAction.stats,
+    .map,
+    .slideshow,
+    .stats,
     null,
-    EntrySetAction.rescan,
+    .rescan,
     // export and editing actions are in their subsections
   ];
 
   // exclude bin related actions
-  static const collectionEditorSelectionRegular = [
-    EntrySetAction.share,
-    EntrySetAction.delete,
-    EntrySetAction.copy,
-    EntrySetAction.move,
-    EntrySetAction.rename,
-    EntrySetAction.toggleFavourite,
-    EntrySetAction.convert,
-    EntrySetAction.exportGpx,
-    EntrySetAction.map,
-    EntrySetAction.slideshow,
-    EntrySetAction.stats,
-    EntrySetAction.selectAll,
+  static const collectionEditorSelectionRegular = <EntrySetAction>[
+    .share,
+    .delete,
+    .copy,
+    .move,
+    .rename,
+    .toggleFavourite,
+    .convert,
+    .exportGpx,
+    .map,
+    .slideshow,
+    .stats,
+    .selectAll,
     // editing actions are in their subsection
   ];
 
-  static const collectionEditorSelectionEdit = [
-    EntrySetAction.rotateCCW,
-    EntrySetAction.rotateCW,
-    EntrySetAction.flip,
-    EntrySetAction.editDate,
-    EntrySetAction.editLocation,
-    EntrySetAction.editTitleDescription,
-    EntrySetAction.editRating,
-    EntrySetAction.editTags,
-    EntrySetAction.removeMetadata,
+  static const collectionEditorSelectionEdit = <EntrySetAction>[
+    .rotateCCW,
+    .rotateCW,
+    .flip,
+    .editDate,
+    .editLocation,
+    .editTitleDescription,
+    .editRating,
+    .editTags,
+    .removeMetadata,
   ];
 
-  static const edit = [
-    EntrySetAction.editDate,
-    EntrySetAction.editLocation,
-    EntrySetAction.editTitleDescription,
-    EntrySetAction.editRating,
-    EntrySetAction.editTags,
-    EntrySetAction.removeMetadata,
+  static const edit = <EntrySetAction>[
+    .editDate,
+    .editLocation,
+    .editTitleDescription,
+    .editRating,
+    .editTags,
+    .removeMetadata,
   ];
 
-  static const export = [
-    EntrySetAction.convert,
-    EntrySetAction.exportGpx,
+  static const export = <EntrySetAction>[
+    .convert,
+    .exportGpx,
   ];
 }

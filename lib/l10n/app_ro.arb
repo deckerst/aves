@@ -333,8 +333,6 @@
     "aboutLinkPolicy": "Politica de Confidențialitate",
     "aboutBugSectionTitle": "Raport de eroare",
     "aboutBugSaveLogInstruction": "Salvați jurnalele aplicației într-un fișier",
-    "aboutBugCopyInfoInstruction": "Copiați informațiile despre sistem",
-    "aboutBugCopyInfoButton": "Copie",
     "aboutBugReportInstruction": "Raportați pe GitHub cu jurnalele și informațiile de sistem",
     "aboutBugReportButton": "Raport",
     "aboutCreditsSectionTitle": "Credite",

@@ -20,9 +20,9 @@ class AppReference extends StatelessWidget {
           _buildAvesLine(context),
           const SizedBox(height: 16),
           Wrap(
-            alignment: WrapAlignment.center,
+            alignment: .center,
             spacing: 16,
-            crossAxisAlignment: WrapCrossAlignment.center,
+            crossAxisAlignment: .center,
             children: AppReference.buildLinks(context),
           ),
         ],
@@ -34,7 +34,7 @@ class AppReference extends StatelessWidget {
     final locale = context.locale;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         AvesLogo(
           size: textScaler.scale(_getAppTitleStyle(locale).fontSize!) * 1.3,
@@ -63,7 +63,7 @@ class AppReference extends StatelessWidget {
   static List<Widget> buildLinks(BuildContext context) {
     final l10n = context.l10n;
     return [
-      LinkChip(
+      const LinkChip(
         leading: Icon(
           AIcons.github,
           size: 24,
@@ -72,7 +72,7 @@ class AppReference extends StatelessWidget {
         urlString: AppReference.avesGithub,
       ),
       LinkChip(
-        leading: Icon(
+        leading: const Icon(
           AIcons.legal,
           size: 22,
         ),

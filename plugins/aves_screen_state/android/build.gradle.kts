@@ -25,12 +25,11 @@ plugins {
     // > The request for this plugin could not be satisfied because the plugin is already
     // on the classpath with an unknown version, so compatibility cannot be checked.
     id("com.android.library")
-    id("kotlin-android")
 }
 
 android {
     namespace = "deckers.thibault.aves.aves_screen_state"
-    compileSdk = 36
+    compileSdk = 37
 
     kotlin {
         jvmToolchain(21)
@@ -38,7 +37,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("src/main/kotlin")
+            java.directories.add("src/main/kotlin")
         }
     }
 

@@ -49,7 +49,7 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
         title: Text(title),
         actions: [
           IconButton(
-            icon: Icon(AIcons.fileExport),
+            icon: const Icon(AIcons.fileExport),
             onPressed: () => _export(context),
             tooltip: context.l10n.settingsActionExport,
           ),
@@ -116,7 +116,7 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
 
     const mimeType = MimeTypes.csv;
     final success = await storageService.createFile(
-      'aves-stats-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
+      'aves-stats-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
       mimeType,
       Uint8List.fromList(utf8.encode(csvContent)),
     );

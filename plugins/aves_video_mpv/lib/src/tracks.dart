@@ -2,9 +2,9 @@ import 'package:aves_video/aves_video.dart';
 import 'package:media_kit/media_kit.dart';
 
 extension ExtraVideoTrack on VideoTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.video,
+  MediaTrackSummary toAves(int index) {
+    return MediaTrackSummary(
+      type: MediaTrackType.video,
       index: index,
       codecName: null,
       language: language,
@@ -16,9 +16,9 @@ extension ExtraVideoTrack on VideoTrack {
 }
 
 extension ExtraAudioTrack on AudioTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.audio,
+  MediaTrackSummary toAves(int index) {
+    return MediaTrackSummary(
+      type: MediaTrackType.audio,
       index: index,
       codecName: null,
       language: language,
@@ -30,9 +30,9 @@ extension ExtraAudioTrack on AudioTrack {
 }
 
 extension ExtraSubtitleTrack on SubtitleTrack {
-  MediaStreamSummary toAves(int index) {
-    return MediaStreamSummary(
-      type: MediaStreamType.text,
+  MediaTrackSummary toAves(int index) {
+    return MediaTrackSummary(
+      type: MediaTrackType.text,
       index: index,
       codecName: null,
       language: language,

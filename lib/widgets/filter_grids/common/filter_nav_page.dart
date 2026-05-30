@@ -137,6 +137,7 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
     return SelectionProvider<FilterGridItem<T>>(
       child: Builder(
         builder: (context) {
+          final animate = context.select<Settings, bool>((v) => v.animate);
           final scrollController = PrimaryScrollController.of(context);
           return QueryProvider(
             startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
@@ -169,7 +170,7 @@ class _FilterNavigationPageState<T extends CollectionFilter, CSAD extends ChipSe
               ),
               // do not always enable hero, otherwise unwanted hero gets triggered
               // when using `Show in [...]` action from a chip in the Collection filter bar
-              heroType: HeroType.onTap,
+              heroType: animate ? HeroType.onTap : HeroType.never,
               onTileTap: (gridItem, navigate) async {
                 final selection = context.read<Selection<FilterGridItem<T>>?>();
                 if (selection != null && selection.isSelecting) {

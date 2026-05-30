@@ -243,7 +243,7 @@ class VideoMetadataFormatter {
             case Keys.bps:
               save('Bit Rate', _formatMetric(value, 'b/s'));
             case Keys.byteCount:
-              save('Size', _formatFilesize(value));
+              save('Size', _formatFileSize(value));
             case Keys.channelLayout:
               save('Channel Layout', _formatChannelLayout(value));
             case Keys.codecName:
@@ -336,7 +336,7 @@ class VideoMetadataFormatter {
             case Keys.durationMicros:
               if (value is int && value != 0) save('Duration', formatPreciseDuration(Duration(microseconds: value)));
             case Keys.extraDataSize:
-              save('Extra Data Size', _formatFilesize(value));
+              save('Extra Data Size', _formatFileSize(value));
             case Keys.fps:
               final fps = info[Keys.fps];
               if (fps is double) {
@@ -371,7 +371,7 @@ class VideoMetadataFormatter {
             case Keys.minorVersion:
               if (value != '0') save('Minor Version', value);
             case Keys.nalLengthSize:
-              save('NAL Length Size', _formatFilesize(value));
+              save('NAL Length Size', _formatFileSize(value));
             case Keys.quicktimeLocationAccuracyHorizontal:
               save('QuickTime Location Horizontal Accuracy', value);
             case Keys.quicktimeCreationDate:
@@ -445,7 +445,7 @@ class VideoMetadataFormatter {
 
   static String _formatBrand(String value) => Mp4.brands[value] ?? value;
 
-  static String _formatChannelLayout(dynamic value) {
+  static String _formatChannelLayout(Object? value) {
     if (value is int) {
       return ChannelLayouts.names[value] ?? 'unknown ($value)';
     }
@@ -505,9 +505,14 @@ class VideoMetadataFormatter {
     return duration != null ? formatPreciseDuration(duration) : value;
   }
 
-  static String _formatFilesize(dynamic value) {
-    final size = value is int ? value : int.tryParse(value);
-    return size != null ? formatFileSize(asciiLocale, size) : value;
+  static String _formatFileSize(Object? value) {
+    int? size;
+    if (value is int) {
+      size = value;
+    } else if (value is String) {
+      size = int.tryParse(value);
+    }
+    return size != null ? formatFileSize(kAsciiLocale, size) : '$value';
   }
 
   static String _formatLanguage(String value) {
@@ -526,16 +531,19 @@ class VideoMetadataFormatter {
     return value;
   }
 
-  static String _formatMetric(dynamic size, String unit, {int round = 2}) {
+  static String _formatMetric(Object? size, String unit, {int round = 2}) {
+    int? sizeNum;
     if (size is String) {
-      final parsed = int.tryParse(size);
-      if (parsed == null) return size;
-      size = parsed;
+      sizeNum = int.tryParse(size);
+    } else if (size is int) {
+      sizeNum = size;
     }
 
+    if (sizeNum == null) return '$sizeNum';
+
     const divider = 1000;
-    if (size < divider) return '$size $unit';
-    if (size < divider * divider) return '${(size / divider).toStringAsFixed(round)} K$unit';
-    return '${(size / divider / divider).toStringAsFixed(round)} M$unit';
+    if (sizeNum < divider) return '$sizeNum $unit';
+    if (sizeNum < divider * divider) return '${(sizeNum / divider).toStringAsFixed(round)} K$unit';
+    return '${(sizeNum / divider / divider).toStringAsFixed(round)} M$unit';
   }
 }

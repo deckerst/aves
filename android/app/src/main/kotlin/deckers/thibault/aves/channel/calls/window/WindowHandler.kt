@@ -19,6 +19,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
             "getOrientation" -> Coresult.safe(call, result, ::getOrientation)
             "requestOrientation" -> Coresult.safe(call, result, ::requestOrientation)
+            "showSystemUI" -> Coresult.safe(call, result, ::showSystemUI)
             "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
             "getCutoutInsets" -> Coresult.safe(call, result, ::getCutoutInsets)
             "supportsWideGamut" -> Coresult.safe(call, result, ::supportsWideGamut)
@@ -52,6 +53,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun getOrientation(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun requestOrientation(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun showSystemUI(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun isCutoutAware(call: MethodCall, result: MethodChannel.Result)
 

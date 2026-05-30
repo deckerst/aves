@@ -50,6 +50,7 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
@@ -256,14 +257,14 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     if (viewerEntryNotifier.value == entry) return;
     WidgetsBinding.instance.addPostFrameCallback((_) => viewerEntryNotifier.value = entry);
 
+    final viewerCollection = collection.copyWith(
+      listenToSource: false,
+    );
     final selection = context.read<Selection<AvesEntry>>();
     await Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (context, a, sa) {
-          final viewerCollection = collection.copyWith(
-            listenToSource: false,
-          );
           Widget child = EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,
@@ -487,14 +488,16 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
   }
 
   void _registerWidget(_CollectionScrollView widget) {
+    widget.collection.addListener(_onCollectionChanged);
     widget.collection.filterChangeNotifier.addListener(_scrollToTop);
-    widget.collection.sortSectionChangeNotifier.addListener(_scrollToTop);
+    widget.collection.layoutChangeNotifier.addListener(_scrollToTop);
     widget.scrollController.addListener(_onScrollChanged);
   }
 
   void _unregisterWidget(_CollectionScrollView widget) {
+    widget.collection.removeListener(_onCollectionChanged);
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
-    widget.collection.sortSectionChangeNotifier.removeListener(_scrollToTop);
+    widget.collection.layoutChangeNotifier.removeListener(_scrollToTop);
     widget.scrollController.removeListener(_onScrollChanged);
   }
 
@@ -536,9 +539,9 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                     final offsetIncrementSnapThreshold = context.select<TileExtentController, double>((v) => (v.extentNotifier.value + v.spacing) / 4);
                     return DraggableScrollbar(
                       backgroundColor: Colors.white,
-                      scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
-                      scrollThumbBuilder: avesScrollThumbBuilder(
-                        height: avesScrollThumbHeight,
+                      scrollThumbSize: AvesScrollThumb.thumbSize,
+                      scrollThumbBuilder: AvesScrollThumb.builder(
+                        height: AvesScrollThumb.thumbHeight,
                         backgroundColor: Colors.white,
                       ),
                       controller: scrollController,
@@ -593,7 +596,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
               gestureSettings: MediaQuery.gestureSettingsOf(context),
               parent: const AlwaysScrollableScrollPhysics(),
             ),
-      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
+      scrollCacheExtent: ScrollCacheExtent.pixels(context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax)),
       slivers: [
         appBar,
         collection.isEmpty
@@ -659,6 +662,25 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
         );
       },
     );
+  }
+
+  void _onCollectionChanged() {
+    _sanitizeSelection(context);
+  }
+
+  void _sanitizeSelection(BuildContext context) {
+    final selection = context.read<Selection<AvesEntry>?>();
+    if (selection == null || !selection.isSelecting) return;
+
+    // check whether selection items are still within the filtered collection
+    final collectionEntries = widget.collection.sortedEntries;
+    final toRemove = selection.selectedItems.whereNot(collectionEntries.contains).toSet();
+    if (toRemove.isNotEmpty) {
+      selection.removeFromSelection(toRemove);
+      if (selection.selectedItemCount == 0) {
+        selection.browse();
+      }
+    }
   }
 
   void _scrollToTop() => widget.scrollController.jumpTo(0);

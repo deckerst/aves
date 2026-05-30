@@ -101,7 +101,7 @@ class Themes {
   static IconThemeData _iconTheme(ColorScheme colors) => IconThemeData(
     // increased weight (from default 400 to 600)
     // applied to variable fonts from `material_symbols_icons`,
-    // to match the fixed-weight icons from `material_design_icons_flutter`
+    // to match the fixed-weight icons from `flutter_material_design_icons`
     weight: 600,
     grade: 0,
     opticalSize: 48,

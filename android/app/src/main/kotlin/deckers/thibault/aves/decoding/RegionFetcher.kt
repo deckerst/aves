@@ -22,6 +22,8 @@ import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.locks.ReentrantLock
@@ -161,7 +163,7 @@ class RegionFetcher internal constructor(
             .submit()
 
         try {
-            val bitmap = target.get()
+            val bitmap = withContext(Dispatchers.IO) { target.get() }
             val tempFile = StorageUtils.createTempFile(context).apply {
                 outputStream().use { output ->
                     val encodedExport = bitmap.compress(exportFormat, 100, output)
@@ -207,6 +209,7 @@ class RegionFetcher internal constructor(
                 var decoderRef = decoderPool.firstOrNull { it.requestKey == requestKey }
                 if (decoderRef == null) {
                     val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                        Log.d(LOG_TAG, "create region decoder for requestKey=$requestKey")
                         BitmapRegionDecoderCompat.newInstance(input)
                     }
                     if (newDecoder == null) {
@@ -217,10 +220,22 @@ class RegionFetcher internal constructor(
                     decoderPool.remove(decoderRef)
                 }
                 decoderPool.add(0, decoderRef)
-                while (decoderPool.size > DECODER_POOL_SIZE) {
-                    decoderPool.removeAt(decoderPool.size - 1)
-                }
+                trimDecoderPool(DECODER_POOL_SIZE)
                 return decoderRef.decoder
+            }
+        }
+
+        fun clearDecoders() {
+            poolLock.withLock {
+                trimDecoderPool(0)
+            }
+        }
+
+        private fun trimDecoderPool(size: Int) {
+            while (decoderPool.size > size) {
+                val oldDecoderRef = decoderPool.removeAt(decoderPool.size - 1)
+                Log.d(LOG_TAG, "recycle region decoder for requestKey=${oldDecoderRef.requestKey}")
+                oldDecoderRef.decoder.recycle()
             }
         }
     }

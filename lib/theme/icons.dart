@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AIcons {
@@ -19,7 +19,7 @@ class AIcons {
   static const brightnessMax = Symbols.brightness_high;
   static const checked = Symbols.done;
   static const circle = Symbols.fiber_manual_record;
-  static final count = MdiIcons.counter;
+  static const count = MdiIcons.counter;
   static const counter = Symbols.plus_one;
   static const description = Symbols.description;
   static const descriptionUntitled = Symbols.comments_disabled;
@@ -28,7 +28,7 @@ class AIcons {
   static const error = Symbols.error;
   static const explorer = Symbols.account_tree;
   static const folder = Symbols.folder;
-  static final github = MdiIcons.github;
+  static const github = MdiIcons.github; // ignore: deprecated_member_use
   static const help = Symbols.help;
   static const height = Symbols.fit_page_height;
   static const histogram = Symbols.area_chart;
@@ -40,7 +40,7 @@ class AIcons {
   static const important = IconData(labelImportantOutlineCodePoint, fontFamily: materialIconsFontFamily, matchTextDirection: true);
 
   static const language = Symbols.translate;
-  static final legal = MdiIcons.scaleBalance;
+  static const legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
   static const minimap = Symbols.picture_in_picture;
   static const name = Symbols.match_word;
@@ -50,8 +50,8 @@ class AIcons {
   static const path = Symbols.account_tree;
   static const privacy = Symbols.shield_person;
   static const rating = Symbols.star;
-  static final ratingRejected = MdiIcons.starMinusOutline;
-  static final ratingUnrated = MdiIcons.starOffOutline;
+  static const ratingRejected = MdiIcons.starMinusOutline;
+  static const ratingUnrated = MdiIcons.starOffOutline;
   static const raw = Symbols.raw_on;
   static const sensorControlEnabled = Symbols.explore;
   static const sensorControlDisabled = Symbols.explore_off;
@@ -60,11 +60,11 @@ class AIcons {
   static const size = Symbols.data_usage;
   static const storageCard = Symbols.sd_storage;
   static const storageMain = Symbols.smartphone;
-  static const streamVideo = Symbols.movie;
-  static const streamAudio = Symbols.audiotrack;
-  static const streamText = Symbols.closed_caption;
+  static const trackVideo = Symbols.movie;
+  static const trackAudio = Symbols.audiotrack;
+  static const trackText = Symbols.closed_caption;
   static const tag = Symbols.sell;
-  static final tagUntagged = MdiIcons.tagOffOutline;
+  static const tagUntagged = MdiIcons.tagOffOutline;
   static const text = Symbols.format_quote;
   static const thumbnails = Symbols.grid_on;
   static const thumbnailBar = Symbols.view_carousel;
@@ -107,15 +107,15 @@ class AIcons {
   static const clear = Symbols.clear;
   static const clipboard = Symbols.content_copy;
   static const convert = Symbols.transform;
-  static final convertToStillImage = MdiIcons.movieRemoveOutline;
+  static const convertToStillImage = MdiIcons.movieRemoveOutline;
   static const copy = Symbols.file_copy;
   static const debug = Symbols.mode_heat;
   static const delete = Symbols.delete;
   static const edit = Symbols.edit;
   static const emptyBin = Symbols.delete_sweep;
   static const export = Symbols.open_with;
-  static final fileExport = MdiIcons.fileExportOutline;
-  static final fileImport = MdiIcons.fileImportOutline;
+  static const fileExport = MdiIcons.fileExportOutline;
+  static const fileImport = MdiIcons.fileImportOutline;
   static const flip = Symbols.flip;
   static const favourite = Symbols.favorite;
   static const filter = Symbols.filter_alt;
@@ -127,16 +127,16 @@ class AIcons {
   static const layers = Symbols.layers;
   static const map = Symbols.map;
   static const more = Symbols.more_horiz;
-  static final move = MdiIcons.fileMoveOutline;
+  static const move = MdiIcons.fileMoveOutline;
   static const rename = Symbols.match_word;
   static const openOutside = Symbols.open_in_new;
-  static final openVideoPart = MdiIcons.moviePlayOutline;
+  static const openVideoPart = MdiIcons.moviePlayOutline;
   static const pin = Symbols.keep;
   static const unpin = Symbols.keep_off;
   static const print = Symbols.print;
   static const refresh = Symbols.refresh;
   static const remove = Symbols.remove;
-  static final resetBounds = MdiIcons.rayStartEnd;
+  static const resetBounds = MdiIcons.rayStartEnd;
   static const reverse = Symbols.invert_colors;
   static const reset = Symbols.restart_alt;
   static const restore = Symbols.restore;
@@ -146,9 +146,9 @@ class AIcons {
   static const search = Symbols.search;
   static const select = Symbols.select_all;
   static const setAs = Symbols.wallpaper;
-  static final setBoundEnd = MdiIcons.rayEnd;
-  static final setBoundStart = MdiIcons.rayStart;
-  static final setCover = MdiIcons.imageEditOutline;
+  static const setBoundEnd = MdiIcons.rayEnd;
+  static const setBoundStart = MdiIcons.rayStart;
+  static const setCover = MdiIcons.imageEditOutline;
   static const share = Symbols.share;
   static const show = Symbols.visibility;
   static const showFullscreenArrows = Symbols.open_in_full;
@@ -158,7 +158,7 @@ class AIcons {
   static const stats = Symbols.donut_small;
   static const vaultLock = Symbols.lock;
   static const vaultAdd = Symbols.enhanced_encryption;
-  static final vaultConfigure = MdiIcons.shieldLockOutline;
+  static const vaultConfigure = MdiIcons.shieldLockOutline;
   static const view = Symbols.grid_view;
   static const viewerLock = Symbols.lock;
   static const viewerUnlock = Symbols.lock_open;
@@ -183,8 +183,8 @@ class AIcons {
   static const unmute = Symbols.volume_up;
   static const captureFrame = Symbols.screenshot;
   static const repeat = Symbols.repeat;
-  static final repeatOff = MdiIcons.repeatOff;
-  static const selectStreams = Symbols.translate;
+  static const repeatOff = MdiIcons.repeatOff;
+  static const selectTracks = Symbols.translate;
   static const setSpeed = Symbols.speed;
   static const videoSettings = Symbols.video_settings;
 

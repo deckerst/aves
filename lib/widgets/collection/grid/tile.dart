@@ -98,7 +98,7 @@ class Tile extends StatelessWidget {
         return _buildThumbnail();
       case .list:
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: .stretch,
           children: [
             SizedBox.square(
               dimension: context.select<EntryListDetailsThemeData, double>((v) => v.extent),

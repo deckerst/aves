@@ -21,7 +21,7 @@ class SourceViewerPage extends StatefulWidget {
 class _SourceViewerPageState extends State<SourceViewerPage> {
   late Future<String> _loader;
 
-  static const maxCodeSize = 2 << 16; // 128kB
+  static const maxCodeSize = 128 * (1 << 10); // KiB
 
   @override
   void initState() {

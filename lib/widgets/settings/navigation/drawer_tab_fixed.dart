@@ -74,9 +74,8 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
                   );
                 },
                 itemCount: widget.items.length,
-                onReorder: (oldIndex, newIndex) {
+                onReorderItem: (oldIndex, newIndex) {
                   setState(() {
-                    if (oldIndex < newIndex) newIndex -= 1;
                     widget.items.insert(newIndex, widget.items.removeAt(oldIndex));
                   });
                 },

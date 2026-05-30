@@ -98,8 +98,8 @@ class DraggableScrollbar extends StatefulWidget {
     final scrollThumbAndLabel = labelText == null
         ? scrollThumb
         : Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: .min,
+            mainAxisAlignment: .end,
             children: [
               ScrollLabel(
                 animation: labelAnimation,

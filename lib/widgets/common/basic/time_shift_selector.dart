@@ -1,5 +1,4 @@
 import 'package:aves/ref/locales.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +66,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
 
     return Center(
       child: Table(
-        textDirection: timeComponentsDirection,
+        textDirection: kTimeComponentsDirection,
         children: [
           TableRow(
             children: [
@@ -92,7 +91,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 alignment: Alignment.centerRight,
                 child: WheelSelector(
                   valueNotifier: _shiftHour,
-                  values: List.generate(hoursInDay, (i) => i),
+                  values: List.generate(Duration.hoursPerDay, (i) => i),
                   textStyle: textStyle,
                   textAlign: digitsAlign,
                   format: timeComponentFormatter.format,
@@ -106,7 +105,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 alignment: Alignment.centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftMinute,
-                  values: List.generate(minutesInHour, (i) => i),
+                  values: List.generate(Duration.minutesPerHour, (i) => i),
                   textStyle: textStyle,
                   textAlign: digitsAlign,
                   format: timeComponentFormatter.format,
@@ -120,7 +119,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 alignment: Alignment.centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftSecond,
-                  values: List.generate(secondsInMinute, (i) => i),
+                  values: List.generate(Duration.secondsPerMinute, (i) => i),
                   textStyle: textStyle,
                   textAlign: digitsAlign,
                   format: timeComponentFormatter.format,

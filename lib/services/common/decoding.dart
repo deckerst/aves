@@ -6,6 +6,9 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
 class InteropDecoding {
+  static const _kIntegerByteCount = 4;
+  static const _trailerLength = _kIntegerByteCount * 2 + 1; // 2 integers + decoded/encoded format byte
+
   // bytes are expected to be in a basic format decodable by Flutter
   static Future<ui.Codec?> encodedBytesToCodec(Uint8List? bytes, ImageDecoderCallback? decode) async {
     if (bytes == null || decode == null) return null;
@@ -29,16 +32,13 @@ class InteropDecoding {
   static Future<ui.ImageDescriptor?> rawBytesToDescriptor(Uint8List? bytes) async {
     if (bytes == null) return null;
 
-    const trailerLength = 4 * 2 + 1; // 2 integers + decoded/encoded format byte
-    final byteCount = bytes.lengthInBytes;
-    if (byteCount < trailerLength) return null;
-
-    final trailerOffset = byteCount - trailerLength;
+    final trailerOffset = bytes.lengthInBytes - _trailerLength;
+    if (trailerOffset < 0) return null;
 
     // fetch trailer
     final trailer = ByteData.sublistView(bytes, trailerOffset);
     final bitmapWidth = trailer.getUint32(0);
-    final bitmapHeight = trailer.getUint32(4);
+    final bitmapHeight = trailer.getUint32(_kIntegerByteCount);
 
     // trim custom trailer
     // a view does not reallocate memory and uses the underlying buffer

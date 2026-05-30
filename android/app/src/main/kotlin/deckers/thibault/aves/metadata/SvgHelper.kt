@@ -6,7 +6,7 @@ import java.io.InputStream
 import kotlin.math.max
 
 object SvgHelper {
-    const val IMAGE_BASE64_SIZE_DANGER_THRESHOLD: Long = 5 * (1 shl 20) // MB
+    const val IMAGE_BASE64_SIZE_DANGER_THRESHOLD: Long = 5 * (1 shl 20) // MiB
 
     fun SVG.normalizeSize() {
         if (documentViewBox == null) {
@@ -28,6 +28,6 @@ class SVGParserBufferedInputStream(input: InputStream) : BufferedInputStream(inp
     }
 
     companion object {
-        private const val MINIMUM_READ_LIMIT = 1 shl 14 // 16kB
+        private const val MINIMUM_READ_LIMIT = 16 * (1 shl 10) // KiB
     }
 }

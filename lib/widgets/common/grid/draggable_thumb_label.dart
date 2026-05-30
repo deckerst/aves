@@ -52,8 +52,8 @@ class DraggableThumbLabel<T> extends StatelessWidget {
         padding: _padding,
         child: lines.length > 1
             ? Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: .min,
+                crossAxisAlignment: .end,
                 children: lines.map((v) => _buildText(v, isCrumb: false)).toList(),
               )
             : _buildText(lines.first, isCrumb: false),
@@ -74,7 +74,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
 
 const double _crumbLabelMaxWidth = 96;
 const double _thumbLabelMaxWidth = 144;
-const EdgeInsets _padding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
+const EdgeInsets _padding = .symmetric(vertical: 4, horizontal: 8);
 
 Widget _buildText(String text, {required bool isCrumb}) => Text(
   text,

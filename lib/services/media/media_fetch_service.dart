@@ -45,6 +45,8 @@ abstract class MediaFetchService {
     int? priority,
   });
 
+  Future<void> clearDecoders();
+
   Future<void> clearImageDiskCache();
 
   Future<void> clearImageMemoryCache();
@@ -59,7 +61,6 @@ abstract class MediaFetchService {
 class PlatformMediaFetchService implements MediaFetchService {
   static const _platformObject = AvesMethodChannel('deckers.thibault/aves/media_fetch_object');
   static final _byteStream = AvesStreamsChannel('deckers.thibault/aves/media_byte_stream');
-  static const double _thumbnailDefaultSize = 64.0;
 
   static const int formatTrailerLength = 1; // single format byte
   static const int formatByteEncoded = 0xCA;
@@ -147,12 +148,11 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   Future<ui.Codec> _bytesToCodec(Map<String, dynamic> args, Uint8List bytes, ImageDecoderCallback? decode) async {
-    final byteCount = bytes.lengthInBytes;
-    if (byteCount < formatTrailerLength) {
+    final trailerOffset = bytes.lengthInBytes - formatTrailerLength;
+    if (trailerOffset < 0) {
       throw UnreportedStateError('failed to get image bytes for args=$args');
     }
 
-    final trailerOffset = byteCount - formatTrailerLength;
     final format = bytes[trailerOffset];
     switch (format) {
       case formatByteEncoded:
@@ -276,8 +276,6 @@ class PlatformMediaFetchService implements MediaFetchService {
       'isFlipped': request.isFlipped,
       'widthDip': request.extent,
       'heightDip': request.extent,
-      'defaultSizeDip': _thumbnailDefaultSize,
-      'quality': 100,
     };
     return servicePolicy.call(
       () async {
@@ -290,6 +288,15 @@ class PlatformMediaFetchService implements MediaFetchService {
       priority: priority ?? (request.extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
+  }
+
+  @override
+  Future<void> clearDecoders() async {
+    try {
+      return _platformObject.invokeMethod('clearDecoders');
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
   }
 
   @override

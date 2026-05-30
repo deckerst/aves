@@ -27,7 +27,7 @@ class VideoControlButtonsPage extends StatelessWidget {
           selector: (context, s) => s.videoControlActions,
           builder: (context, selectedActionList, child) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: .stretch,
               children: [
                 ActionPanel(
                   child: Container(

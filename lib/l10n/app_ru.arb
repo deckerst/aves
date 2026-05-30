@@ -247,8 +247,6 @@
     "aboutLinkPolicy": "Политика конфиденциальности",
     "aboutBugSectionTitle": "Сообщить об ошибке",
     "aboutBugSaveLogInstruction": "Сохраните логи приложения в файл",
-    "aboutBugCopyInfoInstruction": "Скопируйте системную информацию",
-    "aboutBugCopyInfoButton": "Скопировать",
     "aboutBugReportInstruction": "Отправьте отчёт об ошибке на GitHub вместе с логами и системной информацией",
     "aboutBugReportButton": "Отправить",
     "aboutCreditsSectionTitle": "Благодарности",

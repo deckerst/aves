@@ -73,12 +73,12 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
                 left: padding,
                 right: padding,
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: padding),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: .min,
                         children: [
                           if (topLeftButton != null) ...[
                             topLeftButton,
@@ -117,7 +117,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
                 right: padding,
                 bottom: padding,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: [
                     _buildActionButton(context, MapAction.zoomIn),
                     SizedBox(height: padding),

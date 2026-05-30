@@ -110,7 +110,6 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
                   _lastException = error;
                 });
                 assert(() {
-                  // ignore: only_throw_errors, since we're just proxying the error.
                   throw error; // Ensures the error message is printed to the console.
                 }());
               }

@@ -79,7 +79,7 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
               cacheFolder: () async {
                 final cacheRoot = await storageService.getExternalCacheDirectory();
                 final path = pContext.join(cacheRoot, 'map_vector_tiles');
-                dynamic result;
+                Object result;
                 if (vmtio.Directory == String) {
                   result = path;
                 } else if (vmtio.Directory == io.Directory) {
@@ -87,7 +87,7 @@ class _OsmLibertyLayerState extends State<OsmLibertyLayer> {
                 } else {
                   throw Exception('vmtio.Directory type is not supported');
                 }
-                return result;
+                return result as vmtio.Directory;
               },
             );
           },

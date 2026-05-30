@@ -247,8 +247,6 @@
     "aboutLinkPolicy": "Informativa sulla privacy",
     "aboutBugSectionTitle": "Segnalazione bug",
     "aboutBugSaveLogInstruction": "Salva registri app in un file",
-    "aboutBugCopyInfoInstruction": "Copia informazioni sistema",
-    "aboutBugCopyInfoButton": "Copia",
     "aboutBugReportInstruction": "Segnala su GitHub con i registri e le info di sistema",
     "aboutBugReportButton": "Segnala",
     "aboutCreditsSectionTitle": "Ringraziamenti",

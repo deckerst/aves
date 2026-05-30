@@ -58,7 +58,10 @@ class PlatformReportService extends ReportService {
   }
 
   @override
-  Future<void> setCustomKey(String key, Object value) async => _instance?.setCustomKey(key, value);
+  Future<void> setCustomKey(String key, Object value) async {
+    debugPrint('Report set key $key=$value');
+    await _instance?.setCustomKey(key, value);
+  }
 
   @override
   Future<void> setCustomKeys(Map<String, Object> map) {

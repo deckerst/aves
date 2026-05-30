@@ -205,8 +205,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final child = isPortrait
         ? Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
             children: [
               label,
               Padding(
@@ -221,14 +221,14 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             ],
           )
         : Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
             children: [
               Expanded(child: label),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     selector,
                     ?bottom,

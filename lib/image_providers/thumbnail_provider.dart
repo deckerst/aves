@@ -6,10 +6,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+@immutable
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   final ThumbnailProviderKey key;
 
-  ThumbnailProvider(this.key);
+  const ThumbnailProvider(this.key);
 
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {

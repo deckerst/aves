@@ -30,8 +30,8 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
   Widget build(BuildContext context) {
     super.build(context);
 
-    final currentSizeBytes = formatFileSize(asciiLocale, imageCache.currentSizeBytes);
-    final maxSizeBytes = formatFileSize(asciiLocale, imageCache.maximumSizeBytes);
+    final currentSizeBytes = formatFileSize(kAsciiLocale, imageCache.currentSizeBytes);
+    final maxSizeBytes = formatFileSize(kAsciiLocale, imageCache.maximumSizeBytes);
     return AvesExpansionTile(
       title: 'Cache',
       children: [

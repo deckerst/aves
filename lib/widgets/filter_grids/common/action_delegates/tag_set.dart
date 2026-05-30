@@ -140,6 +140,9 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
       context: context,
       chipTypes: {ChipType.group},
       initialGroup: initialGroup,
+      isValidGroupPick: (destinationGroupUri) {
+        return FilterGrouping.isValidParent(destinationGroupUri, childrenUris);
+      },
     );
     if (filter == null) return;
 

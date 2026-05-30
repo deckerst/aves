@@ -1,10 +1,10 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: avoid_types_on_closure_parameters, depend_on_referenced_packages, unnecessary_null_comparison
+
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 
 // adapted from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
-// ignore_for_file: avoid_types_on_closure_parameters, unnecessary_null_comparison
 
 /// The possible states of a [ScaleGestureRecognizer].
 enum _ScaleState {

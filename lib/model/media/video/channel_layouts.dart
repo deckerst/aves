@@ -1,7 +1,7 @@
+// ignore_for_file: constant_identifier_names
+
 // channel layout constants from FFmpeg libavutil/channel_layout.h
 class ChannelLayouts {
-  // ignore_for_file: constant_identifier_names
-
   static const FRONT_LEFT = 0x00000001;
   static const FRONT_RIGHT = 0x00000002;
   static const FRONT_CENTER = 0x00000004;

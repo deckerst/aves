@@ -122,6 +122,7 @@ class _MarkerGeneratorItem<T extends Key> {
         try {
           final image = await boundary.toImage(pixelRatio: devicePixelRatio);
           final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+          image.dispose();
           bytes = byteData?.buffer.asUint8List();
         } catch (error) {
           // happens when widget is offscreen

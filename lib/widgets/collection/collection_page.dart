@@ -89,8 +89,9 @@ class _CollectionPageState extends State<CollectionPage> {
     final useTvLayout = settings.useTvLayout;
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return SelectionProvider<AvesEntry>(
+      toSelectableItems: (entry) => entry.toSelectableItems(),
       child: Selector<Selection<AvesEntry>, bool>(
-        selector: (context, selection) => selection.selectedItems.isNotEmpty,
+        selector: (context, selection) => selection.selectedItemCount > 0,
         builder: (context, hasSelection, child) {
           final body = QueryProvider(
             startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
@@ -186,8 +187,8 @@ class _CollectionPageState extends State<CollectionPage> {
             ? AvesFab(
                 tooltip: l10n.pickTooltip,
                 onPressed: () async {
-                  final items = context.read<Selection<AvesEntry>>().selectedItems;
-                  final uris = items.map((entry) => entry.uri).toList();
+                  final selection = context.read<Selection<AvesEntry>>();
+                  final uris = selection.selectedItems.map((entry) => entry.uri).toList();
                   try {
                     await IntentService.submitPickedItems(uris);
                   } on TooManyItemsException catch (_) {

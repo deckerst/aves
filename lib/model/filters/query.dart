@@ -199,16 +199,8 @@ class QueryFilter extends CollectionFilter {
         final valueInt = int.tryParse(valueString);
         if (valueInt == null) return null;
 
-        var bytes = valueInt;
         final multiplierString = match.group(2)?.trim();
-        switch (multiplierString) {
-          case 'K':
-            bytes *= kilo;
-          case 'M':
-            bytes *= mega;
-          case 'G':
-            bytes *= giga;
-        }
+        final bytes = applyFileSizeSuffix(multiplierString, valueInt);
 
         switch (op) {
           case opEqual:

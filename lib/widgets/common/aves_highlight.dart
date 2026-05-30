@@ -1,9 +1,8 @@
-// ignore_for_file: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
 
 // adapted from package `flutter_highlight` v0.7.0 `HighlightView`
-// TODO TLAD use the TextSpan getter when this is fixed: https://github.com/git-touch/highlight/issues/6
+// TODO TLAD use the TextSpan getter when this is fixed: https://github.com/pd4d10/highlight/issues/6
 
 /// Highlight Flutter Widget
 class AvesHighlightView extends StatelessWidget {

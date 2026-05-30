@@ -45,7 +45,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       content: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: .end,
         children: [
           Expanded(
             child: TextField(

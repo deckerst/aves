@@ -62,7 +62,7 @@ class AvesExpansionTile extends StatelessWidget {
       duration: animationDuration,
       shadowColor: theme.shadowColor,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           const Divider(thickness: 1, height: 1),
           const SizedBox(height: 4),

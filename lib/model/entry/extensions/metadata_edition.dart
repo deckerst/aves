@@ -22,8 +22,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
-  static final _iso6709LatitudeFormatter = NumberFormat('00.0000', asciiLocale);
-  static final _iso6709LongitudeFormatter = NumberFormat('000.0000', asciiLocale);
+  static final _iso6709LatitudeFormatter = NumberFormat('00.0000', kAsciiLocale);
+  static final _iso6709LongitudeFormatter = NumberFormat('000.0000', kAsciiLocale);
 
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
     final dataTypes = <EntryDataType>{};

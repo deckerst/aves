@@ -43,6 +43,7 @@ class NavigationSection extends SettingsSection {
   ]);
 }
 
+@immutable
 class _HomeOption {
   final HomePageSetting page;
   final Set<CollectionFilter> customCollection;

@@ -17,7 +17,7 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
-import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/video_track_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video_settings_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
@@ -57,8 +57,8 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await _captureFrame(context, entry, controller);
       case .videoToggleMute:
         await controller.mute(!controller.isMuted);
-      case .videoSelectStreams:
-        await _showStreamSelectionDialog(context, controller);
+      case .videoSelectTracks:
+        await _showTrackSelectionDialog(context, controller);
       case .videoSetSpeed:
         await _showSpeedDialog(context, controller);
       case .videoABRepeat:
@@ -154,28 +154,28 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
-  Future<void> _showStreamSelectionDialog(BuildContext context, AvesVideoController controller) async {
-    final streams = controller.streams;
-    final currentSelectedStreams = await Future.wait(MediaStreamType.values.map(controller.getSelectedStream));
+  Future<void> _showTrackSelectionDialog(BuildContext context, AvesVideoController controller) async {
+    final tracks = controller.tracks;
+    final currentSelectedTracks = await Future.wait(MediaTrackType.values.map(controller.getSelectedTrack));
 
-    final userSelectedStreams = await showDialog<Map<MediaStreamType, MediaStreamSummary?>>(
+    final userSelectedTracks = await showDialog<Map<MediaTrackType, MediaTrackSummary?>>(
       context: context,
-      builder: (context) => VideoStreamSelectionDialog(
-        streams: Map.fromEntries(
-          streams.map((stream) {
-            final selectedStream = currentSelectedStreams.nonNulls.firstWhereOrNull((v) => v.type == stream.type);
-            final selected = selectedStream != null && selectedStream.index == stream.index;
-            return MapEntry(stream, selected);
+      builder: (context) => VideoTrackSelectionDialog(
+        tracks: Map.fromEntries(
+          tracks.map((track) {
+            final selectedTrack = currentSelectedTracks.nonNulls.firstWhereOrNull((v) => v.type == track.type);
+            final selected = selectedTrack != null && selectedTrack.index == track.index;
+            return MapEntry(track, selected);
           }),
         ),
       ),
-      routeSettings: const RouteSettings(name: VideoStreamSelectionDialog.routeName),
+      routeSettings: const RouteSettings(name: VideoTrackSelectionDialog.routeName),
     );
-    if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
+    if (userSelectedTracks == null || userSelectedTracks.isEmpty) return;
 
-    await Future.forEach<MapEntry<MediaStreamType, MediaStreamSummary?>>(
-      userSelectedStreams.entries,
-      (kv) => controller.selectStream(kv.key, kv.value),
+    await Future.forEach<MapEntry<MediaTrackType, MediaTrackSummary?>>(
+      userSelectedTracks.entries,
+      (kv) => controller.selectTrack(kv.key, kv.value),
     );
   }
 

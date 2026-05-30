@@ -78,7 +78,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                               onPressed: () async {
                                 final sourcePath = await localMediaDb.path;
                                 final success = await storageService.copyFile(
-                                  'aves-database-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.db',
+                                  'aves-database-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}.db',
                                   MimeTypes.sqlite3,
                                   Uri.file(sourcePath).toString(),
                                 );

@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:aves/ref/locales.dart';
+import 'package:aves/services/common/services.dart';
+import 'package:aves/services/device_service.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
@@ -72,7 +75,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
         ),
         Wrap(
           spacing: 4,
-          crossAxisAlignment: WrapCrossAlignment.center,
+          crossAxisAlignment: .center,
           children: [
             ...LeakType.values.map(
               (type) => ElevatedButton(
@@ -91,7 +94,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
                   ),
                 );
               }),
-              child: const Text('Track GC w/ stacks'),
+              child: const Text('Track w/ stacks'),
             ),
             ElevatedButton(
               onPressed: () => LeakTracking.collectLeaks().then((leaks) {
@@ -104,7 +107,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
                   ),
                 );
               }),
-              child: const Text('Track GC w/o stacks'),
+              child: const Text('Track w/o stacks'),
             ),
           ],
         ),
@@ -124,7 +127,53 @@ class _CollectorOverlay extends StatefulWidget {
 }
 
 class _CollectorOverlayState extends State<_CollectorOverlay> {
+  late StreamSubscription _subscription;
+  final ValueNotifier<String> _ramNotifier = ValueNotifier('');
+  final ValueNotifier<String> _heapNotifier = ValueNotifier('');
+  final ValueNotifier<String> _rssNotifier = ValueNotifier('');
+  final ValueNotifier<String> _imageCacheNotifier = ValueNotifier('');
+
   AlignmentGeometry _alignment = AlignmentDirectional.bottomStart;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = Stream.periodic(const Duration(seconds: 1)).listen((_) async {
+      final results = await Future.wait([
+        deviceService.getRamSizes(<MemorySizeType>{.available, .total, .advertised}),
+        deviceService.getHeapSizes(<MemorySizeType>{.used, .total, .max}),
+      ]);
+      final [ram, heap] = results;
+
+      final ramAvailable = formatFileSize(kAsciiLocale, ram[MemorySizeType.available] ?? 0);
+      final ramTotal = formatFileSize(kAsciiLocale, ram[MemorySizeType.total] ?? 0);
+      final ramAdvertised = formatFileSize(kAsciiLocale, ram[MemorySizeType.advertised] ?? 0);
+      _ramNotifier.value = 'RAM: $ramAvailable / $ramTotal / $ramAdvertised';
+
+      final heapUsed = formatFileSize(kAsciiLocale, heap[MemorySizeType.used] ?? 0);
+      final heapTotal = formatFileSize(kAsciiLocale, heap[MemorySizeType.total] ?? 0);
+      final heapMax = formatFileSize(kAsciiLocale, heap[MemorySizeType.max] ?? 0);
+      _heapNotifier.value = 'Heap: $heapUsed / $heapTotal / $heapMax';
+
+      final rssCurrent = formatFileSize(kAsciiLocale, ProcessInfo.currentRss);
+      final rssMax = formatFileSize(kAsciiLocale, ProcessInfo.maxRss);
+      _rssNotifier.value = 'RSS: $rssCurrent / $rssMax';
+
+      final imageCacheCurrent = formatFileSize(kAsciiLocale, imageCache.currentSizeBytes);
+      final imageCacheMax = formatFileSize(kAsciiLocale, imageCache.maximumSizeBytes);
+      _imageCacheNotifier.value = 'imageCache: $imageCacheCurrent / $imageCacheMax';
+    });
+  }
+
+  @override
+  void dispose() {
+    _ramNotifier.dispose();
+    _heapNotifier.dispose();
+    _rssNotifier.dispose();
+    _imageCacheNotifier.dispose();
+    _subscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,11 +185,11 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
           child: Container(
             color: Colors.indigo.shade900.withAlpha(0xCC),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
               children: [
                 Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                  crossAxisAlignment: .center,
                   children: [
                     IconButton(
                       onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
@@ -158,31 +207,21 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                     }),
                   ],
                 ),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    StreamBuilder(
-                      stream: Stream.periodic(const Duration(seconds: 1)),
-                      builder: (context, snapshot) {
-                        final currentRss = formatFileSize(asciiLocale, ProcessInfo.currentRss);
-                        final maxRss = formatFileSize(asciiLocale, ProcessInfo.maxRss);
-                        return Text('RSS: $currentRss / $maxRss');
-                      },
-                    ),
-                  ],
+                ValueListenableBuilder<String>(
+                  valueListenable: _heapNotifier,
+                  builder: (context, v, child) => Text(v),
                 ),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    StreamBuilder(
-                      stream: Stream.periodic(const Duration(seconds: 1)),
-                      builder: (context, snapshot) {
-                        final currentImageCache = formatFileSize(asciiLocale, imageCache.currentSizeBytes);
-                        final maxImageCache = formatFileSize(asciiLocale, imageCache.maximumSizeBytes);
-                        return Text('imageCache: $currentImageCache / $maxImageCache');
-                      },
-                    ),
-                  ],
+                ValueListenableBuilder<String>(
+                  valueListenable: _rssNotifier,
+                  builder: (context, v, child) => Text(v),
+                ),
+                ValueListenableBuilder<String>(
+                  valueListenable: _ramNotifier,
+                  builder: (context, v, child) => Text(v),
+                ),
+                ValueListenableBuilder<String>(
+                  valueListenable: _imageCacheNotifier,
+                  builder: (context, v, child) => Text(v),
                 ),
               ],
             ),

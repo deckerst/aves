@@ -124,7 +124,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
   Widget _buildCustomStyleButtons(EntryMapStyle style) {
     final l10n = context.l10n;
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         IconButton(
           icon: const Icon(AIcons.edit),

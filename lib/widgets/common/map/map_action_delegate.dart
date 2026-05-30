@@ -18,15 +18,18 @@ class MapActionDelegate with FeedbackMixin {
 
   const MapActionDelegate(this.controller);
 
+  bool _isMapPage(BuildContext context) => context.currentRouteName == MapPage.routeName;
+
   bool isVisible(BuildContext context, MapAction action) {
     switch (action) {
       case .selectStyle:
-      case .openMapApp:
       case .zoomIn:
       case .zoomOut:
         return true;
+      case .openMapApp:
+        return _isMapPage(context);
       case .addShortcut:
-        return device.canPinShortcut && context.currentRouteName == MapPage.routeName;
+        return _isMapPage(context) && device.canPinShortcut;
     }
   }
 

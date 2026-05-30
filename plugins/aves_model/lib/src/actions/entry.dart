@@ -20,7 +20,7 @@ enum EntryAction {
   // video
   lockViewer,
   videoCaptureFrame,
-  videoSelectStreams,
+  videoSelectTracks,
   videoSetSpeed,
   videoABRepeat,
   videoToggleMute,
@@ -57,92 +57,92 @@ enum EntryAction {
 }
 
 class EntryActions {
-  static const topLevel = [
-    EntryAction.info,
-    EntryAction.share,
-    EntryAction.edit,
-    EntryAction.rename,
-    EntryAction.delete,
-    EntryAction.copy,
-    EntryAction.move,
-    EntryAction.toggleFavourite,
-    EntryAction.rotateScreen,
-    EntryAction.viewSource,
+  static const topLevel = <EntryAction>[
+    .info,
+    .share,
+    .edit,
+    .rename,
+    .delete,
+    .copy,
+    .move,
+    .toggleFavourite,
+    .rotateScreen,
+    .viewSource,
   ];
 
-  static const export = [
+  static const export = <EntryAction>[
     ...exportInternal,
     ...exportExternal,
   ];
 
-  static const exportInternal = [
-    EntryAction.convert,
-    EntryAction.addShortcut,
-    EntryAction.copyToClipboard,
-    EntryAction.print,
+  static const exportInternal = <EntryAction>[
+    .convert,
+    .addShortcut,
+    .copyToClipboard,
+    .print,
   ];
 
-  static const exportExternal = [
-    EntryAction.open,
-    EntryAction.openMap,
-    EntryAction.setAs,
-    EntryAction.cast,
+  static const exportExternal = <EntryAction>[
+    .open,
+    .openMap,
+    .setAs,
+    .cast,
   ];
 
-  static const pageActions = {
-    EntryAction.videoCaptureFrame,
-    EntryAction.videoToggleMute,
-    EntryAction.videoSetSpeed,
-    EntryAction.videoABRepeat,
-    EntryAction.videoSelectStreams,
-    EntryAction.videoSettings,
+  static const pageActions = <EntryAction>{
+    .videoCaptureFrame,
+    .videoToggleMute,
+    .videoSetSpeed,
+    .videoABRepeat,
+    .videoSelectTracks,
+    .videoSettings,
     ...videoPlayback,
     ...orientationActions,
   };
 
-  static const orientationActions = [
-    EntryAction.rotateCCW,
-    EntryAction.rotateCW,
-    EntryAction.flip,
+  static const orientationActions = <EntryAction>[
+    .rotateCCW,
+    .rotateCW,
+    .flip,
   ];
 
-  static const trashed = [
-    EntryAction.delete,
-    EntryAction.restore,
-    EntryAction.debug,
+  static const trashed = <EntryAction>[
+    .delete,
+    .restore,
+    .debug,
   ];
 
-  static const video = [
-    EntryAction.videoCaptureFrame,
-    EntryAction.videoToggleMute,
-    EntryAction.videoSetSpeed,
-    EntryAction.videoABRepeat,
-    EntryAction.videoSelectStreams,
-    EntryAction.videoSettings,
-    EntryAction.lockViewer,
+  static const video = <EntryAction>[
+    .videoCaptureFrame,
+    .videoToggleMute,
+    .videoSetSpeed,
+    .videoABRepeat,
+    .videoSelectTracks,
+    .videoSettings,
+    .lockViewer,
   ];
 
-  static const videoPlayback = [
-    EntryAction.videoReplay10,
-    EntryAction.videoShowPreviousFrame,
-    EntryAction.videoTogglePlay,
-    EntryAction.videoShowNextFrame,
-    EntryAction.videoSkip10,
+  static const videoPlayback = <EntryAction>[
+    .videoReplay10,
+    .videoShowPreviousFrame,
+    .videoTogglePlay,
+    .videoShowNextFrame,
+    .videoSkip10,
   ];
 
-  static const commonMetadataActions = [
-    EntryAction.editDate,
-    EntryAction.editLocation,
-    EntryAction.editTitleDescription,
-    EntryAction.editRating,
-    EntryAction.editTags,
-    EntryAction.removeMetadata,
-    EntryAction.exportMetadata,
+  static const commonMetadataActions = <EntryAction>[
+    .editDate,
+    .editLocation,
+    .editTitleDescription,
+    .editRating,
+    .editTags,
+    .removeMetadata,
+    .exportMetadata,
   ];
 
-  static const formatSpecificMetadataActions = [
-    EntryAction.showGeoTiffOnMap,
-    EntryAction.convertMotionPhotoToStillImage,
-    EntryAction.viewMotionPhotoVideo,
+  static const formatSpecificMetadataActions = <EntryAction>[
+    .showGeoTiffOnMap,
+    .convertMotionPhotoToStillImage,
+    .viewMotionPhotoVideo,
   ];
 }

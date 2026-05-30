@@ -7,35 +7,35 @@ extension ExtraChipActionView on ChipAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ChipAction.goToAlbumPage => l10n.chipActionGoToAlbumPage,
-      ChipAction.goToCountryPage => l10n.chipActionGoToCountryPage,
-      ChipAction.goToPlacePage => l10n.chipActionGoToPlacePage,
-      ChipAction.goToTagPage => l10n.chipActionGoToTagPage,
-      ChipAction.goToExplorerPage => l10n.chipActionGoToExplorerPage,
-      ChipAction.ratingOrGreater || ChipAction.ratingOrLower =>
+      .goToAlbumPage => l10n.chipActionGoToAlbumPage,
+      .goToCountryPage => l10n.chipActionGoToCountryPage,
+      .goToPlacePage => l10n.chipActionGoToPlacePage,
+      .goToTagPage => l10n.chipActionGoToTagPage,
+      .goToExplorerPage => l10n.chipActionGoToExplorerPage,
+      .ratingOrGreater || .ratingOrLower =>
         // different data depending on state
         toString(),
-      ChipAction.decompose => l10n.chipActionDecompose,
-      ChipAction.reverse =>
+      .decompose => l10n.chipActionDecompose,
+      .reverse =>
         // different data depending on state
         l10n.chipActionFilterOut,
-      ChipAction.hide => l10n.chipActionHide,
-      ChipAction.lockVault => l10n.chipActionLock,
+      .hide => l10n.chipActionHide,
+      .lockVault => l10n.chipActionLock,
     };
   }
 
   Widget getIcon() => Icon(_getIconData());
 
   IconData _getIconData() => switch (this) {
-    ChipAction.goToAlbumPage => AIcons.album,
-    ChipAction.goToCountryPage => AIcons.country,
-    ChipAction.goToPlacePage => AIcons.place,
-    ChipAction.goToTagPage => AIcons.tag,
-    ChipAction.goToExplorerPage => AIcons.explorer,
-    ChipAction.ratingOrGreater || ChipAction.ratingOrLower => AIcons.rating,
-    ChipAction.decompose => AIcons.split,
-    ChipAction.reverse => AIcons.reverse,
-    ChipAction.hide => AIcons.hide,
-    ChipAction.lockVault => AIcons.vaultLock,
+    .goToAlbumPage => AIcons.album,
+    .goToCountryPage => AIcons.country,
+    .goToPlacePage => AIcons.place,
+    .goToTagPage => AIcons.tag,
+    .goToExplorerPage => AIcons.explorer,
+    .ratingOrGreater || .ratingOrLower => AIcons.rating,
+    .decompose => AIcons.split,
+    .reverse => AIcons.reverse,
+    .hide => AIcons.hide,
+    .lockVault => AIcons.vaultLock,
   };
 }

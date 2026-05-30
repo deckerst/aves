@@ -160,7 +160,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
       builder: (context, snapshot) {
         final interpolatedData = snapshot.data;
         return Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),

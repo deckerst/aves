@@ -136,7 +136,7 @@ class MetadataDirTileBody extends StatelessWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: children,
     );
   }

@@ -2,7 +2,7 @@ import 'package:aves/app_flavor.dart';
 import 'package:aves/main_common.dart';
 import 'package:aves/widget_common.dart';
 
-const _flavor = AppFlavor.libre;
+const AppFlavor _flavor = .libre;
 
 @pragma('vm:entry-point')
 void main() => mainCommon(_flavor);

@@ -8,45 +8,45 @@ extension ExtraEntrySetActionView on EntrySetAction {
     final l10n = context.l10n;
     return switch (this) {
       // general
-      EntrySetAction.configureView => l10n.menuActionConfigureView,
-      EntrySetAction.select => l10n.menuActionSelect,
-      EntrySetAction.selectAll => l10n.menuActionSelectAll,
-      EntrySetAction.selectNone => l10n.menuActionSelectNone,
+      .configureView => l10n.menuActionConfigureView,
+      .select => l10n.menuActionSelect,
+      .selectAll => l10n.menuActionSelectAll,
+      .selectNone => l10n.menuActionSelectNone,
       // browsing
-      EntrySetAction.searchCollection => MaterialLocalizations.of(context).searchFieldLabel,
-      EntrySetAction.toggleTitleSearch =>
+      .searchCollection => MaterialLocalizations.of(context).searchFieldLabel,
+      .toggleTitleSearch =>
         // different data depending on toggle state
         l10n.collectionActionShowTitleSearch,
-      EntrySetAction.addDynamicAlbum => l10n.collectionActionAddDynamicAlbum,
-      EntrySetAction.addShortcut => l10n.collectionActionAddShortcut,
-      EntrySetAction.setHome => l10n.collectionActionSetHome,
-      EntrySetAction.emptyBin => l10n.collectionActionEmptyBin,
+      .addDynamicAlbum => l10n.collectionActionAddDynamicAlbum,
+      .addShortcut => l10n.collectionActionAddShortcut,
+      .setHome => l10n.collectionActionSetHome,
+      .emptyBin => l10n.collectionActionEmptyBin,
       // browsing or selecting
-      EntrySetAction.map => l10n.menuActionMap,
-      EntrySetAction.slideshow => l10n.menuActionSlideshow,
-      EntrySetAction.stats => l10n.menuActionStats,
-      EntrySetAction.rescan => l10n.collectionActionRescan,
+      .map => l10n.menuActionMap,
+      .slideshow => l10n.menuActionSlideshow,
+      .stats => l10n.menuActionStats,
+      .rescan => l10n.collectionActionRescan,
       // selecting
-      EntrySetAction.share => l10n.entryActionShare,
-      EntrySetAction.delete => l10n.entryActionDelete,
-      EntrySetAction.restore => l10n.entryActionRestore,
-      EntrySetAction.copy => l10n.collectionActionCopy,
-      EntrySetAction.move => l10n.collectionActionMove,
-      EntrySetAction.rename => l10n.entryActionRename,
-      EntrySetAction.convert => l10n.entryActionConvert,
-      EntrySetAction.exportGpx => l10n.collectionActionExportGpx,
-      EntrySetAction.toggleFavourite =>
+      .share => l10n.entryActionShare,
+      .delete => l10n.entryActionDelete,
+      .restore => l10n.entryActionRestore,
+      .copy => l10n.collectionActionCopy,
+      .move => l10n.collectionActionMove,
+      .rename => l10n.entryActionRename,
+      .convert => l10n.entryActionConvert,
+      .exportGpx => l10n.collectionActionExportGpx,
+      .toggleFavourite =>
         // different data depending on toggle state
         l10n.entryActionAddFavourite,
-      EntrySetAction.rotateCCW => l10n.entryActionRotateCCW,
-      EntrySetAction.rotateCW => l10n.entryActionRotateCW,
-      EntrySetAction.flip => l10n.entryActionFlip,
-      EntrySetAction.editDate => l10n.entryInfoActionEditDate,
-      EntrySetAction.editLocation => l10n.entryInfoActionEditLocation,
-      EntrySetAction.editTitleDescription => l10n.entryInfoActionEditTitleDescription,
-      EntrySetAction.editRating => l10n.entryInfoActionEditRating,
-      EntrySetAction.editTags => l10n.entryInfoActionEditTags,
-      EntrySetAction.removeMetadata => l10n.entryInfoActionRemoveMetadata,
+      .rotateCCW => l10n.entryActionRotateCCW,
+      .rotateCW => l10n.entryActionRotateCW,
+      .flip => l10n.entryActionFlip,
+      .editDate => l10n.entryInfoActionEditDate,
+      .editLocation => l10n.entryInfoActionEditLocation,
+      .editTitleDescription => l10n.entryInfoActionEditTitleDescription,
+      .editRating => l10n.entryInfoActionEditRating,
+      .editTags => l10n.entryInfoActionEditTags,
+      .removeMetadata => l10n.entryInfoActionRemoveMetadata,
     };
   }
 
@@ -55,45 +55,45 @@ extension ExtraEntrySetActionView on EntrySetAction {
   IconData _getIconData() {
     return switch (this) {
       // general
-      EntrySetAction.configureView => AIcons.view,
-      EntrySetAction.select => AIcons.select,
-      EntrySetAction.selectAll => AIcons.selected,
-      EntrySetAction.selectNone => AIcons.unselected,
+      .configureView => AIcons.view,
+      .select => AIcons.select,
+      .selectAll => AIcons.selected,
+      .selectNone => AIcons.unselected,
       // browsing
-      EntrySetAction.searchCollection => AIcons.search,
-      EntrySetAction.toggleTitleSearch =>
+      .searchCollection => AIcons.search,
+      .toggleTitleSearch =>
         // different data depending on toggle state
         AIcons.filter,
-      EntrySetAction.addDynamicAlbum => AIcons.dynamicAlbum,
-      EntrySetAction.addShortcut => AIcons.addShortcut,
-      EntrySetAction.setHome => AIcons.home,
-      EntrySetAction.emptyBin => AIcons.emptyBin,
+      .addDynamicAlbum => AIcons.dynamicAlbum,
+      .addShortcut => AIcons.addShortcut,
+      .setHome => AIcons.home,
+      .emptyBin => AIcons.emptyBin,
       // browsing or selecting
-      EntrySetAction.map => AIcons.map,
-      EntrySetAction.slideshow => AIcons.slideshow,
-      EntrySetAction.stats => AIcons.stats,
-      EntrySetAction.rescan => AIcons.refresh,
+      .map => AIcons.map,
+      .slideshow => AIcons.slideshow,
+      .stats => AIcons.stats,
+      .rescan => AIcons.refresh,
       // selecting
-      EntrySetAction.share => AIcons.share,
-      EntrySetAction.delete => AIcons.delete,
-      EntrySetAction.restore => AIcons.restore,
-      EntrySetAction.copy => AIcons.copy,
-      EntrySetAction.move => AIcons.move,
-      EntrySetAction.rename => AIcons.rename,
-      EntrySetAction.convert => AIcons.convert,
-      EntrySetAction.exportGpx => AIcons.route,
-      EntrySetAction.toggleFavourite =>
+      .share => AIcons.share,
+      .delete => AIcons.delete,
+      .restore => AIcons.restore,
+      .copy => AIcons.copy,
+      .move => AIcons.move,
+      .rename => AIcons.rename,
+      .convert => AIcons.convert,
+      .exportGpx => AIcons.route,
+      .toggleFavourite =>
         // different data depending on toggle state
         AIcons.favourite,
-      EntrySetAction.rotateCCW => AIcons.rotateLeft,
-      EntrySetAction.rotateCW => AIcons.rotateRight,
-      EntrySetAction.flip => AIcons.flip,
-      EntrySetAction.editDate => AIcons.date,
-      EntrySetAction.editLocation => AIcons.location,
-      EntrySetAction.editTitleDescription => AIcons.description,
-      EntrySetAction.editRating => AIcons.rating,
-      EntrySetAction.editTags => AIcons.tag,
-      EntrySetAction.removeMetadata => AIcons.clear,
+      .rotateCCW => AIcons.rotateLeft,
+      .rotateCW => AIcons.rotateRight,
+      .flip => AIcons.flip,
+      .editDate => AIcons.date,
+      .editLocation => AIcons.location,
+      .editTitleDescription => AIcons.description,
+      .editRating => AIcons.rating,
+      .editTags => AIcons.tag,
+      .removeMetadata => AIcons.clear,
     };
   }
 }

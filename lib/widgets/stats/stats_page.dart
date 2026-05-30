@@ -153,8 +153,8 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
             final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
             final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
             final mimeDonuts = Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: .center,
+              crossAxisAlignment: .center,
               children: [
                 MimeDonut(
                   icon: AIcons.image,
@@ -225,7 +225,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
             title: Text(l10n.statsPageTitle),
             actions: [
               IconButton(
-                icon: Icon(AIcons.fileExport),
+                icon: const Icon(AIcons.fileExport),
                 onPressed: () => _export(context),
                 tooltip: context.l10n.settingsActionExport,
               ),
@@ -251,7 +251,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.size),
           const SizedBox(width: 16),
@@ -267,7 +267,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.videoPlay),
           const SizedBox(width: 16),
@@ -314,7 +314,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       header = Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             header,
             const SizedBox(width: 16),
@@ -429,7 +429,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         success = await appService.copyToClipboard(text: body);
       case .file:
         success = await storageService.createFile(
-          'aves-stats-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
+          'aves-stats-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
           mimeType,
           Uint8List.fromList(utf8.encode(body)),
         );
@@ -513,7 +513,7 @@ class _LocationIndicator extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               const Icon(AIcons.location),
               Expanded(
@@ -522,7 +522,6 @@ class _LocationIndicator extends StatelessWidget {
                   // are centered even when the center child has larger height
                   alignment: Alignment.center,
                   children: [
-                    // TODO TLAD [memory] `LinearPercentIndicator` should dispose its internally created `CurvedAnimation`
                     LinearPercentIndicator(
                       percent: withGpsPercent,
                       lineHeight: lineHeight,

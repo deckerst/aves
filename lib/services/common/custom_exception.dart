@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 class CustomPlatformException {
   final String code;
   final String? message;
-  final dynamic details;
+  final Object? details;
   final String? stacktrace;
 
   CustomPlatformException({

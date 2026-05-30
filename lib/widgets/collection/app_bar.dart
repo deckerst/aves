@@ -42,6 +42,7 @@ import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -318,7 +319,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     if (isSelecting) {
       // `Selection` may not be available during hero
       return Selector<Selection<AvesEntry>?, int>(
-        selector: (context, selection) => selection?.selectedItems.length ?? 0,
+        selector: (context, selection) => selection?.selectedItemCount ?? 0,
         builder: (context, count, child) => Text(
           count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
           softWrap: false,
@@ -350,7 +351,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   List<Widget> _buildActions(BuildContext context, Selection<AvesEntry> selection, double maxWidth) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
     final isSelecting = selection.isSelecting;
-    final selectedItemCount = selection.selectedItems.length;
+    final selectedItemCount = selection.selectedItemCount;
 
     bool isVisible(EntrySetAction action) => _actionDelegate.isVisible(
       action,
@@ -430,7 +431,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     final availableCount = (maxWidth / _iconButtonWidth(context)).floor();
 
     final isSelecting = selection.isSelecting;
-    final selectedItemCount = selection.selectedItems.length;
+    final selectedItemCount = selection.selectedItemCount;
     final hasSelection = selectedItemCount > 0;
 
     final browsingQuickActions = settings.collectionBrowsingQuickActions;
@@ -696,8 +697,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     if (filters.isNotEmpty) {
       final selection = context.read<Selection<AvesEntry>>();
       if (selection.isSelecting) {
-        final toRemove = selection.selectedItems.where((entry) => !filters.every((f) => f.test(entry))).toSet();
-        selection.removeFromSelection(toRemove);
+        selection.removeFromSelection(selection.selectedItems.whereNot((entry) => filters.every((f) => f.test(entry))));
       }
     }
   }

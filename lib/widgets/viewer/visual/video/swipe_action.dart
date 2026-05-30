@@ -59,7 +59,7 @@ class SwipeActionFeedback extends StatelessWidget {
           if (value == null) return const SizedBox();
 
           return Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               _buildIcon(_getMaxIcon()),
               Container(

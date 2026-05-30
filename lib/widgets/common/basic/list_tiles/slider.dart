@@ -37,7 +37,7 @@ class SliderListTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 16, bottom: 8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Padding(
               padding: titlePadding,

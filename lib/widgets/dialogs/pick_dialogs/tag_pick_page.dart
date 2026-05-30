@@ -35,6 +35,7 @@ Future<TagBaseFilter?> pickTag({
   required BuildContext context,
   required Iterable<ChipType> chipTypes,
   required Uri? initialGroup,
+  GroupUriPredicate? isValidGroupPick,
 }) async {
   final source = context.read<CollectionSource>();
   if (source.targetScope != CollectionSource.fullScope) {
@@ -50,6 +51,7 @@ Future<TagBaseFilter?> pickTag({
         source: source,
         chipTypes: chipTypes,
         initialGroup: initialGroup,
+        isValidGroupPick: isValidGroupPick,
       ),
     ),
   );
@@ -61,11 +63,13 @@ class _TagPickPage extends StatefulWidget {
   final CollectionSource source;
   final Iterable<ChipType> chipTypes;
   final Uri? initialGroup;
+  final GroupUriPredicate? isValidGroupPick;
 
   const _TagPickPage({
     required this.source,
     required this.chipTypes,
     required this.initialGroup,
+    required this.isValidGroupPick,
   });
 
   @override
@@ -177,16 +181,24 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
 
   Widget? _buildFab(BuildContext context) {
     return isPickingGroup
-        ? FloatingActionButton.extended(
-            onPressed: () {
-              final groupUri = context.read<FilterGroupNotifier>().value;
-              final filter = groupUri != null ? tagGrouping.uriToFilter(groupUri) : TagGroupFilter.root;
-              if (filter is TagBaseFilter) {
-                _pickFilter(context, filter);
-              }
+        ? Selector<FilterGroupNotifier, Uri?>(
+            selector: (context, v) => v.value,
+            builder: (context, groupUri, child) {
+              final isValid = widget.isValidGroupPick?.call(groupUri) ?? true;
+              return FloatingActionButton.extended(
+                onPressed: isValid
+                    ? () {
+                        final filter = groupUri != null ? tagGrouping.uriToFilter(groupUri) : TagGroupFilter.root;
+                        if (filter is TagBaseFilter) {
+                          _pickFilter(context, filter);
+                        }
+                      }
+                    : null,
+                backgroundColor: isValid ? null : Theme.of(context).disabledColor,
+                icon: const Icon(AIcons.apply),
+                label: Text(context.l10n.groupPickerUseThisGroupButton),
+              );
             },
-            icon: const Icon(AIcons.apply),
-            label: Text(context.l10n.groupPickerUseThisGroupButton),
           )
         : null;
   }
@@ -199,8 +211,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
   ) {
     final itemCount = actionDelegate.allItems.length;
     final isSelecting = selection.isSelecting;
-    final selectedItems = selection.selectedItems;
-    final selectedFilters = selectedItems.map((v) => v.filter).toSet();
+    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
       action,

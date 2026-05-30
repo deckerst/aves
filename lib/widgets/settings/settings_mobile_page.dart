@@ -64,11 +64,11 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
               return [
                 PopupMenuItem(
                   value: SettingsAction.export,
-                  child: MenuRow(text: context.l10n.settingsActionExport, icon: Icon(AIcons.fileExport)),
+                  child: MenuRow(text: context.l10n.settingsActionExport, icon: const Icon(AIcons.fileExport)),
                 ),
                 PopupMenuItem(
                   value: SettingsAction.import,
-                  child: MenuRow(text: context.l10n.settingsActionImport, icon: Icon(AIcons.fileImport)),
+                  child: MenuRow(text: context.l10n.settingsActionImport, icon: const Icon(AIcons.fileImport)),
                 ),
               ];
             },
@@ -120,7 +120,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
 
         const mimeType = MimeTypes.json;
         final success = await storageService.createFile(
-          'aves-settings-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
+          'aves-settings-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
           mimeType,
           Uint8List.fromList(utf8.encode(allJsonString)),
         );

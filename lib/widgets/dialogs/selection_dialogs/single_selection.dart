@@ -63,7 +63,7 @@ class _AvesSingleSelectionDialogState<T> extends State<AvesSingleSelectionDialog
             }
           },
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               if (verticalPadding != 0) SizedBox(height: verticalPadding),
               if (message != null)

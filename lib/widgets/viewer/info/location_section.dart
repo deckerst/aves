@@ -88,7 +88,7 @@ class _LocationSectionState extends State<LocationSection> {
         return false;
       },
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           if (widget.showTitle) const SectionRow(icon: AIcons.location),
           MapTheme(
@@ -122,7 +122,7 @@ class _LocationSectionState extends State<LocationSection> {
               }
 
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   _AddressInfoGroup(entry: entry),
                   if (filters.isNotEmpty)

@@ -65,8 +65,9 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
       child: Selector<MapThemeData, Animation<double>>(
         selector: (context, v) => v.scale,
         builder: (context, scale, child) => SizeTransition(
+          axis: Axis.vertical,
           sizeFactor: scale,
-          axisAlignment: 1,
+          alignment: const Alignment(-1, 1),
           child: FadeTransition(
             opacity: scale,
             child: child,

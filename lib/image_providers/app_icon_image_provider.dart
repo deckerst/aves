@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+@immutable
 class AppIconImage extends ImageProvider<AppIconImageKey> {
   const AppIconImage({
     required this.packageName,

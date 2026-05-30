@@ -81,7 +81,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _setup();
-    imageCache.maximumSizeBytes = 512 * (1 << 20);
+    imageCache.maximumSize = 1000;
+    imageCache.maximumSizeBytes = 100 * (1 << 20); // MiB
   }
 
   @override
@@ -338,10 +339,11 @@ class _HomePageState extends State<HomePage> {
             source: source,
             filters: {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))},
             listenToSource: false,
-            // if we group bursts, opening a burst sub-entry should:
+            // if we group bursts/RAWs, opening a sub-entry should:
             // - identify and select the containing main entry,
             // - select the sub-entry in the Viewer page.
             stackBursts: false,
+            stackDevelopedRaws: false,
           );
           final viewerEntryPath = viewerEntry.path;
           final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
@@ -402,7 +404,7 @@ class _HomePageState extends State<HomePage> {
             source: source,
             filters: {
               LocationFilter.located,
-              if (filters != null) ...filters,
+              ...?filters,
             },
           );
           return MapPage(

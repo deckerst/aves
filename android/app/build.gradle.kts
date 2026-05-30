@@ -4,7 +4,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
-    id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -39,7 +38,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "deckers.thibault.aves"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -100,6 +99,10 @@ android {
             dimension = "store"
             applicationIdSuffix = ".libre"
         }
+    }
+
+    buildFeatures {
+        resValues = true
     }
 
     buildTypes {

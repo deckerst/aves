@@ -131,8 +131,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
           transitionBuilder: AvesTransitions.formTransitionBuilder,
           child: Column(
             key: ValueKey(_action),
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
             children: [
               if (_action == EntryConvertAction.convert) ..._buildConvertContent(context),
               if (_action == EntryConvertAction.convertMotionPhotoToStillImage) const SizedBox(height: 16),
@@ -197,7 +197,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
       Padding(
         padding: contentHorizontalPadding,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Text(l10n.exportEntryDialogFormat),
             const SizedBox(width: AvesDialog.controlCaptionPadding),
@@ -217,7 +217,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
       Padding(
         padding: contentHorizontalPadding,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
+          crossAxisAlignment: .baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
             Expanded(

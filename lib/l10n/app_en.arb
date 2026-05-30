@@ -593,8 +593,6 @@
 
   "aboutBugSectionTitle": "Bug Report",
   "aboutBugSaveLogInstruction": "Save app logs to a file",
-  "aboutBugCopyInfoInstruction": "Copy system information",
-  "aboutBugCopyInfoButton": "Copy",
   "aboutBugReportInstruction": "Report on GitHub with the logs and system information",
   "aboutBugReportButton": "Report",
 

@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-enum MediaStreamType { video, audio, text }
+enum MediaTrackType { video, audio, text }
 
-class MediaStreamSummary {
-  final MediaStreamType type;
+class MediaTrackSummary {
+  final MediaTrackType type;
   final int? index, width, height;
   final String? codecName, language, title;
 
-  const MediaStreamSummary({
+  const MediaTrackSummary({
     required this.type,
     required this.index,
     required this.codecName,

@@ -122,6 +122,8 @@ class AvesApp extends StatefulWidget {
     // so the nav bar is opaque, even when requesting `SystemUiMode.edgeToEdge` from Flutter
     // or setting `android:windowTranslucentNavigation` in Android themes.
     final navBarColor = device.supportEdgeToEdgeUIMode ? Colors.transparent : backgroundColor;
+
+    // on Android >=15 (API >=35), setting colors here has no effect
     return SystemUiOverlayStyle(
       systemNavigationBarColor: navBarColor,
       systemNavigationBarDividerColor: navBarColor,
@@ -133,18 +135,6 @@ class AvesApp extends StatefulWidget {
       statusBarIconBrightness: barBrightness,
       systemStatusBarContrastEnforced: false,
     );
-  }
-
-  static Future<void> showSystemUI() async {
-    if (device.supportEdgeToEdgeUIMode) {
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    } else {
-      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    }
-  }
-
-  static Future<void> hideSystemUI() async {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
   static Future<void> launchUrl(String? urlString) async {
@@ -257,7 +247,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             builder: (context, snapshot) {
               final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
               if (initialized) {
-                AvesApp.showSystemUI();
+                windowService.showSystemUI(true);
               }
               final home = initialized
                   ? _getFirstPage(intentData: widget.debugIntentData)
@@ -300,6 +290,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 // for all users of apps registered as accessibility services,
                                 // even though they are not for accessibility purposes (like TalkBack is)
                                 accessibleNavigation: false,
+                                // disabling animations at the framework level is problematic (e.g. GIF playback)
+                                // so we handle it through the app settings and more fine-grained behaviour
+                                disableAnimations: false,
                               ),
                               child: MaterialApp(
                                 navigatorKey: _navigatorKey,
@@ -401,7 +394,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(16),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           const Icon(AIcons.error),
           const SizedBox(height: 16),
@@ -654,7 +647,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           ? 'release'
           : kProfileMode
           ? 'profile'
-          : 'debug',
+          : kDebugMode
+          ? 'debug'
+          : 'unknown',
       'has_mobile_services': mobileServices.isServiceAvailable,
       'is_television': device.isTelevision,
       'locales': WidgetsBinding.instance.platformDispatcher.locales.join(', '),

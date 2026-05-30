@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/model/device.dart';
@@ -9,15 +8,15 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/device_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
-import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
@@ -79,7 +78,7 @@ class BugReportContent extends StatefulWidget {
 
 class _BugReportContentState extends State<BugReportContent> with FeedbackMixin {
   late Future<String> _infoLoader;
-  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.md';
+  static const bugReportUrl = '${AppReference.avesGithub}/issues/new?labels=type%3Abug&template=bug_report.yml';
 
   @override
   void initState() {
@@ -93,43 +92,10 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           _buildStep(1, l10n.aboutBugSaveLogInstruction, l10n.saveTooltip, _saveLogs),
-          _buildStep(2, l10n.aboutBugCopyInfoInstruction, l10n.aboutBugCopyInfoButton, _copySystemInfo),
-          FutureBuilder<String>(
-            future: _infoLoader,
-            builder: (context, snapshot) {
-              final info = snapshot.data;
-              if (info == null) return const SizedBox();
-
-              return Container(
-                decoration: BoxDecoration(
-                  color: Themes.secondLayerColor(context),
-                  border: Border.all(
-                    color: Theme.of(context).dividerColor,
-                    width: AvesBorder.curvedBorderWidth(context),
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                ),
-                constraints: const BoxConstraints(maxHeight: 100),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(8),
-                  // to show a scroll bar, we would need to provide a scroll controller
-                  // to both the `Scrollable` and the `Scrollbar`, but
-                  // as of Flutter v3.0.0, `SelectableText` does not allow passing the `scrollController`
-                  child: SelectableText(
-                    info,
-                    textDirection: ui.TextDirection.ltr,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              );
-            },
-          ),
-          _buildStep(3, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),
+          _buildStep(2, l10n.aboutBugReportInstruction, l10n.aboutBugReportButton, _goToGithub),
           const SizedBox(height: 8),
         ],
       ),
@@ -173,29 +139,39 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final mediaQuery = MediaQuery.of(context);
     final view = View.of(context);
+
+    final ram = await deviceService.getRamSizes(<MemorySizeType>{.total});
+    final heap = await deviceService.getHeapSizes(<MemorySizeType>{.max});
+    final ramTotal = formatFileSize(kAsciiLocale, ram[MemorySizeType.total] ?? 0);
+    final heapMax = formatFileSize(kAsciiLocale, heap[MemorySizeType.max] ?? 0);
+
     final supportsHdr = await windowService.supportsHdr();
     final supportsWideGamut = await windowService.supportsWideGamut();
+
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
     final storageGrants = await storageService.getGrantedDirectories();
+
     final source = context.read<CollectionSource>();
+    final entryCount = source.allEntries.length;
+    final albumCount = source.rawAlbums.length;
+    final tagCount = source.sortedTags.length;
+
     return [
-      'Package: ${device.packageName}',
-      'Installer: ${packageInfo.installerStore}',
-      'Aves version: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}',
+      'Aves: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}, package=${device.packageName}, installer=${packageInfo.installerStore}',
       'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
-      'Android version: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}',
-      'Android build: ${androidInfo.display}',
+      'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
-      'Display: pixel ratio=${view.devicePixelRatio}, logical=${mediaQuery.size.width}x${mediaQuery.size.height}, physical=${view.physicalSize.width}x${view.physicalSize.height}',
-      'Support: dynamic colors=${device.isDynamicColorAvailable}, geocoder=${device.hasGeocoder}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
-      'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}',
+      'Memory: ram.total=$ramTotal, heap.max=$heapMax',
+      'Screen: size.physical=${view.physicalSize.width.round()}x${view.physicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
+      'Display: size.logical=${mediaQuery.size.width}x${mediaQuery.size.height}, pixel ratio=${view.devicePixelRatio}',
+      'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}, geocoder=${device.hasGeocoder}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
       'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
       'Storage grants: ${storageGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',
-      'Collection: ${source.allEntries.length} items, ${source.rawAlbums.length} albums, ${source.sortedTags.length} tags',
+      'Collection: $entryCount items, $albumCount albums, $tagCount tags',
     ].join('\n');
   }
 
@@ -211,7 +187,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     ].join('\n--------------------------------------------------------------------------------\n');
 
     final success = await storageService.createFile(
-      'aves-logs-${DateFormat('yyyyMMdd_HHmmss', asciiLocale).format(DateTime.now())}.txt',
+      'aves-logs-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}.txt',
       MimeTypes.plainText,
       Uint8List.fromList(utf8.encode(logs)),
     );
@@ -222,11 +198,6 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
         showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
       }
     }
-  }
-
-  Future<void> _copySystemInfo() async {
-    await Clipboard.setData(ClipboardData(text: await _infoLoader));
-    showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
   }
 
   Future<void> _goToGithub() => AvesApp.launchUrl(bugReportUrl);

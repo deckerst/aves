@@ -123,7 +123,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                       Padding(
                         padding: const EdgeInsetsDirectional.only(start: 8, end: 16),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: .end,
                           children: [
                             Expanded(
                               child: TextField(
@@ -169,7 +169,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                             constraints: const BoxConstraints(minHeight: AvesFilterChip.minChipHeight),
                             child: Center(
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisSize: .min,
                                 children: [
                                   Icon(AIcons.tagUntagged, color: untaggedColor),
                                   const SizedBox(width: 8),

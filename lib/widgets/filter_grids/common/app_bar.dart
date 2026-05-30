@@ -288,7 +288,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     if (isSelecting) {
       final l10n = context.l10n;
       return Selector<Selection<FilterGridItem<T>>?, int>(
-        selector: (context, selection) => selection?.selectedItems.length ?? 0,
+        selector: (context, selection) => selection?.selectedItemCount ?? 0,
         builder: (context, count, child) => Text(
           count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
           softWrap: false,
@@ -321,8 +321,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   ) {
     final itemCount = actionDelegate.allItems.length;
     final isSelecting = selection.isSelecting;
-    final selectedItems = selection.selectedItems;
-    final selectedFilters = selectedItems.map((v) => v.filter).toSet();
+    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
       action,

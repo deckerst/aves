@@ -31,44 +31,44 @@ enum ChipSetAction {
 }
 
 class ChipSetActions {
-  static const general = [
-    ChipSetAction.configureView,
-    ChipSetAction.select,
-    ChipSetAction.selectAll,
-    ChipSetAction.selectNone,
+  static const general = <ChipSetAction>[
+    .configureView,
+    .select,
+    .selectAll,
+    .selectNone,
   ];
 
   // `null` items are converted to dividers
-  static const browsing = [
-    ChipSetAction.search,
-    ChipSetAction.toggleTitleSearch,
+  static const browsing = <ChipSetAction?>[
+    .search,
+    .toggleTitleSearch,
     null,
-    ChipSetAction.map,
-    ChipSetAction.slideshow,
-    ChipSetAction.stats,
+    .map,
+    .slideshow,
+    .stats,
     null,
-    ChipSetAction.createAlbum,
-    ChipSetAction.createVault,
+    .createAlbum,
+    .createVault,
   ];
 
   // `null` items are converted to dividers
-  static const selection = [
-    ChipSetAction.setCover,
-    ChipSetAction.pin,
-    ChipSetAction.unpin,
-    ChipSetAction.delete,
-    ChipSetAction.remove,
-    ChipSetAction.rename,
-    ChipSetAction.showCountryStates,
-    ChipSetAction.hide,
-    ChipSetAction.group,
+  static const selection = <ChipSetAction?>[
+    .setCover,
+    .pin,
+    .unpin,
+    .delete,
+    .remove,
+    .rename,
+    .showCountryStates,
+    .hide,
+    .group,
     null,
-    ChipSetAction.showCollection,
-    ChipSetAction.map,
-    ChipSetAction.slideshow,
-    ChipSetAction.stats,
+    .showCollection,
+    .map,
+    .slideshow,
+    .stats,
     null,
-    ChipSetAction.configureVault,
-    ChipSetAction.lockVault,
+    .configureVault,
+    .lockVault,
   ];
 }

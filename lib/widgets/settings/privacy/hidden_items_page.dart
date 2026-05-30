@@ -35,7 +35,7 @@ class HiddenItemsPage extends StatelessWidget {
                 };
                 if (allHiddenFilters.isEmpty) {
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
                       const Divider(height: 0),

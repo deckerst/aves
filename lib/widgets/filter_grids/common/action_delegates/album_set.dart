@@ -440,6 +440,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       moveType: null,
       chipTypes: {AlbumChipType.group},
       initialGroup: initialGroup,
+      isValidGroupPick: (destinationGroupUri) {
+        return FilterGrouping.isValidParent(destinationGroupUri, childrenUris);
+      },
     );
     if (filter == null) return;
 

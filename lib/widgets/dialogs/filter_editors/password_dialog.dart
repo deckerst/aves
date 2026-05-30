@@ -39,7 +39,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       content: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Text(_confirming ? context.l10n.passwordDialogConfirm : context.l10n.passwordDialogEnter),
           Padding(

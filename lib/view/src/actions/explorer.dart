@@ -7,10 +7,10 @@ extension ExtraExplorerActionView on ExplorerAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ExplorerAction.addShortcut => l10n.collectionActionAddShortcut,
-      ExplorerAction.setHome => l10n.collectionActionSetHome,
-      ExplorerAction.hide => l10n.chipActionHide,
-      ExplorerAction.stats => l10n.menuActionStats,
+      .addShortcut => l10n.collectionActionAddShortcut,
+      .setHome => l10n.collectionActionSetHome,
+      .hide => l10n.chipActionHide,
+      .stats => l10n.menuActionStats,
     };
   }
 
@@ -18,10 +18,10 @@ extension ExtraExplorerActionView on ExplorerAction {
 
   IconData _getIconData() {
     return switch (this) {
-      ExplorerAction.addShortcut => AIcons.addShortcut,
-      ExplorerAction.setHome => AIcons.home,
-      ExplorerAction.hide => AIcons.hide,
-      ExplorerAction.stats => AIcons.stats,
+      .addShortcut => AIcons.addShortcut,
+      .setHome => AIcons.home,
+      .hide => AIcons.hide,
+      .stats => AIcons.stats,
     };
   }
 }

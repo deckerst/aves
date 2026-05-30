@@ -16,6 +16,9 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import deckers.thibault.aves.channel.calls.AppAdapterHandler.Companion.getShareableUri
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
@@ -87,6 +90,28 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(true)
     }
 
+    override fun showSystemUI(call: MethodCall, result: MethodChannel.Result) {
+        val visible = call.argument<Boolean>("visible")
+        if (visible == null) {
+            result.error("showSystemUI-args", "missing arguments", null)
+            return
+        }
+
+        val window = activity.window
+        WindowCompat.enableEdgeToEdge(window)
+
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        val types = WindowInsetsCompat.Type.systemBars()
+        if (visible) {
+            insetsController.show(types)
+            insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+        } else {
+            insetsController.hide(types)
+            insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+        result.success(true)
+    }
+
     override fun isCutoutAware(call: MethodCall, result: MethodChannel.Result) {
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
     }
@@ -155,7 +180,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             }
 
             val scaleToFit = Matrix()
-            val src = RectF(0f, 0f, bitmap.getWidth().toFloat(), bitmap.getHeight().toFloat())
+            val src = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
             val dst = RectF(0f, 0f, heightPx.toFloat(), heightPx.toFloat())
             scaleToFit.setRectToRect(src, dst, ScaleToFit.CENTER)
 

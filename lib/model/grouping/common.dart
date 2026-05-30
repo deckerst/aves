@@ -23,9 +23,15 @@ import 'package:flutter/foundation.dart';
 final FilterGrouping albumGrouping = FilterGrouping._private(FilterGrouping.hostAlbums, AlbumGroupFilter.new);
 final FilterGrouping tagGrouping = FilterGrouping._private(FilterGrouping.hostTags, TagGroupFilter.new);
 
-// album group URI: "aves://albums/group?path=/group12/subgroup34"
-// stored album URI: "aves://albums/stored?path=/volume/dir/path12"
-// dynamic album URI: "aves://albums/dynamic?name=dynalbum12"
+typedef GroupUriPredicate = bool Function(Uri? groupUri);
+
+/*
+  album group URI: "aves://albums/group?path=group%2Fsubgroup"
+  stored album URI: "aves://albums/stored?path=/volume/dir/path12"
+  dynamic album URI: "aves://albums/dynamic?name=dynalbum12"
+  tag group URI: "aves://tags/group?path=group%2Fsubgroup"
+  tag URI: "aves://tags/tag?name=tag12"
+ */
 class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   static const scheme = 'aves';
   static const hostAlbums = 'albums';
@@ -52,12 +58,13 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   }
 
   void init() {
-    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _clearObsoleteFilters()));
+    _subscriptions.add(dynamicAlbums.eventBus.on<DynamicAlbumChangedEvent>().listen((e) => _sanitize()));
   }
 
   void setGroups(Map<Uri, Set<Uri>> groups) {
     _groups.clear();
     _groups.addAll(groups);
+    _sanitize();
   }
 
   @override
@@ -73,9 +80,9 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     unregisterSource(_source);
     final sourceEvents = source.eventBus;
     _sourceSubscriptions[source] = {
-      sourceEvents.on<EntryMovedEvent>().listen((e) => _clearObsoleteFilters()),
-      sourceEvents.on<EntryRemovedEvent>().listen((e) => _clearObsoleteFilters()),
-      sourceEvents.on<AlbumsChangedEvent>().listen((e) => _clearObsoleteFilters()),
+      sourceEvents.on<EntryMovedEvent>().listen((e) => _sanitize()),
+      sourceEvents.on<EntryRemovedEvent>().listen((e) => _sanitize()),
+      sourceEvents.on<AlbumsChangedEvent>().listen((e) => _sanitize()),
     };
     _source = source;
   }
@@ -173,13 +180,17 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     });
   }
 
-  void _cleanEmptyGroups() {
+  bool _cleanEmptyGroups() {
+    var changed = false;
     final emptyGroupUris = _groups.entries.where((kv) => kv.value.isEmpty).map((v) => v.key).toSet();
     if (emptyGroupUris.isNotEmpty) {
       _removeFromGroups(emptyGroupUris);
       _groups.removeWhere((groupUri, _) => emptyGroupUris.contains(groupUri));
+      // removing a group could make another empty
       _cleanEmptyGroups();
+      changed = true;
     }
+    return changed;
   }
 
   void _reparentGroupPaths(Set<Uri> childrenUris, Uri? parentGroupUri) {
@@ -218,10 +229,24 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     }
   }
 
-  void _clearObsoleteFilters() {
+  void _sanitize() {
     final source = _source;
     if (source == null || source.targetScope != CollectionSource.fullScope || !source.isReady) return;
 
+    var changed = false;
+
+    // remove all children from invalid groups
+    _groups.entries.forEach((kv) {
+      final groupUri = kv.key;
+      final childrenUris = kv.value;
+      if (!isValidParent(groupUri, childrenUris)) {
+        debugPrint('Clearing from invalid group=$groupUri all children=$childrenUris');
+        childrenUris.clear();
+        changed = true;
+      }
+    });
+
+    // remove obsolete children
     _groups.entries.forEach((kv) {
       final groupUri = kv.key;
       final childrenUris = kv.value;
@@ -260,12 +285,17 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
           }
         }
         if (!valid) {
+          debugPrint('Removing from group=$groupUri obsolete child=$childUri');
           childrenUris.remove(childUri);
-          debugPrint('Removed obsolete childUri=$childUri from group=$groupUri');
+          changed = true;
         }
       });
     });
-    _cleanEmptyGroups();
+
+    changed |= _cleanEmptyGroups();
+    if (changed) {
+      notifyListeners();
+    }
   }
 
   // group uri / filter conversion
@@ -278,6 +308,18 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
   }
 
   static bool isGroupUri(Uri uri) => uri.path == FilterGrouping._groupPath;
+
+  static bool isValidParent(Uri? parentUri, Set<Uri> childrenUris) {
+    if (parentUri == null) return true;
+
+    if (!isGroupUri(parentUri)) return false;
+
+    final parentPath = FilterGrouping.getGroupPath(parentUri);
+    if (parentPath == null) return false;
+
+    final childrenPaths = childrenUris.map(FilterGrouping.getGroupPath).nonNulls.toSet();
+    return childrenPaths.none(parentPath.startsWith);
+  }
 
   // parent group URI is `null` for root
   static Uri _buildGroupUri(String host, Uri? parentGroupUri, String name) {

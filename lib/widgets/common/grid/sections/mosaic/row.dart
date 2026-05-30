@@ -46,12 +46,10 @@ class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
 class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   RenderMosaicGridRow({
     List<RenderBox>? children,
-    required MosaicRowLayout rowLayout,
-    required double spacing,
-    required TextDirection textDirection,
-  }) : _rowLayout = rowLayout,
-       _spacing = spacing,
-       _textDirection = textDirection {
+    required this._rowLayout,
+    required this._spacing,
+    required this._textDirection,
+  }) {
     addAll(children);
   }
 

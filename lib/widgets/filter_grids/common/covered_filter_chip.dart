@@ -206,7 +206,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       fontSize: detailFontSize(extent),
     );
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         if (pinned) _buildDetailIcon(context, AIcons.pin),
         if (filter is StoredAlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)) _buildDetailIcon(context, AIcons.storageCard),

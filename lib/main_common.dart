@@ -1,29 +1,20 @@
 import 'dart:isolate';
 
 import 'package:aves/app_flavor.dart';
+import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
-  // debugProfilePlatformChannels = true;
+  AvesMethodChannel.kDebug = kDebugMode;
+  debugProfilePlatformChannels = false;
 
   //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
   //  debugPrintGestureArenaDiagnostics = true;
-
-  // Invert oversized images (debug mode only)
-  // cf https://flutter.dev/docs/development/tools/devtools/inspector
-  // but unaware of device pixel ratio as of Flutter 2.2.1: https://github.com/flutter/flutter/issues/76208
-  //
-  // MaterialApp.checkerboardOffscreenLayers
-  // cf https://flutter.dev/docs/perf/rendering/ui-performance#checking-for-offscreen-layers
-  //
-  // MaterialApp.checkerboardRasterCacheImages
-  // cf https://flutter.dev/docs/perf/rendering/ui-performance#checking-for-non-cached-images
-  //
-  // flutter run --profile --trace-skia
 
   initPlatformServices();
 

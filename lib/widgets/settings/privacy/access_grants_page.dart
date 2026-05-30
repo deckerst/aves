@@ -46,7 +46,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
             _lastPaths = snapshot.data!..sort();
             if (_lastPaths!.isEmpty) {
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   const _Header(),
                   const Divider(),

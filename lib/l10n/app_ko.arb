@@ -249,8 +249,6 @@
     "aboutLinkPolicy": "개인정보 보호정책",
     "aboutBugSectionTitle": "버그 보고",
     "aboutBugSaveLogInstruction": "앱 로그를 파일에 저장하기",
-    "aboutBugCopyInfoInstruction": "시스템 정보를 복사하기",
-    "aboutBugCopyInfoButton": "복사",
     "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 GitHub에서 이슈를 제출하기",
     "aboutBugReportButton": "제출",
     "aboutCreditsSectionTitle": "크레딧",

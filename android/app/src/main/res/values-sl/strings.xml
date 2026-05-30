@@ -7,5 +7,6 @@
     <string name="search_shortcut_short_label">Iskanje</string>
     <string name="analysis_notification_default_title">Skeniram medijske datoteke</string>
     <string name="analysis_notification_action_stop">Ustavi</string>
-    <string name="analysis_channel_name">Sken za medijske datoteke</string>
+    <string name="analysis_channel_name">Razišči datoteke</string>
+    <string name="map_shortcut_short_label">Zemljevid</string>
 </resources>

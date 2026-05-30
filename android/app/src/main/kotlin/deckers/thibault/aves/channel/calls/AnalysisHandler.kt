@@ -3,6 +3,8 @@ package deckers.thibault.aves.channel.calls
 import android.app.ActivityManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
+import androidx.core.app.ComponentActivity
 import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
 import androidx.work.ExistingWorkPolicy
@@ -12,6 +14,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import deckers.thibault.aves.AnalysisWorker
 import deckers.thibault.aves.utils.FlutterUtils
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -96,6 +99,7 @@ class AnalysisHandler<T>(private val activity: T, private val onAnalysisComplete
             attached = true
             WorkManager.getInstance(activity).getWorkInfosForUniqueWorkLiveData(ANALYSIS_WORK_NAME).observe(activity) { list ->
                 if (list.any { it.state == WorkInfo.State.SUCCEEDED }) {
+                    Log.i(LOG_TAG, "Analysis work succeeded for IDs=${list.map { it.id }}")
                     runBlocking {
                         FlutterUtils.runOnUiThread {
                             onAnalysisCompleted()
@@ -107,6 +111,7 @@ class AnalysisHandler<T>(private val activity: T, private val onAnalysisComplete
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<AnalysisHandler<ComponentActivity>>()
         const val CHANNEL = "deckers.thibault/aves/analysis"
         private const val ANALYSIS_WORK_NAME = "analysis_work"
     }

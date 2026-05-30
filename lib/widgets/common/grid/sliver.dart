@@ -70,8 +70,8 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
 
   _RenderSliverKnownExtentBoxAdaptor({
     required super.childManager,
-    required List<SectionLayout> sectionLayouts,
-  }) : _sectionLayouts = sectionLayouts;
+    required this._sectionLayouts,
+  });
 
   // cf `ItemExtentBuilder`, used by `RenderSliverVariedExtentList` / `SliverVariedExtentList`
   late ItemExtentBuilder itemExtentBuilder = (index, dimensions) {

@@ -7,10 +7,10 @@ extension ExtraSlideshowActionView on SlideshowAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      SlideshowAction.resume => l10n.slideshowActionResume,
-      SlideshowAction.showInCollection => l10n.slideshowActionShowInCollection,
-      SlideshowAction.cast => l10n.entryActionCast,
-      SlideshowAction.settings => l10n.viewerActionSettings,
+      .resume => l10n.slideshowActionResume,
+      .showInCollection => l10n.slideshowActionShowInCollection,
+      .cast => l10n.entryActionCast,
+      .settings => l10n.viewerActionSettings,
     };
   }
 
@@ -18,10 +18,10 @@ extension ExtraSlideshowActionView on SlideshowAction {
 
   IconData _getIconData() {
     return switch (this) {
-      SlideshowAction.resume => AIcons.play,
-      SlideshowAction.showInCollection => AIcons.allCollection,
-      SlideshowAction.cast => AIcons.cast,
-      SlideshowAction.settings => AIcons.settings,
+      .resume => AIcons.play,
+      .showInCollection => AIcons.allCollection,
+      .cast => AIcons.cast,
+      .settings => AIcons.settings,
     };
   }
 }

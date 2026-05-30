@@ -257,6 +257,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   ),
                 ),
                 if (animate) const ReportProgressIndicator(opacity: .1),
+                // TODO TLAD [memory] `CircularPercentIndicator` should dispose its internally created `CurvedAnimation`
                 CircularPercentIndicator(
                   percent: percent,
                   lineWidth: strokeWidth,

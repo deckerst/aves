@@ -129,8 +129,8 @@ class ScaleBar extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
         children: [
           OutlinedText(
             textSpans: [

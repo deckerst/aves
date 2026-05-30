@@ -108,7 +108,7 @@ class _LicensesState extends State<Licenses> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           AboutSectionTitle(text: context.l10n.aboutLicensesSectionTitle),
           const SizedBox(height: 8),

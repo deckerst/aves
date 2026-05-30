@@ -247,8 +247,6 @@
     "aboutLinkPolicy": "隐私政策",
     "aboutBugSectionTitle": "报告错误",
     "aboutBugSaveLogInstruction": "将应用日志保存到文件",
-    "aboutBugCopyInfoInstruction": "复制系统信息",
-    "aboutBugCopyInfoButton": "复制",
     "aboutBugReportInstruction": "在 GitHub 上报告日志和系统信息",
     "aboutBugReportButton": "报告",
     "aboutCreditsSectionTitle": "鸣谢",

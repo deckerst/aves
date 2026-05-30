@@ -62,14 +62,17 @@ class _InteractiveFilterTileState<T extends CollectionFilter> extends State<Inte
   }
 
   void _navigate(Route route) {
+    void _doNavigate() => Navigator.maybeOf(context)?.push(route);
     if (effectiveHeroType == HeroType.onTap) {
       // make sure the chip hero triggers, even when tapping on the list view details
       setState(() => _heroTypeOverride = HeroType.always);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _doNavigate();
+      });
+    } else {
+      _doNavigate();
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      Navigator.maybeOf(context)?.push(route);
-    });
   }
 }
 
@@ -124,7 +127,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
         );
       case .list:
         Widget child = Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: .stretch,
           children: [
             FilterChipGridDecorator<T, FilterGridItem<T>>(
               gridItem: gridItem,

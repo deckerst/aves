@@ -241,8 +241,6 @@
     "aboutLinkPolicy": "Aturan Privasi",
     "aboutBugSectionTitle": "Lapor Bug",
     "aboutBugSaveLogInstruction": "Simpan log aplikasi ke file",
-    "aboutBugCopyInfoInstruction": "Salin informasi sistem",
-    "aboutBugCopyInfoButton": "Salin",
     "aboutBugReportInstruction": "Laporkan ke GitHub dengan log dan informasi sistem",
     "aboutBugReportButton": "Rapor",
     "aboutCreditsSectionTitle": "Kredit",

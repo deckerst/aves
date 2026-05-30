@@ -103,6 +103,6 @@ abstract class BaseStreamHandler : EventChannel.StreamHandler {
     }
 
     companion object {
-        const val BUFFER_SIZE = 1 shl 18 // 256kB
+        const val BUFFER_SIZE = 256 * (1 shl 10) // KiB
     }
 }

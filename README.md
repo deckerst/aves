@@ -86,7 +86,7 @@ Aves requires a few permissions to do its job:
 
 ### Issues
 
-[Bug reports](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Abug&template=bug_report.md&title=) and [feature requests](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Afeature&template=feature_request.md&title=) are welcome, but read the [guidelines](https://github.com/deckerst/aves/issues/234) first. If you have questions, check out the [discussions](https://github.com/deckerst/aves/discussions).
+[Bug reports](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Abug&template=bug_report.yml&title=) and [feature requests](https://github.com/deckerst/aves/issues/new?assignees=&labels=type%3Afeature&template=feature_request.yml&title=) are welcome, but read the [guidelines](https://github.com/deckerst/aves/issues/234) first. If you have questions, check out the [discussions](https://github.com/deckerst/aves/discussions).
 
 ### Code
 
@@ -124,6 +124,17 @@ To build the project, create a file named `<app dir>/android/key.properties`. It
 To run the app:
 ```
 # ./flutterw run -t lib/main_play.dart --flavor play
+```
+
+To debug the app Kotlin code, if attaching the debugger from Android Studio fails:
+1) open `android` folder in Android Studio,
+2) `Edit Configurations...`,
+3) select configuration `app`,
+4) select tab `Debugger`
+5) select tab `LLDB Post Attach Commands`
+6) add:
+```
+process handle SIGSEGV --pass true --stop false --notify true
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver

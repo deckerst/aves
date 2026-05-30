@@ -36,7 +36,7 @@ class EmptyContent extends StatelessWidget {
       child: Align(
         alignment: alignment,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: AnimationConfiguration.toStaggeredList(
             duration: durations.staggeredAnimation,
             delay: durations.staggeredAnimationDelay * timeDilation,

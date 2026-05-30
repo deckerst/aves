@@ -99,7 +99,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                           alignment: Alignment.center,
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: .min,
                             children: [
                               Row(
                                 children: [
@@ -118,7 +118,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                               ClipRRect(
                                 borderRadius: const BorderRadius.all(Radius.circular(4)),
                                 child: Directionality(
-                                  textDirection: videoPlaybackDirection,
+                                  textDirection: kVideoPlaybackDirection,
                                   child: StreamBuilder<int>(
                                     stream: positionStream,
                                     builder: (context, snapshot) {

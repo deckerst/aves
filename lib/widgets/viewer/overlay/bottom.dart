@@ -222,8 +222,8 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
         return SizedBox(
           width: availableWidth,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
             children: [
               if (showMultiPageOverlay && !collapsedPageScroller)
                 Padding(
@@ -239,7 +239,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
                 ),
               (showMultiPageOverlay && collapsedPageScroller)
                   ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: .center,
                       textDirection: ViewerBottomOverlay.actionsDirection,
                       children: [
                         SafeArea(

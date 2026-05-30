@@ -67,7 +67,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
           builder: (context, selectedValue, child) {
             final _rating = selectedValue ?? 0;
             return Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: List.generate(5, (i) {
                 final disabled = _rating < i + 1;
                 return Padding(

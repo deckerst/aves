@@ -325,6 +325,7 @@ class MediaStoreSource extends CollectionSource {
       final uri = kv.value;
       final sourceEntry = await mediaFetchService.getEntry(uri, null);
       if (sourceEntry != null) {
+        var isSourceEntryUsed = false;
         final existingEntry = allEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
         // compare paths because some apps move files without updating their `last modified date`
         if (existingEntry == null || (sourceEntry.dateModifiedMillis ?? 0) > (existingEntry.dateModifiedMillis ?? 0) || sourceEntry.path != existingEntry.path) {
@@ -337,6 +338,7 @@ class MediaStoreSource extends CollectionSource {
               // it can discover new entries only if it can analyze them
               sourceEntry.id = localMediaDb.nextId;
               newEntries.add(sourceEntry);
+              isSourceEntryUsed = true;
             }
             final existingDirectory = existingEntry?.directory;
             if (existingDirectory != null) {
@@ -346,6 +348,9 @@ class MediaStoreSource extends CollectionSource {
             debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
             tempUris.add(uri);
           }
+        }
+        if (!isSourceEntryUsed) {
+          sourceEntry.dispose();
         }
       }
     }

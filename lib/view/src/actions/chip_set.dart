@@ -8,36 +8,36 @@ extension ExtraChipSetActionView on ChipSetAction {
     final l10n = context.l10n;
     return switch (this) {
       // general
-      ChipSetAction.configureView => l10n.menuActionConfigureView,
-      ChipSetAction.select => l10n.menuActionSelect,
-      ChipSetAction.selectAll => l10n.menuActionSelectAll,
-      ChipSetAction.selectNone => l10n.menuActionSelectNone,
+      .configureView => l10n.menuActionConfigureView,
+      .select => l10n.menuActionSelect,
+      .selectAll => l10n.menuActionSelectAll,
+      .selectNone => l10n.menuActionSelectNone,
       // browsing
-      ChipSetAction.search => MaterialLocalizations.of(context).searchFieldLabel,
-      ChipSetAction.toggleTitleSearch =>
+      .search => MaterialLocalizations.of(context).searchFieldLabel,
+      .toggleTitleSearch =>
         // different data depending on toggle state
         l10n.collectionActionShowTitleSearch,
-      ChipSetAction.createGroup => l10n.chipActionCreateGroup,
-      ChipSetAction.createAlbum => l10n.chipActionCreateAlbum,
-      ChipSetAction.createVault => l10n.chipActionCreateVault,
+      .createGroup => l10n.chipActionCreateGroup,
+      .createAlbum => l10n.chipActionCreateAlbum,
+      .createVault => l10n.chipActionCreateVault,
       // browsing or selecting
-      ChipSetAction.map => l10n.menuActionMap,
-      ChipSetAction.slideshow => l10n.menuActionSlideshow,
-      ChipSetAction.stats => l10n.menuActionStats,
+      .map => l10n.menuActionMap,
+      .slideshow => l10n.menuActionSlideshow,
+      .stats => l10n.menuActionStats,
       // selecting (single/multiple filters)
-      ChipSetAction.delete => l10n.chipActionDelete,
-      ChipSetAction.remove => l10n.chipActionRemove,
-      ChipSetAction.hide => l10n.chipActionHide,
-      ChipSetAction.pin => l10n.chipActionPin,
-      ChipSetAction.unpin => l10n.chipActionUnpin,
-      ChipSetAction.group => l10n.chipActionGroup,
-      ChipSetAction.lockVault => l10n.chipActionLock,
-      ChipSetAction.showCountryStates => l10n.chipActionShowCountryStates,
-      ChipSetAction.showCollection => l10n.chipActionShowCollection,
+      .delete => l10n.chipActionDelete,
+      .remove => l10n.chipActionRemove,
+      .hide => l10n.chipActionHide,
+      .pin => l10n.chipActionPin,
+      .unpin => l10n.chipActionUnpin,
+      .group => l10n.chipActionGroup,
+      .lockVault => l10n.chipActionLock,
+      .showCountryStates => l10n.chipActionShowCountryStates,
+      .showCollection => l10n.chipActionShowCollection,
       // selecting (single filter)
-      ChipSetAction.rename => l10n.chipActionRename,
-      ChipSetAction.setCover => l10n.chipActionSetCover,
-      ChipSetAction.configureVault => l10n.chipActionConfigureVault,
+      .rename => l10n.chipActionRename,
+      .setCover => l10n.chipActionSetCover,
+      .configureVault => l10n.chipActionConfigureVault,
     };
   }
 
@@ -46,36 +46,36 @@ extension ExtraChipSetActionView on ChipSetAction {
   IconData _getIconData() {
     return switch (this) {
       // general
-      ChipSetAction.configureView => AIcons.view,
-      ChipSetAction.select => AIcons.select,
-      ChipSetAction.selectAll => AIcons.selected,
-      ChipSetAction.selectNone => AIcons.unselected,
+      .configureView => AIcons.view,
+      .select => AIcons.select,
+      .selectAll => AIcons.selected,
+      .selectNone => AIcons.unselected,
       // browsing
-      ChipSetAction.search => AIcons.search,
-      ChipSetAction.toggleTitleSearch =>
+      .search => AIcons.search,
+      .toggleTitleSearch =>
         // different data depending on toggle state
         AIcons.filter,
-      ChipSetAction.createGroup => AIcons.add,
-      ChipSetAction.createAlbum => AIcons.add,
-      ChipSetAction.createVault => AIcons.vaultAdd,
+      .createGroup => AIcons.add,
+      .createAlbum => AIcons.add,
+      .createVault => AIcons.vaultAdd,
       // browsing or selecting
-      ChipSetAction.map => AIcons.map,
-      ChipSetAction.slideshow => AIcons.slideshow,
-      ChipSetAction.stats => AIcons.stats,
+      .map => AIcons.map,
+      .slideshow => AIcons.slideshow,
+      .stats => AIcons.stats,
       // selecting (single/multiple filters)
-      ChipSetAction.delete => AIcons.delete,
-      ChipSetAction.remove => AIcons.remove,
-      ChipSetAction.hide => AIcons.hide,
-      ChipSetAction.pin => AIcons.pin,
-      ChipSetAction.unpin => AIcons.unpin,
-      ChipSetAction.group => AIcons.group,
-      ChipSetAction.lockVault => AIcons.vaultLock,
-      ChipSetAction.showCountryStates => AIcons.state,
-      ChipSetAction.showCollection => AIcons.allCollection,
+      .delete => AIcons.delete,
+      .remove => AIcons.remove,
+      .hide => AIcons.hide,
+      .pin => AIcons.pin,
+      .unpin => AIcons.unpin,
+      .group => AIcons.group,
+      .lockVault => AIcons.vaultLock,
+      .showCountryStates => AIcons.state,
+      .showCollection => AIcons.allCollection,
       // selecting (single filter)
-      ChipSetAction.rename => AIcons.rename,
-      ChipSetAction.setCover => AIcons.setCover,
-      ChipSetAction.configureVault => AIcons.vaultConfigure,
+      .rename => AIcons.rename,
+      .setCover => AIcons.setCover,
+      .configureVault => AIcons.vaultConfigure,
     };
   }
 }

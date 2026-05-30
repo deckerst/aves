@@ -9,13 +9,13 @@ publish_to: none
 # - play changelog:   /whatsnew/whatsnew-en-US
 # - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.14.4+168
+version: 1.14.5+169
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.41.9
-  sdk: ">=3.11.5 <4.0.0"
+  flutter: 3.44.0
+  sdk: ">=3.12.0 <4.0.0"
 
 workspace:
   - plugins/aves_magnifier
@@ -98,16 +98,20 @@ dependencies:
       ref: aves
   get_it:
   gpx:
+  highlight:
   http:
   intl:
   latlong2:
   leak_tracker:
   local_auth:
   material_color_utilities:
-  material_design_icons_flutter:
+  flutter_material_design_icons:
   material_symbols_icons:
   network_info_plus:
   overlay_support:
+    git:
+      url: https://github.com/deckerst/overlay_support.git
+      ref: aves
   package_info_plus:
   panorama:
     git:
@@ -117,6 +121,9 @@ dependencies:
   pattern_lock:
   pdf:
   percent_indicator:
+    git:
+      url: https://github.com/deckerst/flutter_percent_indicator.git
+      ref: aves
   permission_handler:
   pin_code_fields:
   printing:

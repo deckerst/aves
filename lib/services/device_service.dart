@@ -4,6 +4,8 @@ import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/services.dart';
 
+enum MemorySizeType { advertised, available, free, max, total, used }
+
 abstract class DeviceService {
   Future<bool> canManageMedia();
 
@@ -26,12 +28,19 @@ abstract class DeviceService {
 
   Future<void> requestMediaManagePermission();
 
-  Future<int> getAvailableHeapSize();
+  Future<int> getAvailableHeapSize() async {
+    final sizes = await getHeapSizes({.available});
+    return sizes[MemorySizeType.available] ?? 0;
+  }
+
+  Future<Map<MemorySizeType, int?>> getHeapSizes(Set<MemorySizeType> types);
+
+  Future<Map<MemorySizeType, int?>> getRamSizes(Set<MemorySizeType> types);
 
   Future<void> requestGarbageCollection();
 }
 
-class PlatformDeviceService implements DeviceService {
+class PlatformDeviceService extends DeviceService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/device');
 
   @override
@@ -158,14 +167,29 @@ class PlatformDeviceService implements DeviceService {
   }
 
   @override
-  Future<int> getAvailableHeapSize() async {
+  Future<Map<MemorySizeType, int?>> getHeapSizes(Set<MemorySizeType> types) async {
     try {
-      final result = await _platform.invokeMethod('getAvailableHeapSize');
-      if (result != null) return result as int;
+      final result = await _platform.invokeMethod('getHeapSizes', <String, Object?>{
+        'types': types.map((v) => v.name).toList(),
+      });
+      if (result is Map) return result.cast<String, int?>().map((k, v) => MapEntry(MemorySizeType.values.firstWhere((v) => v.name == k), v));
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
-    return 0;
+    return {};
+  }
+
+  @override
+  Future<Map<MemorySizeType, int?>> getRamSizes(Set<MemorySizeType> types) async {
+    try {
+      final result = await _platform.invokeMethod('getRamSizes', <String, Object?>{
+        'types': types.map((v) => v.name).toList(),
+      });
+      if (result is Map) return result.cast<String, int?>().map((k, v) => MapEntry(MemorySizeType.values.firstWhere((v) => v.name == k), v));
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
   }
 
   @override

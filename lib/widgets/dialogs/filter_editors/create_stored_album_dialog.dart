@@ -86,7 +86,7 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
             setState(() {});
           },
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: volumeTiles,
           ),
         ),

@@ -50,9 +50,8 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
               );
             },
             itemCount: items.length,
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
               setState(() {
-                if (oldIndex < newIndex) newIndex -= 1;
                 items.insert(newIndex, items.removeAt(oldIndex));
               });
             },

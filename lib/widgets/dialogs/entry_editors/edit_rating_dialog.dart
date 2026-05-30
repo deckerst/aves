@@ -64,7 +64,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                     setState(() => _action = v!);
                   },
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: .start,
                     children: [
                       RadioListTile<_RatingAction>(
                         value: _RatingAction.set,

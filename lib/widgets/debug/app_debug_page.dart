@@ -20,6 +20,7 @@ import 'package:aves/widgets/debug/capabilities.dart';
 import 'package:aves/widgets/debug/colors.dart';
 import 'package:aves/widgets/debug/database.dart';
 import 'package:aves/widgets/debug/general.dart';
+import 'package:aves/widgets/debug/groups.dart';
 import 'package:aves/widgets/debug/leaking.dart';
 import 'package:aves/widgets/debug/media_store_scan_dialog.dart';
 import 'package:aves/widgets/debug/os_apps.dart';
@@ -89,6 +90,7 @@ class AppDebugPage extends StatelessWidget {
                     DebugAppDatabaseSection(),
                     DebugErrorReportingSection(),
                     DebugSettingsSection(),
+                    DebugGroupsSection(),
                     DebugOSAppSection(),
                     DebugOSCodecSection(),
                     DebugOSPathSection(),

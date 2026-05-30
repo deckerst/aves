@@ -12,6 +12,7 @@ class ExoVideoController extends AvesVideoController {
   late VideoStatus _status;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   final StreamController<VideoPlayerValue> _playerValueStreamController = StreamController.broadcast();
@@ -32,7 +33,7 @@ class ExoVideoController extends AvesVideoController {
   final ValueNotifier<bool> canSetSpeedNotifier = ValueNotifier(true);
 
   @override
-  final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> canSelectTrackNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
@@ -62,7 +63,7 @@ class ExoVideoController extends AvesVideoController {
     canCaptureFrameNotifier.dispose();
     canMuteNotifier.dispose();
     canSetSpeedNotifier.dispose();
-    canSelectStreamNotifier.dispose();
+    canSelectTrackNotifier.dispose();
     sarNotifier.dispose();
 
     await super.dispose();
@@ -164,6 +165,9 @@ class ExoVideoController extends AvesVideoController {
   Stream<VideoStatus> get statusStream => _statusStreamController.stream;
 
   @override
+  Stream<VideoEvent> get eventStream => _eventStreamController.stream;
+
+  @override
   Stream<double> get volumeStream => _playerValueStreamController.stream.map((v) => v.volume).distinct();
 
   @override
@@ -217,16 +221,16 @@ class ExoVideoController extends AvesVideoController {
 
   @override
   // TODO TLAD
-  List<MediaStreamSummary> get streams => [];
+  List<MediaTrackSummary> get tracks => [];
 
   @override
-  Future<MediaStreamSummary?> getSelectedStream(MediaStreamType type) async {
+  Future<MediaTrackSummary?> getSelectedTrack(MediaTrackType type) async {
     // TODO TLAD
     return null;
   }
 
   @override
-  Future<void> selectStream(MediaStreamType type, MediaStreamSummary? selected) async {
+  Future<void> selectTrack(MediaTrackType type, MediaTrackSummary? selected) async {
     // TODO TLAD
   }
 }

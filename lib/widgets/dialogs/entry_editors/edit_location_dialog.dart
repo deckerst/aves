@@ -283,7 +283,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Expanded(
             child: Column(
@@ -317,14 +317,14 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Row(
             children: [
               Expanded(child: _gpxDateRangeText(context, _gpx)),
               const SizedBox(width: 8),
               IconButton(
-                icon: Icon(AIcons.fileImport),
+                icon: const Icon(AIcons.fileImport),
                 onPressed: _pickGpx,
                 tooltip: l10n.pickTooltip,
               ),
@@ -335,8 +335,8 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
               children: [
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: .min,
+                    crossAxisAlignment: .start,
                     children: [
                       Text(l10n.editEntryLocationDialogTimeShift),
                       AvesCaption(_formatShiftDuration(_gpxShift)),

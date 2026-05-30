@@ -127,13 +127,13 @@ object Metadata {
     // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
-    private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MB
+    private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MiB
 
     fun isDangerouslyLarge(sizeBytes: Long?) = sizeBytes == null || sizeBytes > FILE_SIZE_MAX
 
     // we try and read metadata from large files by copying an arbitrary amount from its beginning
     // to a temporary file, and reusing that preview file for all metadata reading purposes
-    private const val PREVIEW_SIZE: Long = 5 * (1 shl 20) // MB
+    private const val PREVIEW_SIZE: Long = 5 * (1 shl 20) // MiB
 
     private val previewFiles = HashMap<Uri, File>()
 

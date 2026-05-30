@@ -1,0 +1,39 @@
+name: Feature Request
+description: Suggest an idea for this project
+labels: [ "type:feature" ]
+body:
+  - type: checkboxes
+    attributes:
+      label: Guidelines
+      options:
+        - label: I have read the [guidelines to open issues](https://github.com/deckerst/aves/issues/234)
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Use case
+      description: |
+        Please tell us the problem you are running into that led to you wanting
+        a new feature.
+
+        Is your feature request related to a problem? Please give a clear and
+        concise description of what the problem is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Alternatives
+      description: A clear and concise description of any alternative solutions or features you've considered.
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.

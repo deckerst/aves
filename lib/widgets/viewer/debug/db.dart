@@ -62,7 +62,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB date:${data == null ? ' no row' : ''}'),
                 if (data != null)
@@ -83,7 +83,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB entry:${data == null ? ' no row' : ''}'),
                 if (data != null) ...[
@@ -119,7 +119,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB metadata:${data == null ? ' no row' : ''}'),
                 if (data != null)
@@ -138,7 +138,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB address:${data == null ? ' no row' : ''}'),
                 if (data != null)
@@ -157,7 +157,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB trash details:${data == null ? ' no row' : ''}'),
                 if (data != null) ...[
@@ -188,7 +188,7 @@ class _DbTabState extends State<DbTab> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
             final data = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text('DB video playback:${data == null ? ' no row' : ''}'),
                 if (data != null)

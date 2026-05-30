@@ -1,7 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/dialogs/duration_dialog.dart';
@@ -213,8 +212,8 @@ class SettingsDurationListTile extends StatelessWidget {
     return Selector<Settings, int>(
       selector: selector,
       builder: (context, current, child) {
-        final currentMinutes = current ~/ secondsInMinute;
-        final currentSeconds = current % secondsInMinute;
+        final currentMinutes = current ~/ Duration.secondsPerMinute;
+        final currentSeconds = current % Duration.secondsPerMinute;
 
         final l10n = context.l10n;
         final subtitle = [

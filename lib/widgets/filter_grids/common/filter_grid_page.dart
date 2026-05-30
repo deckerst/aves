@@ -687,9 +687,9 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                 final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
                 return DraggableScrollbar(
                   backgroundColor: Colors.white,
-                  scrollThumbSize: Size(avesScrollThumbWidth, avesScrollThumbHeight),
-                  scrollThumbBuilder: avesScrollThumbBuilder(
-                    height: avesScrollThumbHeight,
+                  scrollThumbSize: AvesScrollThumb.thumbSize,
+                  scrollThumbBuilder: AvesScrollThumb.builder(
+                    height: AvesScrollThumb.thumbHeight,
                     backgroundColor: Colors.white,
                   ),
                   controller: scrollController,

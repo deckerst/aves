@@ -1,5 +1,4 @@
 import 'package:aves/ref/locales.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -26,8 +25,8 @@ class _DurationDialogState extends State<DurationDialog> {
   void initState() {
     super.initState();
     final seconds = widget.initialSeconds;
-    _minutes = ValueNotifier(seconds ~/ secondsInMinute);
-    _seconds = ValueNotifier(seconds % secondsInMinute);
+    _minutes = ValueNotifier(seconds ~/ Duration.secondsPerMinute);
+    _seconds = ValueNotifier(seconds % Duration.secondsPerMinute);
   }
 
   @override
@@ -54,7 +53,7 @@ class _DurationDialogState extends State<DurationDialog> {
                 padding: const EdgeInsets.only(top: 16),
                 child: Center(
                   child: Table(
-                    textDirection: timeComponentsDirection,
+                    textDirection: kTimeComponentsDirection,
                     children: [
                       TableRow(
                         children: [
@@ -69,7 +68,7 @@ class _DurationDialogState extends State<DurationDialog> {
                             alignment: Alignment.centerRight,
                             child: WheelSelector(
                               valueNotifier: _minutes,
-                              values: List.generate(minutesInHour, (i) => i),
+                              values: List.generate(Duration.minutesPerHour, (i) => i),
                               textStyle: textStyle,
                               textAlign: digitsAlign,
                               format: timeComponentFormatter.format,
@@ -86,7 +85,7 @@ class _DurationDialogState extends State<DurationDialog> {
                             alignment: Alignment.centerLeft,
                             child: WheelSelector(
                               valueNotifier: _seconds,
-                              values: List.generate(secondsInMinute, (i) => i),
+                              values: List.generate(Duration.secondsPerMinute, (i) => i),
                               textStyle: textStyle,
                               textAlign: digitsAlign,
                               format: timeComponentFormatter.format,
@@ -121,5 +120,5 @@ class _DurationDialogState extends State<DurationDialog> {
     );
   }
 
-  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_minutes.value * secondsInMinute + _seconds.value);
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_minutes.value * Duration.secondsPerMinute + _seconds.value);
 }

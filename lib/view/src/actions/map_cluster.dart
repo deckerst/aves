@@ -7,8 +7,8 @@ extension ExtraMapClusterActionView on MapClusterAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      MapClusterAction.editLocation => l10n.entryInfoActionEditLocation,
-      MapClusterAction.removeLocation => l10n.entryInfoActionRemoveLocation,
+      .editLocation => l10n.entryInfoActionEditLocation,
+      .removeLocation => l10n.entryInfoActionRemoveLocation,
     };
   }
 
@@ -16,8 +16,8 @@ extension ExtraMapClusterActionView on MapClusterAction {
 
   IconData _getIconData() {
     return switch (this) {
-      MapClusterAction.editLocation => AIcons.edit,
-      MapClusterAction.removeLocation => AIcons.clear,
+      .editLocation => AIcons.edit,
+      .removeLocation => AIcons.clear,
     };
   }
 }

@@ -7,8 +7,8 @@ extension ExtraShareActionView on ShareAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ShareAction.imageOnly => l10n.entryActionShareImageOnly,
-      ShareAction.videoOnly => l10n.entryActionShareVideoOnly,
+      .imageOnly => l10n.entryActionShareImageOnly,
+      .videoOnly => l10n.entryActionShareVideoOnly,
     };
   }
 
@@ -16,8 +16,8 @@ extension ExtraShareActionView on ShareAction {
 
   IconData _getIconData() {
     return switch (this) {
-      ShareAction.imageOnly => AIcons.image,
-      ShareAction.videoOnly => AIcons.video,
+      .imageOnly => AIcons.image,
+      .videoOnly => AIcons.video,
     };
   }
 }

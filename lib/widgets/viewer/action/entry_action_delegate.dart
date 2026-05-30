@@ -96,7 +96,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         case .lockViewer:
         case .videoToggleMute:
           return !settings.useTvLayout && targetEntry.isPureVideo;
-        case .videoSelectStreams:
+        case .videoSelectTracks:
         case .videoSetSpeed:
         case .videoABRepeat:
         case .videoSettings:
@@ -237,7 +237,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       // video
       case .videoCaptureFrame:
       case .videoToggleMute:
-      case .videoSelectStreams:
+      case .videoSelectTracks:
       case .videoSetSpeed:
       case .videoABRepeat:
       case .videoSettings:

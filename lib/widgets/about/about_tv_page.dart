@@ -122,7 +122,7 @@ class _ContentState extends State<_Content> {
         );
 
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             rail,
             Expanded(
@@ -156,7 +156,7 @@ class _ContentState extends State<_Content> {
     switch (key) {
       case .links:
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: AppReference.buildLinks(context)
               .map(
                 (v) => Padding(
@@ -180,7 +180,7 @@ class _ContentState extends State<_Content> {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(context.l10n.aboutLicensesBanner),
               const SizedBox(height: 16),

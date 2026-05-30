@@ -72,8 +72,8 @@ class DerivedMaterialLocalizations extends MaterialLocalizations {
 
   DerivedMaterialLocalizations({
     required this.parent,
-    int? firstDayOfWeekIndex,
-  }) : _firstDayOfWeekIndex = firstDayOfWeekIndex;
+    this._firstDayOfWeekIndex,
+  });
 
   @override
   String aboutListTileTitle(String applicationName) => parent.aboutListTileTitle(applicationName);

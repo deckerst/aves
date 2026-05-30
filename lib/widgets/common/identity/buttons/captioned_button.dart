@@ -97,7 +97,7 @@ class _CaptionedButtonState extends State<CaptionedButton> {
     return SizedBox(
       width: CaptionedButton.getWidth(context),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           SizedBox(height: CaptionedButton.padding.top),
           OverlayButton(

@@ -181,7 +181,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                   builder: (context, constraints) {
                     _sizeNotifier.value = constraints.biggest;
                     return _GoogleMap(
-                      dotLocationNotifier: widget.dotLocationNotifier ?? ValueNotifier(null),
+                      dotLocationNotifier: widget.dotLocationNotifier,
                       initialCameraPosition: CameraPosition(
                         bearing: -bounds.rotation,
                         target: _toServiceLatLng(bounds.projectedCenter),

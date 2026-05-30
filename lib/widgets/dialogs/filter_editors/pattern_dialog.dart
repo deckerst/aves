@@ -26,7 +26,7 @@ class _PatternDialogState extends State<PatternDialog> {
     final colorScheme = Theme.of(context).colorScheme;
     return AvesDialog(
       content: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [
           Text(_confirming ? context.l10n.patternDialogConfirm : context.l10n.patternDialogEnter),
           Padding(

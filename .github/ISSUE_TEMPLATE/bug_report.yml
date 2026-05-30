@@ -1,0 +1,67 @@
+name: Bug Report
+description: Create a report to help us improve
+labels: [ "type:bug" ]
+body:
+  - type: checkboxes
+    attributes:
+      label: Guidelines
+      options:
+        - label: I have read the [guidelines to open issues](https://github.com/deckerst/aves/issues/234)
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please tell us exactly how to reproduce the problem you are running into.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected results
+      description: Please tell us what is expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual results
+      description: Please tell us what is actually happening.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Screenshots or Video
+      description: |
+        Upload any screenshots or video of the bug if applicable.
+      value: |
+        <details open>
+        <summary>Screenshots / Video demonstration</summary>
+        
+        [Upload media here]
+        
+        </details>
+
+  - type: upload
+    attributes:
+      label: Logs
+      description: In the app, there are instructions in the `About` page > `Bug Report` section. After following them, upload your logs here.
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Custom environment
+      options:
+        - label: I use a custom rom (if so, please specify below)
+        - label: I use a custom launcher (if so, please specify below)
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.

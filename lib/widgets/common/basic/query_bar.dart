@@ -64,7 +64,7 @@ class _QueryBarState extends State<QueryBar> {
       style: Theme.of(context).textTheme.bodyMedium!,
       child: FontSizeIconTheme(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: .center,
           children: [
             Expanded(
               child: TextField(

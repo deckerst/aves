@@ -1,9 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-const hoursInDay = 24;
-const minutesInHour = 60;
-const secondsInMinute = 60;
-
 extension ExtraDateTime on DateTime {
   bool isAtSameYearAs(DateTime? other) => year == other?.year;
 
@@ -36,7 +32,7 @@ final epoch = DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
 
 // Overflowing timestamps that are supposed to be in milliseconds
 // will be retried after stripping extra digits.
-const _millisMaxDigits = 13; // 13 digits can go up to 2286/11/20
+const int _millisMaxDigits = 13; // 13 digits can go up to 2286/11/20
 
 DateTime? dateTimeFromMillis(int? millis, {bool isUtc = false}) {
   // exclude `0` and `-1` as they are both used as default values

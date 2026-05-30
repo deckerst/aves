@@ -43,6 +43,7 @@ Future<AlbumBaseFilter?> pickAlbum({
   required MoveType? moveType,
   required Iterable<AlbumChipType> chipTypes,
   required Uri? initialGroup,
+  GroupUriPredicate? isValidGroupPick,
 }) async {
   final source = context.read<CollectionSource>();
   if (source.targetScope != CollectionSource.fullScope) {
@@ -59,6 +60,7 @@ Future<AlbumBaseFilter?> pickAlbum({
         moveType: moveType,
         chipTypes: chipTypes,
         initialGroup: initialGroup,
+        isValidGroupPick: isValidGroupPick,
       ),
     ),
   );
@@ -71,12 +73,14 @@ class _AlbumPickPage extends StatefulWidget {
   final MoveType? moveType;
   final Iterable<AlbumChipType> chipTypes;
   final Uri? initialGroup;
+  final GroupUriPredicate? isValidGroupPick;
 
   const _AlbumPickPage({
     required this.source,
     required this.moveType,
     required this.chipTypes,
     required this.initialGroup,
+    required this.isValidGroupPick,
   });
 
   @override
@@ -195,16 +199,24 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
 
   Widget? _buildFab(BuildContext context) {
     return isPickingGroup
-        ? FloatingActionButton.extended(
-            onPressed: () {
-              final groupUri = context.read<FilterGroupNotifier>().value;
-              final filter = groupUri != null ? albumGrouping.uriToFilter(groupUri) : AlbumGroupFilter.root;
-              if (filter is AlbumBaseFilter) {
-                _pickFilter(context, filter);
-              }
+        ? Selector<FilterGroupNotifier, Uri?>(
+            selector: (context, v) => v.value,
+            builder: (context, groupUri, child) {
+              final isValid = widget.isValidGroupPick?.call(groupUri) ?? true;
+              return FloatingActionButton.extended(
+                onPressed: isValid
+                    ? () {
+                        final filter = groupUri != null ? albumGrouping.uriToFilter(groupUri) : AlbumGroupFilter.root;
+                        if (filter is AlbumBaseFilter) {
+                          _pickFilter(context, filter);
+                        }
+                      }
+                    : null,
+                backgroundColor: isValid ? null: Theme.of(context).disabledColor,
+                icon: const Icon(AIcons.apply),
+                label: Text(context.l10n.groupPickerUseThisGroupButton),
+              );
             },
-            icon: const Icon(AIcons.apply),
-            label: Text(context.l10n.groupPickerUseThisGroupButton),
           )
         : null;
   }
@@ -217,8 +229,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   ) {
     final itemCount = actionDelegate.allItems.length;
     final isSelecting = selection.isSelecting;
-    final selectedItems = selection.selectedItems;
-    final selectedFilters = selectedItems.map((v) => v.filter).toSet();
+    final selectedFilters = selection.selectedItems.map((v) => v.filter).toSet();
 
     bool isVisible(ChipSetAction action) => actionDelegate.isVisible(
       action,

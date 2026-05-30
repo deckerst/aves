@@ -9,10 +9,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+@immutable
 class RegionProvider extends ImageProvider<RegionProviderKey> {
   final RegionProviderKey key;
 
-  RegionProvider(this.key);
+  const RegionProvider(this.key);
 
   @override
   Future<RegionProviderKey> obtainKey(ImageConfiguration configuration) {

@@ -249,8 +249,6 @@
     "aboutLinkPolicy": "Politique de confidentialité",
     "aboutBugSectionTitle": "Rapports d’erreur",
     "aboutBugSaveLogInstruction": "Sauvegarder les logs de l’app vers un fichier",
-    "aboutBugCopyInfoInstruction": "Copier les informations d’environnement",
-    "aboutBugCopyInfoButton": "Copier",
     "aboutBugReportInstruction": "Créer une « issue » sur GitHub en attachant les logs et informations d’environnement",
     "aboutBugReportButton": "Créer",
     "aboutCreditsSectionTitle": "Remerciements",

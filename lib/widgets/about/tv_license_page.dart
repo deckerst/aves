@@ -97,7 +97,7 @@ class _TvLicensePageState extends State<TvLicensePage> {
 
               return SafeArea(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     const SizedBox(width: 16),
                     rail,
@@ -380,8 +380,8 @@ class _PackageLicensePageTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextStyle? effectiveTitleTextStyle = titleTextStyle ?? theme.titleLarge;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .start,
       children: <Widget>[
         Text(title, style: effectiveTitleTextStyle?.copyWith(color: foregroundColor)),
         Text(subtitle, style: theme.titleSmall?.copyWith(color: foregroundColor)),

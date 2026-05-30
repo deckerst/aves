@@ -47,14 +47,11 @@ class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
 class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   RenderFixedExtentGridRow({
     List<RenderBox>? children,
-    required double width,
-    required double height,
-    required double spacing,
-    required TextDirection textDirection,
-  }) : _width = width,
-       _height = height,
-       _spacing = spacing,
-       _textDirection = textDirection {
+    required this._width,
+    required this._height,
+    required this._spacing,
+    required this._textDirection,
+  }) {
     addAll(children);
   }
 

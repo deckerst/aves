@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, non_constant_identifier_names, unnecessary_this
+
 /*
  * Diff Match and Patch
  * Copyright 2018 The diff-match-patch Authors.
@@ -23,10 +25,6 @@
  *
  * @author fraser@google.com (Neil Fraser)
  */
-
-// ignore_for_file: no_leading_underscores_for_local_identifiers
-// ignore_for_file: non_constant_identifier_names
-// ignore_for_file: unnecessary_this
 
 import 'dart:collection';
 import 'dart:math';

@@ -33,7 +33,7 @@ class SelectionButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: padding, right: padding, bottom: padding),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           textDirection: ViewerBottomOverlay.actionsDirection,
           children: [
             const Spacer(),
@@ -41,10 +41,10 @@ class SelectionButton extends StatelessWidget {
               scale: scale,
               onPressed: () => selection.toggleSelection(mainEntry),
               child: Selector<Selection<AvesEntry>?, int>(
-                selector: (context, selection) => selection?.selectedItems.length ?? 0,
+                selector: (context, selection) => selection?.selectedItemCount ?? 0,
                 builder: (context, count, child) {
                   return Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     textDirection: ViewerBottomOverlay.actionsDirection,
                     children: [
                       AnimatedDiffText(

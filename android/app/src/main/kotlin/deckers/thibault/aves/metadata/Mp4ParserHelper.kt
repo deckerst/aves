@@ -46,7 +46,7 @@ object Mp4ParserHelper {
     private val LOG_TAG = LogUtils.createTag<Mp4ParserHelper>()
 
     // arbitrary size to detect boxes that may yield an OOM
-    private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MB
+    private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MiB
 
     const val SAMSUNG_MAKERNOTE_BOX_TYPE = "sefd"
     const val SEFD_MOTION_PHOTO_NAME = "MotionPhoto_Data"

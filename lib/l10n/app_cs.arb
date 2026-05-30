@@ -555,7 +555,6 @@
     "newAlbumDialogTitle": "Nové album",
     "editEntryDateDialogTitle": "Datum a čas",
     "editEntryDateDialogSetCustom": "Nastavit vlastní datum",
-    "aboutBugCopyInfoButton": "Kopírovat",
     "viewDialogSortSectionTitle": "Řazení",
     "coverDialogTabColor": "Barva",
     "tileLayoutMosaic": "Mozaika",
@@ -573,7 +572,6 @@
     "collectionEmptyFavourites": "Žádné oblíbené položky",
     "albumScreenRecordings": "Nahrávky obrazovky",
     "aboutCreditsSectionTitle": "Zásluhy",
-    "aboutBugCopyInfoInstruction": "Zkopírujte informace o systému",
     "collectionMoveFailureFeedback": "{count, plural, =1{Chyba při přesouvání 1 položky} other{Chyba při přesouvání {count} položek}}",
     "@collectionMoveFailureFeedback": {
         "placeholders": {
