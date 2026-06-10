@@ -864,6 +864,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         if (mimeType == MimeTypes.TIFF && MultiPage.isMultiPageTiff(context, uri)) flags = flags or MASK_IS_MULTIPAGE
 
+        // embedded MP4 video in JPEG without XMP (e.g. Xiaomi dynamic photos)
+        if (mimeType == MimeTypes.JPEG && (flags and MASK_IS_MOTION_PHOTO == 0) && sizeBytes != null) {
+            if (MultiPage.getTrailerVideoSize(context, uri, mimeType, sizeBytes) != null) {
+                flags = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
+            }
+        }
+
         metadataMap[KEY_FLAGS] = flags
     }
 

@@ -343,6 +343,27 @@ object MultiPage {
 
         XMP.checkIsoBMFFImage(context, mimeType, uri, foundXmp, ::processXmp)
 
+        // fallback for JPEG with embedded MP4 video but no XMP (e.g. Xiaomi dynamic photos)
+        // only scan files large enough to feasibly contain embedded video data
+        if (offsetFromEnd == null && mimeType == MimeTypes.JPEG && sizeBytes > 5_000_000) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    if (MemoryUtils.canAllocate(sizeBytes)) {
+                        val bytes = ByteArray(sizeBytes.toInt())
+                        DataInputStream(input).use {
+                            it.readFully(bytes)
+                        }
+                        val index = bytes.indexOfBytes(heicMotionPhotoVideoStartIndicator)
+                        if (index != -1) {
+                            offsetFromEnd = sizeBytes - index
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to find embedded video in JPEG uri=$uri", e)
+            }
+        }
+
         return offsetFromEnd
     }
 
