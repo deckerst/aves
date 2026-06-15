@@ -849,9 +849,9 @@
     "settingsSubtitleThemeTextAlignmentCenter": "நடுவண்",
     "settingsSubtitleThemeTextAlignmentRight": "வலது",
     "settingsPrivacySectionTitle": "தனியுரிமை",
-    "settingsAllowInstalledAppAccess": "பயன்பாட்டு சரக்குகளுக்கான அணுகலை அனுமதி",
+    "settingsAllowInstalledAppAccess": "பயன்பாடு இருப்புக்கான அணுகல்",
     "settingsAllowInstalledAppAccessSubtitle": "தொகுப்புக் காட்சியை மேம்படுத்தப் பயன்படுகிறது",
-    "settingsAllowErrorReporting": "பெயரிலி பிழை அறிக்கையை அனுமதி",
+    "settingsAllowErrorReporting": "பெயரில்லாத பிழை அறிக்கை",
     "settingsSaveSearchHistory": "தேடல் வரலாற்றைச் சேமி",
     "settingsHiddenItemsTile": "மறைக்கப்பட்ட உருப்படிகள்",
     "settingsHiddenItemsPageTitle": "மறைக்கப்பட்ட உருப்படிகள்",
@@ -972,5 +972,15 @@
     "mapStyleEditorDialogName": "பெயர்",
     "mapStyleEditorDialogUrl": "முகவரி",
     "mapStyleEditorDialogSubdomains": "துணை டொமைன்கள்",
-    "mapStyleEditorDialogUserAgent": "பயனர் முகவர்"
+    "mapStyleEditorDialogUserAgent": "பயனர் முகவர்",
+    "filterTypeSlowMotionVideoLabel": "மெதுவான இயக்கம்",
+    "collectionActionExportGpx": "சிபிஃசு ஐ ஏற்றுமதி செய்",
+    "drawerCollectionSlowMotionVideos": "மெதுவாக இயக்கும் காணொளிகள்",
+    "showThumbnailSlowMotionVideoIcon": "மெதுவான இயக்கம் சின்னத்தைக் காட்டு",
+    "settingsAutoExportSettings": "தானியங்கு அமைப்புகள் ஏற்றுமதி",
+    "settingsAllowNotifications": "அறிவிப்புகளை இசைவு",
+    "settingsPermissionsTile": "இசைவுகள்",
+    "settingsPermissionsPageTitle": "இசைவுகள்",
+    "mapShowItemTracks": "பாதைகளை காட்டு",
+    "mapHideItemTracks": "பாதைகளை மறை"
 }

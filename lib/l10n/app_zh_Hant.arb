@@ -944,5 +944,8 @@
     "mapStyleEditorDialogUrl": "URL",
     "mapStyleEditorDialogSubdomains": "子域名",
     "mapStyleEditorDialogUserAgent": "用戶代理（UA）",
-    "settingsViewerShowZoomLevel": "顯示縮放等級"
+    "settingsViewerShowZoomLevel": "顯示縮放等級",
+    "collectionActionExportGpx": "匯出 GPX",
+    "settingsEnabled": "已啟用",
+    "settingsForced": "已強制"
 }

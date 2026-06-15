@@ -463,7 +463,7 @@
     "settingsVideoGestureDoubleTapTogglePlay": "두 번 탭해서 재생이나 일시정지하기",
     "settingsVideoGestureSideDoubleTapSeek": "화면 측면에서 두 번 탭해서 앞뒤로 가기",
     "settingsPrivacySectionTitle": "개인정보 보호",
-    "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근 허용",
+    "settingsAllowInstalledAppAccess": "설치된 앱의 목록 접근",
     "settingsAllowInstalledAppAccessSubtitle": "앨범 표시 개선을 위해",
     "settingsAllowErrorReporting": "오류 보고서 보내기",
     "settingsSaveSearchHistory": "검색기록",
@@ -728,5 +728,14 @@
     "settingsViewerShowZoomLevel": "확대 수준 표시",
     "settingsEnabled": "사용함",
     "settingsForced": "강제",
-    "collectionActionExportGpx": "GPX 내보내기"
+    "collectionActionExportGpx": "GPX 내보내기",
+    "filterTypeSlowMotionVideoLabel": "슬로우 모션",
+    "drawerCollectionSlowMotionVideos": "슬로우 모션 동영상",
+    "showThumbnailSlowMotionVideoIcon": "슬로우 모션 아이콘 표시",
+    "settingsPermissionsTile": "권한",
+    "settingsPermissionsPageTitle": "권한",
+    "mapShowItemTracks": "경로 보기",
+    "mapHideItemTracks": "경로 숨기기",
+    "settingsAllowNotifications": "알림 허용",
+    "settingsAutoExportSettings": "자동 설정 내보내기"
 }

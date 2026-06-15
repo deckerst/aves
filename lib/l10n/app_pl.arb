@@ -628,8 +628,8 @@
     "settingsVideoControlsTile": "Sterowanie",
     "settingsVideoGestureDoubleTapTogglePlay": "Dotknij dwukrotnie, aby odtworzyć/wstrzymać",
     "settingsPrivacySectionTitle": "Prywatność",
-    "settingsAllowInstalledAppAccess": "Zezwól na dostęp do spisu aplikacji",
-    "settingsAllowErrorReporting": "Zezwól na anonimowe zgłaszanie błędów",
+    "settingsAllowInstalledAppAccess": "Dostęp do spisu aplikacji",
+    "settingsAllowErrorReporting": "Anonimowe zgłaszanie błędów",
     "settingsSaveSearchHistory": "Zapisz historię wyszukiwania",
     "settingsStorageAccessTile": "Dostęp do pamięci masowej",
     "settingsRemoveAnimationsTile": "Usuń animacje",
@@ -947,5 +947,14 @@
     "settingsViewerShowZoomLevel": "Pokaż poziom przybliżenia",
     "settingsEnabled": "Włączono",
     "settingsForced": "Wymuszono",
-    "collectionActionExportGpx": "Eksportuj GPX"
+    "collectionActionExportGpx": "Eksportuj GPX",
+    "settingsAutoExportSettings": "Automatyczne eksportowanie ustawień",
+    "mapShowItemTracks": "Pokazuj ścieżki",
+    "mapHideItemTracks": "Ukrywaj ścieżki",
+    "filterTypeSlowMotionVideoLabel": "Zwolnione tempo",
+    "drawerCollectionSlowMotionVideos": "Wideo w zwolnionym tempie",
+    "showThumbnailSlowMotionVideoIcon": "Pokazuj ikonkę zwolnionego tempa",
+    "settingsAllowNotifications": "Zezwól na powiadomienia",
+    "settingsPermissionsTile": "Uprawnienia",
+    "settingsPermissionsPageTitle": "Uprawnienia"
 }

@@ -249,7 +249,7 @@
     "aboutBugSaveLogInstruction": "Anwendungsprotokolle in einer Datei speichern",
     "aboutBugReportInstruction": "Bericht auf GitHub mit den Protokollen und Systeminformationen",
     "aboutBugReportButton": "Bericht",
-    "aboutCreditsSectionTitle": "Kredite",
+    "aboutCreditsSectionTitle": "Mitwirkende",
     "aboutCreditsWorldAtlas1": "Diese Anwendung verwendet eine TopoJSON-Datei von",
     "aboutCreditsWorldAtlas2": "unter ISC-Lizenz.",
     "aboutTranslatorsSectionTitle": "Übersetzer",
@@ -463,7 +463,7 @@
     "settingsPrivacySectionTitle": "Datenschutz",
     "settingsAllowInstalledAppAccess": "Zugriff auf die Liste der installierten Apps",
     "settingsAllowInstalledAppAccessSubtitle": "zur Gruppierung von Bildern nach Apps",
-    "settingsAllowErrorReporting": "Anonyme Fehlermeldungen zulassen",
+    "settingsAllowErrorReporting": "Anonyme Fehlermeldungen",
     "settingsSaveSearchHistory": "Suchverlauf speichern",
     "settingsEnableBin": "Papierkorb verwenden",
     "settingsEnableBinSubtitle": "Gelöschte Elemente 30 Tage lang aufbewahren",
@@ -728,5 +728,11 @@
     "mapStyleEditorDialogUserAgent": "User-Agent",
     "settingsForced": "Erzwungen",
     "settingsEnabled": "Aktiviert",
-    "collectionActionExportGpx": "GPX exportieren"
+    "collectionActionExportGpx": "GPX exportieren",
+    "filterTypeSlowMotionVideoLabel": "Zeitlupe",
+    "drawerCollectionSlowMotionVideos": "Zeitlupenvideos",
+    "showThumbnailSlowMotionVideoIcon": "Zeitlupensymbol anzeigen",
+    "mapShowItemTracks": "Pfade anzeigen",
+    "mapHideItemTracks": "Pfade verbergen",
+    "settingsAutoExportSettings": "Automatischer Export der Einstellungen"
 }

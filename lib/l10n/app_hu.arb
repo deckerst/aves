@@ -741,7 +741,7 @@
     "settingsSubtitleThemeBackgroundOpacity": "Háttér átlátszósága",
     "settingsVideoGestureDoubleTapTogglePlay": "Lejátszás/szünet dupla koppintással",
     "settingsVideoGestureVerticalDragBrightnessVolume": "Fényerő/hangerő módosítása fel vagy lefelé csúsztatással",
-    "settingsAllowErrorReporting": "Névtelen hibajelentés engedélyezése",
+    "settingsAllowErrorReporting": "Névtelen hibajelentés",
     "settingsSaveSearchHistory": "Keresési előzmény mentése",
     "settingsEnableBinSubtitle": "Törölt elemek megőrzése 30 napig",
     "settingsAllowMediaManagement": "Média kezelés engedélyezése",
@@ -837,7 +837,7 @@
     "settingsViewerQuickActionEditorBanner": "Érintsd és tartsd lenyomva a gombok mozgatásához, válaszd ki a megtekintőben megjelenő műveleteket.",
     "settingsVideoGestureSideDoubleTapSeek": "Előre/hátra tekerés dupla koppintással a képernyő szélein",
     "settingsAllowInstalledAppAccessSubtitle": "Az album megjelenítésének javítására szolgál",
-    "settingsAllowInstalledAppAccess": "Hozzáférés engedélyezése az app leltárhoz",
+    "settingsAllowInstalledAppAccess": "Hozzáférés az alkalmazáslistához",
     "settingsHiddenFiltersBanner": "A rejtett szűrőknek megfelelő képek és videók nem jelennek meg a gyűjteményében.",
     "settingsTimeToTakeActionTile": "Ideje cselekedni",
     "settingsAccessibilityShowPinchGestureAlternatives": "Mutasson alternatív többujjas kézmozdulatokat",
@@ -947,5 +947,11 @@
     "settingsEnabled": "Engedélyezett",
     "settingsForced": "Kényszerített",
     "settingsViewerShowZoomLevel": "Nagyítási szint megjelenítése",
-    "collectionActionExportGpx": "GPX exportálás"
+    "collectionActionExportGpx": "GPX exportálás",
+    "settingsAutoExportSettings": "Beállítások automatikus exportálása",
+    "filterTypeSlowMotionVideoLabel": "Lassított felvétel",
+    "drawerCollectionSlowMotionVideos": "Lassított videók",
+    "showThumbnailSlowMotionVideoIcon": "Lassított felvétel ikonjának megjelenítése",
+    "mapShowItemTracks": "Útvonalak megjelenítése",
+    "mapHideItemTracks": "Útvonalak elrejtése"
 }

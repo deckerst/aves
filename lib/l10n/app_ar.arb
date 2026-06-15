@@ -389,7 +389,7 @@
     "viewerActionUnlock": "إلغاء قفل المعاينة",
     "settingsDoubleBackExit": "اضغط على «رجوع» مرتين للخروج",
     "entryActionShare": "مشاركة",
-    "drawerCollectionSphericalVideos": "فيديوهات 360 درجة",
+    "drawerCollectionSphericalVideos": "فيديوهات 360°",
     "moveUndatedConfirmationDialogMessage": "هل تريد حفظ تواريخ العناصر قبل المتابعة؟",
     "collectionEditFailureFeedback": "{count, plural, =1{فشل تحرير عنصر واحد} other{فشل التحرير {count} items}}",
     "@collectionEditFailureFeedback": {
@@ -478,7 +478,7 @@
         }
     },
     "durationDialogMinutes": "دقائق",
-    "settingsAllowErrorReporting": "السماح بالإبلاغ عن الأخطاء المجهولة",
+    "settingsAllowErrorReporting": "الإبلاغ عن الأخطاء بشكل مجهول",
     "settingsVideoLoopModeTile": "وضع التكرار",
     "unsupportedTypeDialogMessage": "{count, plural, =1{هذه العملية غير مدعومة للعناصر من النوع التالي: {types}.} other{هذه العملية غير معتمدة لعناصر الأنواع التالية: {types}.}}",
     "@unsupportedTypeDialogMessage": {
@@ -515,7 +515,7 @@
     "albumPickPageTitleCopy": "نسخ إلى ألبوم",
     "collectionActionCopy": "نسخ إلى الألبوم",
     "entryActionPrint": "طباعة",
-    "settingsAllowInstalledAppAccess": "السماح بالوصول إلى مخزون التطبيق",
+    "settingsAllowInstalledAppAccess": "الوصول إلى مخزون التطبيق",
     "entryActionShowGeoTiffOnMap": "عرض كتراكب على الخريطة",
     "viewDialogReverseSortOrder": "عكس ترتيب الفرز",
     "menuActionConfigureView": "العرض",
@@ -947,5 +947,14 @@
     "settingsViewerShowZoomLevel": "إظهار مستوى التكبير",
     "settingsEnabled": "مُفعّل",
     "settingsForced": "قسري",
-    "collectionActionExportGpx": "تصدير GPX"
+    "collectionActionExportGpx": "تصدير GPX",
+    "settingsAutoExportSettings": "تصدير الإعدادات التلقائية",
+    "filterTypeSlowMotionVideoLabel": "حركة بطيئة",
+    "drawerCollectionSlowMotionVideos": "مقاطع فيديو بالحركة البطيئة",
+    "showThumbnailSlowMotionVideoIcon": "إظهار أيقونة الحركة البطيئة",
+    "mapShowItemTracks": "إظهار المسارات",
+    "mapHideItemTracks": "إخفاء المسارات",
+    "settingsAllowNotifications": "السماح بالإشعارات",
+    "settingsPermissionsTile": "الأذونات",
+    "settingsPermissionsPageTitle": "الأذونات"
 }
