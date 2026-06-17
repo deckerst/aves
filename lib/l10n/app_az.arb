@@ -218,7 +218,7 @@
     "videoLoopModeNever": "heç vaxt",
     "videoLoopModeShortOnly": "Yalnız qısa videolar",
     "coordinateFormatDecimal": "Onluq dərəcələr",
-    "coordinateDms": "{koordinat} {istiqamət}",
+    "coordinateDms": "{coordinate} {direction}",
     "@coordinateDms": {
         "placeholders": {
             "coordinate": {
@@ -290,7 +290,7 @@
             }
         }
     },
-    "storageAccessDialogMessage": "Bu tətbiqə giriş imkanı vermək üçün növbəti ekranda “{volume}” bölməsinin {qovluğunu} seçin.",
+    "storageAccessDialogMessage": "Bu tətbiqə giriş imkanı vermək üçün növbəti ekranda “{volume}” bölməsinin {directory} seçin.",
     "@storageAccessDialogMessage": {
         "placeholders": {
             "directory": {
@@ -304,7 +304,7 @@
             }
         }
     },
-    "restrictedAccessDialogMessage": "Bu tətbiqin “{volume}” qovluğunun {qovluğundakı} faylları dəyişdirməsinə icazə verilmir.\n\nElementləri başqa bir qovluğa köçürmək üçün əvvəlcədən quraşdırılmış fayl menecerindən və ya qalereya tətbiqindən istifadə edin.",
+    "restrictedAccessDialogMessage": "Bu tətbiqin “{volume}” qovluğunun {directory} faylları dəyişdirməsinə icazə verilmir.\n\nElementləri başqa bir qovluğa köçürmək üçün əvvəlcədən quraşdırılmış fayl menecerindən və ya qalereya tətbiqindən istifadə edin.",
     "@restrictedAccessDialogMessage": {
         "placeholders": {
             "directory": {
@@ -318,7 +318,7 @@
             }
         }
     },
-    "notEnoughSpaceDialogMessage": "Bu əməliyyatın tamamlanması üçün “{volume}” üzərində {needSize} boş yer tələb olunur, lakin yalnız {freeSize} qalıb.",
+    "notEnoughSpaceDialogMessage": "Bu əməliyyatın tamamlanması üçün “{volume}” üzərində {neededSize} boş yer tələb olunur, lakin yalnız {freeSize} qalıb.",
     "@notEnoughSpaceDialogMessage": {
         "placeholders": {
             "neededSize": {
@@ -337,7 +337,7 @@
         }
     },
     "missingSystemFilePickerDialogMessage": "Sistem fayl seçicisi yoxdur və ya deaktivdir. Zəhmət olmasa, onu aktivləşdirin və yenidən cəhd edin.",
-    "unsupportedTypeDialogMessage": "{count, cəm, =1{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {növləri}.} other{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {növləri}.}}",
+    "unsupportedTypeDialogMessage": "{count, plural, =1{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {types}.} other{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {types}.}}",
     "@unsupportedTypeDialogMessage": {
         "placeholders": {
             "count": {
@@ -355,7 +355,7 @@
     "addShortcutDialogLabel": "Qısayol etiketi",
     "addShortcutButtonLabel": "əlavə et",
     "noMatchingAppDialogMessage": "Bunu idarə edə biləcək heç bir tətbiq yoxdur.",
-    "binEntriesConfirmationDialogMessage": "{count, cəm, =1{Bu elementi zibil qutusuna daşıyın?} other{Bu {count} elementi zibil qutusuna daşıyın?}}",
+    "binEntriesConfirmationDialogMessage": "{count, plural, =1{Bu elementi zibil qutusuna daşıyın?} other{Bu {count} elementi zibil qutusuna daşıyın?}}",
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
@@ -364,7 +364,7 @@
             }
         }
     },
-    "deleteEntriesConfirmationDialogMessage": "{count, cəm, =1{Bu elementi silmək istəyirsiniz?} other{Bu {count} elementi silmək istəyirsiniz?}}",
+    "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Bu elementi silmək istəyirsiniz?} other{Bu {count} elementi silmək istəyirsiniz?}}",
     "@deleteEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
@@ -496,7 +496,7 @@
     "coverDialogTabApp": "Tətbiq",
     "coverDialogTabColor": "Rəng",
     "appPickDialogTitle": "Tətbiq Seçin",
-    "deleteSingleAlbumConfirmationDialogMessage": "{count, cəm, =1{Bu albomu və içindəki elementi silmək?} other{Bu albomu və içindəki {count} elementi silmək?}}",
+    "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Bu albomu və içindəki elementi silmək?} other{Bu albomu və içindəki {count} elementi silmək?}}",
     "@deleteSingleAlbumConfirmationDialogMessage": {
         "placeholders": {
             "count": {
@@ -601,7 +601,7 @@
             }
         }
     },
-    "collectionExportFailureFeedback": "{count, plural, =1{1 səhifəni ixrac etmək alınmadı} digər{{count} səhifəni ixrac etmək alınmadı}}",
+    "collectionExportFailureFeedback": "{count, plural, =1{1 səhifəni ixrac etmək alınmadı} other{{count} səhifəni ixrac etmək alınmadı}}",
     "@collectionExportFailureFeedback": {
         "placeholders": {
             "count": {
@@ -610,7 +610,7 @@
             }
         }
     },
-    "collectionCopySuccessFeedback": "{count, plural, =1{1 element kopyalandı} digər{Kopyalandı {count} element}}",
+    "collectionCopySuccessFeedback": "{count, plural, =1{1 element kopyalandı} other{Kopyalandı {count} element}}",
     "@collectionCopySuccessFeedback": {
         "placeholders": {
             "count": {
@@ -619,7 +619,7 @@
             }
         }
     },
-    "collectionMoveSuccessFeedback": "{count, plural, =1{1 element köçürüldü} digər{Köçürüldü {count} element}}",
+    "collectionMoveSuccessFeedback": "{count, plural, =1{1 element köçürüldü} other{Köçürüldü {count} element}}",
     "@collectionMoveSuccessFeedback": {
         "placeholders": {
             "count": {
@@ -628,7 +628,7 @@
             }
         }
     },
-    "collectionRenameSuccessFeedback": "{count, cəm, =1{1 elementin adını dəyişdi} other{{count} elementin adını dəyişdi}}",
+    "collectionRenameSuccessFeedback": "{count, plural, =1{1 elementin adını dəyişdi} other{{count} elementin adını dəyişdi}}",
     "@collectionRenameSuccessFeedback": {
         "placeholders": {
             "count": {
@@ -637,7 +637,7 @@
             }
         }
     },
-    "collectionEditSuccessFeedback": "{count, cəm, =1{1 element redaktə edildi} digər{Redaktə edildi {count} element}}",
+    "collectionEditSuccessFeedback": "{count, plural, =1{1 element redaktə edildi} other{Redaktə edildi {count} element}}",
     "@collectionEditSuccessFeedback": {
         "placeholders": {
             "count": {
@@ -909,7 +909,7 @@
     "settingsWidgetDisplayedItem": "Göstərilən element",
     "settingsCollectionTile": "Kolleksiya",
     "statsPageTitle": "Statistika",
-    "statsWithGps": "{count, cəm, =1{1 items with location} other{{count} items with location}}",
+    "statsWithGps": "{count, plural, =1{1 items with location} other{{count} items with location}}",
     "@statsWithGps": {
         "placeholders": {
             "count": {
