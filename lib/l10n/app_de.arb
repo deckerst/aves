@@ -734,5 +734,8 @@
     "showThumbnailSlowMotionVideoIcon": "Zeitlupensymbol anzeigen",
     "mapShowItemTracks": "Pfade anzeigen",
     "mapHideItemTracks": "Pfade verbergen",
-    "settingsAutoExportSettings": "Automatischer Export der Einstellungen"
+    "settingsAutoExportSettings": "Automatischer Export der Einstellungen",
+    "settingsAllowNotifications": "Benachrichtigungen zulassen",
+    "settingsPermissionsTile": "Berechtigungen",
+    "settingsPermissionsPageTitle": "Berechtigungen"
 }

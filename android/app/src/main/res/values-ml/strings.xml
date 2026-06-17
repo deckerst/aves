@@ -6,4 +6,6 @@
     <string name="videos_shortcut_short_label">വീഡിയോകൾ</string>
     <string name="analysis_channel_name">മാധ്യമ സൂക്ഷ്മപരിശോധന</string>
     <string name="analysis_notification_action_stop">നിർത്തുക</string>
+    <string name="app_widget_label">ഫോട്ടോ ഫ്രെയിം</string>
+    <string name="map_shortcut_short_label">സ്ഥലങ്ങൾ</string>
 </resources>

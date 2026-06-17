@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> tipik JPEG və MP4 faylları da daxil olmaqla, hər cür şəkil və videoları, eləcə də <b>çoxsəhifəli TIFF, SVG, köhnə AVI və daha çox ekzotik şeyləri emal edə bilir! O, <b>hərəkətli fotoları</b>, <b>panoramaları</b> (yəni foto sferaları), <b>360° videoları</b>, eləcə də <b>GeoTIFF</b> fayllarını müəyyən etmək üçün media kolleksiyanızı skanlayır.
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+Naviqasiya və axtarış Aves-in vacib hissəsidir. Məqsəd istifadəçilərin albomlardan fotoşəkillərə, etiketlərdən xəritələrə və s. asanlıqla keçid etməsidir.
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i>, <b>vidjetlər</b>, <b>tətbiq qısayolları</b>, <b>ekran qoruyucusu</b> və <b>qlobal axtarış</b> idarəetməsi kimi xüsusiyyətlərlə Android (Android TV daxil olmaqla) ilə inteqrasiya olunur. O, həmçinin <b>media görüntüləyicisi və seçicisi</b> kimi də işləyir.
