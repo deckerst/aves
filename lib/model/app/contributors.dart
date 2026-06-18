@@ -176,7 +176,7 @@ class Contributors {
     Contributor('Remy Rose', 'rem.klajis@gmail.com'),
     Contributor('Lorenzio', 'translator.1oh72@silomails.com'),
     Contributor('vcodesai', 'vcodesai@users.noreply.hosted.weblate.org'),
-    Contributor('CYAXXX', 'ferhad.hasan9624@gmail.com'),
+    Contributor('CYAXXX', 'cyaxxx@vivaldi.net'),
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
     // Contributor('Jamil Farajov', 'jamilfarajov@gmail.com'), // Azerbaijani
     // Contributor('Mireli5656', 'miraliseyidli5656@gmail.com'), // Azerbaijani
