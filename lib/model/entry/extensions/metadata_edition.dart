@@ -357,7 +357,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     iptc.add({
       'record': record,
       'tag': tag,
-      'values': values.map((v) => utf8.encode(v)).toList(),
+      'values': values.map(utf8.encode).toList(),
     });
   }
 

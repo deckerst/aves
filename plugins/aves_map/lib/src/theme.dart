@@ -20,6 +20,8 @@ class MapThemeData {
     required this.attributionPadding,
   });
 
+  double get buttonPadding => 8 + visualDensity.horizontal * 2;
+
   static const double markerOuterBorderWidth = 1.5;
   static const double markerInnerBorderWidth = 2;
   static const double markerImageExtent = 48.0;

@@ -113,6 +113,8 @@ abstract class AvesColorsData {
 
   Color get raw => fromHue(208);
 
+  Color get slowMotionVideo => fromHue(333);
+
   Color get sphericalVideo => fromHue(174);
 
   // albums

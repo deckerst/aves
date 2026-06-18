@@ -53,4 +53,6 @@ class AddressDetails extends Equatable {
     'adminArea': adminArea,
     'locality': locality,
   };
+
+  Map<String, Object?> toDbMap() => toMap();
 }

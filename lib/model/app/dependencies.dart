@@ -5,6 +5,7 @@ class Dependencies {
   static const String bsd2 = 'BSD 2-Clause “Simplified” License';
   static const String bsd3 = 'BSD 3-Clause “Revised” License';
   static const String eclipse1 = 'Eclipse Public License 1.0';
+  static const String isc = 'ISC License';
   static const String lgpl3 = 'GNU Lesser General Public License v3.0';
   static const String mit = 'MIT License';
   static const String zlib = 'zlib License';
@@ -222,6 +223,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/deckerst/flutter_staggered_animations',
     ),
     Dependency(
+      name: 'Kurd Localization',
+      license: isc,
+      sourceUrl: 'https://github.com/khalisit/kurd_localization',
+    ),
+    Dependency(
       name: 'Material Color Utilities',
       license: apache2,
       sourceUrl: 'https://github.com/material-foundation/material-color-utilities/tree/main/dart',
@@ -338,6 +344,11 @@ class Dependencies {
       name: 'HTTP',
       license: bsd3,
       sourceUrl: 'https://github.com/dart-lang/http',
+    ),
+    Dependency(
+      name: 'Image',
+      license: mit,
+      sourceUrl: 'https://github.com/brendan-duncan/image',
     ),
     Dependency(
       name: 'Intl',

@@ -199,7 +199,7 @@ class CancelButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.maybeOf(context)?.pop(result),
+      onPressed: () => Navigator.maybeOf(context)?.pop<T>(result),
       // MD2 button labels were upper case but they are lower case in MD3
       child: Text(text ?? Themes.asButtonLabel(context.l10n.cancelTooltip)),
     );
@@ -219,7 +219,7 @@ class OkButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.maybeOf(context)?.pop(result),
+      onPressed: () => Navigator.maybeOf(context)?.pop<T>(result),
       // MD2 button labels were upper case but they are lower case in MD3
       child: Text(text ?? Themes.asButtonLabel(MaterialLocalizations.of(context).okButtonLabel)),
     );

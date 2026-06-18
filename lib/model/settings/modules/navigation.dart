@@ -3,13 +3,13 @@ import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 mixin NavigationSettings on SettingsAccess {
@@ -19,7 +19,7 @@ mixin NavigationSettings on SettingsAccess {
 
   KeepScreenOn get keepScreenOn => getEnumOrDefault(SettingKeys.keepScreenOnKey, SettingsDefaults.keepScreenOn, KeepScreenOn.values);
 
-  set keepScreenOn(KeepScreenOn newValue) => set(SettingKeys.keepScreenOnKey, newValue.toString());
+  set keepScreenOn(KeepScreenOn newValue) => set(SettingKeys.keepScreenOnKey, newValue.name);
 
   HomePageSetting get homePage => getEnumOrDefault(SettingKeys.homePageKey, SettingsDefaults.homePage, HomePageSetting.values);
 
@@ -45,8 +45,8 @@ mixin NavigationSettings on SettingsAccess {
     Set<CollectionFilter> customCollection = const {},
     String? customExplorerPath,
   }) {
-    set(SettingKeys.homePageKey, homePage.toString());
-    set(SettingKeys.homeCustomCollectionKey, customCollection.map((filter) => filter.toJson()).toList());
+    set(SettingKeys.homePageKey, homePage.name);
+    set(SettingKeys.homeCustomCollectionKey, customCollection.map((filter) => filter.toJsonString()).toList());
     set(SettingKeys.homeCustomExplorerPathKey, customExplorerPath);
   }
 
@@ -74,18 +74,15 @@ mixin NavigationSettings on SettingsAccess {
 
   set setMetadataDateBeforeFileOp(bool newValue) => set(SettingKeys.setMetadataDateBeforeFileOpKey, newValue);
 
-  List<CollectionFilter?> get drawerTypeBookmarks =>
-      getStringList(SettingKeys.drawerTypeBookmarksKey)?.map((v) {
-        if (v.isEmpty) return null;
-        return CollectionFilter.fromJson(v);
-      }).toList() ??
-      SettingsDefaults.drawerTypeBookmarks;
+  static const _noFilterPlaceholder = '';
 
-  set drawerTypeBookmarks(List<CollectionFilter?> newValue) => set(SettingKeys.drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJson() ?? '').toList());
+  List<CollectionFilter?> get drawerTypeBookmarks => getStringList(SettingKeys.drawerTypeBookmarksKey)?.map((v) => v == _noFilterPlaceholder ? null : CollectionFilter.fromJson(v)).toList() ?? SettingsDefaults.drawerTypeBookmarks;
+
+  set drawerTypeBookmarks(List<CollectionFilter?> newValue) => set(SettingKeys.drawerTypeBookmarksKey, newValue.map((filter) => filter?.toJsonString() ?? _noFilterPlaceholder).toList());
 
   List<AlbumBaseFilter>? get drawerAlbumBookmarks => getStringList(SettingKeys.drawerAlbumBookmarksKey)?.map(CollectionFilter.fromJson).whereType<AlbumBaseFilter>().toList();
 
-  set drawerAlbumBookmarks(List<AlbumBaseFilter>? newValue) => set(SettingKeys.drawerAlbumBookmarksKey, newValue?.map((filter) => filter.toJson()).toList());
+  set drawerAlbumBookmarks(List<AlbumBaseFilter>? newValue) => set(SettingKeys.drawerAlbumBookmarksKey, newValue?.map((filter) => filter.toJsonString()).toList());
 
   List<String> get drawerPageBookmarks => getStringList(SettingKeys.drawerPageBookmarksKey) ?? SettingsDefaults.drawerPageBookmarks;
 

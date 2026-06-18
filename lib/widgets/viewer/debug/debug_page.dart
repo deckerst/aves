@@ -4,7 +4,6 @@ import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
 import 'package:aves/widgets/viewer/debug/thumbnails.dart';
@@ -29,8 +28,8 @@ class ViewerDebugPage extends StatelessWidget {
     final tabs = <(Tab, Widget)>[
       (const Tab(text: 'Entry'), _buildEntryTabView()),
       if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) (const Tab(text: 'DB'), DbTab(entry: entry)),
-      (const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
-      (const Tab(icon: Icon(AIcons.image)), ThumbnailsTab(entry: entry)),
+      (const Tab(text: 'Metadata'), MetadataTab(entry: entry)),
+      (const Tab(text: 'Thumbs'), ThumbnailsTab(entry: entry)),
     ];
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -126,6 +125,7 @@ class ViewerDebugPage extends StatelessWidget {
             'isHdr': '${entry.isHdr}',
             'isMultiPage': '${entry.isMultiPage}',
             'isMotionPhoto': '${entry.isMotionPhoto}',
+            'isSlowMotion': '${entry.isSlowMotion}',
             'canEdit': '${entry.canEdit}',
             'canEditDate': '${entry.canEditDate}',
             'canEditTags': '${entry.canEditTags}',

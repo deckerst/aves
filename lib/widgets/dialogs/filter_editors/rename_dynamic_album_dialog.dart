@@ -88,7 +88,7 @@ class _RenameDynamicAlbumDialogState extends State<RenameDynamicAlbumDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(_formatAlbumName());
+      Navigator.maybeOf(context)?.pop<String>(_formatAlbumName());
     }
   }
 }

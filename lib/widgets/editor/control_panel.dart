@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/editor/transform/control_panel.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
-import 'package:aves/widgets/viewer/overlay/viewer_buttons.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +17,6 @@ class EditorControlPanel extends StatelessWidget {
   final ValueNotifier<EditorAction?> actionNotifier;
 
   static const padding = ViewerButtonRowContent.padding;
-  static const actions = [
-    EditorAction.transform,
-  ];
 
   const EditorControlPanel({
     super.key,
@@ -66,7 +63,13 @@ class EditorControlPanel extends StatelessWidget {
                     ],
                   );
                 },
-                child: action == null ? _buildTopLevelPanel(context) : _buildActionPanel(context, action),
+                child: BackdropGroup(
+                  child: action == null
+                      ? _TopLevelPanel(
+                          actionNotifier: actionNotifier,
+                        )
+                      : _buildActionPanel(context, action),
+                ),
               );
             },
           ),
@@ -75,7 +78,43 @@ class EditorControlPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildTopLevelPanel(BuildContext context) {
+  Widget _buildActionPanel(BuildContext context, EditorAction action) {
+    switch (action) {
+      case .transform:
+        return TransformControlPanel(
+          entry: entry,
+          onCancel: () => _cancelAction(context),
+          onApply: (transformation) => _applyAction(context),
+        );
+    }
+  }
+
+  void _cancelAction(BuildContext context) {
+    actionNotifier.value = null;
+    context.read<AvesMagnifierController>().reset();
+    context.read<TransformController>().reset();
+  }
+
+  void _applyAction(BuildContext context) {
+    actionNotifier.value = null;
+    context.read<TransformController>().reset();
+  }
+}
+
+class _TopLevelPanel extends StatelessWidget {
+  final ValueNotifier<EditorAction?> actionNotifier;
+
+  static const padding = ViewerButtonRowContent.padding;
+  static const actions = [
+    EditorAction.transform,
+  ];
+
+  const _TopLevelPanel({
+    required this.actionNotifier,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: .min,
       children: [
@@ -111,27 +150,5 @@ class EditorControlPanel extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Widget _buildActionPanel(BuildContext context, EditorAction action) {
-    switch (action) {
-      case .transform:
-        return TransformControlPanel(
-          entry: entry,
-          onCancel: () => _cancelAction(context),
-          onApply: (transformation) => _applyAction(context),
-        );
-    }
-  }
-
-  void _cancelAction(BuildContext context) {
-    actionNotifier.value = null;
-    context.read<AvesMagnifierController>().reset();
-    context.read<TransformController>().reset();
-  }
-
-  void _applyAction(BuildContext context) {
-    actionNotifier.value = null;
-    context.read<TransformController>().reset();
   }
 }

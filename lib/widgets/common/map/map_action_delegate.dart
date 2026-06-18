@@ -1,6 +1,7 @@
 import 'package:aves/geo/uri.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -30,6 +31,8 @@ class MapActionDelegate with FeedbackMixin {
         return _isMapPage(context);
       case .addShortcut:
         return _isMapPage(context) && device.canPinShortcut;
+      case .toggleItemTrack:
+        return _isMapPage(context);
     }
   }
 
@@ -45,6 +48,8 @@ class MapActionDelegate with FeedbackMixin {
         controller.zoomBy(-1);
       case .addShortcut:
         _addShortcut(context);
+      case .toggleItemTrack:
+        settings.mapShowItemTracks = !settings.mapShowItemTracks;
     }
   }
 

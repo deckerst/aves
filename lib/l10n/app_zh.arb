@@ -457,9 +457,9 @@
     "settingsVideoGestureDoubleTapTogglePlay": "双击播放/暂停",
     "settingsVideoGestureSideDoubleTapSeek": "双击屏幕边缘步进/步退",
     "settingsPrivacySectionTitle": "隐私",
-    "settingsAllowInstalledAppAccess": "允许访问应用清单",
+    "settingsAllowInstalledAppAccess": "访问应用库清单",
     "settingsAllowInstalledAppAccessSubtitle": "用于改善相册显示结果",
-    "settingsAllowErrorReporting": "允许匿名错误报告",
+    "settingsAllowErrorReporting": "匿名错误报告",
     "settingsSaveSearchHistory": "保存搜索历史记录",
     "settingsEnableBin": "启用回收站",
     "settingsEnableBinSubtitle": "将删除项保留 30 天",
@@ -728,5 +728,14 @@
     "settingsViewerShowZoomLevel": "显示缩放级别",
     "settingsEnabled": "已启用",
     "settingsForced": "已强制",
-    "collectionActionExportGpx": "导出 GPX"
+    "collectionActionExportGpx": "导出 GPX",
+    "settingsAutoExportSettings": "自动导出设置",
+    "mapShowItemTracks": "显示路径",
+    "mapHideItemTracks": "隐藏路径",
+    "filterTypeSlowMotionVideoLabel": "慢动作",
+    "drawerCollectionSlowMotionVideos": "慢动作视频",
+    "showThumbnailSlowMotionVideoIcon": "显示慢动作图标",
+    "settingsAllowNotifications": "允许通知",
+    "settingsPermissionsTile": "权限",
+    "settingsPermissionsPageTitle": "权限"
 }

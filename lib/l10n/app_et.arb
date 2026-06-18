@@ -835,8 +835,8 @@
     "settingsSubtitleThemeTextAlignmentCenter": "Keskel",
     "settingsSubtitleThemeTextAlignmentRight": "Paremal",
     "settingsPrivacySectionTitle": "Privaatsus",
-    "settingsAllowInstalledAppAccess": "Luba ligipääs rakenduse andmekogule",
-    "settingsAllowErrorReporting": "Luba anonüümset veateavitust",
+    "settingsAllowInstalledAppAccess": "Ligipääs rakenduse andmekogule",
+    "settingsAllowErrorReporting": "Anonüümne veateavitus",
     "settingsSaveSearchHistory": "Salvesta otsingute ajalugu",
     "settingsDisablingBinWarningDialogMessage": "Prügikastis olevad objektid kustutatakse jäädavalt.",
     "settingsAllowMediaManagement": "Kasuta meediahaldust",
@@ -973,5 +973,14 @@
     "settingsViewerShowZoomLevel": "Näita kasutusel suumi",
     "settingsEnabled": "Kasutusel",
     "settingsForced": "Jõustatud",
-    "collectionActionExportGpx": "Ekspordi GPX-fail"
+    "collectionActionExportGpx": "Ekspordi GPX-fail",
+    "settingsAutoExportSettings": "Seadistuste automaatne eksport",
+    "mapShowItemTracks": "Näita asukohti",
+    "mapHideItemTracks": "Peida asukohad",
+    "filterTypeSlowMotionVideoLabel": "Aegluubis",
+    "drawerCollectionSlowMotionVideos": "Aegluubis videod",
+    "showThumbnailSlowMotionVideoIcon": "Näita aegluubis ikooni",
+    "settingsAllowNotifications": "Luba teavitused",
+    "settingsPermissionsTile": "Õigused",
+    "settingsPermissionsPageTitle": "Õigused"
 }

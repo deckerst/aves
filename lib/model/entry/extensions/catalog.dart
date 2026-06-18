@@ -53,6 +53,19 @@ extension ExtraAvesEntryCatalog on AvesEntry {
           catalogMetadata = videoMetadata;
         }
       }
+      if (isSlowMotion) {
+        final (slowMotionFactor, captureDurationMillis) = await videoMetadataFetcher.computeSlowMotionFactorAndDuration(uri: uri, mimeType: mimeType);
+        if (slowMotionFactor == 1) {
+          // correct false positive derived only from capture FPS
+          catalogMetadata = catalogMetadata?.copyWith(isSlowMotion: false);
+        } else if (captureDurationMillis != null) {
+          durationMillis = captureDurationMillis;
+          final fields = {
+            EntryFields.durationMillis: captureDurationMillis,
+          };
+          await applyNewFields(fields, persist: persist);
+        }
+      }
       if (isGeotiff && !hasGps) {
         final info = await metadataFetchService.getGeoTiffInfo(this);
         if (info != null) {

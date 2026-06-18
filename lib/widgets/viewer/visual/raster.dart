@@ -141,7 +141,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   Widget _buildFullImage() {
     final magnifierScale = viewState.scale!;
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     final quality = _qualityForScaleAndSize(
       magnifierScale: magnifierScale,
       sampleSize: 1,
@@ -158,7 +158,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 
   void _initTiling(Size viewportSize) {
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     _tileSide = viewportSize.shortestSide * devicePixelRatio / _tilesByShortestSide;
     // scale for initial state `contained`
     final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
@@ -247,7 +247,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     final displayHeight = _displaySize.height.round();
     final viewRect = _getViewRect(displayWidth, displayHeight);
     final magnifierScale = viewState.scale!;
-    final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
 
     // for the largest sample size (matching the initial scale), the whole image is in view
     // so we subsample the whole image without tiling

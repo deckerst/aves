@@ -1,5 +1,5 @@
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
+import 'package:aves_utils/aves_utils.dart';
 
 mixin SettingsAccess {
   bool get initialized;
@@ -85,21 +85,16 @@ mixin SettingsAccess {
     }
   }
 
-  T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
+  T getEnumOrDefault<T extends Enum>(String key, T defaultValue, Iterable<T> values) {
     try {
-      final valueString = store.getString(key);
-      for (final v in values) {
-        if (v.toString() == valueString) {
-          return v;
-        }
-      }
+      return values.safeByName(store.getString(key)) ?? defaultValue;
     } catch (error) {
       // ignore, could be obsolete value of different type
+      return defaultValue;
     }
-    return defaultValue;
   }
 
-  List<T> getEnumListOrDefault<T extends Object>(String key, List<T> defaultValue, Iterable<T> values) {
-    return store.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).nonNulls.toList() ?? defaultValue;
+  List<T> getEnumListOrDefault<T extends Enum>(String key, List<T> defaultValue, Iterable<T> values) {
+    return store.getStringList(key)?.map((s) => values.safeByName(s)).nonNulls.toList() ?? defaultValue;
   }
 }

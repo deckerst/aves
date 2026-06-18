@@ -99,7 +99,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(newName);
+      Navigator.maybeOf(context)?.pop<String>(newName);
     }
   }
 }

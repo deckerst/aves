@@ -64,6 +64,15 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(activity.isInMultiWindowMode)
     }
 
+    override fun isCrossWindowBlurEnabled(call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            result.success(windowManager.isCrossWindowBlurEnabled)
+        } else {
+            result.success(false)
+        }
+    }
+
     override fun isInPictureInPictureMode(call: MethodCall, result: MethodChannel.Result) {
         result.success(activity.isInPictureInPictureMode)
     }
@@ -73,9 +82,9 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         val displayRotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             activity.display.rotation
         } else {
-            val windowService = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             @Suppress("deprecation")
-            windowService.defaultDisplay.rotation
+            windowManager.defaultDisplay.rotation
         }
         result.success(displayRotation * 90)
     }
@@ -136,9 +145,44 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.resources.configuration.isScreenHdr)
     }
 
+    override fun isInWideColorGamutMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    && activity.window.colorMode == ActivityInfo.COLOR_MODE_WIDE_COLOR_GAMUT
+                    && activity.resources.configuration.isScreenWideColorGamut
+        )
+    }
+
+    override fun isInHdrMode(call: MethodCall, result: MethodChannel.Result) {
+        result.success(
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    && activity.window.colorMode == ActivityInfo.COLOR_MODE_HDR
+                    && activity.resources.configuration.isScreenHdr
+        )
+    }
+
+    override fun getDisplayHdrSdrRatio(call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            result.success(activity.display.hdrSdrRatio)
+            return
+        }
+
+        result.success(null)
+    }
+
+    override fun getDesiredHdrHeadroom(call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            result.success(activity.window.desiredHdrHeadroom)
+            return
+        }
+
+        result.success(null)
+    }
+
     override fun setColorMode(call: MethodCall, result: MethodChannel.Result) {
         val wideColorGamut = call.argument<Boolean>("wideColorGamut")
         val hdr = call.argument<Boolean>("hdr")
+        val desiredHdrHeadroom = call.argument<Number>("desiredHdrHeadroom")?.toFloat()
         if (wideColorGamut == null || hdr == null) {
             result.error("setColorMode-args", "missing arguments", null)
             return
@@ -153,6 +197,14 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
                 ActivityInfo.COLOR_MODE_DEFAULT
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM
+            && activity.window.colorMode == ActivityInfo.COLOR_MODE_HDR
+            && desiredHdrHeadroom != null
+        ) {
+            activity.window.desiredHdrHeadroom = desiredHdrHeadroom
+        }
+
         result.success(null)
     }
 

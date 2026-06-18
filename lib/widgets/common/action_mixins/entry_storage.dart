@@ -253,6 +253,13 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
 
     if ({MoveType.move, MoveType.copy, MoveType.toBin}.contains(moveType) && !await checkUndatedItems(context, entries)) return false;
 
+    // local context may be deactivated when action is triggered (because of navigation or app bar change)
+    // so we get the navigator beforehand and rely on its context when appropriate
+    final navigator = Navigator.maybeOf(context);
+    final navContext = navigator?.context;
+    if (navContext == null) return false;
+
+    final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
     final source = context.read<CollectionSource>();
     source.pauseMonitoring();
     final opId = mediaEditService.newOpId;
@@ -291,36 +298,31 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
           await storageService.deleteEmptyRegularDirectories(originAlbums);
         }
 
+        // use navigation context for top-level messaging
         final successCount = successOps.length;
         if (successCount < todoCount) {
           final count = todoCount - successCount;
           showFeedback(
-            context,
+            navContext,
             FeedbackType.warn,
             copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count),
           );
         } else {
           final count = movedOps.length;
-          final appMode = context.read<ValueNotifier<AppMode>?>()?.value;
 
           SnackBarAction? action;
           if (count > 0 && appMode == AppMode.main) {
-            // get navigator beforehand because
-            // local context may be deactivated when action is triggered after navigation
-            final navigator = Navigator.maybeOf(context);
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(
                   label: Themes.asButtonLabel(l10n.entryActionRestore),
                   onPressed: () {
-                    if (navigator != null) {
-                      doMove(
-                        navigator.context,
-                        moveType: MoveType.fromBin,
-                        entries: movedEntries,
-                        hideShowAction: true,
-                      );
-                    }
+                    doMove(
+                      navContext,
+                      moveType: MoveType.fromBin,
+                      entries: movedEntries,
+                      hideShowAction: true,
+                    );
                   },
                 );
               }
@@ -328,9 +330,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
               action = SnackBarAction(
                 label: l10n.showButtonLabel,
                 onPressed: () {
-                  if (navigator != null) {
-                    _showMovedItems(navigator.context, destinationAlbums, movedOps);
-                  }
+                  _showMovedItems(navContext, destinationAlbums, movedOps);
                 },
               );
             }
@@ -338,13 +338,14 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
 
           if (!toBin || (toBin && settings.confirmAfterMoveToBin)) {
             showFeedback(
-              context,
+              navContext,
               FeedbackType.info,
               copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count),
               action,
             );
           }
 
+          // use local context for handling up the tree
           EntryMovedNotification(moveType, movedEntries).dispatch(context);
           onSuccess?.call();
         }

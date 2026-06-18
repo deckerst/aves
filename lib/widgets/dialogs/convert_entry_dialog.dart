@@ -168,7 +168,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
                         settings.convertWriteMetadata = options.writeMetadata;
                       }
 
-                      Navigator.maybeOf(context)?.pop(options);
+                      Navigator.maybeOf(context)?.pop<EntryConvertOptions>(options);
                     }
                   : null,
               child: Text(context.l10n.applyButtonLabel),
@@ -302,7 +302,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
               onChanged: (v) => setState(() => _quality = v.round()),
               min: 0,
               max: 100,
-              title: context.l10n.exportEntryDialogQuality,
+              title: (_) => l10n.exportEntryDialogQuality,
               titlePadding: contentHorizontalPadding,
               titleTrailing: (context, value) => ChangeHighlightText(
                 '${value.round()}',
@@ -345,7 +345,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
             child = SwitchListTile(
               value: _writeMetadata,
               onChanged: (v) => setState(() => _writeMetadata = v),
-              title: Text(context.l10n.exportEntryDialogWriteMetadata),
+              title: Text(l10n.exportEntryDialogWriteMetadata),
               contentPadding: const EdgeInsetsDirectional.only(
                 start: AvesDialog.defaultHorizontalContentPadding,
                 end: AvesDialog.defaultHorizontalContentPadding - 8,

@@ -17,6 +17,7 @@ class EntryMapStyle extends Equatable {
   final String? userAgent;
   final bool needMobileService;
   final bool isHeavy;
+  final double minZoom, maxZoom;
 
   @override
   List<Object?> get props => [key, name, isRaster, url];
@@ -30,6 +31,8 @@ class EntryMapStyle extends Equatable {
     this.userAgent,
     this.needMobileService = false,
     this.isHeavy = false,
+    this.minZoom = 2,
+    this.maxZoom = 22,
   }) : subdomains = subdomains ?? const ['a', 'b', 'c'];
 
   static EntryMapStyle? fromJson(String? jsonString) {
@@ -110,16 +113,22 @@ class EntryMapStyles {
   static const openTopoMap = EntryMapStyle(
     key: 'openTopoMap',
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    // as of 2026/06/01, tiles are not rendered at zoom > 17
+    maxZoom: 16, // retina mode will give +1
   );
 
   static const osmHot = EntryMapStyle(
     key: 'osmHot',
     url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    // as of 2026/06/01, tiles are upscaled at zoom > 19
+    maxZoom: 18, // retina mode will give +1
   );
 
   static const stamenWatercolor = EntryMapStyle(
     key: 'stamenWatercolor',
     url: 'https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg',
+    // as of 2026/06/01, tiles are upscaled at zoom > 19
+    maxZoom: 18, // retina mode will give +1
   );
 
   // default styles that do not need mobile services

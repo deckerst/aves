@@ -39,4 +39,6 @@ class TrashDetails extends Equatable {
     'path': path,
     'dateMillis': dateMillis,
   };
+
+  Map<String, Object?> toDbMap() => toMap();
 }

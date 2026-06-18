@@ -9,9 +9,9 @@ import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/viewer/entry_background.dart';
-import 'package:aves/widgets/settings/viewer/overlay.dart';
-import 'package:aves/widgets/settings/viewer/slideshow.dart';
-import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
+import 'package:aves/widgets/settings/viewer/overlay_page.dart';
+import 'package:aves/widgets/settings/viewer/slideshow_page.dart';
+import 'package:aves/widgets/settings/viewer/viewer_actions_editor_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +50,7 @@ class SettingsTileViewerQuickActions extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: ViewerActionEditorPage.routeName,
     builder: (context) => const ViewerActionEditorPage(),
   );
@@ -62,7 +62,7 @@ class SettingsTileViewerOverlay extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: ViewerOverlayPage.routeName,
     builder: (context) => const ViewerOverlayPage(),
   );
@@ -74,7 +74,7 @@ class SettingsTileViewerSlideshow extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: ViewerSlideshowPage.routeName,
     builder: (context) => const ViewerSlideshowPage(),
   );
@@ -88,7 +88,7 @@ class SettingsTileViewerGestureSideTapNext extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.viewerGestureSideTapNext,
     onChanged: (v) => settings.viewerGestureSideTapNext = v,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -100,7 +100,7 @@ class SettingsTileViewerUseCutout extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.viewerUseCutout,
     onChanged: (v) => settings.viewerUseCutout = v,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -112,7 +112,7 @@ class SettingsTileViewerMotionPhotoAutoPlay extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.enableMotionPhotoAutoPlay,
     onChanged: (v) => settings.enableMotionPhotoAutoPlay = v,
-    title: title(context),
+    title: title,
   );
 }
 

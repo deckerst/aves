@@ -37,11 +37,11 @@ class AspectRatioFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'threshold': threshold,
     'op': op,
-    'reversed': reversed,
+    if (reversed) 'reversed': reversed,
   };
 
   @override

@@ -55,7 +55,7 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.coordinateFormat,
     onSelection: (v) => settings.coordinateFormat = v,
-    tileTitle: title(context),
+    tileTitle: title,
     dialogTitle: context.l10n.settingsCoordinateFormatDialogTitle,
     optionSubtitleBuilder: (value) => value.format(context, PointsOfInterest.pointNemo),
   );
@@ -71,7 +71,7 @@ class SettingsTileLanguageUnitSystem extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.unitSystem,
     onSelection: (v) => settings.unitSystem = v,
-    tileTitle: title(context),
+    tileTitle: title,
     dialogTitle: context.l10n.settingsUnitSystemDialogTitle,
   );
 }
@@ -84,6 +84,6 @@ class SettingsTileLanguageNumerals extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.forceWesternArabicNumerals,
     onChanged: (v) => settings.forceWesternArabicNumerals = v,
-    title: title(context),
+    title: title,
   );
 }

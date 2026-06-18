@@ -41,76 +41,98 @@ void main() {
   });
 
   test('Filter serialization', () {
-    CollectionFilter? jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
+    CollectionFilter? jsonMapRoundTrip(CollectionFilter filter) => CollectionFilter.fromJson(filter.toJsonMap());
+    CollectionFilter? jsonStringRoundTrip(CollectionFilter filter) => CollectionFilter.fromJson(filter.toJsonString());
 
     final aspectRatio = AspectRatioFilter.landscape;
-    expect(aspectRatio, jsonRoundTrip(aspectRatio));
+    expect(aspectRatio, jsonMapRoundTrip(aspectRatio));
+    expect(aspectRatio, jsonStringRoundTrip(aspectRatio));
 
     final bounds = CoordinateFilter(const LatLng(29.979167, 28.223615), const LatLng(36.451000, 31.134167));
-    expect(bounds, jsonRoundTrip(bounds));
+    expect(bounds, jsonMapRoundTrip(bounds));
+    expect(bounds, jsonStringRoundTrip(bounds));
 
     final date = DateFilter(DateLevel.ym, DateTime(1969, 7));
-    expect(date, jsonRoundTrip(date));
+    expect(date, jsonMapRoundTrip(date));
+    expect(date, jsonStringRoundTrip(date));
 
     final onThisDay = DateFilter.onThisDay;
-    expect(onThisDay, jsonRoundTrip(onThisDay));
+    expect(onThisDay, jsonMapRoundTrip(onThisDay));
+    expect(onThisDay, jsonStringRoundTrip(onThisDay));
 
     const fav = FavouriteFilter.instance;
-    expect(fav, jsonRoundTrip(fav));
+    expect(fav, jsonMapRoundTrip(fav));
+    expect(fav, jsonStringRoundTrip(fav));
 
     final mime = MimeFilter.video;
-    expect(mime, jsonRoundTrip(mime));
+    expect(mime, jsonMapRoundTrip(mime));
+    expect(mime, jsonStringRoundTrip(mime));
 
     final missing = MissingFilter.title;
-    expect(missing, jsonRoundTrip(missing));
+    expect(missing, jsonMapRoundTrip(missing));
+    expect(missing, jsonStringRoundTrip(missing));
 
     final path = PathFilter('/some/path/');
-    expect(path, jsonRoundTrip(path));
+    expect(path, jsonMapRoundTrip(path));
+    expect(path, jsonStringRoundTrip(path));
 
     final placeholder = PlaceholderFilter.country;
-    expect(placeholder, jsonRoundTrip(placeholder));
+    expect(placeholder, jsonMapRoundTrip(placeholder));
+    expect(placeholder, jsonStringRoundTrip(placeholder));
 
     final query = QueryFilter('some query');
-    expect(query, jsonRoundTrip(query));
+    expect(query, jsonMapRoundTrip(query));
+    expect(query, jsonStringRoundTrip(query));
 
     final rating = RatingFilter(3);
-    expect(rating, jsonRoundTrip(rating));
+    expect(rating, jsonMapRoundTrip(rating));
+    expect(rating, jsonStringRoundTrip(rating));
 
     final recent = RecentlyAddedFilter.instance;
-    expect(recent, jsonRoundTrip(recent));
+    expect(recent, jsonMapRoundTrip(recent));
+    expect(recent, jsonStringRoundTrip(recent));
 
     final type = TypeFilter.sphericalVideo;
-    expect(type, jsonRoundTrip(type));
+    expect(type, jsonMapRoundTrip(type));
+    expect(type, jsonStringRoundTrip(type));
 
     final weekday = WeekDayFilter(5);
-    expect(weekday, jsonRoundTrip(weekday));
+    expect(weekday, jsonMapRoundTrip(weekday));
+    expect(weekday, jsonStringRoundTrip(weekday));
 
     // covered
 
     final album = StoredAlbumFilter('path/to/album', 'album');
-    expect(album, jsonRoundTrip(album));
+    expect(album, jsonMapRoundTrip(album));
+    expect(album, jsonStringRoundTrip(album));
 
     final location = LocationFilter(LocationLevel.country, 'France${LocationFilter.locationSeparator}FR');
-    expect(location, jsonRoundTrip(location));
+    expect(location, jsonMapRoundTrip(location));
+    expect(location, jsonStringRoundTrip(location));
 
     final tag = TagFilter('some tag');
-    expect(tag, jsonRoundTrip(tag));
+    expect(tag, jsonMapRoundTrip(tag));
+    expect(tag, jsonStringRoundTrip(tag));
 
     // combinations
 
     final setAnd = SetAndFilter({album, location, tag});
-    expect(setAnd, jsonRoundTrip(setAnd));
+    expect(setAnd, jsonMapRoundTrip(setAnd));
+    expect(setAnd, jsonStringRoundTrip(setAnd));
 
     final setOr = SetOrFilter({album, location, tag});
-    expect(setOr, jsonRoundTrip(setOr));
+    expect(setOr, jsonMapRoundTrip(setOr));
+    expect(setOr, jsonStringRoundTrip(setOr));
 
     final dynamicAlbum = DynamicAlbumFilter('dynamic album', setAnd);
-    expect(dynamicAlbum, jsonRoundTrip(dynamicAlbum));
+    expect(dynamicAlbum, jsonMapRoundTrip(dynamicAlbum));
+    expect(dynamicAlbum, jsonStringRoundTrip(dynamicAlbum));
 
     // groups
 
     final albumGroup = AlbumGroupFilter(albumGrouping.buildGroupUri(null, 'some group'), setOr);
-    expect(albumGroup, jsonRoundTrip(albumGroup));
+    expect(albumGroup, jsonMapRoundTrip(albumGroup));
+    expect(albumGroup, jsonStringRoundTrip(albumGroup));
   });
 
   test('Path filter', () {

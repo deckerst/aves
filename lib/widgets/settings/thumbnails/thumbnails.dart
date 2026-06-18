@@ -7,7 +7,7 @@ import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/thumbnails/collection_actions_editor_page.dart';
-import 'package:aves/widgets/settings/thumbnails/overlay.dart';
+import 'package:aves/widgets/settings/thumbnails/overlay_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +39,7 @@ class SettingsTileCollectionQuickActions extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: CollectionActionEditorPage.routeName,
     builder: (context) => const CollectionActionEditorPage(),
   );
@@ -51,7 +51,7 @@ class SettingsTileThumbnailOverlay extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: ThumbnailOverlayPage.routeName,
     builder: (context) => const ThumbnailOverlayPage(),
   );

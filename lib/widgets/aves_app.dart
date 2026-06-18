@@ -18,6 +18,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/ref/locales.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -26,6 +27,7 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/derived_material_localization.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
@@ -40,6 +42,8 @@ import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
+import 'package:aves/widgets/settings/app_export/items.dart';
+import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -67,11 +71,10 @@ class AvesApp extends StatefulWidget {
   static final _unsupportedLocales = {
     'az', // Azerbaijani
     'bn', // Bengali
-    'ckb', // Kurdish (Central)
+    'ckb', // Kurdish (Sorani, Central)
     'he', // Hebrew
     'hi', // Hindi
     'hr', // Croatian
-    'kmr', // Kurdish (Northern)
     'ml', // Malayalam
     'my', // Burmese
     'ne', // Nepali
@@ -156,13 +159,10 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final Set<StreamSubscription> _subscriptions = {};
   late final Future<void> _appSetup;
-  late final Future<bool> _shouldUseBoldFontLoader;
   final TvRailController _tvRailController = TvRailController();
   final MediaStoreSource _mediaStoreSource = MediaStoreSource();
   Size? _screenSize;
 
-  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(_defaultPageTransitionsBuilder);
-  final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
 
   // observers are not registered when using the same list object with different items
@@ -174,8 +174,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
   final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
-  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
-  static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
   static bool _exitedMainByPop = false;
   static final EventBus _intentEventBus = EventBus();
@@ -185,7 +184,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     super.initState();
     EquatableConfig.stringify = true;
     _appSetup = _setup();
-    _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((_) => _onAnalysisCompletion()));
@@ -209,8 +207,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     debugPrint('stop listening to app lifecycle');
     WidgetsBinding.instance.removeObserver(this);
 
-    _pageTransitionsBuilderNotifier.dispose();
-    _tvMediaQueryModifierNotifier.dispose();
     _appModeNotifier.dispose();
     _mediaStoreSource.dispose();
     super.dispose();
@@ -250,7 +246,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                 windowService.showSystemUI(true);
               }
               final home = initialized
-                  ? _getFirstPage(intentData: widget.debugIntentData)
+                  ? getFirstPage(intentData: widget.debugIntentData)
                   : AvesScaffold(
                       body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                     );
@@ -295,12 +291,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 disableAnimations: false,
                               ),
                               child: MaterialApp(
-                                navigatorKey: _navigatorKey,
+                                navigatorKey: navigatorKey,
                                 home: home,
+                                onUnknownRoute: (settings) {
+                                  reportService.recordError(Exception('Could not find a generator for route $settings in the $runtimeType.'));
+                                  return null;
+                                },
                                 navigatorObservers: _navigatorObservers,
-                                builder: (context, child) => _decorateAppChild(
-                                  context: context,
+                                builder: (context, child) => AvesAppContentDecorator(
                                   initialized: initialized,
+                                  source: _mediaStoreSource,
                                   child: child,
                                 ),
                                 onGenerateTitle: (context) => context.l10n.appName,
@@ -311,6 +311,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 localizationsDelegates: const [
                                   // order matters for resolution of sublocales (e.g. `en_Shaw` before `en`)
                                   ...LocalizationsEnShaw.delegates,
+                                  ...LocalizationsKmr.delegates,
                                   ...LocalizationsNn.delegates,
                                   ...AppLocalizations.localizationsDelegates,
                                 ],
@@ -329,63 +330,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _decorateAppChild({
-    required BuildContext context,
-    required bool initialized,
-    required Widget? child,
-  }) {
-    if (initialized) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => AvesApp.setSystemUIStyle(Theme.of(context)));
-    }
-    return Selector<Settings, bool>(
-      selector: (context, s) => s.initialized ? s.animate : true,
-      builder: (context, areAnimationsEnabled, child) {
-        return MaterialLocalizationsRegionalizer(
-          child: FutureBuilder<bool>(
-            future: _shouldUseBoldFontLoader,
-            builder: (context, snapshot) {
-              // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
-              // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
-              final shouldUseBoldFont = snapshot.data ?? false;
-              final mq = MediaQuery.of(context).copyWith(
-                boldText: shouldUseBoldFont,
-              );
-              return ValueListenableBuilder<TvMediaQueryModifier?>(
-                valueListenable: _tvMediaQueryModifierNotifier,
-                builder: (context, modifier, child) {
-                  return MediaQuery(
-                    data: modifier?.call(mq) ?? mq,
-                    child: AvesColorsProvider(
-                      child: ValueListenableBuilder<PageTransitionsBuilder>(
-                        valueListenable: _pageTransitionsBuilderNotifier,
-                        builder: (context, pageTransitionsBuilder, child) {
-                          final theme = Theme.of(context);
-                          return Theme(
-                            data: theme.copyWith(
-                              pageTransitionsTheme: areAnimationsEnabled
-                                  ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
-                                  // strip page transitions used by `MaterialPageRoute`
-                                  : const DirectPageTransitionsTheme(),
-                              splashFactory: areAnimationsEnabled ? theme.splashFactory : NoSplash.splashFactory,
-                            ),
-                            child: MediaQueryDataProvider(child: child!),
-                          );
-                        },
-                        child: child,
-                      ),
-                    ),
-                  );
-                },
-                child: child,
-              );
-            },
-          ),
-        );
-      },
-      child: child,
     );
   }
 
@@ -469,7 +413,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
   }
 
-  Widget _getFirstPage({Map<String, Object?>? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
+  static Widget getFirstPage({Map<String, Object?>? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
   Size? _getScreenSize(BuildContext context) {
     final view = View.of(context);
@@ -507,7 +451,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.isRotationLocked = await windowService.isRotationLocked();
     settings.longPressTimeoutMillis = await AccessibilityService.getLongPressTimeout();
     settings.areAnimationsRemoved = await AccessibilityService.areAnimationsRemoved();
-    await _onTvLayoutChanged();
     _monitorSettings();
     videoControllerFactory.init();
     videoMetadataFetcher.init();
@@ -517,51 +460,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     unawaited(_setupErrorReporting());
 
     debugPrint('App setup in ${stopwatch.elapsed.inMilliseconds}ms');
-  }
-
-  Future<void> _onTvLayoutChanged() async {
-    if (settings.useTvLayout) {
-      settings.applyTvSettings();
-
-      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
-      _tvMediaQueryModifierNotifier.value = (mq) {
-        // cf https://developer.android.com/training/tv/start/layouts.html#overscan
-        final screenSize = mq.size;
-        const overscanFactor = .05;
-        final overscanInsets = EdgeInsets.symmetric(
-          vertical: screenSize.shortestSide * overscanFactor,
-          horizontal: screenSize.longestSide * overscanFactor,
-        );
-        final oldViewPadding = mq.viewPadding;
-        final newViewPadding = EdgeInsets.only(
-          top: max(oldViewPadding.top, overscanInsets.top),
-          right: max(oldViewPadding.right, overscanInsets.right),
-          bottom: max(oldViewPadding.bottom, overscanInsets.bottom),
-          left: max(oldViewPadding.left, overscanInsets.left),
-        );
-        var newPadding = newViewPadding - mq.viewInsets;
-        newPadding = EdgeInsets.only(
-          top: max(0.0, newPadding.top),
-          right: max(0.0, newPadding.right),
-          bottom: max(0.0, newPadding.bottom),
-          left: max(0.0, newPadding.left),
-        );
-
-        return mq.copyWith(
-          textScaler: const TextScaler.linear(1.1),
-          padding: newPadding,
-          viewPadding: newViewPadding,
-          navigationMode: NavigationMode.directional,
-        );
-      };
-      if (settings.forceTvLayout) {
-        await windowService.requestOrientation(Orientation.landscape);
-      }
-    } else {
-      _pageTransitionsBuilderNotifier.value = _defaultPageTransitionsBuilder;
-      _tvMediaQueryModifierNotifier.value = null;
-      await windowService.requestOrientation(null);
-    }
   }
 
   void _monitorSettings() {
@@ -598,19 +496,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    void applyForceTvLayout() {
-      _onTvLayoutChanged();
-      unawaited(
-        _navigatorKey.currentState!.pushAndRemoveUntil(
-          MaterialPageRoute(
-            settings: const RouteSettings(name: HomePage.routeName),
-            builder: (_) => _getFirstPage(),
-          ),
-          (route) => false,
-        ),
-      );
-    }
-
     final settingStream = settings.updateStream;
     // app
     settingStream.where((event) => event.key == SettingKeys.isInstalledAppAccessAllowedKey).listen((_) => _applyIsInstalledAppAccessAllowed());
@@ -618,7 +503,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     // display
     settingStream.where((event) => event.key == SettingKeys.displayRefreshRateModeKey).listen((_) => _applyDisplayRefreshRateMode());
     settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => _applyMaxBrightness());
-    settingStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => applyForceTvLayout());
     // navigation
     settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => _applyKeepScreenOn());
     // platform settings
@@ -668,7 +552,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   // so we use the global navigator as a workaround
   String? getCurrentRouteName() {
     String? currentRoute;
-    _navigatorKey.currentState?.popUntil((route) {
+    navigatorKey.currentState?.popUntil((route) {
       currentRoute = route.settings.name;
       return true;
     });
@@ -703,10 +587,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       }
     }
 
-    _navigatorKey.currentState!.pushReplacement(
+    navigatorKey.currentState!.pushReplacement(
       DirectMaterialPageRoute(
         settings: const RouteSettings(name: HomePage.routeName),
-        builder: (_) => _getFirstPage(intentData: intentData?.cast<String, Object?>()),
+        builder: (_) => getFirstPage(intentData: intentData?.cast<String, Object?>()),
       ),
     );
   }
@@ -755,4 +639,198 @@ class LocationReceivedEvent {
   final LatLng location;
 
   const LocationReceivedEvent(this.location);
+}
+
+class AvesAppContentDecorator extends StatefulWidget {
+  final bool initialized;
+  final CollectionSource source;
+  final Widget? child;
+
+  const AvesAppContentDecorator({
+    super.key,
+    required this.initialized,
+    required this.source,
+    required this.child,
+  });
+
+  @override
+  State<AvesAppContentDecorator> createState() => _AvesAppContentDecoratorState();
+}
+
+class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with FeedbackMixin {
+  late final Future<bool> _shouldUseBoldFontLoader;
+  final ValueNotifier<PageTransitionsBuilder> _pageTransitionsBuilderNotifier = ValueNotifier(_defaultPageTransitionsBuilder);
+  final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
+  final Set<StreamSubscription> _subscriptions = {};
+
+  CollectionSource get source => widget.source;
+
+  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
+
+  @override
+  void initState() {
+    super.initState();
+    _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
+    source.stateNotifier.addListener(_onSourceStateChanged);
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => _applyForceTvLayout()));
+  }
+
+  @override
+  void didUpdateWidget(covariant AvesAppContentDecorator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.initialized && widget.initialized) {
+      AvesApp.setSystemUIStyle(Theme.of(context));
+      WidgetsBinding.instance.addPostFrameCallback((_) => _onTvLayoutChanged());
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    _pageTransitionsBuilderNotifier.dispose();
+    _tvMediaQueryModifierNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialLocalizationsRegionalizer(
+      child: FutureBuilder<bool>(
+        future: _shouldUseBoldFontLoader,
+        builder: (context, snapshot) {
+          // Flutter v3.4 already checks the system `Configuration.fontWeightAdjustment` to update `MediaQuery`
+          // but we need to also check the non-standard Samsung field `bf` representing the bold font toggle
+          final shouldUseBoldFont = snapshot.data ?? false;
+          final mq = MediaQuery.of(context).copyWith(
+            boldText: shouldUseBoldFont,
+          );
+          return ValueListenableBuilder<TvMediaQueryModifier?>(
+            valueListenable: _tvMediaQueryModifierNotifier,
+            builder: (context, modifier, child) {
+              return MediaQuery(
+                data: modifier?.call(mq) ?? mq,
+                child: AvesColorsProvider(
+                  child: ValueListenableBuilder<PageTransitionsBuilder>(
+                    valueListenable: _pageTransitionsBuilderNotifier,
+                    builder: (context, pageTransitionsBuilder, child) {
+                      final theme = Theme.of(context);
+                      final animate = context.select<Settings, bool>((s) => s.initialized ? s.animate : true);
+                      return Theme(
+                        data: theme.copyWith(
+                          pageTransitionsTheme: animate
+                              ? PageTransitionsTheme(builders: {TargetPlatform.android: pageTransitionsBuilder})
+                              // strip page transitions used by `MaterialPageRoute`
+                              : const DirectPageTransitionsTheme(),
+                          splashFactory: animate ? theme.splashFactory : NoSplash.splashFactory,
+                        ),
+                        child: MediaQueryDataProvider(child: child!),
+                      );
+                    },
+                    child: child,
+                  ),
+                ),
+              );
+            },
+            child: widget.child,
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _onSourceStateChanged() async {
+    final appMode = context.read<ValueNotifier<AppMode>>().value;
+    if (appMode == .main) {
+      if (source.isReady) {
+        final dirPath = settings.autoExportPath;
+        if (dirPath != null) {
+          final content = SettingsActionDelegate.getExportContent(
+            source: source,
+            toExport: AppExportItem.values.toSet(),
+          );
+          const mimeType = MimeTypes.json;
+          const suffix = kProfileMode
+              ? '-profile'
+              : kDebugMode
+              ? '-debug'
+              : '';
+          final success = await storageService.createFile(
+            dirPath: dirPath,
+            basename: 'aves$suffix-settings-auto',
+            mimeType: mimeType,
+            bytes: content,
+          );
+
+          if (success != null) {
+            if (success) {
+              await reportService.log('Exported settings to dirPath=$dirPath');
+            } else {
+              showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+            }
+          }
+        }
+        source.stateNotifier.removeListener(_onSourceStateChanged);
+      }
+    }
+  }
+
+  Future<void> _applyForceTvLayout() async {
+    await _onTvLayoutChanged();
+    unawaited(
+      _AvesAppState.navigatorKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: HomePage.routeName),
+          builder: (_) => _AvesAppState.getFirstPage(),
+        ),
+        (route) => false,
+      ),
+    );
+  }
+
+  Future<void> _onTvLayoutChanged() async {
+    if (settings.useTvLayout) {
+      settings.applyTvSettings();
+
+      _pageTransitionsBuilderNotifier.value = const TvPageTransitionsBuilder();
+      _tvMediaQueryModifierNotifier.value = (mq) {
+        // cf https://developer.android.com/training/tv/start/layouts.html#overscan
+        final screenSize = mq.size;
+        const overscanFactor = .05;
+        final overscanInsets = EdgeInsets.symmetric(
+          vertical: screenSize.shortestSide * overscanFactor,
+          horizontal: screenSize.longestSide * overscanFactor,
+        );
+        final oldViewPadding = mq.viewPadding;
+        final newViewPadding = EdgeInsets.only(
+          top: max(oldViewPadding.top, overscanInsets.top),
+          right: max(oldViewPadding.right, overscanInsets.right),
+          bottom: max(oldViewPadding.bottom, overscanInsets.bottom),
+          left: max(oldViewPadding.left, overscanInsets.left),
+        );
+        var newPadding = newViewPadding - mq.viewInsets;
+        newPadding = EdgeInsets.only(
+          top: max(0.0, newPadding.top),
+          right: max(0.0, newPadding.right),
+          bottom: max(0.0, newPadding.bottom),
+          left: max(0.0, newPadding.left),
+        );
+
+        return mq.copyWith(
+          textScaler: const TextScaler.linear(1.1),
+          padding: newPadding,
+          viewPadding: newViewPadding,
+          navigationMode: NavigationMode.directional,
+        );
+      };
+      if (settings.forceTvLayout) {
+        await windowService.requestOrientation(Orientation.landscape);
+      }
+    } else {
+      _pageTransitionsBuilderNotifier.value = _defaultPageTransitionsBuilder;
+      _tvMediaQueryModifierNotifier.value = null;
+      await windowService.requestOrientation(null);
+    }
+  }
 }

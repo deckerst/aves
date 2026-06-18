@@ -93,7 +93,7 @@ class _CreateGroupDialogState extends State<CreateGroupDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(_getNewGroupUri());
+      Navigator.maybeOf(context)?.pop<Uri>(_getNewGroupUri());
     }
   }
 }

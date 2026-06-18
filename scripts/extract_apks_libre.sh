@@ -1,13 +1,13 @@
 #!/bin/bash
 if [ ! -d "scripts" ]; then
-  cd ..
+    cd ..
 fi
 
 BUNDLE="/home/tibo/Downloads/app-libre-release.aab"
 APKS_FULL="/home/tibo/Downloads/app-libre-release.apks"
 APKS_STRIPPED="/home/tibo/Downloads/app-libre-release_stripped.apks"
 
-rm "$APKS_FULL"
+rm -f "$APKS_FULL"
 
 # shellcheck disable=SC2001
 OUTPUT=$(sed "s|\.aab|\.apks|" <<<"$BUNDLE")
@@ -21,8 +21,11 @@ KEY_ALIAS=$(sed -n 's|.*keyAlias=\(.*\)[\r\n]|\1|p' "$KEYS_PATH")
 KEY_PW=$(sed -n 's|.*keyPassword=\(.*\)[\r\n]|\1|p' "$KEYS_PATH" | sed 's|\\'\''|'\''|g')
 
 echo "$BUNDLE -> $OUTPUT"
-bundletool build-apks --bundle="$BUNDLE" --output="$OUTPUT" \
+# cf https://github.com/accrescent/parcelo/issues/804#issuecomment-4179588240
+java -jar ../bundletool-all-1.18.2.jar build-apks --bundle="$BUNDLE" --output="$OUTPUT" \
   --ks="$STORE_PATH" --ks-pass="pass:$STORE_PW" \
   --ks-key-alias="$KEY_ALIAS" --key-pass="pass:$KEY_PW"
 
 ../apkstripper "$APKS_FULL" "$APKS_STRIPPED"
+
+rm -f "$APKS_FULL"

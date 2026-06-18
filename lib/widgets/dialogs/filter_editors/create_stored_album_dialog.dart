@@ -206,6 +206,6 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
     final path = await _buildAlbumPath();
     if (path == null) return;
 
-    Navigator.maybeOf(context)?.pop(path);
+    Navigator.maybeOf(context)?.pop<String>(path);
   }
 }

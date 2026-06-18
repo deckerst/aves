@@ -75,7 +75,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
                             // do not recycle bitmaps fetched from `ExifInterface` as their lifecycle is unknown
-                            BitmapUtils.getBytes(it, recycle = false, decoded = true, mimeType = null)?.let { bytes -> thumbnails.add(bytes) }
+                            BitmapUtils.getBytes(it, recycle = false, decoded = true, applyGainmap = false, mimeType = null)?.let { bytes -> thumbnails.add(bytes) }
                         }
                     }
                 }

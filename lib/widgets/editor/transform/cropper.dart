@@ -462,11 +462,11 @@ class _CropperState extends State<Cropper> with SingleTickerProviderStateMixin {
   }
 
   EdgeInsets _getBoundariesPadding(double scale) {
-    // TODO TLAD handle orientation
+    // TODO TLAD [crop] handle orientation
     if (transformation.orientation != TransformOrientation.normal) {
       return const EdgeInsets.all(double.infinity);
     }
-    // TODO TLAD handle straightening
+    // TODO TLAD [crop] handle straightening
     if (transformation.straightenDegrees != 0) {
       return const EdgeInsets.all(double.infinity);
     }

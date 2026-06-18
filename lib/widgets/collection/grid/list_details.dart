@@ -5,11 +5,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -9,7 +9,6 @@ class AIcons {
   static const vector = Symbols.code;
 
   static const accessibility = Symbols.accessibility_new;
-  static const android = Symbols.android;
   static const app = Symbols.apps;
   static const apply = Symbols.done;
   static const aspectRatio = Symbols.aspect_ratio;
@@ -17,6 +16,7 @@ class AIcons {
   static const broken = Symbols.broken_image;
   static const brightnessMin = Symbols.brightness_low;
   static const brightnessMax = Symbols.brightness_high;
+  static const bugReport = Symbols.bug_report;
   static const checked = Symbols.done;
   static const circle = Symbols.fiber_manual_record;
   static const count = MdiIcons.counter;
@@ -45,6 +45,7 @@ class AIcons {
   static const minimap = Symbols.picture_in_picture;
   static const name = Symbols.match_word;
   static const newTier = Symbols.fiber_new;
+  static const notifications = Symbols.notifications;
   static const opacity = Symbols.opacity;
   static const palette = Symbols.palette;
   static const path = Symbols.account_tree;
@@ -86,7 +87,8 @@ class AIcons {
   static const country = Symbols.flag;
   static const state = Symbols.flag;
   static const place = Symbols.place;
-  static const route = Symbols.route;
+  static const route = Symbols.conversion_path;
+  static const routeOff = Symbols.conversion_path_off;
 
   // view
   static const section = Symbols.subheader;
@@ -213,6 +215,7 @@ class AIcons {
   static const motionPhoto = Symbols.motion_photos_on;
   static const multiPage = Symbols.burst_mode;
   static const panorama = Symbols.vrpano;
+  static const slowMotion = Symbols.slow_motion_video;
   static const sphericalVideo = Symbols.threesixty;
   static const videoPlay = Symbols.play_circle;
   static const selected = Symbols.check_circle;

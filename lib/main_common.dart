@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import 'package:aves/app_flavor.dart';
-import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:flutter/foundation.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
-  AvesMethodChannel.kDebug = kDebugMode;
   debugProfilePlatformChannels = false;
 
   //  HttpClient.enableTimelineLogging = true; // enable network traffic logging

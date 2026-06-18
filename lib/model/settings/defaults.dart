@@ -96,7 +96,7 @@ class SettingsDefaults {
   static const enableMotionPhotoAutoPlay = false;
 
   // info
-  static const infoMapZoom = 12.0;
+  static const double infoMapZoom = 12.0;
   static const coordinateFormat = CoordinateFormat.dms;
   static const unitSystem = UnitSystem.metric;
 
@@ -107,7 +107,7 @@ class SettingsDefaults {
   // converter
 
   static const convertMimeType = MimeTypes.jpeg;
-  static const convertQuality = 95;
+  static const int convertQuality = 95;
   static const convertWriteMetadata = true;
 
   // rendering
@@ -115,6 +115,9 @@ class SettingsDefaults {
 
   // search
   static const saveSearchHistory = true;
+
+  // map
+  static const mapShowItemTracks = false;
 
   // bin
   static const enableBin = true;
@@ -131,7 +134,7 @@ class SettingsDefaults {
   static const slideshowAnimatedZoomEffect = true;
   static const slideshowTransition = ViewerTransition.fade;
   static const slideshowVideoPlayback = SlideshowVideoPlayback.playMuted;
-  static const slideshowInterval = 5;
+  static const int slideshowInterval = 5;
 
   // widget
   static const widgetOutline = false;

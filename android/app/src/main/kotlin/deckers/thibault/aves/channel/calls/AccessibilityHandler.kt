@@ -70,13 +70,13 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
             }
         }
 
-        val am = contextWrapper.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
-        if (am == null) {
+        val accessibilityManager = contextWrapper.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        if (accessibilityManager == null) {
             result.error("getRecommendedTimeoutMillis-service", "failed to get accessibility manager", null)
             return
         }
 
-        val millis = am.getRecommendedTimeoutMillis(originalTimeoutMillis, uiContentFlags)
+        val millis = accessibilityManager.getRecommendedTimeoutMillis(originalTimeoutMillis, uiContentFlags)
         result.success(millis)
     }
 

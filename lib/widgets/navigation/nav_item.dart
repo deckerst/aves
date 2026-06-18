@@ -136,14 +136,14 @@ class AvesNavItem extends Equatable {
   static AvesNavItem _fromMap(Map<String, Object?> json) {
     return AvesNavItem(
       route: json['route'] as String,
-      filters: (json['filters'] as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet(),
+      filters: (json['filters'] as List?)?.map(CollectionFilter.fromJson).nonNulls.toSet(),
       path: json['path'] as String?,
     );
   }
 
   Map<String, Object?> _toMap() => {
     'route': route,
-    if (filters != null) 'filters': filters!.map((v) => v.toJson()).toList(),
+    if (filters != null) 'filters': filters!.map((v) => v.toJsonMap()).toList(),
     'path': ?path,
   };
 

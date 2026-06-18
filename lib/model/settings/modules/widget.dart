@@ -5,23 +5,23 @@ import 'package:aves_model/aves_model.dart';
 mixin WidgetSettings on SettingsAccess {
   WidgetOutline getWidgetOutline(int widgetId) => getEnumOrDefault('${SettingKeys.widgetOutlinePrefixKey}$widgetId', WidgetOutline.none, WidgetOutline.values);
 
-  void setWidgetOutline(int widgetId, WidgetOutline newValue) => set('${SettingKeys.widgetOutlinePrefixKey}$widgetId', newValue.toString());
+  void setWidgetOutline(int widgetId, WidgetOutline newValue) => set('${SettingKeys.widgetOutlinePrefixKey}$widgetId', newValue.name);
 
   WidgetShape getWidgetShape(int widgetId) => getEnumOrDefault('${SettingKeys.widgetShapePrefixKey}$widgetId', SettingsDefaults.widgetShape, WidgetShape.values);
 
-  void setWidgetShape(int widgetId, WidgetShape newValue) => set('${SettingKeys.widgetShapePrefixKey}$widgetId', newValue.toString());
+  void setWidgetShape(int widgetId, WidgetShape newValue) => set('${SettingKeys.widgetShapePrefixKey}$widgetId', newValue.name);
 
   Set<CollectionFilter> getWidgetCollectionFilters(int widgetId) => (getStringList('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId') ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
-  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => set('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId', newValue.map((filter) => filter.toJson()).toList());
+  void setWidgetCollectionFilters(int widgetId, Set<CollectionFilter> newValue) => set('${SettingKeys.widgetCollectionFiltersPrefixKey}$widgetId', newValue.map((filter) => filter.toJsonString()).toList());
 
   WidgetOpenPage getWidgetOpenPage(int widgetId) => getEnumOrDefault('${SettingKeys.widgetOpenPagePrefixKey}$widgetId', SettingsDefaults.widgetOpenPage, WidgetOpenPage.values);
 
-  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => set('${SettingKeys.widgetOpenPagePrefixKey}$widgetId', newValue.toString());
+  void setWidgetOpenPage(int widgetId, WidgetOpenPage newValue) => set('${SettingKeys.widgetOpenPagePrefixKey}$widgetId', newValue.name);
 
   WidgetDisplayedItem getWidgetDisplayedItem(int widgetId) => getEnumOrDefault('${SettingKeys.widgetDisplayedItemPrefixKey}$widgetId', SettingsDefaults.widgetDisplayedItem, WidgetDisplayedItem.values);
 
-  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => set('${SettingKeys.widgetDisplayedItemPrefixKey}$widgetId', newValue.toString());
+  void setWidgetDisplayedItem(int widgetId, WidgetDisplayedItem newValue) => set('${SettingKeys.widgetDisplayedItemPrefixKey}$widgetId', newValue.name);
 
   String? getWidgetUri(int widgetId) => getString('${SettingKeys.widgetUriPrefixKey}$widgetId');
 

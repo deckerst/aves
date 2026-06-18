@@ -101,13 +101,15 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
       ),
       body: SafeArea(
         bottom: false,
-        child: QuickActionEditorBody(
-          bannerText: bannerText,
-          displayedButtonsDirection: displayedButtonsDirection,
-          allAvailableActions: allAvailableActions,
-          actionIcon: actionIcon,
-          actionText: actionText,
-          controller: controller,
+        child: BackdropGroup(
+          child: QuickActionEditorBody(
+            bannerText: bannerText,
+            displayedButtonsDirection: displayedButtonsDirection,
+            allAvailableActions: allAvailableActions,
+            actionIcon: actionIcon,
+            actionText: actionText,
+            controller: controller,
+          ),
         ),
       ),
     );

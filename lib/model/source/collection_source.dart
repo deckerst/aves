@@ -82,7 +82,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     settings.updateStream.where((event) => event.key == SettingKeys.hiddenFiltersKey).listen((event) {
       final oldValue = event.oldValue;
       if (oldValue is List?) {
-        final oldHiddenFilters = (oldValue?.cast<String>() ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
+        final oldHiddenFilters = (oldValue ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
         final newlyVisibleFilters = oldHiddenFilters.whereNot(settings.hiddenFilters.contains).toSet();
         _onFilterVisibilityChanged(newlyVisibleFilters);
       }
@@ -95,6 +95,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
+    stateNotifier.dispose();
+    progressNotifier.dispose();
     vaults.lockStateChangeNotifier.removeListener(_onVaultsChanged);
     _disposeAllEntries();
   }

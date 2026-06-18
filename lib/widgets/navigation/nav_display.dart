@@ -27,6 +27,7 @@ class NavigationDisplay {
     if (filter == TypeFilter.motionPhoto) return l10n.drawerCollectionMotionPhotos;
     if (filter == TypeFilter.panorama) return l10n.drawerCollectionPanoramas;
     if (filter == TypeFilter.raw) return l10n.drawerCollectionRaws;
+    if (filter == TypeFilter.slowMotion) return l10n.drawerCollectionSlowMotionVideos;
     if (filter == TypeFilter.sphericalVideo) return l10n.drawerCollectionSphericalVideos;
     return filter.getLabel(context);
   }

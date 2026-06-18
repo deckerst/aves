@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/covers.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
@@ -42,6 +43,9 @@ abstract class StorageService {
   // returns whether user granted access to a directory of his choosing
   Future<bool> requestDirectoryAccess(String path);
 
+  // returns a directory to which user granted access
+  Future<String?> requestAnyDirectoryAccess();
+
   Future<bool> canRequestMediaFileBulkAccess();
 
   Future<bool> canInsertMedia(Set<VolumeRelativeDirectory> directories);
@@ -49,13 +53,26 @@ abstract class StorageService {
   // returns whether user granted access to URIs
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes);
 
+  // save provided content to a user selected file
+  // skip user interaction if `dirPath` is provided
   // returns whether operation succeeded (`null` if user cancelled)
-  Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
+  Future<bool?> createFile({
+    String? dirPath,
+    required String basename,
+    required String mimeType,
+    required Uint8List bytes,
+  });
 
+  // return content from a user selected file
   Future<Uint8List> openFile([String? mimeType]);
 
+  // copy provided file to a user selected file
   // returns whether operation succeeded (`null` if user cancelled)
-  Future<bool?> copyFile(String name, String mimeType, String sourceUri);
+  Future<bool?> copyFile({
+    required String basename,
+    required String mimeType,
+    required String sourceUri,
+  });
 }
 
 class PlatformStorageService implements StorageService {
@@ -292,6 +309,31 @@ class PlatformStorageService implements StorageService {
     return false;
   }
 
+  // returns a directory to which user granted access
+  @override
+  Future<String?> requestAnyDirectoryAccess() async {
+    try {
+      final opCompleter = Completer<String?>();
+      _stream
+          .receiveBroadcastStream(<String, Object?>{
+            'op': 'requestAnyDirectoryAccess',
+          })
+          .listen(
+            (data) => opCompleter.complete(data as String?),
+            onError: opCompleter.completeError,
+            onDone: () {
+              if (!opCompleter.isCompleted) opCompleter.complete(null);
+            },
+            cancelOnError: true,
+          );
+      // `await` here, so that `completeError` will be caught below
+      return await opCompleter.future;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
   // returns whether user granted access to URIs
   @override
   Future<bool> requestMediaFileAccess(List<String> uris, List<String> mimeTypes) async {
@@ -327,13 +369,19 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
+  Future<bool?> createFile({
+    String? dirPath,
+    required String basename,
+    required String mimeType,
+    required Uint8List bytes,
+  }) async {
     try {
       final opCompleter = Completer<bool?>();
       _stream
           .receiveBroadcastStream(<String, Object?>{
             'op': 'createFile',
-            'name': name,
+            'dirPath': dirPath,
+            'name': '$basename${MimeTypes.extensionFor(mimeType)}',
             'mimeType': mimeType,
             'bytes': bytes,
           })
@@ -384,13 +432,17 @@ class PlatformStorageService implements StorageService {
   }
 
   @override
-  Future<bool?> copyFile(String name, String mimeType, String sourceUri) async {
+  Future<bool?> copyFile({
+    required String basename,
+    required String mimeType,
+    required String sourceUri,
+  }) async {
     try {
       final opCompleter = Completer<bool?>();
       _stream
           .receiveBroadcastStream(<String, Object?>{
             'op': 'copyFile',
-            'name': name,
+            'name': '$basename${MimeTypes.extensionFor(mimeType)}',
             'mimeType': mimeType,
             'sourceUri': sourceUri,
           })

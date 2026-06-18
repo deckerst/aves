@@ -117,7 +117,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
       source: source,
       filters: settings.screenSaverCollectionFilters,
     );
-    var entries = originalCollection.sortedEntries;
+    var entries = List.of(originalCollection.sortedEntries);
     if (settings.screenSaverVideoPlayback == SlideshowVideoPlayback.skip) {
       entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
     }

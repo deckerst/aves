@@ -130,14 +130,14 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                         getName: (context, v) => v.getName(context),
                         selector: (context, s) => _openPage,
                         onSelection: (v) => setState(() => _openPage = v),
-                        tileTitle: l10n.settingsWidgetOpenPage,
+                        tileTitle: (_) => l10n.settingsWidgetOpenPage,
                       ),
                       SettingsSelectionListTile<WidgetDisplayedItem>(
                         values: WidgetDisplayedItem.values,
                         getName: (context, v) => v.getName(context),
                         selector: (context, s) => _displayedItem,
                         onSelection: (v) => setState(() => _displayedItem = v),
-                        tileTitle: l10n.settingsWidgetDisplayedItem,
+                        tileTitle: (_) => l10n.settingsWidgetDisplayedItem,
                       ),
                       SettingsCollectionTile(
                         filters: _collectionFilters,
@@ -175,7 +175,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         itemBuilder: (context, index) {
-          final shape = WidgetShape.values[index];
+          final shape = shapes[index];
           final selected = shape == _shape;
           final duration = context.read<DurationsData>().formTransition;
           return Padding(

@@ -39,9 +39,9 @@ class _VideoTrackSelectionDialogState extends State<VideoTrackSelectionDialog> {
     _textTracks = [null, ...byType[MediaTrackType.text] ?? []];
 
     final trackEntries = widget.tracks.entries;
-    _currentVideo = trackEntries.firstWhereOrNull((kv) => kv.key.type == MediaTrackType.video && kv.value)?.key;
-    _currentAudio = trackEntries.firstWhereOrNull((kv) => kv.key.type == MediaTrackType.audio && kv.value)?.key;
-    _currentText = trackEntries.firstWhereOrNull((kv) => kv.key.type == MediaTrackType.text && kv.value)?.key;
+    _currentVideo = trackEntries.firstWhereOrNull((kv) => kv.key.type == .video && kv.value)?.key;
+    _currentAudio = trackEntries.firstWhereOrNull((kv) => kv.key.type == .audio && kv.value)?.key;
+    _currentText = trackEntries.firstWhereOrNull((kv) => kv.key.type == .text && kv.value)?.key;
   }
 
   @override
@@ -156,9 +156,9 @@ class _VideoTrackSelectionDialogState extends State<VideoTrackSelectionDialog> {
     ];
   }
 
-  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop({
-    MediaTrackType.video: _currentVideo,
-    MediaTrackType.audio: _currentAudio,
-    MediaTrackType.text: _currentText,
+  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop<Map<MediaTrackType, MediaTrackSummary?>>({
+    .video: _currentVideo,
+    .audio: _currentAudio,
+    .text: _currentText,
   });
 }

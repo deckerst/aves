@@ -191,7 +191,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (newSpeed == null) return;
 
-    controller.speed = newSpeed;
+    await controller.setSpeed(newSpeed);
   }
 
   Future<void> _showSettings(BuildContext context, AvesVideoController controller) async {

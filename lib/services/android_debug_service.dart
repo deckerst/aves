@@ -8,46 +8,6 @@ import 'package:flutter/services.dart';
 class AndroidDebugService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/debug');
 
-  static Future<void> crash() async {
-    try {
-      await _platform.invokeMethod('crash');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
-  static Future<void> exception() async {
-    try {
-      await _platform.invokeMethod('exception');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
-  static Future<void> safeException() async {
-    try {
-      await _platform.invokeMethod('safeException');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
-  static Future<void> exceptionInCoroutine() async {
-    try {
-      await _platform.invokeMethod('exceptionInCoroutine');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
-  static Future<void> safeExceptionInCoroutine() async {
-    try {
-      await _platform.invokeMethod('safeExceptionInCoroutine');
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-  }
-
   static Future<Map> getContextDirs() async {
     try {
       final result = await _platform.invokeMethod('getContextDirs');

@@ -37,7 +37,7 @@ class SetOrFilter extends CollectionFilter with ContainerFilter {
   }
 
   static SetOrFilter? fromMap(Map<String, Object?> json) {
-    final filters = (json['filters'] as List).cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
+    final filters = (json['filters'] as List).map(CollectionFilter.fromJson).nonNulls.toSet();
     return SetOrFilter(
       filters,
       reversed: json['reversed'] as bool? ?? false,
@@ -45,10 +45,10 @@ class SetOrFilter extends CollectionFilter with ContainerFilter {
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
-    'filters': _filters.map((v) => v.toJson()).toList(),
-    'reversed': reversed,
+    'filters': _filters.map((v) => v.toJsonMap()).toList(),
+    if (reversed) 'reversed': reversed,
   };
 
   @override

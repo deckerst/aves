@@ -29,13 +29,14 @@ object PermissionManager {
         Environment.DIRECTORY_PICTURES,
     )
 
-    fun requestDirectoryAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+
+    fun requestDirectoryAccess(activity: Activity, path: String?, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
         // `StorageVolume.createOpenDocumentTreeIntent` is an alternative,
         // and it helps with initial volume, but not with initial directory
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (path != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // initial URI should not be a `tree document URI`, but a simple `document URI`
             StorageUtils.convertDirPathToDocumentUri(activity, path)?.let {
                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, it)
@@ -236,8 +237,8 @@ object PermissionManager {
         }
     }
 
-    private fun releaseUriPermission(context: Context, it: Uri) {
+    private fun releaseUriPermission(context: Context, uri: Uri) {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        context.contentResolver.releasePersistableUriPermission(it, flags)
+        context.contentResolver.releasePersistableUriPermission(uri, flags)
     }
 }

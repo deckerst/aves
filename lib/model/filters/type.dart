@@ -17,6 +17,7 @@ class TypeFilter extends CollectionFilter {
   static const _motionPhoto = 'motion_photo'; // subset of images (jpeg, heic)
   static const _panorama = 'panorama'; // subset of images
   static const _raw = 'raw'; // specific image formats
+  static const _slowMotionVideo = 'slow_motion_video'; // subset of videos
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
@@ -29,6 +30,7 @@ class TypeFilter extends CollectionFilter {
   static final motionPhoto = TypeFilter._private(_motionPhoto);
   static final panorama = TypeFilter._private(_panorama);
   static final raw = TypeFilter._private(_raw);
+  static final slowMotion = TypeFilter._private(_slowMotionVideo);
   static final sphericalVideo = TypeFilter._private(_sphericalVideo);
 
   @override
@@ -54,6 +56,9 @@ class TypeFilter extends CollectionFilter {
       case _raw:
         _test = (entry) => entry.isRaw;
         _icon = AIcons.raw;
+      case _slowMotionVideo:
+        _test = (entry) => entry.isVideo && entry.isSlowMotion;
+        _icon = AIcons.slowMotion;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
         _icon = AIcons.sphericalVideo;
@@ -68,10 +73,10 @@ class TypeFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'itemType': itemType,
-    'reversed': reversed,
+    if (reversed) 'reversed': reversed,
   };
 
   @override
@@ -93,6 +98,7 @@ class TypeFilter extends CollectionFilter {
       _motionPhoto => l10n.filterTypeMotionPhotoLabel,
       _panorama => l10n.filterTypePanoramaLabel,
       _raw => l10n.filterTypeRawLabel,
+      _slowMotionVideo => l10n.filterTypeSlowMotionVideoLabel,
       _sphericalVideo => l10n.filterTypeSphericalVideoLabel,
       _ => itemType,
     };
@@ -115,6 +121,8 @@ class TypeFilter extends CollectionFilter {
         return SynchronousFuture(colors.panorama);
       case _raw:
         return SynchronousFuture(colors.raw);
+      case _slowMotionVideo:
+        return SynchronousFuture(colors.slowMotionVideo);
       case _sphericalVideo:
         return SynchronousFuture(colors.sphericalVideo);
     }

@@ -21,17 +21,16 @@ class EntryLeafletMap<T> extends StatefulWidget {
   final AvesMapController controller;
   final Listenable clusterListenable;
   final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final double minZoom, maxZoom;
   final EntryMapStyle style;
   final TransitionBuilder decoratorBuilder;
   final WidgetBuilder buttonPanelBuilder;
   final MarkerClusterBuilder<T> markerClusterBuilder;
   final MarkerWidgetBuilder<T> markerWidgetBuilder;
   final ValueNotifier<LatLng?>? dotLocationNotifier;
+  final ValueNotifier<List<GeoTrack>> tracksNotifier;
   final Size markerSize, dotMarkerSize;
   final ValueNotifier<double>? overlayOpacityNotifier;
   final MapOverlay? overlayEntry;
-  final Set<List<LatLng>>? tracks;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final MarkerTapCallback<T>? onMarkerTap;
@@ -42,19 +41,17 @@ class EntryLeafletMap<T> extends StatefulWidget {
     required this.controller,
     required this.clusterListenable,
     required this.boundsNotifier,
-    this.minZoom = 0,
-    this.maxZoom = 22,
     required this.style,
     required this.decoratorBuilder,
     required this.buttonPanelBuilder,
     required this.markerClusterBuilder,
     required this.markerWidgetBuilder,
     required this.dotLocationNotifier,
+    required this.tracksNotifier,
     required this.markerSize,
     required this.dotMarkerSize,
     this.overlayOpacityNotifier,
     this.overlayEntry,
-    this.tracks,
     this.onUserZoomChange,
     this.onMapTap,
     this.onMarkerTap,
@@ -130,6 +127,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   Widget _buildMap() {
     final markerSize = widget.markerSize;
     final dotMarkerSize = widget.dotMarkerSize;
+    final style = widget.style;
 
     final interactive = context.select<MapThemeData, bool>((v) => v.interactive);
 
@@ -163,8 +161,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         initialCenter: bounds.projectedCenter,
         initialZoom: bounds.zoom,
         initialRotation: bounds.rotation,
-        minZoom: widget.minZoom,
-        maxZoom: widget.maxZoom,
+        minZoom: style.minZoom,
+        maxZoom: style.maxZoom,
         backgroundColor: Colors.transparent,
         interactionOptions: InteractionOptions(
           // TODO TLAD [map] as of flutter_map v0.14.0, `doubleTapZoom` does not move when zoom is already maximal
@@ -177,9 +175,9 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
       ),
       mapController: _leafletMapController,
       children: [
-        _buildMapLayer(),
+        _buildMapLayer(style),
         if (widget.overlayEntry != null) _buildOverlayImageLayer(),
-        if (widget.tracks != null) _buildTracksLayer(),
+        _buildTracksLayer(),
         MarkerLayer(
           markers: markers,
           rotate: true,
@@ -208,8 +206,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
     );
   }
 
-  Widget _buildMapLayer() {
-    final style = widget.style;
+  Widget _buildMapLayer(EntryMapStyle style) {
     if (style == EntryMapStyles.osmLiberty) {
       return const OsmLibertyLayer();
     }
@@ -259,20 +256,26 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
   }
 
   Widget _buildTracksLayer() {
-    final tracks = widget.tracks;
-    if (tracks == null) return const SizedBox();
+    return NullableValueListenableBuilder<List<GeoTrack>>(
+      valueListenable: widget.tracksNotifier,
+      builder: (context, tracks, child) {
+        if (tracks == null) return const SizedBox();
 
-    final trackColor = Theme.of(context).colorScheme.primary;
-    return PolylineLayer(
-      polylines: tracks
-          .map(
-            (v) => Polyline(
-              points: v,
-              strokeWidth: MapThemeData.trackWidth.toDouble(),
-              color: trackColor,
-            ),
-          )
-          .toList(),
+        final strokeWidth = MapThemeData.trackWidth.toDouble();
+        return PolylineLayer(
+          polylines: tracks
+              .map(
+                (track) => Polyline(
+                  points: track.points,
+                  strokeWidth: strokeWidth,
+                  color: track.color,
+                  strokeCap: .round,
+                  strokeJoin: .round,
+                ),
+              )
+              .toList(),
+        );
+      },
     );
   }
 
@@ -309,7 +312,8 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
 
   Future<void> _zoomBy(double amount, {LatLng? focalPoint}) async {
     final camera = _leafletMapController.camera;
-    final endZoom = (camera.zoom + amount).clamp(widget.minZoom, widget.maxZoom);
+    final style = widget.style;
+    final endZoom = (camera.zoom + amount).clamp(style.minZoom, style.maxZoom);
     widget.onUserZoomChange?.call(endZoom);
 
     final center = camera.center;

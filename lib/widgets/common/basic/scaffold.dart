@@ -27,16 +27,18 @@ class AvesScaffold extends StatelessWidget {
     // prevent conflict between drawer drag gesture and Android navigation gestures
     final drawerEnableOpenDragGesture = MediaQuery.systemGestureInsetsOf(context).horizontal == 0;
 
-    return Scaffold(
-      appBar: appBar,
-      body: body,
-      floatingActionButton: floatingActionButton,
-      drawer: drawer,
-      bottomNavigationBar: bottomNavigationBar,
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      extendBody: extendBody,
-      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+    return BackdropGroup(
+      child: Scaffold(
+        appBar: appBar,
+        body: body,
+        floatingActionButton: floatingActionButton,
+        drawer: drawer,
+        bottomNavigationBar: bottomNavigationBar,
+        backgroundColor: backgroundColor,
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+        extendBody: extendBody,
+        drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+      ),
     );
   }
 }

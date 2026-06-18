@@ -1,7 +1,8 @@
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flutter/material.dart';
 
 class SliderListTile extends StatelessWidget {
-  final String title;
+  final TitleBuilder title;
   final double value;
   final ValueChanged<double>? onChanged;
   final double min;
@@ -44,7 +45,7 @@ class SliderListTile extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    title,
+                    title(context) ?? '?',
                     style: listTileTitleTextStyle,
                   ),
                   const Spacer(),

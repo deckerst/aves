@@ -137,8 +137,8 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     final packageInfo = await PackageInfo.fromPlatform();
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final mediaQuery = MediaQuery.of(context);
-    final view = View.of(context);
+    final mpc = await deviceService.getMediaPerformanceClass();
+    final viewPhysicalSize = View.of(context).physicalSize;
 
     final ram = await deviceService.getRamSizes(<MemorySizeType>{.total});
     final heap = await deviceService.getHeapSizes(<MemorySizeType>{.max});
@@ -147,6 +147,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
     final supportsHdr = await windowService.supportsHdr();
     final supportsWideGamut = await windowService.supportsWideGamut();
+    final crossWindowBlurEnabled = await windowService.isCrossWindowBlurEnabled();
 
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
@@ -160,11 +161,11 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     return [
       'Aves: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}, package=${device.packageName}, installer=${packageInfo.installerStore}',
       'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
-      'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, build: ${androidInfo.display}',
+      'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, MPC $mpc, build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'Memory: ram.total=$ramTotal, heap.max=$heapMax',
-      'Screen: size.physical=${view.physicalSize.width.round()}x${view.physicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
-      'Display: size.logical=${mediaQuery.size.width}x${mediaQuery.size.height}, pixel ratio=${view.devicePixelRatio}',
+      'Screen: size.physical=${viewPhysicalSize.width.round()}x${viewPhysicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
+      'Graphics: size.logical=${MediaQuery.widthOf(context)}x${MediaQuery.heightOf(context)}, pixel ratio=${MediaQuery.devicePixelRatioOf(context)}, cross window blur=$crossWindowBlurEnabled',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}, geocoder=${device.hasGeocoder}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
@@ -180,16 +181,17 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final contentSettings = const JsonEncoder.withIndent('  ').convert(AppExportItem.settings.export(context.read<CollectionSource>()));
     final contentLog = (await Process.run('logcat', ['-d'])).stdout as String;
 
-    final logs = [
+    final mixedContent = [
       contentInfo,
       contentSettings,
       contentLog,
     ].join('\n--------------------------------------------------------------------------------\n');
 
+    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
     final success = await storageService.createFile(
-      'aves-logs-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}.txt',
-      MimeTypes.plainText,
-      Uint8List.fromList(utf8.encode(logs)),
+      basename: 'aves-logs-$date',
+      mimeType: MimeTypes.plainText,
+      bytes: utf8.encode(mixedContent),
     );
     if (success != null) {
       if (success) {

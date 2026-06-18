@@ -34,7 +34,7 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
   @override
   void didUpdateWidget(covariant MarkerGeneratorWidget<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final devicePixelRatio = View.of(context).devicePixelRatio;
+    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
     widget.markers.forEach((markerWidget) {
       final item = _getOrCreate(
         markerKey: markerWidget.key as T,

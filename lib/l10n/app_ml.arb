@@ -1,6 +1,18 @@
 {
-  "appName": "ഏവ്സ്",
-  "@appName": {},
-  "welcomeMessage": "ഏവ്സിലേക്ക് സ്വാഗതം",
-  "@welcomeMessage": {}
+    "appName": "ഏവ്സ്",
+    "welcomeMessage": "ഏവ്സിലേക്ക് സ്വാഗതം",
+    "welcomeOptional": "നിർബന്ധമില്ല",
+    "applyButtonLabel": "പ്രയോഗിക്കുക",
+    "createButtonLabel": "തയ്യാറാക്കുക",
+    "deleteButtonLabel": "നീക്കം ചെയ്യുക",
+    "nextButtonLabel": "അടുത്തത്",
+    "showButtonLabel": "കാണിക്കുക",
+    "hideButtonLabel": "മറയ്ക്കുക",
+    "continueButtonLabel": "തുടരുക",
+    "saveCopyButtonLabel": "കോപ്പി സേവ് ചെയ്യുക",
+    "resetTooltip": "പഴയപടിയാക്കുക",
+    "doubleBackExitMessage": "ആപ്പ് ക്ലോസ് ചെയ്യാൻ വീണ്ടും 'ബാക്ക്' അമർത്തുക.",
+    "doNotAskAgain": "ഇനി കാണിക്കരുത്",
+    "sourceStateLoading": "ലോഡ് ചെയ്യുന്നു",
+    "sourceStateCataloguing": "തരംതിരിക്കുന്നു"
 }

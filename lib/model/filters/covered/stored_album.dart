@@ -37,11 +37,11 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'album': album,
-    'uniqueName': displayName,
-    'reversed': reversed,
+    if (displayName != null) 'uniqueName': displayName,
+    if (reversed) 'reversed': reversed,
   };
 
   @override

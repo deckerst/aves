@@ -322,7 +322,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     final hiddenFilters = settings.hiddenFilters;
     final typeBookmarks = settings.drawerTypeBookmarks;
     final currentFilters = currentCollection?.filters;
-    return typeBookmarks
+    final tiles = typeBookmarks
         .where((filter) => !hiddenFilters.contains(filter))
         .map(
           (filter) => CollectionNavTile(
@@ -338,6 +338,10 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           ),
         )
         .toList();
+    return [
+      if (tiles.isNotEmpty) const SizedBox(height: 8),
+      ...tiles,
+    ];
   }
 
   Widget _buildAlbumLinks(BuildContext context) {

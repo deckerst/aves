@@ -57,7 +57,7 @@ class _AvesSingleSelectionDialogState<T> extends State<AvesSingleSelectionDialog
             _selectedValue = v as T;
             if (!needConfirmation) {
               // validate without confirmation
-              Navigator.maybeOf(context)?.pop(v);
+              Navigator.maybeOf(context)?.pop<T>(v);
             } else {
               setState(() {});
             }
@@ -90,7 +90,7 @@ class _AvesSingleSelectionDialogState<T> extends State<AvesSingleSelectionDialog
         const CancelButton(),
         if (needConfirmation)
           TextButton(
-            onPressed: () => Navigator.maybeOf(context)?.pop(_selectedValue),
+            onPressed: () => Navigator.maybeOf(context)?.pop<T>(_selectedValue),
             child: Text(confirmationButtonLabel),
           ),
       ],

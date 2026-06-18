@@ -42,7 +42,7 @@ class PlaceholderFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'placeholder': placeholder,
   };

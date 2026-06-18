@@ -35,6 +35,9 @@ enum EntrySetAction {
   editRating,
   editTags,
   removeMetadata,
+  // fab
+  pickCollectionFilters,
+  pickMultipleMedia,
 }
 
 class EntrySetActions {
@@ -131,5 +134,10 @@ class EntrySetActions {
   static const export = <EntrySetAction>[
     .convert,
     .exportGpx,
+  ];
+
+  static const fab = <EntrySetAction>[
+    .pickCollectionFilters,
+    .pickMultipleMedia,
   ];
 }

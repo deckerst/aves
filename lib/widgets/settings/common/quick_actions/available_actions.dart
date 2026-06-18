@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+// `T extends Object` because of `DragTarget` constraint
 class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final List<T> allActions, quickActions;
   final Listenable quickActionsChangeNotifier;

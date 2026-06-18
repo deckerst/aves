@@ -8,9 +8,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:aves/widgets/settings/video/controls.dart';
-import 'package:aves/widgets/settings/video/playback.dart';
-import 'package:aves/widgets/settings/video/subtitle_theme.dart';
+import 'package:aves/widgets/settings/video/controls_page.dart';
+import 'package:aves/widgets/settings/video/playback_page.dart';
+import 'package:aves/widgets/settings/video/subtitle_theme_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class SettingsTileVideoShowVideos extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => !s.hiddenFilters.contains(MimeFilter.video),
     onChanged: (v) => settings.changeFilterVisibility({MimeFilter.video}, v),
-    title: title(context),
+    title: title,
   );
 }
 
@@ -62,7 +62,7 @@ class SettingsTileVideoPlayback extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: VideoPlaybackPage.routeName,
     builder: (context) => const VideoPlaybackPage(),
   );
@@ -74,7 +74,7 @@ class SettingsTileVideoControls extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: VideoControlsPage.routeName,
     builder: (context) => const VideoControlsPage(),
   );
@@ -86,7 +86,7 @@ class SettingsTileVideoSubtitleTheme extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSubPageTile(
-    title: title(context),
+    title: title,
     routeName: SubtitleThemePage.routeName,
     builder: (context) => const SubtitleThemePage(),
   );

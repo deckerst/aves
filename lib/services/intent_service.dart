@@ -38,7 +38,7 @@ class IntentService {
   static Future<void> submitPickedCollectionFilters(Set<CollectionFilter>? filters) async {
     try {
       await _platform.invokeMethod('submitPickedCollectionFilters', <String, Object?>{
-        'filters': filters?.map((filter) => filter.toJson()).toList(),
+        'filters': filters?.map((filter) => filter.toJsonString()).toList(),
       });
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
@@ -51,11 +51,12 @@ class IntentService {
       _stream
           .receiveBroadcastStream(<String, Object?>{
             'op': 'pickCollectionFilters',
-            'initialFilters': initialFilters?.map((filter) => filter.toJson()).toList(),
+            'initialFilters': initialFilters?.map((filter) => filter.toJsonString()).toList(),
           })
           .listen(
             (data) {
-              final result = (data as List?)?.cast<String>().map(CollectionFilter.fromJson).nonNulls.toSet();
+              final serializedFilters = (data as List?)?.cast<String>();
+              final result = serializedFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
               opCompleter.complete(result);
             },
             onError: opCompleter.completeError,

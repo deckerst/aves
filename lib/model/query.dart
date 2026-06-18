@@ -4,7 +4,7 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 
 class Query extends ChangeNotifier {
-  final AChangeNotifier _focusRequestNotifier = AChangeNotifier();
+  final AChangeNotifier _focusRequestNotifier = .new();
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
   final StreamController<bool> _enabledStreamController = StreamController.broadcast();
 

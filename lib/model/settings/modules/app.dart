@@ -30,6 +30,10 @@ mixin AppSettings on SettingsAccess {
 
   set isErrorReportingAllowed(bool newValue) => set(SettingKeys.isErrorReportingAllowedKey, newValue);
 
+  String? get autoExportPath => getString(SettingKeys.autoExportPathKey);
+
+  set autoExportPath(String? newValue) => set(SettingKeys.autoExportPathKey, newValue);
+
   static const localeSeparator = '-';
 
   Locale? get locale {
@@ -99,7 +103,7 @@ mixin AppSettings on SettingsAccess {
 
   TileLayout getTileLayout(String routeName) => getEnumOrDefault(SettingKeys.tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
 
-  void setTileLayout(String routeName, TileLayout newValue) => set(SettingKeys.tileLayoutPrefixKey + routeName, newValue.toString());
+  void setTileLayout(String routeName, TileLayout newValue) => set(SettingKeys.tileLayoutPrefixKey + routeName, newValue.name);
 
   String get entryRenamingPattern => getString(SettingKeys.entryRenamingPatternKey) ?? SettingsDefaults.entryRenamingPattern;
 
@@ -117,7 +121,7 @@ mixin AppSettings on SettingsAccess {
 
   List<CollectionFilter> get _recentTags => (getStringList(SettingKeys.recentTagsKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toList();
 
-  set _recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJson()).toList());
+  set _recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJsonString()).toList());
 
   // when vaults are unlocked, recent tags are transient and not persisted
   List<CollectionFilter>? _protectedRecentTags;

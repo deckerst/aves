@@ -62,9 +62,11 @@ class PlatformMediaFetchService implements MediaFetchService {
   static const _platformObject = AvesMethodChannel('deckers.thibault/aves/media_fetch_object');
   static final _byteStream = AvesStreamsChannel('deckers.thibault/aves/media_byte_stream');
 
-  static const int formatTrailerLength = 1; // single format byte
-  static const int formatByteEncoded = 0xCA;
-  static const int formatByteDecoded = 0xFE;
+  static const int _formatTrailerLength = 1; // single format byte
+  static const int _formatByteEncoded = 0xCA;
+  static const int _formatByteDecoded = 0xFE;
+
+  static bool applyHdrGainmap = false;
 
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
@@ -148,14 +150,14 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   Future<ui.Codec> _bytesToCodec(Map<String, dynamic> args, Uint8List bytes, ImageDecoderCallback? decode) async {
-    final trailerOffset = bytes.lengthInBytes - formatTrailerLength;
+    final trailerOffset = bytes.lengthInBytes - _formatTrailerLength;
     if (trailerOffset < 0) {
       throw UnreportedStateError('failed to get image bytes for args=$args');
     }
 
     final format = bytes[trailerOffset];
     switch (format) {
-      case formatByteEncoded:
+      case _formatByteEncoded:
         if (decode == null) {
           throw Exception('failed to decode encoded image bytes because decoder callback is missing for args=$args');
         }
@@ -165,7 +167,7 @@ class PlatformMediaFetchService implements MediaFetchService {
           throw UnreportedStateError('failed to get codec from encoded image bytes for args=$args');
         }
         return codec;
-      case formatByteDecoded:
+      case _formatByteDecoded:
         // bytes are expected to be in ARGB_8888, necessary for wide gamut or HDR
         final descriptor = await InteropDecoding.rawBytesToDescriptor(bytes);
         if (descriptor == null) {
@@ -196,13 +198,13 @@ class PlatformMediaFetchService implements MediaFetchService {
     );
 
     final byteCount = bytes.lengthInBytes;
-    if (byteCount <= formatTrailerLength) {
+    if (byteCount <= _formatTrailerLength) {
       throw UnreportedStateError('failed to get image bytes for request=$request');
     }
 
     // trim custom trailer
     // a view does not reallocate memory and uses the underlying buffer
-    return Uint8List.sublistView(bytes, 0, byteCount - formatTrailerLength);
+    return Uint8List.sublistView(bytes, 0, byteCount - _formatTrailerLength);
   }
 
   @override
@@ -232,6 +234,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     final args = <String, Object?>{
       'op': 'getRegion',
       'decoded': decoded,
+      'applyGainmap': applyHdrGainmap,
       'uri': request.uri,
       'pageId': request.pageId,
       'mimeType': request.mimeType,
@@ -265,17 +268,20 @@ class PlatformMediaFetchService implements MediaFetchService {
     Object? taskKey,
     int? priority,
   }) {
+    final uri = request.uri;
+    final mimeType = request.mimeType;
+    final extentDip = request.extent;
     final args = <String, Object?>{
       'op': 'getThumbnail',
       'decoded': decoded,
-      'uri': request.uri,
+      'uri': uri,
       'pageId': request.pageId,
-      'mimeType': request.mimeType,
+      'mimeType': mimeType,
       'dateModifiedMillis': request.dateModifiedMillis,
       'rotationDegrees': request.rotationDegrees,
       'isFlipped': request.isFlipped,
-      'widthDip': request.extent,
-      'heightDip': request.extent,
+      'widthDip': extentDip,
+      'heightDip': extentDip,
     };
     return servicePolicy.call(
       () async {
@@ -283,9 +289,26 @@ class PlatformMediaFetchService implements MediaFetchService {
           mimeType: request.mimeType,
           arguments: args,
         );
-        return await _bytesToCodec(args, bytes, decode);
+
+        if (bytes.isEmpty && (MimeTypes.isVideo(mimeType) || mimeType == MimeTypes.avif)) {
+          final descriptor = await videoMetadataFetcher.getThumbnailDescriptor(
+            uri: uri,
+            mimeType: mimeType,
+            targetExtentDip: extentDip,
+          );
+          final codec = await descriptor?.instantiateCodec(
+            targetWidth: descriptor.width,
+            targetHeight: descriptor.height,
+          );
+          if (codec == null) {
+            throw UnreportedStateError('failed to get codec from video screenshot bytes for args=$args');
+          }
+          return codec;
+        } else {
+          return await _bytesToCodec(args, bytes, decode);
+        }
       },
-      priority: priority ?? (request.extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
+      priority: priority ?? (extentDip == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
   }

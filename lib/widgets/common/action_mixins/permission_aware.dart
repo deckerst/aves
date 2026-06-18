@@ -70,7 +70,7 @@ mixin PermissionAwareMixin {
         return false;
       }
 
-      if (!await _checkSystemFilePickerEnabled(context)) return false;
+      if (!await checkSystemFilePickerEnabled(context)) return false;
 
       final granted = await storageService.requestDirectoryAccess(dir.dirPath);
       if (!granted) {
@@ -90,7 +90,7 @@ mixin PermissionAwareMixin {
     );
   }
 
-  Future<bool> _checkSystemFilePickerEnabled(BuildContext context) async {
+  Future<bool> checkSystemFilePickerEnabled(BuildContext context) async {
     if (await deviceService.isSystemFilePickerEnabled()) return true;
 
     await showWarningDialog(

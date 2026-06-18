@@ -96,8 +96,8 @@ mixin CastMixin {
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
-    } catch (e, stack) {
-      await reportService.recordError(e, stack);
+    } catch (error, stack) {
+      await reportService.recordError(error, stack);
     }
   }
 
@@ -136,8 +136,8 @@ extension ExtraDLNADevice on DLNADevice {
         }),
         const Utf8Encoder().convert(data),
       );
-    } catch (e, stack) {
-      await reportService.recordError(e, stack);
+    } catch (error, stack) {
+      await reportService.recordError(error, stack);
     }
     return null;
   }

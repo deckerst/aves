@@ -86,7 +86,7 @@ class _AppPickPageState extends State<AppPickPage> {
                     return Expanded(
                       child: RadioGroup<String?>(
                         groupValue: _selectedValue,
-                        onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
+                        onChanged: (v) => Navigator.maybeOf(context)?.pop<String>(v),
                         child: ListView.builder(
                           itemBuilder: (context, index) {
                             if (showNoneOption) {

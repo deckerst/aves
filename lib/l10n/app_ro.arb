@@ -548,7 +548,7 @@
     "settingsSubtitleThemeTextAlignmentLeft": "Stânga",
     "settingsVideoControlsTile": "Controale",
     "settingsVideoButtonsTile": "Butoane",
-    "settingsAllowErrorReporting": "Permiteți raportarea anonimă a erorilor",
+    "settingsAllowErrorReporting": "Raportarea anonimă a erorilor",
     "settingsSaveSearchHistory": "Salvare istoric căutări",
     "settingsCoordinateFormatTile": "Formatul coordonatelor",
     "settingsUnitSystemTile": "Unități",
@@ -578,7 +578,7 @@
     "settingsThumbnailShowRawIcon": "Afișare pictogramă Raw",
     "settingsVideoEnableHardwareAcceleration": "Accelerare hardware",
     "settingsVideoGestureDoubleTapTogglePlay": "Atingeți de două ori pentru a reda/întrerupe",
-    "settingsAllowInstalledAppAccess": "Permiteți accesul la inventarul aplicațiilor",
+    "settingsAllowInstalledAppAccess": "Acces la inventarul aplicațiilor",
     "settingsAllowInstalledAppAccessSubtitle": "Folosit pentru a îmbunătăți afișarea albumelor",
     "viewerInfoLabelOwner": "Proprietar",
     "mapStyleTooltip": "Selectați stilul hărții",
@@ -947,5 +947,11 @@
     "settingsForced": "Forțat",
     "settingsViewerShowZoomLevel": "Arată nivelul de proximitate",
     "collectionActionExportGpx": "Exportă GPX",
-    "mapStyleEditorDialogUserAgent": "Agent-Utilizator"
+    "mapStyleEditorDialogUserAgent": "Agent-Utilizator",
+    "settingsAutoExportSettings": "Export automat de setări",
+    "filterTypeSlowMotionVideoLabel": "Mișcare lentă",
+    "drawerCollectionSlowMotionVideos": "Videoclipuri cu încetinitorul",
+    "showThumbnailSlowMotionVideoIcon": "Afișează pictograma cu încetinitorul",
+    "mapShowItemTracks": "Afișează căile",
+    "mapHideItemTracks": "Ascunde căile"
 }

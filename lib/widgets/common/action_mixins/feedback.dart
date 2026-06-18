@@ -240,9 +240,21 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
       child: StreamBuilder<T>(
         stream: opStream,
         builder: (context, snapshot) {
-          final processedCount = processed.length.toDouble();
+          final processedCount = processed.length;
           final total = widget.itemCount;
-          final percent = total == null || total == 0 ? 0.0 : min(1.0, processedCount / total);
+          final double percent;
+          final String text;
+          if (total == null || total == 0) {
+            percent = 0;
+            text = '$processedCount';
+          } else {
+            percent = min(1.0, processedCount.toDouble() / total);
+            if (total > 100) {
+              text = '$processedCount/$total';
+            } else {
+              text = percentFormatter.format(percent);
+            }
+          }
           return FadeTransition(
             opacity: _animation,
             child: Stack(
@@ -257,7 +269,6 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   ),
                 ),
                 if (animate) const ReportProgressIndicator(opacity: .1),
-                // TODO TLAD [memory] `CircularPercentIndicator` should dispose its internally created `CurvedAnimation`
                 CircularPercentIndicator(
                   percent: percent,
                   lineWidth: strokeWidth,
@@ -267,7 +278,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
                   animation: animate,
                   center: total != null
                       ? Text(
-                          percentFormatter.format(percent),
+                          text,
                           style: const TextStyle(fontSize: fontSize),
                         )
                       : null,

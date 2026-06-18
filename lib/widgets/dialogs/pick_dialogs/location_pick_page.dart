@@ -121,7 +121,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
             const SizedBox(height: 8),
             AvesOutlinedButton(
               label: context.l10n.locationPickerUseThisLocationButton,
-              onPressed: () => Navigator.maybeOf(context)?.pop(_dotLocationNotifier.value),
+              onPressed: () => Navigator.maybeOf(context)?.pop<LatLng>(_dotLocationNotifier.value),
             ),
           ],
         ),

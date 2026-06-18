@@ -20,7 +20,7 @@ class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredF
   DynamicAlbumFilter(this.name, this.filter, {super.reversed = false});
 
   static DynamicAlbumFilter? fromMap(Map<String, Object?> json) {
-    final filter = CollectionFilter.fromJson(json['filter'] as String?);
+    final filter = CollectionFilter.fromJson(json['filter']);
     if (filter == null) return null;
 
     return DynamicAlbumFilter(
@@ -31,11 +31,11 @@ class DynamicAlbumFilter extends CollectionFilter with ContainerFilter, CoveredF
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'name': name,
-    'filter': filter.toJson(),
-    'reversed': reversed,
+    'filter': filter.toJsonMap(),
+    if (reversed) 'reversed': reversed,
   };
 
   @override

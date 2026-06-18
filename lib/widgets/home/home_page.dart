@@ -194,8 +194,8 @@ class _HomePageState extends State<HomePage> {
             }
         }
         if (_initialFilters == null) {
-          final extraFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
-          _initialFilters = extraFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
+          final serializedFilters = (intentData[IntentDataKeys.filters] as List?)?.cast<String>();
+          _initialFilters = serializedFilters?.map(CollectionFilter.fromJson).nonNulls.toSet();
         }
         _initialExplorerPath = intentData[IntentDataKeys.explorerPath] as String?;
 

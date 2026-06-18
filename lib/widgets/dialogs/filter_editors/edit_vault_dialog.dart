@@ -186,6 +186,6 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
     );
     if (!await setVaultPass(context, details)) return;
 
-    Navigator.maybeOf(context)?.pop(details);
+    Navigator.maybeOf(context)?.pop<VaultDetails>(details);
   }
 }

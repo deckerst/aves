@@ -1,7 +1,6 @@
 import 'package:aves/ref/metadata/geotiff.dart';
 
 class GeoTiffDirectory {
-  // TODO TLAD [geotiff] avoid string-based match
   static int? tagForName(String name) {
     switch (name) {
       case 'Model Type':

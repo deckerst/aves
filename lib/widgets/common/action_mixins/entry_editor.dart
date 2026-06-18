@@ -206,7 +206,7 @@ class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
           Expanded(child: Text(context.l10n.moveUndatedConfirmationDialogMessage)),
           IconButton(
             icon: const Icon(AIcons.help),
-            onPressed: () => AvesApp.launchUrl('${AppReference.avesGithub}/wiki/FAQ#whats-in-a-date'),
+            onPressed: () => AvesApp.launchUrl('${AppReference.avesFaq}#whats-in-a-date'),
             tooltip: 'FAQ',
           ),
         ],

@@ -15,7 +15,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/collection_utils.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';

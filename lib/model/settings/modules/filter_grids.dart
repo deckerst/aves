@@ -2,34 +2,34 @@ import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
   AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumSectionFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
 
-  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumSectionFactorKey, newValue.toString());
+  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumSectionFactorKey, newValue.name);
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
-  set albumSortFactor(ChipSortFactor newValue) => set(SettingKeys.albumSortFactorKey, newValue.toString());
+  set albumSortFactor(ChipSortFactor newValue) => set(SettingKeys.albumSortFactorKey, newValue.name);
 
   ChipSortFactor get countrySortFactor => getEnumOrDefault(SettingKeys.countrySortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
-  set countrySortFactor(ChipSortFactor newValue) => set(SettingKeys.countrySortFactorKey, newValue.toString());
+  set countrySortFactor(ChipSortFactor newValue) => set(SettingKeys.countrySortFactorKey, newValue.name);
 
   ChipSortFactor get stateSortFactor => getEnumOrDefault(SettingKeys.stateSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
-  set stateSortFactor(ChipSortFactor newValue) => set(SettingKeys.stateSortFactorKey, newValue.toString());
+  set stateSortFactor(ChipSortFactor newValue) => set(SettingKeys.stateSortFactorKey, newValue.name);
 
   ChipSortFactor get placeSortFactor => getEnumOrDefault(SettingKeys.placeSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
-  set placeSortFactor(ChipSortFactor newValue) => set(SettingKeys.placeSortFactorKey, newValue.toString());
+  set placeSortFactor(ChipSortFactor newValue) => set(SettingKeys.placeSortFactorKey, newValue.name);
 
   ChipSortFactor get tagSortFactor => getEnumOrDefault(SettingKeys.tagSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
 
-  set tagSortFactor(ChipSortFactor newValue) => set(SettingKeys.tagSortFactorKey, newValue.toString());
+  set tagSortFactor(ChipSortFactor newValue) => set(SettingKeys.tagSortFactorKey, newValue.name);
 
   bool get albumSortReverse => getBool(SettingKeys.albumSortReverseKey) ?? false;
 
@@ -53,7 +53,7 @@ mixin FilterGridsSettings on SettingsAccess {
 
   Set<CollectionFilter> get pinnedFilters => (getStringList(SettingKeys.pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
-  set pinnedFilters(Set<CollectionFilter> newValue) => set(SettingKeys.pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set pinnedFilters(Set<CollectionFilter> newValue) => set(SettingKeys.pinnedFiltersKey, newValue.map((filter) => filter.toJsonString()).toList());
 
   bool getShowTitleQuery(String routeName) => getBool(SettingKeys.showTitleQueryPrefixKey + routeName) ?? false;
 

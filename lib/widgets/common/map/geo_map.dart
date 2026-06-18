@@ -11,7 +11,6 @@ import 'package:aves/ref/poi.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
@@ -21,6 +20,7 @@ import 'package:aves/widgets/common/map/leaflet/map.dart';
 import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:fluster/fluster.dart';
@@ -39,7 +39,7 @@ class GeoMap extends StatefulWidget {
   final ValueNotifier<LatLng?>? dotLocationNotifier;
   final ValueNotifier<double>? overlayOpacityNotifier;
   final MapOverlay? overlayEntry;
-  final Set<List<LatLng>>? tracks;
+  final List<GeoTrack>? tracks;
   final UserZoomChangeCallback? onUserZoomChange;
   final MapTapCallback? onMapTap;
   final void Function(
@@ -92,7 +92,9 @@ class _GeoMapState extends State<GeoMap> {
   late final ValueNotifier<ZoomedBounds> _boundsNotifier;
   Fluster<GeoEntry<AvesEntry>>? _defaultMarkerCluster;
   Fluster<GeoEntry<AvesEntry>>? _slowMarkerCluster;
-  final AChangeNotifier _clusterChangeNotifier = AChangeNotifier();
+  final AChangeNotifier _clusterChangeNotifier = .new();
+
+  final ValueNotifier<List<GeoTrack>> _tracksNotifier = ValueNotifier([]);
 
   List<AvesEntry> get entries => widget.collection?.sortedEntries ?? widget.entries ?? [];
 
@@ -100,10 +102,14 @@ class _GeoMapState extends State<GeoMap> {
   // when toggling overlay on Google map initial state
   static const double minInitialZoom = 3;
 
+  static const maxTrackPointInterval = Duration(days: 2);
+  static const minTrackPointCount = 2;
+
   @override
   void initState() {
     super.initState();
     _boundsNotifier = ValueNotifier(_initBounds());
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.mapShowItemTracksKey).listen((_) => _updateItemTracks()));
     _registerWidget(widget);
     _onCollectionChanged();
   }
@@ -176,9 +182,9 @@ class _GeoMapState extends State<GeoMap> {
               markerWidgetBuilder: _buildMarkerWidget,
               markerImageReadyChecker: _isMarkerImageReady,
               dotLocationNotifier: widget.dotLocationNotifier,
+              tracksNotifier: _tracksNotifier,
               overlayOpacityNotifier: widget.overlayOpacityNotifier,
               overlayEntry: widget.overlayEntry,
-              tracks: widget.tracks,
               onUserZoomChange: widget.onUserZoomChange,
               onMapTap: widget.onMapTap,
               onMarkerTap: _onMarkerTap,
@@ -189,14 +195,13 @@ class _GeoMapState extends State<GeoMap> {
               controller: widget.controller,
               clusterListenable: _clusterChangeNotifier,
               boundsNotifier: _boundsNotifier,
-              minZoom: 2,
-              maxZoom: 16,
               style: mapStyle,
               decoratorBuilder: _decorateMap,
               buttonPanelBuilder: _buildButtonPanel,
               markerClusterBuilder: _buildMarkerClusters,
               markerWidgetBuilder: _buildMarkerWidget,
               dotLocationNotifier: widget.dotLocationNotifier,
+              tracksNotifier: _tracksNotifier,
               markerSize: Size(
                 MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2,
                 MapThemeData.markerImageExtent + MapThemeData.markerOuterBorderWidth * 2 + MapThemeData.markerArrowSize.height,
@@ -207,7 +212,6 @@ class _GeoMapState extends State<GeoMap> {
               ),
               overlayOpacityNotifier: widget.overlayOpacityNotifier,
               overlayEntry: widget.overlayEntry,
-              tracks: widget.tracks,
               onUserZoomChange: widget.onUserZoomChange,
               onMapTap: widget.onMapTap,
               onMarkerTap: _onMarkerTap,
@@ -235,13 +239,14 @@ class _GeoMapState extends State<GeoMap> {
         child = Column(
           crossAxisAlignment: .start,
           children: [
-            // TODO TLAD [flutter vNext] wrap into `BackdropGroup`
-            mapHeight != null
-                ? SizedBox(
-                    height: mapHeight,
-                    child: child,
-                  )
-                : Expanded(child: child),
+            BackdropGroup(
+              child: mapHeight != null
+                  ? SizedBox(
+                      height: mapHeight,
+                      child: child,
+                    )
+                  : Expanded(child: child),
+            ),
             SafeArea(
               top: false,
               bottom: false,
@@ -374,6 +379,42 @@ class _GeoMapState extends State<GeoMap> {
     _defaultMarkerCluster = _buildFluster();
     _slowMarkerCluster = null;
     _clusterChangeNotifier.notify();
+    _updateItemTracks();
+  }
+
+  void _updateItemTracks() {
+    final tracks = [...?widget.tracks];
+    if (settings.mapShowItemTracks) {
+      final entries = widget.collection?.sortedEntries;
+      if (entries != null && entries.isNotEmpty) {
+        final itemTrackPoints = <List<LatLng>>[];
+        var prevDate = DateTime.fromMillisecondsSinceEpoch(0);
+        var prevLatLng = const LatLng(0, 0);
+        final currentTrack = <LatLng>[];
+        for (final entry in entries.sorted(AvesEntrySort.compareByDate).reversed) {
+          final thisDate = entry.bestDate;
+          if (thisDate != null) {
+            if (thisDate.difference(prevDate) > maxTrackPointInterval) {
+              itemTrackPoints.add(List.unmodifiable(currentTrack));
+              currentTrack.clear();
+            }
+            final latLng = entry.latLng;
+            if (latLng != null) {
+              if (prevLatLng != latLng) {
+                currentTrack.add(latLng);
+                prevLatLng = latLng;
+              }
+            }
+            prevDate = thisDate;
+          }
+        }
+        itemTrackPoints.add(List.unmodifiable(currentTrack));
+        itemTrackPoints.removeWhere((v) => v.length < minTrackPointCount);
+
+        tracks.addAll(GeoTrack.buildTracks(itemTrackPoints));
+      }
+    }
+    _tracksNotifier.value = tracks;
   }
 
   Fluster<GeoEntry<AvesEntry>> _buildFluster({int nodeSize = 64}) {

@@ -1,6 +1,6 @@
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -36,7 +36,7 @@ class VaultDetails extends Equatable {
       name: map['name'] as String,
       autoLockScreenOff: (map['autoLock'] as int? ?? 0) != 0,
       useBin: (map['useBin'] as int? ?? 0) != 0,
-      lockType: VaultLockType.values.safeByName(map['lockType'] as String, VaultLockType.system),
+      lockType: VaultLockType.values.safeByName(map['lockType'] as String) ?? .system,
     );
   }
 
@@ -46,6 +46,8 @@ class VaultDetails extends Equatable {
     'useBin': useBin ? 1 : 0,
     'lockType': lockType.name,
   };
+
+  Map<String, Object?> toDbMap() => toMap();
 
   String get passKey => 'vault_pass_$name';
 

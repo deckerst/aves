@@ -9,8 +9,6 @@ import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import androidx.core.net.toUri
@@ -58,12 +56,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "crash" -> Handler(Looper.getMainLooper()).postDelayed({ throw TestException() }, 50)
-            "exception" -> throw TestException()
-            "safeException" -> safe(call, result) { _, _ -> throw TestException() }
-            "exceptionInCoroutine" -> ioScope.launch { throw TestException() }
-            "safeExceptionInCoroutine" -> ioScope.launch { safe(call, result) { _, _ -> throw TestException() } }
-
             "getContextDirs" -> ioScope.launch { safe(call, result, ::getContextDirs) }
             "getCodecs" -> safe(call, result, ::getCodecs)
             "getEnv" -> safe(call, result, ::getEnv)
@@ -526,7 +518,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         // do not recycle bitmaps fetched from `ContentResolver` or Glide as their lifecycle is unknown
-        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
+        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = mimeType)
 
         if (bytes == null) {
             var errorDetails: String? = exception?.message
@@ -543,6 +535,4 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag<DebugHandler>()
         const val CHANNEL = "deckers.thibault/aves/debug"
     }
-
-    class TestException internal constructor() : RuntimeException("oops")
 }

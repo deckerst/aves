@@ -6,8 +6,8 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 

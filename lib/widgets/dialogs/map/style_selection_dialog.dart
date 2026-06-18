@@ -1,8 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/collection_utils.dart';
-import 'package:aves/view/src/settings/enums.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -10,6 +9,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/map/style_editor_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:aves_map/aves_map.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +56,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
               // as well as the regular return value from navigation
               _setGroupValue(v);
               // validate without confirmation
-              Navigator.maybeOf(context)?.pop(v);
+              Navigator.maybeOf(context)?.pop<EntryMapStyle>(v);
             },
             child: ListView(
               children: [

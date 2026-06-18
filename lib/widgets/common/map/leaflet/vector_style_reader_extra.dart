@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
@@ -75,7 +76,7 @@ extension ExtraStyleReader on StyleReader {
       final sourceType = source['type'] as String?;
       final sourceUrl = source['url'] as String?;
 
-      final type = TileProviderType.values.where((e) => e.name == sourceType).firstOrNull;
+      final type = TileProviderType.values.safeByName(sourceType);
       if (type == null) continue;
 
       if (sourceUrl != null) {

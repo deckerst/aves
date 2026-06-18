@@ -12,16 +12,19 @@ class DebugCacheSection extends StatefulWidget {
 }
 
 class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKeepAliveClientMixin {
+  final TextEditingController _imageCacheCountTextController = TextEditingController();
   final TextEditingController _imageCacheSizeTextController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _imageCacheCountTextController.text = '${imageCache.maximumSize}';
     _imageCacheSizeTextController.text = '${imageCache.maximumSizeBytes}';
   }
 
   @override
   void dispose() {
+    _imageCacheCountTextController.dispose();
     _imageCacheSizeTextController.dispose();
     super.dispose();
   }
@@ -41,14 +44,11 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
             children: [
               Row(
                 children: [
-                  Expanded(
-                    child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t$currentSizeBytes/$maxSizeBytes'),
-                  ),
+                  const Expanded(child: Text('Image cache')),
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       imageCache.clear();
-
                       setState(() {});
                     },
                     child: const Text('Clear'),
@@ -57,10 +57,36 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
               ),
               Row(
                 children: [
+                  Expanded(child: Text('${imageCache.currentSize}\n/${imageCache.maximumSize} items')),
+                  Expanded(
+                    child: TextField(
+                      controller: _imageCacheCountTextController,
+                      decoration: const InputDecoration(labelText: 'max (items)'),
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      final size = int.tryParse(_imageCacheCountTextController.text);
+                      if (size != null) {
+                        imageCache.maximumSize = size;
+                      } else {
+                        _imageCacheCountTextController.text = '${imageCache.maximumSize}';
+                      }
+                      setState(() {});
+                    },
+                    child: const Text('Apply'),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(child: Text('$currentSizeBytes\n/$maxSizeBytes')),
                   Expanded(
                     child: TextField(
                       controller: _imageCacheSizeTextController,
-                      decoration: const InputDecoration(labelText: 'imageCache size bytes'),
+                      decoration: const InputDecoration(labelText: 'max (bytes)'),
                       keyboardType: TextInputType.number,
                     ),
                   ),

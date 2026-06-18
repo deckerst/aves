@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/device.dart';
@@ -32,10 +31,10 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -61,6 +60,7 @@ import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -133,6 +133,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         return isMain && isSelecting && !isTrash && canWrite;
       case .restore:
         return isMain && isSelecting && isTrash && canWrite;
+      // fab
+      case .pickCollectionFilters:
+        return appMode == .pickCollectionFiltersExternal;
+      case .pickMultipleMedia:
+        return appMode == .pickMultipleMediaExternal;
     }
   }
 
@@ -188,6 +193,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .editRating:
       case .editTags:
       case .removeMetadata:
+        return hasSelection;
+      // fab
+      case .pickCollectionFilters:
+        return true;
+      case .pickMultipleMedia:
         return hasSelection;
     }
   }
@@ -261,6 +271,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _editTags(context);
       case .removeMetadata:
         _removeMetadata(context);
+      // fab
+      case .pickCollectionFilters:
+        _pickCollectionFilters(context);
+      case .pickMultipleMedia:
+        _pickMultipleMedia(context);
     }
   }
 
@@ -439,7 +454,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         .toList();
     final bounds = ZoomedBounds.fromPoints(points: waypoints.map((v) => LatLng(v.lat!, v.lon!)).toSet());
 
-    final dateTime = DateTime.now();
+    final gpxDate = DateTime.now();
     final gpx = Gpx()
       ..creator = device.userAgent
       ..metadata = Metadata(
@@ -447,7 +462,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           name: device.userAgent,
           link: Link(href: AppReference.avesGithub),
         ),
-        time: dateTime,
+        time: gpxDate,
         bounds: Bounds(
           minlat: bounds.sw.latitude,
           minlon: bounds.sw.longitude,
@@ -467,12 +482,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         ),
       ];
 
-    final body = GpxWriter().asString(gpx);
+    final gpxContent = GpxWriter().asString(gpx);
     const mimeType = MimeTypes.gpx;
+    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(gpxDate);
     final success = await storageService.createFile(
-      'aves-gpx-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(dateTime)}${MimeTypes.extensionFor(mimeType)}',
-      mimeType,
-      Uint8List.fromList(utf8.encode(body)),
+      basename: 'aves-gpx-$date',
+      mimeType: mimeType,
+      bytes: utf8.encode(gpxContent),
     );
     if (success != null) {
       if (success) {
@@ -656,7 +672,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final todoEntries = await _getEditableItems(context, entries, canEdit: (entry) => entry.canEditLocation);
     if (todoEntries == null || todoEntries.isEmpty) return null;
 
-    final location = await Navigator.maybeOf(context)?.push(
+    final location = await Navigator.maybeOf(context)?.push<LatLng>(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
@@ -930,5 +946,23 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void _setHome(BuildContext context) async {
     settings.setHome(HomePageSetting.collection, customCollection: context.read<CollectionLens>().filters);
     showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+  }
+
+  Future<void> _pickCollectionFilters(BuildContext context) async {
+    final filters = context.read<CollectionLens>().filters;
+    await IntentService.submitPickedCollectionFilters(filters);
+  }
+
+  Future<void> _pickMultipleMedia(BuildContext context) async {
+    final selection = context.read<Selection<AvesEntry>>();
+    final uris = selection.selectedItems.map((entry) => entry.uri).toList();
+    try {
+      await IntentService.submitPickedItems(uris);
+    } on TooManyItemsException catch (_) {
+      await showWarningDialog(
+        context: context,
+        message: context.l10n.tooManyItemsErrorDialogMessage,
+      );
+    }
   }
 }

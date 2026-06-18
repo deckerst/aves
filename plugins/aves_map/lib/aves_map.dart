@@ -1,5 +1,6 @@
 export 'src/controller.dart';
 export 'src/geo_entry.dart';
+export 'src/geo_track.dart';
 export 'src/geo_utils.dart';
 export 'src/interface.dart';
 export 'src/marker/dot.dart';

@@ -4,27 +4,27 @@ import 'package:aves_video/src/settings/defaults.dart';
 mixin VideoSettings on SettingsAccess {
   VideoHardwareAcceleration get videoHardwareAcceleration => getEnumOrDefault(SettingKeys.videoHardwareAccelerationKey, SettingsDefaults.videoHardwareAcceleration, VideoHardwareAcceleration.values);
 
-  set videoHardwareAcceleration(VideoHardwareAcceleration newValue) => set(SettingKeys.videoHardwareAccelerationKey, newValue.toString());
+  set videoHardwareAcceleration(VideoHardwareAcceleration newValue) => set(SettingKeys.videoHardwareAccelerationKey, newValue.name);
 
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(SettingKeys.videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
-  set videoAutoPlayMode(VideoAutoPlayMode newValue) => set(SettingKeys.videoAutoPlayModeKey, newValue.toString());
+  set videoAutoPlayMode(VideoAutoPlayMode newValue) => set(SettingKeys.videoAutoPlayModeKey, newValue.name);
 
   VideoBackgroundMode get videoBackgroundMode => getEnumOrDefault(SettingKeys.videoBackgroundModeKey, SettingsDefaults.videoBackgroundMode, VideoBackgroundMode.values);
 
-  set videoBackgroundMode(VideoBackgroundMode newValue) => set(SettingKeys.videoBackgroundModeKey, newValue.toString());
+  set videoBackgroundMode(VideoBackgroundMode newValue) => set(SettingKeys.videoBackgroundModeKey, newValue.name);
 
   VideoLoopMode get videoLoopMode => getEnumOrDefault(SettingKeys.videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
-  set videoLoopMode(VideoLoopMode newValue) => set(SettingKeys.videoLoopModeKey, newValue.toString());
+  set videoLoopMode(VideoLoopMode newValue) => set(SettingKeys.videoLoopModeKey, newValue.name);
 
   VideoResumptionMode get videoResumptionMode => getEnumOrDefault(SettingKeys.videoResumptionModeKey, SettingsDefaults.videoResumptionMode, VideoResumptionMode.values);
 
-  set videoResumptionMode(VideoResumptionMode newValue) => set(SettingKeys.videoResumptionModeKey, newValue.toString());
+  set videoResumptionMode(VideoResumptionMode newValue) => set(SettingKeys.videoResumptionModeKey, newValue.name);
 
   List<EntryAction> get videoControlActions => getEnumListOrDefault(SettingKeys.videoControlActionsKey, SettingsDefaults.videoControlActions, EntryAction.values);
 
-  set videoControlActions(List<EntryAction> newValue) => set(SettingKeys.videoControlActionsKey, newValue.map((v) => v.toString()).toList());
+  set videoControlActions(List<EntryAction> newValue) => set(SettingKeys.videoControlActionsKey, newValue.map((v) => v.name).toList());
 
   bool get videoGestureDoubleTapTogglePlay => getBool(SettingKeys.videoGestureDoubleTapTogglePlayKey) ?? SettingsDefaults.videoGestureDoubleTapTogglePlay;
 

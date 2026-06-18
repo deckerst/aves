@@ -1,13 +1,14 @@
-import 'package:aves/theme/icons.dart';
 import 'package:flutter/material.dart';
 
 class AvesFab extends StatelessWidget {
   final String tooltip;
-  final VoidCallback onPressed;
+  final Widget icon;
+  final VoidCallback? onPressed;
 
   const AvesFab({
     super.key,
     required this.tooltip,
+    required this.icon,
     required this.onPressed,
   });
 
@@ -19,8 +20,9 @@ class AvesFab extends StatelessWidget {
       ),
       child: FloatingActionButton(
         tooltip: tooltip,
+        backgroundColor: onPressed != null ? null : Theme.of(context).disabledColor,
         onPressed: onPressed,
-        child: const Icon(AIcons.apply),
+        child: icon,
       ),
     );
   }

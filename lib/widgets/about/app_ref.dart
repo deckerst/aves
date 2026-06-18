@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 class AppReference extends StatelessWidget {
   static const avesGithub = 'https://github.com/deckerst/aves';
+  static const avesFaq = '$avesGithub/wiki/FAQ';
 
   const AppReference({super.key});
 

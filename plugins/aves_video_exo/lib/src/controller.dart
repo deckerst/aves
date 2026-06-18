@@ -200,7 +200,7 @@ class ExoVideoController extends AvesVideoController {
   double get speed => _controller.value.playbackSpeed;
 
   @override
-  set speed(double speed) => _controller.setPlaybackSpeed(speed);
+  Future<void> setSpeed(double speed) => _controller.setPlaybackSpeed(speed);
 
   @override
   Future<Uint8List?> captureFrame() async {

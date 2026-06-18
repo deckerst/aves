@@ -239,7 +239,7 @@ class MediaStoreSource extends CollectionSource {
               // TODO TLAD find duplication cause
               final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
               if (duplicates.isNotEmpty) {
-                unawaited(reportService.recordError(Exception('Loading entries yielded duplicates=${duplicates.join(', ')}')));
+                debugPrint('Loading entries yielded duplicates=${duplicates.join(', ')}');
                 // post-error cleanup
                 await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
                 for (final duplicate in duplicates) {
@@ -370,7 +370,7 @@ class MediaStoreSource extends CollectionSource {
       // TODO TLAD find duplication cause
       final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
       if (duplicates.isNotEmpty) {
-        unawaited(reportService.recordError(Exception('Refreshing entries yielded duplicates=${duplicates.join(', ')}')));
+        debugPrint('Refreshing entries yielded duplicates=${duplicates.join(', ')}');
         // post-error cleanup
         await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
         for (final duplicate in duplicates) {

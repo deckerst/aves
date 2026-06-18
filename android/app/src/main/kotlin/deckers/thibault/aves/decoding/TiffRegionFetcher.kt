@@ -37,7 +37,7 @@ class TiffRegionFetcher internal constructor(
                     inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
                 }
                 val bitmap: Bitmap? = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-                val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, MimeTypes.TIFF)
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, applyGainmap = false, mimeType = MimeTypes.TIFF)
                 if (bytes == null) {
                     result.error("fetch-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
                 } else {

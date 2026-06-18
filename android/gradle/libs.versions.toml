@@ -1,11 +1,12 @@
 [versions]
 androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
-androidGradlePlugin = "9.1.1"
+androidGradlePlugin = "9.2.1"
 androidSvg = "c7e58e8e59"
 androidxAnnotation = "1.10.0"
 androidxAppcompat = "1.7.1"
-androidxCoreKtx = "1.18.0"
+androidxCoreKtx = "1.19.0"
+androidxCorePerformance = "1.0.0"
 androidxLifecycle = "2.10.0"
 androidxMedia = "1.8.0"
 androidxMultidex = "2.0.1"
@@ -33,6 +34,7 @@ android-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", versio
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidxAnnotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+androidx-performance = { group = "androidx.core", name = "core-performance", version.ref = "androidxCorePerformance" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidxLifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "androidxMedia" }
 androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }

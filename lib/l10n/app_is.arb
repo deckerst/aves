@@ -418,7 +418,7 @@
     "newAlbumDialogNameLabelAlreadyExistsHelper": "Mappa er þegar til staðar",
     "patternDialogConfirm": "Staðfestu mynstrið",
     "durationDialogMinutes": "Mínútur",
-    "settingsAllowErrorReporting": "Leyfa nafnlausar villutilkynningar",
+    "settingsAllowErrorReporting": "Nafnlausar villutilkynningar",
     "settingsVideoLoopModeTile": "Endurtekningarhamur",
     "hideTooltip": "Fela",
     "settingsScreenSaverPageTitle": "Skjáhvíla",
@@ -443,7 +443,7 @@
     "albumPickPageTitleCopy": "Afrita í albúm",
     "collectionActionCopy": "Afrita í albúm",
     "entryActionPrint": "Prenta",
-    "settingsAllowInstalledAppAccess": "Leyfa aðgang að forritaskrá",
+    "settingsAllowInstalledAppAccess": "Aðgangur að forritaskrá",
     "entryActionShowGeoTiffOnMap": "Birta sem yfirlag á korti",
     "viewDialogReverseSortOrder": "Öfug röð",
     "menuActionConfigureView": "Skoða",
@@ -947,5 +947,14 @@
     "settingsViewerShowZoomLevel": "Birta aðdráttarstig",
     "settingsEnabled": "Virkt",
     "settingsForced": "Þvingað",
-    "collectionActionExportGpx": "Flytja út GPX"
+    "collectionActionExportGpx": "Flytja út GPX",
+    "filterTypeSlowMotionVideoLabel": "Hægur hraði",
+    "drawerCollectionSlowMotionVideos": "Myndskeið á hægum hraða",
+    "showThumbnailSlowMotionVideoIcon": "Birta tákn fyrir hægan hraða",
+    "settingsAutoExportSettings": "Sjálfvirkur útflutningur stillinga",
+    "settingsAllowNotifications": "Leyfa tilkynningar",
+    "settingsPermissionsTile": "Heimildir",
+    "settingsPermissionsPageTitle": "Heimildir",
+    "mapShowItemTracks": "Sýna slóðir",
+    "mapHideItemTracks": "Fela slóðir"
 }

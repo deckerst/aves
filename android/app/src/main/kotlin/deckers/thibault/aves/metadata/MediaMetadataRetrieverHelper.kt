@@ -65,6 +65,16 @@ object MediaMetadataRetrieverHelper {
                 )
             )
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            putAll(
+                hashMapOf(
+                    MediaMetadataRetriever.METADATA_KEY_BITS_PER_SAMPLE to "Bits Per Sample",
+                    MediaMetadataRetriever.METADATA_KEY_SAMPLERATE to "Sample Rate",
+                    MediaMetadataRetriever.METADATA_KEY_XMP_LENGTH to "XMP Length",
+                    MediaMetadataRetriever.METADATA_KEY_XMP_OFFSET to "XMP Offset",
+                )
+            )
+        }
     }
 
     private val durationFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.ROOT).apply { timeZone = TimeZone.getTimeZone("UTC") }
@@ -88,6 +98,11 @@ object MediaMetadataRetrieverHelper {
 
     fun MediaMetadataRetriever.getSafeFloat(tag: Int, save: (value: Float) -> Unit) {
         val value = this.extractMetadata(tag)?.toFloatOrNull()
+        if (value != null) save(value)
+    }
+
+    fun MediaMetadataRetriever.getSafeDouble(tag: Int, save: (value: Double) -> Unit) {
+        val value = this.extractMetadata(tag)?.toDoubleOrNull()
         if (value != null) save(value)
     }
 

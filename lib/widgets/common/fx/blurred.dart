@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
+const _blurConfig = ImageFilterConfig.blur(sigmaX: 4, sigmaY: 4);
 // do not use `ColorFilter.matrix` for identity,
 // as it yields performance issues when there are other layers on top
 final _identity = ImageFilter.matrix(Matrix4.identity().storage);
@@ -20,10 +20,10 @@ class BlurredRect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      // TODO TLAD [flutter vNext] use `BackdropFilter.grouped`
-      child: BackdropFilter(
+      child: BackdropFilter.grouped(
         // do not modify tree when disabling filter
-        filter: enabled ? _filter : _identity,
+        filter: enabled ? null : _identity,
+        filterConfig: enabled ? _blurConfig : null,
         child: child,
       ),
     );
@@ -60,10 +60,10 @@ class BlurredRRect extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.zero,
-      // TODO TLAD [flutter vNext] use `BackdropFilter.grouped`
-      child: BackdropFilter(
+      child: BackdropFilter.grouped(
         // do not modify tree when disabling filter
-        filter: enabled ? _filter : _identity,
+        filter: enabled ? null : _identity,
+        filterConfig: enabled ? _blurConfig : null,
         child: child,
       ),
     );
@@ -83,10 +83,10 @@ class BlurredOval extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      // TODO TLAD [flutter vNext] use `BackdropFilter.grouped`
-      child: BackdropFilter(
+      child: BackdropFilter.grouped(
         // do not modify tree when disabling filter
-        filter: enabled ? _filter : _identity,
+        filter: enabled ? null : _identity,
+        filterConfig: enabled ? _blurConfig : null,
         child: child,
       ),
     );

@@ -2,7 +2,7 @@ import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:collection/collection.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
@@ -212,8 +212,7 @@ class MetadataFieldNamingProcessor extends NamingProcessor {
   List<Object?> get props => [field];
 
   MetadataFieldNamingProcessor(String field) {
-    final lowerField = field.toLowerCase();
-    this.field = MetadataField.values.firstWhereOrNull((v) => v.name.toLowerCase() == lowerField);
+    this.field = MetadataField.values.safeByName(field, ignoreCase: true);
   }
 
   @override
@@ -287,8 +286,7 @@ class HashNamingProcessor extends NamingProcessor {
   List<Object?> get props => [function];
 
   HashNamingProcessor(String function) {
-    final lowerField = 'hash${function.toLowerCase()}';
-    this.function = MetadataField.values.firstWhereOrNull((v) => v.name.toLowerCase() == lowerField);
+    this.function = MetadataField.values.safeByName('hash$function', ignoreCase: true);
   }
 
   @override

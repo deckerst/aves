@@ -512,7 +512,7 @@ class LocalMediaDbUpgrader {
       rows.forEach((row) {
         batch.insert(
           newCoverTable,
-          row.toMap(),
+          row.toDbMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       });

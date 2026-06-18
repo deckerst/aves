@@ -20,11 +20,11 @@ mixin SlideshowSettings on SettingsAccess {
 
   ViewerTransition get slideshowTransition => getEnumOrDefault(SettingKeys.slideshowTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
-  set slideshowTransition(ViewerTransition newValue) => set(SettingKeys.slideshowTransitionKey, newValue.toString());
+  set slideshowTransition(ViewerTransition newValue) => set(SettingKeys.slideshowTransitionKey, newValue.name);
 
   SlideshowVideoPlayback get slideshowVideoPlayback => getEnumOrDefault(SettingKeys.slideshowVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
 
-  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.slideshowVideoPlaybackKey, newValue.toString());
+  set slideshowVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.slideshowVideoPlaybackKey, newValue.name);
 
   int get slideshowInterval => getInt(SettingKeys.slideshowIntervalKey) ?? SettingsDefaults.slideshowInterval;
 

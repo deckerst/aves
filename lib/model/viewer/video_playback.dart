@@ -24,4 +24,6 @@ class VideoPlaybackRow extends Equatable {
     'id': entryId,
     'resumeTimeMillis': resumeTimeMillis,
   };
+
+  Map<String, Object?> toDbMap() => toMap();
 }

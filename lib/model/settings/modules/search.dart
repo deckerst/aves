@@ -9,5 +9,5 @@ mixin SearchSettings on SettingsAccess {
 
   List<CollectionFilter> get searchHistory => (getStringList(SettingKeys.searchHistoryKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toList();
 
-  set searchHistory(List<CollectionFilter> newValue) => set(SettingKeys.searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
+  set searchHistory(List<CollectionFilter> newValue) => set(SettingKeys.searchHistoryKey, newValue.map((filter) => filter.toJsonString()).toList());
 }

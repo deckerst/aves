@@ -51,7 +51,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
             final upQuery = query.toUpperCase().trim();
             return RadioGroup<Locale>(
               groupValue: _selectedValue,
-              onChanged: (v) => Navigator.maybeOf(context)?.pop(v),
+              onChanged: (v) => Navigator.maybeOf(context)?.pop<Locale>(v),
               child: ListView(
                 children: [
                   if (!useTvLayout)

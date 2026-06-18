@@ -49,7 +49,7 @@ class MapPage extends StatelessWidget {
   final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
-  final Set<List<LatLng>>? tracks;
+  final List<GeoTrack>? tracks;
 
   const MapPage({
     super.key,
@@ -98,7 +98,7 @@ class _Content extends StatefulWidget {
   final double? initialZoom;
   final AvesEntry? initialEntry;
   final MappedGeoTiff? overlayEntry;
-  final Set<List<LatLng>>? tracks;
+  final List<GeoTrack>? tracks;
 
   const _Content({
     required this.collection,

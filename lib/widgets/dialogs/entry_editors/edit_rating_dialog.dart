@@ -130,7 +130,7 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
       case .unrated:
         entryRating = 0;
     }
-    Navigator.maybeOf(context)?.pop(entryRating);
+    Navigator.maybeOf(context)?.pop<int>(entryRating);
   }
 }
 

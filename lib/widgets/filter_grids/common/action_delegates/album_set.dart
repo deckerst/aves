@@ -88,6 +88,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   }) {
     final selectedSingleItem = selectedFilters.length == 1;
     final isMain = appMode == AppMode.main;
+    final useTvLayout = settings.useTvLayout;
     bool isVault(CollectionFilter filter) => filter is StoredAlbumFilter && filter.isVault;
 
     switch (action) {
@@ -97,7 +98,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       case .createVault:
         return !settings.isReadOnly && appMode.canCreateFilter && !isSelecting;
       case .group:
-        return isMain && isSelecting;
+        return isMain && isSelecting && !useTvLayout;
       case .delete:
         return isMain && isSelecting && !settings.isReadOnly && (selectedFilters.isEmpty || selectedFilters.every((v) => v is StoredAlbumFilter));
       case .remove:

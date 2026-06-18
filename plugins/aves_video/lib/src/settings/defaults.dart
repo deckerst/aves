@@ -7,7 +7,7 @@ class SettingsDefaults {
   // video
   static const videoAutoPlayMode = VideoAutoPlayMode.disabled;
   static const videoBackgroundMode = VideoBackgroundMode.disabled;
-  static const videoHardwareAcceleration = VideoHardwareAcceleration.enabled;
+  static const videoHardwareAcceleration = VideoHardwareAcceleration.forced;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoResumptionMode = VideoResumptionMode.ask;
   static const videoShowRawTimedText = false;

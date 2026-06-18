@@ -3,6 +3,16 @@ import 'package:flutter/widgets.dart';
 
 // `ChangeNotifier` wrapper to call `notify` without constraint
 class AChangeNotifier extends ChangeNotifier {
+  bool _isDisposed = false;
+
+  bool get isDisposed => _isDisposed;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _isDisposed = true;
+  }
+
   void notify() {
     // why is this protected?
     super.notifyListeners();

@@ -150,8 +150,8 @@ object StorageUtils {
 
     private fun findPrimaryVolumePath(context: Context): String? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            val path = sm?.primaryStorageVolume?.directory?.path
+            val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val path = storageManager?.primaryStorageVolume?.directory?.path
             if (path != null) {
                 return ensureTrailingSeparator(path)
             }
@@ -174,8 +174,8 @@ object StorageUtils {
 
     private fun findVolumePaths(context: Context): Array<String> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-            val paths = sm?.storageVolumes?.mapNotNull { it.directory?.path }
+            val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val paths = storageManager?.storageVolumes?.mapNotNull { it.directory?.path }
             if (paths != null) {
                 return paths.map(::ensureTrailingSeparator).toTypedArray()
             }
@@ -244,8 +244,8 @@ object StorageUtils {
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
     // /storage/extSdCard/          -> 1234-5678 [Android 5.1.1, Samsung Galaxy Core Prime]
     private fun getVolumeUuidForDocumentUri(context: Context, anyPath: String): String? {
-        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-        sm?.getStorageVolume(File(anyPath))?.let { volume ->
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        storageManager?.getStorageVolume(File(anyPath))?.let { volume ->
             if (volume.isPrimary) {
                 return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
             }
@@ -292,11 +292,11 @@ object StorageUtils {
             return getPrimaryVolumePath(context)
         }
 
-        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-        if (sm != null) {
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (storageManager != null) {
             for (volumePath in getVolumePaths(context)) {
                 try {
-                    val volume = sm.getStorageVolume(File(volumePath))
+                    val volume = storageManager.getStorageVolume(File(volumePath))
                     if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
                         return volumePath
                     }
@@ -397,11 +397,11 @@ object StorageUtils {
      * Document files
      */
 
-    fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri): DocumentFileCompat? {
+    fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri?): DocumentFileCompat? {
         try {
             if (requireAccessPermission(context, anyPath)) {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mediaUri != null && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
                     PermissionManager.sanitizePersistedUriPermissions(context)
                     try {
@@ -419,7 +419,7 @@ object StorageUtils {
                 if (df != null) return df
 
                 // try to strip user info, if any
-                if (mediaUri.userInfo != null) {
+                if (mediaUri?.userInfo != null) {
                     val genericMediaUri = stripMediaUriUserInfo(mediaUri)
                     Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
                     return getDocumentFile(context, anyPath, genericMediaUri)

@@ -11,6 +11,7 @@ export 'src/editor/enums.dart';
 export 'src/metadata/convert_action.dart';
 export 'src/metadata/date_edit_action.dart';
 export 'src/metadata/date_field_source.dart';
+export 'src/metadata/exportable_fields.dart';
 export 'src/metadata/fields.dart';
 export 'src/metadata/length_unit.dart';
 export 'src/metadata/location_edit_action.dart';

@@ -47,6 +47,9 @@ extension ExtraEntrySetActionView on EntrySetAction {
       .editRating => l10n.entryInfoActionEditRating,
       .editTags => l10n.entryInfoActionEditTags,
       .removeMetadata => l10n.entryInfoActionRemoveMetadata,
+      // fab
+      .pickCollectionFilters => l10n.pickTooltip,
+      .pickMultipleMedia => l10n.pickTooltip,
     };
   }
 
@@ -94,6 +97,9 @@ extension ExtraEntrySetActionView on EntrySetAction {
       .editRating => AIcons.rating,
       .editTags => AIcons.tag,
       .removeMetadata => AIcons.clear,
+      // fab
+      .pickCollectionFilters => AIcons.apply,
+      .pickMultipleMedia => AIcons.apply,
     };
   }
 }

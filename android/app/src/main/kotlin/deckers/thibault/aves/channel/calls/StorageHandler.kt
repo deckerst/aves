@@ -75,11 +75,11 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         val volumes = ArrayList<Map<String, Any>>()
-        val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-        if (sm != null) {
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (storageManager != null) {
             for (volumePath in getVolumePaths(context)) {
                 try {
-                    sm.getStorageVolume(File(volumePath))?.let {
+                    storageManager.getStorageVolume(File(volumePath))?.let {
                         volumes.add(
                             hashMapOf(
                                 "path" to volumePath,

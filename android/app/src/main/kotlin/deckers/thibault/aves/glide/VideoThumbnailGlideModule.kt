@@ -104,7 +104,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
 
         var durationMillis: Long? = null
         retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
-        val timeMicros = getBestTimeForDuration(durationMillis)
+        val timeMicros = getBestThumbnailTimeMicros(durationMillis)
 
         // fall back from preferred frame, to first frame, to any frame
         var bitmap = getFrameAtTime(retriever, videoSize, targetSize, timeMicros)
@@ -165,8 +165,8 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     // the thumbnails returned by the content resolver / Media Store
     // so we derive one in an arbitrary way
     //
-    // return time in micros
-    private fun getBestTimeForDuration(durationMillis: Long?): Long {
+    // use same strategy on flutter and platform sides
+    private fun getBestThumbnailTimeMicros(durationMillis: Long?): Long {
         if (durationMillis == null || durationMillis < SHORT_DURATION_MILLIS) {
             return TIME_FRAME_FIRST
         }

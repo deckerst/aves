@@ -332,7 +332,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
   void _submit(BuildContext context) {
     if (_isValidNotifier.value) {
-      Navigator.maybeOf(context)?.pop(_getModifier());
+      Navigator.maybeOf(context)?.pop<DateModifier>(_getModifier());
     }
   }
 }

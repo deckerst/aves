@@ -4,7 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.6"></a>[v1.14.6] - 2026-06-18
+
+### Added
+
+- Cataloguing: detect/filter slow motion videos
+- Video: slow motion range control
+- Map: show paths
+- Settings: automatic export option
+- Kurdish (Kurmanji) translation (thanks CYAXXX)
+
+### Changed
+
+- Map : increased max zoom level for HOT/Watercolor layers
+- Map : removed max zoom limit for custom layers
+- Video: hardware acceleration setting now defaults to `forced` (i.e. using `MediaCodec`)
+- upgraded Flutter to stable v3.44.2
+
+### Fixed
+
+- Collection: video thumbnail generation fallback when the Android codecs fail
+- TV: missing button to pick collection for screen saver
+
 ## <a id="v1.14.5"></a>[v1.14.5] - 2026-05-30
+
+### Added
+
+- predictive back gesture support (external and intra-app)
 
 ### Changed
 
@@ -91,7 +117,7 @@ All notable changes to this project will be documented in this file.
 - Video: allow forcing hardware acceleration
 - Search: allow regex (wrapped in `/.../`) in query filter
 - Stats: export to CSV/JSON fields of filtered collection
-- predictive back gesture support (external only, intra-app support pending Flutter v3.42)
+- predictive back gesture support (external only)
 
 ### Changed
 

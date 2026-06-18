@@ -50,7 +50,7 @@ class InteractiveTile extends StatelessWidget {
             selection.toggleSelection(entry);
           case .pickFilteredMediaInternal:
           case .pickUnfilteredMediaInternal:
-            Navigator.maybeOf(context)?.pop(entry);
+            Navigator.maybeOf(context)?.pop<AvesEntry>(entry);
           default:
             break;
         }

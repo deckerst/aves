@@ -4,12 +4,12 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

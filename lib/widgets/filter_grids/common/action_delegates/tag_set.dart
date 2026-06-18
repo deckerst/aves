@@ -54,12 +54,13 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
     required Set<TagBaseFilter> selectedFilters,
   }) {
     final isMain = appMode == AppMode.main;
+    final useTvLayout = settings.useTvLayout;
 
     switch (action) {
       case .createGroup:
         return true;
       case .group:
-        return isMain && isSelecting;
+        return isMain && isSelecting && !useTvLayout;
       case .remove:
         return isMain && isSelecting && !settings.isReadOnly && (selectedFilters.isEmpty || selectedFilters.every((v) => v is TagFilter));
       default:

@@ -94,7 +94,7 @@ class SvgRegionFetcher internal constructor(
             svg.renderToCanvas(canvas, renderOptions)
 
             bitmap = Bitmap.createBitmap(bitmap, bleedX, bleedY, targetBitmapWidth, targetBitmapHeight)
-            val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, MimeTypes.SVG)
+            val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, applyGainmap = false, mimeType = MimeTypes.SVG)
             if (bytes == null) {
                 result.error("fetch-null", "failed to decode SVG for uri=$uri regionRect=$regionRect", null)
             } else {

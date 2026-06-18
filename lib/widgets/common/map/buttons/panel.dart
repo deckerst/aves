@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/map/buttons/button.dart';
 import 'package:aves/widgets/common/map/buttons/coordinate_filter.dart';
+import 'package:aves/widgets/common/map/buttons/item_track_toggler.dart';
 import 'package:aves/widgets/common/map/compass.dart';
 import 'package:aves/widgets/common/map/map_action_delegate.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
@@ -54,8 +55,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
   @override
   Widget build(BuildContext context) {
     final showCoordinateFilter = context.select<MapThemeData, bool>((v) => v.showCoordinateFilter);
-    final visualDensity = context.select<MapThemeData, VisualDensity>((v) => v.visualDensity);
-    final double padding = 8 + visualDensity.horizontal * 2;
+    final double padding = context.select<MapThemeData, double>((v) => v.buttonPadding);
 
     Widget? topLeftButton = _buildNavigationButton(context);
     Widget? topRightButton = _buildTopRightButton(context);
@@ -106,7 +106,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
                             SizedBox(height: padding),
                           ],
                           // key is expected by test driver
-                          _buildActionButton(context, MapAction.selectStyle, buttonKey: const Key('map-menu-layers')),
+                          _buildActionButton(context, MapAction.selectStyle),
                         ],
                       ),
                     ),
@@ -173,6 +173,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
     final actions = [
       MapAction.openMapApp,
       MapAction.addShortcut,
+      MapAction.toggleItemTrack,
     ].where((action) => _actionDelegate.isVisible(context, action)).toList();
 
     Widget? child;
@@ -183,17 +184,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
         builder: (context, visualDensity, child) {
           final animations = context.read<Settings>().accessibilityAnimations;
           return PopupMenuButton<MapAction>(
-            itemBuilder: (context) => actions
-                .map(
-                  (action) => PopupMenuItem(
-                    value: action,
-                    child: MenuRow(
-                      text: action.getText(context),
-                      icon: action.getIcon(),
-                    ),
-                  ),
-                )
-                .toList(),
+            itemBuilder: (context) => actions.map(_toMenuItem).toList(),
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
               await Future.delayed(animations.popUpAnimationDelay * timeDilation);
@@ -242,13 +233,23 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
     );
   }
 
-  Widget _buildActionButton(BuildContext context, MapAction action, {Key? buttonKey, String? heroTag}) {
-    final child = MapOverlayButton.icon(
-      buttonKey: buttonKey,
-      icon: action.getIcon(),
-      onPressed: () => _actionDelegate.onActionSelected(context, action),
-      tooltip: action.getText(context),
-    );
+  // key is expected by test driver
+  Key _getActionKey(MapAction action) => Key('map-menu-${action.name}');
+
+  Widget _buildActionButton(BuildContext context, MapAction action, {String? heroTag}) {
+    final Widget child;
+    void onPressed() => _actionDelegate.onActionSelected(context, action);
+    switch (action) {
+      case .toggleItemTrack:
+        child = MapItemTrackToggler(onPressed: onPressed);
+      default:
+        child = MapOverlayButton.icon(
+          buttonKey: _getActionKey(action),
+          icon: action.getIcon(),
+          onPressed: onPressed,
+          tooltip: action.getText(context),
+        );
+    }
     return _heroify(context, heroTag ?? action.name, child);
   }
 
@@ -264,5 +265,20 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
       }
     }
     return child;
+  }
+
+  PopupMenuItem<MapAction> _toMenuItem(MapAction action) {
+    final Widget child;
+    switch (action) {
+      case .toggleItemTrack:
+        child = const MapItemTrackToggler(isMenuItem: true);
+      default:
+        child = MenuRow(text: action.getText(context), icon: action.getIcon());
+    }
+    return PopupMenuItem(
+      key: _getActionKey(action),
+      value: action,
+      child: child,
+    );
   }
 }

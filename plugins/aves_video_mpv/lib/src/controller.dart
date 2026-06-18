@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
+import 'package:aves_video_mpv/aves_video_mpv.dart';
 import 'package:aves_video_mpv/src/tracks.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,13 @@ class MpvVideoController extends AvesVideoController {
   final List<SubtitleTrack> _externalSubtitleTracks = [];
 
   static final _pContext = p.Context();
+
+  static final protocolWhitelist = [
+    ...const PlayerConfiguration().protocolWhitelist,
+    // Android `content` URIs are considered unsafe by default,
+    // as they are transferred via a custom `fd` protocol
+    'fd',
+  ];
 
   @override
   double get minSpeed => .25;
@@ -60,12 +68,7 @@ class MpvVideoController extends AvesVideoController {
         title: entry.bestTitle ?? entry.uri,
         libass: false,
         logLevel: MPVLogLevel.warn,
-        protocolWhitelist: [
-          ...const PlayerConfiguration().protocolWhitelist,
-          // Android `content` URIs are considered unsafe by default,
-          // as they are transferred via a custom `fd` protocol
-          'fd',
-        ],
+        protocolWhitelist: protocolWhitelist,
       ),
     );
     _initController();
@@ -129,12 +132,22 @@ class MpvVideoController extends AvesVideoController {
           final start = abRepeat.start;
           final end = abRepeat.end;
           if (start != null && end != null) {
-            if (v.inMilliseconds < end) {
+            if (_toCaptureTime(v.inMilliseconds) < end) {
               _abRepeatSeeking = false;
             } else if (!_abRepeatSeeking) {
               _abRepeatSeeking = true;
-              _mkPlayer.seek(Duration(milliseconds: start));
+              _mkPlayer.seek(Duration(milliseconds: _toPlaybackTime(start)));
             }
+          }
+        }
+
+        if (!_abRepeatSeeking && isSlowMotion) {
+          final targetSpeed = getSlowMotionTargetSpeed(
+            currentPosition: currentPosition,
+            duration: duration,
+          );
+          if (speed != targetSpeed) {
+            setSpeed(targetSpeed);
           }
         }
       }),
@@ -176,6 +189,12 @@ class MpvVideoController extends AvesVideoController {
       ..clear();
   }
 
+  Future<void> _updateSlowMotionFactor() async {
+    final playbackFps = _videoTracks.firstOrNull?.fps;
+    slowMotionFactor = await MpvVideoMetadataFetcher.computeSlowMotionFactor(_mkPlayer, playbackFps);
+    canSetSpeedNotifier.value = !isSlowMotion;
+  }
+
   Future<void> _applyLoop() async {
     final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
     await _mkPlayer.setPlaylistMode(loopEnabled ? PlaylistMode.single : PlaylistMode.none);
@@ -203,31 +222,45 @@ class MpvVideoController extends AvesVideoController {
 
   void _initController() {
     _firstFrameRendered = false;
-    final hardwareAcceleration = settings.videoHardwareAcceleration;
-    String hwdec;
-    switch (settings.videoHardwareAcceleration) {
-      case .disabled:
-        hwdec = 'no';
-      case .enabled:
-        hwdec = 'auto-safe';
-      case .forced:
-        hwdec = 'mediacodec';
-    }
+
     final oldController = _mkControllerNotifier.value;
     final newController =
         VideoController(
             _mkPlayer,
-            configuration: VideoControllerConfiguration(
-              hwdec: hwdec,
-              enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
-            ),
+            configuration: _toControllerConfiguration(settings.videoHardwareAcceleration),
           )
           ..waitUntilFirstFrameRendered.then((v) {
+            _updateSlowMotionFactor();
             _firstFrameRendered = true;
             _statusStreamController.add(_status);
           });
     _mkControllerNotifier.value = newController;
     oldController?.dispose();
+  }
+
+  static VideoControllerConfiguration _toControllerConfiguration(VideoHardwareAcceleration hardwareAcceleration) {
+    String hwdec;
+    switch (hardwareAcceleration) {
+      case .disabled:
+        hwdec = 'no';
+      case .enabled:
+        hwdec = 'auto-safe';
+      case .forced:
+        // https://mpv.io/manual/stable/#options-hwdec says:
+        // mediacodec is not safe. It forces RGB conversion (not with -copy) and
+        // how well it handles non-standard colorspaces is not known.
+        // In the rare cases where 10-bit is supported the bit depth of the output will be reduced to 8.
+        hwdec = 'mediacodec'; // seems similar with 'mediacodec-copy'
+    }
+    // as of `media_kit_video` v2.0.1, the following properties are set internally:
+    // - 'gpu-context': 'android',
+    // - 'hwdec-codecs': 'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1',
+    return VideoControllerConfiguration(
+      vo: 'gpu', // 'gpu-next' / 'mediacodec_embed' are not usable as of `media_kit_video` v2.0.1, `media_kit_libs_android_video` v1.3.8
+      hwdec: hwdec, // default: 'auto-safe'
+      enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
+      androidAttachSurfaceAfterVideoParameters: true,
+    );
   }
 
   @override
@@ -264,7 +297,7 @@ class MpvVideoController extends AvesVideoController {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
-    await _mkPlayer.seek(Duration(milliseconds: targetMillis));
+    await _mkPlayer.seek(Duration(milliseconds: _toPlaybackTime(targetMillis)));
   }
 
   @override
@@ -292,12 +325,12 @@ class MpvVideoController extends AvesVideoController {
 
   @override
   Stream<VideoEvent> get eventStream => _eventStreamController.stream;
-  
+
   @override
   Stream<double> get volumeStream => _mkPlayer.stream.volume;
 
   @override
-  Stream<double> get speedStream => _mkPlayer.stream.rate;
+  Stream<double> get speedStream => _mkPlayer.stream.rate.map((v) => v / slowMotionFactor);
 
   @override
   bool get isReady {
@@ -313,14 +346,22 @@ class MpvVideoController extends AvesVideoController {
     }
   }
 
-  @override
-  int get duration => _mkPlayer.state.duration.inMilliseconds;
+  int _toCaptureTime(int videoTime) {
+    return (videoTime / slowMotionFactor).round();
+  }
+
+  int _toPlaybackTime(int videoTime) {
+    return videoTime * slowMotionFactor;
+  }
 
   @override
-  int get currentPosition => _mkPlayer.state.position.inMilliseconds;
+  int get duration => _toCaptureTime(_mkPlayer.state.duration.inMilliseconds);
 
   @override
-  Stream<int> get positionStream => _mkPlayer.stream.position.map((pos) => pos.inMilliseconds);
+  int get currentPosition => _toCaptureTime(_mkPlayer.state.position.inMilliseconds);
+
+  @override
+  Stream<int> get positionStream => _mkPlayer.stream.position.map((pos) => _toCaptureTime(pos.inMilliseconds));
 
   @override
   Stream<String?> get timedTextStream => _timedTextStreamController.stream;
@@ -332,13 +373,16 @@ class MpvVideoController extends AvesVideoController {
   Future<void> mute(bool muted) => _mkPlayer.setVolume(muted ? 0 : 100);
 
   @override
-  double get speed => _mkPlayer.state.rate;
+  double get speed => _mkPlayer.state.rate / slowMotionFactor;
 
   @override
-  set speed(double speed) => _mkPlayer.setRate(speed);
+  Future<void> setSpeed(double speed) => _mkPlayer.setRate(speed * slowMotionFactor);
 
   @override
-  Future<Uint8List?> captureFrame() => _mkPlayer.screenshot();
+  Future<Uint8List?> captureFrame() {
+    // TODO TLAD rotate screenshot according to video rotation
+    return _mkPlayer.screenshot();
+  }
 
   @override
   Widget buildPlayerWidget(BuildContext context) {

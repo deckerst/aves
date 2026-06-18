@@ -19,10 +19,9 @@ class StorageVolume extends Equatable {
   });
 
   factory StorageVolume.fromMap(Map map) {
-    final isPrimary = map['isPrimary'] ?? false;
     return StorageVolume(
       description: map['description'],
-      isPrimary: isPrimary,
+      isPrimary: map['isPrimary'] ?? false,
       isRemovable: map['isRemovable'] ?? false,
       path: map['path'] ?? '',
       state: map['state'] ?? '',

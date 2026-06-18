@@ -82,7 +82,10 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: () => Navigator.maybeOf(context)?.pop(widget.options.keys.where(_selectedValues.contains).toList()),
+          onPressed: () {
+            final result = widget.options.keys.where(_selectedValues.contains).toList();
+            return Navigator.maybeOf(context)?.pop<List<T>>(result);
+          },
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

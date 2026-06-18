@@ -25,7 +25,7 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader;
+  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mpvDumpLoader;
   late Future<Map> _mediaMetadataLoader, _metadataExtractorLoader, _pixyMetaLoader, _tiffStructureLoader, _addressLoader;
   late Future<String?> _mp4ParserDumpLoader;
 
@@ -45,6 +45,7 @@ class _MetadataTabState extends State<MetadataTab> {
     _bitmapFactoryLoader = AndroidDebugService.getBitmapFactoryInfo(entry);
     _contentResolverMetadataLoader = AndroidDebugService.getContentResolverMetadata(entry);
     _exifInterfaceMetadataLoader = AndroidDebugService.getExifInterfaceMetadata(entry);
+    _mpvDumpLoader = videoMetadataFetcher.getMetadata(uri: entry.uri, mimeType: entry.mimeType);
     _mediaMetadataLoader = AndroidDebugService.getMediaMetadataRetrieverMetadata(entry);
     _metadataExtractorLoader = AndroidDebugService.getMetadataExtractorSummary(entry);
     _mp4ParserDumpLoader = AndroidDebugService.getMp4ParserDump(entry);
@@ -122,6 +123,10 @@ class _MetadataTabState extends State<MetadataTab> {
         FutureBuilder<Map>(
           future: _exifInterfaceMetadataLoader,
           builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Exif Interface'),
+        ),
+        FutureBuilder<Map>(
+          future: _mpvDumpLoader,
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'MPV'),
         ),
         FutureBuilder<Map>(
           future: _mediaMetadataLoader,

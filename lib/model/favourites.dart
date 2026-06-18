@@ -124,4 +124,6 @@ class FavouriteRow extends Equatable {
   Map<String, Object?> toMap() => {
     'id': entryId,
   };
+
+  Map<String, Object?> toDbMap() => toMap();
 }

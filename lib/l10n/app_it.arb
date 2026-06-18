@@ -461,9 +461,9 @@
     "settingsVideoGestureDoubleTapTogglePlay": "Doppio tocco riproduci/pausa",
     "settingsVideoGestureSideDoubleTapSeek": "Doppio tocco sui bordi dello schermo per cercare avanti/indietro",
     "settingsPrivacySectionTitle": "Privacy",
-    "settingsAllowInstalledAppAccess": "Consenti l’accesso all’inventario app",
+    "settingsAllowInstalledAppAccess": "Accesso all’inventario app",
     "settingsAllowInstalledAppAccessSubtitle": "Usato per migliorare la visualizzazione album",
-    "settingsAllowErrorReporting": "Consenti segnalazione anonima errori",
+    "settingsAllowErrorReporting": "Segnalazione anonima errori",
     "settingsSaveSearchHistory": "Salva cronologia ricerche",
     "settingsEnableBin": "Usa cestino",
     "settingsEnableBinSubtitle": "Conserva elementi eliminati per 30 giorni",
@@ -728,5 +728,6 @@
     "settingsEnabled": "Abilitato",
     "settingsForced": "Forzato",
     "settingsViewerShowZoomLevel": "Mostra il livello di zoom",
-    "collectionActionExportGpx": "Esporta GPX"
+    "collectionActionExportGpx": "Esporta GPX",
+    "settingsAutoExportSettings": "Esportazione automatica impostazioni"
 }

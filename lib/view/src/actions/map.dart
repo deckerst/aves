@@ -12,6 +12,9 @@ extension ExtraMapActionView on MapAction {
       .zoomIn => l10n.mapZoomInTooltip,
       .zoomOut => l10n.mapZoomOutTooltip,
       .addShortcut => l10n.collectionActionAddShortcut,
+      .toggleItemTrack =>
+        // different data depending on toggle state
+        l10n.mapShowItemTracks,
     };
   }
 
@@ -24,6 +27,9 @@ extension ExtraMapActionView on MapAction {
       .zoomIn => AIcons.zoomIn,
       .zoomOut => AIcons.zoomOut,
       .addShortcut => AIcons.addShortcut,
+      .toggleItemTrack =>
+        // different data depending on toggle state
+        AIcons.route,
     };
   }
 }

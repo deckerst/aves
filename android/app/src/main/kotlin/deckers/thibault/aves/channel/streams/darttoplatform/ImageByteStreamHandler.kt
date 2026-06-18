@@ -30,12 +30,14 @@ import java.util.Date
 class ImageByteStreamHandler(private val context: Context, private val arguments: Any?) : BaseStreamHandler(), ByteSink {
     private var op: String? = null
     private var decoded: Boolean = false
+    private var applyGainmap: Boolean = false
     private val regionFetcher = RegionFetcher(context)
 
     init {
         if (arguments is Map<*, *>) {
             op = arguments["op"] as String?
             decoded = arguments["decoded"] as Boolean
+            applyGainmap = arguments["applyGainmap"] as Boolean? ?: false
         }
     }
 
@@ -95,6 +97,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 rotationDegrees = rotationDegrees,
                 isFlipped = isFlipped,
                 decoded = decoded,
+                applyGainmap = applyGainmap,
             )
         }
     }
@@ -118,6 +121,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         rotationDegrees: Int,
         isFlipped: Boolean,
         decoded: Boolean,
+        applyGainmap: Boolean
     ) {
         val target = Glide.with(context)
             .asBitmap()
@@ -131,7 +135,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             }
             if (bitmap != null) {
                 // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
-                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = applyGainmap, mimeType = mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
                 error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
@@ -153,7 +157,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             val bitmap = withContext(Dispatchers.IO) { target.get() }
             if (bitmap != null) {
                 // do not recycle bitmaps fetched from Glide as their lifecycle is unknown
-                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
+                val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
                 error("streamImage-video-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
@@ -213,6 +217,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 uri = uri,
                 pageId = pageId,
                 decoded = decoded,
+                applyGainmap = applyGainmap,
                 mimeType = mimeType,
                 sampleSize = sampleSize,
                 regionRect = regionRect,

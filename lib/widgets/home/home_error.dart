@@ -77,10 +77,11 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                               label: l10n.settingsActionExport,
                               onPressed: () async {
                                 final sourcePath = await localMediaDb.path;
+                                final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
                                 final success = await storageService.copyFile(
-                                  'aves-database-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}.db',
-                                  MimeTypes.sqlite3,
-                                  Uri.file(sourcePath).toString(),
+                                  basename: 'aves-database-$date',
+                                  mimeType: MimeTypes.sqlite3,
+                                  sourceUri: Uri.file(sourcePath).toString(),
                                 );
                                 if (success != null) {
                                   if (success) {

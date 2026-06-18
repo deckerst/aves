@@ -9,7 +9,6 @@ import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/channel_isolate.dart';
-import 'package:aves/services/common/custom_exception.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
@@ -299,20 +298,11 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   Future<void> _processPlatformException(AvesEntry entry, PlatformException e, StackTrace stack) async {
     if (entry.isValid) {
       final code = e.code;
-      final customException = CustomPlatformException.fromStandard(e);
       if (code.endsWith('filenotfound')) {
-        await fileNotFound(customException);
+        debugPrint('Unreported `fileNotFound` error with exception=$e');
       } else {
         await reportService.recordError(e, stack);
       }
     }
-  }
-
-  // distinct exceptions to convince Crashlytics to split reports into distinct issues
-  // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
-
-  Future<void> fileNotFound(CustomPlatformException e) {
-    debugPrint('fileNotFound $e');
-    return reportService.recordError(e);
   }
 }

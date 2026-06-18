@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
+import androidx.core.performance.DefaultDevicePerformance
 import androidx.core.text.util.LocalePreferences
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
@@ -38,7 +39,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getLocales" -> safe(call, result, ::getLocales)
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
             "getFirstDayOfWeek" -> safe(call, result, ::getFirstDayOfWeek)
-            "getPerformanceClass" -> safe(call, result, ::getPerformanceClass)
+            "getMediaPerformanceClass" -> safe(call, result, ::getMediaPerformanceClass)
             "getWidgetCornerRadiusPx" -> safe(call, result, ::getWidgetCornerRadiusPx)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
@@ -59,7 +60,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             hashMapOf(
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canRenderSubdivisionFlagEmojis" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
-                "canRequestManageMedia" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S),
+                "canRequestMediaManagementPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S),
+                "canRequestNotificationPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
@@ -101,8 +103,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             @SuppressLint("WrongConstant")
-            val lm = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
-            lm?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
+            val localeManager = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
+            localeManager?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
         }
 
         result.success(true)
@@ -112,15 +114,13 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         result.success(LocalePreferences.getFirstDayOfWeek())
     }
 
-    private fun getPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val performanceClass = Build.VERSION.MEDIA_PERFORMANCE_CLASS
-            if (performanceClass > 0) {
-                result.success(performanceClass)
-                return
-            }
+    private fun getMediaPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val performanceClass = DefaultDevicePerformance().mediaPerformanceClass
+        if (performanceClass > 0) {
+            result.success(performanceClass)
+        } else {
+            result.success(Build.VERSION.SDK_INT)
         }
-        result.success(Build.VERSION.SDK_INT)
     }
 
     private fun getWidgetCornerRadiusPx(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

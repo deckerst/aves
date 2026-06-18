@@ -217,12 +217,12 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
         lines.add('$padding$tag: $value');
       });
     });
-    final metadataString = lines.join('\n');
+    final customContent = lines.join('\n');
 
     final success = await storageService.createFile(
-      '${targetEntry.filenameWithoutExtension}-metadata.txt',
-      MimeTypes.plainText,
-      Uint8List.fromList(utf8.encode(metadataString)),
+      basename: '${targetEntry.filenameWithoutExtension}-metadata',
+      mimeType: MimeTypes.plainText,
+      bytes: utf8.encode(customContent),
     );
     if (success != null) {
       if (success) {

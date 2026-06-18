@@ -37,6 +37,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         // as it will be closed when getting that activity result
         val closeStream = false
         when (op) {
+            "requestAnyDirectoryAccess" -> ioScope.launch { safe(::requestAnyDirectoryAccess, closeStream) }
             "requestDirectoryAccess" -> ioScope.launch { safe(::requestDirectoryAccess, closeStream) }
             "requestMediaFileAccess" -> ioScope.launch { safe(::requestMediaFileAccess, closeStream) }
             "createFile" -> ioScope.launch { safe(::createFile, closeStream) }
@@ -51,6 +52,17 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
         super.error(errorCode, errorMessage, errorDetails)
         endOfStream()
+    }
+
+    private fun requestAnyDirectoryAccess() {
+        PermissionManager.requestDirectoryAccess(activity, path = null, {
+            val dirPath = StorageUtils.convertTreeDocumentUriToDirPath(activity, it)
+            success(dirPath)
+            endOfStream()
+        }, {
+            success(null)
+            endOfStream()
+        })
     }
 
     private fun requestDirectoryAccess() {
@@ -116,6 +128,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun createFile() {
+        val dirPath = args["dirPath"] as String?
         val name = args["name"] as String?
         val mimeType = args["mimeType"] as String?
         val bytes = args["bytes"] as ByteArray?
@@ -144,12 +157,24 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             endOfStream()
         }
 
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = mimeType
-            putExtra(Intent.EXTRA_TITLE, name)
+        if (dirPath != null) {
+            // save to provided directory
+            val filePath = ensureTrailingSeparator(dirPath) + name
+            val docFile = StorageUtils.getDocumentFile(activity, filePath, mediaUri = null)
+            if (docFile != null) {
+                onGranted(docFile.uri)
+            } else {
+                onDenied()
+            }
+        } else {
+            // save to user selected directory
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = mimeType
+                putExtra(Intent.EXTRA_TITLE, name)
+            }
+            safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
         }
-        safeStartActivityForStorageAccessResult(intent, MainActivity.CREATE_FILE_REQUEST, ::onGranted, ::onDenied)
     }
 
     private fun openFile() {

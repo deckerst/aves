@@ -27,31 +27,31 @@ class ScreenSaverSettingsPage extends StatelessWidget {
             SettingsSwitchListTile(
               selector: (context, s) => s.screenSaverFillScreen,
               onChanged: (v) => settings.screenSaverFillScreen = v,
-              title: l10n.settingsSlideshowFillScreen,
+              title: (_) => l10n.settingsSlideshowFillScreen,
             ),
             SettingsSwitchListTile(
               selector: (context, s) => s.screenSaverAnimatedZoomEffect,
               onChanged: (v) => settings.screenSaverAnimatedZoomEffect = v,
-              title: l10n.settingsSlideshowAnimatedZoomEffect,
+              title: (_) => l10n.settingsSlideshowAnimatedZoomEffect,
             ),
             SettingsSelectionListTile<ViewerTransition>(
               values: ViewerTransition.values,
               getName: (context, v) => v.getName(context),
               selector: (context, s) => s.screenSaverTransition,
               onSelection: (v) => settings.screenSaverTransition = v,
-              tileTitle: l10n.settingsSlideshowTransitionTile,
+              tileTitle: (_) => l10n.settingsSlideshowTransitionTile,
             ),
             SettingsDurationListTile(
               selector: (context, s) => s.screenSaverInterval,
               onChanged: (v) => settings.screenSaverInterval = v,
-              title: l10n.settingsSlideshowIntervalTile,
+              title: (_) => l10n.settingsSlideshowIntervalTile,
             ),
             SettingsSelectionListTile<SlideshowVideoPlayback>(
               values: SlideshowVideoPlayback.values,
               getName: (context, v) => v.getName(context),
               selector: (context, s) => s.screenSaverVideoPlayback,
               onSelection: (v) => settings.screenSaverVideoPlayback = v,
-              tileTitle: l10n.settingsSlideshowVideoPlaybackTile,
+              tileTitle: (_) => l10n.settingsSlideshowVideoPlaybackTile,
               dialogTitle: l10n.settingsSlideshowVideoPlaybackDialogTitle,
             ),
             Selector<Settings, Set<CollectionFilter>>(

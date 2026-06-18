@@ -16,6 +16,7 @@ dependencies:
   aves_utils:
     path: ../aves_utils
   collection:
+  image:
   media_kit:
   media_kit_libs_android_video:
   media_kit_video:

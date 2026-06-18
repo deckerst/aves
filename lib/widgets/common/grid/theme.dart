@@ -39,6 +39,7 @@ class GridTheme extends StatelessWidget {
           fontSize: fontSize,
           highlightBorderWidth: highlightBorderWidth,
           interactiveDimension: interactiveDimension,
+          useTvLayout: settings.useTvLayout,
           showFavourite: settings.showThumbnailFavourite,
           showHdr: settings.showThumbnailHdr,
           locationIcon: showLocation ? settings.thumbnailLocationIcon : ThumbnailOverlayLocationIcon.none,
@@ -59,6 +60,7 @@ typedef GridThemeIconBuilder = List<Widget> Function(BuildContext context, AvesE
 
 class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth, interactiveDimension;
+  final bool useTvLayout;
   final bool showFavourite, showHdr, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
   final bool showLocated, showUnlocated, showTagged, showUntagged;
   late final GridThemeIconBuilder iconBuilder;
@@ -68,6 +70,7 @@ class GridThemeData {
     required this.fontSize,
     required this.highlightBorderWidth,
     required this.interactiveDimension,
+    required this.useTvLayout,
     required this.showFavourite,
     required this.showHdr,
     required ThumbnailOverlayLocationIcon locationIcon,

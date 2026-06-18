@@ -146,7 +146,7 @@ class _SkippableConfirmationDialogState extends State<_SkippableConfirmationDial
             if (_skipNotifier.value) {
               _skipConfirmation(widget.type);
             }
-            Navigator.maybeOf(context)?.pop(true);
+            Navigator.maybeOf(context)?.pop<bool>(true);
           },
           child: Text(widget.confirmationButtonLabel),
         ),

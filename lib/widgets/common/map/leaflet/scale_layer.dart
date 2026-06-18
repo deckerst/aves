@@ -75,7 +75,7 @@ class ScaleLayerWidget extends StatelessWidget {
             : latitude > 60
             ? 3
             : 2);
-    final scaleLevel = level.clamp(0, 20);
+    final scaleLevel = level.clamp(0, scaleMeters.length - 1);
     late final double distanceMeters;
     late final String displayDistance;
     switch (options.unitSystem) {

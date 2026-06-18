@@ -2,11 +2,12 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
 import 'package:flutter/material.dart';
 
 class ColorListTile extends StatelessWidget {
-  final String title;
+  final TitleBuilder title;
   final Color value;
   final ValueSetter<Color> onChanged;
 
@@ -20,7 +21,7 @@ class ColorListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      title: Text(title(context) ?? '?'),
       trailing: ColorIndicator(
         value: value,
       ),
@@ -90,7 +91,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: () => Navigator.maybeOf(context)?.pop(color),
+          onPressed: () => Navigator.maybeOf(context)?.pop<Color>(color),
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

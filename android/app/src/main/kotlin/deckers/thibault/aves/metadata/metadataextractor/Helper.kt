@@ -16,6 +16,7 @@ import com.drew.lang.Rational
 import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
 import com.drew.metadata.StringValue
+import com.drew.metadata.Tag
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
@@ -24,11 +25,14 @@ import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.xmp.XmpReader
+import deckers.thibault.aves.metadata.DngTags
 import deckers.thibault.aves.metadata.ExifGeoTiffTags
+import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MathUtils.round
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -40,6 +44,7 @@ import java.util.GregorianCalendar
 import java.util.Locale
 import java.util.TimeZone
 import java.util.regex.Pattern
+import kotlin.math.floor
 
 object Helper {
     private val LOG_TAG = LogUtils.createTag<Helper>()
@@ -58,6 +63,63 @@ object Helper {
     // e.g. "iptc [...] 114 [...] 3842494d040400[...]"
     // e.g. "exif [...] 134 [...] 4578696600004949[...]"
     private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
+
+    private const val RATIONAL_DESCRIPTION_DECIMALS = 4
+
+    fun getTagName(tag: Tag): String {
+        return if (tag.hasTagName()) {
+            tag.tagName
+        } else {
+            ExifTags.getTagName(tag.tagType) ?: tag.tagName
+        }
+    }
+
+    private fun formatRational(r: Rational): String {
+        val d = (r.numerator.toDouble() / r.denominator).round(RATIONAL_DESCRIPTION_DECIMALS)
+        val i = floor(d)
+        return if (d == i) {
+            String.format(Locale.ROOT, "%d", i.toInt())
+        } else {
+            String.format(Locale.ROOT, "%.${RATIONAL_DESCRIPTION_DECIMALS}f", d)
+        }
+    }
+
+    fun getTagDescription(dir: Directory, tag: Tag): String {
+        return when (tag.tagType) {
+            DngTags.ANALOG_BALANCE,
+            DngTags.AS_SHOT_NEUTRAL,
+            DngTags.AS_SHOT_WHITE_XY,
+            DngTags.BLACK_LEVEL,
+            DngTags.CAMERA_CALIBRATION_1,
+            DngTags.CAMERA_CALIBRATION_2,
+            DngTags.COLOR_MATRIX_1,
+            DngTags.COLOR_MATRIX_2,
+            DngTags.COLOR_MATRIX_3,
+            DngTags.DEFAULT_CROP_ORIGIN,
+            DngTags.DEFAULT_CROP_SIZE,
+            DngTags.DEFAULT_SCALE,
+            DngTags.FORWARD_MATRIX_1,
+            DngTags.FORWARD_MATRIX_2,
+            DngTags.FORWARD_MATRIX_3,
+            DngTags.LENS_INFO,
+                -> {
+                val o = dir.getObject(tag.tagType)
+                if (o != null) {
+
+                    if (o is Array<*> && o.isArrayOf<Rational>()) {
+                        return o.filterNotNull().joinToString(" ") {
+                            formatRational(it as Rational)
+                        }
+                    } else if (o is Rational) {
+                        return formatRational(o)
+                    }
+                }
+                tag.description
+            }
+
+            else -> tag.description
+        } ?: "${dir.getObject(tag.tagType)}"
+    }
 
     fun readMimeType(input: InputStream): String? {
         val bufferedInputStream = input as? BufferedInputStream ?: BufferedInputStream(input)

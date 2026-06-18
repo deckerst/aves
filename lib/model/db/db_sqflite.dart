@@ -295,7 +295,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     }
     batch.insert(
       metadataTable,
-      metadata.toMap(),
+      metadata.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -343,7 +343,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     if (address == null) return;
     batch.insert(
       addressTable,
-      address.toMap(),
+      address.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -385,7 +385,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertVault(Batch batch, VaultDetails row) {
     batch.insert(
       vaultTable,
-      row.toMap(),
+      row.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -430,7 +430,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
     if (details == null) return;
     batch.insert(
       trashTable,
-      details.toMap(),
+      details.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -472,7 +472,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertFavourite(Batch batch, FavouriteRow row) {
     batch.insert(
       favouriteTable,
-      row.toMap(),
+      row.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -533,7 +533,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertCover(Batch batch, CoverRow row) {
     batch.insert(
       coverTable,
-      row.toMap(),
+      row.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -615,7 +615,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertDynamicAlbum(Batch batch, DynamicAlbumRow row) {
     batch.insert(
       dynamicAlbumTable,
-      row.toMap(),
+      row.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -674,7 +674,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   void _batchInsertVideoPlayback(Batch batch, VideoPlaybackRow row) {
     batch.insert(
       videoPlaybackTable,
-      row.toMap(),
+      row.toDbMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

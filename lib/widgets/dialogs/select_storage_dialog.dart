@@ -57,7 +57,7 @@ class _SelectStorageDialogState extends State<SelectStorageDialog> {
       actions: [
         const CancelButton(),
         TextButton(
-          onPressed: () => Navigator.maybeOf(context)?.pop(_selectedVolume),
+          onPressed: () => Navigator.maybeOf(context)?.pop<StorageVolume>(_selectedVolume),
           child: Text(context.l10n.applyButtonLabel),
         ),
       ],

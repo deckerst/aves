@@ -8,9 +8,9 @@ mixin InfoSettings on SettingsAccess {
 
   CoordinateFormat get coordinateFormat => getEnumOrDefault(SettingKeys.coordinateFormatKey, SettingsDefaults.coordinateFormat, CoordinateFormat.values);
 
-  set coordinateFormat(CoordinateFormat newValue) => set(SettingKeys.coordinateFormatKey, newValue.toString());
+  set coordinateFormat(CoordinateFormat newValue) => set(SettingKeys.coordinateFormatKey, newValue.name);
 
   UnitSystem get unitSystem => getEnumOrDefault(SettingKeys.unitSystemKey, SettingsDefaults.unitSystem, UnitSystem.values);
 
-  set unitSystem(UnitSystem newValue) => set(SettingKeys.unitSystemKey, newValue.toString());
+  set unitSystem(UnitSystem newValue) => set(SettingKeys.unitSystemKey, newValue.name);
 }

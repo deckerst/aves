@@ -5,16 +5,16 @@ publish_to: none
 
 # version bump checklist:
 # - pubspec version
-# - github changelog: /CHANGELOG.md
-# - play changelog:   /whatsnew/whatsnew-en-US
-# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/XXX01.txt
-# - libre changelog:  /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.14.5+169
+# - GitHub changelog:     /CHANGELOG.md
+# - Play Store changelog: /whatsnew/whatsnew-en-US
+# - izzy changelog:       /fastlane/metadata/android/en-US/changelogs/XXX01.txt
+# - libre changelog:      /fastlane/metadata/android/en-US/changelogs/XXX.txt
+version: 1.14.6+170
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.44.0
+  flutter: 3.44.2
   sdk: ">=3.12.0 <4.0.0"
 
 workspace:

@@ -5,7 +5,7 @@ import 'package:aves_model/aves_model.dart';
 mixin PrivacySettings on SettingsAccess, SearchSettings {
   Set<CollectionFilter> get hiddenFilters => (getStringList(SettingKeys.hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
-  set hiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set hiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.hiddenFiltersKey, newValue.map((filter) => filter.toJsonString()).toList());
 
   void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
     final _deactivatedHiddenFilters = deactivatedHiddenFilters;
@@ -25,7 +25,7 @@ mixin PrivacySettings on SettingsAccess, SearchSettings {
 
   Set<CollectionFilter> get deactivatedHiddenFilters => (getStringList(SettingKeys.deactivatedHiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
-  set deactivatedHiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.deactivatedHiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set deactivatedHiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.deactivatedHiddenFiltersKey, newValue.map((filter) => filter.toJsonString()).toList());
 
   void activateHiddenFilter(CollectionFilter filter, bool active) {
     final _deactivatedHiddenFilters = deactivatedHiddenFilters;

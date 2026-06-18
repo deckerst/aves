@@ -17,7 +17,7 @@ abstract class AvesVideoControllerFactory {
   });
 }
 
-abstract class AvesVideoController extends Disposer with ABRepeatMixin {
+abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMotionMixin {
   final AvesEntryBase _entry;
   final PlaybackStateHandler playbackStateHandler;
   final VideoSettings settings;
@@ -133,7 +133,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin {
 
   double get maxSpeed;
 
-  set speed(double speed);
+  Future<void> setSpeed(double speed);
 
   Future<void> selectTrack(MediaTrackType type, MediaTrackSummary? selected);
 

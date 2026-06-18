@@ -35,13 +35,14 @@ class PanoramaPage extends StatefulWidget {
 
 class _PanoramaPageState extends State<PanoramaPage> {
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
-  final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(SensorControl.none);
+  final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(.none);
 
   AvesEntry get entry => widget.entry;
 
   PanoramaInfo get info => widget.info;
 
-  static const _minZoom = .25;
+  static const double _minZoom = .25;
+  static const int _sensorOrientationMeanCount = 15;
 
   @override
   void initState() {
@@ -78,6 +79,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                     longitude: longitude,
                     minZoom: _minZoom,
                     sensorControl: sensorControl,
+                    sensorOrientationMeanCount: _sensorOrientationMeanCount,
                     croppedArea: croppedArea,
                     croppedFullWidth: fullSize.width,
                     croppedFullHeight: fullSize.height,
@@ -88,6 +90,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   return Panorama(
                     minZoom: _minZoom,
                     sensorControl: sensorControl,
+                    sensorOrientationMeanCount: _sensorOrientationMeanCount,
                     onTap: onTap,
                     child: imageChild,
                   );
@@ -157,10 +160,10 @@ class _PanoramaPageState extends State<PanoramaPage> {
   void _toggleSensor() {
     switch (_sensorControl.value) {
       case .none:
-        _sensorControl.value = SensorControl.absoluteOrientation;
+        _sensorControl.value = .absoluteOrientation;
       case .absoluteOrientation:
       case .orientation:
-        _sensorControl.value = SensorControl.none;
+        _sensorControl.value = .none;
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:aves/widgets/editor/control_panel.dart';
 import 'package:aves/widgets/editor/image.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/editor/transform/cropper.dart';
-import 'package:aves/widgets/viewer/overlay/minimap.dart';
+import 'package:aves/widgets/viewer/overlay/top/minimap.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';

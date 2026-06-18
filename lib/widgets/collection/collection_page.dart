@@ -10,10 +10,10 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/app_service.dart';
-import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -24,7 +24,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_fab.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
-import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/navigation/drawer/app_drawer.dart';
 import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
@@ -90,9 +89,10 @@ class _CollectionPageState extends State<CollectionPage> {
     final liveFilter = _collection.filters.firstWhereOrNull((v) => v is QueryFilter && v.live) as QueryFilter?;
     return SelectionProvider<AvesEntry>(
       toSelectableItems: (entry) => entry.toSelectableItems(),
-      child: Selector<Selection<AvesEntry>, bool>(
-        selector: (context, selection) => selection.selectedItemCount > 0,
-        builder: (context, hasSelection, child) {
+      child: Selector<Selection<AvesEntry>, (bool, int)>(
+        selector: (context, selection) => (selection.isSelecting, selection.selectedItemCount),
+        builder: (context, selectionResult, child) {
+          final (isSelecting, selectedItemCount) = selectionResult;
           final body = QueryProvider(
             startEnabled: settings.getShowTitleQuery(context.currentRouteName!),
             initialQuery: liveFilter?.query,
@@ -153,7 +153,7 @@ class _CollectionPageState extends State<CollectionPage> {
                   },
                   child: AvesScaffold(
                     body: body,
-                    floatingActionButton: _buildFab(context, hasSelection),
+                    floatingActionButton: _buildFab(context, isSelecting, selectedItemCount),
                     drawer: canNavigate ? AppDrawer(currentCollection: _collection) : null,
                     bottomNavigationBar: showBottomNavigationBar
                         ? AppBottomNavBar(
@@ -178,39 +178,35 @@ class _CollectionPageState extends State<CollectionPage> {
     );
   }
 
-  Widget? _buildFab(BuildContext context, bool hasSelection) {
-    final appMode = context.watch<ValueNotifier<AppMode>>().value;
-    final l10n = context.l10n;
-    switch (appMode) {
-      case .pickMultipleMediaExternal:
-        return hasSelection
-            ? AvesFab(
-                tooltip: l10n.pickTooltip,
-                onPressed: () async {
-                  final selection = context.read<Selection<AvesEntry>>();
-                  final uris = selection.selectedItems.map((entry) => entry.uri).toList();
-                  try {
-                    await IntentService.submitPickedItems(uris);
-                  } on TooManyItemsException catch (_) {
-                    await showWarningDialog(
-                      context: context,
-                      message: l10n.tooManyItemsErrorDialogMessage,
-                    );
-                  }
-                },
-              )
-            : null;
-      case .pickCollectionFiltersExternal:
-        return AvesFab(
-          tooltip: l10n.pickTooltip,
-          onPressed: () {
-            final filters = _collection.filters;
-            IntentService.submitPickedCollectionFilters(filters);
-          },
-        );
-      default:
-        return null;
+  Widget? _buildFab(BuildContext context, bool isSelecting, int selectedItemCount) {
+    final actionDelegate = EntrySetActionDelegate();
+    final action = EntrySetActions.fab.firstWhereOrNull((action) {
+      return actionDelegate.isVisible(
+        action,
+        appMode: context.watch<ValueNotifier<AppMode>>().value,
+        isSelecting: isSelecting,
+        itemCount: _collection.entryCount,
+        selectedItemCount: selectedItemCount,
+        isTrash: _collection.filters.contains(TrashFilter.instance),
+      );
+    });
+
+    if (action != null) {
+      final canApply = actionDelegate.canApply(
+        action,
+        isSelecting: isSelecting,
+        collection: _collection,
+        selectedItemCount: selectedItemCount,
+      );
+
+      return AvesFab(
+        tooltip: action.getText(context),
+        icon: action.getIcon(),
+        onPressed: canApply ? () => actionDelegate.onActionSelected(context, action) : null,
+      );
     }
+
+    return null;
   }
 
   Future<void> _checkInitHighlight() async {

@@ -4,7 +4,7 @@ import 'package:aves_model/aves_model.dart';
 mixin ViewerSettings on SettingsAccess {
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(SettingKeys.viewerQuickActionsKey, SettingsDefaults.viewerQuickActions, EntryAction.values);
 
-  set viewerQuickActions(List<EntryAction> newValue) => set(SettingKeys.viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set viewerQuickActions(List<EntryAction> newValue) => set(SettingKeys.viewerQuickActionsKey, newValue.map((v) => v.name).toList());
 
   bool get showOverlayOnOpening => getBool(SettingKeys.showOverlayOnOpeningKey) ?? SettingsDefaults.showOverlayOnOpening;
 
@@ -20,7 +20,7 @@ mixin ViewerSettings on SettingsAccess {
 
   OverlayHistogramStyle get overlayHistogramStyle => getEnumOrDefault(SettingKeys.overlayHistogramStyleKey, SettingsDefaults.overlayHistogramStyle, OverlayHistogramStyle.values);
 
-  set overlayHistogramStyle(OverlayHistogramStyle newValue) => set(SettingKeys.overlayHistogramStyleKey, newValue.toString());
+  set overlayHistogramStyle(OverlayHistogramStyle newValue) => set(SettingKeys.overlayHistogramStyleKey, newValue.name);
 
   bool get showOverlayInfo => getBool(SettingKeys.showOverlayInfoKey) ?? SettingsDefaults.showOverlayInfo;
 
@@ -56,5 +56,5 @@ mixin ViewerSettings on SettingsAccess {
 
   EntryBackground get imageBackground => getEnumOrDefault(SettingKeys.imageBackgroundKey, SettingsDefaults.imageBackground, EntryBackground.values);
 
-  set imageBackground(EntryBackground newValue) => set(SettingKeys.imageBackgroundKey, newValue.toString());
+  set imageBackground(EntryBackground newValue) => set(SettingKeys.imageBackgroundKey, newValue.name);
 }

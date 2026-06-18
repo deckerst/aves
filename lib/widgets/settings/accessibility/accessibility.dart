@@ -42,7 +42,7 @@ class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.showPinchGestureAlternatives,
     onChanged: (v) => settings.showPinchGestureAlternatives = v,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -56,7 +56,7 @@ class SettingsTileAccessibilityAnimations extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.accessibilityAnimations,
     onSelection: (v) => settings.accessibilityAnimations = v,
-    tileTitle: title(context),
+    tileTitle: title,
     dialogTitle: context.l10n.settingsRemoveAnimationsDialogTitle,
   );
 }

@@ -463,9 +463,9 @@
     "settingsVideoGestureDoubleTapTogglePlay": "Appuyer deux fois pour lire ou mettre en pause",
     "settingsVideoGestureSideDoubleTapSeek": "Appuyer deux fois sur les bords de l’écran pour reculer ou avancer",
     "settingsPrivacySectionTitle": "Confidentialité",
-    "settingsAllowInstalledAppAccess": "Autoriser l’accès à l’inventaire des apps",
+    "settingsAllowInstalledAppAccess": "Accès à l’inventaire des apps",
     "settingsAllowInstalledAppAccessSubtitle": "Pour un affichage amélioré des albums",
-    "settingsAllowErrorReporting": "Autoriser l’envoi de rapports d’erreur",
+    "settingsAllowErrorReporting": "Envoi de rapports d’erreur",
     "settingsSaveSearchHistory": "Maintenir un historique des recherches",
     "settingsEnableBin": "Utiliser la corbeille",
     "settingsEnableBinSubtitle": "Conserver les éléments supprimés pendant 30 jours",
@@ -728,5 +728,14 @@
     "settingsViewerShowZoomLevel": "Afficher le niveau de zoom",
     "settingsEnabled": "Activé",
     "settingsForced": "Forcé",
-    "collectionActionExportGpx": "Exporter en GPX"
+    "collectionActionExportGpx": "Exporter en GPX",
+    "settingsPermissionsTile": "Permissions",
+    "settingsPermissionsPageTitle": "Permissions",
+    "mapShowItemTracks": "Montrer les chemins",
+    "mapHideItemTracks": "Masquer les chemins",
+    "settingsAllowNotifications": "Autoriser les notifications",
+    "filterTypeSlowMotionVideoLabel": "Ralenti",
+    "drawerCollectionSlowMotionVideos": "Vidéos au ralenti",
+    "showThumbnailSlowMotionVideoIcon": "Afficher l’icône de ralenti",
+    "settingsAutoExportSettings": "Exporter automatiquement les réglages"
 }

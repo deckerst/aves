@@ -61,7 +61,7 @@ class AlbumListPage extends StatelessWidget {
                       stream: source.eventBus.on<AlbumsChangedEvent>(),
                       builder: (context, snapshot) {
                         final groupUri = context.watch<FilterGroupNotifier>().value;
-                        final gridItems = getGridItems(context, source, AlbumChipType.values, groupUri);
+                        final gridItems = getGridItems(context, source, AlbumChipType.values.toSet(), groupUri);
                         return StreamBuilder<Set<CollectionFilter>?>(
                           // to update sections by tier
                           stream: covers.packageChangeStream,
@@ -96,7 +96,7 @@ class AlbumListPage extends StatelessWidget {
   static List<FilterGridItem<AlbumBaseFilter>> getGridItems(
     BuildContext context,
     CollectionSource source,
-    Iterable<AlbumChipType> albumChipTypes,
+    Set<AlbumChipType> albumChipTypes,
     Uri? groupUri,
   ) {
     final groupContent = albumGrouping.getDirectChildren(groupUri);

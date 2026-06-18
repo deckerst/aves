@@ -50,7 +50,7 @@ class SettingsTileDisplayThemeBrightness extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.themeBrightness,
     onSelection: (v) => settings.themeBrightness = v,
-    tileTitle: title(context),
+    tileTitle: title,
     dialogTitle: context.l10n.settingsThemeBrightnessDialogTitle,
   );
 }
@@ -63,7 +63,7 @@ class SettingsTileDisplayThemeColorMode extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.themeColorMode == AvesThemeColorMode.polychrome,
     onChanged: (v) => settings.themeColorMode = v ? AvesThemeColorMode.polychrome : AvesThemeColorMode.monochrome,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -75,7 +75,7 @@ class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.enableDynamicColor,
     onChanged: (v) => settings.enableDynamicColor = v,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -87,7 +87,7 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
   Widget build(BuildContext context) => SettingsSwitchListTile(
     selector: (context, s) => s.enableBlurEffect,
     onChanged: (v) => settings.enableBlurEffect = v,
-    title: title(context),
+    title: title,
   );
 }
 
@@ -101,7 +101,7 @@ class SettingsTileDisplayMaxBrightness extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.maxBrightness,
     onSelection: (v) => settings.maxBrightness = v,
-    tileTitle: title(context),
+    tileTitle: title,
   );
 }
 
@@ -115,7 +115,7 @@ class SettingsTileDisplayRefreshRateMode extends SettingsTile {
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.displayRefreshRateMode,
     onSelection: (v) => settings.displayRefreshRateMode = v,
-    tileTitle: title(context),
+    tileTitle: title,
     dialogTitle: context.l10n.settingsDisplayRefreshRateModeDialogTitle,
   );
 }
@@ -146,6 +146,6 @@ class SettingsTileDisplayForceTvLayout extends SettingsTile {
 
       settings.forceTvLayout = v;
     },
-    title: title(context),
+    title: title,
   );
 }

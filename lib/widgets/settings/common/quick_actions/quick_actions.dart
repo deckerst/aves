@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 enum QuickActionPlacement { header, action, footer }
 
+// `T extends Object` because of `DragTarget` constraint
 class QuickActionButton<T extends Object> extends StatelessWidget {
   final QuickActionPlacement placement;
   final T? action;

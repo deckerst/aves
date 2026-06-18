@@ -13,11 +13,11 @@ mixin ScreenSaverSettings on SettingsAccess {
 
   ViewerTransition get screenSaverTransition => getEnumOrDefault(SettingKeys.screenSaverTransitionKey, SettingsDefaults.slideshowTransition, ViewerTransition.values);
 
-  set screenSaverTransition(ViewerTransition newValue) => set(SettingKeys.screenSaverTransitionKey, newValue.toString());
+  set screenSaverTransition(ViewerTransition newValue) => set(SettingKeys.screenSaverTransitionKey, newValue.name);
 
   SlideshowVideoPlayback get screenSaverVideoPlayback => getEnumOrDefault(SettingKeys.screenSaverVideoPlaybackKey, SettingsDefaults.slideshowVideoPlayback, SlideshowVideoPlayback.values);
 
-  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.screenSaverVideoPlaybackKey, newValue.toString());
+  set screenSaverVideoPlayback(SlideshowVideoPlayback newValue) => set(SettingKeys.screenSaverVideoPlaybackKey, newValue.name);
 
   int get screenSaverInterval => getInt(SettingKeys.screenSaverIntervalKey) ?? SettingsDefaults.slideshowInterval;
 
@@ -25,5 +25,5 @@ mixin ScreenSaverSettings on SettingsAccess {
 
   Set<CollectionFilter> get screenSaverCollectionFilters => (getStringList(SettingKeys.screenSaverCollectionFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
-  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => set(SettingKeys.screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+  set screenSaverCollectionFilters(Set<CollectionFilter> newValue) => set(SettingKeys.screenSaverCollectionFiltersKey, newValue.map((filter) => filter.toJsonString()).toList());
 }

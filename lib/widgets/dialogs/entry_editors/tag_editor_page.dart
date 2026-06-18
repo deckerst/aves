@@ -100,7 +100,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
             ),
             IconButton(
               icon: const Icon(AIcons.apply),
-              onPressed: () => Navigator.maybeOf(context)?.pop(filtersByEntry),
+              onPressed: () => Navigator.maybeOf(context)?.pop<Map<AvesEntry, Set<CollectionFilter>>>(filtersByEntry),
               tooltip: l10n.saveTooltip,
             ),
             const SizedBox(width: 16),

@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/emoji_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:collection/collection.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter with CoveredFilter {
@@ -45,14 +45,14 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
 
   factory LocationFilter.fromMap(Map<String, Object?> json) {
     return LocationFilter(
-      LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
+      LocationLevel.values.safeByName(json['level'] as String?) ?? .place,
       json['location'] as String,
       reversed: json['reversed'] as bool? ?? false,
     );
   }
 
   @override
-  Map<String, Object?> toMap() {
+  Map<String, Object?> toJsonMap() {
     String location = _location;
     switch (level) {
       case .country:
@@ -65,9 +65,9 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
     }
     return {
       'type': type,
-      'level': level.toString(),
+      'level': level.name,
       'location': location,
-      'reversed': reversed,
+      if (reversed) 'reversed': reversed,
     };
   }
 

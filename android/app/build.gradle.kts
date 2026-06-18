@@ -51,7 +51,12 @@ android {
         // Gradle looks up toolchain JDKs (for this app and each of its modules)
         // among locally installed JDKs (including in `~/.gradle/jdks/` and `~/jdks`)
         // and download them from configured repositories if necessary.
-        jvmToolchain(21)
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+            vendor.set(JvmVendorSpec.ADOPTIUM) // Temurin
+            // for consistency, refresh `gradle-daemon-jvm.properties` with the following:
+            // ./gradlew updateDaemonJvm --jvm-version=21 --jvm-vendor=ADOPTIUM
+        }
     }
 
     defaultConfig {
@@ -206,6 +211,7 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.ktx)
+    implementation(libs.androidx.performance)
     implementation(libs.androidx.lifecycle)
     implementation(libs.androidx.media)
     implementation(libs.androidx.multidex)

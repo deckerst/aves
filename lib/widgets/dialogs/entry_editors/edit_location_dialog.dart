@@ -32,6 +32,7 @@ import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/dialogs/time_shift_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -219,7 +220,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
 
   Future<void> _pickLocation() async {
     final pickCollection = _createPickCollection();
-    final latLng = await Navigator.maybeOf(context)?.push(
+    final latLng = await Navigator.maybeOf(context)?.push<LatLng>(
       MaterialPageRoute(
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) => LocationPickPage(
@@ -502,7 +503,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
       fixedSelection: previewEntries,
     );
 
-    final tracks = _gpx?.trks
+    final trackPoints = _gpx?.trks
         .expand((trk) => trk.trksegs)
         .map(
           (trkSeg) => trkSeg.trkpts
@@ -514,7 +515,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
               .nonNulls
               .toList(),
         )
-        .toSet();
+        .toList();
+
+    final tracks = trackPoints != null ? GeoTrack.buildTracks(trackPoints) : null;
 
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(

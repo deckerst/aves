@@ -1,12 +1,5 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
-import 'package:aves/ref/mime_types.dart';
-import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -17,15 +10,13 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
-import 'package:aves/widgets/settings/app_export/items.dart';
-import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
+import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/settings/settings_search_delegate.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class SettingsMobilePage extends StatefulWidget {
@@ -75,7 +66,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
               await Future.delayed(animations.popUpAnimationDelay * timeDilation);
-              _onActionSelected(action);
+              SettingsActionDelegate().onActionSelected(context, action);
             },
             popUpAnimationStyle: animations.popUpAnimationStyle,
           ),
@@ -92,91 +83,6 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
         ),
       ),
     );
-  }
-
-  static const String exportVersionKey = 'version';
-  static const int exportVersion = 1;
-
-  void _onActionSelected(SettingsAction action) async {
-    final source = context.read<CollectionSource>();
-    switch (action) {
-      case .export:
-        final toExport = await showDialog<Set<AppExportItem>>(
-          context: context,
-          builder: (context) => AppExportItemSelectionDialog(
-            title: context.l10n.settingsActionExportDialogTitle,
-          ),
-        );
-        if (toExport == null || toExport.isEmpty) return;
-
-        final allMap = Map.fromEntries(
-          toExport.map((v) {
-            final jsonMap = v.export(source);
-            return jsonMap != null ? MapEntry(v.name, jsonMap) : null;
-          }).nonNulls,
-        );
-        allMap[exportVersionKey] = exportVersion;
-        final allJsonString = jsonEncode(allMap);
-
-        const mimeType = MimeTypes.json;
-        final success = await storageService.createFile(
-          'aves-settings-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
-          mimeType,
-          Uint8List.fromList(utf8.encode(allJsonString)),
-        );
-        if (success != null) {
-          if (success) {
-            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
-          } else {
-            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
-          }
-        }
-      case .import:
-        // specifying the JSON MIME type to restrict openable files is correct in theory,
-        // but older devices (e.g. SM-P580, API 27) that do not recognize JSON files as such would filter them out
-        final bytes = await storageService.openFile();
-        if (bytes.isNotEmpty) {
-          try {
-            final allJsonString = utf8.decode(bytes);
-            final allJsonMap = jsonDecode(allJsonString) as Map<String, Object?>;
-
-            final version = allJsonMap[exportVersionKey] as int?;
-            final importable = <AppExportItem, Object>{};
-            if (version == null) {
-              // backward compatibility before versioning
-              importable[AppExportItem.settings] = allJsonMap;
-            } else {
-              allJsonMap.keys.where((v) => v != exportVersionKey).forEach((k) {
-                try {
-                  importable[AppExportItem.values.byName(k)] = allJsonMap[k] as Object;
-                } catch (error, stack) {
-                  debugPrint('failed to identify import app item=$k with error=$error\n$stack');
-                }
-              });
-            }
-
-            final toImport = await showDialog<Set<AppExportItem>>(
-              context: context,
-              builder: (context) => AppExportItemSelectionDialog(
-                title: context.l10n.settingsActionImportDialogTitle,
-                selectableItems: importable.keys.toSet(),
-              ),
-            );
-            if (toImport == null || toImport.isEmpty) return;
-
-            await Future.forEach<AppExportItem>(toImport, (item) async {
-              final jsonObject = importable[item];
-              if (jsonObject != null) {
-                await item.import(jsonObject, source);
-              }
-            });
-            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
-          } catch (error, stack) {
-            debugPrint('failed to import app json, error=$error\n$stack');
-            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
-          }
-        }
-    }
   }
 
   void _goToSearch(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/utils/math_utils.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/painting.dart';
 

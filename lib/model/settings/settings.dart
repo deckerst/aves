@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:aves/app_flavor.dart';
@@ -16,6 +15,7 @@ import 'package:aves/model/settings/modules/debug.dart';
 import 'package:aves/model/settings/modules/display.dart';
 import 'package:aves/model/settings/modules/filter_grids.dart';
 import 'package:aves/model/settings/modules/info.dart';
+import 'package:aves/model/settings/modules/map.dart';
 import 'package:aves/model/settings/modules/navigation.dart';
 import 'package:aves/model/settings/modules/privacy.dart';
 import 'package:aves/model/settings/modules/screen_saver.dart';
@@ -40,7 +40,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:latlong2/latlong.dart';
 
 final Settings settings = Settings._private();
 
@@ -55,6 +54,7 @@ class Settings
         DisplaySettings,
         FilterGridsSettings,
         InfoSettings,
+        MapSettings,
         NavigationSettings,
         PrivacySettings,
         ScreenSaverSettings,
@@ -141,8 +141,8 @@ class Settings
 
   Future<void> setContextualDefaults(AppFlavor flavor) async {
     // performance
-    final performanceClass = await deviceService.getPerformanceClass();
-    enableBlurEffect = performanceClass >= 29;
+    final performanceClass = await deviceService.getMediaPerformanceClass();
+    enableBlurEffect = performanceClass >= 31;
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final manufacturer = androidInfo.manufacturer.toLowerCase();
@@ -241,40 +241,6 @@ class Settings
 
   set convertWriteMetadata(bool newValue) => set(SettingKeys.convertWriteMetadataKey, newValue);
 
-  // map
-
-  EntryMapStyle? get mapStyle {
-    var preferred = getString(SettingKeys.mapStyleKey);
-
-    // backward compatibility with definition as enum
-    const oldEnumPrefix = 'EntryMapStyle.';
-    if (preferred != null && preferred.startsWith(oldEnumPrefix)) {
-      preferred = preferred.substring(oldEnumPrefix.length);
-      if (preferred.isEmpty) preferred = null;
-    }
-
-    if (preferred == null) return null;
-
-    final styles = [...availability.mapStyles, ...customMapStyles];
-    return styles.firstWhereOrNull((v) => v.key == preferred) ?? styles.first;
-  }
-
-  set mapStyle(EntryMapStyle? newValue) => set(SettingKeys.mapStyleKey, newValue?.key);
-
-  LatLng? get mapDefaultCenter {
-    final jsonString = getString(SettingKeys.mapDefaultCenterKey);
-    if (jsonString == null) return null;
-
-    final jsonMap = jsonDecode(jsonString) as Map<String, Object?>;
-    return LatLng.fromJson(jsonMap);
-  }
-
-  set mapDefaultCenter(LatLng? newValue) => set(SettingKeys.mapDefaultCenterKey, newValue != null ? jsonEncode(newValue.toJson()) : null);
-
-  Set<EntryMapStyle> get customMapStyles => (getStringList(SettingKeys.customMapStylesKey) ?? []).map(EntryMapStyle.fromJson).nonNulls.toSet();
-
-  set customMapStyles(Set<EntryMapStyle> newValue) => set(SettingKeys.customMapStylesKey, newValue.map((filter) => filter.toJson()).toList());
-
   // bin
 
   bool get enableBin => getBool(SettingKeys.enableBinKey) ?? SettingsDefaults.enableBin;
@@ -291,11 +257,11 @@ class Settings
 
   bool get animate => accessibilityAnimations.animate;
 
-  set accessibilityAnimations(AccessibilityAnimations newValue) => set(SettingKeys.accessibilityAnimationsKey, newValue.toString());
+  set accessibilityAnimations(AccessibilityAnimations newValue) => set(SettingKeys.accessibilityAnimationsKey, newValue.name);
 
   AccessibilityTimeout get timeToTakeAction => getEnumOrDefault(SettingKeys.timeToTakeActionKey, SettingsDefaults.timeToTakeAction, AccessibilityTimeout.values);
 
-  set timeToTakeAction(AccessibilityTimeout newValue) => set(SettingKeys.timeToTakeActionKey, newValue.toString());
+  set timeToTakeAction(AccessibilityTimeout newValue) => set(SettingKeys.timeToTakeActionKey, newValue.name);
 
   // platform settings
 
@@ -404,6 +370,7 @@ class Settings
           case SettingKeys.showThumbnailMotionPhotoKey:
           case SettingKeys.showThumbnailRatingKey:
           case SettingKeys.showThumbnailRawKey:
+          case SettingKeys.showThumbnailSlowMotionVideoKey:
           case SettingKeys.showThumbnailVideoDurationKey:
           case SettingKeys.albumSortReverseKey:
           case SettingKeys.countrySortReverseKey:
@@ -427,6 +394,7 @@ class Settings
           case SettingKeys.subtitleShowOutlineKey:
           case SettingKeys.tagEditorCurrentFilterSectionExpandedKey:
           case SettingKeys.convertWriteMetadataKey:
+          case SettingKeys.mapShowItemTracksKey:
           case SettingKeys.saveSearchHistoryKey:
           case SettingKeys.showPinchGestureAlternativesKey:
           case SettingKeys.screenSaverFillScreenKey:
@@ -440,6 +408,7 @@ class Settings
             } else {
               debugPrint('failed to import key=$key, value=$newValue is not a bool');
             }
+          case SettingKeys.autoExportPathKey:
           case SettingKeys.localeKey:
           case SettingKeys.displayRefreshRateModeKey:
           case SettingKeys.themeBrightnessKey:

@@ -14,7 +14,10 @@ import 'utils/driver_extension.dart';
 late FlutterDriver driver;
 String _languageCode = '';
 
-final languageCodes = SupportedLocales.languagesByLanguageCode.keys;
+final languageCodes = <String>[
+  'en', // always start with English, as preferred language for country names from reverse geocoding
+  ...SupportedLocales.languagesByLanguageCode.keys,
+];
 const outputDirectory = 'screenshots/raw';
 
 void main() {
@@ -24,14 +27,15 @@ void main() {
 
       await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
-          [
-            'deckers.thibault.aves.debug',
-            'deckers.thibault.aves.profile',
-          ],
-          (package) => grantPermissions(package, [
-                'android.permission.READ_EXTERNAL_STORAGE',
-                'android.permission.ACCESS_MEDIA_LOCATION',
-              ]));
+        [
+          'deckers.thibault.aves.debug',
+          'deckers.thibault.aves.profile',
+        ],
+        (package) => grantPermissions(package, [
+          'android.permission.READ_EXTERNAL_STORAGE',
+          'android.permission.ACCESS_MEDIA_LOCATION',
+        ]),
+      );
       driver = await FlutterDriver.connect();
     });
 
@@ -70,7 +74,7 @@ Future<void> _search(String query, String chipKey) async {
 }
 
 Future<void> _selectMapStyle(String styleKey) async {
-  await driver.tapKeyAndWait('map-menu-layers');
+  await driver.tapKeyAndWait('map-menu-selectStyle');
   await driver.tapKeyAndWait(styleKey);
 
   // tiles may take time to load
@@ -138,11 +142,13 @@ void viewer() {
 
     // delay to avoid flaky descendant resolution
     await Future.delayed(const Duration(seconds: 2));
-    await driver.tap(find.descendant(
-      of: find.byValueKey('collection-grid'),
-      matching: find.byType('MetaData'),
-      firstMatchOnly: true,
-    ));
+    await driver.tap(
+      find.descendant(
+        of: find.byValueKey('collection-grid'),
+        matching: find.byType('MetaData'),
+        firstMatchOnly: true,
+      ),
+    );
     await driver.waitUntilNoTransientCallbacks();
     await Future.delayed(const Duration(seconds: 2));
 
@@ -219,12 +225,12 @@ void map() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
-    await _search('animals', 'tag-false-animals');
-    await _search('Singapore', 'location-false-LocationLevel.country-SG-Singapore');
+    await _search('Riomaggiore', 'location-false-LocationLevel.place-null-Riomaggiore');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-map');
 
+    await driver.tapKeyAndWait('map-menu-zoomIn');
     await _selectMapStyle('googleTerrain');
 
     await _takeScreenshot(driver, '7');

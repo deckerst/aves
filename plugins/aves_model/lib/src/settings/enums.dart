@@ -70,4 +70,18 @@ enum WidgetOutline {
   systemDynamic,
 }
 
-enum WidgetShape { rrect, circle, heart, concaveSquare, wavyCircle16, tearRectLeft, tearRectRight, bumpyRows, bumpyColumns }
+// ideas for more shapes:
+// - Material 3: https://m3.material.io/styles/shape/overview-principles
+enum WidgetShape {
+  rrect,
+  circle,
+  heart,
+  m3sunny,
+  concaveSquare, // aka M3 `4-sided cookie`
+  m3cookie9,
+  wavyCircle16,
+  tearRectLeft,
+  tearRectRight,
+  bumpyRows,
+  bumpyColumns,
+}

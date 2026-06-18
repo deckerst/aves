@@ -1,5 +1,5 @@
-// keys returned by fijkplayer when getting media and streams info
-// they originate from FFmpeg, fijkplayer, and other software
+// keys returned by `mpv` when getting media and streams info
+// they originate from `FFmpeg`, and other software
 // that write additional metadata to media files
 class Keys {
   static const alpha = 'alpha';
@@ -38,6 +38,7 @@ class Keys {
   static const date = 'date';
   static const decoderHeight = 'dh';
   static const decoderWidth = 'dw';
+  static const demuxFps = 'demux-fps';
   static const disposition = 'disposition';
   static const duration = 'duration';
   static const durationMicros = 'duration_us';

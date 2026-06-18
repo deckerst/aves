@@ -11,11 +11,11 @@ mixin SubtitlesSettings on SettingsAccess {
 
   TextAlign get subtitleTextAlignment => getEnumOrDefault(SettingKeys.subtitleTextAlignmentKey, SettingsDefaults.subtitleTextAlignment, TextAlign.values);
 
-  set subtitleTextAlignment(TextAlign newValue) => set(SettingKeys.subtitleTextAlignmentKey, newValue.toString());
+  set subtitleTextAlignment(TextAlign newValue) => set(SettingKeys.subtitleTextAlignmentKey, newValue.name);
 
   SubtitlePosition get subtitleTextPosition => getEnumOrDefault(SettingKeys.subtitleTextPositionKey, SettingsDefaults.subtitleTextPosition, SubtitlePosition.values);
 
-  set subtitleTextPosition(SubtitlePosition newValue) => set(SettingKeys.subtitleTextPositionKey, newValue.toString());
+  set subtitleTextPosition(SubtitlePosition newValue) => set(SettingKeys.subtitleTextPositionKey, newValue.name);
 
   bool get subtitleShowOutline => getBool(SettingKeys.subtitleShowOutlineKey) ?? SettingsDefaults.subtitleShowOutline;
 
@@ -23,9 +23,9 @@ mixin SubtitlesSettings on SettingsAccess {
 
   Color get subtitleTextColor => ExtraColor.fromJson(getString(SettingKeys.subtitleTextColorKey)) ?? SettingsDefaults.subtitleTextColor;
 
-  set subtitleTextColor(Color newValue) => set(SettingKeys.subtitleTextColorKey, newValue.toJson());
+  set subtitleTextColor(Color newValue) => set(SettingKeys.subtitleTextColorKey, newValue.toJsonString());
 
   Color get subtitleBackgroundColor => ExtraColor.fromJson(getString(SettingKeys.subtitleBackgroundColorKey)) ?? SettingsDefaults.subtitleBackgroundColor;
 
-  set subtitleBackgroundColor(Color newValue) => set(SettingKeys.subtitleBackgroundColorKey, newValue.toJson());
+  set subtitleBackgroundColor(Color newValue) => set(SettingKeys.subtitleBackgroundColorKey, newValue.toJsonString());
 }

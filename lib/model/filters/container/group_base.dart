@@ -45,7 +45,7 @@ abstract class GroupBaseFilter extends CollectionFilter with ContainerFilter, Co
   // serialization
 
   static (Uri, SetOrFilter, bool)? fromMap(Map<String, Object?> json) {
-    final filter = CollectionFilter.fromJson(json['filter'] as String?);
+    final filter = CollectionFilter.fromJson(json['filter']);
     if (filter == null || filter is! SetOrFilter) return null;
 
     final uriString = json['uri'];
@@ -57,10 +57,10 @@ abstract class GroupBaseFilter extends CollectionFilter with ContainerFilter, Co
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': category,
     'uri': uri.toString(),
-    'filter': filter.toJson(),
-    'reversed': reversed,
+    'filter': filter.toJsonMap(),
+    if (reversed) 'reversed': reversed,
   };
 }

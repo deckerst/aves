@@ -315,20 +315,29 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   Widget _buildAppBarTitle(bool isSelecting) {
     final l10n = context.l10n;
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
 
     if (isSelecting) {
       // `Selection` may not be available during hero
       return Selector<Selection<AvesEntry>?, int>(
         selector: (context, selection) => selection?.selectedItemCount ?? 0,
-        builder: (context, count, child) => Text(
-          count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
+        builder: (context, count, child) {
+          Widget title = Text(
+            count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          );
+          if (appMode == AppMode.main) {
+            title = SourceStateAwareAppBarTitle(
+              title: title,
+              source: source,
+            );
+          }
+          return title;
+        },
       );
     } else {
-      final appMode = context.watch<ValueNotifier<AppMode>>().value;
       Widget title = Text(
         appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle),
         softWrap: false,
@@ -393,12 +402,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     required bool Function(EntrySetAction action) isVisible,
     required bool Function(EntrySetAction action) canApply,
   }) {
-    final isSelecting = selection.isSelecting;
-
-    return [
-      ...EntrySetActions.general,
-      ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
-    ].nonNulls.where(isVisible).map((action) {
+    Widget toCaptionedButton(action) {
       final enabled = canApply(action);
       return CaptionedButton(
         iconButtonBuilder: (context, focusNode) => _buildButtonIcon(
@@ -411,7 +415,33 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         captionText: _buildButtonCaption(context, action, enabled: enabled),
         onPressed: enabled ? () => _onActionSelected(action) : null,
       );
-    }).toList();
+    }
+
+    final fabAction = EntrySetActions.fab.firstWhereOrNull(isVisible);
+
+    final isSelecting = selection.isSelecting;
+    final regularActions = [
+      ...EntrySetActions.general,
+      ...isSelecting ? EntrySetActions.pageSelection : EntrySetActions.pageBrowsing,
+    ].nonNulls.where(isVisible).map(toCaptionedButton).toList();
+
+    return [
+      if (fabAction != null) ...[
+        toCaptionedButton(fabAction),
+        const Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: 16,
+            height: kMinInteractiveDimension,
+            child: Divider(
+              thickness: 4,
+              radius: BorderRadius.all(Radius.circular(123)),
+            ),
+          ),
+        ),
+      ],
+      ...regularActions,
+    ];
   }
 
   static double _iconButtonWidth(BuildContext context) {
@@ -545,8 +575,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
           builder: (context, queryEnabled, child) {
             return TitleSearchToggler(
               queryEnabled: queryEnabled,
-              onPressed: onPressed,
               focusNode: focusNode,
+              onPressed: onPressed,
             );
           },
         );
@@ -614,7 +644,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   }
 
   PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
-    late Widget child;
+    final Widget child;
     switch (action) {
       case .toggleTitleSearch:
         child = TitleSearchToggler(
@@ -770,6 +800,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       case .editRating:
       case .editTags:
       case .removeMetadata:
+      // fab
+      case .pickCollectionFilters:
+      case .pickMultipleMedia:
         _actionDelegate.onActionSelected(context, action);
     }
   }

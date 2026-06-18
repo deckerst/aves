@@ -112,31 +112,38 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     return null;
   }
 
-  static CollectionFilter? fromJson(String? jsonString) {
-    if (jsonString == null || jsonString.isEmpty) return null;
+  // either a `String` or a `Map<String, Object?>`
+  static CollectionFilter? fromJson(Object? json) {
+    if (json == null) return null;
 
     try {
-      final jsonMap = jsonDecode(jsonString);
-      if (jsonMap is Map) {
+      Map? jsonMap;
+      if (json is String) {
+        if (json.isEmpty) return null;
+        jsonMap = jsonDecode(json);
+      } else if (json is Map) {
+        jsonMap = json;
+      }
+      if (jsonMap != null) {
         return _fromMap(jsonMap.cast<String, Object?>());
       }
-      debugPrint('failed to parse filter from json=$jsonString');
-    } catch (error) {
+      debugPrint('failed to parse filter from json=$json');
+    } catch (error, stack) {
       // no need for stack
-      debugPrint('failed to parse filter from json=$jsonString error=$error');
+      debugPrint('failed to parse filter from json=$json error=$error\n$stack');
     }
     return null;
   }
 
-  Map<String, Object?> toMap();
+  Map<String, Object?> toJsonMap();
 
-  String toJson() => jsonEncode(toMap());
+  String toJsonString() => jsonEncode(toJsonMap());
 
   EntryPredicate get positiveTest;
 
   EntryPredicate get test => reversed ? (v) => !positiveTest(v) : positiveTest;
 
-  CollectionFilter reverse() => _fromMap(toMap()..['reversed'] = !reversed)!;
+  CollectionFilter reverse() => _fromMap(toJsonMap()..['reversed'] = !reversed)!;
 
   bool get exclusiveProp;
 
@@ -211,7 +218,7 @@ abstract class DummyCollectionFilter extends CollectionFilter {
   List<Object?> get props => throw UnimplementedError();
 
   @override
-  Map<String, Object?> toMap() => throw UnimplementedError();
+  Map<String, Object?> toJsonMap() => throw UnimplementedError();
 
   @override
   String get universalLabel => throw UnimplementedError();

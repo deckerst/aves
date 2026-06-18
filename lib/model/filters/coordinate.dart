@@ -33,11 +33,11 @@ class CoordinateFilter extends CollectionFilter {
   }
 
   @override
-  Map<String, Object?> toMap() => {
+  Map<String, Object?> toJsonMap() => {
     'type': type,
     'sw': sw.toJson(),
     'ne': ne.toJson(),
-    'reversed': reversed,
+    if (reversed) 'reversed': reversed,
   };
 
   @override

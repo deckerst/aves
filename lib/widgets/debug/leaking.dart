@@ -77,12 +77,12 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
           spacing: 4,
           crossAxisAlignment: .center,
           children: [
-            ...LeakType.values.map(
-              (type) => ElevatedButton(
-                onPressed: () => DebugLeakingSection.printLeakReportsOfType(type),
-                child: Text(type.name),
-              ),
-            ),
+            ...LeakType.values.map((v) {
+              return ElevatedButton(
+                onPressed: () => DebugLeakingSection.printLeakReportsOfType(v),
+                child: Text(v.name),
+              );
+            }),
             ElevatedButton(
               onPressed: () => LeakTracking.collectLeaks().then((leaks) {
                 LeakTracking.phase = const PhaseSettings(
@@ -195,14 +195,14 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                       onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
                       icon: Icon(_alignment == AlignmentDirectional.bottomStart ? Icons.vertical_align_top_outlined : Icons.vertical_align_bottom_outlined),
                     ),
-                    ...LeakType.values.map((type) {
+                    ...LeakType.values.map((v) {
                       return OutlinedButton(
                         style: ButtonStyle(
                           padding: WidgetStateProperty.all(const EdgeInsets.all(6)),
                           minimumSize: WidgetStateProperty.all(Size.zero),
                         ),
-                        onPressed: () => DebugLeakingSection.printLeakReportsOfType(type),
-                        child: Text(type.name),
+                        onPressed: () => DebugLeakingSection.printLeakReportsOfType(v),
+                        child: Text(v.name),
                       );
                     }),
                   ],

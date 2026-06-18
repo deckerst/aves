@@ -281,7 +281,7 @@
     "drawerCollectionMotionPhotos": "Hareketli fotoğraflar",
     "drawerCollectionPanoramas": "Panoramalar",
     "drawerCollectionRaws": "Raw fotoğraflar",
-    "drawerCollectionSphericalVideos": "360° Videolar",
+    "drawerCollectionSphericalVideos": "360° videolar",
     "drawerAlbumPage": "Albümler",
     "drawerCountryPage": "Ülkeler",
     "drawerTagPage": "Etiketler",
@@ -412,9 +412,9 @@
     "settingsVideoGestureDoubleTapTogglePlay": "Oynatmak/duraklatmak için çift dokunun",
     "settingsVideoGestureSideDoubleTapSeek": "İleri/geri gitmek için ekran kenarlarına çift dokunun",
     "settingsPrivacySectionTitle": "Gizlilik",
-    "settingsAllowInstalledAppAccess": "Uygulama envanterine erişime izin ver",
+    "settingsAllowInstalledAppAccess": "Uygulama envanterine erişim",
     "settingsAllowInstalledAppAccessSubtitle": "Albüm görüntüsünü iyileştirmek için kullanılır",
-    "settingsAllowErrorReporting": "Anonim hata raporlamasına izin ver",
+    "settingsAllowErrorReporting": "Anonim hata bildirimi",
     "settingsSaveSearchHistory": "Arama geçmişini kaydet",
     "settingsEnableBin": "Geri dönüşüm kutusunu kullan",
     "settingsEnableBinSubtitle": "Silinen ögeleri 30 gün boyunca saklar",
@@ -728,5 +728,11 @@
     "settingsViewerShowZoomLevel": "Yakınlaştırma seviyesini göster",
     "settingsEnabled": "Etkin",
     "settingsForced": "Zorla",
-    "collectionActionExportGpx": "GPX Dışa Aktar"
+    "collectionActionExportGpx": "GPX Dışa Aktar",
+    "settingsAutoExportSettings": "Ayarların otomatik dışa aktarılması",
+    "filterTypeSlowMotionVideoLabel": "Ağır Çekim",
+    "drawerCollectionSlowMotionVideos": "Ağır çekim videolar",
+    "showThumbnailSlowMotionVideoIcon": "Ağır çekim simgesini göster",
+    "mapShowItemTracks": "Yolları göster",
+    "mapHideItemTracks": "Yolları gizle"
 }

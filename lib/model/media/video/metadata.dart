@@ -16,10 +16,10 @@ import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -49,7 +49,7 @@ class VideoMetadataFormatter {
 
   // fetch size, rotation and duration
   static Future<Map<String, int>> getLoadingMetadata(AvesEntry entry) async {
-    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
+    final mediaInfo = await videoMetadataFetcher.getMetadata(uri: entry.uri, mimeType: entry.mimeType);
     final fields = <String, int>{};
 
     final streams = mediaInfo[Keys.streams];
@@ -87,13 +87,13 @@ class VideoMetadataFormatter {
   static Future<CatalogMetadata?> completeCatalogMetadata(AvesEntry entry) async {
     var catalogMetadata = entry.catalogMetadata ?? CatalogMetadata(id: entry.id);
 
-    final mediaInfo = await videoMetadataFetcher.getMetadata(entry);
+    final mediaInfo = await videoMetadataFetcher.getMetadata(uri: entry.uri, mimeType: entry.mimeType);
 
     if (entry.mimeType == MimeTypes.avif) {
       final duration = _parseDuration(mediaInfo[Keys.duration] as String?);
       if (duration == null || duration == Duration.zero) return null;
 
-      catalogMetadata = catalogMetadata.copyWith(isAnimated: true);
+      catalogMetadata = catalogMetadata.copyWith(isAnimated: true, isMultiPage: false);
     }
 
     // only consider values with at least 8 characters (yyyymmdd),

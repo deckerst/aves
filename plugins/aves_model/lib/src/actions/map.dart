@@ -6,4 +6,5 @@ enum MapAction {
   zoomOut,
   // full page only
   addShortcut,
+  toggleItemTrack,
 }

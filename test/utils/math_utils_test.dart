@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:aves/utils/math_utils.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:test/test.dart';
 
 void main() {

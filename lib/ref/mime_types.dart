@@ -177,7 +177,9 @@ class MimeTypes {
     gpx: '.gpx',
     jpeg: '.jpg',
     json: '.json',
+    plainText: '.txt',
     png: '.png',
+    sqlite3: '.db',
     svg: '.svg',
     webp: '.webp',
   };

@@ -20,6 +20,7 @@ class SettingKeys {
   static const canUseAnalysisServiceKey = 'can_use_analysis_service';
   static const isInstalledAppAccessAllowedKey = 'is_installed_app_access_allowed';
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
+  static const autoExportPathKey = 'auto_export_path';
   static const localeKey = 'locale';
   static const forceWesternArabicNumeralsKey = 'force_western_arabic_numerals';
   static const catalogTimeZoneOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
@@ -73,6 +74,7 @@ class SettingKeys {
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
+  static const showThumbnailSlowMotionVideoKey = 'show_thumbnail_slow_motion_video';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
@@ -148,6 +150,7 @@ class SettingKeys {
   // map
   static const mapStyleKey = 'info_map_style';
   static const mapDefaultCenterKey = 'map_default_center';
+  static const mapShowItemTracksKey = 'map_show_item_tracks';
   static const customMapStylesKey = 'custom_map_styles';
 
   // search

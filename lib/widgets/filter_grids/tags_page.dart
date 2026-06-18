@@ -53,7 +53,7 @@ class TagListPage extends StatelessWidget {
                   stream: source.eventBus.on<TagsChangedEvent>(),
                   builder: (context, snapshot) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
-                    final gridItems = getGridItems(source, ChipType.values, groupUri);
+                    final gridItems = getGridItems(source, ChipType.values.toSet(), groupUri);
                     return FilterNavigationPage<TagBaseFilter, TagChipSetActionDelegate>(
                       source: source,
                       title: context.l10n.tagPageTitle,
@@ -79,7 +79,7 @@ class TagListPage extends StatelessWidget {
 
   static List<FilterGridItem<TagBaseFilter>> getGridItems(
     CollectionSource source,
-    Iterable<ChipType> chipTypes,
+    Set<ChipType> chipTypes,
     Uri? groupUri,
   ) {
     final groupContent = tagGrouping.getDirectChildren(groupUri);

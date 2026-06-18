@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -115,10 +114,11 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
     ]);
 
     const mimeType = MimeTypes.csv;
+    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
     final success = await storageService.createFile(
-      'aves-stats-${DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now())}${MimeTypes.extensionFor(mimeType)}',
-      mimeType,
-      Uint8List.fromList(utf8.encode(csvContent)),
+      basename: 'aves-stats-$date',
+      mimeType: mimeType,
+      bytes: utf8.encode(csvContent),
     );
     if (success != null) {
       if (success) {

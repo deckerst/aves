@@ -115,7 +115,10 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                           ),
                         ]
                       : [
-                          const SectionRow(icon: AIcons.info),
+                          const SectionRow(
+                            icon: AIcons.info,
+                            padding: EdgeInsets.only(top: 24, bottom: 8),
+                          ),
                           ...metadata.entries.map(
                             (kv) => MetadataDirTile(
                               entry: entry,

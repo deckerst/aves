@@ -89,12 +89,15 @@ class ThumbnailFetcher internal constructor(
                 val scalingFactor: Double = min(bitmap.width.toDouble() / width, bitmap.height.toDouble() / height)
                 val dstWidth = (bitmap.width / scalingFactor).roundToInt()
                 val dstHeight = (bitmap.height / scalingFactor).roundToInt()
-                Log.d(
-                    LOG_TAG, "rescale thumbnail for mimeType=$mimeType uri=$uri width=$width height=$height" +
-                            ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height}" +
-                            ", to target=${dstWidth}x${dstHeight}"
-                )
-                bitmap = bitmap.scale(dstWidth, dstHeight)
+                val reduction = 1f - (dstWidth * dstHeight).toFloat() / (bitmap.width * bitmap.height)
+                if (reduction > RESCALE_REDUCTION_THRESHOLD) {
+                    Log.d(
+                        LOG_TAG, "rescale thumbnail for mimeType=$mimeType uri=$uri width=$width height=$height" +
+                                ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height}, to target=${dstWidth}x${dstHeight}" +
+                                ", reduced by ${(reduction * 100).roundToInt()}%)"
+                    )
+                    bitmap = bitmap.scale(dstWidth, dstHeight)
+                }
             }
 
             if (bitmap.byteCount > BITMAP_SIZE_DANGER_THRESHOLD) {
@@ -108,7 +111,7 @@ class ThumbnailFetcher internal constructor(
         }
 
         // do not recycle bitmaps fetched from `ContentResolver` or Glide as their lifecycle is unknown
-        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, mimeType)
+        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = mimeType)
         if (bytes == null) {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {
@@ -178,5 +181,6 @@ class ThumbnailFetcher internal constructor(
         private val LOG_TAG = LogUtils.createTag<ThumbnailFetcher>()
         private const val BITMAP_SIZE_DANGER_THRESHOLD = 20 * (1 shl 20) // MiB
         private const val DEFAULT_SIZE_DIP: Double = 64.0
+        private const val RESCALE_REDUCTION_THRESHOLD: Float = .15f
     }
 }

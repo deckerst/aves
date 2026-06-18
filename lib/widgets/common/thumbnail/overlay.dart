@@ -94,6 +94,9 @@ class ThumbnailZoomOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useTvLayout = context.select<GridThemeData, bool>((t) => t.useTvLayout);
+    if (useTvLayout) return const SizedBox();
+
     final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
     final interactiveDimension = context.select<GridThemeData, double>((t) => t.interactiveDimension);

@@ -14,6 +14,7 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "isActivity" -> Coresult.safe(call, result, ::isActivity)
             "keepScreenOn" -> Coresult.safe(call, result, ::keepScreenOn)
             "secureScreen" -> Coresult.safe(call, result, ::secureScreen)
+            "isCrossWindowBlurEnabled" -> Coresult.safe(call, result, ::isCrossWindowBlurEnabled)
             "isInMultiWindowMode" -> Coresult.safe(call, result, ::isInMultiWindowMode)
             "isInPictureInPictureMode" -> Coresult.safe(call, result, ::isInPictureInPictureMode)
             "isRotationLocked" -> Coresult.safe(call, result, ::isRotationLocked)
@@ -22,9 +23,15 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
             "showSystemUI" -> Coresult.safe(call, result, ::showSystemUI)
             "isCutoutAware" -> Coresult.safe(call, result, ::isCutoutAware)
             "getCutoutInsets" -> Coresult.safe(call, result, ::getCutoutInsets)
+
             "supportsWideGamut" -> Coresult.safe(call, result, ::supportsWideGamut)
             "supportsHdr" -> Coresult.safe(call, result, ::supportsHdr)
+            "isInWideColorGamutMode" -> Coresult.safe(call, result, ::isInWideColorGamutMode)
+            "isInHdrMode" -> Coresult.safe(call, result, ::isInHdrMode)
+            "getDisplayHdrSdrRatio" -> Coresult.safe(call, result, ::getDisplayHdrSdrRatio)
+            "getDesiredHdrHeadroom" -> Coresult.safe(call, result, ::getDesiredHdrHeadroom)
             "setColorMode" -> Coresult.safe(call, result, ::setColorMode)
+
             "startGlobalDrag" -> Coresult.safe(call, result, ::startGlobalDrag)
             else -> result.notImplemented()
         }
@@ -35,6 +42,8 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun keepScreenOn(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun secureScreen(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun isCrossWindowBlurEnabled(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun isInMultiWindowMode(call: MethodCall, result: MethodChannel.Result)
 
@@ -63,6 +72,14 @@ abstract class WindowHandler(private val contextWrapper: ContextWrapper) : Metho
     abstract fun supportsWideGamut(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun supportsHdr(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun isInWideColorGamutMode(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun isInHdrMode(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun getDisplayHdrSdrRatio(call: MethodCall, result: MethodChannel.Result)
+
+    abstract fun getDesiredHdrHeadroom(call: MethodCall, result: MethodChannel.Result)
 
     abstract fun setColorMode(call: MethodCall, result: MethodChannel.Result)
 

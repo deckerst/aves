@@ -48,5 +48,8 @@ class _TimeShiftDialogState extends State<TimeShiftDialog> {
     );
   }
 
-  void _submit(BuildContext context) => Navigator.maybeOf(context)?.pop(_timeShiftController.value);
+  void _submit(BuildContext context) {
+    final duration = _timeShiftController.value;
+    return Navigator.maybeOf(context)?.pop<Duration>(duration);
+  }
 }

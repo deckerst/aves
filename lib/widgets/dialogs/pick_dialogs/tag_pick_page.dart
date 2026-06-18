@@ -33,7 +33,7 @@ import 'package:provider/provider.dart';
 
 Future<TagBaseFilter?> pickTag({
   required BuildContext context,
-  required Iterable<ChipType> chipTypes,
+  required Set<ChipType> chipTypes,
   required Uri? initialGroup,
   GroupUriPredicate? isValidGroupPick,
 }) async {
@@ -44,8 +44,8 @@ Future<TagBaseFilter?> pickTag({
     source.canAnalyze = true;
     await source.init(scope: CollectionSource.fullScope);
   }
-  return await Navigator.maybeOf(context)?.push(
-    MaterialPageRoute<TagBaseFilter>(
+  return await Navigator.maybeOf(context)?.push<TagBaseFilter>(
+    MaterialPageRoute(
       settings: const RouteSettings(name: _TagPickPage.routeName),
       builder: (context) => _TagPickPage(
         source: source,
@@ -61,7 +61,7 @@ class _TagPickPage extends StatefulWidget {
   static const routeName = '/tag_pick';
 
   final CollectionSource source;
-  final Iterable<ChipType> chipTypes;
+  final Set<ChipType> chipTypes;
   final Uri? initialGroup;
   final GroupUriPredicate? isValidGroupPick;
 
@@ -82,11 +82,11 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
 
   CollectionSource get source => widget.source;
 
-  Iterable<ChipType> get chipTypes => widget.chipTypes;
+  Set<ChipType> get chipTypes => widget.chipTypes;
 
   bool get isPickingGroup => chipTypes.length == 1 && chipTypes.contains(ChipType.group);
 
-  bool get canPickGroupFromCrumbLine => chipTypes == ChipType.values;
+  bool get canPickGroupFromCrumbLine => chipTypes.length == ChipType.values.length;
 
   String get title {
     final l10n = context.l10n;

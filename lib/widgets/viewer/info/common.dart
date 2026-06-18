@@ -9,10 +9,12 @@ import 'package:flutter/rendering.dart';
 
 class SectionRow extends StatelessWidget {
   final IconData icon;
+  final EdgeInsets padding;
 
   const SectionRow({
     super.key,
     required this.icon,
+    this.padding = const EdgeInsets.symmetric(vertical: 16),
   });
 
   @override
@@ -24,19 +26,22 @@ class SectionRow extends StatelessWidget {
         thickness: AvesFilterChip.outlineWidth,
       ),
     );
-    return Row(
-      mainAxisAlignment: .center,
-      children: [
-        buildDivider(),
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Icon(
-            icon,
-            size: dim,
+    return Padding(
+      padding: padding,
+      child: Row(
+        mainAxisAlignment: .center,
+        children: [
+          buildDivider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Icon(
+              icon,
+              size: dim,
+            ),
           ),
-        ),
-        buildDivider(),
-      ],
+          buildDivider(),
+        ],
+      ),
     );
   }
 }

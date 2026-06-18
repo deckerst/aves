@@ -8,11 +8,11 @@ mixin CollectionSettings on SettingsAccess {
 
   EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
 
-  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.toString());
+  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.name);
 
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
-  set collectionSortFactor(EntrySortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.toString());
+  set collectionSortFactor(EntrySortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
 
   bool get collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
 
@@ -20,11 +20,11 @@ mixin CollectionSettings on SettingsAccess {
 
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(SettingKeys.collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
-  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => set(SettingKeys.collectionBrowsingQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set collectionBrowsingQuickActions(List<EntrySetAction> newValue) => set(SettingKeys.collectionBrowsingQuickActionsKey, newValue.map((v) => v.name).toList());
 
   List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(SettingKeys.collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
 
-  set collectionSelectionQuickActions(List<EntrySetAction> newValue) => set(SettingKeys.collectionSelectionQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set collectionSelectionQuickActions(List<EntrySetAction> newValue) => set(SettingKeys.collectionSelectionQuickActionsKey, newValue.map((v) => v.name).toList());
 
   bool get showThumbnailFavourite => getBool(SettingKeys.showThumbnailFavouriteKey) ?? SettingsDefaults.showThumbnailFavourite;
 
@@ -36,11 +36,11 @@ mixin CollectionSettings on SettingsAccess {
 
   ThumbnailOverlayLocationIcon get thumbnailLocationIcon => getEnumOrDefault(SettingKeys.thumbnailLocationIconKey, SettingsDefaults.thumbnailLocationIcon, ThumbnailOverlayLocationIcon.values);
 
-  set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => set(SettingKeys.thumbnailLocationIconKey, newValue.toString());
+  set thumbnailLocationIcon(ThumbnailOverlayLocationIcon newValue) => set(SettingKeys.thumbnailLocationIconKey, newValue.name);
 
   ThumbnailOverlayTagIcon get thumbnailTagIcon => getEnumOrDefault(SettingKeys.thumbnailTagIconKey, SettingsDefaults.thumbnailTagIcon, ThumbnailOverlayTagIcon.values);
 
-  set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => set(SettingKeys.thumbnailTagIconKey, newValue.toString());
+  set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => set(SettingKeys.thumbnailTagIconKey, newValue.name);
 
   bool get showThumbnailMotionPhoto => getBool(SettingKeys.showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
@@ -53,6 +53,10 @@ mixin CollectionSettings on SettingsAccess {
   bool get showThumbnailRaw => getBool(SettingKeys.showThumbnailRawKey) ?? SettingsDefaults.showThumbnailRaw;
 
   set showThumbnailRaw(bool newValue) => set(SettingKeys.showThumbnailRawKey, newValue);
+
+  bool get showThumbnailSlowMotionVideo => getBool(SettingKeys.showThumbnailSlowMotionVideoKey) ?? SettingsDefaults.showThumbnailRaw;
+
+  set showThumbnailSlowMotionVideo(bool newValue) => set(SettingKeys.showThumbnailSlowMotionVideoKey, newValue);
 
   bool get showThumbnailVideoDuration => getBool(SettingKeys.showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 

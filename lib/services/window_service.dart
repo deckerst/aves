@@ -11,6 +11,8 @@ abstract class WindowService {
 
   Future<void> secureScreen(bool on);
 
+  Future<bool> isCrossWindowBlurEnabled();
+
   Future<bool> isInMultiWindowMode();
 
   Future<bool> isInPictureInPictureMode();
@@ -31,7 +33,15 @@ abstract class WindowService {
 
   Future<bool> supportsHdr();
 
-  Future<void> setColorMode({required bool wideColorGamut, required bool hdr});
+  Future<bool> isInWideColorGamutMode();
+
+  Future<bool> isInHdrMode();
+
+  Future<double?> getDisplayHdrSdrRatio();
+
+  Future<double?> getDesiredHdrHeadroom();
+
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr, double? desiredHdrHeadroom});
 
   Future<bool> startGlobalDrag(String uri, String? label, Size shadowSize, Uint8List shadowBytes);
 }
@@ -72,6 +82,17 @@ class PlatformWindowService implements WindowService {
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
+  }
+
+  @override
+  Future<bool> isCrossWindowBlurEnabled() async {
+    try {
+      final result = await _platform.invokeMethod('isCrossWindowBlurEnabled');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
   }
 
   @override
@@ -230,16 +251,60 @@ class PlatformWindowService implements WindowService {
   }
 
   @override
-  Future<void> setColorMode({required bool wideColorGamut, required bool hdr}) async {
-    // TODO TLAD [hdr] enable when ready
-    // try {
-    //   await _platform.invokeMethod('setColorMode', <String, Object?>{
-    //     'wideColorGamut': wideColorGamut,
-    //     'hdr': hdr,
-    //   });
-    // } on PlatformException catch (e, stack) {
-    //   await reportService.recordError(e, stack);
-    // }
+  Future<bool> isInWideColorGamutMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInWideColorGamutMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> isInHdrMode() async {
+    try {
+      final result = await _platform.invokeMethod('isInHdrMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<double?> getDisplayHdrSdrRatio() async {
+    try {
+      final result = await _platform.invokeMethod('getDisplayHdrSdrRatio');
+      if (result != null) return result as double;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
+  @override
+  Future<double?> getDesiredHdrHeadroom() async {
+    try {
+      final result = await _platform.invokeMethod('getDesiredHdrHeadroom');
+      if (result != null) return result as double;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
+  }
+
+  @override
+  Future<void> setColorMode({required bool wideColorGamut, required bool hdr, double? desiredHdrHeadroom}) async {
+    try {
+      await _platform.invokeMethod('setColorMode', <String, Object?>{
+        'wideColorGamut': wideColorGamut,
+        'hdr': hdr,
+        'desiredHdrHeadroom': desiredHdrHeadroom,
+      });
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
   }
 
   @override

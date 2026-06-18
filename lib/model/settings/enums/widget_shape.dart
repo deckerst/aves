@@ -21,8 +21,12 @@ extension ExtraWidgetShape on WidgetShape {
             radius: rect.shortestSide / 2,
           ),
         );
+      case .m3sunny:
+        return _buildWavyCirclePath(rect, 8, .7);
       case .concaveSquare:
         return _buildConcaveSquarePath(rect);
+      case .m3cookie9:
+        return _buildWavyCirclePath(rect, 9, .4, angleOffset: pi / 18);
       case .heart:
         return _buildHeartPath(rect);
       case .rrect:
@@ -194,7 +198,9 @@ extension ExtraWidgetShape on WidgetShape {
       case .circle:
       case .heart:
       case .wavyCircle16:
+      case .m3sunny:
       case .concaveSquare:
+      case .m3cookie9:
         return widgetSizePx.shortestSide;
     }
   }

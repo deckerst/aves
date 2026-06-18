@@ -25,6 +25,7 @@ class SupportedLocales {
     'is': 'Íslenska',
     'it': 'Italiano',
     'ja': '日本語',
+    'kmr': 'Kurdî (Kurmancî)',
     'kn': 'ಕನ್ನಡ',
     'ko': '한국어',
     'lo': 'ພາສາລາວ',
