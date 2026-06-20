@@ -734,5 +734,8 @@
     "drawerCollectionSlowMotionVideos": "Ağır çekim videolar",
     "showThumbnailSlowMotionVideoIcon": "Ağır çekim simgesini göster",
     "mapShowItemTracks": "Yolları göster",
-    "mapHideItemTracks": "Yolları gizle"
+    "mapHideItemTracks": "Yolları gizle",
+    "settingsAllowNotifications": "Bildirimlere izin ver",
+    "settingsPermissionsTile": "İzinler",
+    "settingsPermissionsPageTitle": "İzinler"
 }
