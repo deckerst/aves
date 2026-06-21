@@ -6,6 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+// TODO TLAD remove experiment if useless
+// Experiment: drop-in replacement for `MethodChannel` to perform calls in an `Isolate`
 class ChannelIsolate {
   final Map<int, Completer<Object?>> _requestCompleters = {};
   int _nextRequestId = 0;

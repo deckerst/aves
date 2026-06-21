@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/channel.dart';
-import 'package:aves/services/common/channel_isolate.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
@@ -25,7 +24,7 @@ abstract class MediaSessionService {
 }
 
 class PlatformMediaSessionService implements MediaSessionService, Disposable {
-  final _sessionChannelIsolate = ChannelIsolate(AvesChannels.mediaSession);
+  static const _sessionChannel = AvesMethodChannel(AvesChannels.mediaSession);
 
   final Set<StreamSubscription> _subscriptions = {};
   final EventChannel _commandChannel = const OptionalEventChannel('deckers.thibault/aves/media_command');
@@ -53,7 +52,7 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
     required bool canSkipToPrevious,
   }) async {
     try {
-      await _sessionChannelIsolate.invokeMethod('update', <String, Object?>{
+      await _sessionChannel.invokeMethod('update', <String, Object?>{
         'uri': entry.uri,
         'title': entry.bestTitle,
         'durationMillis': controller.duration,
@@ -71,7 +70,7 @@ class PlatformMediaSessionService implements MediaSessionService, Disposable {
   @override
   Future<void> release() async {
     try {
-      await _sessionChannelIsolate.invokeMethod('release');
+      await _sessionChannel.invokeMethod('release');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

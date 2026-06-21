@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/services/common/channel.dart';
-import 'package:aves/services/common/channel_isolate.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +13,12 @@ abstract class GeocodingService {
 
 // geocoding requires Google Play Services
 class PlatformGeocodingService implements GeocodingService {
-  final _channelIsolate = ChannelIsolate(AvesChannels.geocoding);
+  static const _channel = AvesMethodChannel(AvesChannels.geocoding);
 
   @override
   Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
     try {
-      final result = await _channelIsolate.invokeMethod('getAddress', <String, Object?>{
+      final result = await _channel.invokeMethod('getAddress', <String, Object?>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
         'localeLanguageTag': locale.toLanguageTag(),
