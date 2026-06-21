@@ -68,6 +68,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<double> _backgroundOpacityNotifier = ValueNotifier(1);
   final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
+  final ValueNotifier<double> _infoPageInViewNotifier = ValueNotifier(0);
   final ValueNotifier<bool> _isImageFocusedNotifier = ValueNotifier(true);
   Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
@@ -108,6 +109,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     _stopScrollMonitoringTimer();
     _backgroundOpacityNotifier.dispose();
     _isVerticallyScrollingNotifier.dispose();
+    _infoPageInViewNotifier.dispose();
     _isImageFocusedNotifier.dispose();
     super.dispose();
   }
@@ -154,11 +156,11 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           widget.onImagePageRequested();
           return true;
         },
-        child: ListenableBuilder(
-          listenable: verticalPager,
-          builder: (context, child) {
+        child: ValueListenableBuilder<double>(
+          valueListenable: _infoPageInViewNotifier,
+          builder: (context, inView, child) {
             return Visibility(
-              visible: verticalPager.page! > 1,
+              visible: inView > 0,
               child: child!,
             );
           },
@@ -167,6 +169,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               collection: collection,
               entryNotifier: widget.entryNotifier,
               isScrollingNotifier: _isVerticallyScrollingNotifier,
+              pageInViewNotifier: _infoPageInViewNotifier,
             ),
           ),
         ),
@@ -347,6 +350,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
   void _onVerticalPageControllerChanged() {
     final page = verticalPager.page!;
+
+    _infoPageInViewNotifier.value = (verticalPager.page! - 1).clamp(0, 1);
 
     final opacity = min(1.0, page);
     _backgroundOpacityNotifier.value = opacity * opacity;

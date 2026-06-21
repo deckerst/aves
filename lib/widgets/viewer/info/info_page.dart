@@ -29,12 +29,14 @@ class InfoPage extends StatefulWidget {
   final CollectionLens? collection;
   final ValueNotifier<AvesEntry?> entryNotifier;
   final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<double> pageInViewNotifier;
 
   const InfoPage({
     super.key,
     required this.collection,
     required this.entryNotifier,
     required this.isScrollingNotifier,
+    required this.pageInViewNotifier,
   });
 
   @override
@@ -76,6 +78,7 @@ class _InfoPageState extends State<InfoPage> {
                       collection: widget.collection,
                       entry: targetEntry,
                       isScrollingNotifier: widget.isScrollingNotifier,
+                      pageInViewNotifier: widget.pageInViewNotifier,
                       scrollController: _scrollController,
                       split: MediaQuery.sizeOf(context).width > splitScreenWidthThreshold,
                       goToViewer: _goToViewer,
@@ -132,6 +135,7 @@ class _InfoPageContent extends StatefulWidget {
   final CollectionLens? collection;
   final AvesEntry entry;
   final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<double> pageInViewNotifier;
   final ScrollController scrollController;
   final bool split;
   final VoidCallback goToViewer;
@@ -140,6 +144,7 @@ class _InfoPageContent extends StatefulWidget {
     required this.collection,
     required this.entry,
     required this.isScrollingNotifier,
+    required this.pageInViewNotifier,
     required this.scrollController,
     required this.split,
     required this.goToViewer,
@@ -152,10 +157,16 @@ class _InfoPageContent extends StatefulWidget {
 class _InfoPageContentState extends State<_InfoPageContent> {
   final Set<StreamSubscription> _subscriptions = {};
   late EntryInfoActionDelegate _actionDelegate;
+  final ValueNotifier<bool> _isBasicSectionVisibleNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isMetadataSectionVisibleNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isColorSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
   final ValueNotifier<EntryAction?> _isEditingMetadataNotifier = ValueNotifier(null);
 
-  static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
+  static const _basicSectionVisibilityRatio = .2;
+  static const _metadataSectionVisibilityRatio = .5;
+  static const _colorSectionVisibilityRatio = .8;
+  static const _horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
   CollectionLens? get collection => widget.collection;
 
@@ -174,11 +185,17 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     if (oldWidget.entry != widget.entry) {
       _unregisterWidget(oldWidget);
       _registerWidget(widget);
+      _isBasicSectionVisibleNotifier.value = false;
+      _isMetadataSectionVisibleNotifier.value = false;
+      _isColorSectionVisibleNotifier.value = false;
     }
   }
 
   @override
   void dispose() {
+    _isBasicSectionVisibleNotifier.dispose();
+    _isMetadataSectionVisibleNotifier.dispose();
+    _isColorSectionVisibleNotifier.dispose();
     _metadataNotifier.dispose();
     _isEditingMetadataNotifier.dispose();
     _unregisterWidget(widget);
@@ -188,12 +205,21 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   void _registerWidget(_InfoPageContent widget) {
     _actionDelegate = EntryInfoActionDelegate();
     _subscriptions.add(_actionDelegate.eventStream.listen(_onActionDelegateEvent));
+    widget.pageInViewNotifier.addListener(_onPageInViewChanged);
   }
 
   void _unregisterWidget(_InfoPageContent widget) {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    widget.pageInViewNotifier.removeListener(_onPageInViewChanged);
+  }
+
+  void _onPageInViewChanged() {
+    final inView = widget.pageInViewNotifier.value;
+    _isBasicSectionVisibleNotifier.value |= inView > _basicSectionVisibilityRatio;
+    _isMetadataSectionVisibleNotifier.value |= inView > _metadataSectionVisibilityRatio;
+    _isColorSectionVisibleNotifier.value |= inView > _colorSectionVisibilityRatio;
   }
 
   @override
@@ -253,21 +279,42 @@ class _InfoPageContentState extends State<_InfoPageContent> {
             metadataNotifier: _metadataNotifier,
             onBackPressed: widget.goToViewer,
           ),
-          SliverPadding(
-            padding: horizontalPadding + const EdgeInsets.only(top: 8),
-            sliver: basicAndLocationSliver,
+          ValueListenableBuilder<bool>(
+            valueListenable: _isBasicSectionVisibleNotifier,
+            builder: (context, visible, child) {
+              return visible
+                  ? SliverPadding(
+                      padding: _horizontalPadding + const EdgeInsets.only(top: 8),
+                      sliver: basicAndLocationSliver,
+                    )
+                  : const SliverToBoxAdapter(child: SizedBox());
+            },
           ),
-          SliverPadding(
-            padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
-            sliver: MetadataSectionSliver(
-              entry: entry,
-              metadataNotifier: _metadataNotifier,
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _isMetadataSectionVisibleNotifier,
+            builder: (context, visible, child) {
+              return visible
+                  ? SliverPadding(
+                      padding: _horizontalPadding + const EdgeInsets.only(bottom: 8),
+                      sliver: MetadataSectionSliver(
+                        entry: entry,
+                        metadataNotifier: _metadataNotifier,
+                      ),
+                    )
+                  : const SliverToBoxAdapter(child: SizedBox());
+            },
           ),
           if (!settings.useTvLayout)
-            SliverPadding(
-              padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
-              sliver: ColorSectionSliver(entry: entry),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isColorSectionVisibleNotifier,
+              builder: (context, visible, child) {
+                return visible
+                    ? SliverPadding(
+                        padding: _horizontalPadding + const EdgeInsets.only(bottom: 8),
+                        sliver: ColorSectionSliver(entry: entry),
+                      )
+                    : const SliverToBoxAdapter(child: SizedBox());
+              },
             ),
           const BottomPaddingSliver(),
         ],

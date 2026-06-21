@@ -40,8 +40,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   void initState() {
     super.initState();
     _registerWidget(widget);
-    metadataNotifier.value = {};
-    _getMetadata();
+    _onEntryChanged();
   }
 
   @override
@@ -49,7 +48,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
-    _getMetadata();
+    if (oldWidget.entry != widget.entry) {
+      _onEntryChanged();
+    }
   }
 
   @override
@@ -60,11 +61,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   void _registerWidget(MetadataSectionSliver widget) {
-    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
+    widget.entry.metadataChangeNotifier.addListener(_getMetadata);
   }
 
   void _unregisterWidget(MetadataSectionSliver widget) {
-    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
+    widget.entry.metadataChangeNotifier.removeListener(_getMetadata);
   }
 
   @override
@@ -144,7 +145,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
     );
   }
 
-  void _onMetadataChanged() {
+  void _onEntryChanged() {
     metadataNotifier.value = {};
     _getMetadata();
   }
