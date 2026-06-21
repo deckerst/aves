@@ -294,7 +294,10 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 navigatorKey: navigatorKey,
                                 home: home,
                                 onUnknownRoute: (settings) {
-                                  reportService.recordError(Exception('Could not find a generator for route $settings in the $runtimeType.'));
+                                  // as of Flutter v3.44.2, using `$settings` in exception message yields `Instance of 'RouteSettings'` in reports,
+                                  // so we explicitly stringify variable outside
+                                  final settingsString = '${settings.runtimeType}(${settings.name == null ? 'none' : '"${settings.name}"'}, ${settings.arguments})';
+                                  reportService.recordError(Exception('Could not find a generator for route settings=$settingsString in the $runtimeType.'));
                                   return null;
                                 },
                                 navigatorObservers: _navigatorObservers,
