@@ -134,7 +134,7 @@ class EntryMapStyles {
   // default styles that do not need mobile services
   static List<EntryMapStyle> baseStyles = [
     // Vector (OpenMapTiles)
-    osmLiberty,
+    // osmLiberty, // TODO TLAD find alternative vector tile host
     // Raster (Leaflet)
     openTopoMap,
     osmHot,
