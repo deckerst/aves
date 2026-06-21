@@ -8,7 +8,6 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/services/common/channel.dart';
-import 'package:aves/services/common/channel_isolate.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
@@ -46,14 +45,13 @@ abstract class MetadataFetchService {
 
 class PlatformMetadataFetchService implements MetadataFetchService {
   static const _channel = AvesMethodChannel(AvesChannels.metadataFetch);
-  final _channelIsolate = ChannelIsolate(AvesChannels.metadataFetch);
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {
     if (entry.isSvg) return {};
 
     try {
-      final result = await _channelIsolate.invokeMethod('getAllMetadata', <String, Object?>{
+      final result = await _channel.invokeMethod('getAllMetadata', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
@@ -247,7 +245,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<String?> getContentResolverProp(AvesEntry entry, String prop) async {
     try {
-      final result = await _channelIsolate.invokeMethod('getContentResolverProp', <String, Object?>{
+      final result = await _channel.invokeMethod('getContentResolverProp', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'prop': prop,

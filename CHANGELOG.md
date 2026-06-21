@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.7"></a>[v1.14.7] - 2026-06-21
+
+### Changed
+
+- improved auto settings export failure feedback
+
+### Removed
+
+- Map: OSM Liberty vector layer (because host is down)
+
 ## <a id="v1.14.6"></a>[v1.14.6] - 2026-06-18
 
 ### Added
