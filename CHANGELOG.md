@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.44.3
 
+### Fixed
+
+- broken video progress bar layout
+
 ## <a id="v1.14.7"></a>[v1.14.7] - 2026-06-21
 
 ### Changed
