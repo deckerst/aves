@@ -329,13 +329,13 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   static Future<int> computeSlowMotionFactor(Player player, double? playbackFps) async {
     int slowMotionFactor = 1;
 
-    if (playbackFps != null) {
+    if (playbackFps != null && playbackFps != 0) {
       final result = await _getMetadataFields(player, {
         Keys.androidCaptureFramerate,
         Keys.xiaomiSlowMoment,
       });
       final captureFps = result[Keys.androidCaptureFramerate];
-      if (captureFps is double) {
+      if (captureFps is double && captureFps != 0) {
         slowMotionFactor = (captureFps / playbackFps).round();
         if (slowMotionFactor == 1) {
           // Xiaomi slow motion videos set both FPS to 120
@@ -346,7 +346,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
         }
       }
     }
-    return slowMotionFactor;
+    return slowMotionFactor.isFinite && slowMotionFactor != 0 ? slowMotionFactor : 1;
   }
 
   @override

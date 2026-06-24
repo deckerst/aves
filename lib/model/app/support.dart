@@ -26,6 +26,7 @@ class AppSupport {
     MimeTypes.psdVnd,
     MimeTypes.psdX,
     MimeTypes.ras,
+    MimeTypes.rgb,
     MimeTypes.rgbe,
     MimeTypes.sgif,
     MimeTypes.tap,
@@ -33,6 +34,7 @@ class AppSupport {
     MimeTypes.wmf,
     MimeTypes.xbm,
     MimeTypes.xpm,
+    MimeTypes.xwd,
     // RAW
     MimeTypes.crw,
     // non-media

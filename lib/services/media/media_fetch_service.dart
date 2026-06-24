@@ -382,6 +382,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     MimeTypes.ogv,
     MimeTypes.realVideo,
     MimeTypes.webm,
+    MimeTypes.wm,
     MimeTypes.wmv,
   };
 

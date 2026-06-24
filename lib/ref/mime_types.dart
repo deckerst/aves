@@ -40,6 +40,7 @@ class MimeTypes {
   static const psdVnd = 'image/vnd.adobe.photoshop';
   static const psdX = 'image/x-photoshop';
   static const ras = 'image/x-cmu-raster';
+  static const rgb = 'image/x-rgb'; // ?
   static const rgbe = 'image/vnd.radiance';
   static const sgif = 'image/vnd.sealedmedia.softseal.gif';
   static const tap = 'image/vnd.tencent.tap';
@@ -47,6 +48,7 @@ class MimeTypes {
   static const wmf = 'image/wmf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const xbm = 'image/x-xbitmap'; // https://en.wikipedia.org/wiki/X_BitMap
   static const xpm = 'image/x-xpixmap'; // https://en.wikipedia.org/wiki/X_PixMap
+  static const xwd = 'image/x-xwindowdump'; // https://en.wikipedia.org/wiki/Xwd
 
   // RAW
   static const arw = 'image/x-sony-arw';
@@ -75,11 +77,11 @@ class MimeTypes {
   static const anyVideo = 'video/*';
 
   static const v3gpp = 'video/3gpp';
-  static const asf = 'video/x-ms-asf';
-  static const avi = 'video/avi';
-  static const aviMSVideo = 'video/msvideo';
-  static const aviVnd = 'video/vnd.avi';
-  static const aviXMSVideo = 'video/x-msvideo';
+  static const asf = 'video/x-ms-asf'; // https://en.wikipedia.org/wiki/Advanced_Systems_Format
+  static const avi = 'video/avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
+  static const aviMSVideo = 'video/msvideo'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
+  static const aviVnd = 'video/vnd.avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
+  static const aviXMSVideo = 'video/x-msvideo'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
   static const dl = 'video/dl';
   static const dv = 'video/dv';
   static const dvd = 'video/dvd';
@@ -101,6 +103,7 @@ class MimeTypes {
   static const ogv = 'video/ogg';
   static const realVideo = 'video/x-pn-realvideo';
   static const webm = 'video/webm';
+  static const wm = 'video/x-ms-wm';
   static const wmv = 'video/x-ms-wmv';
 
   // non-media
