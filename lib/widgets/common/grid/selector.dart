@@ -154,6 +154,8 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   void _stopScrollMonitoringTimer() => _scrollMonitoringTimer?.cancel();
 
   void _onLongPressUpdate() {
+    if (!scrollController.hasClients) return;
+
     final dy = _localPosition.dy;
 
     final height = scrollController.position.viewportDimension;

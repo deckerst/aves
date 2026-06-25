@@ -61,6 +61,7 @@ abstract class StorageService {
     required String basename,
     required String mimeType,
     required Uint8List bytes,
+    bool reportErrors,
   });
 
   // return content from a user selected file
@@ -374,6 +375,7 @@ class PlatformStorageService implements StorageService {
     required String basename,
     required String mimeType,
     required Uint8List bytes,
+    bool reportErrors = true,
   }) async {
     try {
       final opCompleter = Completer<bool?>();
@@ -396,7 +398,9 @@ class PlatformStorageService implements StorageService {
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if (reportErrors) {
+        await reportService.recordError(e, stack);
+      }
     }
     return false;
   }

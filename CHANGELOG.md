@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.8"></a>[v1.14.8] - 2026-06-25
+
+### Changed
+
+- upgraded Flutter to stable v3.44.4
+
+### Fixed
+
+- broken progress bar layout for hyperlapse videos
+- empty Info page when animations are disabled
+
 ## <a id="v1.14.7"></a>[v1.14.7] - 2026-06-21
 
 ### Changed

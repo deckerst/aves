@@ -766,6 +766,7 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
             basename: 'aves$suffix-settings-auto',
             mimeType: mimeType,
             bytes: content,
+            reportErrors: false,
           );
 
           if (success != null) {

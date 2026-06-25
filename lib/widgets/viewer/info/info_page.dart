@@ -176,6 +176,8 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   void initState() {
     super.initState();
     _registerWidget(widget);
+    // necessary when animations are disabled and page is in full view from first frame
+    _onPageInViewChanged();
   }
 
   @override

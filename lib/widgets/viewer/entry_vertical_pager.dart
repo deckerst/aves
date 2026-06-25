@@ -349,10 +349,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _onVerticalPageControllerChanged() {
+    _updateInfoPageInView();
+
     final page = verticalPager.page!;
-
-    _infoPageInViewNotifier.value = (verticalPager.page! - 1).clamp(0, 1);
-
     final opacity = min(1.0, page);
     _backgroundOpacityNotifier.value = opacity * opacity;
 
@@ -368,6 +367,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     _verticalScrollMonitoringTimer = Timer(ADurations.infoScrollMonitoringTimerDelay, () {
       _isVerticallyScrollingNotifier.value = false;
     });
+  }
+
+  void _updateInfoPageInView() {
+    _infoPageInViewNotifier.value = (verticalPager.page! - 1).clamp(0, 1);
   }
 
   void _stopScrollMonitoringTimer() {
