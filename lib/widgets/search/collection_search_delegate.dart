@@ -23,6 +23,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -66,8 +67,6 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     TypeFilter.hdr,
     TypeFilter.raw,
   ];
-
-  static final _monthFilters = List.generate(12, (i) => DateFilter(DateLevel.m, DateTime(1, i + 1)));
 
   CollectionSearchDelegate({
     required super.searchFieldLabel,
@@ -200,6 +199,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   Widget _buildDateFilters(BuildContext context, CollectionFilterPredicate containQuery) {
     final firstDayOfWeekIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
     const daysPerWeek = DateTime.daysPerWeek;
+    final calendar = settings.calendar;
+    final _monthFilters = List.generate(calendar.maxMonthsInYear, (i) => DateFilter(calendar, DateLevel.m, DateTime(1, i + 1)));
     final _weekdayFilters = List.generate(daysPerWeek, (i) => WeekDayFilter((i + firstDayOfWeekIndex - 1) % daysPerWeek + 1));
 
     final filters = [

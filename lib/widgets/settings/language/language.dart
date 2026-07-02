@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/poi.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/calendar/intl4x_format.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -13,6 +14,7 @@ import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:provider/provider.dart';
 
 class LanguageSection extends SettingsSection {
@@ -31,6 +33,7 @@ class LanguageSection extends SettingsSection {
   @override
   Future<List<SettingsTile>> tiles(BuildContext context) => Future.value([
     SettingsTileLanguageLocale(),
+    SettingsTileLanguageCalendar(),
     SettingsTileLanguageCoordinateFormat(),
     SettingsTileLanguageUnitSystem(),
     SettingsTileLanguageNumerals(),
@@ -43,6 +46,21 @@ class SettingsTileLanguageLocale extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => const LocaleTile();
+}
+
+class SettingsTileLanguageCalendar extends SettingsTile {
+  @override
+  String title(BuildContext context) => context.l10n.settingsCalendarTile;
+
+  @override
+  Widget build(BuildContext context) => SettingsSelectionListTile<intl4x.Calendar>(
+    values: const [.gregorian, .persian],
+    getName: (context, v) => v.getName(context),
+    selector: (context, s) => s.calendar,
+    onSelection: (v) => settings.calendar = v,
+    tileTitle: title,
+    optionSubtitleBuilder: (v) => settings.intl4xLocale(v).yMMMMd()(DateTime.now()),
+  );
 }
 
 class SettingsTileLanguageCoordinateFormat extends SettingsTile {

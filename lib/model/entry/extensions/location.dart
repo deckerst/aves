@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -16,7 +16,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
 
   LatLng? get latLng => hasGps ? LatLng(catalogMetadata!.latitude!, catalogMetadata!.longitude!) : null;
 
-  Future<void> locate({required bool background, required bool force, required Locale geocoderLocale}) async {
+  Future<void> locate({required bool background, required bool force, required ui.Locale geocoderLocale}) async {
     if (hasGps) {
       await _locateCountry(force: force);
       if (await availability.canLocatePlaces) {
@@ -44,7 +44,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
   }
 
   // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({required bool background, required bool force, required Locale geocoderLocale}) async {
+  Future<void> locatePlace({required bool background, required bool force, required ui.Locale geocoderLocale}) async {
     if (!hasGps || (hasFineAddress && !force)) return;
     try {
       Future<List<Address>> call() => geocodingService.getAddress(latLng!, geocoderLocale);
@@ -73,7 +73,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
     }
   }
 
-  Future<String?> findAddressLine({required Locale geocoderLocale}) async {
+  Future<String?> findAddressLine({required ui.Locale geocoderLocale}) async {
     if (!hasGps) return null;
 
     try {

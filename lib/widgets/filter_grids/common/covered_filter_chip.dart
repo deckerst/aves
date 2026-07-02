@@ -215,20 +215,20 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is AlbumGroupFilter) ...[
           _buildDetailIcon(context, AIcons.album, padding: detailIconTextPadding(extent)),
           Text(
-            '${NumberFormat.decimalPattern(context.locale).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
+            '${NumberFormat.decimalPattern(context.localeName).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],
         if (filter is TagGroupFilter) ...[
           _buildDetailIcon(context, AIcons.tag, padding: detailIconTextPadding(extent)),
           Text(
-            '${NumberFormat.decimalPattern(context.locale).format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
+            '${NumberFormat.decimalPattern(context.localeName).format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],
         Flexible(
           child: Text(
-            locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.locale).format(source.count(filter)),
+            locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.localeName).format(source.count(filter)),
             style: textStyle,
             softWrap: false,
             overflow: TextOverflow.fade,

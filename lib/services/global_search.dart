@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class GlobalSearch {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/global_search');
@@ -51,15 +52,18 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
   final suggestions = <Map<String, String?>>[];
   if (args is Map) {
     final query = args['query'];
-    final locale = args['locale'];
+    final localeName = args['locale'];
     final use24hour = args['use24hour'];
-    debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
+    debugPrint('getSuggestions query=$query, localeName=$localeName use24hour=$use24hour');
 
-    if (query is String && locale is String) {
+    if (query is String && localeName is String) {
       final entries = (await localMediaDb.searchLiveEntries(query, limit: 9)).toList();
       final catalogMetadata = await localMediaDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
+
+      // TODO TLAD [calendar] try whether `settings.intl4xLocale` is accessible
+      final locale = intl4x.Locale.parse(localeName).withCalendar(intl4x.Calendar.gregorian);
 
       suggestions.addAll(
         entries.map((entry) {

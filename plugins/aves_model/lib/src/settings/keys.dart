@@ -22,6 +22,7 @@ class SettingKeys {
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const autoExportPathKey = 'auto_export_path';
   static const localeKey = 'locale';
+  static const calendarKey = 'calendar';
   static const forceWesternArabicNumeralsKey = 'force_western_arabic_numerals';
   static const catalogTimeZoneOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
   static const tileExtentPrefixKey = 'tile_extent_';

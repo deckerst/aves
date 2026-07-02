@@ -24,7 +24,7 @@ class MimeDonut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
+    final countFormatter = NumberFormat.decimalPattern(context.localeName);
 
     String formatKey(d) => MimeUtils.displayType(d.key);
     return AvesDonut(

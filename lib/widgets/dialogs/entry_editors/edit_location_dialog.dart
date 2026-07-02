@@ -82,7 +82,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     _mapCoordinates = mainEntry.latLng;
     _copyItemSource = mainEntry;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      coordinateFormatter = NumberFormat('0.000000', context.locale);
+      coordinateFormatter = NumberFormat('0.000000', context.localeName);
       final latLng = mainEntry.latLng;
       if (latLng != null) {
         _latitudeController.text = coordinateFormatter.format(latLng.latitude);
@@ -556,7 +556,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     final dateRange = _gpxDateRange(gpx);
     if (dateRange != null) {
       final (firstDate, lastDate) = dateRange;
-      final locale = context.locale;
+      final locale = settings.intl4xLocale();
       final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
       return Text(
         [

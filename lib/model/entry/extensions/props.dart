@@ -52,8 +52,8 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // text
 
-  String getResolutionText(String locale) {
-    final dimensionFormatter = NumberFormat('0', locale);
+  String getResolutionText(String localeName) {
+    final dimensionFormatter = NumberFormat('0', localeName);
     final ws = dimensionFormatter.format(width);
     final hs = dimensionFormatter.format(height);
     return isRotated ? '$hs${AText.resolutionSeparator}$ws' : '$ws${AText.resolutionSeparator}$hs';

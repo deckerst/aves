@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/filters/date.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
@@ -60,9 +62,10 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     if (lastDate != null && firstDate != null) {
       final rangeDays = lastDate.difference(firstDate).inHumanDays;
       if (rangeDays > 1) {
-        if (rangeDays <= 31) {
+        final calendar = settings.calendar;
+        if (rangeDays <= calendar.maxDaysInMonth) {
           _level = DateLevel.ymd;
-        } else if (rangeDays <= 365) {
+        } else if (rangeDays <= calendar.maxDaysInYear) {
           _level = DateLevel.ym;
         }
 
@@ -230,16 +233,16 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         )..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
 
-    final locale = context.locale;
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
-            locale: locale,
+            locale: settings.intl4xLocale(),
+            calendar: settings.calendar,
             level: _level,
             first: _firstDate!,
             last: _lastDate!,
           )
         : null;
-    final tickFormatter = NumberFormat.decimalPattern(locale);
+    final tickFormatter = NumberFormat.decimalPattern(context.localeName);
 
     final domainAxis = charts.DateTimeAxisSpec(
       renderSpec: charts.SmallTickRendererSpec(
@@ -311,7 +314,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   Widget _buildSelectionRow() {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
+    final countFormatter = NumberFormat.decimalPattern(context.localeName);
 
     return ValueListenableBuilder<_EntryByDate?>(
       valueListenable: _selection,
@@ -320,7 +323,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         if (selection == null) {
           child = const SizedBox();
         } else {
-          final filter = DateFilter(_level, selection.date);
+          final calendar = settings.calendar;
+          final filter = DateFilter(calendar, _level, selection.date);
           final count = selection.entryCount;
           child = Padding(
             padding: const EdgeInsets.all(8),

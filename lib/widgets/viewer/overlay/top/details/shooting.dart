@@ -17,13 +17,13 @@ class OverlayShootingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.locale;
+    final localeName = context.localeName;
 
     final aperture = details.aperture;
-    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', locale).format(aperture)}' : AText.valueNotAvailable;
+    final apertureText = aperture != null ? 'ƒ/${NumberFormat('0.0', localeName).format(aperture)}' : AText.valueNotAvailable;
 
     final focalLength = details.focalLength;
-    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', locale).format(focalLength)) : AText.valueNotAvailable;
+    final focalLengthText = focalLength != null ? context.l10n.focalLength(NumberFormat('0.#', localeName).format(focalLength)) : AText.valueNotAvailable;
 
     final iso = details.iso;
     final isoText = iso != null ? 'ISO$iso' : AText.valueNotAvailable;

@@ -38,7 +38,7 @@ class RenameEntrySetPage extends StatefulWidget {
 class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   final TextEditingController _patternTextController = TextEditingController();
   final ValueNotifier<NamingPattern> _namingPatternNotifier = ValueNotifier<NamingPattern>(const NamingPattern([]));
-  late final String locale;
+  late final String localeName;
 
   static const int previewMax = 10;
   static const double thumbnailExtent = 48;
@@ -54,7 +54,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _patternTextController.addListener(_onUserPatternChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      locale = context.locale;
+      localeName = context.localeName;
       _onUserPatternChanged();
     });
   }
@@ -248,7 +248,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _namingPatternNotifier.value = NamingPattern.from(
       userPattern: _patternTextController.text,
       entryCount: entryCount,
-      locale: locale,
+      localeName: localeName,
     );
   }
 

@@ -42,7 +42,7 @@ class _DurationDialogState extends State<DurationDialog> {
       child: Builder(
         builder: (context) {
           final l10n = context.l10n;
-          final timeComponentFormatter = NumberFormat('0', context.locale);
+          final timeComponentFormatter = NumberFormat('0', context.localeName);
 
           const textStyle = TextStyle(fontSize: 34);
           const digitsAlign = TextAlign.right;

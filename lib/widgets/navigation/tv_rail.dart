@@ -108,7 +108,7 @@ class _TvRailState extends State<TvRail> {
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.w300,
-                        letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
+                        letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
                         fontFeatures: const [FontFeature.enable('smcp')],
                       ),
                     ),

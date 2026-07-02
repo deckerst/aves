@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
@@ -12,9 +12,9 @@ abstract class DeviceService {
 
   Future<Map<String, Object?>> getCapabilities();
 
-  Future<List<Locale>> getLocales();
+  Future<List<ui.Locale>> getLocales();
 
-  Future<void> setLocaleConfig(List<Locale> locales);
+  Future<void> setLocaleConfig(List<ui.Locale> locales);
 
   // 0 is Sunday
   Future<int?> getFirstDayOfWeekIndex();
@@ -67,14 +67,14 @@ class PlatformDeviceService extends DeviceService {
   }
 
   @override
-  Future<List<Locale>> getLocales() async {
+  Future<List<ui.Locale>> getLocales() async {
     try {
       final result = await _platform.invokeMethod('getLocales');
       if (result != null) {
         return (result as List).cast<Map>().map((tags) {
           final language = tags['language'] as String?;
           final country = tags['country'] as String?;
-          return Locale(
+          return ui.Locale(
             language ?? 'und',
             (country != null && country.isEmpty) ? null : country,
           );
@@ -87,7 +87,7 @@ class PlatformDeviceService extends DeviceService {
   }
 
   @override
-  Future<void> setLocaleConfig(List<Locale> locales) async {
+  Future<void> setLocaleConfig(List<ui.Locale> locales) async {
     try {
       await _platform.invokeMethod('setLocaleConfig', <String, Object?>{
         'locales': locales.map((v) => v.toLanguageTag()).toList(),

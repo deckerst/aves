@@ -128,8 +128,8 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   }
 
   Widget _toTile(ExportableEntryField field) {
-    final locale = context.locale;
-    final preview = _exportEntryField(field, sample, locale)?.toString() ?? '';
+    final localeName = context.localeName;
+    final preview = _exportEntryField(field, sample, localeName)?.toString() ?? '';
     return SwitchListTile(
       value: _selectedFields.contains(field),
       subtitle: preview.isNotEmpty ? Text(preview) : null,
@@ -201,23 +201,23 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   }
 
   String _exportToCsv(List<ExportableEntryField> fields, BuildContext context) {
-    final locale = context.locale;
+    final localeName = context.localeName;
     final headers = fields.map((v) => v.getText(context)).toList();
     List<String> toCsvValues(AvesEntry entry) => fields.map((field) {
-      return _exportEntryField(field, entry, locale)?.toString() ?? '';
+      return _exportEntryField(field, entry, localeName)?.toString() ?? '';
     }).toList();
     return csv.encode([headers, ...entries.map(toCsvValues)]);
   }
 
   String _exportToJson(List<ExportableEntryField> fields) {
-    final locale = context.locale;
+    final localeName = context.localeName;
     Map<String, Object?> toJsonMap(AvesEntry entry) => Map.fromEntries(
-      fields.map((field) => MapEntry(field.name, _exportEntryField(field, entry, locale))),
+      fields.map((field) => MapEntry(field.name, _exportEntryField(field, entry, localeName))),
     );
     return jsonEncode(entries.map(toJsonMap).toList());
   }
 
-  static Object? _exportEntryField(ExportableEntryField field, AvesEntry entry, String locale) {
+  static Object? _exportEntryField(ExportableEntryField field, AvesEntry entry, String localeName) {
     switch (field) {
       case .uri:
         return entry.uri;
@@ -230,7 +230,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
       case .size:
         return entry.sizeBytes;
       case .resolution:
-        return entry.getResolutionText(locale);
+        return entry.getResolutionText(localeName);
       case .width:
         return entry.displaySize.width.toInt();
       case .height:

@@ -1,34 +1,38 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/theme/format.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/time_utils.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
+import 'package:aves/utils/calendar/intl4x_format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class DateFilter extends CollectionFilter {
   static const type = 'date';
 
   final DateLevel level;
+  late final intl4x.Calendar calendar;
   late final DateTime? date;
   late final DateTime _effectiveDate;
   late final EntryPredicate _test;
 
-  static final onThisDay = DateFilter(DateLevel.md, null);
+  // TODO TLAD [calendar]
+  static final onThisDay = DateFilter(intl4x.Calendar.gregorian, DateLevel.md, null);
 
   @override
   List<Object?> get props => [level, date, reversed];
 
-  DateFilter(this.level, this.date, {super.reversed = false}) {
+  DateFilter(this.calendar, this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
+    final comparator = calendar.getComparator();
     switch (level) {
       case .y:
-        _test = (entry) => entry.bestDate?.isAtSameYearAs(_effectiveDate) ?? false;
+        _test = (entry) => comparator.isSameYear(entry.bestDate, _effectiveDate);
       case .ym:
-        _test = (entry) => entry.bestDate?.isAtSameMonthAs(_effectiveDate) ?? false;
+        _test = (entry) => comparator.isSameYearMonth(entry.bestDate, _effectiveDate);
       case .ymd:
-        _test = (entry) => entry.bestDate?.isAtSameDayAs(_effectiveDate) ?? false;
+        _test = (entry) => comparator.isSameYearMonthDay(entry.bestDate, _effectiveDate);
       case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
@@ -48,6 +52,7 @@ class DateFilter extends CollectionFilter {
   factory DateFilter.fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
+      intl4x.Calendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,
       DateLevel.values.safeByName(json['level'] as String?) ?? .ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
       reversed: json['reversed'] as bool? ?? false,
@@ -57,6 +62,7 @@ class DateFilter extends CollectionFilter {
   @override
   Map<String, Object?> toJsonMap() => {
     'type': type,
+    if (calendar != .gregorian) 'calendar': calendar.name,
     'level': level.name,
     'date': date?.toIso8601String(),
     if (reversed) 'reversed': reversed,
@@ -100,24 +106,24 @@ class DateFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    final locale = context.locale;
+    final locale = settings.intl4xLocale(calendar);
     switch (level) {
       case .y:
-        return DateFormat.y(locale).format(_effectiveDate);
+        return locale.y()(_effectiveDate);
       case .ym:
-        return DateFormat.yMMM(locale).format(_effectiveDate);
+        return locale.yMMM(context.localeName, calendar)(_effectiveDate);
       case .ymd:
-        return formatDay(_effectiveDate, locale);
+        return locale.yMMMd()(_effectiveDate);
       case .md:
         if (date != null) {
-          return DateFormat.MMMd(locale).format(_effectiveDate);
+          return locale.MMMd()(_effectiveDate);
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
       case .m:
-        return DateFormat.MMMM(locale).format(_effectiveDate);
+        return locale.MMMM()(_effectiveDate);
       case .d:
-        return DateFormat.d(locale).format(_effectiveDate);
+        return locale.d()(_effectiveDate);
     }
   }
 
@@ -128,7 +134,7 @@ class DateFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$level-$date';
+  String get key => '$type-$reversed-$calendar-$level-$date';
 }
 
 enum DateLevel { y, ym, ymd, md, m, d }

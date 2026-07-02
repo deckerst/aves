@@ -135,7 +135,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
       if (entry.isSlowMotion) TypeFilter.slowMotion,
-      if (dateTime != null) ...[DateFilter(DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
+      if (dateTime != null) ...[DateFilter(settings.calendar, DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       ...dynamicAlbums.all.where((v) => v.test(entry)).toSet(),
       if (entry.rating != 0) RatingFilter(entry.rating),
@@ -315,7 +315,8 @@ class _BasicInfoState extends State<_BasicInfo> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final locale = context.locale;
+    final localeName = context.localeName;
+    final locale = settings.intl4xLocale();
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
@@ -324,7 +325,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
     final showResolution = !entry.isSvg && entry.isSized;
-    final sizeText = entry.sizeBytes != null ? formatFileSize(locale, entry.sizeBytes!) : infoUnknown;
+    final sizeText = entry.sizeBytes != null ? formatFileSize(localeName, entry.sizeBytes!) : infoUnknown;
     final path = entry.path;
 
     return FutureBuilder<String?>(
@@ -339,7 +340,7 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale)),
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(localeName)),
                 l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 l10n.viewerInfoLabelPath: ?path,
@@ -393,15 +394,15 @@ class _BasicInfoState extends State<_BasicInfo> {
     ];
   }
 
-  String getRasterResolutionText(String locale) {
-    var s = entry.getResolutionText(locale);
+  String getRasterResolutionText(String localeName) {
+    var s = entry.getResolutionText(localeName);
 
     // guess whether this is a photo, according to file type
     final isPhoto = [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
     if (isPhoto) {
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
-        s += ' • ${NumberFormat('0', locale).format(megaPixels)} MP';
+        s += ' • ${NumberFormat('0', localeName).format(megaPixels)} MP';
       }
     }
 

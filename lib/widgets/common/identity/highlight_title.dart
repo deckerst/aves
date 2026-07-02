@@ -41,7 +41,7 @@ class HighlightTitle extends StatelessWidget {
     final style = TextStyle(
       shadows: shadows(context),
       fontSize: fontSize,
-      letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
+      letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
       fontFeatures: const [FontFeature.enable('smcp')],
     );
 

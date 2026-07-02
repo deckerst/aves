@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -52,7 +52,7 @@ class FilterListDetailsTheme extends StatelessWidget {
         titleLineHeightParagraph.dispose();
 
         final captionLineHeightParagraph = RenderParagraph(
-          TextSpan(text: formatDateTime(DateTime.now(), context.locale, use24hour), style: captionStyle),
+          TextSpan(text: formatDateTime(DateTime.now(), settings.intl4xLocale(), use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);

@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
@@ -6,6 +8,7 @@ import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 
 mixin AppSettings on SettingsAccess {
   static const int recentFilterHistoryMax = 20;
@@ -36,12 +39,12 @@ mixin AppSettings on SettingsAccess {
 
   static const localeSeparator = '-';
 
-  Locale? get locale {
+  ui.Locale? get uiLocale {
     // exceptionally allow getting locale before settings are initialized
     final tag = initialized ? getString(SettingKeys.localeKey) : null;
     if (tag != null) {
       final codes = tag.split(localeSeparator);
-      return Locale.fromSubtags(
+      return ui.Locale.fromSubtags(
         languageCode: codes[0],
         scriptCode: codes[1] == '' ? null : codes[1],
         countryCode: codes[2] == '' ? null : codes[2],
@@ -50,7 +53,7 @@ mixin AppSettings on SettingsAccess {
     return null;
   }
 
-  set locale(Locale? newValue) {
+  set uiLocale(ui.Locale? newValue) {
     String? tag;
     if (newValue != null) {
       tag = [
@@ -63,18 +66,18 @@ mixin AppSettings on SettingsAccess {
     resetAppliedLocale();
   }
 
-  List<Locale> _systemLocalesFallback = [];
+  List<ui.Locale> _systemLocalesFallback = [];
 
-  set systemLocalesFallback(List<Locale> locales) => _systemLocalesFallback = locales;
+  set systemLocalesFallback(List<ui.Locale> locales) => _systemLocalesFallback = locales;
 
-  Locale? _appliedLocale;
+  ui.Locale? _appliedLocale;
 
   void resetAppliedLocale() => _appliedLocale = null;
 
-  Locale get appliedLocale {
+  ui.Locale get appliedLocale {
     if (_appliedLocale == null) {
-      final _locale = locale;
-      final preferredLocales = <Locale>[];
+      final _locale = uiLocale;
+      final preferredLocales = <ui.Locale>[];
       if (_locale != null) {
         preferredLocales.add(_locale);
       } else {
@@ -89,9 +92,22 @@ mixin AppSettings on SettingsAccess {
     return _appliedLocale!;
   }
 
+  intl4x.Calendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, intl4x.Calendar.gregorian, intl4x.Calendar.values);
+
+  set calendar(intl4x.Calendar newValue) => set(SettingKeys.calendarKey, newValue.name);
+
   bool get forceWesternArabicNumerals => getBool(SettingKeys.forceWesternArabicNumeralsKey) ?? false;
 
   set forceWesternArabicNumerals(bool newValue) => set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
+
+  intl4x.Locale intl4xLocale([intl4x.Calendar? calendarOverride]) {
+    final localeName = appliedLocale.toLanguageTag();
+    var locale = intl4x.Locale.parse(localeName).withCalendar(calendarOverride ?? calendar);
+    if (forceWesternArabicNumerals) {
+      locale = locale.withNumberingSystem(intl4x.NumberingSystem.latin);
+    }
+    return locale;
+  }
 
   int get catalogTimeZoneOffsetMillis => getInt(SettingKeys.catalogTimeZoneOffsetMillisKey) ?? 0;
 

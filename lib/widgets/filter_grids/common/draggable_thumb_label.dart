@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -25,7 +26,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
         switch (sortFactor) {
           case .date:
             return [
-              DraggableThumbLabel.formatMonthThumbLabel(context, filterGridItem.entry?.bestDate),
+              DraggableThumbLabel.formatMonthThumbLabel(context, settings.intl4xLocale(), settings.calendar, filterGridItem.entry?.bestDate),
             ];
           case .name:
           case .path:
@@ -38,7 +39,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
             ];
           case .size:
             return [
-              formatFileSize(context.locale, context.read<CollectionSource>().size(filterGridItem.filter)),
+              formatFileSize(context.localeName, context.read<CollectionSource>().size(filterGridItem.filter)),
             ];
         }
       },

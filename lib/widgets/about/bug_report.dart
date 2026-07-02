@@ -119,7 +119,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
               ),
               shape: BoxShape.circle,
             ),
-            child: Text(NumberFormat('0', context.locale).format(step)),
+            child: Text(NumberFormat('0', context.localeName).format(step)),
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(text)),

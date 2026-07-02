@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -26,21 +27,23 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
           case .date:
+            final locale = settings.intl4xLocale();
+            final calendar = settings.calendar;
             final date = entry.bestDate;
             switch (collection.sectionFactor) {
               case .album:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
               case .month:
               case .none:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
                 ];
               case .day:
                 return [
-                  DraggableThumbLabel.formatDayThumbLabel(context, date),
+                  DraggableThumbLabel.formatDayThumbLabel(context, locale, date),
                 ];
             }
           case .name:
@@ -49,14 +52,17 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               ?entry.bestTitle,
             ];
           case .rating:
+            final locale = settings.intl4xLocale();
+            final calendar = settings.calendar;
+            final date = entry.bestDate;
             return [
               RatingFilter.formatRating(context, entry.rating),
-              DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
+              DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
             ];
           case .size:
             final sizeBytes = entry.sizeBytes;
             return [
-              if (sizeBytes != null) formatFileSize(context.locale, sizeBytes, round: 0),
+              if (sizeBytes != null) formatFileSize(context.localeName, sizeBytes, round: 0),
             ];
           case .duration:
             return [

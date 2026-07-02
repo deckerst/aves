@@ -254,7 +254,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     );
               return Selector<Settings, (Locale?, AvesThemeBrightness, bool)>(
                 selector: (context, s) => (
-                  s.locale,
+                  s.uiLocale,
                   s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
                   s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
                 ),
@@ -405,14 +405,16 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.resetAppliedLocale();
 
     final appliedLocale = settings.appliedLocale;
-    AStyles.updateStylesForLocale(appliedLocale);
+    final languageCode = appliedLocale.languageCode;
+    AStyles.updateStylesForLocale(languageCode);
 
     Locale? countrifiedLocale;
     if (appliedLocale.countryCode == null) {
-      final languageCode = appliedLocale.languageCode;
       countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
     }
 
+    // `intl` setup here, for date formatters
+    // `intl4x` setup is done via the locale, in the `Settings` getter
     final useNativeDigits = !settings.forceWesternArabicNumerals && shouldUseNativeDigits(countrifiedLocale);
     DateFormat.useNativeDigitsByDefaultFor(appliedLocale.toString(), useNativeDigits);
     DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);

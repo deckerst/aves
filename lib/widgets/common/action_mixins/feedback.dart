@@ -229,7 +229,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   Widget build(BuildContext context) {
     const diameter = ReportOverlay.diameter;
     const strokeWidth = ReportOverlay.strokeWidth;
-    final percentFormatter = NumberFormat.percentPattern(context.locale);
+    final percentFormatter = NumberFormat.percentPattern(context.localeName);
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -395,7 +395,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final durationFormatter = NumberFormat('0', context.locale);
+    final durationFormatter = NumberFormat('0', context.localeName);
 
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);

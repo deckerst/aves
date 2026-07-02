@@ -1,15 +1,17 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
+
+import 'package:aves/ref/languages.dart';
 
 const kAsciiLocale = 'en_US';
 
 // time components hours/minutes/seconds are always displayed in that order
-const TextDirection kTimeComponentsDirection = .ltr;
+const ui.TextDirection kTimeComponentsDirection = .ltr;
 
 // represents direction of tape being played, not direction of time
-const TextDirection kVideoPlaybackDirection = .ltr;
+const ui.TextDirection kVideoPlaybackDirection = .ltr;
 
 // cf https://en.wikipedia.org/wiki/Eastern_Arabic_numerals
-bool shouldUseNativeDigits(Locale? countrifiedLocale) {
+bool shouldUseNativeDigits(ui.Locale? countrifiedLocale) {
   switch (countrifiedLocale?.toString()) {
     // Maghreb
     case 'ar_DZ': // Algeria
@@ -52,10 +54,10 @@ bool shouldUseNativeDigits(Locale? countrifiedLocale) {
   }
 }
 
-bool canHaveLetterSpacing(String locale) {
-  switch (locale) {
-    case 'ar':
-    case 'fa':
+bool canHaveLetterSpacing(String localeName) {
+  switch (localeName) {
+    case LanguageCodesIso639_1.arabic:
+    case LanguageCodesIso639_1.persian:
       return false;
     default:
       return true;

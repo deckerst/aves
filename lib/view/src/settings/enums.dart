@@ -2,14 +2,15 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 
 extension ExtraAccessibilityAnimationsView on AccessibilityAnimations {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AccessibilityAnimations.system => l10n.settingsSystemDefault,
-      AccessibilityAnimations.disabled => l10n.accessibilityAnimationsRemove,
-      AccessibilityAnimations.enabled => l10n.accessibilityAnimationsKeep,
+      .system => l10n.settingsSystemDefault,
+      .disabled => l10n.accessibilityAnimationsRemove,
+      .enabled => l10n.accessibilityAnimationsKeep,
     };
   }
 }
@@ -18,12 +19,12 @@ extension ExtraAccessibilityTimeoutView on AccessibilityTimeout {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AccessibilityTimeout.system => l10n.settingsSystemDefault,
-      AccessibilityTimeout.s1 => l10n.timeSeconds(1),
-      AccessibilityTimeout.s3 => l10n.timeSeconds(3),
-      AccessibilityTimeout.s5 => l10n.timeSeconds(5),
-      AccessibilityTimeout.s10 => l10n.timeSeconds(10),
-      AccessibilityTimeout.s30 => l10n.timeSeconds(30),
+      .system => l10n.settingsSystemDefault,
+      .s1 => l10n.timeSeconds(1),
+      .s3 => l10n.timeSeconds(3),
+      .s5 => l10n.timeSeconds(5),
+      .s10 => l10n.timeSeconds(10),
+      .s30 => l10n.timeSeconds(30),
     };
   }
 }
@@ -32,10 +33,21 @@ extension ExtraAvesThemeBrightnessView on AvesThemeBrightness {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AvesThemeBrightness.system => l10n.settingsSystemDefault,
-      AvesThemeBrightness.light => l10n.themeBrightnessLight,
-      AvesThemeBrightness.dark => l10n.themeBrightnessDark,
-      AvesThemeBrightness.black => l10n.themeBrightnessBlack,
+      .system => l10n.settingsSystemDefault,
+      .light => l10n.themeBrightnessLight,
+      .dark => l10n.themeBrightnessDark,
+      .black => l10n.themeBrightnessBlack,
+    };
+  }
+}
+
+extension ExtraCalendarView on intl4x.Calendar {
+  String getName(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      .gregorian => l10n.calendarGregorian,
+      .persian => l10n.calendarPersian,
+      _ => name,
     };
   }
 }
@@ -44,9 +56,9 @@ extension ExtraCoordinateFormatView on CoordinateFormat {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      CoordinateFormat.dms => l10n.coordinateFormatDms,
-      CoordinateFormat.ddm => l10n.coordinateFormatDdm,
-      CoordinateFormat.decimal => l10n.coordinateFormatDecimal,
+      .dms => l10n.coordinateFormatDms,
+      .ddm => l10n.coordinateFormatDdm,
+      .decimal => l10n.coordinateFormatDecimal,
     };
   }
 }
@@ -82,10 +94,10 @@ extension ExtraHomePageSettingView on HomePageSetting {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      HomePageSetting.collection => l10n.drawerCollectionAll,
-      HomePageSetting.albums => l10n.drawerAlbumPage,
-      HomePageSetting.tags => l10n.drawerTagPage,
-      HomePageSetting.explorer => l10n.explorerPageTitle,
+      .collection => l10n.drawerCollectionAll,
+      .albums => l10n.drawerAlbumPage,
+      .tags => l10n.drawerTagPage,
+      .explorer => l10n.explorerPageTitle,
     };
   }
 }
@@ -94,10 +106,10 @@ extension ExtraKeepScreenOnView on KeepScreenOn {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      KeepScreenOn.never => l10n.keepScreenOnNever,
-      KeepScreenOn.videoPlayback => l10n.keepScreenOnVideoPlayback,
-      KeepScreenOn.viewerOnly => l10n.keepScreenOnViewerOnly,
-      KeepScreenOn.always => l10n.keepScreenOnAlways,
+      .never => l10n.keepScreenOnNever,
+      .videoPlayback => l10n.keepScreenOnVideoPlayback,
+      .viewerOnly => l10n.keepScreenOnViewerOnly,
+      .always => l10n.keepScreenOnAlways,
     };
   }
 }
@@ -106,9 +118,9 @@ extension ExtraMaxBrightnessView on MaxBrightness {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      MaxBrightness.never => l10n.maxBrightnessNever,
-      MaxBrightness.viewerOnly => l10n.keepScreenOnViewerOnly,
-      MaxBrightness.always => l10n.maxBrightnessAlways,
+      .never => l10n.maxBrightnessNever,
+      .viewerOnly => l10n.keepScreenOnViewerOnly,
+      .always => l10n.maxBrightnessAlways,
     };
   }
 }
@@ -117,9 +129,9 @@ extension ExtraSlideshowVideoPlaybackView on SlideshowVideoPlayback {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      SlideshowVideoPlayback.skip => l10n.videoPlaybackSkip,
-      SlideshowVideoPlayback.playMuted => l10n.videoPlaybackMuted,
-      SlideshowVideoPlayback.playWithSound => l10n.videoPlaybackWithSound,
+      .skip => l10n.videoPlaybackSkip,
+      .playMuted => l10n.videoPlaybackMuted,
+      .playWithSound => l10n.videoPlaybackWithSound,
     };
   }
 }
@@ -128,9 +140,9 @@ extension ExtraOverlayHistogramStyleView on OverlayHistogramStyle {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      OverlayHistogramStyle.none => l10n.overlayHistogramNone,
-      OverlayHistogramStyle.rgb => l10n.overlayHistogramRGB,
-      OverlayHistogramStyle.luminance => l10n.overlayHistogramLuminance,
+      .none => l10n.overlayHistogramNone,
+      .rgb => l10n.overlayHistogramRGB,
+      .luminance => l10n.overlayHistogramLuminance,
     };
   }
 }
@@ -139,8 +151,8 @@ extension ExtraSubtitlePositionView on SubtitlePosition {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      SubtitlePosition.top => l10n.subtitlePositionTop,
-      SubtitlePosition.bottom => l10n.subtitlePositionBottom,
+      .top => l10n.subtitlePositionTop,
+      .bottom => l10n.subtitlePositionBottom,
     };
   }
 }
@@ -149,8 +161,8 @@ extension ExtraUnitSystemView on UnitSystem {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      UnitSystem.metric => l10n.unitSystemMetric,
-      UnitSystem.imperial => l10n.unitSystemImperial,
+      .metric => l10n.unitSystemMetric,
+      .imperial => l10n.unitSystemImperial,
     };
   }
 }
@@ -159,9 +171,9 @@ extension ExtraVideoAutoPlayModeView on VideoAutoPlayMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      VideoAutoPlayMode.disabled => l10n.settingsDisabled,
-      VideoAutoPlayMode.playMuted => l10n.videoPlaybackMuted,
-      VideoAutoPlayMode.playWithSound => l10n.videoPlaybackWithSound,
+      .disabled => l10n.settingsDisabled,
+      .playMuted => l10n.videoPlaybackMuted,
+      .playWithSound => l10n.videoPlaybackWithSound,
     };
   }
 }
@@ -170,8 +182,8 @@ extension ExtraVideoBackgroundModeView on VideoBackgroundMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      VideoBackgroundMode.disabled => l10n.settingsDisabled,
-      VideoBackgroundMode.pip => l10n.settingsVideoEnablePip,
+      .disabled => l10n.settingsDisabled,
+      .pip => l10n.settingsVideoEnablePip,
     };
   }
 }
@@ -180,9 +192,9 @@ extension ExtraVideoHardwareAccelerationView on VideoHardwareAcceleration {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      VideoHardwareAcceleration.disabled => l10n.settingsDisabled,
-      VideoHardwareAcceleration.enabled => l10n.settingsEnabled,
-      VideoHardwareAcceleration.forced => l10n.settingsForced,
+      .disabled => l10n.settingsDisabled,
+      .enabled => l10n.settingsEnabled,
+      .forced => l10n.settingsForced,
     };
   }
 }
@@ -202,9 +214,9 @@ extension ExtraVideoResumptionModeView on VideoResumptionMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      VideoResumptionMode.never => l10n.videoResumptionModeNever,
-      VideoResumptionMode.ask => l10n.settingsAskEverytime,
-      VideoResumptionMode.always => l10n.videoResumptionModeAlways,
+      .never => l10n.videoResumptionModeNever,
+      .ask => l10n.settingsAskEverytime,
+      .always => l10n.videoResumptionModeAlways,
     };
   }
 }
@@ -213,12 +225,12 @@ extension ExtraViewerTransitionView on ViewerTransition {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ViewerTransition.slide => l10n.viewerTransitionSlide,
-      ViewerTransition.parallax => l10n.viewerTransitionParallax,
-      ViewerTransition.fade => l10n.viewerTransitionFade,
-      ViewerTransition.zoomIn => l10n.viewerTransitionZoomIn,
-      ViewerTransition.none => l10n.viewerTransitionNone,
-      ViewerTransition.random => l10n.widgetDisplayedItemRandom,
+      .slide => l10n.viewerTransitionSlide,
+      .parallax => l10n.viewerTransitionParallax,
+      .fade => l10n.viewerTransitionFade,
+      .zoomIn => l10n.viewerTransitionZoomIn,
+      .none => l10n.viewerTransitionNone,
+      .random => l10n.widgetDisplayedItemRandom,
     };
   }
 }
@@ -227,8 +239,8 @@ extension ExtraWidgetDisplayedItemView on WidgetDisplayedItem {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      WidgetDisplayedItem.random => l10n.widgetDisplayedItemRandom,
-      WidgetDisplayedItem.mostRecent => l10n.widgetDisplayedItemMostRecent,
+      .random => l10n.widgetDisplayedItemRandom,
+      .mostRecent => l10n.widgetDisplayedItemMostRecent,
     };
   }
 }
@@ -237,10 +249,10 @@ extension ExtraWidgetOpenPageView on WidgetOpenPage {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      WidgetOpenPage.home => l10n.widgetOpenPageHome,
-      WidgetOpenPage.collection => l10n.widgetOpenPageCollection,
-      WidgetOpenPage.viewer => l10n.widgetOpenPageViewer,
-      WidgetOpenPage.updateWidget => l10n.widgetTapUpdateWidget,
+      .home => l10n.widgetOpenPageHome,
+      .collection => l10n.widgetOpenPageCollection,
+      .viewer => l10n.widgetOpenPageViewer,
+      .updateWidget => l10n.widgetTapUpdateWidget,
     };
   }
 }

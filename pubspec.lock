@@ -135,10 +135,10 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "62ffa266d9a23b79fb3fcbc206afc00bb979417ba57b1324c546b5aab95ba057"
+      sha256: cad0e811a289ea2a941119dc483c204ec1684cbb9a8fc7351fe4a230b8313160
       url: "https://pub.dev"
     source: hosted
-    version: "7.1.1"
+    version: "7.2.0"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -239,10 +239,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "6a642e1daa10190af89ba6cb6386c0df7d071a3592080bfe1e44faa63ae1df65"
+      sha256: "0891702f96b2e465fe567b7ec448380e6b1c14f60af552a8536d9f583b6b8442"
       url: "https://pub.dev"
     source: hosted
-    version: "13.1.0"
+    version: "13.2.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -255,10 +255,10 @@ packages:
     dependency: "direct main"
     description:
       name: dlna_dart
-      sha256: "8a4f0e4f378615c99f2af679dc9f0c72fe4a0fb2f3eea96b637fe691dfcf0649"
+      sha256: da607931548720331b7503f72c426fa7fbd19e9144a4778d293c16a5bc186407
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -472,10 +472,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map
-      sha256: "03b71c02806ff20c3718d108cbbb3638142ebafe368d8ce2dd22a33344bcb02b"
+      sha256: ce1debbb29cade61964334b2a19c7c76e5bb2ef7dacf126c6424ee44036232f8
       url: "https://pub.dev"
     source: hosted
-    version: "8.3.0"
+    version: "8.3.1"
   flutter_markdown_plus:
     dependency: "direct main"
     description:
@@ -600,10 +600,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: f573749a75c4074b7a74ab986703607e9cd859fb2807c332872620f3656400dc
+      sha256: "090960a33557380d95e416ef7747b542ef1d82bc8281a74664dcd9a683cf5597"
       url: "https://pub.dev"
     source: hosted
-    version: "2.18.3"
+    version: "2.18.4"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
@@ -676,14 +676,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  icu4x:
+    dependency: transitive
+    description:
+      name: icu4x
+      sha256: "5a1709cbca00ded6304082292995c503d33f20544867f7226f8ee646128c4494"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0-dev.2"
   idb_shim:
     dependency: transitive
     description:
       name: idb_shim
-      sha256: "65d2fbda05f707f9c6e0b502bc4bf411d9f799d391f709c121aeb44d0dc0fd2a"
+      sha256: a3b70c0c49c90dfbb3ffcaf6a1e376a83d542dc59124e6f29b1e84487c481c30
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.4"
+    version: "2.9.6"
   image:
     dependency: transitive
     description:
@@ -700,6 +708,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
+  intl4x:
+    dependency: "direct main"
+    description:
+      name: intl4x
+      sha256: "9bde13391a36b16ad25ac0c8ac3f777c47d74216973f21b59c682b9222871cd6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-alpha.1"
   io:
     dependency: transitive
     description:
@@ -910,6 +926,14 @@ packages:
       url: "https://github.com/deckerst/aves_panorama_motion_sensors.git"
     source: git
     version: "0.1.0"
+  native_toolchain_c:
+    dependency: transitive
+    description:
+      name: native_toolchain_c
+      sha256: f9c168717100ae6d9fee9ffb0be379bf1f8b26b0f6bcbd4fdddcd931993a6a72
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.2"
   nested:
     dependency: transitive
     description:
@@ -922,10 +946,10 @@ packages:
     dependency: "direct main"
     description:
       name: network_info_plus
-      sha256: f424bad71994a1dc8594b00a6f71a665f7714ee7b32d397656d592c030d8555f
+      sha256: "4a1217d16644ed59f88e415e2777a4c81f4da5bffb724566825e5551c6379567"
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.0"
+    version: "8.2.0"
   network_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -979,10 +1003,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "4bf625947f6c7713ee242296a682e23e44823c09cf9d79e4f1238923c92db852"
+      sha256: f5c435dc0e0d461e5b32471a870f769b6a1cc46930637efe24fbc535314e78ad
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.0"
+    version: "10.2.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -1341,10 +1365,18 @@ packages:
     dependency: transitive
     description:
       name: sembast
-      sha256: "60746eb3377fe953367c10d549e9d99a3e0bccb464f32d0528d4e44933898597"
+      sha256: a58b26925e23071cf0f4754d8449aabe829e9a9930a872fb18e6ae4c2c88e025
       url: "https://pub.dev"
     source: hosted
-    version: "3.8.9"
+    version: "3.8.9+1"
+  shamsi_date:
+    dependency: "direct main"
+    description:
+      name: shamsi_date
+      sha256: "0383fddc9bce91e9e08de0c909faf93c3ab3a0e532abd271fb0dcf5d0617487b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -1506,10 +1538,10 @@ packages:
     dependency: transitive
     description:
       name: sqflite_darwin
-      sha256: "164a5d73ab87a134566057219988bafde837029a64264e61f1f04376ef3cfcd2"
+      sha256: c86ca18b8f666bbf903924687fe21cc16fc385d086005067e26619ca530bef9f
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.3+1"
   sqflite_platform_interface:
     dependency: transitive
     description:
@@ -1607,6 +1639,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.17"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "981d1020d6ef8fe1e7b3de5054e5b25579ae7c403d7734adc508ffc47668e9cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.11.1"
   typed_data:
     dependency: transitive
     description:
@@ -1755,26 +1795,26 @@ packages:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: "8401adac6f33e78a0f255a75a7e7c9e2f9713ffcd87ff4e6c00d9bd92b5d99db"
+      sha256: "15bfd0598f8d8946bf0e2d50e2ca1a0db9491589a8bb7f6f9a388c0b48aef764"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.7"
+    version: "2.10.0"
   video_player_avfoundation:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "9338f3ec22774f88146b22f13273a446719b1da010fd200c4d1d97802156ac58"
+      sha256: "76097729ef0c976937945afa53f1ca3afa9b50c9a95909ba347bcf93270466fd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.7"
+    version: "2.10.0"
   video_player_platform_interface:
     dependency: transitive
     description:
       name: video_player_platform_interface
-      sha256: "16eaed5268c571c31840dc58ef8da5f0cd4db2a98490c3b8f1cf70122546c6e0"
+      sha256: e4ae5bc934b528e5b95c5e47be2812860186260cd3eed3ac62f5ed380fdd1613
       url: "https://pub.dev"
     source: hosted
-    version: "6.7.0"
+    version: "6.8.0"
   video_player_web:
     dependency: transitive
     description:

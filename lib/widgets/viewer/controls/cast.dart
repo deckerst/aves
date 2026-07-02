@@ -92,7 +92,7 @@ mixin CastMixin {
       await renderer.setUrl(
         '$_serverBaseUrl/${entry.id}',
         title: entry.bestTitle ?? '',
-        type: entry.isVideo ? PlayType.Video : PlayType.Image,
+        type: (entry.isVideo ? VideoMime : ImageMime) as PlayType,
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());

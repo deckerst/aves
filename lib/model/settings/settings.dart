@@ -410,6 +410,7 @@ class Settings
             }
           case SettingKeys.autoExportPathKey:
           case SettingKeys.localeKey:
+          case SettingKeys.calendarKey:
           case SettingKeys.displayRefreshRateModeKey:
           case SettingKeys.themeBrightnessKey:
           case SettingKeys.themeColorModeKey:

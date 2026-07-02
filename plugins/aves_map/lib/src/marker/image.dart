@@ -25,10 +25,10 @@ class ImageMarker extends StatelessWidget {
   ImageMarker({
     super.key,
     required this.count,
-    required String? locale,
+    required String? localeName,
     this.drawArrow = true,
     required this.buildThumbnailImage,
-  }) : countFormatter = intl.NumberFormat.decimalPattern(locale);
+  }) : countFormatter = intl.NumberFormat.decimalPattern(localeName);
 
   @override
   Widget build(BuildContext context) {

@@ -225,7 +225,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                             color: Colors.white,
                             fontSize: 38,
                             fontWeight: FontWeight.w300,
-                            letterSpacing: canHaveLetterSpacing(context.locale) ? 1 : 0,
+                            letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
                             fontFeatures: const [FontFeature.enable('smcp')],
                           ),
                         ),
@@ -420,7 +420,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     return CollectionNavTile(
       leading: const DrawerFilterIcon(filter: filter),
       title: const DrawerFilterTitle(filter: filter),
-      trailing: Text(formatFileSize(context.locale, trashSize, round: 0)),
+      trailing: Text(formatFileSize(context.localeName, trashSize, round: 0)),
       filters: {filter},
       isSelected: () => currentCollection?.filters.contains(filter) ?? false,
     );

@@ -104,7 +104,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
 
     return ImageMarker(
       count: null,
-      locale: null,
+      localeName: null,
       drawArrow: false,
       buildThumbnailImage: (_) => Image.asset('assets/$assetName'),
     );

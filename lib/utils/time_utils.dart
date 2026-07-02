@@ -1,19 +1,15 @@
+import 'package:aves/utils/calendar/comparators.dart';
 import 'package:flutter/foundation.dart';
 
 extension ExtraDateTime on DateTime {
-  bool isAtSameYearAs(DateTime? other) => year == other?.year;
+  // TODO TLAD [calendar] use comparators
+  bool get isToday => const GregorianCalendarComparator().isSameYearMonthDay(this, DateTime.now());
 
-  bool isAtSameMonthAs(DateTime? other) => isAtSameYearAs(other) && month == other?.month;
+  bool get isYesterday => const GregorianCalendarComparator().isSameYearMonthDay(this, DateTime.now().subtract(const Duration(days: 1)));
 
-  bool isAtSameDayAs(DateTime? other) => isAtSameMonthAs(other) && day == other?.day;
+  bool get isThisMonth => const GregorianCalendarComparator().isSameYearMonth(this, DateTime.now());
 
-  bool get isToday => isAtSameDayAs(DateTime.now());
-
-  bool get isYesterday => isAtSameDayAs(DateTime.now().subtract(const Duration(days: 1)));
-
-  bool get isThisMonth => isAtSameMonthAs(DateTime.now());
-
-  bool get isThisYear => isAtSameYearAs(DateTime.now());
+  bool get isThisYear => const GregorianCalendarComparator().isSameYear(this, DateTime.now());
 
   DateTime get date => DateTime(year, month, day);
 

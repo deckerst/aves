@@ -1,8 +1,8 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/map/info_row.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +19,7 @@ class MapDateRow extends StatelessWidget {
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, context.locale, use24hour) : AText.valueNotAvailable;
+    final dateText = date != null ? formatDateTime(date, settings.intl4xLocale(), use24hour) : AText.valueNotAvailable;
     return Text.rich(
       TextSpan(
         children: [

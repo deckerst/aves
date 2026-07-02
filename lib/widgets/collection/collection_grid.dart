@@ -14,6 +14,8 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
+import 'package:aves/utils/calendar/intl4x_format.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
@@ -53,7 +55,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -725,13 +726,14 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
               final newest = firstKey.date;
               final oldest = lastKey.date;
               if (newest != null && oldest != null) {
-                final locale = context.locale;
-                final dateFormat = (newest.difference(oldest).inHumanDays).abs() > 365 ? DateFormat.y(locale) : DateFormat.MMM(locale);
+                final locale = settings.intl4xLocale();
+                final calendar = settings.calendar;
+                final dateFormatter = (newest.difference(oldest).inHumanDays).abs() > calendar.maxDaysInYear ? locale.y() : locale.MMM();
                 String? lastLabel;
                 sectionLayouts.forEach((section) {
                   final date = (section.sectionKey as EntryDateSectionKey).date;
                   if (date != null) {
-                    final label = dateFormat.format(date);
+                    final label = dateFormatter(date);
                     if (label != lastLabel) {
                       crumbs[section.minOffset / maxOffset] = label;
                       lastLabel = label;

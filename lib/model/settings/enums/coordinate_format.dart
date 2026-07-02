@@ -39,11 +39,11 @@ extension ExtraCoordinateFormat on CoordinateFormat {
 
   // returns coordinates formatted as DDM, e.g. ['41° 24.2028′ N', '2° 10.4418′ E']
   static List<String> toDDM(AppLocalizations l10n, LatLng latLng, {bool minutePadding = false, int minuteDecimals = 4}) {
-    final locale = l10n.localeName;
+    final localeName = l10n.localeName;
     final lat = latLng.latitude;
     final lng = latLng.longitude;
-    final latSexa = _decimal2ddm(lat, minutePadding, minuteDecimals, locale);
-    final lngSexa = _decimal2ddm(lng, minutePadding, minuteDecimals, locale);
+    final latSexa = _decimal2ddm(lat, minutePadding, minuteDecimals, localeName);
+    final lngSexa = _decimal2ddm(lng, minutePadding, minuteDecimals, localeName);
     return [
       l10n.coordinateDms(latSexa, lat < 0 ? l10n.coordinateDmsSouth : l10n.coordinateDmsNorth),
       l10n.coordinateDms(lngSexa, lng < 0 ? l10n.coordinateDmsWest : l10n.coordinateDmsEast),
@@ -54,7 +54,7 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     double degDecimal,
     bool minuteSecondPadding,
     int secondDecimals,
-    String locale,
+    String localeName,
   ) {
     final degAbs = degDecimal.abs();
     final deg = degAbs.toInt();
@@ -62,9 +62,9 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     final min = minDecimal.toInt();
     final sec = (minDecimal - min) * 60;
 
-    final degText = NumberFormat('0', locale).format(deg);
-    final minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), locale).format(min);
-    final secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', locale).format(sec);
+    final degText = NumberFormat('0', localeName).format(deg);
+    final minText = NumberFormat('0' * (minuteSecondPadding ? 2 : 1), localeName).format(min);
+    final secText = NumberFormat('${'0' * (minuteSecondPadding ? 2 : 1)}${secondDecimals > 0 ? '.${'0' * secondDecimals}' : ''}', localeName).format(sec);
 
     return '$degText° $minText′ $secText″';
   }
@@ -73,14 +73,14 @@ extension ExtraCoordinateFormat on CoordinateFormat {
     double degDecimal,
     bool minutePadding,
     int minuteDecimals,
-    String locale,
+    String localeName,
   ) {
     final degAbs = degDecimal.abs();
     final deg = degAbs.toInt();
     final min = (degAbs - deg) * 60;
 
-    final degText = NumberFormat('0', locale).format(deg);
-    final minText = NumberFormat('${'0' * (minutePadding ? 2 : 1)}${minuteDecimals > 0 ? '.${'0' * minuteDecimals}' : ''}', locale).format(min);
+    final degText = NumberFormat('0', localeName).format(deg);
+    final minText = NumberFormat('${'0' * (minutePadding ? 2 : 1)}${minuteDecimals > 0 ? '.${'0' * minuteDecimals}' : ''}', localeName).format(min);
 
     return '$degText° $minText′';
   }

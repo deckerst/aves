@@ -59,7 +59,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final timeComponentFormatter = NumberFormat('0', context.locale);
+    final timeComponentFormatter = NumberFormat('0', context.localeName);
 
     const textStyle = TextStyle(fontSize: 34);
     const digitsAlign = TextAlign.right;
