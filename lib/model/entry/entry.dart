@@ -304,18 +304,6 @@ class AvesEntry with AvesEntryBase {
     _bestDate = null;
   }
 
-  // TODO TLAD cache _monthTaken
-  DateTime? get monthTaken {
-    final d = bestDate;
-    return d == null ? null : DateTime(d.year, d.month);
-  }
-
-  // TODO TLAD cache _dayTaken
-  DateTime? get dayTaken {
-    final d = bestDate;
-    return d == null ? null : DateTime(d.year, d.month, d.day);
-  }
-
   @override
   int? get durationMillis => _durationMillis;
 

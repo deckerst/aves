@@ -20,7 +20,7 @@ class DateFilter extends CollectionFilter {
   static final onThisDay = DateFilter(intl4x.Calendar.gregorian, DateLevel.md, null);
 
   @override
-  List<Object?> get props => [level, date, reversed];
+  List<Object?> get props => [calendar, level, date, reversed];
 
   DateFilter(this.calendar, this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
@@ -35,19 +35,13 @@ class DateFilter extends CollectionFilter {
       case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
-        // TODO TLAD [calendar] isSameMonthDay
-        _test = (entry) {
-          final bestDate = entry.bestDate;
-          return bestDate != null && bestDate.month == month && bestDate.day == day;
-        };
+        _test = (entry) => comparator.isOnMonthDay(entry.bestDate, month, day);
       case .m:
-        // TODO TLAD [calendar] isSameMonth
         final month = _effectiveDate.month;
-        _test = (entry) => entry.bestDate?.month == month;
+        _test = (entry) => comparator.isOnMonth(entry.bestDate, month);
       case .d:
-        // TODO TLAD [calendar] isSameDay
         final day = _effectiveDate.day;
-        _test = (entry) => entry.bestDate?.day == day;
+        _test = (entry) => comparator.isOnDay(entry.bestDate, day);
     }
   }
 
@@ -78,12 +72,10 @@ class DateFilter extends CollectionFilter {
 
   @override
   bool isCompatible(CollectionFilter other) {
-    if (other is DateFilter) {
-      if (reversed != other.reversed && this == other.reverse()) return false;
-      return reversed || other.reversed || isCompatibleLevel(level, other.level);
-    } else {
-      return true;
-    }
+    if (other is! DateFilter) return true;
+    if (other.calendar != calendar) return true;
+    if (reversed != other.reversed && this == other.reverse()) return false;
+    return reversed || other.reversed || isCompatibleLevel(level, other.level);
   }
 
   static bool isCompatibleLevel(DateLevel a, DateLevel b) {
@@ -118,14 +110,14 @@ class DateFilter extends CollectionFilter {
         return locale.yMMMd(_effectiveDate);
       case .md:
         if (date != null) {
-          return locale.MMMd(_effectiveDate);
+          return locale.MMMd(calendar.getComparator().asNative(_effectiveDate));
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
       case .m:
-        return locale.MMMM(_effectiveDate);
+        return locale.MMMM(calendar.getComparator().asNative(_effectiveDate));
       case .d:
-        return locale.d(_effectiveDate);
+        return locale.d(calendar.getComparator().asNative(_effectiveDate));
     }
   }
 

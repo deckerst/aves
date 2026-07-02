@@ -4,6 +4,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
 import 'package:aves/widgets/collection/grid/headers/rating.dart';
@@ -42,15 +43,21 @@ class CollectionSectionHeader extends StatelessWidget {
           case .album:
             return _buildAlbumHeader(context);
           case .month:
+            var k = sectionKey as EntryDateSectionKey;
+            final date = collection.calendar.getComparator().fromYearMonthDay(k.year, k.month, k.day);
             return MonthSectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
-              date: (sectionKey as EntryDateSectionKey).date,
+              sectionKey: sectionKey,
+              date: date,
               selectable: selectable,
             );
           case .day:
+            var k = sectionKey as EntryDateSectionKey;
+            final date = collection.calendar.getComparator().fromYearMonthDay(k.year, k.month, k.day);
             return DaySectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
-              date: (sectionKey as EntryDateSectionKey).date,
+              sectionKey: sectionKey,
+              date: date,
               selectable: selectable,
             );
           case .none:

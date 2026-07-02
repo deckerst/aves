@@ -722,17 +722,20 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             final firstKey = sectionLayouts.first.sectionKey;
             final lastKey = sectionLayouts.last.sectionKey;
             if (firstKey is EntryDateSectionKey && lastKey is EntryDateSectionKey) {
-              final newest = firstKey.date;
-              final oldest = lastKey.date;
-              if (newest != null && oldest != null) {
+              if (firstKey != EntryDateSectionKey.unknown && lastKey != EntryDateSectionKey.unknown) {
                 final locale = settings.avesLocale;
                 final calendar = settings.calendar;
+                final comparator = calendar.getComparator();
+
+                final oldest = comparator.fromYearMonthDay(firstKey.year, firstKey.month, firstKey.day);
+                final newest = comparator.fromYearMonthDay(lastKey.year, lastKey.month, lastKey.day);
+
                 final dateFormatter = (newest.difference(oldest).inHumanDays).abs() > calendar.maxDaysInYear ? locale.y : locale.MMM;
                 String? lastLabel;
                 sectionLayouts.forEach((section) {
-                  final date = (section.sectionKey as EntryDateSectionKey).date;
-                  if (date != null) {
-                    final label = dateFormatter(date);
+                  final k = section.sectionKey as EntryDateSectionKey;
+                  if (k != EntryDateSectionKey.unknown) {
+                    final label = dateFormatter(comparator.fromYearMonthDay(k.year, k.month, k.day));
                     if (label != lastLabel) {
                       crumbs[section.minOffset / maxOffset] = label;
                       lastLabel = label;

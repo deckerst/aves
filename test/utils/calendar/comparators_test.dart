@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('Gregorian calendar comparisons', () {
-    const comparator = GregorianCalendarComparator();
+    final comparator = GregorianCalendarComparator.instance;
     expect(comparator.isSameYear(DateTime(1593, 7, 8), null), false);
     expect(comparator.isSameYear(DateTime(1903, 9, 25), DateTime(1970, 2, 25)), false);
     expect(comparator.isSameYear(DateTime(1929, 3, 22), DateTime(1929, 3, 22)), true);

@@ -135,7 +135,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
       if (entry.isSlowMotion) TypeFilter.slowMotion,
-      if (dateTime != null) ...[DateFilter(settings.calendar, DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
+      if (dateTime != null) ...[DateFilter(settings.calendar, DateLevel.ymd, dateTime.dateOnly), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       ...dynamicAlbums.all.where((v) => v.test(entry)).toSet(),
       if (entry.rating != 0) RatingFilter(entry.rating),

@@ -1,17 +1,19 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/utils/time_utils.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DaySectionHeader<T> extends StatelessWidget {
+  final SectionKey sectionKey;
   final DateTime? date;
   final bool selectable;
 
   const DaySectionHeader({
     super.key,
+    required this.sectionKey,
     required this.date,
     required this.selectable,
   });
@@ -19,19 +21,22 @@ class DaySectionHeader<T> extends StatelessWidget {
   static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
-    if (date.isToday) return l10n.dateToday;
-    if (date.isYesterday) return l10n.dateYesterday;
 
     final locale = settings.avesLocale;
+    final comparator = locale.calendar.getComparator();
+
+    if (comparator.isToday(date)) return l10n.dateToday;
+    if (comparator.isYesterday(date)) return l10n.dateYesterday;
+
     final weekday = DateFormat.E(locale.languageTag).format(date);
-    if (date.isThisYear) return '${locale.MMMMd(date)} ($weekday)';
+    if (comparator.isThisYear(date)) return '${locale.MMMMd(date)} ($weekday)';
     return '${locale.yMMMMd(date)} ($weekday)';
   }
 
   @override
   Widget build(BuildContext context) {
     return SectionHeader<T>(
-      sectionKey: EntryDateSectionKey(date),
+      sectionKey: sectionKey,
       title: _formatDate(context, date),
       selectable: selectable,
     );
@@ -39,11 +44,13 @@ class DaySectionHeader<T> extends StatelessWidget {
 }
 
 class MonthSectionHeader<T> extends StatelessWidget {
+  final SectionKey sectionKey;
   final DateTime? date;
   final bool selectable;
 
   const MonthSectionHeader({
     super.key,
+    required this.sectionKey,
     required this.date,
     required this.selectable,
   });
@@ -51,10 +58,13 @@ class MonthSectionHeader<T> extends StatelessWidget {
   static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
-    if (date.isThisMonth) return l10n.dateThisMonth;
 
     final locale = settings.avesLocale;
-    final formatter = date.isThisYear ? locale.MMMM : locale.yMMMM;
+    final comparator = locale.calendar.getComparator();
+
+    if (comparator.isThisMonth(date)) return l10n.dateThisMonth;
+
+    final formatter = comparator.isThisYear(date) ? locale.MMMM : locale.yMMMM;
     final localized = formatter(date);
     return '${localized.substring(0, 1).toUpperCase()}${localized.substring(1)}';
   }
@@ -62,7 +72,7 @@ class MonthSectionHeader<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionHeader<T>(
-      sectionKey: EntryDateSectionKey(date),
+      sectionKey: sectionKey,
       title: _formatDate(context, date),
       selectable: selectable,
     );

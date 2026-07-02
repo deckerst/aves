@@ -20,10 +20,12 @@ import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
@@ -32,6 +34,7 @@ class CollectionLens with ChangeNotifier {
   EntrySectionFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
+  intl4x.Calendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
   final AChangeNotifier layoutChangeNotifier = .new();
   final Set<StreamSubscription> _subscriptions = {};
@@ -63,7 +66,8 @@ class CollectionLens with ChangeNotifier {
        burstPatterns = settings.collectionBurstPatterns,
        sectionFactor = settings.collectionSectionFactor,
        sortFactor = settings.collectionSortFactor,
-       sortReverse = settings.collectionSortReverse {
+       sortReverse = settings.collectionSortReverse,
+       calendar = settings.calendar {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
     if (listenToSource) {
@@ -105,6 +109,7 @@ class CollectionLens with ChangeNotifier {
               SettingKeys.collectionSortFactorKey,
               SettingKeys.collectionGroupFactorKey,
               SettingKeys.collectionSortReverseKey,
+              SettingKeys.calendarKey,
             ].contains(event.key),
           )
           .listen((_) => _onSettingsChanged()),
@@ -295,9 +300,21 @@ class CollectionLens with ChangeNotifier {
             case .album:
               sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             case .month:
-              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
+              final comparator = calendar.getComparator();
+              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) {
+                final d = entry.bestDate;
+                if (d == null) return EntryDateSectionKey.unknown;
+                final (year, month) = comparator.getYearMonth(d);
+                return EntryDateSectionKey(year: year, month: month);
+              });
             case .day:
-              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
+              final comparator = calendar.getComparator();
+              sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) {
+                final d = entry.bestDate;
+                if (d == null) return EntryDateSectionKey.unknown;
+                final (year, month, day) = comparator.getYearMonthDay(d);
+                return EntryDateSectionKey(year: year, month: month, day: day);
+              });
             case .none:
               sections = Map.fromEntries([
                 MapEntry(const SectionKey(), _filteredSortedEntries),
@@ -344,10 +361,11 @@ class CollectionLens with ChangeNotifier {
     final newSortFactor = settings.collectionSortFactor;
     final newSectionFactor = settings.collectionSectionFactor;
     final newSortReverse = settings.collectionSortReverse;
+    final newCalendar = settings.calendar;
 
     final needFilter = burstPatterns != newBurstPatterns;
     final needSort = needFilter || sortFactor != newSortFactor || sortReverse != newSortReverse;
-    final needSection = needSort || sectionFactor != newSectionFactor;
+    final needSection = needSort || sectionFactor != newSectionFactor || calendar != newCalendar;
 
     if (needFilter) {
       burstPatterns = newBurstPatterns;
@@ -360,6 +378,7 @@ class CollectionLens with ChangeNotifier {
     }
     if (needSection) {
       sectionFactor = newSectionFactor;
+      calendar = newCalendar;
       _applySection();
     }
 

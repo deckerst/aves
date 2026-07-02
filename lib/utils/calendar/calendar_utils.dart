@@ -11,9 +11,9 @@ extension ExtraIntl4xCalendar on intl4x.Calendar {
   CalendarComparator getComparator() {
     switch (this) {
       case .gregorian:
-        return const GregorianCalendarComparator();
+        return GregorianCalendarComparator.instance;
       case .persian:
-        return const PersianCalendarComparator();
+        return PersianCalendarComparator.instance;
       default:
         throw UnimplementedError();
     }

@@ -117,7 +117,7 @@ class VideoMetadataFormatter {
     // exclude date if it is suspiciously close to epoch
     if (dateMillis != null) {
       final date = DateTime.fromMillisecondsSinceEpoch(dateMillis);
-      if (!const GregorianCalendarComparator().isSameYearMonthDay(date, epoch)) {
+      if (!GregorianCalendarComparator.instance.isSameYearMonthDay(date, epoch)) {
         catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
       }
     }
