@@ -556,7 +556,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     final dateRange = _gpxDateRange(gpx);
     if (dateRange != null) {
       final (firstDate, lastDate) = dateRange;
-      final locale = settings.intl4xLocale();
+      final locale = settings.avesLocale;
       final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
       return Text(
         [

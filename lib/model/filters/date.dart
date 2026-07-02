@@ -2,7 +2,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
-import 'package:aves/utils/calendar/intl4x_format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
@@ -36,14 +35,17 @@ class DateFilter extends CollectionFilter {
       case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
+        // TODO TLAD [calendar] isSameMonthDay
         _test = (entry) {
           final bestDate = entry.bestDate;
           return bestDate != null && bestDate.month == month && bestDate.day == day;
         };
       case .m:
+        // TODO TLAD [calendar] isSameMonth
         final month = _effectiveDate.month;
         _test = (entry) => entry.bestDate?.month == month;
       case .d:
+        // TODO TLAD [calendar] isSameDay
         final day = _effectiveDate.day;
         _test = (entry) => entry.bestDate?.day == day;
     }
@@ -106,24 +108,24 @@ class DateFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    final locale = settings.intl4xLocale(calendar);
+    final locale = settings.avesLocale.copyWith(calendar: calendar);
     switch (level) {
       case .y:
-        return locale.y()(_effectiveDate);
+        return locale.y(_effectiveDate);
       case .ym:
-        return locale.yMMM(context.localeName, calendar)(_effectiveDate);
+        return locale.yMMM(_effectiveDate);
       case .ymd:
-        return locale.yMMMd()(_effectiveDate);
+        return locale.yMMMd(_effectiveDate);
       case .md:
         if (date != null) {
-          return locale.MMMd()(_effectiveDate);
+          return locale.MMMd(_effectiveDate);
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
       case .m:
-        return locale.MMMM()(_effectiveDate);
+        return locale.MMMM(_effectiveDate);
       case .d:
-        return locale.d()(_effectiveDate);
+        return locale.d(_effectiveDate);
     }
   }
 

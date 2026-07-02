@@ -63,7 +63,11 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditor
           const persist = false;
           await targetEntry.refresh(background: background, persist: persist, dataTypes: dataTypes);
           await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-          await targetEntry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
+          await targetEntry.locate(
+            background: background,
+            force: dataTypes.contains(EntryDataType.address),
+            geocoderLocale: settings.avesLocale,
+          );
         }
         showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback);
       } else {

@@ -75,14 +75,13 @@ class EntryListDetails extends StatelessWidget {
   }
 
   Widget _buildDateRow(BuildContext context, TextStyle style) {
-    final localeName = context.localeName;
-    final locale = settings.intl4xLocale();
+    final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
 
     final size = entry.stackedEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
-    final sizeText = size != null ? formatFileSize(localeName, size) : AText.valueNotAvailable;
+    final sizeText = size != null ? formatFileSize(locale.languageTag, size) : AText.valueNotAvailable;
 
     return Wrap(
       spacing: 8,

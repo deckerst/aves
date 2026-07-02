@@ -254,7 +254,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                     );
               return Selector<Settings, (Locale?, AvesThemeBrightness, bool)>(
                 selector: (context, s) => (
-                  s.uiLocale,
+                  s.basicLocale,
                   s.initialized ? s.themeBrightness : SettingsDefaults.themeBrightness,
                   s.initialized ? s.enableDynamicColor : SettingsDefaults.enableDynamicColor,
                 ),
@@ -402,22 +402,24 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   }
 
   void _applyLocale() {
-    settings.resetAppliedLocale();
+    settings.resetResolvedLocale();
 
-    final appliedLocale = settings.appliedLocale;
-    final languageCode = appliedLocale.languageCode;
+    final resolvedLocale = settings.resolvedLocale;
+    final languageCode = resolvedLocale.languageCode;
     AStyles.updateStylesForLocale(languageCode);
 
     Locale? countrifiedLocale;
-    if (appliedLocale.countryCode == null) {
+    if (resolvedLocale.countryCode == null) {
       countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
     }
 
     // `intl` setup here, for date formatters
-    // `intl4x` setup is done via the locale, in the `Settings` getter
+    // `intl4x` setup is done when building the locale, in the `Settings` getter
     final useNativeDigits = !settings.forceWesternArabicNumerals && shouldUseNativeDigits(countrifiedLocale);
-    DateFormat.useNativeDigitsByDefaultFor(appliedLocale.toString(), useNativeDigits);
-    DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toString(), useNativeDigits);
+    DateFormat.useNativeDigitsByDefaultFor(resolvedLocale.toLanguageTag(), useNativeDigits);
+    if (countrifiedLocale != null) {
+      DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toLanguageTag(), useNativeDigits);
+    }
   }
 
   static Widget getFirstPage({Map<String, Object?>? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();

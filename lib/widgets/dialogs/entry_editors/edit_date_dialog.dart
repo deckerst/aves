@@ -6,7 +6,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/calendar/persian_delegate.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
@@ -151,7 +150,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_customDateTime, settings.intl4xLocale(), use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, settings.avesLocale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
@@ -183,7 +182,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(copyItemDate, settings.intl4xLocale(), use24hour))),
+          Expanded(child: Text(formatDateTime(copyItemDate, settings.avesLocale, use24hour))),
           const SizedBox(width: 8),
           ItemPicker(
             extent: 48,
@@ -243,9 +242,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final l10n = context.l10n;
     final cancelText = Themes.asButtonLabel(l10n.cancelTooltip);
 
-    final locale = settings.intl4xLocale();
-    final calendar = settings.calendar;
-    final calendarDelegate = calendar.getPickerDelegate(locale);
+    final locale = settings.avesLocale;
+    final calendarDelegate = locale.getDatePickerDelegate();
     DateTime initialDate = _customDateTime;
     DateTime firstDate = DateTime(1900);
     DateTime lastDate = DateTime(2100);

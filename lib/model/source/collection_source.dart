@@ -491,7 +491,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
     if (dataTypes.contains(EntryDataType.address)) {
       await Future.forEach(entries, (entry) async {
-        await entry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
+        await entry.locate(
+          background: background,
+          force: dataTypes.contains(EntryDataType.address),
+          geocoderLocale: settings.avesLocale,
+        );
         await localMediaDb.updateAddress(entry.id, entry.addressDetails);
       });
       onAddressMetadataChanged();

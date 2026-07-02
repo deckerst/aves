@@ -19,7 +19,7 @@ class MapDateRow extends StatelessWidget {
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry?.bestDate;
-    final dateText = date != null ? formatDateTime(date, settings.intl4xLocale(), use24hour) : AText.valueNotAvailable;
+    final dateText = date != null ? formatDateTime(date, settings.avesLocale, use24hour) : AText.valueNotAvailable;
     return Text.rich(
       TextSpan(
         children: [

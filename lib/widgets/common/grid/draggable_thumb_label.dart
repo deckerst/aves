@@ -1,8 +1,7 @@
-import 'package:aves/utils/calendar/intl4x_format.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:provider/provider.dart';
 
 class DraggableCrumbLabel extends StatelessWidget {
@@ -61,14 +60,14 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     );
   }
 
-  static String formatMonthThumbLabel(BuildContext context, intl4x.Locale locale, intl4x.Calendar calendar, DateTime? date) {
+  static String formatMonthThumbLabel(BuildContext context, AvesLocale locale, DateTime? date) {
     if (date == null) return context.l10n.sectionUnknown;
-    return locale.yMMM(context.localeName, calendar)(date);
+    return locale.yMMM(date);
   }
 
-  static String formatDayThumbLabel(BuildContext context, intl4x.Locale locale, DateTime? date) {
+  static String formatDayThumbLabel(BuildContext context, AvesLocale locale, DateTime? date) {
     if (date == null) return context.l10n.sectionUnknown;
-    return locale.yMMMd()(date);
+    return locale.yMMMd(date);
   }
 }
 

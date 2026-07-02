@@ -315,8 +315,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final localeName = context.localeName;
-    final locale = settings.intl4xLocale();
+    final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
@@ -325,7 +324,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
     final showResolution = !entry.isSvg && entry.isSized;
-    final sizeText = entry.sizeBytes != null ? formatFileSize(localeName, entry.sizeBytes!) : infoUnknown;
+    final sizeText = entry.sizeBytes != null ? formatFileSize(locale.languageTag, entry.sizeBytes!) : infoUnknown;
     final path = entry.path;
 
     return FutureBuilder<String?>(
@@ -340,7 +339,7 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(localeName)),
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale.languageTag)),
                 l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 l10n.viewerInfoLabelPath: ?path,

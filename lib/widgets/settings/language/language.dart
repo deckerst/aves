@@ -5,7 +5,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/poi.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/calendar/intl4x_format.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -59,7 +58,10 @@ class SettingsTileLanguageCalendar extends SettingsTile {
     selector: (context, s) => s.calendar,
     onSelection: (v) => settings.calendar = v,
     tileTitle: title,
-    optionSubtitleBuilder: (v) => settings.intl4xLocale(v).yMMMMd()(DateTime.now()),
+    optionSubtitleBuilder: (v) {
+      final locale = settings.avesLocale.copyWith(calendar: v);
+      return locale.yMMMMd(DateTime.now());
+    },
   );
 }
 

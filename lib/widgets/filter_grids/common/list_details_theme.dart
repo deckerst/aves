@@ -52,7 +52,7 @@ class FilterListDetailsTheme extends StatelessWidget {
         titleLineHeightParagraph.dispose();
 
         final captionLineHeightParagraph = RenderParagraph(
-          TextSpan(text: formatDateTime(DateTime.now(), settings.intl4xLocale(), use24hour), style: captionStyle),
+          TextSpan(text: formatDateTime(DateTime.now(), settings.avesLocale, use24hour), style: captionStyle),
           textDirection: TextDirection.ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);

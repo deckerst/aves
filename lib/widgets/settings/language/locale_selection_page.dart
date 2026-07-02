@@ -27,7 +27,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
   @override
   void initState() {
     super.initState();
-    _selectedValue = settings.uiLocale ?? LocaleTile.systemLocaleOption;
+    _selectedValue = settings.basicLocale ?? LocaleTile.systemLocaleOption;
   }
 
   @override

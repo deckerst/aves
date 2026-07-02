@@ -4,6 +4,7 @@ import 'package:aves/model/entry/sort.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -62,8 +63,13 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
 
-      // TODO TLAD [calendar] try whether `settings.intl4xLocale` is accessible
-      final locale = intl4x.Locale.parse(localeName).withCalendar(intl4x.Calendar.gregorian);
+      // TODO TLAD [calendar] try whether `settings.avesLocale` is accessible, after:
+      //   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
+      final locale = AvesLocale(
+        languageTag: localeName,
+        calendar: intl4x.Calendar.gregorian,
+        forceWesternArabicNumerals: false,
+      );
 
       suggestions.addAll(
         entries.map((entry) {

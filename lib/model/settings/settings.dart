@@ -88,7 +88,7 @@ class Settings
     required bool shouldSanitize,
   }) async {
     await store.init();
-    resetAppliedLocale();
+    resetResolvedLocale();
     _unregister();
     _register(monitorPlatformSettings);
     initAppSettings();

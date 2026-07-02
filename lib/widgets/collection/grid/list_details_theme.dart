@@ -48,7 +48,7 @@ class EntryListDetailsTheme extends StatelessWidget {
 
         final captionLineHeightParagraph = RenderParagraph(
           TextSpan(
-            text: formatDateTime(DateTime.now(), settings.intl4xLocale(), use24hour),
+            text: formatDateTime(DateTime.now(), settings.avesLocale, use24hour),
             style: captionStyle,
           ),
           textDirection: TextDirection.ltr,

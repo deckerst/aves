@@ -52,7 +52,7 @@ class _MetadataTabState extends State<MetadataTab> {
     _pixyMetaLoader = AndroidDebugService.getPixyMetadata(entry);
     _tiffStructureLoader = AndroidDebugService.getTiffStructure(entry);
     _addressLoader = entry.hasGps
-        ? geocodingService.getAddress(entry.latLng!, settings.appliedLocale).then((addresses) {
+        ? geocodingService.getAddress(entry.latLng!, settings.avesLocale).then((addresses) {
             if (addresses.isNotEmpty) {
               final address = addresses.first;
               return {

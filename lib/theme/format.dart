@@ -1,17 +1,16 @@
 import 'package:aves/theme/text.dart';
-import 'package:aves/utils/calendar/intl4x_format.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
+import 'package:aves/utils/calendar/aves_locale.dart';
 
-String formatDay(DateTime date, intl4x.Locale locale) {
-  return locale.yMMMd()(date);
+String formatDay(DateTime date, AvesLocale locale) {
+  return locale.yMMMd(date);
 }
 
-String formatTime(DateTime date, intl4x.Locale locale, bool use24hour) {
-  final formatter = use24hour ? locale.Hm() : locale.jm();
+String formatTime(DateTime date, AvesLocale locale, bool use24hour) {
+  final formatter = use24hour ? locale.Hm : locale.jm;
   return formatter(date);
 }
 
-String formatDateTime(DateTime date, intl4x.Locale locale, bool use24hour) => [
+String formatDateTime(DateTime date, AvesLocale locale, bool use24hour) => [
   formatDay(date, locale),
   formatTime(date, locale, use24hour),
 ].join(AText.separator);

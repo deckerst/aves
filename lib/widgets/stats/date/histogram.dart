@@ -235,8 +235,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
 
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
-            locale: settings.intl4xLocale(),
-            calendar: settings.calendar,
+            locale: settings.avesLocale,
             level: _level,
             first: _firstDate!,
             last: _lastDate!,

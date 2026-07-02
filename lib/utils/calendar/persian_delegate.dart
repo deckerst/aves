@@ -1,6 +1,5 @@
 import 'package:aves/utils/calendar/base_delegate.dart';
 import 'package:flutter/material.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:shamsi_date/shamsi_date.dart';
 
 // placeholder to use as `DateTime` in the picker
@@ -38,9 +37,6 @@ class PersianDateTime extends DateTime {
 class PersianCalendarDelegate extends AvesCalendarDelegate<PersianDateTime> {
   static const int daysPerWeek = DateTime.daysPerWeek;
   static const int monthsPerYear = DateTime.monthsPerYear;
-
-  @override
-  intl4x.Calendar get calendar => intl4x.Calendar.persian;
 
   const PersianCalendarDelegate(super.locale);
 

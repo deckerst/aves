@@ -58,7 +58,11 @@ class PlaceholderFilter extends CollectionFilter {
         if (!entry.hasGps) return null;
 
         if (!entry.hasFineAddress) {
-          await entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
+          await entry.locate(
+            background: false,
+            force: false,
+            geocoderLocale: settings.avesLocale,
+          );
         }
         final address = entry.addressDetails;
         if (address == null) return null;

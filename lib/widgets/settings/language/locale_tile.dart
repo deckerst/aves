@@ -21,7 +21,7 @@ class LocaleTile extends StatelessWidget {
       key: const Key('tile-language'),
       title: Text(context.l10n.settingsLanguageTile),
       subtitle: Selector<Settings, ui.Locale?>(
-        selector: (context, s) => settings.uiLocale,
+        selector: (context, s) => settings.basicLocale,
         builder: (context, locale, child) {
           return Text(locale == null ? context.l10n.settingsSystemDefault : getLocaleName(locale));
         },
@@ -36,7 +36,7 @@ class LocaleTile extends StatelessWidget {
         // wait for the dialog to hide
         await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
         if (value != null) {
-          settings.uiLocale = value == systemLocaleOption ? null : value;
+          settings.basicLocale = value == systemLocaleOption ? null : value;
         }
       },
     );

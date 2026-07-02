@@ -27,19 +27,18 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
           case .date:
-            final locale = settings.intl4xLocale();
-            final calendar = settings.calendar;
+            final locale = settings.avesLocale;
             final date = entry.bestDate;
             switch (collection.sectionFactor) {
               case .album:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
               case .month:
               case .none:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
                 ];
               case .day:
                 return [
@@ -52,12 +51,11 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               ?entry.bestTitle,
             ];
           case .rating:
-            final locale = settings.intl4xLocale();
-            final calendar = settings.calendar;
+            final locale = settings.avesLocale;
             final date = entry.bestDate;
             return [
               RatingFilter.formatRating(context, entry.rating),
-              DraggableThumbLabel.formatMonthThumbLabel(context, locale, calendar, date),
+              DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
             ];
           case .size:
             final sizeBytes = entry.sizeBytes;

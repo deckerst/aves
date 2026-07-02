@@ -5,6 +5,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
@@ -39,7 +40,9 @@ mixin AppSettings on SettingsAccess {
 
   static const localeSeparator = '-';
 
-  ui.Locale? get uiLocale {
+  // basic identifier, without extensions, used for language setup
+  // may be null to pick up system locale
+  ui.Locale? get basicLocale {
     // exceptionally allow getting locale before settings are initialized
     final tag = initialized ? getString(SettingKeys.localeKey) : null;
     if (tag != null) {
@@ -53,7 +56,7 @@ mixin AppSettings on SettingsAccess {
     return null;
   }
 
-  set uiLocale(ui.Locale? newValue) {
+  set basicLocale(ui.Locale? newValue) {
     String? tag;
     if (newValue != null) {
       tag = [
@@ -63,50 +66,66 @@ mixin AppSettings on SettingsAccess {
       ].join(localeSeparator);
     }
     set(SettingKeys.localeKey, tag);
-    resetAppliedLocale();
+    resetResolvedLocale();
   }
 
   List<ui.Locale> _systemLocalesFallback = [];
 
   set systemLocalesFallback(List<ui.Locale> locales) => _systemLocalesFallback = locales;
 
-  ui.Locale? _appliedLocale;
+  ui.Locale? _resolvedLocale;
 
-  void resetAppliedLocale() => _appliedLocale = null;
+  void resetResolvedLocale() {
+    _resolvedLocale = null;
+    _resetAvesLocale();
+  }
 
-  ui.Locale get appliedLocale {
-    if (_appliedLocale == null) {
-      final _locale = uiLocale;
-      final preferredLocales = <ui.Locale>[];
-      if (_locale != null) {
-        preferredLocales.add(_locale);
-      } else {
+  // basic identifier, without extensions, resolved to match user settings
+  ui.Locale get resolvedLocale {
+    if (_resolvedLocale == null) {
+      final preferredLocales = <ui.Locale>[
+        ?basicLocale,
+      ];
+      if (preferredLocales.isEmpty) {
         preferredLocales.addAll(WidgetsBinding.instance.platformDispatcher.locales);
-        if (preferredLocales.isEmpty) {
-          // the `window` locales may be empty in a window-less service context
-          preferredLocales.addAll(_systemLocalesFallback);
-        }
       }
-      _appliedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
+      if (preferredLocales.isEmpty) {
+        // the `window` locales may be empty in a window-less service context
+        preferredLocales.addAll(_systemLocalesFallback);
+      }
+      _resolvedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
     }
-    return _appliedLocale!;
+    return _resolvedLocale!;
+  }
+
+  AvesLocale? _avesLocale;
+
+  void _resetAvesLocale() {
+    _avesLocale = null;
+  }
+
+  // advanced identifier, resolved to match user settings
+  AvesLocale get avesLocale {
+    _avesLocale ??= AvesLocale(
+      languageTag: resolvedLocale.toLanguageTag(),
+      calendar: calendar,
+      forceWesternArabicNumerals: forceWesternArabicNumerals,
+    );
+    return _avesLocale!;
   }
 
   intl4x.Calendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, intl4x.Calendar.gregorian, intl4x.Calendar.values);
 
-  set calendar(intl4x.Calendar newValue) => set(SettingKeys.calendarKey, newValue.name);
+  set calendar(intl4x.Calendar newValue) {
+    _resetAvesLocale();
+    set(SettingKeys.calendarKey, newValue.name);
+  }
 
   bool get forceWesternArabicNumerals => getBool(SettingKeys.forceWesternArabicNumeralsKey) ?? false;
 
-  set forceWesternArabicNumerals(bool newValue) => set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
-
-  intl4x.Locale intl4xLocale([intl4x.Calendar? calendarOverride]) {
-    final localeName = appliedLocale.toLanguageTag();
-    var locale = intl4x.Locale.parse(localeName).withCalendar(calendarOverride ?? calendar);
-    if (forceWesternArabicNumerals) {
-      locale = locale.withNumberingSystem(intl4x.NumberingSystem.latin);
-    }
-    return locale;
+  set forceWesternArabicNumerals(bool newValue) {
+    _resetAvesLocale();
+    set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
   }
 
   int get catalogTimeZoneOffsetMillis => getInt(SettingKeys.catalogTimeZoneOffsetMillisKey) ?? 0;
