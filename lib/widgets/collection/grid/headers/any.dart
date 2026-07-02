@@ -44,7 +44,7 @@ class CollectionSectionHeader extends StatelessWidget {
             return _buildAlbumHeader(context);
           case .month:
             var k = sectionKey as EntryDateSectionKey;
-            final date = collection.calendar.getComparator().fromYearMonthDay(k.year, k.month, k.day);
+            final date = collection.calendar.ops.fromYearMonthDay(k.year, k.month, k.day);
             return MonthSectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               sectionKey: sectionKey,
@@ -53,7 +53,7 @@ class CollectionSectionHeader extends StatelessWidget {
             );
           case .day:
             var k = sectionKey as EntryDateSectionKey;
-            final date = collection.calendar.getComparator().fromYearMonthDay(k.year, k.month, k.day);
+            final date = collection.calendar.ops.fromYearMonthDay(k.year, k.month, k.day);
             return DaySectionHeader<AvesEntry>(
               key: ValueKey(sectionKey),
               sectionKey: sectionKey,

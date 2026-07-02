@@ -24,24 +24,24 @@ class DateFilter extends CollectionFilter {
 
   DateFilter(this.calendar, this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
-    final comparator = calendar.getComparator();
+    final calOps = calendar.ops;
     switch (level) {
       case .y:
-        _test = (entry) => comparator.isSameYear(entry.bestDate, _effectiveDate);
+        _test = (entry) => calOps.isSameYear(entry.bestDate, _effectiveDate);
       case .ym:
-        _test = (entry) => comparator.isSameYearMonth(entry.bestDate, _effectiveDate);
+        _test = (entry) => calOps.isSameYearMonth(entry.bestDate, _effectiveDate);
       case .ymd:
-        _test = (entry) => comparator.isSameYearMonthDay(entry.bestDate, _effectiveDate);
+        _test = (entry) => calOps.isSameYearMonthDay(entry.bestDate, _effectiveDate);
       case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
-        _test = (entry) => comparator.isOnMonthDay(entry.bestDate, month, day);
+        _test = (entry) => calOps.isOnMonthDay(entry.bestDate, month, day);
       case .m:
         final month = _effectiveDate.month;
-        _test = (entry) => comparator.isOnMonth(entry.bestDate, month);
+        _test = (entry) => calOps.isOnMonth(entry.bestDate, month);
       case .d:
         final day = _effectiveDate.day;
-        _test = (entry) => comparator.isOnDay(entry.bestDate, day);
+        _test = (entry) => calOps.isOnDay(entry.bestDate, day);
     }
   }
 
@@ -110,14 +110,14 @@ class DateFilter extends CollectionFilter {
         return locale.yMMMd(_effectiveDate);
       case .md:
         if (date != null) {
-          return locale.MMMd(calendar.getComparator().asNative(_effectiveDate));
+          return locale.MMMd(calendar.ops.asNative(_effectiveDate));
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
       case .m:
-        return locale.MMMM(calendar.getComparator().asNative(_effectiveDate));
+        return locale.MMMM(calendar.ops.asNative(_effectiveDate));
       case .d:
-        return locale.d(calendar.getComparator().asNative(_effectiveDate));
+        return locale.d(calendar.ops.asNative(_effectiveDate));
     }
   }
 

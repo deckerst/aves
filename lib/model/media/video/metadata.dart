@@ -15,7 +15,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/calendar/comparators.dart';
+import 'package:aves/utils/calendar/ops/gregorian.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
@@ -117,7 +117,7 @@ class VideoMetadataFormatter {
     // exclude date if it is suspiciously close to epoch
     if (dateMillis != null) {
       final date = DateTime.fromMillisecondsSinceEpoch(dateMillis);
-      if (!GregorianCalendarComparator.instance.isSameYearMonthDay(date, epoch)) {
+      if (!GregorianCalendarOps.instance.isSameYearMonthDay(date, epoch)) {
         catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
       }
     }

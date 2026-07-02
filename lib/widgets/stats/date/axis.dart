@@ -32,9 +32,10 @@ class TimeAxisSpec {
   factory TimeAxisSpec.days(AvesLocale locale, DateTime first, DateTime last) {
     final daysTickLongFormat = locale.MMMd;
     final daysTickShortFormat = locale.d;
+    final calOps = locale.calendar.ops;
 
-    first = first.dateOnly;
-    last = last.dateOnly;
+    first = calOps.dateOnly(first);
+    last = calOps.dateOnly(last);
     final rangeDays = last.difference(first).inHumanDays;
     final delta = max(1, (rangeDays / 5).ceil());
 
@@ -42,7 +43,7 @@ class TimeAxisSpec {
     int lastContext = -1;
     DateFormatter dateFormat;
     for (int i = 0; i < rangeDays; i += delta) {
-      final tickDate = first.addDays(i);
+      final tickDate = calOps.addDaysToDate(first, i);
       if (lastContext != tickDate.month) {
         lastContext = tickDate.month;
         dateFormat = daysTickLongFormat;
@@ -57,20 +58,21 @@ class TimeAxisSpec {
   factory TimeAxisSpec.months(AvesLocale locale, DateTime first, DateTime last) {
     final monthsTickLongFormat = locale.yMMM;
     final monthsTickShortFormat = locale.MMM;
+    final calOps = locale.calendar.ops;
 
-    first = DateTime(first.year, first.month);
-    last = DateTime(last.year, last.month);
+    first = calOps.monthDateOnly(first);
+    last = calOps.monthDateOnly(last);
     final monthsInYear = locale.calendar.maxMonthsInYear;
     final rangeMonths = last.month - first.month + (last.month < first.month ? monthsInYear : 0);
     if (rangeMonths < monthsInYear) {
-      first = first.addMonths(-((monthsInYear - rangeMonths) / 2).floor());
+      first = calOps.addMonthsToMonthDate(first, -((monthsInYear - rangeMonths) / 2).floor());
     }
 
     List<charts.TickSpec<DateTime>> ticks = [];
     int lastContext = -1;
     DateFormatter dateFormat;
     for (int i = 0; i < DateTime.monthsPerYear; i += 3) {
-      final tickDate = first.addMonths(2 + i);
+      final tickDate = calOps.addMonthsToMonthDate(first, 2 + i);
       if (lastContext != tickDate.year) {
         lastContext = tickDate.year;
         dateFormat = monthsTickLongFormat;

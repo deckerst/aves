@@ -6,7 +6,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/utils/calendar/persian_delegate.dart';
+import 'package:aves/utils/calendar/delegate/persian.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/time_shift_selector.dart';

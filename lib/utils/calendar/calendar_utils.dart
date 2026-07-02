@@ -1,4 +1,6 @@
-import 'package:aves/utils/calendar/comparators.dart';
+import 'package:aves/utils/calendar/ops/base.dart';
+import 'package:aves/utils/calendar/ops/gregorian.dart';
+import 'package:aves/utils/calendar/ops/persian.dart';
 import 'package:intl4x/datetime_format.dart' as intl4x;
 
 extension ExtraIntl4xCalendar on intl4x.Calendar {
@@ -8,12 +10,12 @@ extension ExtraIntl4xCalendar on intl4x.Calendar {
 
   int get maxMonthsInYear => 12;
 
-  CalendarComparator getComparator() {
+  CalendarOps get ops {
     switch (this) {
       case .gregorian:
-        return GregorianCalendarComparator.instance;
+        return GregorianCalendarOps.instance;
       case .persian:
-        return PersianCalendarComparator.instance;
+        return PersianCalendarOps.instance;
       default:
         throw UnimplementedError();
     }

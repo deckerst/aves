@@ -23,13 +23,13 @@ class DaySectionHeader<T> extends StatelessWidget {
     if (date == null) return l10n.sectionUnknown;
 
     final locale = settings.avesLocale;
-    final comparator = locale.calendar.getComparator();
+    final calOps = locale.calendar.ops;
 
-    if (comparator.isToday(date)) return l10n.dateToday;
-    if (comparator.isYesterday(date)) return l10n.dateYesterday;
+    if (calOps.isToday(date)) return l10n.dateToday;
+    if (calOps.isYesterday(date)) return l10n.dateYesterday;
 
     final weekday = DateFormat.E(locale.languageTag).format(date);
-    if (comparator.isThisYear(date)) return '${locale.MMMMd(date)} ($weekday)';
+    if (calOps.isThisYear(date)) return '${locale.MMMMd(date)} ($weekday)';
     return '${locale.yMMMMd(date)} ($weekday)';
   }
 
@@ -60,11 +60,11 @@ class MonthSectionHeader<T> extends StatelessWidget {
     if (date == null) return l10n.sectionUnknown;
 
     final locale = settings.avesLocale;
-    final comparator = locale.calendar.getComparator();
+    final calOps = locale.calendar.ops;
 
-    if (comparator.isThisMonth(date)) return l10n.dateThisMonth;
+    if (calOps.isThisMonth(date)) return l10n.dateThisMonth;
 
-    final formatter = comparator.isThisYear(date) ? locale.MMMM : locale.yMMMM;
+    final formatter = calOps.isThisYear(date) ? locale.MMMM : locale.yMMMM;
     final localized = formatter(date);
     return '${localized.substring(0, 1).toUpperCase()}${localized.substring(1)}';
   }

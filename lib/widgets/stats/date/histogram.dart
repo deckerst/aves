@@ -20,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
+import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
@@ -63,6 +64,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
       final rangeDays = lastDate.difference(firstDate).inHumanDays;
       if (rangeDays > 1) {
         final calendar = settings.calendar;
+        final calOps = calendar.ops;
+
         if (rangeDays <= calendar.maxDaysInMonth) {
           _level = DateLevel.ymd;
         } else if (rangeDays <= calendar.maxDaysInYear) {
@@ -72,11 +75,11 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         late DateTime Function(DateTime) normalizeDate;
         switch (_level) {
           case .ymd:
-            normalizeDate = (v) => DateTime(v.year, v.month, v.day);
+            normalizeDate = calOps.dateOnly;
           case .ym:
-            normalizeDate = (v) => DateTime(v.year, v.month);
+            normalizeDate = calOps.monthDateOnly;
           default:
-            normalizeDate = (v) => DateTime(v.year);
+            normalizeDate = calOps.yearDateOnly;
         }
         _firstDate = normalizeDate(firstDate);
         _lastDate = normalizeDate(lastDate);
@@ -93,6 +96,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
           _interpolatedDataLoader = compute<_DataInterpolationArg, List<_EntryByDate>?>(
             _computeInterpolatedData,
             _DataInterpolationArg(
+              calendar: calendar,
               firstDate: _firstDate,
               lastDate: _lastDate,
               level: _level,
@@ -112,13 +116,15 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   static List<_EntryByDate>? _computeInterpolatedData(_DataInterpolationArg arg) {
+    final calendar = arg.calendar;
+    final level = arg.level;
     final firstDate = arg.firstDate;
     final lastDate = arg.lastDate;
-    final level = arg.level;
     final entryCountPerDate = arg.entryCountPerDate;
 
     if (firstDate == null || lastDate == null) return null;
 
+    final calOps = calendar.ops;
     final xRange = lastDate.difference(firstDate);
     final xRangeInMillis = xRange.inMilliseconds;
     late int xCount;
@@ -126,13 +132,13 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     switch (level) {
       case .ymd:
         xCount = xRange.inHumanDays;
-        incrementDate = (date) => DateTime(date.year, date.month, date.day + 1);
+        incrementDate = (date) => calOps.addDaysToDate(date, 1);
       case .ym:
         xCount = (xRange.inHumanDays / 30.5).round();
-        incrementDate = (date) => DateTime(date.year, date.month + 1);
+        incrementDate = (date) => calOps.addMonthsToMonthDate(date, 1);
       default:
         xCount = lastDate.year - firstDate.year;
-        incrementDate = (date) => DateTime(date.year + 1);
+        incrementDate = (date) => calOps.addYearsToYearDate(date, 1);
     }
     final yMax = entryCountPerDate.values.reduce(max).toDouble();
     final xInterval = yMax / xCount;
@@ -383,11 +389,13 @@ class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
 }
 
 class _DataInterpolationArg {
+  final intl4x.Calendar calendar;
   final DateLevel level;
   final DateTime? firstDate, lastDate;
   final Map<DateTime, int> entryCountPerDate;
 
   const _DataInterpolationArg({
+    required this.calendar,
     required this.level,
     required this.firstDate,
     required this.lastDate,

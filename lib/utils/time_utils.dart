@@ -1,14 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-// TODO TLAD [calendar]
-extension ExtraDateTime on DateTime {
-  DateTime get dateOnly => DateTime(year, month, day);
-
-  DateTime addMonths(int months) => DateTime(year, month + months, day, hour, minute, second, millisecond, microsecond);
-
-  DateTime addDays(int days) => DateTime(year, month, day + days, hour, minute, second, millisecond, microsecond);
-}
-
 extension ExtraDuration on Duration {
   // using `Duration.inDays` may yield surprising results when crossing DST boundaries
   // because a day will not have 24 hours, so we use the following approximation instead

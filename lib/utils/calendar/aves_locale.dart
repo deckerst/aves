@@ -1,5 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
-import 'package:aves/utils/calendar/persian_delegate.dart';
+import 'package:aves/utils/calendar/delegate/persian.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/datetime_format.dart' as intl4x;
@@ -55,7 +55,7 @@ class AvesLocale {
   final String languageTag;
   final intl4x.Calendar calendar;
   final bool forceWesternArabicNumerals;
-  late final intl4x.Locale locale4x;
+  late final intl4x.Locale _locale4x;
 
   AvesLocale({
     required this.languageTag,
@@ -66,7 +66,7 @@ class AvesLocale {
     if (forceWesternArabicNumerals) {
       locale = locale.withNumberingSystem(intl4x.NumberingSystem.latin);
     }
-    locale4x = locale;
+    _locale4x = locale;
   }
 
   AvesLocale copyWith({
@@ -79,6 +79,8 @@ class AvesLocale {
     );
   }
 
+  // only use with `showDatePicker` / `DatePickerDialog`,
+  // as delegates may rely on custom `DateTime` subclasses
   CalendarDelegate getDatePickerDelegate() {
     switch (calendar) {
       case .gregorian:
@@ -94,7 +96,7 @@ class AvesLocale {
 
   DateFormatter get y {
     _y ??= intl4x.DateTimeFormat.year(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.medium,
     ).format;
     return _y!;
@@ -104,7 +106,7 @@ class AvesLocale {
 
   DateFormatter get MMM {
     _MMM ??= intl4x.DateTimeFormat.month(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.medium,
     ).format;
     return _MMM!;
@@ -114,7 +116,7 @@ class AvesLocale {
 
   DateFormatter get MMMM {
     _MMMM ??= intl4x.DateTimeFormat.month(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.long,
     ).format;
     return _MMMM!;
@@ -124,7 +126,7 @@ class AvesLocale {
 
   DateFormatter get d {
     _d ??= intl4x.DateTimeFormat.day(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.medium,
     ).format;
     return _d!;
@@ -134,7 +136,7 @@ class AvesLocale {
 
   DateFormatter get MMMd {
     _MMMd ??= intl4x.DateTimeFormat.monthDay(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.medium,
     ).format;
     return _MMMd!;
@@ -144,7 +146,7 @@ class AvesLocale {
 
   DateFormatter get MMMMd {
     _MMMMd ??= intl4x.DateTimeFormat.monthDay(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.long,
     ).format;
     return _MMMMd!;
@@ -161,11 +163,11 @@ class AvesLocale {
           // ideally, we would use an equivalent to intl `DateFormat.yMMM`,
           // but as of intl4x v0.17.0, there is no `DateTimeFormat.yearMonth`
           final y = intl4x.DateTimeFormat.year(
-            locale: locale4x,
+            locale: _locale4x,
             length: intl4x.DateTimeLength.medium,
           );
           final d = intl4x.DateTimeFormat.month(
-            locale: locale4x,
+            locale: _locale4x,
             length: intl4x.DateTimeLength.medium,
           );
           _yMMM = (v) => '${y.format(v)} ${d.format(v)}';
@@ -185,11 +187,11 @@ class AvesLocale {
           // ideally, we would use an equivalent to intl `DateFormat.yMMMM`,
           // but as of intl4x v0.17.0, there is no `DateTimeFormat.yearMonth`
           final y = intl4x.DateTimeFormat.year(
-            locale: locale4x,
+            locale: _locale4x,
             length: intl4x.DateTimeLength.long,
           );
           final d = intl4x.DateTimeFormat.month(
-            locale: locale4x,
+            locale: _locale4x,
             length: intl4x.DateTimeLength.long,
           );
           _yMMMM = (v) => '${y.format(v)} ${d.format(v)}';
@@ -209,7 +211,7 @@ class AvesLocale {
           // ideally, we would use an equivalent to intl `DateFormat.MMMEd`,
           // but as of intl4x v0.17.0, there is no `DateTimeFormat.monthDayWeekday`
           final ymdw = intl4x.DateTimeFormat.yearMonthDayWeekday(
-            locale: locale4x,
+            locale: _locale4x,
             length: intl4x.DateTimeLength.medium,
           );
           _MMMEd = ymdw.format;
@@ -222,7 +224,7 @@ class AvesLocale {
 
   DateFormatter get yMd {
     _yMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.short,
     ).format;
     return _yMd!;
@@ -232,7 +234,7 @@ class AvesLocale {
 
   DateFormatter get yMMMd {
     _yMMMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.medium,
     ).format;
     return _yMMMd!;
@@ -242,7 +244,7 @@ class AvesLocale {
 
   DateFormatter get yMMMMd {
     _yMMMMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.long,
     ).format;
     return _yMMMMd!;
@@ -252,7 +254,7 @@ class AvesLocale {
 
   DateFormatter get yMMMMEEEEd {
     _yMMMMEEEEd ??= intl4x.DateTimeFormat.yearMonthDayWeekday(
-      locale: locale4x,
+      locale: _locale4x,
       length: intl4x.DateTimeLength.long,
     ).format;
     return _yMMMMEEEEd!;
@@ -262,7 +264,7 @@ class AvesLocale {
 
   DateFormatter get Hm {
     _Hm ??= intl4x.DateTimeFormat.time(
-      locale: locale4x.withClockStyle(intl4x.ClockStyle.zeroToTwentyThree),
+      locale: _locale4x.withClockStyle(intl4x.ClockStyle.zeroToTwentyThree),
       length: intl4x.DateTimeLength.medium,
       timePrecision: intl4x.TimePrecision.minute,
     ).format;
@@ -273,7 +275,7 @@ class AvesLocale {
 
   DateFormatter get jm {
     _jm ??= intl4x.DateTimeFormat.time(
-      locale: locale4x.withClockStyle(intl4x.ClockStyle.zeroToEleven),
+      locale: _locale4x.withClockStyle(intl4x.ClockStyle.zeroToEleven),
       length: intl4x.DateTimeLength.medium,
       timePrecision: intl4x.TimePrecision.minute,
     ).format;

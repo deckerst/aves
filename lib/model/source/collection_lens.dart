@@ -300,19 +300,19 @@ class CollectionLens with ChangeNotifier {
             case .album:
               sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             case .month:
-              final comparator = calendar.getComparator();
+              final calOps = calendar.ops;
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) {
                 final d = entry.bestDate;
                 if (d == null) return EntryDateSectionKey.unknown;
-                final (year, month) = comparator.getYearMonth(d);
+                final (year, month) = calOps.getYearMonth(d);
                 return EntryDateSectionKey(year: year, month: month);
               });
             case .day:
-              final comparator = calendar.getComparator();
+              final calOps = calendar.ops;
               sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) {
                 final d = entry.bestDate;
                 if (d == null) return EntryDateSectionKey.unknown;
-                final (year, month, day) = comparator.getYearMonthDay(d);
+                final (year, month, day) = calOps.getYearMonthDay(d);
                 return EntryDateSectionKey(year: year, month: month, day: day);
               });
             case .none:

@@ -21,8 +21,8 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
@@ -120,10 +120,15 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   }
 
   Widget _buildChips(BuildContext context) {
+    final locale = settings.avesLocale;
+    final calendar = locale.calendar;
+    final calOps = calendar.ops;
+
     final entry = widget.entry;
-    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final dateTime = entry.bestDate;
     final album = entry.directory;
+    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
+
     final filters = {
       MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
@@ -135,7 +140,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
       if (entry.isSlowMotion) TypeFilter.slowMotion,
-      if (dateTime != null) ...[DateFilter(settings.calendar, DateLevel.ymd, dateTime.dateOnly), WeekDayFilter(dateTime.weekday)],
+      if (dateTime != null) ...[DateFilter(calendar, DateLevel.ymd, calOps.dateOnly(dateTime)), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       ...dynamicAlbums.all.where((v) => v.test(entry)).toSet(),
       if (entry.rating != 0) RatingFilter(entry.rating),
