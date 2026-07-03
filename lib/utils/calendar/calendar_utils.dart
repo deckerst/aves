@@ -8,8 +8,6 @@ extension ExtraIntl4xCalendar on intl4x.Calendar {
 
   int get maxDaysInMonth => 31;
 
-  int get maxMonthsInYear => 12;
-
   CalendarOps get ops {
     switch (this) {
       case .gregorian:

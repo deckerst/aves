@@ -2,6 +2,9 @@ import 'package:aves/utils/calendar/ops/base.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class PersianCalendarOps extends CalendarOps {
+  @override
+  int get monthsPerYear => DateTime.monthsPerYear;
+
   static final instance = PersianCalendarOps._private();
 
   PersianCalendarOps._private();
@@ -95,6 +98,12 @@ class PersianCalendarOps extends CalendarOps {
   }
 
   @override
+  int getYear(DateTime date) {
+    final j = toNative(date)!;
+    return j.year;
+  }
+
+  @override
   (int year, int month) getYearMonth(DateTime date) {
     final j = toNative(date)!;
     return (j.year, j.month);
@@ -109,5 +118,19 @@ class PersianCalendarOps extends CalendarOps {
   @override
   DateTime fromYearMonthDay(int? year, int? month, int? day) {
     return Jalali(year ?? 1, month ?? 1, day ?? 1).toDateTime();
+  }
+
+  @override
+  int yearDelta(DateTime startDate, DateTime endDate) {
+    final jStart = toNative(startDate)!;
+    final jEnd = toNative(endDate)!;
+    return jEnd.year - jStart.year;
+  }
+
+  @override
+  int monthDelta(DateTime startDate, DateTime endDate) {
+    final jStart = toNative(startDate)!;
+    final jEnd = toNative(endDate)!;
+    return (jEnd.year - jStart.year) * monthsPerYear + jEnd.month - jStart.month;
   }
 }

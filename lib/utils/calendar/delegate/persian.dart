@@ -55,12 +55,12 @@ class PersianCalendarDelegate extends AvesCalendarDelegate<PersianDateTime> {
 
   @override
   int monthDelta(PersianDateTime startDate, PersianDateTime endDate) {
-    return (endDate.year - startDate.year) * monthsPerYear + (endDate.month - startDate.month);
+    return (endDate.year - startDate.year) * monthsPerYear + endDate.month - startDate.month;
   }
 
   @override
   PersianDateTime addMonthsToMonthDate(PersianDateTime monthDate, int monthsToAdd) {
-    final int totalMonths = monthDate.year * monthsPerYear + (monthDate.month - 1) + monthsToAdd;
+    final int totalMonths = monthDate.year * monthsPerYear + monthDate.month - 1 + monthsToAdd;
     final int newYear = totalMonths ~/ monthsPerYear;
     final int newMonth = (totalMonths % monthsPerYear) + 1;
     return PersianDateTime(newYear, newMonth, 1);

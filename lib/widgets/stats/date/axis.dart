@@ -40,12 +40,13 @@ class TimeAxisSpec {
     final delta = max(1, (rangeDays / 5).ceil());
 
     List<charts.TickSpec<DateTime>> ticks = [];
-    int lastContext = -1;
+    (int, int) lastContext = (-1, -1);
     DateFormatter dateFormat;
     for (int i = 0; i < rangeDays; i += delta) {
       final tickDate = calOps.addDaysToDate(first, i);
-      if (lastContext != tickDate.month) {
-        lastContext = tickDate.month;
+      final tickContext = calOps.getYearMonth(tickDate);
+      if (lastContext != tickContext) {
+        lastContext = tickContext;
         dateFormat = daysTickLongFormat;
       } else {
         dateFormat = daysTickShortFormat;
@@ -62,19 +63,21 @@ class TimeAxisSpec {
 
     first = calOps.monthDateOnly(first);
     last = calOps.monthDateOnly(last);
-    final monthsInYear = locale.calendar.maxMonthsInYear;
-    final rangeMonths = last.month - first.month + (last.month < first.month ? monthsInYear : 0);
-    if (rangeMonths < monthsInYear) {
-      first = calOps.addMonthsToMonthDate(first, -((monthsInYear - rangeMonths) / 2).floor());
+    final monthsPerYear = calOps.monthsPerYear;
+    final rangeMonths = calOps.monthDelta(first, last);
+    if (rangeMonths < monthsPerYear) {
+      // push back first date in the past, so that data will land in the middle of chart
+      first = calOps.addMonthsToMonthDate(first, -((monthsPerYear - rangeMonths) / 2).floor());
     }
 
     List<charts.TickSpec<DateTime>> ticks = [];
     int lastContext = -1;
     DateFormatter dateFormat;
-    for (int i = 0; i < DateTime.monthsPerYear; i += 3) {
+    for (int i = 0; i < calOps.monthsPerYear; i += 3) {
       final tickDate = calOps.addMonthsToMonthDate(first, 2 + i);
-      if (lastContext != tickDate.year) {
-        lastContext = tickDate.year;
+      final tickContext = calOps.getYear(tickDate);
+      if (lastContext != tickContext) {
+        lastContext = tickContext;
         dateFormat = monthsTickLongFormat;
       } else {
         dateFormat = monthsTickShortFormat;
@@ -86,14 +89,16 @@ class TimeAxisSpec {
 
   factory TimeAxisSpec.years(AvesLocale locale, DateTime first, DateTime last) {
     final dateFormat = locale.y;
+    final calOps = locale.calendar.ops;
 
-    final firstYear = first.year;
-    final lastYear = last.year;
-    final delta = max(1, ((lastYear - firstYear) / 5).ceil());
+    final firstYear = calOps.getYear(first);
+    final lastYear = calOps.getYear(last);
+    final rangeYears = lastYear - firstYear;
+    final delta = max(1, (rangeYears / 5).ceil());
 
     List<charts.TickSpec<DateTime>> ticks = [];
-    for (int year = firstYear; year <= lastYear; year += delta) {
-      final tickDate = DateTime(year);
+    for (int i = 0; i < rangeYears; i += delta) {
+      final tickDate = calOps.addYearsToYearDate(first, i);
       ticks.add(charts.TickSpec<DateTime>(tickDate, label: dateFormat(tickDate)));
     }
     return TimeAxisSpec(ticks);

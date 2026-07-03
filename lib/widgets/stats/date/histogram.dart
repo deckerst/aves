@@ -134,10 +134,10 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         xCount = xRange.inHumanDays;
         incrementDate = (date) => calOps.addDaysToDate(date, 1);
       case .ym:
-        xCount = (xRange.inHumanDays / 30.5).round();
+        xCount = calOps.monthDelta(firstDate, lastDate);
         incrementDate = (date) => calOps.addMonthsToMonthDate(date, 1);
       default:
-        xCount = lastDate.year - firstDate.year;
+        xCount = calOps.yearDelta(firstDate, lastDate);
         incrementDate = (date) => calOps.addYearsToYearDate(date, 1);
     }
     final yMax = entryCountPerDate.values.reduce(max).toDouble();

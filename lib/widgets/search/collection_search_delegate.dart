@@ -197,10 +197,13 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildDateFilters(BuildContext context, CollectionFilterPredicate containQuery) {
+    final locale = settings.avesLocale;
+    final calendar = locale.calendar;
+    final calOps = calendar.ops;
+
     final firstDayOfWeekIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
     const daysPerWeek = DateTime.daysPerWeek;
-    final calendar = settings.calendar;
-    final _monthFilters = List.generate(calendar.maxMonthsInYear, (i) => DateFilter(calendar, DateLevel.m, DateTime(1, i + 1)));
+    final _monthFilters = List.generate(calOps.monthsPerYear, (i) => DateFilter(calendar, DateLevel.m, DateTime(1, i + 1)));
     final _weekdayFilters = List.generate(daysPerWeek, (i) => WeekDayFilter((i + firstDayOfWeekIndex - 1) % daysPerWeek + 1));
 
     final filters = [

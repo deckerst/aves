@@ -1,4 +1,6 @@
 abstract class CalendarOps {
+  int get monthsPerYear;
+
   // when `DateTime` components are to be interpreted within the calendar
   // e.g. when `DateTime` month `7` is to be interpreted as Persian 7th month `Mehr`
   DateTime asNative(DateTime date);
@@ -27,11 +29,17 @@ abstract class CalendarOps {
 
   bool isOnDay(DateTime? date, int day);
 
+  int getYear(DateTime date);
+
   (int year, int month) getYearMonth(DateTime date);
 
   (int year, int month, int day) getYearMonthDay(DateTime date);
 
   DateTime fromYearMonthDay(int? year, int? month, int? day);
+
+  int yearDelta(DateTime startDate, DateTime endDate);
+
+  int monthDelta(DateTime startDate, DateTime endDate);
 
   bool isToday(DateTime date) => isSameYearMonthDay(date, DateTime.now());
 
