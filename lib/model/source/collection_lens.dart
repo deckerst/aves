@@ -20,12 +20,12 @@ import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
@@ -34,7 +34,7 @@ class CollectionLens with ChangeNotifier {
   EntrySectionFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
-  intl4x.Calendar calendar;
+  ACalendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
   final AChangeNotifier layoutChangeNotifier = .new();
   final Set<StreamSubscription> _subscriptions = {};

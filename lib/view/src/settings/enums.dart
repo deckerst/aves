@@ -1,8 +1,8 @@
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
 extension ExtraAccessibilityAnimationsView on AccessibilityAnimations {
   String getName(BuildContext context) {
@@ -41,7 +41,7 @@ extension ExtraAvesThemeBrightnessView on AvesThemeBrightness {
   }
 }
 
-extension ExtraCalendarView on intl4x.Calendar {
+extension ExtraCalendarView on ACalendar {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {

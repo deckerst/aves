@@ -9,7 +9,6 @@ import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
 mixin AppSettings on SettingsAccess {
   static const int recentFilterHistoryMax = 20;
@@ -114,9 +113,9 @@ mixin AppSettings on SettingsAccess {
     return _avesLocale!;
   }
 
-  intl4x.Calendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, intl4x.Calendar.gregorian, intl4x.Calendar.values);
+  ACalendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, ACalendar.gregorian, ACalendar.values);
 
-  set calendar(intl4x.Calendar newValue) {
+  set calendar(ACalendar newValue) {
     _resetAvesLocale();
     set(SettingKeys.calendarKey, newValue.name);
   }

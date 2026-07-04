@@ -9,7 +9,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class GlobalSearch {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/global_search');
@@ -67,7 +66,7 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
       //   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
       final locale = AvesLocale(
         languageTag: localeName,
-        calendar: intl4x.Calendar.gregorian,
+        calendar: ACalendar.gregorian,
         forceWesternArabicNumerals: false,
       );
 

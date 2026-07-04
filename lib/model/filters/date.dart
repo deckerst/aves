@@ -1,23 +1,23 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
 class DateFilter extends CollectionFilter {
   static const type = 'date';
 
   final DateLevel level;
-  late final intl4x.Calendar calendar;
+  late final ACalendar calendar;
   late final DateTime? date;
   late final DateTime _effectiveDate;
   late final EntryPredicate _test;
 
   // TODO TLAD [calendar]
-  static final onThisDay = DateFilter(intl4x.Calendar.gregorian, DateLevel.md, null);
+  static final onThisDay = DateFilter(ACalendar.gregorian, DateLevel.md, null);
 
   @override
   List<Object?> get props => [calendar, level, date, reversed];
@@ -48,7 +48,7 @@ class DateFilter extends CollectionFilter {
   factory DateFilter.fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
-      intl4x.Calendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,
+      ACalendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,
       DateLevel.values.safeByName(json['level'] as String?) ?? .ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
       reversed: json['reversed'] as bool? ?? false,

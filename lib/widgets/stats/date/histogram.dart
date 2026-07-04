@@ -7,6 +7,7 @@ import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -20,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
@@ -389,7 +389,7 @@ class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
 }
 
 class _DataInterpolationArg {
-  final intl4x.Calendar calendar;
+  final ACalendar calendar;
   final DateLevel level;
   final DateTime? firstDate, lastDate;
   final Map<DateTime, int> entryCountPerDate;

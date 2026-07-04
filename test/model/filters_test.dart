@@ -20,7 +20,7 @@ import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 
@@ -53,7 +53,7 @@ void main() {
     expect(bounds, jsonMapRoundTrip(bounds));
     expect(bounds, jsonStringRoundTrip(bounds));
 
-    const calendar = intl4x.Calendar.gregorian;
+    const calendar = ACalendar.gregorian;
     final date = DateFilter(calendar, DateLevel.ym, DateTime(1969, 7));
     expect(date, jsonMapRoundTrip(date));
     expect(date, jsonStringRoundTrip(date));

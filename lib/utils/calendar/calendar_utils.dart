@@ -1,9 +1,9 @@
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/ops/base.dart';
 import 'package:aves/utils/calendar/ops/gregorian.dart';
 import 'package:aves/utils/calendar/ops/persian.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
 
-extension ExtraIntl4xCalendar on intl4x.Calendar {
+extension ExtraIntl4xCalendar on ACalendar {
   int get maxDaysInYear => 366;
 
   int get maxDaysInMonth => 31;

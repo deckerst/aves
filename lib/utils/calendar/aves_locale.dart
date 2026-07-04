@@ -1,76 +1,29 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:aves/utils/calendar/dateformat/base.dart';
+import 'package:aves/utils/calendar/dateformat/intl.dart';
+import 'package:aves/utils/calendar/dateformat/intl4x.dart';
 import 'package:aves/utils/calendar/delegate/persian.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/datetime_format.dart' as intl4x;
 
-typedef DateFormatter = String Function(DateTime date);
+typedef ACalendar = intl4x.Calendar;
 
-/*
-  * `intl` formatter examples (en_US)
-
-  `MMMMd`:       `April 15`
-  `yMMMMd`:      `April 15, 2020`
-  `MMMEd`:       `Wed, Apr 15`
-  `yMMMEd`:      `Wed, Apr 15, 2020`
-  `MMMMEEEEd`:   `Wednesday, April 15`
-  `yMMMMEEEEd`:  `Wednesday, April 15, 2020`
-  `MEd`:         `Wed, 4/15`
-  `yMEd`:        `Wed, 4/15/2020`
-
-  * `intl` formatter examples (ko)
-
-  `MMMMd`:       `1월 26일`
-  `yMMMMd`:      `2021년 1월 26일`
-  `MMMEd`:       `1월 26일 (화)`
-  `yMMMEd`:      `2021년 1월 26일 (화)`
-  `MMMMEEEEd`:   `1월 26일 화요일`
-  `yMMMMEEEEd`:  `2021년 1월 26일 화요일`
-  `MEd`:         `1. 26. (화)`
-  `yMEd`:        `2021. 1. 26. (화)`
-
-  * `intl4x` formatter examples (en-US locale, Gregorian calendar)
-
-  year / short:   14
-  year / medium:  2014
-  year / long:    2014
-
-  month / short:  3
-  month / medium: Mar
-  month / long:   March
-
-  day / short:    1
-  day / medium:   1
-  day / long:     1
-
-  monthDay / short:       3/1
-  monthDay / medium:      Mar 1
-  monthDay / long:        March 1
-
-  yearMonthDay / short:   3/1/14
-  yearMonthDay / medium:  Mar 1, 2014
-  yearMonthDay / long:    March 1, 2014
- */
 class AvesLocale {
   final String languageTag;
-  final intl4x.Calendar calendar;
+  final ACalendar calendar;
   final bool forceWesternArabicNumerals;
-  late final intl4x.Locale _locale4x;
+  late final DateFormatDelegate _dateFormatDelegate;
 
   AvesLocale({
     required this.languageTag,
     required this.calendar,
     required this.forceWesternArabicNumerals,
   }) {
-    var locale = intl4x.Locale.parse(languageTag).withCalendar(calendar);
-    if (forceWesternArabicNumerals) {
-      locale = locale.withNumberingSystem(intl4x.NumberingSystem.latin);
-    }
-    _locale4x = locale;
+    _dateFormatDelegate = getDateFormatDelegate();
   }
 
   AvesLocale copyWith({
-    intl4x.Calendar? calendar,
+    ACalendar? calendar,
   }) {
     return AvesLocale(
       languageTag: languageTag,
@@ -83,202 +36,128 @@ class AvesLocale {
   // as delegates may rely on custom `DateTime` subclasses
   CalendarDelegate getDatePickerDelegate() {
     switch (calendar) {
-      case .gregorian:
-        return const GregorianCalendarDelegate();
       case .persian:
         return PersianCalendarDelegate(this);
       default:
-        throw UnimplementedError();
+        return const GregorianCalendarDelegate();
+    }
+  }
+
+  DateFormatDelegate getDateFormatDelegate() {
+    switch (calendar) {
+      case .persian:
+        return Intl4xDateFormatDelegate(
+          languageTag: languageTag,
+          calendar: calendar,
+          forceWesternArabicNumerals: forceWesternArabicNumerals,
+        );
+      default:
+        return IntlDateFormatDelegate(languageTag: languageTag);
     }
   }
 
   DateFormatter? _y;
 
   DateFormatter get y {
-    _y ??= intl4x.DateTimeFormat.year(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.medium,
-    ).format;
+    _y ??= _dateFormatDelegate.y;
     return _y!;
   }
 
   DateFormatter? _MMM;
 
   DateFormatter get MMM {
-    _MMM ??= intl4x.DateTimeFormat.month(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.medium,
-    ).format;
+    _MMM ??= _dateFormatDelegate.MMM;
     return _MMM!;
   }
 
   DateFormatter? _MMMM;
 
   DateFormatter get MMMM {
-    _MMMM ??= intl4x.DateTimeFormat.month(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.long,
-    ).format;
+    _MMMM ??= _dateFormatDelegate.MMMM;
     return _MMMM!;
   }
 
   DateFormatter? _d;
 
   DateFormatter get d {
-    _d ??= intl4x.DateTimeFormat.day(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.medium,
-    ).format;
+    _d ??= _dateFormatDelegate.d;
     return _d!;
   }
 
   DateFormatter? _MMMd;
 
   DateFormatter get MMMd {
-    _MMMd ??= intl4x.DateTimeFormat.monthDay(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.medium,
-    ).format;
+    _MMMd ??= _dateFormatDelegate.MMMd;
     return _MMMd!;
   }
 
   DateFormatter? _MMMMd;
 
   DateFormatter get MMMMd {
-    _MMMMd ??= intl4x.DateTimeFormat.monthDay(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.long,
-    ).format;
+    _MMMMd ??= _dateFormatDelegate.MMMMd;
     return _MMMMd!;
   }
 
   DateFormatter? _yMMM;
 
   DateFormatter get yMMM {
-    if (_yMMM == null) {
-      switch (calendar) {
-        case .gregorian:
-          _yMMM = intl.DateFormat.yMMM().format;
-        default:
-          // ideally, we would use an equivalent to intl `DateFormat.yMMM`,
-          // but as of intl4x v0.17.0, there is no `DateTimeFormat.yearMonth`
-          final y = intl4x.DateTimeFormat.year(
-            locale: _locale4x,
-            length: intl4x.DateTimeLength.medium,
-          );
-          final d = intl4x.DateTimeFormat.month(
-            locale: _locale4x,
-            length: intl4x.DateTimeLength.medium,
-          );
-          _yMMM = (v) => '${y.format(v)} ${d.format(v)}';
-      }
-    }
+    _yMMM ??= _dateFormatDelegate.yMMM;
     return _yMMM!;
   }
 
   DateFormatter? _yMMMM;
 
   DateFormatter get yMMMM {
-    if (_yMMMM == null) {
-      switch (calendar) {
-        case .gregorian:
-          _yMMMM = intl.DateFormat.yMMMM(languageTag).format;
-        default:
-          // ideally, we would use an equivalent to intl `DateFormat.yMMMM`,
-          // but as of intl4x v0.17.0, there is no `DateTimeFormat.yearMonth`
-          final y = intl4x.DateTimeFormat.year(
-            locale: _locale4x,
-            length: intl4x.DateTimeLength.long,
-          );
-          final d = intl4x.DateTimeFormat.month(
-            locale: _locale4x,
-            length: intl4x.DateTimeLength.long,
-          );
-          _yMMMM = (v) => '${y.format(v)} ${d.format(v)}';
-      }
-    }
+    _yMMMM ??= _dateFormatDelegate.yMMMM;
     return _yMMMM!;
   }
 
   DateFormatter? _MMMEd;
 
   DateFormatter get MMMEd {
-    if (_MMMEd == null) {
-      switch (calendar) {
-        case .gregorian:
-          _MMMEd = intl.DateFormat.MMMEd(languageTag).format;
-        default:
-          // ideally, we would use an equivalent to intl `DateFormat.MMMEd`,
-          // but as of intl4x v0.17.0, there is no `DateTimeFormat.monthDayWeekday`
-          final ymdw = intl4x.DateTimeFormat.yearMonthDayWeekday(
-            locale: _locale4x,
-            length: intl4x.DateTimeLength.medium,
-          );
-          _MMMEd = ymdw.format;
-      }
-    }
+    _MMMEd ??= _dateFormatDelegate.MMMEd;
     return _MMMEd!;
   }
 
   DateFormatter? _yMd;
 
   DateFormatter get yMd {
-    _yMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.short,
-    ).format;
+    _yMd ??= _dateFormatDelegate.yMd;
     return _yMd!;
   }
 
   DateFormatter? _yMMMd;
 
   DateFormatter get yMMMd {
-    _yMMMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.medium,
-    ).format;
+    _yMMMd ??= _dateFormatDelegate.yMMMd;
     return _yMMMd!;
   }
 
   DateFormatter? _yMMMMd;
 
   DateFormatter get yMMMMd {
-    _yMMMMd ??= intl4x.DateTimeFormat.yearMonthDay(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.long,
-    ).format;
+    _yMMMMd ??= _dateFormatDelegate.yMMMMd;
     return _yMMMMd!;
   }
 
   DateFormatter? _yMMMMEEEEd;
 
   DateFormatter get yMMMMEEEEd {
-    _yMMMMEEEEd ??= intl4x.DateTimeFormat.yearMonthDayWeekday(
-      locale: _locale4x,
-      length: intl4x.DateTimeLength.long,
-    ).format;
+    _yMMMMEEEEd ??= _dateFormatDelegate.yMMMMEEEEd;
     return _yMMMMEEEEd!;
   }
 
   DateFormatter? _Hm;
 
   DateFormatter get Hm {
-    _Hm ??= intl4x.DateTimeFormat.time(
-      locale: _locale4x.withClockStyle(intl4x.ClockStyle.zeroToTwentyThree),
-      length: intl4x.DateTimeLength.medium,
-      timePrecision: intl4x.TimePrecision.minute,
-    ).format;
+    _Hm ??= _dateFormatDelegate.Hm;
     return _Hm!;
   }
 
   DateFormatter? _jm;
 
   DateFormatter get jm {
-    _jm ??= intl4x.DateTimeFormat.time(
-      locale: _locale4x.withClockStyle(intl4x.ClockStyle.zeroToEleven),
-      length: intl4x.DateTimeLength.medium,
-      timePrecision: intl4x.TimePrecision.minute,
-    ).format;
+    _jm ??= _dateFormatDelegate.jm;
     return _jm!;
   }
 }
