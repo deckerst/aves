@@ -27,6 +27,7 @@ class XmpCrsNamespace extends XmpNamespace {
           RegExp(nsPrefix + r'CorrectionMasks\[(\d+)\]/(.*)'),
           cards: [
             XmpCardData(RegExp(nsPrefix + r'CorrectionRangeMask/(.*)')),
+            XmpCardData(RegExp(nsPrefix + r'Gesture\[(\d+)\]/(.*)')),
             XmpCardData(RegExp(nsPrefix + r'Masks\[(\d+)\]/(.*)')),
           ],
         ),

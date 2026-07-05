@@ -365,6 +365,7 @@ class PlatformMediaFetchService implements MediaFetchService {
     MimeTypes.dl,
     MimeTypes.dv,
     MimeTypes.dvd,
+    MimeTypes.flic,
     MimeTypes.flv,
     MimeTypes.flvX,
     MimeTypes.gl,

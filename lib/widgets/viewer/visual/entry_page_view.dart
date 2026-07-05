@@ -420,9 +420,8 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
           onScaleEnd: onScaleEnd,
           onFling: _onFling,
           onTap: (context, _, alignment, _) {
-            if (context.mounted) {
-              _onTap(alignment: alignment);
-            }
+            if (!context.mounted) return;
+            _onTap(alignment: alignment);
           },
           onLongPress: canGestureToOtherApps ? _startGlobalDrag : null,
           onDoubleTap: onDoubleTap,
