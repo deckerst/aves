@@ -1,5 +1,6 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
@@ -43,7 +44,15 @@ mixin PermissionAwareMixin {
                 uris.add(entry.uri);
                 mimeTypes.add(entry.mimeType);
               });
-          final granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
+          var granted = false;
+          try {
+            granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
+          } on TooManyItemsException catch (_) {
+            await showWarningDialog(
+              context: context,
+              message: context.l10n.tooManyItemsErrorDialogMessage,
+            );
+          }
           if (!granted) return false;
         } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirsLowerCase)) {
           // insertion in restricted directories

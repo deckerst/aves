@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.Environment
+import android.os.TransactionTooLargeException
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
@@ -72,9 +73,17 @@ object PermissionManager {
         if (todoUris.isEmpty()) return true
 
         Log.i(LOG_TAG, "request user to select and grant access permission to uris=$todoUris")
-        val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
-        MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
-        activity.startIntentSenderForResult(intentSender, MainActivity.MEDIA_WRITE_BULK_PERMISSION_REQUEST, null, 0, 0, 0, null)
+        try {
+            val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
+            MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
+            activity.startIntentSenderForResult(intentSender, MainActivity.MEDIA_WRITE_BULK_PERMISSION_REQUEST, null, 0, 0, 0, null)
+        } catch (e: IllegalArgumentException) {
+            if (e.message == "URI list restricted to 2000 per request") {
+                throw TransactionTooLargeException(e.message)
+            }
+            throw e
+        }
+
         val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
         MainActivity.pendingScopedStoragePermissionCompleter = null
 
