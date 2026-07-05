@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
         await Permissions.mediaAccess.request();
       }
 
-      var appMode = AppMode.main;
+      AppMode appMode = .main;
       var error = false;
       final Map<String, Object?> intentData = widget.intentData ?? await IntentService.getIntentData();
       final intentAction = intentData[IntentDataKeys.action] as String?;
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
         switch (intentAction) {
           case IntentActions.view:
-            appMode = AppMode.view;
+            appMode = .view;
             _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
           case IntentActions.viewGeo:
             error = true;
@@ -144,19 +144,19 @@ class _HomePageState extends State<HomePage> {
             }
             break;
           case IntentActions.edit:
-            appMode = AppMode.edit;
+            appMode = .edit;
           case IntentActions.setWallpaper:
-            appMode = AppMode.setWallpaper;
+            appMode = .setWallpaper;
           case IntentActions.pickItems:
             // TODO TLAD apply pick mimetype(s)
             // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
             final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
             debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
-            appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
+            appMode = multiple ? .pickMultipleMediaExternal : .pickSingleMediaExternal;
           case IntentActions.pickCollectionFilters:
-            appMode = AppMode.pickCollectionFiltersExternal;
+            appMode = .pickCollectionFiltersExternal;
           case IntentActions.screenSaver:
-            appMode = AppMode.screenSaver;
+            appMode = .screenSaver;
             _initialRouteName = ScreenSaverPage.routeName;
           case IntentActions.screenSaverSettings:
             _initialRouteName = ScreenSaverSettingsPage.routeName;
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                 case .collection:
                   _initialFilters = settings.getWidgetCollectionFilters(widgetId);
                 case .viewer:
-                  appMode = AppMode.view;
+                  appMode = .view;
                   intentUri = settings.getWidgetUri(widgetId);
                 case .home:
                 case .updateWidget:
@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
 
       if (error) {
         debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
-        appMode = AppMode.main;
+        appMode = .main;
       }
 
       context.read<ValueNotifier<AppMode>>().value = appMode;

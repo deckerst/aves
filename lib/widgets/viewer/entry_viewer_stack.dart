@@ -674,7 +674,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _goToCollection(CollectionFilter filter) async {
-    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == .main;
     if (!isMainMode) return;
 
     final baseCollection = collection;
@@ -942,7 +942,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   Future<void> _initOverlay() async {
     final appMode = context.read<ValueNotifier<AppMode>>().value;
-    if (appMode == AppMode.screenSaver) {
+    if (appMode == .screenSaver) {
       _overlayVisible.value = false;
       await _onOverlayVisibleChanged(animate: false);
     } else {

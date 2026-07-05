@@ -87,7 +87,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     required Set<AlbumBaseFilter> selectedFilters,
   }) {
     final selectedSingleItem = selectedFilters.length == 1;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     bool isVault(CollectionFilter filter) => filter is StoredAlbumFilter && filter.isVault;
 

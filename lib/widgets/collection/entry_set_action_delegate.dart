@@ -79,7 +79,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required bool isTrash,
   }) {
     final canWrite = !settings.isReadOnly;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general

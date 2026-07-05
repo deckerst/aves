@@ -309,7 +309,7 @@ class _BasicInfoState extends State<_BasicInfo> {
       _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
         return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
       });
-      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
+      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == .view;
       if (isViewerMode && settings.isInstalledAppAccessAllowed) {
         _appNameLoader = appInventory.initAppNames();
       }

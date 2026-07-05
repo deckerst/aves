@@ -78,7 +78,7 @@ class _TagPickPage extends StatefulWidget {
 
 class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.pickFilterInternal);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(.pickFilterInternal);
 
   CollectionSource get source => widget.source;
 

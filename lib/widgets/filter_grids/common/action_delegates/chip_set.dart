@@ -79,7 +79,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }) {
     final selectedItemCount = selectedFilters.length;
     final hasSelection = selectedFilters.isNotEmpty;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general

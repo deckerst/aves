@@ -495,7 +495,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == .main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry targetEntry) {
     Navigator.maybeOf(context)?.push(

@@ -113,7 +113,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
       overflow: TextOverflow.fade,
       maxLines: 1,
     );
-    if (appMode == AppMode.main) {
+    if (appMode == .main) {
       title = SourceStateAwareAppBarTitle(
         title: title,
         source: context.read<CollectionSource>(),

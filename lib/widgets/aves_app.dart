@@ -165,7 +165,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final MediaStoreSource _mediaStoreSource = MediaStoreSource();
   Size? _screenSize;
 
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.initialization);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(.initialization);
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -234,7 +234,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       ],
       child: NotificationListener<PopExitNotification>(
         onNotification: (notification) {
-          if (_appModeNotifier.value == AppMode.main) {
+          if (_appModeNotifier.value == .main) {
             _exitedMainByPop = true;
           }
           return true;
@@ -571,7 +571,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   void _onNewIntent(Map? intentData) {
     reportService.log('New intent data=$intentData');
 
-    if (_appModeNotifier.value == AppMode.main) {
+    if (_appModeNotifier.value == .main) {
       // do not reset when relaunching the app, except when exiting by pop
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;

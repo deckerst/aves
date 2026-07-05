@@ -89,7 +89,7 @@ class _AlbumPickPage extends StatefulWidget {
 
 class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, VaultAwareMixin {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.pickFilterInternal);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(.pickFilterInternal);
 
   CollectionSource get source => widget.source;
 

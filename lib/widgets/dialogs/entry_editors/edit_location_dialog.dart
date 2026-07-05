@@ -524,7 +524,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) {
           return ListenableProvider<ValueNotifier<AppMode>>.value(
-            value: ValueNotifier(AppMode.previewMap),
+            value: ValueNotifier(.previewMap),
             child: MapPage(
               collection: mapCollection,
               tracks: tracks,

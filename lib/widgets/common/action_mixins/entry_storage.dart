@@ -117,7 +117,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
         final successOps = processed.where((op) => op.success).toSet();
         final exportedOps = successOps.where((op) => !op.skipped && op.newFields[EntryFields.uri] != null).toSet();
         final newUris = exportedOps.map((op) => op.newFields[EntryFields.uri] as String).toSet();
-        final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+        final isMainMode = context.read<ValueNotifier<AppMode>>().value == .main;
 
         // check source favourite status
         final favouriteSourceUris = selection.where((entry) => entry.isFavourite).map((entry) => entry.uri).toSet();
@@ -311,7 +311,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
           final count = movedOps.length;
 
           SnackBarAction? action;
-          if (count > 0 && appMode == AppMode.main) {
+          if (count > 0 && appMode == .main) {
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(

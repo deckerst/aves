@@ -198,7 +198,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       child: ListenableBuilder(
         listenable: collection.filterChangeNotifier,
         builder: (context, child) {
-          final canRemoveFilters = appMode != AppMode.pickFilteredMediaInternal;
+          final canRemoveFilters = appMode != .pickFilteredMediaInternal;
           return Selector<Query, bool>(
             selector: (context, query) => query.enabled,
             builder: (context, queryEnabled, child) {
@@ -328,7 +328,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
             overflow: TextOverflow.fade,
             maxLines: 1,
           );
-          if (appMode == AppMode.main) {
+          if (appMode == .main) {
             title = SourceStateAwareAppBarTitle(
               title: title,
               source: source,
@@ -344,7 +344,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         overflow: TextOverflow.fade,
         maxLines: 1,
       );
-      if (appMode == AppMode.main) {
+      if (appMode == .main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
           source: source,
@@ -507,7 +507,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                 return _toMenuItem(action, enabled: canApply(action), selection: selection);
               },
             ),
-            if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash) ...[
+            if (isSelecting && !settings.isReadOnly && appMode == .main && !isTrash) ...[
               if (exportMenuActions.isNotEmpty)
                 PopupMenuExpansionPanel<EntrySetAction>(
                   enabled: hasSelection,

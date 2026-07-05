@@ -397,7 +397,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     MagnifierDoubleTapCallback? onDoubleTap,
     required Widget child,
   }) {
-    final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
+    final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == .setWallpaper;
     final minScale = isWallpaperMode ? const ScaleLevel(ref: ScaleReference.covered) : const ScaleLevel(ref: ScaleReference.contained);
 
     return ValueListenableBuilder<bool>(

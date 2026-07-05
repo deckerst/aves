@@ -150,7 +150,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     ];
 
     final appMode = context.read<ValueNotifier<AppMode>>().value;
-    if (!{AppMode.screenSaver, AppMode.slideshow}.contains(appMode)) {
+    if (!<AppMode>{.screenSaver, .slideshow}.contains(appMode)) {
       final infoPage = NotificationListener<ShowImageNotification>(
         onNotification: (notification) {
           widget.onImagePageRequested();

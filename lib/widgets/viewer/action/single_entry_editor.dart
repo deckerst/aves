@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditorMixin {
-  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == .main;
 
   Future<void> edit(
     BuildContext context,

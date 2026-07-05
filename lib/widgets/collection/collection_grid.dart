@@ -117,7 +117,7 @@ class _CollectionGridContent extends StatefulWidget {
 class _CollectionGridContentState extends State<_CollectionGridContent> {
   final ValueNotifier<AvesEntry?> _focusedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(AppMode.pickFilteredMediaInternal);
+  final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(.pickFilteredMediaInternal);
 
   @override
   void initState() {
