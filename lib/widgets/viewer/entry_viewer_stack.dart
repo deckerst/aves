@@ -902,10 +902,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onLeave() async {
-    // get the theme first, as the context is likely
-    // to be unmounted after the other async steps
-    final theme = Theme.of(context);
-
     await viewerController.stopCast();
 
     try {
@@ -924,8 +920,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       await windowService.keepScreenOn(false);
     }
     await mediaSessionService.release();
-    await windowService.showSystemUI(true);
-    AvesApp.setSystemUIStyle(theme);
+    await AvesApp.showSystemUI(true);
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
@@ -960,8 +955,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       if (_viewLocked.value) {
         await _startOverlayHidingTimer();
       } else {
-        await windowService.showSystemUI(true);
-        AvesApp.setSystemUIStyle(Theme.of(context));
+        await AvesApp.showSystemUI(true);
       }
       if (animate) {
         await _overlayAnimationController.forward();
@@ -975,7 +969,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;
       });
-      await windowService.showSystemUI(false);
+      await AvesApp.showSystemUI(false);
       if (animate) {
         await _overlayAnimationController.reverse();
       } else {
@@ -990,11 +984,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   Future<void> _onViewLockedChanged() async {
     if (_viewLocked.value) {
-      await windowService.showSystemUI(false);
+      await AvesApp.showSystemUI(false);
       await _startOverlayHidingTimer();
     } else {
-      await windowService.showSystemUI(true);
-      AvesApp.setSystemUIStyle(Theme.of(context));
+      await AvesApp.showSystemUI(true);
       _stopOverlayHidingTimer();
       _overlayVisible.value = true;
     }

@@ -114,8 +114,20 @@ class AvesApp extends StatefulWidget {
   @override
   State<AvesApp> createState() => _AvesAppState();
 
+  static Future<void> showSystemUI(bool visible) async {
+    if (visible) {
+      if (device.supportEdgeToEdgeUIMode) {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      } else {
+        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      }
+    } else {
+      await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    }
+  }
+
   static void setSystemUIStyle(ThemeData theme) {
-    final style = systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
+    final style = theme.appBarTheme.systemOverlayStyle ?? systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
     SystemChrome.setSystemUIOverlayStyle(style);
   }
 
@@ -174,7 +186,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
   final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
-  final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
@@ -190,9 +201,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((_) => _onAnalysisCompletion()));
     _subscriptions.add(_errorChannel.receiveBroadcastStream().cast<String>().listen(_onError));
-    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().cast<String>().listen(_onWindowChange));
-    _updateCutoutInsets();
-    _updateWindowMode();
     _appModeNotifier.addListener(_onAppModeChanged);
 
     debugPrint('start listening to app lifecycle');
@@ -244,9 +252,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
             future: _appSetup,
             builder: (context, snapshot) {
               final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-              if (initialized) {
-                windowService.showSystemUI(true);
-              }
               final home = initialized
                   ? getFirstPage(intentData: widget.debugIntentData)
                   : AvesScaffold(
@@ -378,28 +383,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   @override
   void didChangeLocales(List<Locale>? locales) => _applyLocale();
-
-  Future<void> _onWindowChange(String? code) async {
-    if (code == null) return;
-    switch (code) {
-      case 'cutout_insets':
-        await _updateCutoutInsets();
-        break;
-      case 'window_mode':
-        await _updateWindowMode();
-        break;
-    }
-  }
-
-  Future<void> _updateCutoutInsets() async {
-    AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
-  }
-
-  Future<void> _updateWindowMode() async {
-    final isInPipMode = await windowService.isInPictureInPictureMode();
-    AvesApp.isInPictureInPictureMode.value = isInPipMode;
-    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !isInPipMode;
-  }
 
   void _applyLocale() {
     settings.resetResolvedLocale();
@@ -672,6 +655,8 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
   final ValueNotifier<TvMediaQueryModifier?> _tvMediaQueryModifierNotifier = ValueNotifier(null);
   final Set<StreamSubscription> _subscriptions = {};
 
+  final EventChannel _platformWindowChangeChannel = const OptionalEventChannel('deckers.thibault/aves/window_change');
+
   CollectionSource get source => widget.source;
 
   static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
@@ -682,14 +667,18 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
     _shouldUseBoldFontLoader = AccessibilityService.shouldUseBoldFont();
     source.stateNotifier.addListener(_onSourceStateChanged);
     _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.forceTvLayoutKey).listen((_) => _applyForceTvLayout()));
+    // register here instead of the top app level,
+    // because handling relies on effective page theme
+    _subscriptions.add(_platformWindowChangeChannel.receiveBroadcastStream().cast<Map?>().listen(_onWindowChange));
+    _updateCutoutInsets();
+    _updateWindowMode();
   }
 
   @override
   void didUpdateWidget(covariant AvesAppContentDecorator oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!oldWidget.initialized && widget.initialized) {
-      AvesApp.setSystemUIStyle(Theme.of(context));
-      WidgetsBinding.instance.addPostFrameCallback((_) => _onTvLayoutChanged());
+      _onAppInitialized();
     }
   }
 
@@ -747,6 +736,50 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
         },
       ),
     );
+  }
+
+  void _onAppInitialized() {
+    _updateSystemUI();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onTvLayoutChanged());
+  }
+
+  // necessary on older devices
+  Future<void> _updateSystemUI() async {
+    await AvesApp.showSystemUI(true);
+    await Future.delayed(const Duration(milliseconds: 400));
+    AvesApp.setSystemUIStyle(Theme.of(context));
+  }
+
+  Future<void> _onWindowChange(Map? fields) async {
+    if (fields == null) return;
+
+    final code = fields['code'] as String?;
+    if (code == null) return;
+
+    switch (code) {
+      case 'cutout_insets':
+        await _updateCutoutInsets();
+      case 'window_mode':
+        await _updateWindowMode();
+      case 'system_bar_visibility':
+        // on older devices, setting system UI style right after UI mode is not effective
+        // and the required delay is unknown, so we monitor the change on the platform side
+        final statusBarVisible = fields['status_bar'];
+        final navBarVisible = fields['nav_bar'];
+        if (statusBarVisible == true && navBarVisible == true) {
+          AvesApp.setSystemUIStyle(Theme.of(context));
+        }
+    }
+  }
+
+  Future<void> _updateCutoutInsets() async {
+    AvesApp.cutoutInsetsNotifier.value = await windowService.getCutoutInsets();
+  }
+
+  Future<void> _updateWindowMode() async {
+    final isInPipMode = await windowService.isInPictureInPictureMode();
+    AvesApp.isInPictureInPictureMode.value = isInPipMode;
+    AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !isInPipMode;
   }
 
   Future<void> _onSourceStateChanged() async {

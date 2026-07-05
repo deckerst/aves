@@ -339,6 +339,8 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
               theme: theme.textTheme,
               titleTextStyle: theme.textTheme.titleLarge,
             ),
+            // as of Flutter v3.44.4, `SliverAppBar` does not automatically pick up `systemOverlayStyle` from `AppBar` theme
+            systemOverlayStyle: theme.appBarTheme.systemOverlayStyle,
           ),
           SliverPadding(
             padding: padding,

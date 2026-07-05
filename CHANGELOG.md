@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Collection: copy to clipboard
 - "show" action in hidden filter chip context menu
 
+### Fixed
+
+- system nav bar inconsistent transparency
+
 ## <a id="v1.14.8"></a>[v1.14.8] - 2026-06-25
 
 ### Changed
