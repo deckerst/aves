@@ -56,7 +56,7 @@ jobs:
           scripts/apply_flavor_izzy.sh
           ./flutterw build apk -t lib/main_izzy.dart --flavor izzy --split-per-abi
           cp build/app/outputs/apk/izzy/release/*.apk outputs
-          export AVES_GOOGLE_API_KEY="<NONE>"
+          export AVES_GOOGLE_API_KEY="NONE"
           scripts/apply_flavor_libre.sh
           ./flutterw build appbundle -t lib/main_libre.dart --flavor libre
           cp build/app/outputs/bundle/libreRelease/*.aab outputs
