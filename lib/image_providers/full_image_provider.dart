@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class FullImage extends ImageProvider<FullImage> with EquatableMixin {
+class FullImage extends ImageProvider<FullImage> with Equatable {
   final String uri, mimeType;
   final int? pageId, rotationDegrees, sizeBytes;
   final bool isFlipped, isAnimated;

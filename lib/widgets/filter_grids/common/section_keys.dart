@@ -7,7 +7,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class ChipSectionKey extends SectionKey with EquatableMixin {
+class ChipSectionKey extends SectionKey with Equatable {
   final String title;
 
   @override

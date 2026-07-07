@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Collection: copy to clipboard
 - "show" action in hidden filter chip context menu
 
+### Changed
+
+- upgraded Flutter to stable v3.44.5
+
 ### Fixed
 
 - system nav bar inconsistent transparency

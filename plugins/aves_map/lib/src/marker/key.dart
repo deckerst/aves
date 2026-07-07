@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 @immutable
-class MarkerKey<T> extends LocalKey with EquatableMixin {
+class MarkerKey<T> extends LocalKey with Equatable {
   final T entry;
   final int? count;
 
