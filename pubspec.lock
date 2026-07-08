@@ -480,10 +480,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown_plus
-      sha256: "3893b00caa52ce75cf9212f2c159ea517b9d64a641fc2226811bf5f218b5b77e"
+      sha256: "2e4b667a75c08e5710866ae010da392acf5af475f9ad0be9bf406525e9751b0c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.11"
   flutter_material_design_icons:
     dependency: "direct main"
     description:
@@ -677,13 +677,14 @@ packages:
     source: hosted
     version: "4.1.2"
   icu4x:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: icu4x
-      sha256: "5a1709cbca00ded6304082292995c503d33f20544867f7226f8ee646128c4494"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0-dev.2"
+      path: "ffi/dart"
+      ref: "75a7cac13ca896c0d6b24408294ef35fe6b3601a"
+      resolved-ref: "75a7cac13ca896c0d6b24408294ef35fe6b3601a"
+      url: "https://github.com/unicode-org/icu4x.git"
+    source: git
+    version: "2.2.0-dev.1-wip"
   idb_shim:
     dependency: transitive
     description:
