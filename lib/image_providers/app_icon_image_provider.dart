@@ -46,7 +46,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
       if (descriptor == null) {
         throw UnreportedStateError('$packageName app icon decoding failed');
       }
-      return descriptor.instantiateCodec();
+      return await descriptor.instantiateCodec();
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');
       throw UnreportedStateError('$packageName app icon decoding failed');

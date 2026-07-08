@@ -52,7 +52,7 @@ class CountryTopology {
     if (topology == null) return null;
 
     try {
-      return Isolate.run<Map<int, Set<LatLng>>>(() {
+      return await Isolate.run<Map<int, Set<LatLng>>>(() {
         final countries = (topology.objects['countries'] as GeometryCollection).geometries;
         final byCode = <int, Set<LatLng>>{};
         for (final position in positions) {

@@ -316,7 +316,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<void> clearDecoders() async {
     try {
-      return _platformObject.invokeMethod('clearDecoders');
+      return await _platformObject.invokeMethod('clearDecoders');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -325,7 +325,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<void> clearImageDiskCache() async {
     try {
-      return _platformObject.invokeMethod('clearImageDiskCache');
+      return await _platformObject.invokeMethod('clearImageDiskCache');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
@@ -334,7 +334,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<void> clearImageMemoryCache() async {
     try {
-      return _platformObject.invokeMethod('clearImageMemoryCache');
+      return await _platformObject.invokeMethod('clearImageMemoryCache');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

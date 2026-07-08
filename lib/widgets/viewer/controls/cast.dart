@@ -128,7 +128,7 @@ extension ExtraDLNADevice on DLNADevice {
     required String data,
   }) async {
     try {
-      return DLNAHttp.post(
+      return await DLNAHttp.post(
         Uri.parse(controlURL(serviceId)),
         Map.from({
           'SOAPAction': '"$serviceType#$action"',
