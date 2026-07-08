@@ -31,7 +31,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
       if (isValid && userModifier.action != DateEditAction.copyField) {
-        await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this');
+        await reportService.recordError('Failed to get date for modifier=$userModifier, entry=$this');
       }
       return {};
     }
@@ -64,7 +64,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                   final shiftedDate = date.add(Duration(seconds: appliedModifier.shiftSeconds!));
                   editCreateDateXmp(descriptions, shiftedDate);
                 } else {
-                  reportService.recordError('failed to parse XMP date=$xmpDate');
+                  reportService.recordError('Failed to parse XMP date=$xmpDate');
                 }
               }
             case .remove:

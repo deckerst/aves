@@ -64,13 +64,19 @@ extension ExtraAvesEntryLocation on AvesEntry {
         if (locality == null || _invalidLocalityPattern.hasMatch(locality) || {v.subThoroughfare, v.countryName}.contains(locality)) {
           locality = v.subAdminArea;
         }
-        addressDetails = AddressDetails(
+        final _addressDetails = AddressDetails(
           id: id,
           countryCode: v.countryCode?.toUpperCase(),
           countryName: v.countryName,
           adminArea: v.adminArea,
           locality: locality,
         );
+        if (_addressDetails.isValid) {
+          addressDetails = _addressDetails;
+        } else {
+          // broken geocoder, discard result
+          unawaited(reportService.recordError('Failed to get valid address details for latLng=$latLng, address=$v'));
+        }
       }
     } catch (error, stack) {
       debugPrint('$runtimeType locate failed with path=$path coordinates=$latLng error=$error\n$stack');

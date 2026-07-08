@@ -105,7 +105,10 @@ mixin LocationMixin on CountryMixin, StateMixin {
     final located = visibleEntries.where((entry) => entry.hasGps).toSet().difference(todo);
     final knownLocations = <(int, int), AddressDetails?>{};
     located.forEach((entry) {
-      knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails);
+      final address = entry.addressDetails;
+      if (address != null && address.isValid) {
+        knownLocations.putIfAbsent(approximateLatLng(entry), () => address);
+      }
     });
 
     state = SourceState.locatingPlaces;
