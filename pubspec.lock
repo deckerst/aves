@@ -399,10 +399,11 @@ packages:
   floating:
     dependency: "direct main"
     description:
-      name: floating
-      sha256: e51ce1dbcab3ea83da0ad1b07f2091b99c0e8680184c780a000567f41234d454
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: agp9
+      resolved-ref: fd08b433eb05c81d32294d8b875e4651015a3e03
+      url: "https://github.com/deckerst/floating.git"
+    source: git
     version: "6.0.0"
   fluster:
     dependency: "direct main"
@@ -480,10 +481,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown_plus
-      sha256: "2e4b667a75c08e5710866ae010da392acf5af475f9ad0be9bf406525e9751b0c"
+      sha256: fce641d6c2106cc495de1cd603f97a4f9d615a97a64011928ded380dbdade935
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.11"
+    version: "1.0.12"
   flutter_material_design_icons:
     dependency: "direct main"
     description:
@@ -677,14 +678,13 @@ packages:
     source: hosted
     version: "4.1.2"
   icu4x:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "ffi/dart"
-      ref: "75a7cac13ca896c0d6b24408294ef35fe6b3601a"
-      resolved-ref: "75a7cac13ca896c0d6b24408294ef35fe6b3601a"
-      url: "https://github.com/unicode-org/icu4x.git"
-    source: git
-    version: "2.2.0-dev.1-wip"
+      name: icu4x
+      sha256: "5cdaabc21a842fd9369b94e900d62b91b7c2d9f24ed1d56bb6d93a05306c4823"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0-dev.3"
   idb_shim:
     dependency: transitive
     description:
@@ -793,10 +793,10 @@ packages:
     dependency: "direct main"
     description:
       name: local_auth
-      sha256: ae6f382f638108c6becd134318d7c3f0a93875383a54010f61d7c97ac05d5137
+      sha256: ecf24edf2283c509ecd217e3595f6f71034b68888d28ad1dae6bfa0857b816ac
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   local_auth_android:
     dependency: transitive
     description:
@@ -1796,18 +1796,18 @@ packages:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: "15bfd0598f8d8946bf0e2d50e2ca1a0db9491589a8bb7f6f9a388c0b48aef764"
+      sha256: "5121de08444d00363efdda630a69ad4d27a208a9f7586482d4909a44a1cdbc63"
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.11.0"
   video_player_avfoundation:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "76097729ef0c976937945afa53f1ca3afa9b50c9a95909ba347bcf93270466fd"
+      sha256: c238f5f0a26845cd0bcc2956049b63065a4d3c40ddfc22c3414cd170bef7fff9
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.0"
+    version: "2.11.0"
   video_player_platform_interface:
     dependency: transitive
     description:
@@ -1954,4 +1954,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.12.0 <4.0.0"
-  flutter: "3.44.5"
+  flutter: "3.44.6"

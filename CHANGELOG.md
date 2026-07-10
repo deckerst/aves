@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- upgraded Flutter to stable v3.44.5
+- upgraded Flutter to stable v3.44.6
 
 ### Fixed
 

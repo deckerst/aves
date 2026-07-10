@@ -14,7 +14,7 @@ version: 1.14.8+172
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.44.5
+  flutter: 3.44.6
   sdk: ">=3.12.0 <4.0.0"
 
 platforms:
@@ -87,6 +87,9 @@ dependencies:
       url: https://github.com/deckerst/expansion_tile_card.git
   flex_color_picker:
   floating:
+    git:
+      url: https://github.com/deckerst/floating.git
+      ref: agp9
   fluster:
   flutter_displaymode:
   flutter_highlight:
@@ -153,13 +156,6 @@ dependencies:
   xml:
 
 dependency_overrides:
-  # cf https://github.com/dart-lang/i18n/issues/1066
-  # switch to version >2.2.0-dev.2 when available
-  icu4x:
-    git:
-      url: https://github.com/unicode-org/icu4x.git
-      ref: 75a7cac13ca896c0d6b24408294ef35fe6b3601a
-      path: ffi/dart
   media_kit_video:
     git:
       url: https://github.com/deckerst/media-kit.git
