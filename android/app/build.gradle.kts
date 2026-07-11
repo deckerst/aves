@@ -21,7 +21,7 @@ if (keystorePropertiesFile.exists()) {
 } else {
     println("Load keystore props from system environment")
     // for release using credentials in environment variables set up by GitHub Actions
-    // warning: in property file, single quotes should be escaped with a backslash
+    // warning: in property file, single quotes should be escaped with a backslash,
     // but they should not be escaped when stored in env variables
     val env = System.getenv()
     fun getEnv(propKey: String, envKey: String) {

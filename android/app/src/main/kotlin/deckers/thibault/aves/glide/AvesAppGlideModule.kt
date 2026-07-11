@@ -32,7 +32,19 @@ class AvesAppGlideModule : AppGlideModule() {
         // hide noisy warning (e.g. for images that can't be decoded)
         builder.setLogLevel(Log.ERROR)
 
-        // sizing
+        applyImageDecoderOptions(builder)
+        applySizingOptions(context, builder)
+    }
+
+    // cf https://github.com/bumptech/glide/releases/tag/v5.0.8
+    private fun applyImageDecoderOptions(builder: GlideBuilder) {
+        builder.setImageDecoderEnabledForBitmaps(true)
+        builder.setUriImageDecoderEnabled(true)
+        builder.setUseArrayPoolForImageDecoderByteBufferAllocation(true)
+        builder.setUseHeapBufferForImageDecoderWithInputStream(true)
+    }
+
+    private fun applySizingOptions(context: Context, builder: GlideBuilder) {
         val memorySizeCalculator = MemorySizeCalculator.Builder(context).build()
         builder.setMemorySizeCalculator(memorySizeCalculator)
         val size: Int = memorySizeCalculator.bitmapPoolSize
