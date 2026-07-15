@@ -11,6 +11,9 @@ import 'package:provider/provider.dart';
 
 class VideoControlButtonsPage extends StatelessWidget {
   static const routeName = '/settings/video/control_buttons';
+
+  static const List<String> settingKeys = [SettingKeys.videoControlActionsKey];
+
   static const _availableActions = [...EntryActions.videoPlayback, EntryAction.openVideoPlayer];
 
   const VideoControlButtonsPage({super.key});

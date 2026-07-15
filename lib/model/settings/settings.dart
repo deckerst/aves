@@ -14,12 +14,12 @@ import 'package:aves/model/settings/modules/collection.dart';
 import 'package:aves/model/settings/modules/debug.dart';
 import 'package:aves/model/settings/modules/display.dart';
 import 'package:aves/model/settings/modules/filter_grids.dart';
+import 'package:aves/model/settings/modules/history.dart';
 import 'package:aves/model/settings/modules/info.dart';
 import 'package:aves/model/settings/modules/map.dart';
 import 'package:aves/model/settings/modules/navigation.dart';
 import 'package:aves/model/settings/modules/privacy.dart';
 import 'package:aves/model/settings/modules/screen_saver.dart';
-import 'package:aves/model/settings/modules/search.dart';
 import 'package:aves/model/settings/modules/slideshow.dart';
 import 'package:aves/model/settings/modules/viewer.dart';
 import 'package:aves/model/settings/modules/widget.dart';
@@ -47,12 +47,12 @@ class Settings
     with
         ChangeNotifier,
         SettingsAccess,
-        SearchSettings,
         AppSettings,
         CollectionSettings,
         DebugSettings,
         DisplaySettings,
         FilterGridsSettings,
+        HistorySettings,
         InfoSettings,
         MapSettings,
         NavigationSettings,
@@ -91,7 +91,7 @@ class Settings
     resetResolvedLocale();
     _unregister();
     _register(monitorPlatformSettings);
-    initAppSettings();
+    initHistorySettings();
     if (shouldSanitize) {
       await sanitize();
     }
@@ -479,7 +479,7 @@ class Settings
             }
         }
       }
-      if (oldValue != newValue) {
+      if (hasValueChanged(oldValue, newValue)) {
         notifyKeyChange(key, oldValue, newValue);
       }
     });
@@ -492,6 +492,10 @@ class Settings
     _updateStreamController.add(SettingsChangedEvent(key, oldValue, newValue));
     if (key.startsWith(SettingKeys.tileExtentPrefixKey)) {
       _updateTileExtentStreamController.add(SettingsChangedEvent(key, oldValue, newValue));
+    }
+    if (!SettingKeys.isInternalKey(key)) {
+      final recent = recentSettingKeys..insert(0, key);
+      recentSettingKeys = recent.toSet().toList();
     }
   }
 }

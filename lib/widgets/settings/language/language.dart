@@ -41,6 +41,9 @@ class LanguageSection extends SettingsSection {
 
 class SettingsTileLanguageLocale extends SettingsTile {
   @override
+  List<String> get settingKeys => LocaleTile.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsLanguageTile;
 
   @override
@@ -48,6 +51,9 @@ class SettingsTileLanguageLocale extends SettingsTile {
 }
 
 class SettingsTileLanguageCalendar extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.calendarKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsCalendarTile;
 
@@ -67,6 +73,9 @@ class SettingsTileLanguageCalendar extends SettingsTile {
 
 class SettingsTileLanguageCoordinateFormat extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.coordinateFormatKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsCoordinateFormatTile;
 
   @override
@@ -83,6 +92,9 @@ class SettingsTileLanguageCoordinateFormat extends SettingsTile {
 
 class SettingsTileLanguageUnitSystem extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.unitSystemKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsUnitSystemTile;
 
   @override
@@ -97,6 +109,9 @@ class SettingsTileLanguageUnitSystem extends SettingsTile {
 }
 
 class SettingsTileLanguageNumerals extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.forceWesternArabicNumeralsKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsForceWesternArabicNumeralsTile;
 

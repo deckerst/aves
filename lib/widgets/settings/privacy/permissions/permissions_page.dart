@@ -7,11 +7,17 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/privacy/permissions/manage_media.dart';
 import 'package:aves/widgets/settings/privacy/permissions/notification.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PermissionsPage extends StatelessWidget {
   static const routeName = '/settings/privacy/permissions';
+
+  static const List<String> settingKeys = [
+    SettingKeys.isInstalledAppAccessAllowedKey,
+    SettingKeys.isErrorReportingAllowedKey,
+  ];
 
   const PermissionsPage({super.key});
 

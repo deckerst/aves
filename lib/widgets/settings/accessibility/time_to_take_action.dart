@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 class TimeToTakeActionTile extends StatefulWidget {
   const TimeToTakeActionTile({super.key});
 
+  static const List<String> settingKeys = [SettingKeys.timeToTakeActionKey];
+
   @override
   State<TimeToTakeActionTile> createState() => _TimeToTakeActionTileState();
 }

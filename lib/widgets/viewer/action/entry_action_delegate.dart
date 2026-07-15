@@ -30,6 +30,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
@@ -138,6 +139,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             targetEntry: targetEntry,
             action: action,
           );
+        case .settings:
+          return true;
         case .debug:
           return !kReleaseMode;
       }
@@ -289,7 +292,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case .convertMotionPhotoToStillImage:
       case .viewMotionPhotoVideo:
         _metadataActionDelegate.onActionSelected(context, targetEntry, collection, action);
-      // debug
+      // generic
+      case .settings:
+        _goToSettings(context);
       case .debug:
         _goToDebug(context, targetEntry);
     }
@@ -516,6 +521,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),
+      ),
+    );
+  }
+
+  void _goToSettings(BuildContext context) {
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: SettingsPage.routeName),
+        builder: (context) => const SettingsPage(),
       ),
     );
   }

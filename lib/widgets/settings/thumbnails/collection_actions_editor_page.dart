@@ -9,6 +9,11 @@ import 'package:flutter/material.dart';
 class CollectionActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/collection_actions';
 
+  static const List<String> settingKeys = [
+    SettingKeys.collectionBrowsingQuickActionsKey,
+    SettingKeys.collectionSelectionQuickActionsKey,
+  ];
+
   const CollectionActionEditorPage({super.key});
 
   @override

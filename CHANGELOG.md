@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: copy to clipboard
+- Viewer: settings quick action (long press for search)
+- Settings: search shows last changed settings
 - "show" action in hidden filter chip context menu
 
 ### Changed

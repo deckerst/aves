@@ -46,6 +46,9 @@ class VideoSection extends SettingsSection {
 
 class SettingsTileVideoShowVideos extends SettingsTile {
   @override
+  List<String> get settingKeys => []; // prefer main hidden filter setting page
+
+  @override
   String title(BuildContext context) => context.l10n.settingsVideoShowVideos;
 
   @override
@@ -57,6 +60,9 @@ class SettingsTileVideoShowVideos extends SettingsTile {
 }
 
 class SettingsTileVideoPlayback extends SettingsTile {
+  @override
+  List<String> get settingKeys => VideoPlaybackPage.settingKeys;
+
   @override
   String title(BuildContext context) => context.l10n.settingsVideoPlaybackTile;
 
@@ -70,6 +76,9 @@ class SettingsTileVideoPlayback extends SettingsTile {
 
 class SettingsTileVideoControls extends SettingsTile {
   @override
+  List<String> get settingKeys => VideoControlsPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsVideoControlsTile;
 
   @override
@@ -81,6 +90,9 @@ class SettingsTileVideoControls extends SettingsTile {
 }
 
 class SettingsTileVideoSubtitleTheme extends SettingsTile {
+  @override
+  List<String> get settingKeys => SubtitleThemePage.settingKeys;
+
   @override
   String title(BuildContext context) => context.l10n.settingsSubtitleThemeTile;
 

@@ -3,6 +3,7 @@ import 'package:aves/utils/calendar/dateformat/base.dart';
 import 'package:aves/utils/calendar/dateformat/intl.dart';
 import 'package:aves/utils/calendar/dateformat/intl4x.dart';
 import 'package:aves/utils/calendar/delegate/persian.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl4x/datetime_format.dart' as intl4x;
 
@@ -19,8 +20,11 @@ class AvesLocale {
     required this.calendar,
     required this.forceWesternArabicNumerals,
   }) {
-    _dateFormatDelegate = getDateFormatDelegate();
+    _dateFormatDelegate = _getDateFormatDelegate();
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{languageTag=$languageTag, calendar=$calendar, forceWesternArabicNumerals=$forceWesternArabicNumerals}';
 
   AvesLocale copyWith({
     ACalendar? calendar,
@@ -43,7 +47,7 @@ class AvesLocale {
     }
   }
 
-  DateFormatDelegate getDateFormatDelegate() {
+  DateFormatDelegate _getDateFormatDelegate() {
     switch (calendar) {
       case .persian:
         return Intl4xDateFormatDelegate(

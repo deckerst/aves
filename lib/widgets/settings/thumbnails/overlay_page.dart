@@ -14,6 +14,18 @@ import 'package:provider/provider.dart';
 class ThumbnailOverlayPage extends StatelessWidget {
   static const routeName = '/settings/thumbnail_overlay';
 
+  static const List<String> settingKeys = [
+    SettingKeys.showThumbnailHdrKey,
+    SettingKeys.showThumbnailRawKey,
+    SettingKeys.showThumbnailMotionPhotoKey,
+    SettingKeys.showThumbnailSlowMotionVideoKey,
+    SettingKeys.showThumbnailVideoDurationKey,
+    SettingKeys.showThumbnailFavouriteKey,
+    SettingKeys.showThumbnailRatingKey,
+    SettingKeys.thumbnailLocationIconKey,
+    SettingKeys.thumbnailTagIconKey,
+  ];
+
   const ThumbnailOverlayPage({super.key});
 
   @override
@@ -113,6 +125,9 @@ class ThumbnailOverlayPage extends StatelessWidget {
 
 class SettingsTileThumbnailLocationIcon extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.thumbnailLocationIconKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsThumbnailShowLocationIcon;
 
   @override
@@ -136,6 +151,9 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
 }
 
 class SettingsTileThumbnailTagIcon extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.thumbnailTagIconKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsThumbnailShowTagIcon;
 

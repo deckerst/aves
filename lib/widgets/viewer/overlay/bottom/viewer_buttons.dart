@@ -8,6 +8,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
@@ -23,6 +24,9 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
+import 'package:aves/widgets/settings/settings_search_delegate.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
@@ -532,6 +536,14 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           focusNode: focusNode,
           onPressed: onPressed,
         );
+      case .settings:
+        return IconButton(
+          icon: action.getIcon(),
+          onPressed: onPressed,
+          onLongPress: () => _goToSettingsSearch(context),
+          focusNode: focusNode,
+          tooltip: action.getText(context),
+        );
       default:
         return IconButton(
           icon: action.getIcon(),
@@ -540,5 +552,17 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           tooltip: action.getText(context),
         );
     }
+  }
+
+  static void _goToSettingsSearch(BuildContext context) {
+    Navigator.maybeOf(context)?.push(
+      SearchPageRoute(
+        delegate: SettingsSearchDelegate(
+          searchFieldLabel: context.l10n.settingsSearchFieldLabel,
+          searchFieldStyle: Themes.searchFieldStyle(context),
+          sections: SettingsPage.sections,
+        ),
+      ),
+    );
   }
 }

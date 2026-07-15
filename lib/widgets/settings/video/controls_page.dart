@@ -3,10 +3,18 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/control_buttons_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlsPage extends StatelessWidget {
   static const routeName = '/settings/video/controls';
+
+  static const List<String> settingKeys = [
+    ...VideoControlButtonsPage.settingKeys,
+    SettingKeys.videoGestureDoubleTapTogglePlayKey,
+    SettingKeys.videoGestureSideDoubleTapSeekKey,
+    SettingKeys.videoGestureVerticalDragBrightnessVolumeKey,
+  ];
 
   const VideoControlsPage({super.key});
 

@@ -9,6 +9,16 @@ import 'package:flutter/material.dart';
 class ViewerSlideshowPage extends StatelessWidget {
   static const routeName = '/settings/viewer/slideshow';
 
+  static const List<String> settingKeys = [
+    SettingKeys.slideshowRepeatKey,
+    SettingKeys.slideshowShuffleKey,
+    SettingKeys.slideshowFillScreenKey,
+    SettingKeys.slideshowAnimatedZoomEffectKey,
+    SettingKeys.slideshowTransitionKey,
+    SettingKeys.slideshowIntervalKey,
+    SettingKeys.slideshowVideoPlaybackKey,
+  ];
+
   const ViewerSlideshowPage({super.key});
 
   @override

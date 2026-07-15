@@ -13,6 +13,15 @@ import 'package:provider/provider.dart';
 class SubtitleThemePage extends StatelessWidget {
   static const routeName = '/settings/video/subtitle_theme';
 
+  static const List<String> settingKeys = [
+    SettingKeys.subtitleTextAlignmentKey,
+    SettingKeys.subtitleTextPositionKey,
+    SettingKeys.subtitleFontSizeKey,
+    SettingKeys.subtitleTextColorKey,
+    SettingKeys.subtitleBackgroundColorKey,
+    SettingKeys.subtitleShowOutlineKey,
+  ];
+
   const SubtitleThemePage({super.key});
 
   @override

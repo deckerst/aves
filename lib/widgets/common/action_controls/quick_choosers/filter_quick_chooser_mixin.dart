@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/modules/app.dart';
+import 'package:aves/model/settings/modules/history.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 mixin FilterQuickChooserMixin<T> {
   List<T> get options;
 
-  static const int maxTotalOptionCount = AppSettings.recentFilterHistoryMax;
+  static const int maxTotalOptionCount = HistorySettings.recentFilterHistoryMax;
   static const double _chipPadding = AvesFilterChip.defaultPadding;
   static const bool _chipAllowGenericIcon = false;
 

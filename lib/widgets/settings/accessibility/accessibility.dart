@@ -36,6 +36,9 @@ class AccessibilitySection extends SettingsSection {
 
 class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.showPinchGestureAlternativesKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsAccessibilityShowPinchGestureAlternatives;
 
   @override
@@ -47,6 +50,9 @@ class SettingsTileAccessibilityShowPinchGestureAlternatives extends SettingsTile
 }
 
 class SettingsTileAccessibilityAnimations extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.accessibilityAnimationsKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsRemoveAnimationsTile;
 
@@ -62,6 +68,9 @@ class SettingsTileAccessibilityAnimations extends SettingsTile {
 }
 
 class SettingsTileAccessibilityTimeToTakeAction extends SettingsTile {
+  @override
+  List<String> get settingKeys => TimeToTakeActionTile.settingKeys;
+
   @override
   String title(BuildContext context) => context.l10n.settingsTimeToTakeActionTile;
 

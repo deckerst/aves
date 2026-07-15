@@ -1,5 +1,6 @@
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:collection/collection.dart';
 
 mixin SettingsAccess {
   bool get initialized;
@@ -11,6 +12,13 @@ mixin SettingsAccess {
   void notifyKeyChange(String key, Object? oldValue, Object? newValue);
 
   void notifyListeners();
+
+  bool hasValueChanged(Object? oldValue, Object? newValue) {
+    if (oldValue is Iterable && newValue is Iterable) {
+      return !const DeepCollectionEquality().equals(oldValue, newValue);
+    }
+    return oldValue != newValue;
+  }
 
   void set(String key, Object? newValue) {
     var oldValue = store.get(key);
@@ -32,7 +40,7 @@ mixin SettingsAccess {
       oldValue = getBool(key);
       store.setBool(key, newValue);
     }
-    if (oldValue != newValue) {
+    if (hasValueChanged(oldValue, newValue)) {
       notifyKeyChange(key, oldValue, newValue);
       notifyListeners();
     }
