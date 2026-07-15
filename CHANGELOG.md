@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - system nav bar inconsistent transparency
+- dialog transition when animations are disabled
 
 ## <a id="v1.14.8"></a>[v1.14.8] - 2026-06-25
 

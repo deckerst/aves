@@ -5,6 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/duration_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/multi_selection.dart';
@@ -242,7 +243,7 @@ class SettingsDurationListTile extends StatelessWidget {
           title: Text(title(context) ?? '?'),
           subtitle: AvesCaption(subtitle),
           onTap: () async {
-            final seconds = await showDialog<int>(
+            final seconds = await showAvesDialog<int>(
               context: context,
               builder: (context) => DurationDialog(initialSeconds: current),
             );

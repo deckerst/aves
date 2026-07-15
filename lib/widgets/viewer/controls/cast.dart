@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/upnp.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/cast_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:dlna_dart/dlna.dart';
@@ -75,7 +76,7 @@ mixin CastMixin {
   }
 
   Future<DLNADevice?> _selectRenderer(BuildContext context) async {
-    return await showDialog<DLNADevice?>(
+    return await showAvesDialog<DLNADevice?>(
       context: context,
       builder: (context) => const CastDialog(),
       routeSettings: const RouteSettings(name: CastDialog.routeName),

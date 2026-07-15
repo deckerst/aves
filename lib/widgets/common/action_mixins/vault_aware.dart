@@ -35,7 +35,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           }
         }
       case .pattern:
-        final pattern = await showDialog<String>(
+        final pattern = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PatternDialog(needConfirmation: false),
           routeSettings: const RouteSettings(name: PatternDialog.routeName),
@@ -44,7 +44,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           confirmed = pattern == await securityService.readValue(details.passKey);
         }
       case .pin:
-        final pin = await showDialog<String>(
+        final pin = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PinDialog(needConfirmation: false),
           routeSettings: const RouteSettings(name: PinDialog.routeName),
@@ -53,7 +53,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           confirmed = pin == await securityService.readValue(details.passKey);
         }
       case .password:
-        final password = await showDialog<String>(
+        final password = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PasswordDialog(needConfirmation: false),
           routeSettings: const RouteSettings(name: PasswordDialog.routeName),
@@ -109,7 +109,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           await reportService.recordError(e, stack);
         }
       case .pattern:
-        final pattern = await showDialog<String>(
+        final pattern = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PatternDialog(needConfirmation: true),
           routeSettings: const RouteSettings(name: PatternDialog.routeName),
@@ -118,7 +118,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           return await securityService.writeValue(details.passKey, pattern);
         }
       case .pin:
-        final pin = await showDialog<String>(
+        final pin = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PinDialog(needConfirmation: true),
           routeSettings: const RouteSettings(name: PinDialog.routeName),
@@ -127,7 +127,7 @@ mixin VaultAwareMixin on FeedbackMixin {
           return await securityService.writeValue(details.passKey, pin);
         }
       case .password:
-        final password = await showDialog<String>(
+        final password = await showAvesDialog<String>(
           context: context,
           builder: (context) => const PasswordDialog(needConfirmation: true),
           routeSettings: const RouteSettings(name: PasswordDialog.routeName),

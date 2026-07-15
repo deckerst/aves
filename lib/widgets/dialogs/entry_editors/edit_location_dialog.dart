@@ -389,7 +389,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   }
 
   Future<void> _pickGpxShift() async {
-    final newShift = await showDialog<Duration>(
+    final newShift = await showAvesDialog<Duration>(
       context: context,
       builder: (context) => TimeShiftDialog(
         initialValue: _gpxShift,

@@ -6,6 +6,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves/widgets/settings/app_export/selection_dialog.dart';
 import 'package:aves_model/aves_model.dart';
@@ -44,7 +45,7 @@ class SettingsActionDelegate with FeedbackMixin {
 
   Future<void> _export(BuildContext context) async {
     final l10n = context.l10n;
-    final toExport = await showDialog<Set<AppExportItem>>(
+    final toExport = await showAvesDialog<Set<AppExportItem>>(
       context: context,
       builder: (context) => AppExportItemSelectionDialog(
         title: l10n.settingsActionExportDialogTitle,
@@ -98,7 +99,7 @@ class SettingsActionDelegate with FeedbackMixin {
           });
         }
 
-        final toImport = await showDialog<Set<AppExportItem>>(
+        final toImport = await showAvesDialog<Set<AppExportItem>>(
           context: context,
           builder: (context) => AppExportItemSelectionDialog(
             title: l10n.settingsActionImportDialogTitle,

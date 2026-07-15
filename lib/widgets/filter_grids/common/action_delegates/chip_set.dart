@@ -25,6 +25,7 @@ import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
@@ -278,7 +279,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(ChipSortFactor?, void, TileLayout?, bool)>(
+    final value = await showAvesDialog<(ChipSortFactor?, void, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
@@ -403,7 +404,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final existingCover = covers.of(filter);
     final entryId = existingCover?.entryId;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
-    final selectedCover = await showDialog<(AvesEntry?, String?, Color?)>(
+    final selectedCover = await showAvesDialog<(AvesEntry?, String?, Color?)>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,

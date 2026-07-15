@@ -20,6 +20,7 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_group_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/tag_set.dart';
 import 'package:aves/widgets/filter_grids/common/app_bar.dart';
@@ -310,7 +311,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
   }
 
   Future<void> _createGroup(Uri? parentGroupUri) async {
-    final uri = await showDialog<Uri>(
+    final uri = await showAvesDialog<Uri>(
       context: context,
       builder: (context) => CreateGroupDialog(grouping: tagGrouping, parentGroupUri: parentGroupUri),
       routeSettings: const RouteSettings(name: CreateGroupDialog.routeName),

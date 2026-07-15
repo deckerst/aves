@@ -12,6 +12,7 @@ import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -143,7 +144,7 @@ mixin FeedbackMixin {
     Future<void> Function(Set<T> processed)? onDone,
   }) async {
     final opCompleter = Completer();
-    await showDialog(
+    await showAvesDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(

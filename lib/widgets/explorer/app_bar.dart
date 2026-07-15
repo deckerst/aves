@@ -21,6 +21,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
 import 'package:aves/widgets/explorer/crumb_line.dart';
 import 'package:aves/widgets/explorer/explorer_action_delegate.dart';
@@ -196,7 +197,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           }).toList();
           final volumePath = widget.directoryNotifier.value?.volumePath;
           final initialVolume = _volumes.firstWhereOrNull((v) => v.path == volumePath);
-          final volume = await showDialog<StorageVolume?>(
+          final volume = await showAvesDialog<StorageVolume?>(
             context: context,
             builder: (context) => SelectStorageDialog(initialVolume: initialVolume),
             routeSettings: const RouteSettings(name: SelectStorageDialog.routeName),

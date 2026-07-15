@@ -423,7 +423,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _convert(BuildContext context) async {
     final entries = _getTargetItems(context);
 
-    final options = await showDialog<EntryConvertOptions>(
+    final options = await showAvesDialog<EntryConvertOptions>(
       context: context,
       builder: (context) => ConvertEntryDialog(entries: entries),
       routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
@@ -890,7 +890,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     // local context may be deactivated when action is triggered after navigation
     final navigator = Navigator.maybeOf(context);
 
-    final name = await showDialog<String>(
+    final name = await showAvesDialog<String>(
       context: context,
       builder: (context) => const CreateDynamicAlbumDialog(),
       routeSettings: const RouteSettings(name: CreateDynamicAlbumDialog.routeName),
@@ -939,7 +939,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final filters = collection.filters;
 
     String? defaultName = _getDefaultNameForFilters(context, filters);
-    final result = await showDialog<(AvesEntry?, String)>(
+    final result = await showAvesDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: defaultName ?? '',

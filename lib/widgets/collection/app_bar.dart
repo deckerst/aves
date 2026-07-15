@@ -38,6 +38,7 @@ import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
@@ -816,7 +817,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
+    final value = await showAvesDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(

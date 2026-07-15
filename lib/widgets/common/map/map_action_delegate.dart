@@ -7,6 +7,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/map/style_selection_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
@@ -70,7 +71,7 @@ class MapActionDelegate with FeedbackMixin {
     }
 
     final collection = context.read<CollectionLens>();
-    final result = await showDialog<(AvesEntry?, String)>(
+    final result = await showAvesDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: '',
