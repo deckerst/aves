@@ -7,7 +7,6 @@ import 'package:aves_model/aves_model.dart';
 
 mixin HistorySettings on SettingsAccess {
   static const int recentFilterHistoryMax = 20;
-  static const int recentSettingHistoryMax = 3;
 
   void initHistorySettings() {
     vaults.lockStateChangeNotifier.addListener(_onVaultsChanged);
@@ -23,7 +22,7 @@ mixin HistorySettings on SettingsAccess {
 
   List<String> get recentSettingKeys => getStringList(SettingKeys.recentSettingKeysKey) ?? [];
 
-  set recentSettingKeys(List<String> newValue) => set(SettingKeys.recentSettingKeysKey, newValue.take(recentSettingHistoryMax).toList());
+  set recentSettingKeys(List<String> newValue) => set(SettingKeys.recentSettingKeysKey, newValue);
 
   List<String> get recentDestinationAlbums => getStringList(SettingKeys.recentDestinationAlbumsKey) ?? [];
 
