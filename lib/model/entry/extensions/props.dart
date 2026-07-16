@@ -81,7 +81,11 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get isExpiredTrash {
     final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) return false;
+    if (dateMillis == null) {
+      // for trashed items which are for some reason missing trash details,
+      // consider them expired so they are cleaned automatically on launch
+      return true;
+    }
     return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
   }
 

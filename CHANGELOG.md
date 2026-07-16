@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 - system nav bar inconsistent transparency
 - dialog transition when animations are disabled
+- deleting forever ghost items in the bin
 
 ## <a id="v1.14.8"></a>[v1.14.8] - 2026-06-25
 
