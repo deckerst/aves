@@ -385,7 +385,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
               path: newFields[EntryFields.path] as String?,
               contentId: newFields[EntryFields.contentId] as int?,
               // title can change when moved files are automatically renamed to avoid conflict
-              title: newFields[EntryFields.title] as String?,
+              sourceTitle: newFields[EntryFields.title] as String?,
               dateAddedSecs: newFields[EntryFields.dateAddedSecs] as int?,
               dateModifiedMillis: newFields[EntryFields.dateModifiedMillis] as int?,
               origin: newFields[EntryFields.origin] as int?,
