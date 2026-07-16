@@ -484,7 +484,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       // explicit GC before cataloguing multiple items
       await deviceService.requestGarbageCollection();
       await Future.forEach(entries, (entry) async {
-        await entry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
+        await entry.catalog(background: background, force: true, persist: persist);
         await localMediaDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
       });
       onCatalogMetadataChanged();
@@ -492,11 +492,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
     if (dataTypes.contains(EntryDataType.address)) {
       await Future.forEach(entries, (entry) async {
-        await entry.locate(
-          background: background,
-          force: dataTypes.contains(EntryDataType.address),
-          geocoderLocale: settings.avesLocale,
-        );
+        await entry.locate(background: background, force: true, geocoderLocale: settings.avesLocale);
         await localMediaDb.updateAddress(entry.id, entry.addressDetails);
       });
       onAddressMetadataChanged();

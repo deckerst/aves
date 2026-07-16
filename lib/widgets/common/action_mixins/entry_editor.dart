@@ -180,6 +180,10 @@ mixin EntryEditorMixin {
             modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
             showResult: false,
           );
+          // recatalog so that the metadata dates are not ignored when best dates are evaluated
+          await Future.forEach(entriesToDate, (entry) async {
+            await entry.catalog(background: false, force: true, persist: true);
+          });
         }
       }
     }
