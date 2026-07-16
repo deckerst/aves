@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "androidx.exifinterface.media"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 21

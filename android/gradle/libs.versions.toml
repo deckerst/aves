@@ -1,7 +1,7 @@
 [versions]
 androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
-androidGradlePlugin = "9.2.1"
+androidGradlePlugin = "9.3.0"
 androidSvg = "c7e58e8e59"
 androidxAnnotation = "1.10.0"
 androidxAppcompat = "1.7.1"
@@ -17,7 +17,7 @@ firebase = "3.0.7"
 glide = "5.0.9"
 gms = "4.5.0"
 jspecify = "1.0.0"
-junit = "6.1.1"
+junit = "6.1.2"
 kotlin = "2.3.21"
 kotlinxCoroutines = "1.11.0"
 ksp = "2.3.8"
