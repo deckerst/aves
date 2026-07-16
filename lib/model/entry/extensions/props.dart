@@ -93,18 +93,19 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // storage
 
+  String? get storagePath => trashDetails?.path ?? path;
+
   String? get storageDirectory {
     if (!trashed) {
       // prefer normalized paths
       return directory;
     }
-    // trash details should be present, but provide fallback path anyway
-    final _storagePath = trashDetails?.path ?? path;
+    final _storagePath = storagePath;
     return _storagePath != null ? pContext.dirname(_storagePath) : null;
   }
 
   bool get isMissingAtPath {
-    final _storagePath = trashed ? trashDetails?.path : path;
+    final _storagePath = storagePath;
     return _storagePath != null && !File(_storagePath).existsSync();
   }
 

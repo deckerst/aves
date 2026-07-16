@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
@@ -32,7 +33,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
   @override
   void initState() {
     super.initState();
-    final path = entry.trashDetails?.path ?? entry.path;
+    final path = entry.storagePath;
     _exists = path != null ? File(path).exists() : SynchronousFuture(true);
   }
 

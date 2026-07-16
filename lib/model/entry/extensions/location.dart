@@ -79,7 +79,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
         }
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$latLng error=$error\n$stack');
+      debugPrint('$runtimeType locate failed for entry=$this coordinates=$latLng error=$error\n$stack');
     }
   }
 
@@ -93,7 +93,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
         return address.addressLine;
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$latLng error=$error\n$stack');
+      debugPrint('$runtimeType findAddressLine failed for entry=$this coordinates=$latLng error=$error\n$stack');
     }
     return null;
   }

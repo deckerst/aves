@@ -5,6 +5,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/location.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/container/album_group.dart';
@@ -274,7 +275,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       }
     });
     if (entry.trashed) {
-      final trashPath = entry.trashDetails?.path;
+      final trashPath = entry.storagePath;
       if (trashPath != null) {
         entry.contentId = null;
         entry.uri = Uri.file(trashPath).toString();

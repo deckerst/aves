@@ -449,8 +449,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           switch (source) {
             case .fileModifiedDate:
               try {
-                if (path != null) {
-                  final file = File(path!);
+                final _path = storagePath;
+                if (_path != null) {
+                  final file = File(_path);
                   if (await file.exists()) {
                     date = await file.lastModified();
                   }

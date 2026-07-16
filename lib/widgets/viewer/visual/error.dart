@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -30,7 +31,7 @@ class _ErrorViewState extends State<ErrorView> {
   @override
   void initState() {
     super.initState();
-    final path = entry.trashDetails?.path ?? entry.path;
+    final path = entry.storagePath;
     _exists = path != null ? File(path).exists() : SynchronousFuture(true);
   }
 
