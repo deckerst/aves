@@ -93,7 +93,22 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // storage
 
-  String? get storagePath => trashDetails?.path ?? path;
+  String? get storagePath {
+    if (trashed) {
+      final _storagePath = trashDetails?.path;
+      if (_storagePath != null) {
+        return _storagePath;
+      } else {
+        // for trashed items which are for some reason missing trash details,
+        // do not fall back to original item path,
+        // but derive storage path from `file` URI
+        final _uri = Uri.parse(uri);
+        return _uri.scheme == 'file' ? _uri.path : null;
+      }
+    } else {
+      return path;
+    }
+  }
 
   String? get storageDirectory {
     if (!trashed) {

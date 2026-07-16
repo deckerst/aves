@@ -1,5 +1,6 @@
 package deckers.thibault.aves.model
 
+import android.content.ContentResolver
 import android.net.Uri
 import androidx.core.net.toUri
 
@@ -15,6 +16,17 @@ class AvesEntry(map: FieldMap) {
     val sizeBytes = toLong(map[EntryFields.SIZE_BYTES])
     val trashed = map[EntryFields.TRASHED] as Boolean
     val trashPath = map[EntryFields.TRASH_PATH] as String?
+
+    val storagePath: String?
+        get() = if (trashed) {
+            trashPath ?:
+            // for trashed items which are for some reason missing trash details,
+            // do not fall back to original item path,
+            // but derive storage path from `file` URI
+            if (uri.scheme == ContentResolver.SCHEME_FILE) uri.path else null
+        } else {
+            path
+        }
 
     private val isRotated: Boolean
         get() = rotationDegrees % 180 == 90

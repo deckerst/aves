@@ -480,7 +480,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val trashed = entry.trashed
 
                 val sourceUri = entry.uri
-                val sourcePath = if (trashed) entry.trashPath else entry.path
+                val sourcePath = entry.storagePath
 
                 var desiredName: String? = null
                 if (trashed) {
