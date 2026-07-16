@@ -356,7 +356,7 @@ abstract class ImageProvider {
                                     Bitmap.CompressFormat.WEBP_LOSSY
                                 }
                             } else {
-                                @Suppress("deprecation")
+                                @Suppress("DEPRECATION")
                                 Bitmap.CompressFormat.WEBP
                             }
 

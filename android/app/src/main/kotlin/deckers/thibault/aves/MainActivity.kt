@@ -250,7 +250,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     @Deprecated("Deprecated in android.app.Activity")
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         super.onMultiWindowModeChanged(isInMultiWindowMode)
         notifyWindowModeChange()
     }
@@ -262,7 +262,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     @Deprecated("Deprecated in android.app.Activity")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         super.onPictureInPictureModeChanged(isInPictureInPictureMode)
         notifyWindowModeChange()
     }

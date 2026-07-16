@@ -100,7 +100,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                             // The following methods do not work:
                             // - `resources.getConfiguration().setLocale(...)`
                             // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
-                            @Suppress("deprecation")
+                            @Suppress("DEPRECATION")
                             resources.updateConfiguration(englishConfig, resources.displayMetrics)
                             englishLabel = resources.getString(labelRes)
                         } catch (e: Exception) {

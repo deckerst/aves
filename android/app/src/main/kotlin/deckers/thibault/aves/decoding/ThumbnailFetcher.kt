@@ -137,10 +137,10 @@ class ThumbnailFetcher internal constructor(
         val contentId = uri.tryParseId() ?: return null
         val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null)
         } else {
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             var bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null)
             // from Android 10 (API 29), returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {

@@ -56,8 +56,6 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType
-            val trashed = entry.trashed
-
             val uri = entry.uri
             val path = entry.storagePath
 

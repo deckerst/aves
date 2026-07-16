@@ -80,7 +80,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
             activity.display.rotation
         } else {
             val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             windowManager.defaultDisplay.rotation
         }
         result.success(displayRotation * 90)
