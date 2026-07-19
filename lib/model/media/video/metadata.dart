@@ -110,7 +110,7 @@ class VideoMetadataFormatter {
       final dateString = rawDate as String;
       dateMillis = parseVideoDate(dateString);
       if (dateMillis == null && !isAmbiguousDate(dateString)) {
-        await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
+        debugPrint('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
       }
     }
 

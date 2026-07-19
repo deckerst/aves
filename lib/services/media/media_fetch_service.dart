@@ -358,6 +358,7 @@ class PlatformMediaFetchService implements MediaFetchService {
   static const Set<String> _knownVideos = {
     MimeTypes.v3gpp,
     MimeTypes.asf,
+    MimeTypes.avc,
     MimeTypes.avi,
     MimeTypes.aviMSVideo,
     MimeTypes.aviVnd,

@@ -79,6 +79,7 @@ class MimeTypes {
 
   static const v3gpp = 'video/3gpp';
   static const asf = 'video/x-ms-asf'; // https://en.wikipedia.org/wiki/Advanced_Systems_Format
+  static const avc = 'video/avc'; // https://en.wikipedia.org/wiki/Advanced_Video_Coding
   static const avi = 'video/avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
   static const aviMSVideo = 'video/msvideo'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
   static const aviVnd = 'video/vnd.avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
