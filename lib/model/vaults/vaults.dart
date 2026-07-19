@@ -180,14 +180,29 @@ class Vaults {
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked vault items');
       await Future.forEach(untrackedPaths, (untrackedPath) async {
-        final uri = Uri.file(untrackedPath).toString();
-        final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
-        if (sourceEntry != null) {
-          sourceEntry.id = localMediaDb.nextId;
-          sourceEntry.origin = EntryOrigins.vault;
-          newEntries.add(sourceEntry);
+        final isDirectory = await FileSystemEntity.isDirectory(untrackedPath);
+        if (isDirectory) {
+          await reportService.recordError('Untracked vault item at path=$untrackedPath is a directory. Deleting...');
+          try {
+            await Directory(untrackedPath).delete(recursive: true);
+          } catch (error, stack) {
+            await reportService.recordError('Failed to remove invalid untracked vault item at path=$untrackedPath with error=$error\n$stack');
+          }
         } else {
-          await reportService.recordError('Failed to recover untracked vault item at uri=$uri');
+          final uri = Uri.file(untrackedPath).toString();
+          final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
+          if (sourceEntry != null) {
+            sourceEntry.id = localMediaDb.nextId;
+            sourceEntry.origin = EntryOrigins.vault;
+            newEntries.add(sourceEntry);
+          } else {
+            await reportService.recordError('Untracked vault item at uri=$uri is not a valid media file. Deleting...');
+            try {
+              await File(untrackedPath).delete();
+            } catch (error, stack) {
+              await reportService.recordError('Failed to remove invalid untracked vault item at path=$untrackedPath with error=$error\n$stack');
+            }
+          }
         }
       });
     }
