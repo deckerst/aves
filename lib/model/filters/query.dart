@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  static final exactRegex = RegExp('^"(.*)"\$');
-  static final regexRegex = RegExp('^/(.*)/\$');
+  static final _exactRegex = RegExp('^"(.*)"\$');
+  static final _regexRegex = RegExp('^/(.*)/\$');
 
   final String query;
   final bool colorful, live;
@@ -36,7 +36,7 @@ class QueryFilter extends CollectionFilter {
 
   QueryFilter(this.query, {this.colorful = true, this.live = false, super.reversed = false}) {
     // allow regex queries wrapped with `/.../`
-    var matches = regexRegex.allMatches(query);
+    var matches = _regexRegex.allMatches(query);
     if (matches.length == 1) {
       try {
         final regex = RegExp(matches.first.group(1)!);
@@ -66,7 +66,7 @@ class QueryFilter extends CollectionFilter {
     }
 
     // allow untrimmed queries wrapped with `"..."`
-    matches = exactRegex.allMatches(upQuery);
+    matches = _exactRegex.allMatches(upQuery);
     if (matches.length == 1) {
       upQuery = matches.first.group(1)!;
     }

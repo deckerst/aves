@@ -291,6 +291,8 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<FilterGridItem<T>?> _focusedItemNotifier = ValueNotifier(null);
 
+  static final _regexRegex = RegExp('^/(.*)/\$');
+
   @override
   void didUpdateWidget(covariant _FilterGridContent<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -318,9 +320,9 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
             Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
             if (queryEnabled && query.isNotEmpty) {
               visibleSections = {};
-              final queryUp = query.toUpperCase();
+              final test = _buildQueryPredicate(query, context);
               widget.sections.forEach((sectionKey, sectionFilters) {
-                final visibleFilters = sectionFilters.where((item) => item.filter.matchLabel(context, queryUp)).toList();
+                final visibleFilters = sectionFilters.where(test).toList();
                 if (visibleFilters.isNotEmpty) {
                   visibleSections[sectionKey] = visibleFilters;
                 }
@@ -432,6 +434,23 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
         );
       },
     );
+  }
+
+  bool Function(FilterGridItem<T> item) _buildQueryPredicate(String query, BuildContext context) {
+    // allow regex queries wrapped with `/.../`
+    var matches = _regexRegex.allMatches(query);
+    if (matches.length == 1) {
+      try {
+        final regex = RegExp(matches.first.group(1)!);
+        return (item) => regex.hasMatch(item.filter.getLabel(context));
+      } on FormatException catch (_) {
+        // invalid regex
+        return (item) => false;
+      }
+    }
+
+    final queryUp = query.toUpperCase();
+    return (item) => item.filter.matchLabel(context, queryUp);
   }
 
   String? _getFilterBanner(BuildContext context, T filter) {

@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: settings quick action (long press for search)
 - Settings: search shows last changed settings
 - "show" action in hidden filter chip context menu
+- Albums/Countries/Tags: allow regex (wrapped in `/.../`) in query filter
 
 ### Changed
 
