@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- crash when cataloguing GIF with large XMP
 - system nav bar inconsistent transparency
 - dialog transition when animations are disabled
 - deleting forever ghost items in the bin
