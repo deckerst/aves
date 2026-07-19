@@ -123,6 +123,7 @@ class InfoAppBar extends StatelessWidget {
           metadataNotifier: metadataNotifier,
           isSelecting: isSelecting,
         ),
+        background: Theme.of(context).scaffoldBackgroundColor,
       ),
     );
   }

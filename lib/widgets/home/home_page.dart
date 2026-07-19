@@ -18,21 +18,18 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/widget_service.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/editor/entry_editor_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_error.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -423,14 +420,10 @@ class _HomePageState extends State<HomePage> {
       case ScreenSaverSettingsPage.routeName:
         return buildRoute((context) => const ScreenSaverSettingsPage());
       case SearchPage.routeName:
-        return SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            searchFieldLabel: context.l10n.searchCollectionFieldHint,
-            searchFieldStyle: Themes.searchFieldStyle(context),
-            source: source,
-            canPop: false,
-            initialQuery: _initialSearchQuery,
-          ),
+        return CollectionSearchPageRoute(
+          context: context,
+          canPop: false,
+          initialQuery: _initialSearchQuery,
         );
       case CollectionPage.routeName:
       default:

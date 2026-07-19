@@ -11,6 +11,7 @@ enum SearchBody { suggestions, results }
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
     required this.delegate,
+    this.background,
   }) : super(settings: RouteSettings(name: delegate.routeName)) {
     assert(
       delegate.route == null,
@@ -31,6 +32,12 @@ class SearchPageRoute<T> extends PageRoute<T> {
 
   final AvesSearchDelegate delegate;
 
+  // When `PredictiveBackPageTransitionsBuilder` is the transition used for page N-1,
+  // N-1 slides away and page N-2 (if any) briefly flashes, while the search page is fading in.
+  // So we apply an opaque background color if provided, to hide pages below.
+  // This differs from `barrierColor`, which fades in.
+  final Color? background;
+
   @override
   Color? get barrierColor => null;
 
@@ -50,13 +57,15 @@ class SearchPageRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    // a simple fade is usually more fitting for a search page,
-    // instead of the `pageTransitionsTheme` used by the rest of the app
     final animate = context.read<Settings>().animate;
     return animate
-        ? FadeTransition(
-            opacity: animation,
-            child: child,
+        ? Container(
+            color: background,
+            // a simple fade is usually more fitting for a search page
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           )
         : child;
   }
