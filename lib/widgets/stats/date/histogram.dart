@@ -10,7 +10,6 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/date/axis.dart';
@@ -20,7 +19,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
@@ -239,15 +237,16 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         )..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
 
+    final locale = settings.avesLocale;
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
-            locale: settings.avesLocale,
+            locale: locale,
             level: _level,
             first: _firstDate!,
             last: _lastDate!,
           )
         : null;
-    final tickFormatter = NumberFormat.decimalPattern(context.localeName);
+    final tickFormatter = locale.decimalNumberFormat();
 
     final domainAxis = charts.DateTimeAxisSpec(
       renderSpec: charts.SmallTickRendererSpec(
@@ -319,7 +318,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   Widget _buildSelectionRow() {
-    final countFormatter = NumberFormat.decimalPattern(context.localeName);
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
 
     return ValueListenableBuilder<_EntryByDate?>(
       valueListenable: _selection,
@@ -341,7 +340,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                 ),
                 const Spacer(),
                 Text(
-                  countFormatter.format(count),
+                  itemCountFormatter.format(count),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

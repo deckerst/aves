@@ -1,5 +1,5 @@
-import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +33,8 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
   Widget build(BuildContext context) {
     super.build(context);
 
-    final currentSizeBytes = formatFileSize(kAsciiLocale, imageCache.currentSizeBytes);
-    final maxSizeBytes = formatFileSize(kAsciiLocale, imageCache.maximumSizeBytes);
+    final currentSizeBytes = formatFileSize(AvesLocale.ascii, imageCache.currentSizeBytes);
+    final maxSizeBytes = formatFileSize(AvesLocale.ascii, imageCache.maximumSizeBytes);
     return AvesExpansionTile(
       title: 'Cache',
       children: [

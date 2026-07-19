@@ -10,6 +10,7 @@ import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
@@ -19,11 +20,9 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
@@ -205,6 +204,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
       color: _detailColor(context),
       fontSize: detailFontSize(extent),
     );
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
     return Row(
       mainAxisSize: .min,
       children: [
@@ -215,20 +215,20 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         if (filter is AlbumGroupFilter) ...[
           _buildDetailIcon(context, AIcons.album, padding: detailIconTextPadding(extent)),
           Text(
-            '${NumberFormat.decimalPattern(context.localeName).format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
+            '${itemCountFormatter.format(albumGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],
         if (filter is TagGroupFilter) ...[
           _buildDetailIcon(context, AIcons.tag, padding: detailIconTextPadding(extent)),
           Text(
-            '${NumberFormat.decimalPattern(context.localeName).format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
+            '${itemCountFormatter.format(tagGrouping.countLeaves(filter.uri))}${AText.separator}',
             style: textStyle,
           ),
         ],
         Flexible(
           child: Text(
-            locked ? AText.valueNotAvailable : NumberFormat.decimalPattern(context.localeName).format(source.count(filter)),
+            locked ? AText.valueNotAvailable : itemCountFormatter.format(source.count(filter)),
             style: textStyle,
             softWrap: false,
             overflow: TextOverflow.fade,

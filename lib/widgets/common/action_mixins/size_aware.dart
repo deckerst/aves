@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -74,9 +75,9 @@ mixin SizeAwareMixin {
   }
 
   Future<void> _showNotEnoughSpaceDialog(BuildContext context, int needed, int free, StorageVolume destinationVolume) async {
-    final localeName = context.localeName;
-    final neededSize = formatFileSize(localeName, needed);
-    final freeSize = formatFileSize(localeName, free);
+    final locale = settings.avesLocale;
+    final neededSize = formatFileSize(locale, needed);
+    final freeSize = formatFileSize(locale, free);
     final volume = destinationVolume.getDescription(context);
     await showWarningDialog(
       context: context,

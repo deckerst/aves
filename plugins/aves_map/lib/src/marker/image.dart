@@ -22,13 +22,13 @@ class ImageMarker extends StatelessWidget {
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
 
-  ImageMarker({
+  const ImageMarker({
     super.key,
     required this.count,
-    required String? localeName,
+    required this.countFormatter,
     this.drawArrow = true,
     required this.buildThumbnailImage,
-  }) : countFormatter = intl.NumberFormat.decimalPattern(localeName);
+  });
 
   @override
   Widget build(BuildContext context) {

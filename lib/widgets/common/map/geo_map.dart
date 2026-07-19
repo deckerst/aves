@@ -155,11 +155,11 @@ class _GeoMapState extends State<GeoMap> {
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
         final isHeavy = mapStyle?.isHeavy ?? false;
-        final localeName = context.localeName;
+        final countFormatter = settings.avesLocale.decimalNumberFormat();
         Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
           key: key,
           count: key.count,
-          localeName: localeName,
+          countFormatter: countFormatter,
           buildThumbnailImage: (extent) => ThumbnailImage(
             entry: key.entry,
             extent: extent,
@@ -525,11 +525,11 @@ class _GeoMapState extends State<GeoMap> {
     } else {
       markerEntry = geoEntry.entry!;
     }
-    final localeName = context.localeName;
+    final countFormatter = settings.avesLocale.decimalNumberFormat();
     final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
     Widget markerBuilder(BuildContext context) => ImageMarker(
       count: geoEntry.pointsSize,
-      localeName: localeName,
+      countFormatter: countFormatter,
       drawArrow: false,
       buildThumbnailImage: (extent) => ThumbnailImage(
         entry: markerEntry,

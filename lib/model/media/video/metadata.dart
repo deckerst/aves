@@ -10,11 +10,11 @@ import 'package:aves/model/media/video/profiles/hevc.dart';
 import 'package:aves/model/media/video/stereo_3d_modes.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/languages.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/ops/gregorian.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/string_utils.dart';
@@ -516,7 +516,7 @@ class VideoMetadataFormatter {
     } else if (value is String) {
       size = int.tryParse(value);
     }
-    return size != null ? formatFileSize(kAsciiLocale, size) : '$value';
+    return size != null ? formatFileSize(AvesLocale.ascii, size) : '$value';
   }
 
   static String _formatLanguage(String value) {

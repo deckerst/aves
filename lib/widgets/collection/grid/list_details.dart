@@ -81,7 +81,7 @@ class EntryListDetails extends StatelessWidget {
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;
 
     final size = entry.stackedEntries?.map((v) => v.sizeBytes).sum ?? entry.sizeBytes;
-    final sizeText = size != null ? formatFileSize(locale.languageTag, size) : AText.valueNotAvailable;
+    final sizeText = size != null ? formatFileSize(locale, size) : AText.valueNotAvailable;
 
     return Wrap(
       spacing: 8,

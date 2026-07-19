@@ -4,7 +4,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
@@ -22,7 +21,6 @@ class OverlayDateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localeName = context.localeName;
     final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
@@ -31,7 +29,7 @@ class OverlayDateRow extends StatelessWidget {
     final resolutionText = entry.isSvg
         ? entry.aspectRatioText
         : entry.isSized
-        ? entry.getResolutionText(localeName)
+        ? entry.getResolutionText(locale)
         : '';
 
     return Row(

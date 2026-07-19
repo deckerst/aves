@@ -1,10 +1,10 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class LoadingEmptyContent extends StatelessWidget {
   final CollectionSource source;
@@ -16,7 +16,7 @@ class LoadingEmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countFormatter = NumberFormat.decimalPattern(context.localeName);
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
     final progressTextStyle = TextStyle(
       color: Theme.of(context).colorScheme.primary.withValues(alpha: .5),
       fontSize: 18,
@@ -36,7 +36,7 @@ class LoadingEmptyContent extends StatelessWidget {
                 final done = progress.done;
                 return done > 0
                     ? Text(
-                        countFormatter.format(done),
+                        itemCountFormatter.format(done),
                         style: progressTextStyle,
                       )
                     : const SizedBox();

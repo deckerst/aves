@@ -1,10 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
+import 'package:aves/ref/locales.dart';
 import 'package:aves/utils/calendar/dateformat/base.dart';
 import 'package:aves/utils/calendar/dateformat/intl.dart';
 import 'package:aves/utils/calendar/dateformat/intl4x.dart';
 import 'package:aves/utils/calendar/delegate/persian.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:intl4x/datetime_format.dart' as intl4x;
 
 typedef ACalendar = intl4x.Calendar;
@@ -23,6 +25,12 @@ class AvesLocale {
     _dateFormatDelegate = _getDateFormatDelegate();
   }
 
+  static final AvesLocale ascii = AvesLocale(
+    languageTag: kAsciiLocale,
+    calendar: ACalendar.gregorian,
+    forceWesternArabicNumerals: false,
+  );
+
   @override
   String toString() => '$runtimeType#${shortHash(this)}{languageTag=$languageTag, calendar=$calendar, forceWesternArabicNumerals=$forceWesternArabicNumerals}';
 
@@ -34,6 +42,18 @@ class AvesLocale {
       calendar: calendar ?? this.calendar,
       forceWesternArabicNumerals: forceWesternArabicNumerals,
     );
+  }
+
+  NumberFormat numberFormat(String pattern) {
+    return NumberFormat(pattern, languageTag);
+  }
+
+  NumberFormat decimalNumberFormat() {
+    return NumberFormat.decimalPattern(languageTag);
+  }
+
+  NumberFormat percentNumberFormat() {
+    return NumberFormat.percentPattern(languageTag);
   }
 
   // only use with `showDatePicker` / `DatePickerDialog`,

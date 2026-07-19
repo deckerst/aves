@@ -82,7 +82,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     _mapCoordinates = mainEntry.latLng;
     _copyItemSource = mainEntry;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      coordinateFormatter = NumberFormat('0.000000', context.localeName);
+      coordinateFormatter = settings.avesLocale.numberFormat('0.000000');
       final latLng = mainEntry.latLng;
       if (latLng != null) {
         _latitudeController.text = coordinateFormatter.format(latLng.latitude);
@@ -570,10 +570,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   }
 
   Text _coordinatesText(BuildContext context, LatLng? latLng) {
-    final l10n = context.l10n;
     if (latLng != null) {
       return Text(
-        ExtraCoordinateFormat.toDMS(l10n, latLng).join('\n'),
+        ExtraCoordinateFormat.toDMS(settings.avesLocale, context.l10n, latLng).join('\n'),
       );
     } else {
       return _unknownText(context);

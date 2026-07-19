@@ -420,7 +420,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     return CollectionNavTile(
       leading: const DrawerFilterIcon(filter: filter),
       title: const DrawerFilterTitle(filter: filter),
-      trailing: Text(formatFileSize(context.localeName, trashSize, round: 0)),
+      trailing: Text(formatFileSize(settings.avesLocale, trashSize, round: 0)),
       filters: {filter},
       isSelected: () => currentCollection?.filters.contains(filter) ?? false,
     );

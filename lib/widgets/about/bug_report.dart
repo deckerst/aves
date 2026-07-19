@@ -12,6 +12,7 @@ import 'package:aves/services/device_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -104,6 +105,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
   Widget _buildStep(int step, String text, String buttonText, VoidCallback onPressed) {
     final isMonochrome = settings.themeColorMode == AvesThemeColorMode.monochrome;
+    final stepCountFormatter = settings.avesLocale.decimalNumberFormat();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -119,7 +121,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
               ),
               shape: BoxShape.circle,
             ),
-            child: Text(NumberFormat('0', context.localeName).format(step)),
+            child: Text(stepCountFormatter.format(step)),
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(text)),
@@ -142,8 +144,8 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
     final ram = await deviceService.getRamSizes(<MemorySizeType>{.total});
     final heap = await deviceService.getHeapSizes(<MemorySizeType>{.max});
-    final ramTotal = formatFileSize(kAsciiLocale, ram[MemorySizeType.total] ?? 0);
-    final heapMax = formatFileSize(kAsciiLocale, heap[MemorySizeType.max] ?? 0);
+    final ramTotal = formatFileSize(AvesLocale.ascii, ram[MemorySizeType.total] ?? 0);
+    final heapMax = formatFileSize(AvesLocale.ascii, heap[MemorySizeType.max] ?? 0);
 
     final supportsHdr = await windowService.supportsHdr();
     final supportsWideGamut = await windowService.supportsWideGamut();

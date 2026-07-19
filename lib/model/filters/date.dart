@@ -16,7 +16,7 @@ class DateFilter extends CollectionFilter {
   late final DateTime _effectiveDate;
   late final EntryPredicate _test;
 
-  // TODO TLAD [calendar]
+  // TODO TLAD [calendar] reflect calendar setting
   static final onThisDay = DateFilter(ACalendar.gregorian, DateLevel.md, null);
 
   @override

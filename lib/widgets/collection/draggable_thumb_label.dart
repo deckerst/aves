@@ -4,7 +4,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
@@ -58,9 +57,10 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
             ];
           case .size:
+            final locale = settings.avesLocale;
             final sizeBytes = entry.sizeBytes;
             return [
-              if (sizeBytes != null) formatFileSize(context.localeName, sizeBytes, round: 0),
+              if (sizeBytes != null) formatFileSize(locale, sizeBytes, round: 0),
             ];
           case .duration:
             return [

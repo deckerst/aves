@@ -103,7 +103,7 @@ mixin AppSettings on SettingsAccess {
     return _avesLocale!;
   }
 
-  ACalendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, ACalendar.gregorian, ACalendar.values);
+  ACalendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, SettingsDefaults.calendar, ACalendar.values);
 
   set calendar(ACalendar newValue) {
     _resetAvesLocale();

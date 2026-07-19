@@ -21,6 +21,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
@@ -34,7 +35,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class BasicSection extends StatefulWidget {
@@ -329,7 +329,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : infoUnknown;
     final showResolution = !entry.isSvg && entry.isSized;
-    final sizeText = entry.sizeBytes != null ? formatFileSize(locale.languageTag, entry.sizeBytes!) : infoUnknown;
+    final sizeText = entry.sizeBytes != null ? formatFileSize(locale, entry.sizeBytes!) : infoUnknown;
     final path = entry.path;
 
     return FutureBuilder<String?>(
@@ -344,7 +344,7 @@ class _BasicInfoState extends State<_BasicInfo> {
                 l10n.viewerInfoLabelTitle: title,
                 l10n.viewerInfoLabelDate: dateText,
                 if (entry.isVideo) ..._buildVideoRows(context),
-                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale.languageTag)),
+                if (showResolution) l10n.viewerInfoLabelResolution: context.applyDirectionality(getRasterResolutionText(locale)),
                 l10n.viewerInfoLabelSize: context.applyDirectionality(sizeText),
                 if (!entry.trashed) l10n.viewerInfoLabelUri: entry.uri,
                 l10n.viewerInfoLabelPath: ?path,
@@ -398,15 +398,15 @@ class _BasicInfoState extends State<_BasicInfo> {
     ];
   }
 
-  String getRasterResolutionText(String localeName) {
-    var s = entry.getResolutionText(localeName);
+  String getRasterResolutionText(AvesLocale locale) {
+    var s = entry.getResolutionText(locale);
 
     // guess whether this is a photo, according to file type
     final isPhoto = [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
     if (isPhoto) {
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
-        s += ' • ${NumberFormat('0', localeName).format(megaPixels)} MP';
+        s += ' • ${locale.numberFormat('0').format(megaPixels)} MP';
       }
     }
 

@@ -158,7 +158,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
           leading,
           const SizedBox(width: 8),
           Text(
-            '${context.l10n.itemCount(source.count(filter))} • ${formatFileSize(context.localeName, source.size(filter))}',
+            '${context.l10n.itemCount(source.count(filter))} • ${formatFileSize(settings.avesLocale, source.size(filter))}',
             style: detailsTheme.captionStyle,
             softWrap: false,
             overflow: TextOverflow.fade,

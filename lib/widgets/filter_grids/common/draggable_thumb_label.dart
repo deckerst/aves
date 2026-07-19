@@ -39,7 +39,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
             ];
           case .size:
             return [
-              formatFileSize(context.localeName, context.read<CollectionSource>().size(filterGridItem.filter)),
+              formatFileSize(settings.avesLocale, context.read<CollectionSource>().size(filterGridItem.filter)),
             ];
         }
       },
