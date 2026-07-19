@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
-import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/number.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
@@ -71,6 +71,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
   late ANumberFormat coordinateFormatter;
+  late ANumberParser coordinateParser;
+
+  static const _coordinatePattern = '0.000000';
   static const _gpxProjection = SphericalMercator();
   static const _minDurationToGpxPoint = Duration(hours: 1);
 
@@ -81,18 +84,19 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     mainEntry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
     _mapCoordinates = mainEntry.latLng;
     _copyItemSource = mainEntry;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      coordinateFormatter = settings.avesLocale.numberFormat('0.000000');
-      final latLng = mainEntry.latLng;
-      if (latLng != null) {
-        _latitudeController.text = coordinateFormatter.format(latLng.latitude);
-        _longitudeController.text = coordinateFormatter.format(latLng.longitude);
-      } else {
-        _latitudeController.text = '';
-        _longitudeController.text = '';
-      }
-      setState(_validate);
-    });
+
+    final locale = settings.avesLocale;
+    coordinateFormatter = locale.numberFormat(_coordinatePattern);
+    coordinateParser = locale.numberParser(_coordinatePattern);
+    final latLng = mainEntry.latLng;
+    if (latLng != null) {
+      _latitudeController.text = coordinateFormatter.format(latLng.latitude);
+      _longitudeController.text = coordinateFormatter.format(latLng.longitude);
+    } else {
+      _latitudeController.text = '';
+      _longitudeController.text = '';
+    }
+    setState(_validate);
     _subscriptions.add(AvesApp.intentEventBus.on<LocationReceivedEvent>().listen((event) => _setCustomLocation(event.location)));
   }
 
@@ -582,7 +586,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   LatLng? _parseLatLng() {
     double? tryParse(String text) {
       try {
-        return double.tryParse(text) ?? (coordinateFormatter.parse(text).toDouble());
+        return double.tryParse(text) ?? (coordinateParser.parse(text).toDouble());
       } catch (error) {
         // ignore
         return null;

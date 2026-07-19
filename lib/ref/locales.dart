@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:aves/ref/languages.dart';
 
-const kAsciiLocale = 'en_US';
+const kAsciiLocale = 'en-US'; // should conform to BCP47
 
 // time components hours/minutes/seconds are always displayed in that order
 const ui.TextDirection kTimeComponentsDirection = .ltr;

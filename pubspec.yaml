@@ -107,7 +107,7 @@ dependencies:
   highlight:
   http:
   intl:
-  intl4x: 1.0.0-alpha.1
+  intl4x: 1.0.0-alpha.2
   latlong2:
   leak_tracker:
   local_auth:

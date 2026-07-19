@@ -1,36 +1,25 @@
 // ignore_for_file: non_constant_identifier_names
-import 'package:aves/ref/locales.dart';
 import 'package:aves/locale/calendar/dateformat/base.dart';
 import 'package:aves/locale/calendar/dateformat/intl.dart';
 import 'package:aves/locale/calendar/dateformat/intl4x.dart';
 import 'package:aves/locale/calendar/delegate/persian.dart';
+import 'package:aves/locale/intl4x.dart';
+import 'package:aves/locale/number.dart';
+import 'package:aves/ref/locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/datetime_format.dart' as date4x;
+import 'package:intl4x/number_format.dart' as num4x;
 
 typedef ACalendar = date4x.Calendar;
-
-class ANumberFormat {
-  final String Function(num number) _format;
-  final num Function(String text) _parse;
-
-  ANumberFormat._private(this._format, this._parse);
-
-  factory ANumberFormat.fromIntl(intl.NumberFormat nf) {
-    return ANumberFormat._private(nf.format, nf.parse);
-  }
-
-  String format(num number) => _format(number);
-
-  num parse(String text) => _parse(text);
-}
 
 class AvesLocale {
   final String languageTag;
   final ACalendar calendar;
   final bool forceWesternArabicNumerals;
   late final DateFormatDelegate _dateFormatDelegate;
+  late final num4x.Locale _locale4x;
 
   AvesLocale({
     required this.languageTag,
@@ -38,6 +27,7 @@ class AvesLocale {
     required this.forceWesternArabicNumerals,
   }) {
     _dateFormatDelegate = _getDateFormatDelegate();
+    _locale4x = Intl4x.toLocale4x(languageTag, calendar, forceWesternArabicNumerals);
   }
 
   static final AvesLocale ascii = AvesLocale(
@@ -64,11 +54,17 @@ class AvesLocale {
   }
 
   ANumberFormat decimalNumberFormat() {
-    return ANumberFormat.fromIntl(intl.NumberFormat.decimalPattern(languageTag));
+    return ANumberFormat.fromIntl4x(num4x.NumberFormat(locale: _locale4x));
   }
 
   ANumberFormat percentNumberFormat() {
     return ANumberFormat.fromIntl(intl.NumberFormat.percentPattern(languageTag));
+    // as of intl4x v1.0.0-alpha.2 `NumberFormat.percent` is not implemented for native
+    // return ANumberFormat.fromIntl4x(num4x.NumberFormat.percent(locale: _locale4x));
+  }
+
+  ANumberParser numberParser(String pattern) {
+    return ANumberParser.fromIntl(intl.NumberFormat(pattern, languageTag));
   }
 
   // only use with `showDatePicker` / `DatePickerDialog`,
