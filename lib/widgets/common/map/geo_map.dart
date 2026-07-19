@@ -109,7 +109,6 @@ class _GeoMapState extends State<GeoMap> {
   void initState() {
     super.initState();
     _boundsNotifier = ValueNotifier(_initBounds());
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.mapShowItemTracksKey).listen((_) => _updateItemTracks()));
     _registerWidget(widget);
     _onCollectionChanged();
   }
@@ -132,6 +131,8 @@ class _GeoMapState extends State<GeoMap> {
   void _registerWidget(GeoMap widget) {
     widget.collection?.addListener(_onCollectionChanged);
     _subscriptions.add(widget.controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
+    // not specific to widget, but here to be next to other subscriptions
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.mapShowItemTracksKey).listen((_) => _updateItemTracks()));
   }
 
   void _unregisterWidget(GeoMap widget) {
