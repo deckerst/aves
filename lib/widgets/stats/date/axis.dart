@@ -1,9 +1,9 @@
 import 'dart:math';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
+import 'package:aves/locale/calendar/dateformat/base.dart';
 import 'package:aves/model/filters/date.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
-import 'package:aves/utils/calendar/dateformat/base.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 

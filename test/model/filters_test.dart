@@ -1,3 +1,4 @@
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
@@ -20,7 +21,6 @@ import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/filters/weekday.dart';
 import 'package:aves/model/grouping/common.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 

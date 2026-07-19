@@ -1,5 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -21,8 +23,6 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';

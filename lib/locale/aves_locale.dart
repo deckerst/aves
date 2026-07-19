@@ -1,15 +1,30 @@
 // ignore_for_file: non_constant_identifier_names
 import 'package:aves/ref/locales.dart';
-import 'package:aves/utils/calendar/dateformat/base.dart';
-import 'package:aves/utils/calendar/dateformat/intl.dart';
-import 'package:aves/utils/calendar/dateformat/intl4x.dart';
-import 'package:aves/utils/calendar/delegate/persian.dart';
+import 'package:aves/locale/calendar/dateformat/base.dart';
+import 'package:aves/locale/calendar/dateformat/intl.dart';
+import 'package:aves/locale/calendar/dateformat/intl4x.dart';
+import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:intl4x/datetime_format.dart' as intl4x;
+import 'package:intl/intl.dart' as intl;
+import 'package:intl4x/datetime_format.dart' as date4x;
 
-typedef ACalendar = intl4x.Calendar;
+typedef ACalendar = date4x.Calendar;
+
+class ANumberFormat {
+  final String Function(num number) _format;
+  final num Function(String text) _parse;
+
+  ANumberFormat._private(this._format, this._parse);
+
+  factory ANumberFormat.fromIntl(intl.NumberFormat nf) {
+    return ANumberFormat._private(nf.format, nf.parse);
+  }
+
+  String format(num number) => _format(number);
+
+  num parse(String text) => _parse(text);
+}
 
 class AvesLocale {
   final String languageTag;
@@ -44,16 +59,16 @@ class AvesLocale {
     );
   }
 
-  NumberFormat numberFormat(String pattern) {
-    return NumberFormat(pattern, languageTag);
+  ANumberFormat numberFormat(String pattern) {
+    return ANumberFormat.fromIntl(intl.NumberFormat(pattern, languageTag));
   }
 
-  NumberFormat decimalNumberFormat() {
-    return NumberFormat.decimalPattern(languageTag);
+  ANumberFormat decimalNumberFormat() {
+    return ANumberFormat.fromIntl(intl.NumberFormat.decimalPattern(languageTag));
   }
 
-  NumberFormat percentNumberFormat() {
-    return NumberFormat.percentPattern(languageTag);
+  ANumberFormat percentNumberFormat() {
+    return ANumberFormat.fromIntl(intl.NumberFormat.percentPattern(languageTag));
   }
 
   // only use with `showDatePicker` / `DatePickerDialog`,

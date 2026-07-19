@@ -1,7 +1,7 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
-import 'package:aves/utils/calendar/ops/base.dart';
-import 'package:aves/utils/calendar/ops/gregorian.dart';
-import 'package:aves/utils/calendar/ops/persian.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/ops/base.dart';
+import 'package:aves/locale/calendar/ops/gregorian.dart';
+import 'package:aves/locale/calendar/ops/persian.dart';
 
 extension ExtraIntl4xCalendar on ACalendar {
   int get maxDaysInYear => 366;

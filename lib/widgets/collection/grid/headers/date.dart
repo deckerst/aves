@@ -1,6 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';

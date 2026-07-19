@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';

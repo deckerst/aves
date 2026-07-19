@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
@@ -38,7 +39,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gpx/gpx.dart';
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -70,7 +70,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   final TextEditingController _latitudeController = TextEditingController(), _longitudeController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  late NumberFormat coordinateFormatter;
+  late ANumberFormat coordinateFormatter;
   static const _gpxProjection = SphericalMercator();
   static const _minDurationToGpxPoint = Duration(hours: 1);
 

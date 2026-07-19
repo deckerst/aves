@@ -12,7 +12,7 @@ import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves_model/aves_model.dart';

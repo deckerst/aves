@@ -1,8 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';

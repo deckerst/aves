@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/ops/gregorian.dart';
+import 'package:aves/locale/calendar/ops/gregorian.dart';
 import 'package:test/test.dart';
 
 void main() {

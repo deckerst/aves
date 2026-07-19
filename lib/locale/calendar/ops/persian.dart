@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/ops/base.dart';
+import 'package:aves/locale/calendar/ops/base.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class PersianCalendarOps extends CalendarOps {

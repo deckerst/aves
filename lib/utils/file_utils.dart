@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 
 const int _kilo = 1024;
 const int _mega = _kilo * _kilo;

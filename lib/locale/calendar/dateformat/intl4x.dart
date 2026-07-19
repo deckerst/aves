@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
-import 'package:aves/utils/calendar/aves_locale.dart';
-import 'package:aves/utils/calendar/dateformat/base.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/dateformat/base.dart';
 import 'package:intl4x/datetime_format.dart';
 
 class Intl4xDateFormatDelegate extends DateFormatDelegate {

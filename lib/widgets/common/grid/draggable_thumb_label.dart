@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/services/common/channel.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';

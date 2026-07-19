@@ -1,5 +1,5 @@
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
 
 String formatDay(DateTime date, AvesLocale locale) {
   return locale.yMMMd(date);

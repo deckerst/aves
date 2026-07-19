@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';

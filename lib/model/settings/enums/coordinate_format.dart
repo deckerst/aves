@@ -1,6 +1,6 @@
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';

@@ -4,12 +4,11 @@ import 'package:collection/collection.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:latlong2/latlong.dart';
 
 class ImageMarker extends StatelessWidget {
   final int? count;
-  final intl.NumberFormat countFormatter;
+  final String Function(num count) countFormatter;
   final bool drawArrow;
   final Widget Function(double extent) buildThumbnailImage;
 
@@ -75,7 +74,8 @@ class ImageMarker extends StatelessWidget {
       ),
     );
 
-    if (count != null) {
+    final _count = count;
+    if (_count != null) {
       final borderSide = BorderSide(
         color: innerBorderColor,
         width: innerBorderWidth,
@@ -90,7 +90,7 @@ class ImageMarker extends StatelessWidget {
               shape: _buildCornerDetailShape(context, borderSide),
             ),
             child: Text(
-              countFormatter.format(count),
+              countFormatter(_count),
               style: TextStyle(
                 fontSize: 12,
                 color: theme.colorScheme.onPrimary,

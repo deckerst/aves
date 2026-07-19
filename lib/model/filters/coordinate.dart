@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';

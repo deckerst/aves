@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:test/test.dart';
 

@@ -14,7 +14,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/calendar/calendar_utils.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';

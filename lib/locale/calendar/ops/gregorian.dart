@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/ops/base.dart';
+import 'package:aves/locale/calendar/ops/base.dart';
 
 class GregorianCalendarOps extends CalendarOps {
   @override

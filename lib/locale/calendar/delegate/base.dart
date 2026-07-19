@@ -1,4 +1,4 @@
-import 'package:aves/utils/calendar/aves_locale.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesCalendarDelegate<T extends DateTime> extends CalendarDelegate<T> {

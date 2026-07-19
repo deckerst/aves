@@ -105,7 +105,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
 
     return ImageMarker(
       count: null,
-      countFormatter: settings.avesLocale.decimalNumberFormat(),
+      countFormatter: settings.avesLocale.decimalNumberFormat().format,
       drawArrow: false,
       buildThumbnailImage: (_) => Image.asset('assets/$assetName'),
     );
