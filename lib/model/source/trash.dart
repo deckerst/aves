@@ -49,42 +49,50 @@ mixin TrashMixin on SourceBase {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');
       final recoveryPath = pContext.join(androidFileUtils.picturesPath, AndroidFileUtils.recoveryDir);
       await Future.forEach(untrackedPaths, (untrackedPath) async {
-        TrashDetails _buildTrashDetails(int id) => TrashDetails(
-          id: id,
-          path: untrackedPath,
-          dateMillis: DateTime.now().millisecondsSinceEpoch,
-        );
-
-        final uri = Uri.file(untrackedPath).toString();
-        final entry = allEntries.firstWhereOrNull((v) => v.uri == uri);
-        if (entry != null) {
-          // there is already a matching entry
-          // but missing trash details, and possibly not marked as trash
-          final id = entry.id;
-          entry.contentId = null;
-          entry.trashed = true;
-          entry.trashDetails = _buildTrashDetails(id);
-          // persist
-          await localMediaDb.updateEntry(id, entry);
-          await localMediaDb.updateTrash(id, entry.trashDetails);
+        final isDirectory = await FileSystemEntity.isDirectory(untrackedPath);
+        if (isDirectory) {
+          await reportService.recordError('Untracked bin item at path=$untrackedPath is a directory. Deleting...');
+          try {
+            await Directory(untrackedPath).delete(recursive: true);
+          } catch (error, stack) {
+            await reportService.recordError('Failed to remove invalid untracked bin item at path=$untrackedPath with error=$error\n$stack');
+          }
         } else {
-          // there is no matching entry
-          final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
-          if (sourceEntry != null) {
-            final id = localMediaDb.nextId;
-            sourceEntry.id = id;
-            sourceEntry.path = pContext.join(recoveryPath, pContext.basename(untrackedPath));
-            sourceEntry.trashed = true;
-            sourceEntry.trashDetails = _buildTrashDetails(id);
-            newEntries.add(sourceEntry);
-          } else {
-            await reportService.recordError('Failed to recover untracked bin item at uri=$uri');
+          TrashDetails _buildTrashDetails(int id) => TrashDetails(
+            id: id,
+            path: untrackedPath,
+            dateMillis: DateTime.now().millisecondsSinceEpoch,
+          );
 
-            // remove it, as it is likely not a valid media file
-            try {
-              await File(untrackedPath).delete();
-            } catch (error, stack) {
-              await reportService.recordError('Failed to remove invalid untracked bin item at path=$untrackedPath with error=$error\n$stack');
+          final uri = Uri.file(untrackedPath).toString();
+          final entry = allEntries.firstWhereOrNull((v) => v.uri == uri);
+          if (entry != null) {
+            // there is already a matching entry
+            // but missing trash details, and possibly not marked as trash
+            final id = entry.id;
+            entry.contentId = null;
+            entry.trashed = true;
+            entry.trashDetails = _buildTrashDetails(id);
+            // persist
+            await localMediaDb.updateEntry(id, entry);
+            await localMediaDb.updateTrash(id, entry.trashDetails);
+          } else {
+            // there is no matching entry
+            final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
+            if (sourceEntry != null) {
+              final id = localMediaDb.nextId;
+              sourceEntry.id = id;
+              sourceEntry.path = pContext.join(recoveryPath, pContext.basename(untrackedPath));
+              sourceEntry.trashed = true;
+              sourceEntry.trashDetails = _buildTrashDetails(id);
+              newEntries.add(sourceEntry);
+            } else {
+              await reportService.recordError('Untracked bin item at uri=$uri is not a valid media file. Deleting...');
+              try {
+                await File(untrackedPath).delete();
+              } catch (error, stack) {
+                await reportService.recordError('Failed to remove invalid untracked bin item at path=$untrackedPath with error=$error\n$stack');
+              }
             }
           }
         }
