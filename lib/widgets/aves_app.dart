@@ -301,11 +301,15 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                 navigatorKey: navigatorKey,
                                 home: home,
                                 onUnknownRoute: (settings) {
-                                  // as of Flutter v3.44.2, using `$settings` in exception message yields `Instance of 'RouteSettings'` in reports,
-                                  // so we explicitly stringify variable outside
-                                  final settingsString = '${settings.runtimeType}(${settings.name == null ? 'none' : '"${settings.name}"'}, ${settings.arguments})';
-                                  reportService.recordError(Exception('Could not find a generator for route settings=$settingsString in the $runtimeType.'));
-                                  return null;
+                                  final routeName = settings.name ?? 'none';
+                                  debugPrint('Could not find a generator for route name=$routeName');
+                                  // Flutter automatically pushes a new route when receiving a new Android intent with a provided URI,
+                                  // but this is redundant with Aves handling. If that redundant route is not handled here,
+                                  // Flutter throws an error, so we provide a dummy result.
+                                  return DirectMaterialPageRoute(
+                                    settings: settings,
+                                    builder: (context) => Text(routeName),
+                                  );
                                 },
                                 navigatorObservers: _navigatorObservers,
                                 builder: (context, child) => AvesAppContentDecorator(
