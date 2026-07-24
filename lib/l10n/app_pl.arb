@@ -956,5 +956,8 @@
     "showThumbnailSlowMotionVideoIcon": "Pokazuj ikonkę zwolnionego tempa",
     "settingsAllowNotifications": "Zezwól na powiadomienia",
     "settingsPermissionsTile": "Uprawnienia",
-    "settingsPermissionsPageTitle": "Uprawnienia"
+    "settingsPermissionsPageTitle": "Uprawnienia",
+    "calendarGregorian": "Gregoriański",
+    "calendarPersian": "Perski",
+    "settingsCalendarTile": "Kalendarz"
 }

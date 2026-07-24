@@ -5,7 +5,7 @@
     <string name="search_shortcut_short_label">جستجو</string>
     <string name="wallpaper">کاغذدیواری</string>
     <string name="analysis_notification_default_title">در حال کنکاش رسانه‌ها</string>
-    <string name="analysis_notification_action_stop">توقف کردن</string>
+    <string name="analysis_notification_action_stop">توقف</string>
     <string name="app_widget_label">قاب عکس</string>
     <string name="app_name">Aves</string>
     <string name="map_shortcut_short_label">نقشه</string>
