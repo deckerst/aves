@@ -9,7 +9,7 @@ publish_to: none
 # - Play Store changelog: /whatsnew/whatsnew-en-US
 # - izzy changelog:       /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:      /fastlane/metadata/android/en-US/changelogs/XXX.txt
-version: 1.14.8+172
+version: 1.14.9+173
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`

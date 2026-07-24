@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
+
 ### Added
 
+- Persian calendar
 - Collection: copy to clipboard
 - Viewer: settings quick action (long press for search)
 - Settings: search shows last changed settings
