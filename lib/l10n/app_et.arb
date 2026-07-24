@@ -982,5 +982,8 @@
     "showThumbnailSlowMotionVideoIcon": "Näita aegluubis ikooni",
     "settingsAllowNotifications": "Luba teavitused",
     "settingsPermissionsTile": "Õigused",
-    "settingsPermissionsPageTitle": "Õigused"
+    "settingsPermissionsPageTitle": "Õigused",
+    "calendarGregorian": "Gregoriuse",
+    "calendarPersian": "Pärsia",
+    "settingsCalendarTile": "Kalender"
 }

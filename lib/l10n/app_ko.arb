@@ -737,5 +737,8 @@
     "mapShowItemTracks": "경로 보기",
     "mapHideItemTracks": "경로 숨기기",
     "settingsAllowNotifications": "알림 허용",
-    "settingsAutoExportSettings": "자동 설정 내보내기"
+    "settingsAutoExportSettings": "자동 설정 내보내기",
+    "settingsCalendarTile": "역법",
+    "calendarGregorian": "그레고리력",
+    "calendarPersian": "태양 헤지라력"
 }

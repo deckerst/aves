@@ -39,7 +39,7 @@
             "seconds": {}
         }
     },
-    "deleteButtonLabel": "پاک کردن",
+    "deleteButtonLabel": "پاک‌کردن",
     "itemCount": "{count, plural, =1{{count} فایل} other{{count} فایل}}",
     "@itemCount": {
         "placeholders": {
@@ -112,7 +112,7 @@
             }
         }
     },
-    "settingsActionExport": "خروجی گرفتن",
+    "settingsActionExport": "خروجی‌گرفتن",
     "filterNoTitleLabel": "بدون نام",
     "coverDialogTabColor": "رنگ",
     "filterTypePanoramaLabel": "پاناروما",
@@ -122,7 +122,7 @@
     "entryActionRemoveFavourite": "پاک‌کردن از برگزیده‌ها",
     "videoLoopModeNever": "هیچ وقت",
     "chipActionFilterIn": "اضافه به فیلتر",
-    "settingsActionExportDialogTitle": "خروجی گرفتن",
+    "settingsActionExportDialogTitle": "خروجی‌گرفتن",
     "aboutBugSectionTitle": "گزارشات خرابی",
     "filterRecentlyAddedLabel": "تازه اضافه شده",
     "filterTypeSphericalVideoLabel": "ویدئو 360°",
@@ -135,7 +135,7 @@
             }
         }
     },
-    "albumPickPageTitleExport": "خروجی گرفتن به البوم",
+    "albumPickPageTitleExport": "خروجی‌گرفتن به البوم",
     "filterMimeVideoLabel": "ویدئو",
     "filterTypeMotionPhotoLabel": "تصویر متحرک",
     "unitSystemImperial": "مایلی",
@@ -155,7 +155,7 @@
     "filterMimeImageLabel": "عکس",
     "menuActionMap": "نقشه",
     "aboutPageTitle": "درباره",
-    "entryInfoActionExportMetadata": "خروجی گرفتن از فراداده",
+    "entryInfoActionExportMetadata": "خروجی‌گرفتن از فراداده",
     "exportEntryDialogFormat": "فرمت:",
     "collectionEmptyFavourites": "هیچ برگزیده‌ای نیست",
     "appExportSettings": "تنظیمات",
@@ -262,7 +262,7 @@
     "viewerActionUnlock": "باز کردن قفل پخش‌کننده",
     "videoActionPause": "ایست",
     "widgetOpenPageCollection": "باز کردن مجموعه",
-    "clearTooltip": "پاک‌کردن",
+    "clearTooltip": "پاک‌سازی",
     "nameConflictStrategySkip": "رد شدن",
     "filterTypeRawLabel": "خام",
     "keepScreenOnVideoPlayback": "هنگام پخش ویدیو",
@@ -669,7 +669,7 @@
     "settingsSubtitleThemeTextOpacity": "شفافیت متن",
     "settingsHiddenItemsTile": "موارد پنهان",
     "settingsSubtitleThemeTextPositionDialogTitle": "موقعیت متن‌",
-    "settingsAllowErrorReporting": "اجازه به گزارش خطا ناشناس",
+    "settingsAllowErrorReporting": "گزارش خطا ناشناس",
     "settingsThemeColorHighlights": "رنگ متون برجسته",
     "settingsThemeEnableDynamicColor": "رنگ‌های پویا",
     "settingsHiddenFiltersEmpty": "پالایشی پنهان نیست",
@@ -884,7 +884,7 @@
     "settingsViewerShowShootingDetails": "نمایش ریزگان تصویربرداری",
     "settingsHiddenFiltersBanner": "تصاویر و ویدیوهایی که با پالایش‌های مخفی سازگار نیستند در مجموعه شما دیده نمیشوند.",
     "moveUndatedConfirmationDialogMessage": "پیش از ادامه دادن تاریخ موارد نگه‌داری شود؟",
-    "settingsAllowInstalledAppAccess": "اجازه دسترسی به دارایی برنامه",
+    "settingsAllowInstalledAppAccess": "دسترسی به دارایی برنامه",
     "collectionEditFailureFeedback": "{count, plural, =1{ویرایش ۱ مورد ناموفق بود} other{ویرایش {count} مورد ناموفق بود}}",
     "@collectionEditFailureFeedback": {
         "placeholders": {
@@ -944,5 +944,20 @@
     "mapStyleEditorDialogUrl": "URL",
     "mapStyleEditorDialogSubdomains": "زیربخش‌ها",
     "mapStyleEditorDialogUserAgent": "نماینده کاربر",
-    "settingsViewerShowZoomLevel": "نمایش سطح بزرگنمایی"
+    "settingsViewerShowZoomLevel": "نمایش سطح بزرگنمایی",
+    "filterTypeSlowMotionVideoLabel": "حرکت آهسته",
+    "calendarGregorian": "میلادی",
+    "calendarPersian": "ایرانی",
+    "collectionActionExportGpx": "خروجی‌گرفتن GPX",
+    "settingsAutoExportSettings": "خروجی‌گرفتن خودکار تنظیمات",
+    "settingsAllowNotifications": "اجازه نمایش اعلان",
+    "settingsCalendarTile": "تقویم",
+    "mapShowItemTracks": "نمایش مسیرها",
+    "mapHideItemTracks": "پنهان‌کردن مسیرها",
+    "drawerCollectionSlowMotionVideos": "ویدیوهای حرکت آهسته",
+    "settingsEnabled": "فعال",
+    "settingsForced": "اجباری",
+    "showThumbnailSlowMotionVideoIcon": "نمایش نماد حرکت آهسته",
+    "settingsPermissionsTile": "دسترسی‌ها",
+    "settingsPermissionsPageTitle": "دسترسی‌ها"
 }

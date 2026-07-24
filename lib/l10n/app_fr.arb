@@ -737,5 +737,8 @@
     "filterTypeSlowMotionVideoLabel": "Ralenti",
     "drawerCollectionSlowMotionVideos": "Vidéos au ralenti",
     "showThumbnailSlowMotionVideoIcon": "Afficher l’icône de ralenti",
-    "settingsAutoExportSettings": "Exporter automatiquement les réglages"
+    "settingsAutoExportSettings": "Exporter automatiquement les réglages",
+    "settingsCalendarTile": "Calendrier",
+    "calendarGregorian": "Grégorien",
+    "calendarPersian": "Persan"
 }

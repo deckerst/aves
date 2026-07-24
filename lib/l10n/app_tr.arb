@@ -737,5 +737,8 @@
     "mapHideItemTracks": "Yolları gizle",
     "settingsAllowNotifications": "Bildirimlere izin ver",
     "settingsPermissionsTile": "İzinler",
-    "settingsPermissionsPageTitle": "İzinler"
+    "settingsPermissionsPageTitle": "İzinler",
+    "calendarGregorian": "Gregoryan",
+    "calendarPersian": "İran",
+    "settingsCalendarTile": "Takvim"
 }

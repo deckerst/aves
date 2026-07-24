@@ -956,5 +956,8 @@
     "mapHideItemTracks": "إخفاء المسارات",
     "settingsAllowNotifications": "السماح بالإشعارات",
     "settingsPermissionsTile": "الأذونات",
-    "settingsPermissionsPageTitle": "الأذونات"
+    "settingsPermissionsPageTitle": "الأذونات",
+    "calendarGregorian": "الميلادي",
+    "calendarPersian": "الفارسي",
+    "settingsCalendarTile": "تقويم"
 }
