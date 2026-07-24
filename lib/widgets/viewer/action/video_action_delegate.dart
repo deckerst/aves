@@ -158,7 +158,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final tracks = controller.tracks;
     final currentSelectedTracks = await Future.wait(MediaTrackType.values.map(controller.getSelectedTrack));
 
-    final userSelectedTracks = await showDialog<Map<MediaTrackType, MediaTrackSummary?>>(
+    final userSelectedTracks = await showAvesDialog<Map<MediaTrackType, MediaTrackSummary?>>(
       context: context,
       builder: (context) => VideoTrackSelectionDialog(
         tracks: Map.fromEntries(
@@ -180,7 +180,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _showSpeedDialog(BuildContext context, AvesVideoController controller) async {
-    final newSpeed = await showDialog<double>(
+    final newSpeed = await showAvesDialog<double>(
       context: context,
       builder: (context) => VideoSpeedDialog(
         current: controller.speed,

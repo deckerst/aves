@@ -34,7 +34,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/media/media_edit_service.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -45,7 +44,6 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -55,7 +53,7 @@ import 'package:aves/widgets/dialogs/filter_editors/create_dynamic_album_dialog.
 import 'package:aves/widgets/dialogs/pick_dialogs/location_pick_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_map/aves_map.dart';
@@ -79,7 +77,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     required bool isTrash,
   }) {
     final canWrite = !settings.isReadOnly;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
@@ -114,6 +112,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .share:
       case .toggleFavourite:
         return isMain && isSelecting && !isTrash;
+      case .copyToClipboard:
+        return isMain && isSelecting && !isTrash && !useTvLayout;
       case .delete:
         return isMain && isSelecting && canWrite;
       case .copy:
@@ -182,6 +182,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .move:
       case .rename:
       case .convert:
+      case .copyToClipboard:
       case .exportGpx:
       case .toggleFavourite:
       case .rotateCCW:
@@ -249,6 +250,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _rename(context);
       case .convert:
         _convert(context);
+      case .copyToClipboard:
+        _copyToClipboard(context);
       case .exportGpx:
         _exportGpx(context);
       case .toggleFavourite:
@@ -418,7 +421,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _convert(BuildContext context) async {
     final entries = _getTargetItems(context);
 
-    final options = await showDialog<EntryConvertOptions>(
+    final options = await showAvesDialog<EntryConvertOptions>(
       context: context,
       builder: (context) => ConvertEntryDialog(entries: entries),
       routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
@@ -431,6 +434,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .convertMotionPhotoToStillImage:
         final todoEntries = entries.where((entry) => entry.isMotionPhoto).toSet();
         await _edit(context, todoEntries, (entry) => entry.removeTrailerVideo());
+    }
+  }
+
+  Future<void> _copyToClipboard(BuildContext context) async {
+    final entries = _getTargetItems(context);
+    final success = entries.isNotEmpty && await appService.copyToClipboard(label: entries.first.bestTitle, uris: entries.map((entry) => entry.uri).toList());
+    if (success) {
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
     }
   }
 
@@ -840,16 +853,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void _goToSearch(BuildContext context) {
-    final collection = context.read<CollectionLens>();
-
     Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: collection.source,
-          parentCollection: collection,
-        ),
+      CollectionSearchPageRoute(
+        context: context,
+        parentCollection: context.read<CollectionLens>(),
       ),
     );
   }
@@ -875,7 +882,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     // local context may be deactivated when action is triggered after navigation
     final navigator = Navigator.maybeOf(context);
 
-    final name = await showDialog<String>(
+    final name = await showAvesDialog<String>(
       context: context,
       builder: (context) => const CreateDynamicAlbumDialog(),
       routeSettings: const RouteSettings(name: CreateDynamicAlbumDialog.routeName),
@@ -924,7 +931,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final filters = collection.filters;
 
     String? defaultName = _getDefaultNameForFilters(context, filters);
-    final result = await showDialog<(AvesEntry?, String)>(
+    final result = await showAvesDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: defaultName ?? '',

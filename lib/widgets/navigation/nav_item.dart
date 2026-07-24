@@ -4,12 +4,9 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -19,7 +16,7 @@ import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/navigation/nav_display.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -87,13 +84,9 @@ class AvesNavItem extends Equatable {
         return settings.homeNavItem.routeBuilder(context, topLevel: topLevel);
       case SearchPage.routeName:
         final currentCollection = context.read<CollectionLens?>();
-        return SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            searchFieldLabel: context.l10n.searchCollectionFieldHint,
-            searchFieldStyle: Themes.searchFieldStyle(context),
-            source: context.read<CollectionSource>(),
-            parentCollection: topLevel ? currentCollection?.copyWith() : currentCollection,
-          ),
+        return CollectionSearchPageRoute(
+          context: context,
+          parentCollection: topLevel ? currentCollection?.copyWith() : currentCollection,
         );
       default:
         return MaterialPageRoute(

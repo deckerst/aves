@@ -1,27 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-extension ExtraDateTime on DateTime {
-  bool isAtSameYearAs(DateTime? other) => year == other?.year;
-
-  bool isAtSameMonthAs(DateTime? other) => isAtSameYearAs(other) && month == other?.month;
-
-  bool isAtSameDayAs(DateTime? other) => isAtSameMonthAs(other) && day == other?.day;
-
-  bool get isToday => isAtSameDayAs(DateTime.now());
-
-  bool get isYesterday => isAtSameDayAs(DateTime.now().subtract(const Duration(days: 1)));
-
-  bool get isThisMonth => isAtSameMonthAs(DateTime.now());
-
-  bool get isThisYear => isAtSameYearAs(DateTime.now());
-
-  DateTime get date => DateTime(year, month, day);
-
-  DateTime addMonths(int months) => DateTime(year, month + months, day, hour, minute, second, millisecond, microsecond);
-
-  DateTime addDays(int days) => DateTime(year, month, day + days, hour, minute, second, millisecond, microsecond);
-}
-
 extension ExtraDuration on Duration {
   // using `Duration.inDays` may yield surprising results when crossing DST boundaries
   // because a day will not have 24 hours, so we use the following approximation instead

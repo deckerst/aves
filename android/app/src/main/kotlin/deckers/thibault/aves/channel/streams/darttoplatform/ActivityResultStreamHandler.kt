@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.TransactionTooLargeException
 import android.util.Log
 import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
@@ -15,6 +16,7 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
+import deckers.thibault.aves.utils.anyCauseIs
 import kotlinx.coroutines.launch
 
 // starting activity to get a result (e.g. storage access via native dialog)
@@ -83,7 +85,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
 
     private fun requestMediaFileAccess() {
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) it.toUri() else null }
-        val mimeTypes = (args["mimeTypes"] as List<*>?)?.mapNotNull { it as? String }
+        val mimeTypes = (args["mimeTypes"] as List<*>?)?.filterIsInstance<String>()
         if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
             error("requestMediaFileAccess-args", "missing arguments", null)
             return
@@ -104,13 +106,17 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             success(granted)
             endOfStream()
         } catch (e: Exception) {
-            val byFromMediaStore = uris.groupBy { uri -> uri.toString().startsWith("content://media/") }
-            error(
-                "requestMediaFileAccess-request", "failed to request access to ${uris.size} uris" +
-                        " (${byFromMediaStore[true]?.size ?: 0} from media store" +
-                        ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
-                        ")", e.message
-            )
+            if (e.anyCauseIs<TransactionTooLargeException>()) {
+                error("requestMediaFileAccess-large", "transaction too large with ${uris.size} uris", e)
+            } else {
+                val byFromMediaStore = uris.groupBy { uri -> uri.toString().startsWith("content://media/") }
+                error(
+                    "requestMediaFileAccess-request", "failed to request access to ${uris.size} uris" +
+                            " (${byFromMediaStore[true]?.size ?: 0} from media store" +
+                            ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
+                            ")", e.message
+                )
+            }
         }
     }
 
@@ -273,7 +279,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun pickCollectionFilters() {
-        val initialFilters = (args["initialFilters"] as? List<*>)?.mapNotNull { it as? String } ?: listOf()
+        val initialFilters = (args["initialFilters"] as? List<*>)?.filterIsInstance<String>() ?: listOf()
         val intent = Intent(MainActivity.INTENT_ACTION_PICK_COLLECTION_FILTERS, null, activity, MainActivity::class.java)
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_ARRAY, initialFilters.toTypedArray())
             .putExtra(MainActivity.EXTRA_KEY_FILTERS_STRING, initialFilters.joinToString(MainActivity.EXTRA_STRING_ARRAY_SEPARATOR))

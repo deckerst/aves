@@ -43,7 +43,7 @@ class WeekDayFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    final dateSymbols = DateFormat(null, context.locale).dateSymbols;
+    final dateSymbols = DateFormat(null, context.localeName).dateSymbols;
     return dateSymbols.STANDALONEWEEKDAYS[weekday % 7];
   }
 

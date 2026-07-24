@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class AvesAppBar extends StatelessWidget {
@@ -39,6 +40,7 @@ class AvesAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final appBarTheme = theme.appBarTheme;
     final colorScheme = theme.colorScheme;
     final textScaler = MediaQuery.textScalerOf(context);
     final useTvLayout = settings.useTvLayout;
@@ -94,48 +96,51 @@ class AvesAppBar extends StatelessWidget {
         child: DirectionalSafeArea(
           start: !useTvLayout,
           bottom: false,
-          child: AvesFloatingBar(
-            builder: (context, backgroundColor, child) => Material(
-              color: backgroundColor,
-              child: AInkResponse(
-                // absorb taps while providing visual feedback
-                onTap: () {},
-                onLongPress: () {},
-                containedInkWell: true,
-                highlightShape: BoxShape.rectangle,
-                longPressTimeout: settings.longPressTimeout,
-                child: child,
-              ),
-            ),
-            child: Theme(
-              data: theme.copyWith(
-                colorScheme: colorScheme.copyWith(
-                  onSurfaceVariant: colorScheme.onSurface,
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: appBarTheme.systemOverlayStyle!,
+            child: AvesFloatingBar(
+              builder: (context, backgroundColor, child) => Material(
+                color: backgroundColor,
+                child: AInkResponse(
+                  // absorb taps while providing visual feedback
+                  onTap: () {},
+                  onLongPress: () {},
+                  containedInkWell: true,
+                  highlightShape: BoxShape.rectangle,
+                  longPressTimeout: settings.longPressTimeout,
+                  child: child,
                 ),
               ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: textScaler.scale(kToolbarHeight),
-                    child: Row(
-                      children: [
-                        _leading != null
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
-                                child: _leading,
-                              )
-                            : const SizedBox(width: 16),
-                        Expanded(
-                          child: DefaultTextStyle(
-                            style: theme.appBarTheme.titleTextStyle!,
-                            child: _title,
-                          ),
-                        ),
-                      ],
-                    ),
+              child: Theme(
+                data: theme.copyWith(
+                  colorScheme: colorScheme.copyWith(
+                    onSurfaceVariant: colorScheme.onSurface,
                   ),
-                  ?bottom,
-                ],
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: textScaler.scale(kToolbarHeight),
+                      child: Row(
+                        children: [
+                          _leading != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: _leading,
+                                )
+                              : const SizedBox(width: 16),
+                          Expanded(
+                            child: DefaultTextStyle(
+                              style: appBarTheme.titleTextStyle!,
+                              child: _title,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ?bottom,
+                  ],
+                ),
               ),
             ),
           ),

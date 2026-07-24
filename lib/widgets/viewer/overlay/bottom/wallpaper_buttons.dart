@@ -9,6 +9,7 @@ import 'package:aves/services/wallpaper_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/wallpaper_settings_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
@@ -58,7 +59,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
 
   Future<void> _setWallpaper(BuildContext context) async {
     final l10n = context.l10n;
-    final value = await showDialog<(WallpaperTarget, bool)>(
+    final value = await showAvesDialog<(WallpaperTarget, bool)>(
       context: context,
       builder: (context) => const WallpaperSettingsDialog(),
       routeSettings: const RouteSettings(name: WallpaperSettingsDialog.routeName),

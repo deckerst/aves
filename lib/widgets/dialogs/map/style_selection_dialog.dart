@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/map/style_editor_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:aves_map/aves_map.dart';
@@ -104,7 +105,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
 
     return ImageMarker(
       count: null,
-      locale: null,
+      countFormatter: settings.avesLocale.decimalNumberFormat().format,
       drawArrow: false,
       buildThumbnailImage: (_) => Image.asset('assets/$assetName'),
     );
@@ -141,7 +142,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
   }
 
   Future<void> _add() async {
-    final newStyle = await showDialog<EntryMapStyle>(
+    final newStyle = await showAvesDialog<EntryMapStyle>(
       context: context,
       builder: (context) => const MapStyleEditorDialog(),
       routeSettings: const RouteSettings(name: MapStyleEditorDialog.routeName),
@@ -153,7 +154,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
   }
 
   Future<void> _edit(EntryMapStyle style) async {
-    final newStyle = await showDialog<EntryMapStyle>(
+    final newStyle = await showAvesDialog<EntryMapStyle>(
       context: context,
       builder: (context) => MapStyleEditorDialog(initialValue: style),
       routeSettings: const RouteSettings(name: MapStyleEditorDialog.routeName),

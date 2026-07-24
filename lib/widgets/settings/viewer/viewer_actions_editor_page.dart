@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 class ViewerActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/viewer/actions';
 
+  static const List<String> settingKeys = [SettingKeys.viewerQuickActionsKey];
+
   const ViewerActionEditorPage({super.key});
 
   @override
@@ -19,28 +21,31 @@ class ViewerActionEditorPage extends StatefulWidget {
 class _ViewerActionEditorPageState extends State<ViewerActionEditorPage> {
   late final QuickActionEditorController<EntryAction> _controller;
 
-  static final allAvailableActions = [
+  static final allAvailableActions = <List<EntryAction>>[
     [
-      EntryAction.share,
-      EntryAction.edit,
-      EntryAction.rename,
-      EntryAction.delete,
-      EntryAction.copy,
-      EntryAction.move,
-      EntryAction.toggleFavourite,
-      EntryAction.rotateScreen,
-      EntryAction.viewSource,
-      EntryAction.rotateCCW,
-      EntryAction.rotateCW,
-      EntryAction.flip,
+      .share,
+      .edit,
+      .rename,
+      .delete,
+      .copy,
+      .move,
+      .toggleFavourite,
+      .rotateScreen,
+      .viewSource,
+      .rotateCCW,
+      .rotateCW,
+      .flip,
     ],
     [
       ...EntryActions.export,
     ],
     [
-      ...EntryActions.video.whereNot((v) => v == EntryAction.videoSettings),
+      ...EntryActions.video.whereNot((v) => v == .videoSettings),
     ],
-    EntryActions.commonMetadataActions,
+    [
+      ...EntryActions.commonMetadataActions,
+      .settings,
+    ],
   ];
 
   @override

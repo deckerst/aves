@@ -20,6 +20,7 @@ extension ExtraChipActionView on ChipAction {
         // different data depending on state
         l10n.chipActionFilterOut,
       .hide => l10n.chipActionHide,
+      .show => l10n.showTooltip,
       .lockVault => l10n.chipActionLock,
     };
   }
@@ -36,6 +37,7 @@ extension ExtraChipActionView on ChipAction {
     .decompose => AIcons.split,
     .reverse => AIcons.reverse,
     .hide => AIcons.hide,
+    .show => AIcons.show,
     .lockVault => AIcons.vaultLock,
   };
 }

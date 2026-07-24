@@ -2,10 +2,19 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmationDialogPage extends StatelessWidget {
   static const routeName = '/settings/navigation_confirmation';
+
+  static const List<String> settingKeys = [
+    SettingKeys.confirmMoveUndatedItemsKey,
+    SettingKeys.confirmMoveToBinKey,
+    SettingKeys.confirmDeleteForeverKey,
+    SettingKeys.confirmAfterMoveToBinKey,
+    SettingKeys.confirmCreateVaultKey,
+  ];
 
   const ConfirmationDialogPage({super.key});
 

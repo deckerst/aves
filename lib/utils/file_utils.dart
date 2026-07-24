@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'package:aves/locale/aves_locale.dart';
 
 const int _kilo = 1024;
 const int _mega = _kilo * _kilo;
@@ -17,10 +17,10 @@ int applyFileSizeSuffix(String? suffix, int bytes) {
   return bytes;
 }
 
-String formatFileSize(String locale, int size, {int round = 2}) {
+String formatFileSize(AvesLocale locale, int size, {int round = 2}) {
   if (size < _kilo) return '$size B';
 
-  final compactFormatter = NumberFormat('0${round > 0 ? '.${'0' * round}' : ''}', locale);
+  final compactFormatter = locale.numberFormat('0${round > 0 ? '.${'0' * round}' : ''}');
   if (size < _mega) return '${compactFormatter.format(size / _kilo)} KB';
   if (size < _giga) return '${compactFormatter.format(size / _mega)} MB';
   if (size < _tera) return '${compactFormatter.format(size / _giga)} GB';

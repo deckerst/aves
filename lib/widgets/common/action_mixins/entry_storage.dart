@@ -29,6 +29,7 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
@@ -87,7 +88,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
     // case insensitive comparison
     final uniqueNames = names.toSet();
     if (uniqueNames.length < names.length) {
-      final value = await showDialog<NameConflictStrategy>(
+      final value = await showAvesDialog<NameConflictStrategy>(
         context: context,
         builder: (context) => AvesSingleSelectionDialog<NameConflictStrategy>(
           initialValue: nameConflictStrategy,
@@ -117,7 +118,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
         final successOps = processed.where((op) => op.success).toSet();
         final exportedOps = successOps.where((op) => !op.skipped && op.newFields[EntryFields.uri] != null).toSet();
         final newUris = exportedOps.map((op) => op.newFields[EntryFields.uri] as String).toSet();
-        final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+        final isMainMode = context.read<ValueNotifier<AppMode>>().value == .main;
 
         // check source favourite status
         final favouriteSourceUris = selection.where((entry) => entry.isFavourite).map((entry) => entry.uri).toSet();
@@ -236,7 +237,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
       // case insensitive comparison
       final uniqueNames = names.toSet();
       if (uniqueNames.length < names.length) {
-        final value = await showDialog<NameConflictStrategy>(
+        final value = await showAvesDialog<NameConflictStrategy>(
           context: context,
           builder: (context) => AvesSingleSelectionDialog<NameConflictStrategy>(
             initialValue: nameConflictStrategy,
@@ -311,7 +312,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
           final count = movedOps.length;
 
           SnackBarAction? action;
-          if (count > 0 && appMode == AppMode.main) {
+          if (count > 0 && appMode == .main) {
             if (toBin) {
               if (movedEntries.isNotEmpty) {
                 action = SnackBarAction(

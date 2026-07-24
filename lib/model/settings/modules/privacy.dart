@@ -1,8 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/modules/search.dart';
+import 'package:aves/model/settings/modules/history.dart';
 import 'package:aves_model/aves_model.dart';
 
-mixin PrivacySettings on SettingsAccess, SearchSettings {
+mixin PrivacySettings on SettingsAccess, HistorySettings {
   Set<CollectionFilter> get hiddenFilters => (getStringList(SettingKeys.hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => set(SettingKeys.hiddenFiltersKey, newValue.map((filter) => filter.toJsonString()).toList());

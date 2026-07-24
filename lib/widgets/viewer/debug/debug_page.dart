@@ -27,7 +27,7 @@ class ViewerDebugPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = <(Tab, Widget)>[
       (const Tab(text: 'Entry'), _buildEntryTabView()),
-      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) (const Tab(text: 'DB'), DbTab(entry: entry)),
+      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != .view)) (const Tab(text: 'DB'), DbTab(entry: entry)),
       (const Tab(text: 'Metadata'), MetadataTab(entry: entry)),
       (const Tab(text: 'Thumbs'), ThumbnailsTab(entry: entry)),
     ];

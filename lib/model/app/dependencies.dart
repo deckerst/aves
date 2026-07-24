@@ -356,6 +356,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/dart-lang/intl',
     ),
     Dependency(
+      name: 'Intl4x',
+      license: bsd3,
+      sourceUrl: 'https://github.com/dart-lang/i18n/tree/main/pkgs/intl4x',
+    ),
+    Dependency(
       name: 'LatLong2',
       license: apache2,
       sourceUrl: 'https://github.com/jifalops/dart-latlong',
@@ -379,6 +384,11 @@ class Dependencies {
       name: 'Proj4dart',
       license: mit,
       sourceUrl: 'https://github.com/maRci002/proj4dart',
+    ),
+    Dependency(
+      name: 'Shamsi Date',
+      license: bsd3,
+      sourceUrl: 'https://github.com/FatulM/shamsi_date',
     ),
     Dependency(
       name: 'Shelf',

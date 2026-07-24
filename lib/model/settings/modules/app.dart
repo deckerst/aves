@@ -1,19 +1,12 @@
-import 'package:aves/model/filters/covered/tag.dart';
-import 'package:aves/model/filters/filters.dart';
+import 'dart:ui' as ui;
+
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/settings/defaults.dart';
-import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AppSettings on SettingsAccess {
-  static const int recentFilterHistoryMax = 20;
-
-  void initAppSettings() {
-    vaults.lockStateChangeNotifier.addListener(_onVaultsChanged);
-  }
-
   bool get hasAcceptedTerms => getBool(SettingKeys.hasAcceptedTermsKey) ?? SettingsDefaults.hasAcceptedTerms;
 
   set hasAcceptedTerms(bool newValue) => set(SettingKeys.hasAcceptedTermsKey, newValue);
@@ -36,12 +29,14 @@ mixin AppSettings on SettingsAccess {
 
   static const localeSeparator = '-';
 
-  Locale? get locale {
+  // basic identifier, without extensions, used for language setup
+  // may be null to pick up system locale
+  ui.Locale? get basicLocale {
     // exceptionally allow getting locale before settings are initialized
     final tag = initialized ? getString(SettingKeys.localeKey) : null;
     if (tag != null) {
       final codes = tag.split(localeSeparator);
-      return Locale.fromSubtags(
+      return ui.Locale.fromSubtags(
         languageCode: codes[0],
         scriptCode: codes[1] == '' ? null : codes[1],
         countryCode: codes[2] == '' ? null : codes[2],
@@ -50,7 +45,7 @@ mixin AppSettings on SettingsAccess {
     return null;
   }
 
-  set locale(Locale? newValue) {
+  set basicLocale(ui.Locale? newValue) {
     String? tag;
     if (newValue != null) {
       tag = [
@@ -60,38 +55,67 @@ mixin AppSettings on SettingsAccess {
       ].join(localeSeparator);
     }
     set(SettingKeys.localeKey, tag);
-    resetAppliedLocale();
+    resetResolvedLocale();
   }
 
-  List<Locale> _systemLocalesFallback = [];
+  List<ui.Locale> _systemLocalesFallback = [];
 
-  set systemLocalesFallback(List<Locale> locales) => _systemLocalesFallback = locales;
+  set systemLocalesFallback(List<ui.Locale> locales) => _systemLocalesFallback = locales;
 
-  Locale? _appliedLocale;
+  ui.Locale? _resolvedLocale;
 
-  void resetAppliedLocale() => _appliedLocale = null;
+  void resetResolvedLocale() {
+    _resolvedLocale = null;
+    _resetAvesLocale();
+  }
 
-  Locale get appliedLocale {
-    if (_appliedLocale == null) {
-      final _locale = locale;
-      final preferredLocales = <Locale>[];
-      if (_locale != null) {
-        preferredLocales.add(_locale);
-      } else {
+  // basic identifier, without extensions, resolved to match user settings
+  ui.Locale get resolvedLocale {
+    if (_resolvedLocale == null) {
+      final preferredLocales = <ui.Locale>[
+        ?basicLocale,
+      ];
+      if (preferredLocales.isEmpty) {
         preferredLocales.addAll(WidgetsBinding.instance.platformDispatcher.locales);
-        if (preferredLocales.isEmpty) {
-          // the `window` locales may be empty in a window-less service context
-          preferredLocales.addAll(_systemLocalesFallback);
-        }
       }
-      _appliedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
+      if (preferredLocales.isEmpty) {
+        // the `window` locales may be empty in a window-less service context
+        preferredLocales.addAll(_systemLocalesFallback);
+      }
+      _resolvedLocale = basicLocaleListResolution(preferredLocales, AvesApp.supportedLocales);
     }
-    return _appliedLocale!;
+    return _resolvedLocale!;
+  }
+
+  AvesLocale? _avesLocale;
+
+  void _resetAvesLocale() {
+    _avesLocale = null;
+  }
+
+  // advanced identifier, resolved to match user settings
+  AvesLocale get avesLocale {
+    _avesLocale ??= AvesLocale(
+      languageTag: resolvedLocale.toLanguageTag(),
+      calendar: calendar,
+      forceWesternArabicNumerals: forceWesternArabicNumerals,
+    );
+    return _avesLocale!;
+  }
+
+  ACalendar get calendar => getEnumOrDefault(SettingKeys.calendarKey, SettingsDefaults.calendar, ACalendar.values);
+
+  set calendar(ACalendar newValue) {
+    _resetAvesLocale();
+    set(SettingKeys.calendarKey, newValue.name);
   }
 
   bool get forceWesternArabicNumerals => getBool(SettingKeys.forceWesternArabicNumeralsKey) ?? false;
 
-  set forceWesternArabicNumerals(bool newValue) => set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
+  set forceWesternArabicNumerals(bool newValue) {
+    _resetAvesLocale();
+    set(SettingKeys.forceWesternArabicNumeralsKey, newValue);
+  }
 
   int get catalogTimeZoneOffsetMillis => getInt(SettingKeys.catalogTimeZoneOffsetMillisKey) ?? 0;
 
@@ -112,35 +136,4 @@ mixin AppSettings on SettingsAccess {
   List<int>? get topEntryIds => getStringList(SettingKeys.topEntryIdsKey)?.map(int.tryParse).nonNulls.toList();
 
   set topEntryIds(List<int>? newValue) => set(SettingKeys.topEntryIdsKey, newValue?.map((id) => id.toString()).nonNulls.toList());
-
-  List<String> get recentDestinationAlbums => getStringList(SettingKeys.recentDestinationAlbumsKey) ?? [];
-
-  set recentDestinationAlbums(List<String> newValue) => set(SettingKeys.recentDestinationAlbumsKey, newValue.take(recentFilterHistoryMax).toList());
-
-  // recent tags
-
-  List<CollectionFilter> get _recentTags => (getStringList(SettingKeys.recentTagsKey) ?? []).map(CollectionFilter.fromJson).nonNulls.toList();
-
-  set _recentTags(List<CollectionFilter> newValue) => set(SettingKeys.recentTagsKey, newValue.take(recentFilterHistoryMax).map((filter) => filter.toJsonString()).toList());
-
-  // when vaults are unlocked, recent tags are transient and not persisted
-  List<CollectionFilter>? _protectedRecentTags;
-
-  List<CollectionFilter> get recentTags => vaults.needProtection ? _protectedRecentTags ?? List.of(_recentTags) : _recentTags;
-
-  set recentTags(List<CollectionFilter> newValue) {
-    if (vaults.needProtection) {
-      _protectedRecentTags = newValue;
-    } else {
-      _recentTags = newValue;
-    }
-  }
-
-  void _onVaultsChanged() => _protectedRecentTags = null;
-
-  void removeObsoleteRecentTags(CollectionSource? source) {
-    if (source != null) {
-      recentTags = recentTags.where((v) => v is! TagFilter || source.sortedTags.contains(v.tag)).toList();
-    }
-  }
 }

@@ -1,5 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -22,7 +24,6 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/utils/time_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
@@ -34,7 +35,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class BasicSection extends StatefulWidget {
@@ -120,10 +120,15 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   }
 
   Widget _buildChips(BuildContext context) {
+    final locale = settings.avesLocale;
+    final calendar = locale.calendar;
+    final calOps = calendar.ops;
+
     final entry = widget.entry;
-    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
     final dateTime = entry.bestDate;
     final album = entry.directory;
+    final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
+
     final filters = {
       MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
@@ -135,7 +140,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       if (entry.isPureVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isPureVideo && !entry.is360) MimeFilter.video,
       if (entry.isSlowMotion) TypeFilter.slowMotion,
-      if (dateTime != null) ...[DateFilter(DateLevel.ymd, dateTime.date), WeekDayFilter(dateTime.weekday)],
+      if (dateTime != null) ...[DateFilter(calendar, DateLevel.ymd, calOps.dateOnly(dateTime)), WeekDayFilter(dateTime.weekday)],
       if (album != null) StoredAlbumFilter(album, collection?.source.getStoredAlbumDisplayName(context, album)),
       ...dynamicAlbums.all.where((v) => v.test(entry)).toSet(),
       if (entry.rating != 0) RatingFilter(entry.rating),
@@ -304,7 +309,7 @@ class _BasicInfoState extends State<_BasicInfo> {
       _ownerPackageLoader = metadataFetchService.hasContentResolverProp(ownerPackageNamePropKey).then((exists) {
         return exists ? metadataFetchService.getContentResolverProp(entry, ownerPackageNamePropKey) : SynchronousFuture(null);
       });
-      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == AppMode.view;
+      final isViewerMode = context.read<ValueNotifier<AppMode>>().value == .view;
       if (isViewerMode && settings.isInstalledAppAccessAllowed) {
         _appNameLoader = appInventory.initAppNames();
       }
@@ -315,7 +320,7 @@ class _BasicInfoState extends State<_BasicInfo> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final infoUnknown = l10n.viewerInfoUnknown;
-    final locale = context.locale;
+    final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
@@ -393,7 +398,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     ];
   }
 
-  String getRasterResolutionText(String locale) {
+  String getRasterResolutionText(AvesLocale locale) {
     var s = entry.getResolutionText(locale);
 
     // guess whether this is a photo, according to file type
@@ -401,7 +406,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     if (isPhoto) {
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
-        s += ' • ${NumberFormat('0', locale).format(megaPixels)} MP';
+        s += ' • ${locale.numberFormat('0').format(megaPixels)} MP';
       }
     }
 

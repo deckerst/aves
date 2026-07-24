@@ -14,6 +14,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
@@ -53,7 +54,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -117,7 +117,7 @@ class _CollectionGridContent extends StatefulWidget {
 class _CollectionGridContentState extends State<_CollectionGridContent> {
   final ValueNotifier<AvesEntry?> _focusedItemNotifier = ValueNotifier(null);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(AppMode.pickFilteredMediaInternal);
+  final ValueNotifier<AppMode> _selectingAppModeNotifier = ValueNotifier(.pickFilteredMediaInternal);
 
   @override
   void initState() {
@@ -722,16 +722,20 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             final firstKey = sectionLayouts.first.sectionKey;
             final lastKey = sectionLayouts.last.sectionKey;
             if (firstKey is EntryDateSectionKey && lastKey is EntryDateSectionKey) {
-              final newest = firstKey.date;
-              final oldest = lastKey.date;
-              if (newest != null && oldest != null) {
-                final locale = context.locale;
-                final dateFormat = (newest.difference(oldest).inHumanDays).abs() > 365 ? DateFormat.y(locale) : DateFormat.MMM(locale);
+              if (firstKey != EntryDateSectionKey.unknown && lastKey != EntryDateSectionKey.unknown) {
+                final locale = settings.avesLocale;
+                final calendar = settings.calendar;
+                final calOps = calendar.ops;
+
+                final oldest = calOps.fromYearMonthDay(firstKey.year, firstKey.month, firstKey.day);
+                final newest = calOps.fromYearMonthDay(lastKey.year, lastKey.month, lastKey.day);
+
+                final dateFormatter = (newest.difference(oldest).inHumanDays).abs() > calendar.maxDaysInYear ? locale.y : locale.MMM;
                 String? lastLabel;
                 sectionLayouts.forEach((section) {
-                  final date = (section.sectionKey as EntryDateSectionKey).date;
-                  if (date != null) {
-                    final label = dateFormat.format(date);
+                  final k = section.sectionKey as EntryDateSectionKey;
+                  if (k != EntryDateSectionKey.unknown) {
+                    final label = dateFormatter(calOps.fromYearMonthDay(k.year, k.month, k.day));
                     if (label != lastLabel) {
                       crumbs[section.minOffset / maxOffset] = label;
                       lastLabel = label;

@@ -737,5 +737,8 @@
     "showThumbnailSlowMotionVideoIcon": "显示慢动作图标",
     "settingsAllowNotifications": "允许通知",
     "settingsPermissionsTile": "权限",
-    "settingsPermissionsPageTitle": "权限"
+    "settingsPermissionsPageTitle": "权限",
+    "calendarGregorian": "格里高利历",
+    "calendarPersian": "波斯历",
+    "settingsCalendarTile": "日历"
 }

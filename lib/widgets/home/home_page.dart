@@ -18,21 +18,18 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/global_search.dart';
 import 'package:aves/services/intent_service.dart';
 import 'package:aves/services/widget_service.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/editor/entry_editor_page.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_error.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
@@ -104,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         await Permissions.mediaAccess.request();
       }
 
-      var appMode = AppMode.main;
+      AppMode appMode = .main;
       var error = false;
       final Map<String, Object?> intentData = widget.intentData ?? await IntentService.getIntentData();
       final intentAction = intentData[IntentDataKeys.action] as String?;
@@ -130,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
         switch (intentAction) {
           case IntentActions.view:
-            appMode = AppMode.view;
+            appMode = .view;
             _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
           case IntentActions.viewGeo:
             error = true;
@@ -144,19 +141,19 @@ class _HomePageState extends State<HomePage> {
             }
             break;
           case IntentActions.edit:
-            appMode = AppMode.edit;
+            appMode = .edit;
           case IntentActions.setWallpaper:
-            appMode = AppMode.setWallpaper;
+            appMode = .setWallpaper;
           case IntentActions.pickItems:
             // TODO TLAD apply pick mimetype(s)
             // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
             final multiple = (intentData[IntentDataKeys.allowMultiple] as bool?) ?? false;
             debugPrint('pick mimeType=$intentMimeType multiple=$multiple');
-            appMode = multiple ? AppMode.pickMultipleMediaExternal : AppMode.pickSingleMediaExternal;
+            appMode = multiple ? .pickMultipleMediaExternal : .pickSingleMediaExternal;
           case IntentActions.pickCollectionFilters:
-            appMode = AppMode.pickCollectionFiltersExternal;
+            appMode = .pickCollectionFiltersExternal;
           case IntentActions.screenSaver:
-            appMode = AppMode.screenSaver;
+            appMode = .screenSaver;
             _initialRouteName = ScreenSaverPage.routeName;
           case IntentActions.screenSaverSettings:
             _initialRouteName = ScreenSaverSettingsPage.routeName;
@@ -178,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                 case .collection:
                   _initialFilters = settings.getWidgetCollectionFilters(widgetId);
                 case .viewer:
-                  appMode = AppMode.view;
+                  appMode = .view;
                   intentUri = settings.getWidgetUri(widgetId);
                 case .home:
                 case .updateWidget:
@@ -217,7 +214,7 @@ class _HomePageState extends State<HomePage> {
 
       if (error) {
         debugPrint('Failed to init app mode=$appMode for intent data=$intentData. Fallback to main mode.');
-        appMode = AppMode.main;
+        appMode = .main;
       }
 
       context.read<ValueNotifier<AppMode>>().value = appMode;
@@ -423,14 +420,10 @@ class _HomePageState extends State<HomePage> {
       case ScreenSaverSettingsPage.routeName:
         return buildRoute((context) => const ScreenSaverSettingsPage());
       case SearchPage.routeName:
-        return SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            searchFieldLabel: context.l10n.searchCollectionFieldHint,
-            searchFieldStyle: Themes.searchFieldStyle(context),
-            source: source,
-            canPop: false,
-            initialQuery: _initialSearchQuery,
-          ),
+        return CollectionSearchPageRoute(
+          context: context,
+          canPop: false,
+          initialQuery: _initialSearchQuery,
         );
       case CollectionPage.routeName:
       default:

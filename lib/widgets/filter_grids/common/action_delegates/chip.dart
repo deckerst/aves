@@ -49,7 +49,9 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         return filter is DynamicAlbumFilter;
       case .reverse:
       case .hide:
-        return true;
+        return !settings.hiddenFilters.contains(filter);
+      case .show:
+        return settings.hiddenFilters.contains(filter);
       case .lockVault:
         return (filter is StoredAlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
     }
@@ -94,6 +96,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         SelectFilterNotification(filter.reverse()).dispatch(context);
       case .hide:
         _hide(context, filter);
+      case .show:
+        _show(context, filter);
       case .lockVault:
         if (filter is StoredAlbumFilter) {
           lockFilters({filter});
@@ -133,5 +137,12 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
 
     settings.changeFilterVisibility(filters, false);
     lockFilters(filters);
+  }
+
+  Future<void> _show(BuildContext context, CollectionFilter filter) async {
+    final filters = {filter};
+    if (!await unlockFilters(context, filters)) return;
+
+    settings.changeFilterVisibility(filters, true);
   }
 }

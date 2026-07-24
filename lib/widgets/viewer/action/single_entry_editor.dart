@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditorMixin {
-  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == .main;
 
   Future<void> edit(
     BuildContext context,
@@ -63,7 +63,11 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditor
           const persist = false;
           await targetEntry.refresh(background: background, persist: persist, dataTypes: dataTypes);
           await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
-          await targetEntry.locate(background: background, force: dataTypes.contains(EntryDataType.address), geocoderLocale: settings.appliedLocale);
+          await targetEntry.locate(
+            background: background,
+            force: dataTypes.contains(EntryDataType.address),
+            geocoderLocale: settings.avesLocale,
+          );
         }
         showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback);
       } else {

@@ -75,7 +75,7 @@ class EntryListDetails extends StatelessWidget {
   }
 
   Widget _buildDateRow(BuildContext context, TextStyle style) {
-    final locale = context.locale;
+    final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
     final date = entry.bestDate;
     final dateText = date != null ? formatDateTime(date, locale, use24hour) : AText.valueNotAvailable;

@@ -1,11 +1,10 @@
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/mime_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_donut.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MimeDonut extends StatelessWidget {
@@ -24,7 +23,7 @@ class MimeDonut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
 
     String formatKey(d) => MimeUtils.displayType(d.key);
     return AvesDonut(
@@ -32,7 +31,7 @@ class MimeDonut extends StatelessWidget {
       byTypes: byMimeTypes,
       animationDuration: animationDuration,
       formatKey: formatKey,
-      formatValue: countFormatter.format,
+      formatValue: itemCountFormatter.format,
       colorize: (context, d) {
         final colors = context.read<AvesColorsData>();
         return colors.fromString(formatKey(d));

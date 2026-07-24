@@ -93,7 +93,8 @@ class AvesEntry with AvesEntryBase {
     String? uri,
     String? path,
     int? contentId,
-    String? title,
+    String? sourceMimeType,
+    String? sourceTitle,
     int? dateAddedSecs,
     int? dateModifiedMillis,
     int? origin,
@@ -107,12 +108,12 @@ class AvesEntry with AvesEntryBase {
             path: path ?? this.path,
             contentId: contentId ?? this.contentId,
             pageId: null,
-            sourceMimeType: sourceMimeType,
+            sourceMimeType: sourceMimeType ?? this.sourceMimeType,
             width: width,
             height: height,
             sourceRotationDegrees: sourceRotationDegrees,
             sizeBytes: sizeBytes,
-            sourceTitle: title ?? sourceTitle,
+            sourceTitle: sourceTitle ?? this.sourceTitle,
             dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
             dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
             sourceDateTakenMillis: sourceDateTakenMillis,
@@ -302,18 +303,6 @@ class AvesEntry with AvesEntryBase {
   set dateModifiedMillis(int? dateModifiedMillis) {
     _dateModifiedMillis = dateModifiedMillis;
     _bestDate = null;
-  }
-
-  // TODO TLAD cache _monthTaken
-  DateTime? get monthTaken {
-    final d = bestDate;
-    return d == null ? null : DateTime(d.year, d.month);
-  }
-
-  // TODO TLAD cache _dayTaken
-  DateTime? get dayTaken {
-    final d = bestDate;
-    return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
   @override

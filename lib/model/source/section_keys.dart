@@ -6,7 +6,7 @@ class SectionKey {
   const SectionKey();
 }
 
-class EntryAlbumSectionKey extends SectionKey with EquatableMixin {
+class EntryAlbumSectionKey extends SectionKey with Equatable {
   final String? directory;
 
   @override
@@ -15,16 +15,18 @@ class EntryAlbumSectionKey extends SectionKey with EquatableMixin {
   const EntryAlbumSectionKey(this.directory);
 }
 
-class EntryDateSectionKey extends SectionKey with EquatableMixin {
-  final DateTime? date;
+class EntryDateSectionKey extends SectionKey with Equatable {
+  final int? year, month, day;
 
   @override
-  List<Object?> get props => [date];
+  List<Object?> get props => [year, month, day];
 
-  const EntryDateSectionKey(this.date);
+  const EntryDateSectionKey({this.year, this.month, this.day});
+
+  static const EntryDateSectionKey unknown = EntryDateSectionKey();
 }
 
-class EntryRatingSectionKey extends SectionKey with EquatableMixin {
+class EntryRatingSectionKey extends SectionKey with Equatable {
   final int rating;
 
   @override

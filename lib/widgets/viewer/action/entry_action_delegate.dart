@@ -30,6 +30,7 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/convert_entry_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/rename_entry_dialog.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/action/printer.dart';
 import 'package:aves/widgets/viewer/action/single_entry_editor.dart';
@@ -138,6 +139,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
             targetEntry: targetEntry,
             action: action,
           );
+        case .settings:
+          return true;
         case .debug:
           return !kReleaseMode;
       }
@@ -195,13 +198,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case .addShortcut:
         _addShortcut(context, targetEntry);
       case .copyToClipboard:
-        appService.copyToClipboard(label: targetEntry.bestTitle, uri: targetEntry.uri).then((success) {
-          if (success) {
-            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
-          } else {
-            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
-          }
-        });
+        _copyToClipboard(context, targetEntry);
       case .delete:
         _delete(context, targetEntry);
       case .restore:
@@ -295,7 +292,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case .convertMotionPhotoToStillImage:
       case .viewMotionPhotoVideo:
         _metadataActionDelegate.onActionSelected(context, targetEntry, collection, action);
-      // debug
+      // generic
+      case .settings:
+        _goToSettings(context);
       case .debug:
         _goToDebug(context, targetEntry);
     }
@@ -391,7 +390,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {
-    final result = await showDialog<(AvesEntry?, String)>(
+    final result = await showAvesDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: targetEntry.bestTitle ?? '',
@@ -459,7 +458,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   );
 
   Future<void> _convert(BuildContext context, AvesEntry targetEntry) async {
-    final options = await showDialog<EntryConvertOptions>(
+    final options = await showAvesDialog<EntryConvertOptions>(
       context: context,
       builder: (context) => ConvertEntryDialog(entries: {targetEntry}),
       routeSettings: const RouteSettings(name: ConvertEntryDialog.routeName),
@@ -474,8 +473,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     }
   }
 
+  Future<void> _copyToClipboard(BuildContext context, AvesEntry targetEntry) async {
+    final success = await appService.copyToClipboard(label: targetEntry.bestTitle, uris: [targetEntry.uri]);
+    if (success) {
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+    }
+  }
+
   Future<void> _rename(BuildContext context, AvesEntry targetEntry) async {
-    final newName = await showDialog<String>(
+    final newName = await showAvesDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry: targetEntry),
       routeSettings: const RouteSettings(name: RenameEntryDialog.routeName),
@@ -492,7 +500,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
   }
 
-  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+  bool _isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == .main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry targetEntry) {
     Navigator.maybeOf(context)?.push(
@@ -513,6 +521,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: targetEntry),
+      ),
+    );
+  }
+
+  void _goToSettings(BuildContext context) {
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: SettingsPage.routeName),
+        builder: (context) => const SettingsPage(),
       ),
     );
   }

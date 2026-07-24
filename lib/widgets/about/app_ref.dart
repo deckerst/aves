@@ -32,32 +32,32 @@ class AppReference extends StatelessWidget {
   }
 
   Widget _buildAvesLine(BuildContext context) {
-    final locale = context.locale;
+    final localeName = context.localeName;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: .min,
       children: [
         AvesLogo(
-          size: textScaler.scale(_getAppTitleStyle(locale).fontSize!) * 1.3,
+          size: textScaler.scale(_getAppTitleStyle(localeName).fontSize!) * 1.3,
         ),
         const SizedBox(width: 8),
         Text(
           context.l10n.appName,
-          style: _getAppTitleStyle(locale),
+          style: _getAppTitleStyle(localeName),
         ),
         const SizedBox(width: 8),
         Text(
           device.packageVersion,
-          style: _getAppTitleStyle(locale),
+          style: _getAppTitleStyle(localeName),
         ),
       ],
     );
   }
 
-  TextStyle _getAppTitleStyle(String locale) => TextStyle(
+  TextStyle _getAppTitleStyle(String localeName) => TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.normal,
-    letterSpacing: canHaveLetterSpacing(locale) ? 1 : 0,
+    letterSpacing: canHaveLetterSpacing(localeName) ? 1 : 0,
     fontFeatures: const [FontFeature.enable('smcp')],
   );
 

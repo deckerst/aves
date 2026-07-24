@@ -4,12 +4,15 @@ class SettingKeys {
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneOffsetMillisKey,
-    searchHistoryKey,
     platformAccelerometerRotationKey,
     platformTransitionAnimationScaleKey,
     topEntryIdsKey,
+    // history
+    recentSettingKeysKey,
+    searchHistoryKey,
     recentDestinationAlbumsKey,
     recentTagsKey,
+    // debug
     debugShowViewerTilesKey,
   };
 
@@ -22,12 +25,18 @@ class SettingKeys {
   static const isErrorReportingAllowedKey = 'is_crashlytics_enabled';
   static const autoExportPathKey = 'auto_export_path';
   static const localeKey = 'locale';
+  static const calendarKey = 'calendar';
   static const forceWesternArabicNumeralsKey = 'force_western_arabic_numerals';
   static const catalogTimeZoneOffsetMillisKey = 'catalog_time_zone_raw_offset_millis';
   static const tileExtentPrefixKey = 'tile_extent_';
   static const tileLayoutPrefixKey = 'tile_layout_';
   static const entryRenamingPatternKey = 'entry_renaming_pattern';
   static const topEntryIdsKey = 'top_entry_ids';
+
+  // history
+  static const saveSearchHistoryKey = 'save_search_history';
+  static const searchHistoryKey = 'search_history';
+  static const recentSettingKeysKey = 'recent_setting_keys';
   static const recentDestinationAlbumsKey = 'recent_destination_albums';
   static const recentTagsKey = 'recent_tags';
 
@@ -152,10 +161,6 @@ class SettingKeys {
   static const mapDefaultCenterKey = 'map_default_center';
   static const mapShowItemTracksKey = 'map_show_item_tracks';
   static const customMapStylesKey = 'custom_map_styles';
-
-  // search
-  static const saveSearchHistoryKey = 'save_search_history';
-  static const searchHistoryKey = 'search_history';
 
   // bin
   static const enableBinKey = 'enable_bin';

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 class TopoJson {
   Future<Topology?> parse(String jsonString) async {
     try {
-      return Isolate.run<Topology>(() {
+      return await Isolate.run<Topology>(() {
         final jsonMap = jsonDecode(jsonString) as Map<String, Object?>;
         return Topology.parse(jsonMap);
       });

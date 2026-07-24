@@ -23,6 +23,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves/widgets/settings/settings_search_page_route.dart';
 import 'package:aves/widgets/viewer/action/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
@@ -532,6 +533,14 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           focusNode: focusNode,
           onPressed: onPressed,
         );
+      case .settings:
+        return IconButton(
+          icon: action.getIcon(),
+          onPressed: onPressed,
+          onLongPress: () => _goToSettingsSearch(context),
+          focusNode: focusNode,
+          tooltip: action.getText(context),
+        );
       default:
         return IconButton(
           icon: action.getIcon(),
@@ -540,5 +549,14 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
           tooltip: action.getText(context),
         );
     }
+  }
+
+  static void _goToSettingsSearch(BuildContext context) {
+    Navigator.maybeOf(context)?.push(
+      SettingsSearchPageRoute(
+        context: context,
+        background: Theme.of(context).scaffoldBackgroundColor,
+      ),
+    );
   }
 }

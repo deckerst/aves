@@ -149,7 +149,7 @@ class Analyzer with WidgetsBindingObserver {
     );
 
     settings.systemLocalesFallback = await deviceService.getLocales();
-    _l10n = await AppLocalizations.delegate.load(settings.appliedLocale);
+    _l10n = await AppLocalizations.delegate.load(settings.resolvedLocale);
     _serviceStateNotifier.value = AnalyzerState.running;
     await _source.init(scope: CollectionSource.fullScope, analysisController: _controller);
 

@@ -99,6 +99,8 @@ class InfoAppBar extends StatelessWidget {
                 ),
             ].map((v) => FontSizeIconTheme(child: v)).toList(),
       floating: true,
+      // as of Flutter v3.44.4, `SliverAppBar` does not automatically pick up `systemOverlayStyle` from `AppBar` theme
+      systemOverlayStyle: Theme.of(context).appBarTheme.systemOverlayStyle,
     );
   }
 
@@ -121,6 +123,7 @@ class InfoAppBar extends StatelessWidget {
           metadataNotifier: metadataNotifier,
           isSelecting: isSelecting,
         ),
+        background: Theme.of(context).scaffoldBackgroundColor,
       ),
     );
   }

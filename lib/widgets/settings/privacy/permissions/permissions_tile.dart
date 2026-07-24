@@ -16,6 +16,9 @@ import 'package:provider/provider.dart';
 
 class SettingsTilePermissions extends SettingsTile {
   @override
+  List<String> get settingKeys => PermissionsPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsPermissionsTile;
 
   @override

@@ -20,7 +20,7 @@ class NamingPattern {
   factory NamingPattern.from({
     required String userPattern,
     required int entryCount,
-    required String locale,
+    required String localeName,
   }) {
     final processors = <NamingProcessor>[];
 
@@ -55,7 +55,7 @@ class NamingPattern {
           processors.add(CounterNamingProcessor(start: start ?? defaultCounterStart, padding: padding ?? defaultCounterPadding));
         case DateNamingProcessor.key:
           if (processorOptions != null) {
-            processors.add(DateNamingProcessor(processorOptions.trim(), locale));
+            processors.add(DateNamingProcessor(processorOptions.trim(), localeName));
           }
         case HashNamingProcessor.key:
           if (processorOptions != null) {
@@ -170,7 +170,8 @@ class DateNamingProcessor extends NamingProcessor {
   @override
   List<Object?> get props => [format.pattern];
 
-  DateNamingProcessor(String pattern, String locale) : format = DateFormat(pattern, locale);
+  // format using date pattern with Gregorian calendar
+  DateNamingProcessor(String pattern, String localeName) : format = DateFormat(pattern, localeName);
 
   @override
   String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) {

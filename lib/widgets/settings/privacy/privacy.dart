@@ -17,6 +17,7 @@ import 'package:aves/widgets/settings/privacy/access_grants_page.dart';
 import 'package:aves/widgets/settings/privacy/hidden_items_page.dart';
 import 'package:aves/widgets/settings/privacy/permissions/permissions_tile.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,6 +49,9 @@ class PrivacySection extends SettingsSection {
 
 class SettingsTilePrivacyAutoExportSettings extends SettingsTile with PermissionAwareMixin {
   @override
+  List<String> get settingKeys => [SettingKeys.autoExportPathKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsAutoExportSettings;
 
   @override
@@ -72,6 +76,9 @@ class SettingsTilePrivacyAutoExportSettings extends SettingsTile with Permission
 
 class SettingsTilePrivacySaveSearchHistory extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.saveSearchHistoryKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsSaveSearchHistory;
 
   @override
@@ -88,6 +95,9 @@ class SettingsTilePrivacySaveSearchHistory extends SettingsTile {
 }
 
 class SettingsTilePrivacyEnableBin extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.enableBinKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsEnableBin;
 
@@ -142,6 +152,9 @@ class SettingsTilePrivacyEnableBin extends SettingsTile {
 
 class SettingsTilePrivacyHiddenItems extends SettingsTile {
   @override
+  List<String> get settingKeys => HiddenItemsPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsHiddenItemsTile;
 
   @override
@@ -153,6 +166,9 @@ class SettingsTilePrivacyHiddenItems extends SettingsTile {
 }
 
 class SettingsTilePrivacyStorageAccess extends SettingsTile {
+  @override
+  List<String> get settingKeys => []; // no editable settings
+
   @override
   String title(BuildContext context) => context.l10n.settingsStorageAccessTile;
 

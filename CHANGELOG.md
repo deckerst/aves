@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
+
+### Added
+
+- Persian calendar
+- Collection: copy to clipboard
+- Viewer: settings quick action (long press for search)
+- Settings: search shows last changed settings
+- "show" action in hidden filter chip context menu
+- Albums/Countries/Tags: allow regex (wrapped in `/.../`) in query filter
+
+### Changed
+
+- upgraded Flutter to beta v3.47.0-0.1.pre
+
+### Fixed
+
+- crash when cataloguing GIF with large XMP
+- system nav bar inconsistent transparency
+- dialog transition when animations are disabled
+- deleting forever ghost items in the bin
+- time change when restoring undated item with assigned metadata date on move to bin
+
 ## <a id="v1.14.8"></a>[v1.14.8] - 2026-06-25
 
 ### Changed

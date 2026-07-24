@@ -1,5 +1,5 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,7 @@ class EntryListDetailsTheme extends StatelessWidget {
 
         final captionLineHeightParagraph = RenderParagraph(
           TextSpan(
-            text: formatDateTime(DateTime.now(), context.locale, use24hour),
+            text: formatDateTime(DateTime.now(), settings.avesLocale, use24hour),
             style: captionStyle,
           ),
           textDirection: TextDirection.ltr,

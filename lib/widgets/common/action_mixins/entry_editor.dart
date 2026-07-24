@@ -19,6 +19,7 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_date_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_description_dialog.dart';
 import 'package:aves/widgets/dialogs/entry_editors/edit_location_dialog.dart';
@@ -32,7 +33,7 @@ mixin EntryEditorMixin {
   Future<DateModifier?> selectDateModifier(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    return showDialog<DateModifier>(
+    return showAvesDialog<DateModifier>(
       context: context,
       builder: (context) => EditEntryDateDialog(
         entry: entries.first,
@@ -45,7 +46,7 @@ mixin EntryEditorMixin {
   Future<LocationEditActionResult?> selectLocation(BuildContext context, Set<AvesEntry> entries, CollectionLens? collection) async {
     if (entries.isEmpty) return null;
 
-    return showDialog<LocationEditActionResult>(
+    return showAvesDialog<LocationEditActionResult>(
       context: context,
       builder: (context) => EditEntryLocationDialog(
         entries: entries,
@@ -63,7 +64,7 @@ mixin EntryEditorMixin {
     final fields = await metadataFetchService.getOverlayMetadata(entry, {MetadataSyntheticField.description});
     final initialDescription = fields.description ?? '';
 
-    return showDialog<Map<DescriptionField, String?>>(
+    return showAvesDialog<Map<DescriptionField, String?>>(
       context: context,
       builder: (context) => EditEntryTitleDescriptionDialog(
         initialTitle: initialTitle,
@@ -76,7 +77,7 @@ mixin EntryEditorMixin {
   Future<int?> selectRating(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    return showDialog<int>(
+    return showAvesDialog<int>(
       context: context,
       builder: (context) => EditEntryRatingDialog(
         entry: entries.first,
@@ -124,7 +125,7 @@ mixin EntryEditorMixin {
   Future<Set<MetadataType>?> selectMetadataToRemove(BuildContext context, Set<AvesEntry> entries) async {
     if (entries.isEmpty) return null;
 
-    final types = await showDialog<Set<MetadataType>>(
+    final types = await showAvesDialog<Set<MetadataType>>(
       context: context,
       builder: (context) => RemoveEntryMetadataDialog(
         showJpegTypes: entries.any((entry) => entry.mimeType == MimeTypes.jpeg),
@@ -179,6 +180,10 @@ mixin EntryEditorMixin {
             modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
             showResult: false,
           );
+          // recatalog so that the metadata dates are not ignored when best dates are evaluated
+          await Future.forEach(entriesToDate, (entry) async {
+            await entry.catalog(background: false, force: true, persist: true);
+          });
         }
       }
     }

@@ -43,6 +43,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 class HomeWidgetProvider : AppWidgetProvider() {
     private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -77,7 +78,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
             imageByteFetchJob?.cancel()
         }
         imageByteFetchJob = defaultScope.launch {
-            delay(500)
+            delay(500.milliseconds)
             val imageProps = getProps(context, widgetId, widgetInfo, drawEntryImage = true, reuseEntry = true)
             updateWidgetImage(context, appWidgetManager, widgetId, imageProps)
         }
@@ -87,7 +88,7 @@ class HomeWidgetProvider : AppWidgetProvider() {
         var sizes: List<SizeF>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             widgetInfo.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES)
         } else {
             null

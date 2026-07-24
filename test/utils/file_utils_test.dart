@@ -1,12 +1,10 @@
-import 'package:aves/l10n/l10n.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('format file size', () {
-    final l10n = lookupAppLocalizations(AvesApp.supportedLocales.first);
-    final locale = l10n.localeName;
+    final locale = AvesLocale.ascii;
     expect(formatFileSize(locale, 1024), '1.00 KB');
     expect(formatFileSize(locale, 1536), '1.50 KB');
     expect(formatFileSize(locale, 1073741824), '1.00 GB');

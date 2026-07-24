@@ -7,19 +7,19 @@ extension ExtraEntryGroupFactorView on EntrySectionFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      EntrySectionFactor.album => l10n.collectionGroupAlbum,
-      EntrySectionFactor.month => l10n.collectionGroupMonth,
-      EntrySectionFactor.day => l10n.collectionGroupDay,
-      EntrySectionFactor.none => l10n.sectionNone,
+      .album => l10n.collectionGroupAlbum,
+      .month => l10n.collectionGroupMonth,
+      .day => l10n.collectionGroupDay,
+      .none => l10n.sectionNone,
     };
   }
 
   IconData get icon {
     return switch (this) {
-      EntrySectionFactor.album => AIcons.album,
-      EntrySectionFactor.month => AIcons.dateByMonth,
-      EntrySectionFactor.day => AIcons.dateByDay,
-      EntrySectionFactor.none => AIcons.clear,
+      .album => AIcons.album,
+      .month => AIcons.dateByMonth,
+      .day => AIcons.dateByDay,
+      .none => AIcons.clear,
     };
   }
 }
@@ -28,19 +28,19 @@ extension ExtraAlbumChipGroupFactorView on AlbumChipSectionFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AlbumChipSectionFactor.importance => l10n.albumGroupTier,
-      AlbumChipSectionFactor.mimeType => l10n.albumGroupType,
-      AlbumChipSectionFactor.volume => l10n.albumGroupVolume,
-      AlbumChipSectionFactor.none => l10n.sectionNone,
+      .importance => l10n.albumGroupTier,
+      .mimeType => l10n.albumGroupType,
+      .volume => l10n.albumGroupVolume,
+      .none => l10n.sectionNone,
     };
   }
 
   IconData get icon {
     return switch (this) {
-      AlbumChipSectionFactor.importance => AIcons.important,
-      AlbumChipSectionFactor.mimeType => AIcons.mimeType,
-      AlbumChipSectionFactor.volume => AIcons.storageCard,
-      AlbumChipSectionFactor.none => AIcons.clear,
+      .importance => AIcons.important,
+      .mimeType => AIcons.mimeType,
+      .volume => AIcons.storageCard,
+      .none => AIcons.clear,
     };
   }
 }

@@ -8,7 +8,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -20,11 +19,11 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/common/search/route.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
 import 'package:aves/widgets/explorer/crumb_line.dart';
 import 'package:aves/widgets/explorer/explorer_action_delegate.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +112,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
       overflow: TextOverflow.fade,
       maxLines: 1,
     );
-    if (appMode == AppMode.main) {
+    if (appMode == .main) {
       title = SourceStateAwareAppBarTitle(
         title: title,
         source: context.read<CollectionSource>(),
@@ -196,7 +195,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
           }).toList();
           final volumePath = widget.directoryNotifier.value?.volumePath;
           final initialVolume = _volumes.firstWhereOrNull((v) => v.path == volumePath);
-          final volume = await showDialog<StorageVolume?>(
+          final volume = await showAvesDialog<StorageVolume?>(
             context: context,
             builder: (context) => SelectStorageDialog(initialVolume: initialVolume),
             routeSettings: const RouteSettings(name: SelectStorageDialog.routeName),
@@ -217,13 +216,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
 
   void _goToSearch(BuildContext context) {
     Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: context.read<CollectionSource>(),
-        ),
-      ),
+      CollectionSearchPageRoute(context: context),
     );
   }
 

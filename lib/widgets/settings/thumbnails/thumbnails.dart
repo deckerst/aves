@@ -8,6 +8,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/thumbnails/collection_actions_editor_page.dart';
 import 'package:aves/widgets/settings/thumbnails/overlay_page.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,9 @@ class ThumbnailsSection extends SettingsSection {
 
 class SettingsTileCollectionQuickActions extends SettingsTile {
   @override
+  List<String> get settingKeys => CollectionActionEditorPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsCollectionQuickActionsTile;
 
   @override
@@ -47,6 +51,9 @@ class SettingsTileCollectionQuickActions extends SettingsTile {
 
 class SettingsTileThumbnailOverlay extends SettingsTile {
   @override
+  List<String> get settingKeys => ThumbnailOverlayPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsThumbnailOverlayTile;
 
   @override
@@ -58,6 +65,9 @@ class SettingsTileThumbnailOverlay extends SettingsTile {
 }
 
 class SettingsTileBurstPatterns extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.collectionBurstPatternsKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsCollectionBurstPatternsTile;
 

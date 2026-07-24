@@ -22,7 +22,7 @@ abstract class AppService {
 
   Future<ui.ImageDescriptor?> getAppIcon(String packageName, double size);
 
-  Future<bool> copyToClipboard({String? label, String? text, String? uri});
+  Future<bool> copyToClipboard({String? label, String? text, List<String>? uris});
 
   Future<Map<String, Object?>> edit(String uri, String mimeType);
 
@@ -89,7 +89,7 @@ class PlatformAppService implements AppService {
       });
       if (result != null) {
         final bytes = result as Uint8List;
-        return InteropDecoding.rawBytesToDescriptor(bytes);
+        return await InteropDecoding.rawBytesToDescriptor(bytes);
       }
     } on PlatformException catch (_) {
       // ignore, as some packages legitimately do not have icons
@@ -98,12 +98,12 @@ class PlatformAppService implements AppService {
   }
 
   @override
-  Future<bool> copyToClipboard({String? label, String? text, String? uri}) async {
+  Future<bool> copyToClipboard({String? label, String? text, List<String>? uris}) async {
     try {
       final result = await _platform.invokeMethod('copyToClipboard', <String, Object?>{
         'label': label,
         'text': text,
-        'uri': uri,
+        'uris': uris,
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {

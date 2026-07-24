@@ -55,4 +55,9 @@ class AddressDetails extends Equatable {
   };
 
   Map<String, Object?> toDbMap() => toMap();
+
+  bool get isValid {
+    if (countryName?.isNotEmpty == true && countryCode == null) return false;
+    return true;
+  }
 }

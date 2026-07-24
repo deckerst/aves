@@ -458,7 +458,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 
   void _goToCollection(CollectionFilter filter) {
-    final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+    final isMainMode = context.read<ValueNotifier<AppMode>>().value == .main;
     if (!isMainMode) return;
 
     Navigator.maybeOf(context)?.pushAndRemoveUntil(

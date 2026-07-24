@@ -52,7 +52,8 @@ enum EntryAction {
   // metadata / motion photo
   convertMotionPhotoToStillImage,
   viewMotionPhotoVideo,
-  // debug
+  // generic
+  settings,
   debug,
 }
 

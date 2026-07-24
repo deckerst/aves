@@ -332,7 +332,10 @@ class _ExplorerContentLine extends StatelessWidget {
                 filter: StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album)),
                 showText: false,
                 maxWidth: leadingDim,
-                onTap: (filter) => _GoToCollectionPageNotification(filter).dispatch(context),
+                onTap: (filter) {
+                  if (!context.mounted) return;
+                  _GoToCollectionPageNotification(filter).dispatch(context);
+                },
                 onLongPress: null,
               ),
             )

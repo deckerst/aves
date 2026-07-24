@@ -22,6 +22,8 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.AccessibilityHandler
 import deckers.thibault.aves.channel.calls.AnalysisHandler
@@ -101,7 +103,17 @@ open class MainActivity : FlutterFragmentActivity() {
 //                .penaltyLog()
 //                .build()
 //        )
+
         super.onCreate(savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, windowInsets ->
+            val insets = ViewCompat.onApplyWindowInsets(view, windowInsets)
+            notifySystemBarVisibilityChange(
+                statusBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.statusBars()),
+                navBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars()),
+            )
+            insets
+        }
     }
 
     private fun logExtras(intent: Intent?, method: String) {
@@ -238,7 +250,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     @Deprecated("Deprecated in android.app.Activity")
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         super.onMultiWindowModeChanged(isInMultiWindowMode)
         notifyWindowModeChange()
     }
@@ -250,7 +262,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     @Deprecated("Deprecated in android.app.Activity")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         super.onPictureInPictureModeChanged(isInPictureInPictureMode)
         notifyWindowModeChange()
     }
@@ -274,6 +286,10 @@ open class MainActivity : FlutterFragmentActivity() {
     private fun notifyWindowModeChange() = windowChangeStreamHandler.notifyWindowModeChange()
 
     private fun notifyCutoutInsetsChange() = windowChangeStreamHandler.notifyCutoutInsetsChange()
+
+    private fun notifySystemBarVisibilityChange(statusBarVisible: Boolean, navBarVisible: Boolean) {
+        windowChangeStreamHandler.notifySystemBarVisibilityChange(statusBarVisible, navBarVisible)
+    }
 
     override fun onNewIntent(intent: Intent) {
         Log.i(LOG_TAG, "onNewIntent intent=$intent")

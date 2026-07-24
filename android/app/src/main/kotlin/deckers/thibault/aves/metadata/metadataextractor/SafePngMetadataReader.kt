@@ -19,11 +19,13 @@ import com.drew.lang.SequentialByteArrayReader
 import com.drew.lang.SequentialReader
 import com.drew.lang.StreamReader
 import com.drew.lang.StreamUtil
+import com.drew.lang.annotations.Nullable
 import com.drew.metadata.ErrorDirectory
 import com.drew.metadata.Metadata
 import com.drew.metadata.StringValue
 import com.drew.metadata.exif.ExifTiffHandler
 import com.drew.metadata.icc.IccReader
+import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngChromaticitiesDirectory
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.xmp.XmpReader
@@ -35,7 +37,7 @@ import java.util.Locale
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `metadata-extractor` v2.20.0 `PngMetadataReader` to:
+// adapted from `metadata-extractor` v2.21.0 `PngMetadataReader` to:
 // - prevent OOM from reading large chunks (there is no way to customize the reader
 // without copying `desiredChunkTypes` and the whole `processChunk` function).
 // - parse `acTL` chunk to identify animated PNGs.
@@ -190,11 +192,22 @@ object SafePngMetadataReader {
             // total bytes length - (Keyword length + null byte)
             val bytesLeft = bytes.size - (keywordsv.bytes.size + 1)
             val value = reader.getNullTerminatedStringValue(bytesLeft, latin1Encoding, false)
-            val textPairs: MutableList<KeyValuePair> = ArrayList()
-            textPairs.add(KeyValuePair(keyword, value))
-            val directory = PngDirectory(PngChunkType.tEXt)
-            directory.setObject(PngDirectory.TAG_TEXTUAL_DATA, textPairs)
-            metadata.addDirectory(directory)
+            if (keyword == "Raw profile type iptc") {
+                val iptcBytes = decodeRawProfile(value.toString())
+                if (iptcBytes != null) {
+                    IptcReader().extract(SequentialByteArrayReader(iptcBytes), metadata, iptcBytes.size.toLong())
+                } else {
+                    val directory = PngDirectory(PngChunkType.tEXt)
+                    directory.addError("Could not decode IPTC raw profile data")
+                    metadata.addDirectory(directory)
+                }
+            } else {
+                val textPairs: MutableList<KeyValuePair> = ArrayList()
+                textPairs.add(KeyValuePair(keyword, value))
+                val directory = PngDirectory(PngChunkType.tEXt)
+                directory.setObject(PngDirectory.TAG_TEXTUAL_DATA, textPairs)
+                metadata.addDirectory(directory)
+            }
         } else if (chunkType == PngChunkType.zTXt) {
             val reader: SequentialReader = SequentialByteArrayReader(bytes)
 
@@ -224,6 +237,15 @@ object SafePngMetadataReader {
                 if (keyword == "XML:com.adobe.xmp") {
                     // NOTE in testing images, the XMP has parsed successfully, but we are not extracting tags from it as necessary
                     XmpReader().extract(textBytes, metadata)
+                } else if (keyword == "Raw profile type iptc") {
+                    val iptcBytes = decodeRawProfile(String(textBytes, latin1Encoding))
+                    if (iptcBytes != null) {
+                        IptcReader().extract(SequentialByteArrayReader(iptcBytes), metadata, iptcBytes.size.toLong())
+                    } else {
+                        val directory = PngDirectory(PngChunkType.zTXt)
+                        directory.addError("Could not decode IPTC raw profile data")
+                        metadata.addDirectory(directory)
+                    }
                 } else {
                     val textPairs: MutableList<KeyValuePair> = ArrayList()
                     textPairs.add(KeyValuePair(keyword, StringValue(textBytes, latin1Encoding)))
@@ -273,6 +295,15 @@ object SafePngMetadataReader {
                 if (keyword == "XML:com.adobe.xmp") {
                     // NOTE in testing images, the XMP has parsed successfully, but we are not extracting tags from it as necessary
                     XmpReader().extract(textBytes, metadata)
+                } else if (keyword == "Raw profile type iptc") {
+                    val iptcBytes = decodeRawProfile(String(textBytes, utf8Encoding))
+                    if (iptcBytes != null) {
+                        IptcReader().extract(SequentialByteArrayReader(iptcBytes), metadata, iptcBytes.size.toLong())
+                    } else {
+                        val directory = PngDirectory(PngChunkType.iTXt)
+                        directory.addError("Could not decode IPTC raw profile data")
+                        metadata.addDirectory(directory)
+                    }
                 } else {
                     val textPairs: MutableList<KeyValuePair> = ArrayList()
                     textPairs.add(KeyValuePair(keyword, StringValue(textBytes, utf8Encoding)))
@@ -331,5 +362,58 @@ object SafePngMetadataReader {
                 metadata.addDirectory(directory)
             }
         }
+    }
+
+    /**
+     * Decodes a "raw profile" as stored in a PNG text chunk. This format is used by ImageMagick/GIMP to embed
+     * binary data (such as IPTC) in PNG text chunks. The format is:
+     * <pre>
+     * \n
+     * &lt;type&gt;\n
+     * &lt;      length&gt;\n
+     * &lt;hex data&gt;\n
+    </pre> *
+     *
+     * @param rawProfile the raw profile string
+     * @return the decoded binary data, or `null` if the profile could not be decoded
+     */
+    @Nullable
+    private fun decodeRawProfile(rawProfile: String): ByteArray? {
+        val lines: Array<String?> = rawProfile.split("\\r\\n|\\r|\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+        if (lines.size < 3) {
+            return null
+        }
+
+        // Line 0 is empty, line 1 is the type identifier, line 2 is the length
+        val expectedByteCount: Int
+        try {
+            expectedByteCount = lines[2]!!.trim { it <= ' ' }.toInt()
+        } catch (_: NumberFormatException) {
+            return null
+        }
+
+        // Remaining lines are hex-encoded data
+        val hexBuilder = StringBuilder()
+        for (i in 3..<lines.size) {
+            hexBuilder.append(lines[i]!!.trim { it <= ' ' })
+        }
+
+        val hexString = hexBuilder.toString()
+        if (hexString.length != expectedByteCount * 2) {
+            return null
+        }
+
+        val result = ByteArray(expectedByteCount)
+        for (i in 0..<expectedByteCount) {
+            val high = hexString[i * 2].digitToIntOrNull(16) ?: -1
+            val low = hexString[i * 2 + 1].digitToIntOrNull(16) ?: -1
+            if (high == -1 || low == -1) {
+                return null
+            }
+            result[i] = ((high shl 4) or low).toByte()
+        }
+
+        return result
     }
 }

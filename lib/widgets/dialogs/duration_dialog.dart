@@ -1,10 +1,10 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class DurationDialog extends StatefulWidget {
   final int initialSeconds;
@@ -42,7 +42,7 @@ class _DurationDialogState extends State<DurationDialog> {
       child: Builder(
         builder: (context) {
           final l10n = context.l10n;
-          final timeComponentFormatter = NumberFormat('0', context.locale);
+          final timeComponentFormatter = settings.avesLocale.decimalNumberFormat();
 
           const textStyle = TextStyle(fontSize: 34);
           const digitsAlign = TextAlign.right;

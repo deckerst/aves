@@ -1,7 +1,6 @@
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
@@ -9,10 +8,9 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
-import 'package:aves/widgets/settings/settings_search_delegate.dart';
+import 'package:aves/widgets/settings/settings_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -87,13 +85,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
 
   void _goToSearch(BuildContext context) {
     Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: SettingsSearchDelegate(
-          searchFieldLabel: context.l10n.settingsSearchFieldLabel,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          sections: SettingsPage.sections,
-        ),
-      ),
+      SettingsSearchPageRoute(context: context),
     );
   }
 }

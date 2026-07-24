@@ -13,6 +13,14 @@ import 'package:flutter/material.dart';
 class VideoPlaybackPage extends StatelessWidget {
   static const routeName = '/settings/video/playback';
 
+  static const List<String> settingKeys = [
+    SettingKeys.videoAutoPlayModeKey,
+    SettingKeys.videoLoopModeKey,
+    SettingKeys.videoResumptionModeKey,
+    SettingKeys.videoBackgroundModeKey,
+    SettingKeys.videoHardwareAccelerationKey,
+  ];
+
   const VideoPlaybackPage({super.key});
 
   @override

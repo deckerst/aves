@@ -144,13 +144,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           null,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="$toolkit">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -167,7 +169,8 @@ void main() {
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set tags to XMP with ratings (multiple descriptions)', () async {
@@ -175,13 +178,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inMultiDescriptionRatings,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about="uuid:faf5bdd5-ba3d-11da-ad31-d33d75182f1b"
@@ -202,7 +207,8 @@ void main() {
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set tags to XMP with subjects only', () async {
@@ -210,13 +216,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjects,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {'one', 'two'}),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -233,17 +241,21 @@ void main() {
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Remove tags from XMP with subjects only', () async {
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjects,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {}),
-        )),
-        _toExpect(null));
+        ),
+      ),
+      _toExpect(null),
+    );
   });
 
   test('Remove tags from XMP with subjects and creator', () async {
@@ -251,13 +263,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjectsCreator,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editTagsXmp(descriptions, {}),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -273,7 +287,8 @@ void main() {
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set rating without existing XMP', () async {
@@ -281,13 +296,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           null,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="$toolkit">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -297,7 +314,8 @@ void main() {
       xmp:ModifyDate="$xmpDate" />
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set rating to XMP with ratings (multiple descriptions)', () async {
@@ -305,13 +323,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inMultiDescriptionRatings,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about="uuid:faf5bdd5-ba3d-11da-ad31-d33d75182f1b"
@@ -323,7 +343,8 @@ void main() {
       xmp:ModifyDate="$xmpDate" />
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set rating to XMP with rating attribute', () async {
@@ -331,13 +352,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inRatingAttribute,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -347,7 +370,8 @@ void main() {
       xmp:ModifyDate="$xmpDate" />
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set rating to XMP with rating element', () async {
@@ -355,13 +379,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inRatingElement,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -371,7 +397,8 @@ void main() {
       xmp:ModifyDate="$xmpDate" />
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Set rating to XMP with subjects only', () async {
@@ -379,13 +406,15 @@ void main() {
     final xmpDate = XMP.toXmpDate(modifyDate);
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjects,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, 3),
           modifyDate: modifyDate,
-        )),
-        _toExpect('''
+        ),
+      ),
+      _toExpect('''
 <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core Test.SNAPSHOT">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about=""
@@ -402,71 +431,87 @@ void main() {
     </rdf:Description>
   </rdf:RDF>
 </x:xmpmeta>
-'''));
+'''),
+    );
   });
 
   test('Remove rating from XMP with subjects only', () async {
     final modifyDate = DateTime.now();
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjects,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, null),
           modifyDate: modifyDate,
-        )),
-        _toExpect(inSubjects));
+        ),
+      ),
+      _toExpect(inSubjects),
+    );
   });
 
   test('Remove trailer media info from XMP with micro video', () async {
     final modifyDate = DateTime.now();
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inMotionPhotoMicroVideo,
           toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
-        )),
-        _toExpect(null));
+        ),
+      ),
+      _toExpect(null),
+    );
   });
 
   test('Remove trailer media info from XMP with container', () async {
     final modifyDate = DateTime.now();
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inMotionPhotoContainer,
           toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
-        )),
-        _toExpect(null));
+        ),
+      ),
+      _toExpect(null),
+    );
   });
 
   test('Remove trailer media info from XMP with no related metadata', () async {
     final modifyDate = DateTime.now();
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inSubjects,
           toolkit,
           ExtraAvesEntryMetadataEdition.removeContainerXmp,
           modifyDate: modifyDate,
-        )),
-        _toExpect(inSubjects));
+        ),
+      ),
+      _toExpect(inSubjects),
+    );
   });
 
   test('Remove rating from XMP with ratings (multiple descriptions)', () async {
     final modifyDate = DateTime.now();
 
     expect(
-        _toExpect(await XMP.edit(
+      _toExpect(
+        await XMP.edit(
           inMultiDescriptionRatings,
           toolkit,
           (descriptions) => ExtraAvesEntryMetadataEdition.editRatingXmp(descriptions, null),
           modifyDate: modifyDate,
-        )),
-        _toExpect(null));
+        ),
+      ),
+      _toExpect(null),
+    );
   });
 }

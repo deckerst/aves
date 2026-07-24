@@ -219,6 +219,9 @@
   "albumTierDynamic": "Dynamic",
   "albumTierRegular": "Others",
 
+  "calendarGregorian": "Gregorian",
+  "calendarPersian": "Persian",
+
   "coordinateFormatDms": "DMS",
   "coordinateFormatDdm": "DDM",
   "coordinateFormatDecimal": "Decimal degrees",
@@ -1033,6 +1036,7 @@
   "settingsLanguageSectionTitle": "Language & Formats",
   "settingsLanguageTile": "Language",
   "settingsLanguagePageTitle": "Language",
+  "settingsCalendarTile": "Calendar",
   "settingsCoordinateFormatTile": "Coordinate format",
   "settingsCoordinateFormatDialogTitle": "Coordinate Format",
   "settingsUnitSystemTile": "Units",

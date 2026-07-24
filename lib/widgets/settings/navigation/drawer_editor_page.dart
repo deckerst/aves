@@ -18,10 +18,17 @@ import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation/drawer';
+
+  static const List<String> settingKeys = [
+    SettingKeys.drawerTypeBookmarksKey,
+    SettingKeys.drawerAlbumBookmarksKey,
+    SettingKeys.drawerPageBookmarksKey,
+  ];
 
   static final List<CollectionFilter?> collectionFilterOptions = [
     null,

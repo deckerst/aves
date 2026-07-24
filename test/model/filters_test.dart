@@ -1,3 +1,4 @@
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
@@ -52,7 +53,8 @@ void main() {
     expect(bounds, jsonMapRoundTrip(bounds));
     expect(bounds, jsonStringRoundTrip(bounds));
 
-    final date = DateFilter(DateLevel.ym, DateTime(1969, 7));
+    const calendar = ACalendar.gregorian;
+    final date = DateFilter(calendar, DateLevel.ym, DateTime(1969, 7));
     expect(date, jsonMapRoundTrip(date));
     expect(date, jsonStringRoundTrip(date));
 

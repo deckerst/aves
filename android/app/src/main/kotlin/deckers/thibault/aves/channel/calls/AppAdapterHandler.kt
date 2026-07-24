@@ -100,7 +100,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                             // The following methods do not work:
                             // - `resources.getConfiguration().setLocale(...)`
                             // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
-                            @Suppress("deprecation")
+                            @Suppress("DEPRECATION")
                             resources.updateConfiguration(englishConfig, resources.displayMetrics)
                             englishLabel = resources.getString(labelRes)
                         } catch (e: Exception) {
@@ -211,8 +211,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     private fun copyToClipboard(call: MethodCall, result: MethodChannel.Result) {
         val label = call.argument<String>("label")
         val text = call.argument<String>("text")
-        val uri = call.argument<String>("uri")?.toUri()
-        if (text == null && uri == null) {
+        val uris = call.argument<List<String>>("uris")?.map { it.toUri() }
+        if (text == null && uris.isNullOrEmpty()) {
             result.error("copyToClipboard-args", "missing arguments", null)
             return
         }
@@ -224,11 +224,18 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
                 if (clipboardManager != null) {
                     val clip: ClipData
-                    if (uri != null) {
-                        clip = ClipData.newUri(context.contentResolver, label, getShareableUri(context, uri))
+                    if (!uris.isNullOrEmpty()) {
+                        val resolver = context.contentResolver
+                        clip = ClipData.newUri(resolver, label, getShareableUri(context, uris.first()))
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            uris.drop(1).forEach {
+                                clip.addItem(resolver, ClipData.Item(getShareableUri(context, it)))
+                            }
+                        }
                     } else {
                         clip = ClipData.newPlainText(label, text)
                     }
+                    Log.d(LOG_TAG, "copy to clipboard clip=${clip}")
                     clipboardManager.setPrimaryClip(clip)
                     result.success(true)
                 } else {

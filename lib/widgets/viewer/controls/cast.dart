@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/ref/upnp.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/cast_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:dlna_dart/dlna.dart';
@@ -75,7 +76,7 @@ mixin CastMixin {
   }
 
   Future<DLNADevice?> _selectRenderer(BuildContext context) async {
-    return await showDialog<DLNADevice?>(
+    return await showAvesDialog<DLNADevice?>(
       context: context,
       builder: (context) => const CastDialog(),
       routeSettings: const RouteSettings(name: CastDialog.routeName),
@@ -92,7 +93,7 @@ mixin CastMixin {
       await renderer.setUrl(
         '$_serverBaseUrl/${entry.id}',
         title: entry.bestTitle ?? '',
-        type: entry.isVideo ? PlayType.Video : PlayType.Image,
+        type: (entry.isVideo ? VideoMime : ImageMime) as PlayType,
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
@@ -128,7 +129,7 @@ extension ExtraDLNADevice on DLNADevice {
     required String data,
   }) async {
     try {
-      return DLNAHttp.post(
+      return await DLNAHttp.post(
         Uri.parse(controlURL(serviceId)),
         Map.from({
           'SOAPAction': '"$serviceType#$action"',

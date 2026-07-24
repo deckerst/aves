@@ -385,7 +385,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   }
 
   Future<void> _pickColor() async {
-    final color = await showDialog<Color>(
+    final color = await showAvesDialog<Color>(
       context: context,
       builder: (context) => ColorPickerDialog(
         // avoid a pure material color as the default, so that

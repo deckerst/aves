@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/filters/date.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/date/axis.dart';
@@ -17,7 +19,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Histogram extends StatefulWidget {
@@ -60,20 +61,23 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     if (lastDate != null && firstDate != null) {
       final rangeDays = lastDate.difference(firstDate).inHumanDays;
       if (rangeDays > 1) {
-        if (rangeDays <= 31) {
+        final calendar = settings.calendar;
+        final calOps = calendar.ops;
+
+        if (rangeDays <= calendar.maxDaysInMonth) {
           _level = DateLevel.ymd;
-        } else if (rangeDays <= 365) {
+        } else if (rangeDays <= calendar.maxDaysInYear) {
           _level = DateLevel.ym;
         }
 
         late DateTime Function(DateTime) normalizeDate;
         switch (_level) {
           case .ymd:
-            normalizeDate = (v) => DateTime(v.year, v.month, v.day);
+            normalizeDate = calOps.dateOnly;
           case .ym:
-            normalizeDate = (v) => DateTime(v.year, v.month);
+            normalizeDate = calOps.monthDateOnly;
           default:
-            normalizeDate = (v) => DateTime(v.year);
+            normalizeDate = calOps.yearDateOnly;
         }
         _firstDate = normalizeDate(firstDate);
         _lastDate = normalizeDate(lastDate);
@@ -90,6 +94,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
           _interpolatedDataLoader = compute<_DataInterpolationArg, List<_EntryByDate>?>(
             _computeInterpolatedData,
             _DataInterpolationArg(
+              calendar: calendar,
               firstDate: _firstDate,
               lastDate: _lastDate,
               level: _level,
@@ -109,13 +114,15 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   static List<_EntryByDate>? _computeInterpolatedData(_DataInterpolationArg arg) {
+    final calendar = arg.calendar;
+    final level = arg.level;
     final firstDate = arg.firstDate;
     final lastDate = arg.lastDate;
-    final level = arg.level;
     final entryCountPerDate = arg.entryCountPerDate;
 
     if (firstDate == null || lastDate == null) return null;
 
+    final calOps = calendar.ops;
     final xRange = lastDate.difference(firstDate);
     final xRangeInMillis = xRange.inMilliseconds;
     late int xCount;
@@ -123,13 +130,13 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     switch (level) {
       case .ymd:
         xCount = xRange.inHumanDays;
-        incrementDate = (date) => DateTime(date.year, date.month, date.day + 1);
+        incrementDate = (date) => calOps.addDaysToDate(date, 1);
       case .ym:
-        xCount = (xRange.inHumanDays / 30.5).round();
-        incrementDate = (date) => DateTime(date.year, date.month + 1);
+        xCount = calOps.monthDelta(firstDate, lastDate);
+        incrementDate = (date) => calOps.addMonthsToMonthDate(date, 1);
       default:
-        xCount = lastDate.year - firstDate.year;
-        incrementDate = (date) => DateTime(date.year + 1);
+        xCount = calOps.yearDelta(firstDate, lastDate);
+        incrementDate = (date) => calOps.addYearsToYearDate(date, 1);
     }
     final yMax = entryCountPerDate.values.reduce(max).toDouble();
     final xInterval = yMax / xCount;
@@ -230,7 +237,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         )..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
 
-    final locale = context.locale;
+    final locale = settings.avesLocale;
     final timeAxisSpec = _firstDate != null && _lastDate != null
         ? TimeAxisSpec.forLevel(
             locale: locale,
@@ -239,7 +246,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
             last: _lastDate!,
           )
         : null;
-    final tickFormatter = NumberFormat.decimalPattern(locale);
+    final tickFormatter = locale.decimalNumberFormat();
 
     final domainAxis = charts.DateTimeAxisSpec(
       renderSpec: charts.SmallTickRendererSpec(
@@ -311,7 +318,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
   }
 
   Widget _buildSelectionRow() {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
 
     return ValueListenableBuilder<_EntryByDate?>(
       valueListenable: _selection,
@@ -320,7 +327,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
         if (selection == null) {
           child = const SizedBox();
         } else {
-          final filter = DateFilter(_level, selection.date);
+          final calendar = settings.calendar;
+          final filter = DateFilter(calendar, _level, selection.date);
           final count = selection.entryCount;
           child = Padding(
             padding: const EdgeInsets.all(8),
@@ -332,7 +340,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                 ),
                 const Spacer(),
                 Text(
-                  countFormatter.format(count),
+                  itemCountFormatter.format(count),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -380,11 +388,13 @@ class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
 }
 
 class _DataInterpolationArg {
+  final ACalendar calendar;
   final DateLevel level;
   final DateTime? firstDate, lastDate;
   final Map<DateTime, int> entryCountPerDate;
 
   const _DataInterpolationArg({
+    required this.calendar,
     required this.level,
     required this.firstDate,
     required this.lastDate,

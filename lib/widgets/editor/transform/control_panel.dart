@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
@@ -11,7 +12,6 @@ import 'package:aves/widgets/editor/transform/transformation.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class TransformControlPanel extends StatefulWidget {
@@ -158,7 +158,7 @@ class RotationControlPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TransformController>();
-    final angleFormatter = NumberFormat('0.0°', context.locale);
+    final angleFormatter = settings.avesLocale.numberFormat('0.0°');
 
     return Row(
       children: [

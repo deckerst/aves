@@ -91,6 +91,13 @@ class _HomeOption {
 
 class SettingsTileNavigationHomePage extends SettingsTile {
   @override
+  List<String> get settingKeys => [
+    SettingKeys.homePageKey,
+    SettingKeys.homeCustomCollectionKey,
+    SettingKeys.homeCustomExplorerPathKey,
+  ];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsHomeTile;
 
   @override
@@ -118,6 +125,9 @@ class SettingsTileNavigationHomePage extends SettingsTile {
 
 class SettingsTileNavigationDrawer extends SettingsTile {
   @override
+  List<String> get settingKeys => NavigationDrawerEditorPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsNavigationDrawerTile;
 
   @override
@@ -129,6 +139,9 @@ class SettingsTileNavigationDrawer extends SettingsTile {
 }
 
 class SettingsTileNavigationBottomActions extends SettingsTile {
+  @override
+  List<String> get settingKeys => BottomNavigationActionEditorPage.settingKeys;
+
   @override
   String title(BuildContext context) => context.l10n.settingsNavigationBottomActionsTile;
 
@@ -142,6 +155,9 @@ class SettingsTileNavigationBottomActions extends SettingsTile {
 
 class SettingsTileNavigationConfirmationDialog extends SettingsTile {
   @override
+  List<String> get settingKeys => ConfirmationDialogPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsConfirmationTile;
 
   @override
@@ -153,6 +169,9 @@ class SettingsTileNavigationConfirmationDialog extends SettingsTile {
 }
 
 class SettingsTileNavigationKeepScreenOn extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.keepScreenOnKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsKeepScreenOnTile;
 
@@ -168,6 +187,9 @@ class SettingsTileNavigationKeepScreenOn extends SettingsTile {
 }
 
 class SettingsTileNavigationDoubleBackExit extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.mustBackTwiceToExitKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsDoubleBackExit;
 

@@ -1,9 +1,9 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
@@ -21,7 +21,7 @@ class OverlayDateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.locale;
+    final locale = settings.avesLocale;
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
     final date = entry.bestDate;

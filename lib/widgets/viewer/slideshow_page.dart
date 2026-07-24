@@ -35,7 +35,7 @@ class SlideshowPage extends StatefulWidget {
 }
 
 class _SlideshowPageState extends State<SlideshowPage> {
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.slideshow);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(.slideshow);
   late ViewerController _viewerController;
   late CollectionLens _slideshowCollection;
   AvesEntry? _initialEntry;

@@ -29,6 +29,7 @@ import 'package:aves/widgets/debug/os_codecs.dart';
 import 'package:aves/widgets/debug/os_paths.dart';
 import 'package:aves/widgets/debug/os_storage.dart';
 import 'package:aves/widgets/debug/settings.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -130,7 +131,7 @@ class AppDebugPage extends StatelessWidget {
         // scan files copied from test assets
         // we do it via the app instead of broadcasting via ADB
         // because `MEDIA_SCANNER_SCAN_FILE` intent got deprecated in API 29
-        await showDialog<String>(
+        await showAvesDialog<String>(
           context: context,
           builder: (context) => const MediaStoreScanDirDialog(),
         );

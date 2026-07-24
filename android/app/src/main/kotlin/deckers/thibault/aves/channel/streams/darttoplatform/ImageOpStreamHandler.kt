@@ -56,10 +56,8 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
             val mimeType = entry.mimeType
-            val trashed = entry.trashed
-
             val uri = entry.uri
-            val path = if (trashed) entry.trashPath else entry.path
+            val path = entry.storagePath
 
             val result: FieldMap = hashMapOf(
                 "uri" to uri.toString(),

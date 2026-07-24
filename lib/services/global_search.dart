@@ -4,6 +4,7 @@ import 'package:aves/model/entry/sort.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -51,15 +52,23 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
   final suggestions = <Map<String, String?>>[];
   if (args is Map) {
     final query = args['query'];
-    final locale = args['locale'];
+    final localeName = args['locale'];
     final use24hour = args['use24hour'];
-    debugPrint('getSuggestions query=$query, locale=$locale use24hour=$use24hour');
+    debugPrint('getSuggestions query=$query, localeName=$localeName use24hour=$use24hour');
 
-    if (query is String && locale is String) {
+    if (query is String && localeName is String) {
       final entries = (await localMediaDb.searchLiveEntries(query, limit: 9)).toList();
       final catalogMetadata = await localMediaDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
+
+      // TODO TLAD [calendar] try whether `settings.avesLocale` is accessible, after:
+      //   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
+      final locale = AvesLocale(
+        languageTag: localeName,
+        calendar: ACalendar.gregorian,
+        forceWesternArabicNumerals: false,
+      );
 
       suggestions.addAll(
         entries.map((entry) {

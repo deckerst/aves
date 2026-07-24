@@ -37,10 +37,6 @@ class ServiceWindowHandler(service: Service) : WindowHandler(service) {
         result.success(false)
     }
 
-    override fun showSystemUI(call: MethodCall, result: MethodChannel.Result) {
-        result.success(false)
-    }
-
     override fun isCutoutAware(call: MethodCall, result: MethodChannel.Result) {
         result.success(false)
     }

@@ -246,7 +246,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
           const Icon(AIcons.size),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(formatFileSize(context.locale, _totalSizeBytes)),
+            child: Text(formatFileSize(settings.avesLocale, _totalSizeBytes)),
           ),
         ],
       ),

@@ -25,6 +25,7 @@ import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_group_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
@@ -89,7 +90,7 @@ class _AlbumPickPage extends StatefulWidget {
 
 class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, VaultAwareMixin {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(AppMode.pickFilterInternal);
+  final ValueNotifier<AppMode> _appModeNotifier = ValueNotifier(.pickFilterInternal);
 
   CollectionSource get source => widget.source;
 
@@ -338,7 +339,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   }
 
   Future<void> _createGroup(Uri? parentGroupUri) async {
-    final uri = await showDialog<Uri>(
+    final uri = await showAvesDialog<Uri>(
       context: context,
       builder: (context) => CreateGroupDialog(grouping: albumGrouping, parentGroupUri: parentGroupUri),
       routeSettings: const RouteSettings(name: CreateGroupDialog.routeName),
@@ -352,7 +353,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
   }
 
   Future<void> _createAlbum() async {
-    final directory = await showDialog<String>(
+    final directory = await showAvesDialog<String>(
       context: context,
       builder: (context) => const CreateStoredAlbumDialog(),
       routeSettings: const RouteSettings(name: CreateStoredAlbumDialog.routeName),
@@ -376,7 +377,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
       return;
     }
 
-    final details = await showDialog<VaultDetails>(
+    final details = await showAvesDialog<VaultDetails>(
       context: context,
       builder: (context) => const EditVaultDialog(),
       routeSettings: const RouteSettings(name: EditVaultDialog.routeName),

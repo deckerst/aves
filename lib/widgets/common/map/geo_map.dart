@@ -109,7 +109,6 @@ class _GeoMapState extends State<GeoMap> {
   void initState() {
     super.initState();
     _boundsNotifier = ValueNotifier(_initBounds());
-    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.mapShowItemTracksKey).listen((_) => _updateItemTracks()));
     _registerWidget(widget);
     _onCollectionChanged();
   }
@@ -132,6 +131,8 @@ class _GeoMapState extends State<GeoMap> {
   void _registerWidget(GeoMap widget) {
     widget.collection?.addListener(_onCollectionChanged);
     _subscriptions.add(widget.controller.markerLocationChanges.listen((event) => _onCollectionChanged()));
+    // not specific to widget, but here to be next to other subscriptions
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.mapShowItemTracksKey).listen((_) => _updateItemTracks()));
   }
 
   void _unregisterWidget(GeoMap widget) {
@@ -154,11 +155,11 @@ class _GeoMapState extends State<GeoMap> {
       selector: (context, s) => s.mapStyle,
       builder: (context, mapStyle, child) {
         final isHeavy = mapStyle?.isHeavy ?? false;
-        final locale = context.locale;
+        final countFormatter = settings.avesLocale.decimalNumberFormat().format;
         Widget _buildMarkerWidget(MarkerKey<AvesEntry> key) => ImageMarker(
           key: key,
           count: key.count,
-          locale: locale,
+          countFormatter: countFormatter,
           buildThumbnailImage: (extent) => ThumbnailImage(
             entry: key.entry,
             extent: extent,
@@ -524,11 +525,11 @@ class _GeoMapState extends State<GeoMap> {
     } else {
       markerEntry = geoEntry.entry!;
     }
-    final locale = context.locale;
+    final countFormatter = settings.avesLocale.decimalNumberFormat().format;
     final markerLocation = LatLng(geoEntry.latitude!, geoEntry.longitude!);
     Widget markerBuilder(BuildContext context) => ImageMarker(
       count: geoEntry.pointsSize,
-      locale: locale,
+      countFormatter: countFormatter,
       drawArrow: false,
       buildThumbnailImage: (extent) => ThumbnailImage(
         entry: markerEntry,

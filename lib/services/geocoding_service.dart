@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:ui';
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:latlong2/latlong.dart';
 
 abstract class GeocodingService {
-  Future<List<Address>> getAddress(LatLng coordinates, Locale locale);
+  Future<List<Address>> getAddress(LatLng coordinates, AvesLocale locale);
 }
 
 // geocoding requires Google Play Services
@@ -16,12 +16,12 @@ class PlatformGeocodingService implements GeocodingService {
   static const _channel = AvesMethodChannel(AvesChannels.geocoding);
 
   @override
-  Future<List<Address>> getAddress(LatLng coordinates, Locale locale) async {
+  Future<List<Address>> getAddress(LatLng coordinates, AvesLocale locale) async {
     try {
       final result = await _channel.invokeMethod('getAddress', <String, Object?>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
-        'localeLanguageTag': locale.toLanguageTag(),
+        'localeLanguageTag': locale.languageTag,
         // we only really need one address, but sometimes the native geocoder
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,

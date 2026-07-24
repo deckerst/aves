@@ -79,7 +79,7 @@ class VideoActionNotification extends Notification {
 }
 
 @immutable
-class CastNotification extends Notification with EquatableMixin {
+class CastNotification extends Notification with Equatable {
   final bool enabled;
 
   @override
@@ -89,7 +89,7 @@ class CastNotification extends Notification with EquatableMixin {
 }
 
 @immutable
-class SelectFilterNotification extends Notification with EquatableMixin {
+class SelectFilterNotification extends Notification with Equatable {
   final CollectionFilter filter;
 
   @override
@@ -99,7 +99,7 @@ class SelectFilterNotification extends Notification with EquatableMixin {
 }
 
 @immutable
-class DecomposeFilterNotification extends Notification with EquatableMixin {
+class DecomposeFilterNotification extends Notification with Equatable {
   final CollectionFilter filter;
 
   @override
@@ -109,7 +109,7 @@ class DecomposeFilterNotification extends Notification with EquatableMixin {
 }
 
 @immutable
-class EntryDeletedNotification extends Notification with EquatableMixin {
+class EntryDeletedNotification extends Notification with Equatable {
   final Set<AvesEntry> entries;
 
   @override
@@ -119,7 +119,7 @@ class EntryDeletedNotification extends Notification with EquatableMixin {
 }
 
 @immutable
-class EntryMovedNotification extends Notification with EquatableMixin {
+class EntryMovedNotification extends Notification with Equatable {
   final MoveType moveType;
   final Set<AvesEntry> entries;
 

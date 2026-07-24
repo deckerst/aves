@@ -6,11 +6,17 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HiddenItemsPage extends StatelessWidget {
   static const routeName = '/settings/hidden_items';
+
+  static const List<String> settingKeys = [
+    SettingKeys.hiddenFiltersKey,
+    SettingKeys.deactivatedHiddenFiltersKey,
+  ];
 
   const HiddenItemsPage({super.key});
 

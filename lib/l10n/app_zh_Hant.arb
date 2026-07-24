@@ -456,7 +456,7 @@
     "settingsVideoGestureDoubleTapTogglePlay": "點擊二次以播放/暫停",
     "settingsVideoGestureSideDoubleTapSeek": "螢幕邊緣點擊二次以後退/前進",
     "settingsPrivacySectionTitle": "隱私",
-    "settingsAllowErrorReporting": "允許匿名錯誤報告",
+    "settingsAllowErrorReporting": "匿名錯誤報告",
     "settingsSaveSearchHistory": "儲存搜尋歷史記錄",
     "settingsEnableBinSubtitle": "刪除項目保留 30 天",
     "settingsAllowMediaManagement": "允許媒體管理",
@@ -947,5 +947,17 @@
     "settingsViewerShowZoomLevel": "顯示縮放等級",
     "collectionActionExportGpx": "匯出 GPX",
     "settingsEnabled": "已啟用",
-    "settingsForced": "已強制"
+    "settingsForced": "已強制",
+    "filterTypeSlowMotionVideoLabel": "慢動作",
+    "calendarGregorian": "格里高利曆",
+    "calendarPersian": "波斯歷",
+    "drawerCollectionSlowMotionVideos": "慢動作視頻",
+    "showThumbnailSlowMotionVideoIcon": "顯示慢動作圖標",
+    "settingsAutoExportSettings": "自動匯出設定",
+    "settingsAllowNotifications": "允許通知",
+    "settingsPermissionsTile": "權限",
+    "settingsPermissionsPageTitle": "權限",
+    "settingsCalendarTile": "日曆",
+    "mapShowItemTracks": "顯示路徑",
+    "mapHideItemTracks": "隱藏路徑"
 }

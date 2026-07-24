@@ -1,3 +1,4 @@
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
@@ -17,6 +18,7 @@ class SettingsDefaults {
   static const canUseAnalysisService = true;
   static const isInstalledAppAccessAllowed = false;
   static const isErrorReportingAllowed = false;
+  static const calendar = ACalendar.gregorian;
   static const tileLayout = TileLayout.grid;
   static const entryRenamingPattern = '<${DateNamingProcessor.key}, yyyyMMdd-HHmmss> <${NameNamingProcessor.key}>';
 

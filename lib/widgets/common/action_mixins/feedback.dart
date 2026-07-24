@@ -12,8 +12,8 @@ import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +143,7 @@ mixin FeedbackMixin {
     Future<void> Function(Set<T> processed)? onDone,
   }) async {
     final opCompleter = Completer();
-    await showDialog(
+    await showAvesDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => ReportOverlay<T>(
@@ -229,7 +229,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   Widget build(BuildContext context) {
     const diameter = ReportOverlay.diameter;
     const strokeWidth = ReportOverlay.strokeWidth;
-    final percentFormatter = NumberFormat.percentPattern(context.locale);
+    final progressFormatter = settings.avesLocale.percentNumberFormat();
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -252,7 +252,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             if (total > 100) {
               text = '$processedCount/$total';
             } else {
-              text = percentFormatter.format(percent);
+              text = progressFormatter.format(percent);
             }
           }
           return FadeTransition(
@@ -395,7 +395,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    final durationFormatter = NumberFormat('0', context.locale);
+    final durationFormatter = settings.avesLocale.decimalNumberFormat();
 
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);

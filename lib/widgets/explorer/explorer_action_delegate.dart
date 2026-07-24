@@ -9,6 +9,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -25,7 +26,7 @@ class ExplorerActionDelegate with FeedbackMixin {
     ExplorerAction action, {
     required AppMode appMode,
   }) {
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       case .addShortcut:
@@ -72,7 +73,7 @@ class ExplorerActionDelegate with FeedbackMixin {
       filters: {filter},
     );
 
-    final result = await showDialog<(AvesEntry?, String)>(
+    final result = await showAvesDialog<(AvesEntry?, String)>(
       context: context,
       builder: (context) => AddShortcutDialog(
         defaultName: defaultName,

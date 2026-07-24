@@ -16,7 +16,6 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -36,10 +35,10 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
@@ -198,7 +197,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       child: ListenableBuilder(
         listenable: collection.filterChangeNotifier,
         builder: (context, child) {
-          final canRemoveFilters = appMode != AppMode.pickFilteredMediaInternal;
+          final canRemoveFilters = appMode != .pickFilteredMediaInternal;
           return Selector<Query, bool>(
             selector: (context, query) => query.enabled,
             builder: (context, queryEnabled, child) {
@@ -328,7 +327,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
             overflow: TextOverflow.fade,
             maxLines: 1,
           );
-          if (appMode == AppMode.main) {
+          if (appMode == .main) {
             title = SourceStateAwareAppBarTitle(
               title: title,
               source: source,
@@ -344,7 +343,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         overflow: TextOverflow.fade,
         maxLines: 1,
       );
-      if (appMode == AppMode.main) {
+      if (appMode == .main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
           source: source,
@@ -507,7 +506,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                 return _toMenuItem(action, enabled: canApply(action), selection: selection);
               },
             ),
-            if (isSelecting && !settings.isReadOnly && appMode == AppMode.main && !isTrash) ...[
+            if (isSelecting && !settings.isReadOnly && appMode == .main && !isTrash) ...[
               if (exportMenuActions.isNotEmpty)
                 PopupMenuExpansionPanel<EntrySetAction>(
                   enabled: hasSelection,
@@ -789,6 +788,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       case .move:
       case .rename:
       case .convert:
+      case .copyToClipboard:
       case .exportGpx:
       case .toggleFavourite:
       case .rotateCCW:
@@ -815,7 +815,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
+    final value = await showAvesDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
@@ -842,13 +842,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   void _goToSearch() {
     Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: collection.source,
-          parentCollection: collection,
-        ),
+      CollectionSearchPageRoute(
+        context: context,
+        parentCollection: collection,
       ),
     );
   }

@@ -9,12 +9,12 @@ void main() {
 
   test('mixed processors', () {
     const entryCount = 42;
-    const locale = 'en';
+    const localeName = 'en';
     expect(
       NamingPattern.from(
         userPattern: 'pure literal',
         entryCount: entryCount,
-        locale: locale,
+        localeName: localeName,
       ).processors,
       [
         const LiteralNamingProcessor('pure literal'),
@@ -24,11 +24,11 @@ void main() {
       NamingPattern.from(
         userPattern: 'prefix<date,yyyy-MM-ddTHH:mm:ss>suffix',
         entryCount: entryCount,
-        locale: locale,
+        localeName: localeName,
       ).processors,
       [
         const LiteralNamingProcessor('prefix'),
-        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', locale),
+        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', localeName),
         const LiteralNamingProcessor('suffix'),
       ],
     );
@@ -36,10 +36,10 @@ void main() {
       NamingPattern.from(
         userPattern: '<date,yyyy-MM-ddTHH:mm:ss> <name>',
         entryCount: entryCount,
-        locale: locale,
+        localeName: localeName,
       ).processors,
       [
-        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', locale),
+        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', localeName),
         const LiteralNamingProcessor(' '),
         const NameNamingProcessor(),
       ],

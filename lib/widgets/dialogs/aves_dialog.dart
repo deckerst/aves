@@ -2,6 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AvesDialog extends StatefulWidget {
   static const confirmationRouteName = '/dialog/confirmation';
@@ -180,11 +181,45 @@ Future<void> showNoMatchingAppDialog(BuildContext context) => showWarningDialog(
 Future<void> showWarningDialog({
   required BuildContext context,
   required String message,
-}) => showDialog(
+}) => showAvesDialog<void>(
   context: context,
   builder: (context) => AvesMessageDialog.info(message),
   routeSettings: const RouteSettings(name: AvesDialog.warningRouteName),
 );
+
+Future<T?> showAvesDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  bool barrierDismissible = true,
+  Color? barrierColor,
+  String? barrierLabel,
+  bool useSafeArea = true,
+  bool useRootNavigator = true,
+  RouteSettings? routeSettings,
+  Offset? anchorPoint,
+  TraversalEdgeBehavior? traversalEdgeBehavior,
+  bool fullscreenDialog = false,
+  bool? requestFocus,
+}) {
+  final animate = context.read<Settings>().animate;
+  final animationStyle = animate ? null : AnimationStyle.noAnimation;
+
+  return showDialog<T>(
+    context: context,
+    builder: builder,
+    barrierDismissible: barrierDismissible,
+    barrierColor: barrierColor,
+    barrierLabel: barrierLabel,
+    useSafeArea: useSafeArea,
+    useRootNavigator: useRootNavigator,
+    routeSettings: routeSettings,
+    anchorPoint: anchorPoint,
+    traversalEdgeBehavior: traversalEdgeBehavior,
+    fullscreenDialog: fullscreenDialog,
+    requestFocus: requestFocus,
+    animationStyle: animationStyle,
+  );
+}
 
 class CancelButton<T> extends StatelessWidget {
   final String? text;

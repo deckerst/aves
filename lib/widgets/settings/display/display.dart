@@ -42,6 +42,9 @@ class DisplaySection extends SettingsSection {
 
 class SettingsTileDisplayThemeBrightness extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.themeBrightnessKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsThemeBrightnessTile;
 
   @override
@@ -57,6 +60,9 @@ class SettingsTileDisplayThemeBrightness extends SettingsTile {
 
 class SettingsTileDisplayThemeColorMode extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.themeColorModeKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsThemeColorHighlights;
 
   @override
@@ -68,6 +74,9 @@ class SettingsTileDisplayThemeColorMode extends SettingsTile {
 }
 
 class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.enableDynamicColorKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsThemeEnableDynamicColor;
 
@@ -81,6 +90,9 @@ class SettingsTileDisplayEnableDynamicColor extends SettingsTile {
 
 class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.enableBlurEffectKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsViewerEnableOverlayBlurEffect;
 
   @override
@@ -92,6 +104,9 @@ class SettingsTileDisplayEnableBlurEffect extends SettingsTile {
 }
 
 class SettingsTileDisplayMaxBrightness extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.maxBrightnessKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsViewerMaximumBrightness;
 
@@ -107,6 +122,9 @@ class SettingsTileDisplayMaxBrightness extends SettingsTile {
 
 class SettingsTileDisplayRefreshRateMode extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.displayRefreshRateModeKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsDisplayRefreshRateModeTile;
 
   @override
@@ -121,6 +139,9 @@ class SettingsTileDisplayRefreshRateMode extends SettingsTile {
 }
 
 class SettingsTileDisplayForceTvLayout extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.forceTvLayoutKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsDisplayUseTvInterface;
 

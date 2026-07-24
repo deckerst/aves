@@ -18,7 +18,7 @@ inline fun <reified T> Intent.getParcelableExtraCompat(name: String): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelableExtra(name, T::class.java)
     } else {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         getParcelableExtra<Parcelable>(name) as? T
     }
 }
@@ -27,7 +27,7 @@ fun Activity.getDisplayCompat(): Display? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         display
     } else {
-        @Suppress("deprecation")
+        @Suppress("DEPRECATION")
         windowManager.defaultDisplay
     }
 }
@@ -59,7 +59,7 @@ fun Geocoder.getFromLocationCompat(
         Compat33.geocoderGetFromLocation(this, latitude, longitude, maxResults, processAddresses, onError)
     } else {
         try {
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             val addresses = getFromLocation(latitude, longitude, maxResults) ?: ArrayList()
             processAddresses(addresses)
         } catch (e: IOException) {
@@ -77,7 +77,7 @@ object BitmapRegionDecoderCompat {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             BitmapRegionDecoder.newInstance(input)
         } else {
-            @Suppress("deprecation")
+            @Suppress("DEPRECATION")
             BitmapRegionDecoder.newInstance(input, false)
         }
     }

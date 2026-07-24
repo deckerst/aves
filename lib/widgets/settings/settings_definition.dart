@@ -38,6 +38,8 @@ abstract class SettingsSection {
 }
 
 abstract class SettingsTile {
+  List<String> get settingKeys;
+
   String title(BuildContext context);
 
   Widget build(BuildContext context);

@@ -29,6 +29,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/edit_vault_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_dynamic_album_dialog.dart';
@@ -87,7 +88,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     required Set<AlbumBaseFilter> selectedFilters,
   }) {
     final selectedSingleItem = selectedFilters.length == 1;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     bool isVault(CollectionFilter filter) => filter is StoredAlbumFilter && filter.isVault;
 
@@ -196,7 +197,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(ChipSortFactor?, AlbumChipSectionFactor?, TileLayout?, bool)>(
+    final value = await showAvesDialog<(ChipSortFactor?, AlbumChipSectionFactor?, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, AlbumChipSectionFactor, TileLayout>(
@@ -239,7 +240,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         return;
       }
 
-      final details = await showDialog<VaultDetails>(
+      final details = await showAvesDialog<VaultDetails>(
         context: context,
         builder: (context) => const EditVaultDialog(),
         routeSettings: const RouteSettings(name: CreateStoredAlbumDialog.routeName),
@@ -249,7 +250,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       await vaults.create(details);
       directory = details.path;
     } else {
-      directory = await showDialog<String>(
+      directory = await showAvesDialog<String>(
         context: context,
         builder: (context) => const CreateStoredAlbumDialog(),
         routeSettings: const RouteSettings(name: CreateStoredAlbumDialog.routeName),
@@ -479,7 +480,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         }
       }
 
-      final newName = await showDialog<String>(
+      final newName = await showAvesDialog<String>(
         context: context,
         builder: (context) => RenameStoredAlbumDialog(album: album),
         routeSettings: const RouteSettings(name: RenameStoredAlbumDialog.routeName),
@@ -488,7 +489,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
       await _doRenameStoredAlbum(context, filter, newName);
     } else if (filter is DynamicAlbumFilter) {
-      final newName = await showDialog<String>(
+      final newName = await showAvesDialog<String>(
         context: context,
         builder: (context) => RenameDynamicAlbumDialog(name: filter.name),
         routeSettings: const RouteSettings(name: RenameDynamicAlbumDialog.routeName),
@@ -497,7 +498,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
       await _doRenameDynamicAlbum(context, filter, newName);
     } else if (filter is AlbumGroupFilter) {
-      final newGroupUri = await showDialog<Uri>(
+      final newGroupUri = await showAvesDialog<Uri>(
         context: context,
         builder: (context) => RenameGroupDialog(grouping: albumGrouping, groupUri: filter.uri),
         routeSettings: const RouteSettings(name: RenameGroupDialog.routeName),
@@ -590,7 +591,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final oldDetails = vaults.getVault(filter.album);
     if (oldDetails == null) return;
 
-    final newDetails = await showDialog<VaultDetails>(
+    final newDetails = await showAvesDialog<VaultDetails>(
       context: context,
       builder: (context) => EditVaultDialog(initialDetails: oldDetails),
       routeSettings: const RouteSettings(name: EditVaultDialog.routeName),

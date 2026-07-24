@@ -3,6 +3,13 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - lib/generated_plugin_registrant.dart
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 
 #  strong-mode:
 #    implicit-casts: false

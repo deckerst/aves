@@ -461,9 +461,9 @@
     "settingsVideoGestureDoubleTapTogglePlay": "Двойное нажатие для воспроизведения/паузы",
     "settingsVideoGestureSideDoubleTapSeek": "Двойное нажатие на края экрана для перехода назад/вперёд",
     "settingsPrivacySectionTitle": "Конфиденциальность",
-    "settingsAllowInstalledAppAccess": "Разрешить доступ к библиотеке приложения",
+    "settingsAllowInstalledAppAccess": "Доступ к списку приложений",
     "settingsAllowInstalledAppAccessSubtitle": "Используется для улучшения отображения альбомов",
-    "settingsAllowErrorReporting": "Разрешить анонимную отправку логов",
+    "settingsAllowErrorReporting": "Анонимную отправку отчётов об ошибках",
     "settingsSaveSearchHistory": "Сохранять историю поиска",
     "settingsEnableBin": "Использовать корзину",
     "settingsEnableBinSubtitle": "Хранить удалённые объекты в течение 30 дней",
@@ -728,5 +728,14 @@
     "settingsEnabled": "Включено",
     "settingsForced": "Принудительно",
     "settingsViewerShowZoomLevel": "Показать уровень приближения",
-    "collectionActionExportGpx": "Экспорт GPX"
+    "collectionActionExportGpx": "Экспорт GPX",
+    "drawerCollectionSlowMotionVideos": "Видео в слоу-мо",
+    "settingsAutoExportSettings": "Автоматический экспорт настроек",
+    "settingsAllowNotifications": "Разрешить уведомления",
+    "settingsPermissionsTile": "Разрешения",
+    "settingsPermissionsPageTitle": "Разрешения",
+    "mapShowItemTracks": "Показать пути к файлам",
+    "mapHideItemTracks": "Скрыть пути к файлам",
+    "filterTypeSlowMotionVideoLabel": "Слоу-мо",
+    "showThumbnailSlowMotionVideoIcon": "Показать значок слоу-мо"
 }

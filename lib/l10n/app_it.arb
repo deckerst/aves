@@ -729,5 +729,16 @@
     "settingsForced": "Forzato",
     "settingsViewerShowZoomLevel": "Mostra il livello di zoom",
     "collectionActionExportGpx": "Esporta GPX",
-    "settingsAutoExportSettings": "Esportazione automatica impostazioni"
+    "settingsAutoExportSettings": "Esportazione automatica impostazioni",
+    "filterTypeSlowMotionVideoLabel": "Slow motion",
+    "calendarGregorian": "Gregoriano",
+    "calendarPersian": "Persiano",
+    "drawerCollectionSlowMotionVideos": "Video slow motion",
+    "showThumbnailSlowMotionVideoIcon": "Icona visualizza slow motion",
+    "settingsAllowNotifications": "Consenti notifiche",
+    "settingsPermissionsTile": "Permessi",
+    "settingsPermissionsPageTitle": "Permessi",
+    "settingsCalendarTile": "Calendario",
+    "mapShowItemTracks": "Visualizza percorsi",
+    "mapHideItemTracks": "Nascondi percorsi"
 }

@@ -297,7 +297,8 @@ class MediaStoreSource extends CollectionSource {
 
     state = SourceState.loading;
 
-    unawaited(reportService.log('$runtimeType refresh start for ${changedUris.length} uris'));
+    final changedUriDetails = changedUris.length < 5 ? ' (${changedUris.join(', ')})' : '';
+    unawaited(reportService.log('$runtimeType refresh start for ${changedUris.length} uris$changedUriDetails'));
     final changedUriByContentId = Map.fromEntries(
       changedUris.map((uri) {
         final pathSegments = Uri.parse(uri).pathSegments;
@@ -370,7 +371,7 @@ class MediaStoreSource extends CollectionSource {
       // TODO TLAD find duplication cause
       final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
       if (duplicates.isNotEmpty) {
-        debugPrint('Refreshing entries yielded duplicates=${duplicates.join(', ')}');
+        debugPrint('$runtimeType refreshUris duplicates=${duplicates.join(', ')}');
         // post-error cleanup
         await localMediaDb.removeIds(duplicates.map((v) => v.id).toSet());
         for (final duplicate in duplicates) {
@@ -388,9 +389,14 @@ class MediaStoreSource extends CollectionSource {
       await refreshEntries(entriesToRefresh, EntryDataType.values.toSet());
     }
 
-    unawaited(reportService.log('$runtimeType refresh end for ${changedUris.length} uris'));
+    unawaited(reportService.log('$runtimeType refresh end for ${changedUris.length} uris$changedUriDetails'));
 
     state = SourceState.ready;
+
+    if (tempUris.isNotEmpty) {
+      final tempUriDetails = tempUris.length < 5 ? ' (${tempUris.join(', ')})' : '';
+      unawaited(reportService.log('$runtimeType refresh will retry ${tempUris.length} uris$tempUriDetails'));
+    }
 
     return tempUris;
   }

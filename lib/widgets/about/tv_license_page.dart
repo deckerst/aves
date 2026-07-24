@@ -1,4 +1,5 @@
 import 'dart:developer' show Flow, Timeline;
+import 'dart:ui' as ui;
 
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -310,7 +311,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 600.0),
               child: Localizations.override(
-                locale: const Locale('en', 'US'),
+                locale: const ui.Locale('en', 'US'),
                 context: context,
                 child: ScrollConfiguration(
                   // A Scrollbar is built-in below.
@@ -338,6 +339,8 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
               theme: theme.textTheme,
               titleTextStyle: theme.textTheme.titleLarge,
             ),
+            // as of Flutter v3.44.4, `SliverAppBar` does not automatically pick up `systemOverlayStyle` from `AppBar` theme
+            systemOverlayStyle: theme.appBarTheme.systemOverlayStyle,
           ),
           SliverPadding(
             padding: padding,
@@ -345,7 +348,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
               itemCount: listWidgets.length,
               itemBuilder: (context, index) {
                 return Localizations.override(
-                  locale: const Locale('en', 'US'),
+                  locale: const ui.Locale('en', 'US'),
                   context: context,
                   child: listWidgets[index],
                 );

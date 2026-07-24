@@ -208,7 +208,7 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
     super.initState();
     _addressLineLoader = availability.canLocatePlaces.then((connected) {
       if (connected) {
-        return entry.findAddressLine(geocoderLocale: settings.appliedLocale);
+        return entry.findAddressLine(geocoderLocale: settings.avesLocale);
       }
       return null;
     });

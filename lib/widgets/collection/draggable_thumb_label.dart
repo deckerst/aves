@@ -1,9 +1,9 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/rating.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
@@ -26,21 +26,22 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
           case .date:
+            final locale = settings.avesLocale;
             final date = entry.bestDate;
             switch (collection.sectionFactor) {
               case .album:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
                   if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
               case .month:
               case .none:
                 return [
-                  DraggableThumbLabel.formatMonthThumbLabel(context, date),
+                  DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
                 ];
               case .day:
                 return [
-                  DraggableThumbLabel.formatDayThumbLabel(context, date),
+                  DraggableThumbLabel.formatDayThumbLabel(context, locale, date),
                 ];
             }
           case .name:
@@ -49,14 +50,17 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               ?entry.bestTitle,
             ];
           case .rating:
+            final locale = settings.avesLocale;
+            final date = entry.bestDate;
             return [
               RatingFilter.formatRating(context, entry.rating),
-              DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
+              DraggableThumbLabel.formatMonthThumbLabel(context, locale, date),
             ];
           case .size:
+            final locale = settings.avesLocale;
             final sizeBytes = entry.sizeBytes;
             return [
-              if (sizeBytes != null) formatFileSize(context.locale, sizeBytes, round: 0),
+              if (sizeBytes != null) formatFileSize(locale, sizeBytes, round: 0),
             ];
           case .duration:
             return [

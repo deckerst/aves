@@ -1,8 +1,7 @@
-import 'package:aves/theme/format.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DraggableCrumbLabel extends StatelessWidget {
@@ -61,14 +60,14 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     );
   }
 
-  static String formatMonthThumbLabel(BuildContext context, DateTime? date) {
+  static String formatMonthThumbLabel(BuildContext context, AvesLocale locale, DateTime? date) {
     if (date == null) return context.l10n.sectionUnknown;
-    return DateFormat.yMMM(context.locale).format(date);
+    return locale.yMMM(date);
   }
 
-  static String formatDayThumbLabel(BuildContext context, DateTime? date) {
+  static String formatDayThumbLabel(BuildContext context, AvesLocale locale, DateTime? date) {
     if (date == null) return context.l10n.sectionUnknown;
-    return formatDay(date, context.locale);
+    return locale.yMMMd(date);
   }
 }
 

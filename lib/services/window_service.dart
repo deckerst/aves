@@ -23,8 +23,6 @@ abstract class WindowService {
 
   Future<void> requestOrientation([Orientation? orientation]);
 
-  Future<void> showSystemUI(bool visible);
-
   Future<bool> isCutoutAware();
 
   Future<EdgeInsets> getCutoutInsets();
@@ -180,19 +178,6 @@ class PlatformWindowService implements WindowService {
         await apply(screenOrientationUserPortrait);
       default:
         await apply(screenOrientationUnspecified);
-    }
-  }
-
-  @override
-  Future<void> showSystemUI(bool visible) async {
-    // since Flutter v3.44 `SystemChrome.setEnabledSystemUIMode` is unreliable,
-    // so we use a custom implementation using current `*Compat` AndroidX classes
-    try {
-      await _platform.invokeMethod('showSystemUI', <String, Object?>{
-        'visible': visible,
-      });
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
     }
   }
 

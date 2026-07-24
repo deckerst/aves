@@ -137,6 +137,7 @@ object Helper {
         val undefinedStreamLength = -1L
 
         val metadata = when (fileType) {
+            FileType.Gif -> safeReadGif(inputStream)
             FileType.Jpeg -> safeReadJpeg(inputStream)
             FileType.Mp4 -> safeReadMp4(inputStream)
             FileType.Png -> safeReadPng(inputStream)
@@ -146,7 +147,13 @@ object Helper {
             FileType.Cr2,
             FileType.Nef,
             FileType.Orf,
-            FileType.Rw2 -> safeReadTiff(inputStream, undefinedStreamLength)
+            FileType.Rw2,
+            FileType.Dng,
+            FileType.GoPro,
+            FileType.Kdc,
+            FileType.ThreeFR,
+            FileType.Pef,
+            FileType.Srw -> safeReadTiff(inputStream, undefinedStreamLength)
 
             else -> ImageMetadataReader.readMetadata(inputStream, undefinedStreamLength, fileType)
         }
@@ -168,6 +175,10 @@ object Helper {
         val metadata = com.drew.metadata.Metadata()
         JpegMetadataReader.process(metadata, input, readers)
         return metadata
+    }
+
+    private fun safeReadGif(input: InputStream): com.drew.metadata.Metadata {
+        return SafeGifMetadataReader.readMetadata(input)
     }
 
     private fun safeReadPng(input: InputStream): com.drew.metadata.Metadata {
@@ -265,7 +276,7 @@ object Helper {
     private val calendar: Calendar = GregorianCalendar()
     private const val PARSED_DATE_YEAR_MAX = 10000
 
-    // adapted from `metadata-extractor` v2.20.0 `Directory.getDate()`
+    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()`
     // to also parse dates written as timestamps
     private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone?): Date? {
         var effectiveSubSecond = subSecond

@@ -9,7 +9,6 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
@@ -22,11 +21,10 @@ import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -526,13 +524,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   void _goToSearch() {
     Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: source,
-        ),
-      ),
+      CollectionSearchPageRoute(context: context),
     );
   }
 }

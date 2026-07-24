@@ -23,6 +23,8 @@ import 'package:provider/provider.dart';
 class BottomNavigationActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation/bottom_actions';
 
+  static const List<String> settingKeys = [SettingKeys.bottomNavigationActionsKey];
+
   const BottomNavigationActionEditorPage({super.key});
 
   @override

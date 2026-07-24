@@ -46,6 +46,9 @@ class ViewerSection extends SettingsSection {
 
 class SettingsTileViewerQuickActions extends SettingsTile {
   @override
+  List<String> get settingKeys => ViewerActionEditorPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsViewerQuickActionsTile;
 
   @override
@@ -57,6 +60,9 @@ class SettingsTileViewerQuickActions extends SettingsTile {
 }
 
 class SettingsTileViewerOverlay extends SettingsTile {
+  @override
+  List<String> get settingKeys => ViewerOverlayPage.settingKeys;
+
   @override
   String title(BuildContext context) => context.l10n.settingsViewerOverlayTile;
 
@@ -70,6 +76,9 @@ class SettingsTileViewerOverlay extends SettingsTile {
 
 class SettingsTileViewerSlideshow extends SettingsTile {
   @override
+  List<String> get settingKeys => ViewerSlideshowPage.settingKeys;
+
+  @override
   String title(BuildContext context) => context.l10n.settingsViewerSlideshowTile;
 
   @override
@@ -81,6 +90,9 @@ class SettingsTileViewerSlideshow extends SettingsTile {
 }
 
 class SettingsTileViewerGestureSideTapNext extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.viewerGestureSideTapNextKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsViewerGestureSideTapNext;
 
@@ -94,6 +106,9 @@ class SettingsTileViewerGestureSideTapNext extends SettingsTile {
 
 class SettingsTileViewerUseCutout extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.viewerUseCutoutKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsViewerUseCutout;
 
   @override
@@ -106,6 +121,9 @@ class SettingsTileViewerUseCutout extends SettingsTile {
 
 class SettingsTileViewerMotionPhotoAutoPlay extends SettingsTile {
   @override
+  List<String> get settingKeys => [SettingKeys.enableMotionPhotoAutoPlayKey];
+
+  @override
   String title(BuildContext context) => context.l10n.settingsMotionPhotoAutoPlay;
 
   @override
@@ -117,6 +135,9 @@ class SettingsTileViewerMotionPhotoAutoPlay extends SettingsTile {
 }
 
 class SettingsTileViewerImageBackground extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.imageBackgroundKey];
+
   @override
   String title(BuildContext context) => context.l10n.settingsImageBackground;
 

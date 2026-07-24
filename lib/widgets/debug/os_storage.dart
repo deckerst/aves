@@ -1,4 +1,4 @@
-import 'package:aves/ref/locales.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -48,7 +48,7 @@ class _DebugOSStorageSectionState extends State<DebugOSStorageSection> with Auto
                   'isPrimary': '${v.isPrimary}',
                   'isRemovable': '${v.isRemovable}',
                   'state': v.state,
-                  if (freeSpace != null) 'freeSpace': formatFileSize(kAsciiLocale, freeSpace),
+                  if (freeSpace != null) 'freeSpace': formatFileSize(AvesLocale.ascii, freeSpace),
                 },
               ),
             ),

@@ -169,7 +169,7 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
     final mainEntry = widget.mainEntry;
     final pageEntry = widget.pageEntry;
     final multiPageController = widget.multiPageController;
-    final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == AppMode.setWallpaper;
+    final isWallpaperMode = context.read<ValueNotifier<AppMode>>().value == .setWallpaper;
 
     return ListenableBuilder(
       listenable: Listenable.merge([

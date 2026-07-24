@@ -983,5 +983,8 @@
     "tagPlaceholderState": "Bajar",
     "tagPlaceholderPlace": "Cih",
     "panoramaEnableSensorControl": "Kontrola sensorê çalak bike",
-    "panoramaDisableSensorControl": "Kontrola sensorê neçalak bike"
+    "panoramaDisableSensorControl": "Kontrola sensorê neçalak bike",
+    "settingsCalendarTile": "Salname",
+    "calendarPersian": "Farisî",
+    "calendarGregorian": "Zayînî"
 }

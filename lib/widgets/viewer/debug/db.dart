@@ -4,6 +4,7 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/viewer/video_playback.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
@@ -102,6 +103,25 @@ class _DbTabState extends State<DbTab> {
                       await localMediaDb.insertEntries(duplicates);
                     },
                     child: const Text('Duplicate entry'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await localMediaDb.updateEntry(entry.id, entry.copyWith(sourceMimeType: MimeTypes.jpeg));
+                      await localMediaDb.updateCatalogMetadata(
+                        entry.id,
+                        entry.catalogMetadata?.copyWith(
+                          mimeType: MimeTypes.jpeg,
+                          isAnimated: false,
+                        ),
+                      );
+                    },
+                    child: const Text('Update as JPEG in DB'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await appService.open(Uri.file(entry.path!).toString(), MimeTypes.jpeg, forceChooser: true);
+                    },
+                    child: const Text('Open as JPEG content'),
                   ),
                   InfoRowGroup(
                     info: Map.fromEntries(data.toDatabaseMap().entries.map((kv) => MapEntry(kv.key, kv.value?.toString() ?? ''))),

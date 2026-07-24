@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
@@ -144,23 +144,24 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
         deviceService.getHeapSizes(<MemorySizeType>{.used, .total, .max}),
       ]);
       final [ram, heap] = results;
+      final locale = AvesLocale.ascii;
 
-      final ramAvailable = formatFileSize(kAsciiLocale, ram[MemorySizeType.available] ?? 0);
-      final ramTotal = formatFileSize(kAsciiLocale, ram[MemorySizeType.total] ?? 0);
-      final ramAdvertised = formatFileSize(kAsciiLocale, ram[MemorySizeType.advertised] ?? 0);
+      final ramAvailable = formatFileSize(locale, ram[MemorySizeType.available] ?? 0);
+      final ramTotal = formatFileSize(locale, ram[MemorySizeType.total] ?? 0);
+      final ramAdvertised = formatFileSize(locale, ram[MemorySizeType.advertised] ?? 0);
       _ramNotifier.value = 'RAM: $ramAvailable / $ramTotal / $ramAdvertised';
 
-      final heapUsed = formatFileSize(kAsciiLocale, heap[MemorySizeType.used] ?? 0);
-      final heapTotal = formatFileSize(kAsciiLocale, heap[MemorySizeType.total] ?? 0);
-      final heapMax = formatFileSize(kAsciiLocale, heap[MemorySizeType.max] ?? 0);
+      final heapUsed = formatFileSize(locale, heap[MemorySizeType.used] ?? 0);
+      final heapTotal = formatFileSize(locale, heap[MemorySizeType.total] ?? 0);
+      final heapMax = formatFileSize(locale, heap[MemorySizeType.max] ?? 0);
       _heapNotifier.value = 'Heap: $heapUsed / $heapTotal / $heapMax';
 
-      final rssCurrent = formatFileSize(kAsciiLocale, ProcessInfo.currentRss);
-      final rssMax = formatFileSize(kAsciiLocale, ProcessInfo.maxRss);
+      final rssCurrent = formatFileSize(locale, ProcessInfo.currentRss);
+      final rssMax = formatFileSize(locale, ProcessInfo.maxRss);
       _rssNotifier.value = 'RSS: $rssCurrent / $rssMax';
 
-      final imageCacheCurrent = formatFileSize(kAsciiLocale, imageCache.currentSizeBytes);
-      final imageCacheMax = formatFileSize(kAsciiLocale, imageCache.maximumSizeBytes);
+      final imageCacheCurrent = formatFileSize(locale, imageCache.currentSizeBytes);
+      final imageCacheMax = formatFileSize(locale, imageCache.maximumSizeBytes);
       _imageCacheNotifier.value = 'imageCache: $imageCacheCurrent / $imageCacheMax';
     });
   }

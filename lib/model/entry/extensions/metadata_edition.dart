@@ -6,24 +6,23 @@ import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/metadata/exif.dart';
 import 'package:aves/ref/metadata/iptc.dart';
 import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart';
 
 extension ExtraAvesEntryMetadataEdition on AvesEntry {
-  static final _iso6709LatitudeFormatter = NumberFormat('00.0000', kAsciiLocale);
-  static final _iso6709LongitudeFormatter = NumberFormat('000.0000', kAsciiLocale);
+  static final _iso6709LatitudeFormatter = AvesLocale.ascii.numberFormat('00.0000');
+  static final _iso6709LongitudeFormatter = AvesLocale.ascii.numberFormat('000.0000');
 
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
     final dataTypes = <EntryDataType>{};
@@ -31,7 +30,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
       if (isValid && userModifier.action != DateEditAction.copyField) {
-        await reportService.recordError('failed to get date for modifier=$userModifier, entry=$this');
+        await reportService.recordError('Failed to get date for modifier=$userModifier, entry=$this');
       }
       return {};
     }
@@ -64,7 +63,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                   final shiftedDate = date.add(Duration(seconds: appliedModifier.shiftSeconds!));
                   editCreateDateXmp(descriptions, shiftedDate);
                 } else {
-                  reportService.recordError('failed to parse XMP date=$xmpDate');
+                  reportService.recordError('Failed to parse XMP date=$xmpDate');
                 }
               }
             case .remove:
@@ -449,8 +448,9 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           switch (source) {
             case .fileModifiedDate:
               try {
-                if (path != null) {
-                  final file = File(path!);
+                final _path = storagePath;
+                if (_path != null) {
+                  final file = File(_path);
                   if (await file.exists()) {
                     date = await file.lastModified();
                   }

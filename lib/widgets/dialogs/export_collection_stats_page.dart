@@ -9,6 +9,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -128,8 +129,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   }
 
   Widget _toTile(ExportableEntryField field) {
-    final locale = context.locale;
-    final preview = _exportEntryField(field, sample, locale)?.toString() ?? '';
+    final preview = _exportEntryField(field, sample)?.toString() ?? '';
     return SwitchListTile(
       value: _selectedFields.contains(field),
       subtitle: preview.isNotEmpty ? Text(preview) : null,
@@ -201,23 +201,21 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   }
 
   String _exportToCsv(List<ExportableEntryField> fields, BuildContext context) {
-    final locale = context.locale;
     final headers = fields.map((v) => v.getText(context)).toList();
     List<String> toCsvValues(AvesEntry entry) => fields.map((field) {
-      return _exportEntryField(field, entry, locale)?.toString() ?? '';
+      return _exportEntryField(field, entry)?.toString() ?? '';
     }).toList();
     return csv.encode([headers, ...entries.map(toCsvValues)]);
   }
 
   String _exportToJson(List<ExportableEntryField> fields) {
-    final locale = context.locale;
     Map<String, Object?> toJsonMap(AvesEntry entry) => Map.fromEntries(
-      fields.map((field) => MapEntry(field.name, _exportEntryField(field, entry, locale))),
+      fields.map((field) => MapEntry(field.name, _exportEntryField(field, entry))),
     );
     return jsonEncode(entries.map(toJsonMap).toList());
   }
 
-  static Object? _exportEntryField(ExportableEntryField field, AvesEntry entry, String locale) {
+  static Object? _exportEntryField(ExportableEntryField field, AvesEntry entry) {
     switch (field) {
       case .uri:
         return entry.uri;
@@ -230,7 +228,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
       case .size:
         return entry.sizeBytes;
       case .resolution:
-        return entry.getResolutionText(locale);
+        return entry.getResolutionText(AvesLocale.ascii);
       case .width:
         return entry.displaySize.width.toInt();
       case .height:

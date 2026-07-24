@@ -24,6 +24,7 @@ enum EntrySetAction {
   move,
   rename,
   convert,
+  copyToClipboard,
   exportGpx,
   toggleFavourite,
   rotateCCW,
@@ -102,6 +103,7 @@ class EntrySetActions {
     .rename,
     .toggleFavourite,
     .convert,
+    .copyToClipboard,
     .exportGpx,
     .map,
     .slideshow,
@@ -133,6 +135,7 @@ class EntrySetActions {
 
   static const export = <EntrySetAction>[
     .convert,
+    .copyToClipboard,
     .exportGpx,
   ];
 

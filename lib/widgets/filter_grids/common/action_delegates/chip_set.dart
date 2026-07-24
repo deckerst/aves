@@ -13,7 +13,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -22,13 +21,13 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
-import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
-import 'package:aves/widgets/search/collection_search_delegate.dart';
+import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -79,7 +78,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }) {
     final selectedItemCount = selectedFilters.length;
     final hasSelection = selectedFilters.isNotEmpty;
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
@@ -278,7 +277,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showDialog<(ChipSortFactor?, void, TileLayout?, bool)>(
+    final value = await showAvesDialog<(ChipSortFactor?, void, TileLayout?, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<ChipSortFactor, void, TileLayout>(
@@ -363,13 +362,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   Future<void> _goToSearch(BuildContext context) async {
     await Navigator.maybeOf(context)?.push(
-      SearchPageRoute(
-        delegate: CollectionSearchDelegate(
-          searchFieldLabel: context.l10n.searchCollectionFieldHint,
-          searchFieldStyle: Themes.searchFieldStyle(context),
-          source: context.read<CollectionSource>(),
-        ),
-      ),
+      CollectionSearchPageRoute(context: context),
     );
   }
 
@@ -403,7 +396,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final existingCover = covers.of(filter);
     final entryId = existingCover?.entryId;
     final customEntry = entryId != null ? context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.id == entryId) : null;
-    final selectedCover = await showDialog<(AvesEntry?, String?, Color?)>(
+    final selectedCover = await showAvesDialog<(AvesEntry?, String?, Color?)>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,

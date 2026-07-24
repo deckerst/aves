@@ -34,6 +34,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       .move => l10n.collectionActionMove,
       .rename => l10n.entryActionRename,
       .convert => l10n.entryActionConvert,
+      .copyToClipboard => l10n.entryActionCopyToClipboard,
       .exportGpx => l10n.collectionActionExportGpx,
       .toggleFavourite =>
         // different data depending on toggle state
@@ -84,6 +85,7 @@ extension ExtraEntrySetActionView on EntrySetAction {
       .move => AIcons.move,
       .rename => AIcons.rename,
       .convert => AIcons.convert,
+      .copyToClipboard => AIcons.clipboard,
       .exportGpx => AIcons.route,
       .toggleFavourite =>
         // different data depending on toggle state

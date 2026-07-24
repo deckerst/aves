@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,16 +51,16 @@ class _MaterialLocalizationsRegionalizerState extends State<MaterialLocalization
 }
 
 class DerivedMaterialLocalizationsDelegate extends LocalizationsDelegate<MaterialLocalizations> {
-  final Locale locale;
+  final ui.Locale locale;
   final MaterialLocalizations localizations;
 
   const DerivedMaterialLocalizationsDelegate(this.locale, this.localizations);
 
   @override
-  bool isSupported(Locale locale) => locale == this.locale;
+  bool isSupported(ui.Locale locale) => locale == this.locale;
 
   @override
-  Future<MaterialLocalizations> load(Locale locale) async {
+  Future<MaterialLocalizations> load(ui.Locale locale) async {
     return SynchronousFuture<MaterialLocalizations>(localizations);
   }
 

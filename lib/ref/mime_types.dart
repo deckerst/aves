@@ -27,6 +27,7 @@ class MimeTypes {
   static const dwg = 'image/vnd.dwg';
   static const dxf = 'image/vnd.dxf';
   static const emf = 'image/emf'; // https://en.wikipedia.org/wiki/Windows_Metafile
+  static const fits = 'image/fits'; // https://en.wikipedia.org/wiki/FITS
   static const jng = 'image/x-jng';
   static const jpeg2000 = 'image/jp2';
   static const jpx = 'image/jpx';
@@ -78,6 +79,7 @@ class MimeTypes {
 
   static const v3gpp = 'video/3gpp';
   static const asf = 'video/x-ms-asf'; // https://en.wikipedia.org/wiki/Advanced_Systems_Format
+  static const avc = 'video/avc'; // https://en.wikipedia.org/wiki/Advanced_Video_Coding
   static const avi = 'video/avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
   static const aviMSVideo = 'video/msvideo'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
   static const aviVnd = 'video/vnd.avi'; // https://en.wikipedia.org/wiki/Audio_Video_Interleave
@@ -85,7 +87,7 @@ class MimeTypes {
   static const dl = 'video/dl';
   static const dv = 'video/dv';
   static const dvd = 'video/dvd';
-  static const flic = 'video/fli';
+  static const flic = 'video/fli'; // https://en.wikipedia.org/wiki/FLIC_(file_format)
   static const flv = 'video/flv';
   static const flvX = 'video/x-flv';
   static const gl = 'video/gl';

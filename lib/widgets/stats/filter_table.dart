@@ -6,7 +6,6 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +33,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countFormatter = NumberFormat.decimalPattern(context.locale);
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
     final animate = context.select<Settings, bool>((v) => v.animate);
 
     final sortedEntries = entryCountMap.entries.toList();
@@ -102,7 +101,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                       },
                     ),
                   Text(
-                    countFormatter.format(count),
+                    itemCountFormatter.format(count),
                     style: TextStyle(
                       color: colorScheme.onSurfaceVariant,
                     ),

@@ -39,6 +39,7 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final source = context.read<CollectionSource?>();
       settings.removeObsoleteRecentTags(source);
     });

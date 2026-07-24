@@ -48,6 +48,7 @@ import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.time.Duration.Companion.milliseconds
 
 class MediaStoreImageProvider : ImageProvider() {
     fun fetchAll(
@@ -479,7 +480,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val trashed = entry.trashed
 
                 val sourceUri = entry.uri
-                val sourcePath = if (trashed) entry.trashPath else entry.path
+                val sourcePath = entry.storagePath
 
                 var desiredName: String? = null
                 if (trashed) {
@@ -571,6 +572,10 @@ class MediaStoreImageProvider : ImageProvider() {
         if (sourceDir == targetDir && !(copy && nameConflictStrategy == NameConflictStrategy.RENAME)) {
             // nothing to do unless it's a renamed copy
             return skippedFieldMap
+        }
+
+        if (sourceFile != null && !sourceFile.exists()) {
+            throw Exception("failed to move file because it is missing at path=$sourcePath")
         }
 
         val desiredNameWithoutExtension = desiredName.substringBeforeLast(".")
@@ -890,7 +895,7 @@ class MediaStoreImageProvider : ImageProvider() {
             if (!hasEntry(context, uri)) return
             if (totalDelayMillis < maxDelayMillis) {
                 Log.d(LOG_TAG, "Trying to scan obsolete path but file exists at path=$path. Will retry in $delayMillis ms (total: $totalDelayMillis ms)")
-                runBlocking { delay(delayMillis) }
+                runBlocking { delay(delayMillis.milliseconds) }
                 totalDelayMillis += delayMillis
             } else {
                 throw Exception("Timeout ($maxDelayMillis ms) to clear MediaStore entry for file at path=$path")

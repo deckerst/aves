@@ -12,6 +12,18 @@ import 'package:provider/provider.dart';
 class ViewerOverlayPage extends StatelessWidget {
   static const routeName = '/settings/viewer/overlay';
 
+  static const List<String> settingKeys = [
+    SettingKeys.showOverlayOnOpeningKey,
+    SettingKeys.showOverlayInfoKey,
+    SettingKeys.showOverlayShootingDetailsKey,
+    SettingKeys.showOverlayRatingTagsKey,
+    SettingKeys.showOverlayDescriptionKey,
+    SettingKeys.showOverlayZoomLevelKey,
+    SettingKeys.showOverlayMinimapKey,
+    SettingKeys.overlayHistogramStyleKey,
+    SettingKeys.showOverlayThumbnailPreviewKey,
+  ];
+
   const ViewerOverlayPage({super.key});
 
   @override

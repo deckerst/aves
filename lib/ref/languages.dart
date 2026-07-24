@@ -1,3 +1,10 @@
+// subset of ISO 639-1
+// ignore: camel_case_types
+class LanguageCodesIso639_1 {
+  static const arabic = 'ar';
+  static const persian = 'fa';
+}
+
 class Language {
   final String iso639_2, name;
   final String? native;

@@ -10,11 +10,12 @@ import 'package:aves/model/media/video/profiles/hevc.dart';
 import 'package:aves/model/media/video/stereo_3d_modes.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/languages.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/ops/gregorian.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
@@ -109,13 +110,16 @@ class VideoMetadataFormatter {
       final dateString = rawDate as String;
       dateMillis = parseVideoDate(dateString);
       if (dateMillis == null && !isAmbiguousDate(dateString)) {
-        await reportService.recordError('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
+        debugPrint('getCatalogMetadata failed to parse date=$dateString for mimeType=${entry.mimeType} entry=$entry');
       }
     }
 
     // exclude date if it is suspiciously close to epoch
-    if (dateMillis != null && !DateTime.fromMillisecondsSinceEpoch(dateMillis).isAtSameDayAs(epoch)) {
-      catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
+    if (dateMillis != null) {
+      final date = DateTime.fromMillisecondsSinceEpoch(dateMillis);
+      if (!GregorianCalendarOps.instance.isSameYearMonthDay(date, epoch)) {
+        catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
+      }
     }
 
     return catalogMetadata;
@@ -512,7 +516,7 @@ class VideoMetadataFormatter {
     } else if (value is String) {
       size = int.tryParse(value);
     }
-    return size != null ? formatFileSize(kAsciiLocale, size) : '$value';
+    return size != null ? formatFileSize(AvesLocale.ascii, size) : '$value';
   }
 
   static String _formatLanguage(String value) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/covers.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/services.dart';
@@ -357,13 +358,17 @@ class PlatformStorageService implements StorageService {
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e, stack) {
-      final message = e.message;
-      // mute issue in the specific case when an item:
-      // 1) is a Media Store `file` content,
-      // 2) has no `images` or `video` entry,
-      // 3) is in a restricted directory
-      if (message == null || !message.contains('/external/file/')) {
-        await reportService.recordError(e, stack);
+      if (e.code == 'requestMediaFileAccess-large') {
+        throw TooManyItemsException();
+      } else {
+        final message = e.message;
+        // mute issue in the specific case when an item:
+        // 1) is a Media Store `file` content,
+        // 2) has no `images` or `video` entry,
+        // 3) is in a restricted directory
+        if (message == null || !message.contains('/external/file/')) {
+          await reportService.recordError(e, stack);
+        }
       }
     }
     return false;

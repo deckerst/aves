@@ -9,8 +9,8 @@ class AStyles {
 
   static TextStyle unknownTitleText = knownTitleText;
 
-  static void updateStylesForLocale(Locale locale) {
-    final smcp = locale.languageCode != 'el';
+  static void updateStylesForLocale(String languageCode) {
+    final smcp = languageCode != 'el';
     unknownTitleText = smcp ? knownTitleText : knownTitleText.copyWith(fontFeatures: []);
   }
 

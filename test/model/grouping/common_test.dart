@@ -189,11 +189,14 @@ void main() {
     expect(albumGrouping.getFilterParent(newFilter), null);
 
     final source = await _initSource();
-    await source.renameStoredAlbum(sourceAlbum, destinationAlbum, {
-      image1
-    }, {
-      FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
-    });
+    await source.renameStoredAlbum(
+      sourceAlbum,
+      destinationAlbum,
+      {image1},
+      {
+        FakeMediaStoreService.moveOpEventForMove(image1, sourceAlbum, destinationAlbum),
+      },
+    );
 
     expect(albumGrouping.getFilterParent(oldFilter), null);
     expect(albumGrouping.getFilterParent(newFilter), groupUri);

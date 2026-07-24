@@ -53,7 +53,7 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
     required int itemCount,
     required Set<TagBaseFilter> selectedFilters,
   }) {
-    final isMain = appMode == AppMode.main;
+    final isMain = appMode == .main;
     final useTvLayout = settings.useTvLayout;
 
     switch (action) {

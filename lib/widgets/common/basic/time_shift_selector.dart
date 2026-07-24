@@ -1,8 +1,8 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TimeShiftSelector extends StatefulWidget {
   final TimeShiftController controller;
@@ -59,7 +59,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final timeComponentFormatter = NumberFormat('0', context.locale);
+    final timeComponentFormatter = settings.avesLocale.decimalNumberFormat();
 
     const textStyle = TextStyle(fontSize: 34);
     const digitsAlign = TextAlign.right;

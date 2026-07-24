@@ -514,7 +514,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 }
 
 @immutable
-class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with EquatableMixin {
+class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equatable {
   final Size subjectSize;
   final Alignment basePosition;
   final bool applyScale;

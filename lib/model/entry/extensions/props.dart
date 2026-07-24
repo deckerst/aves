@@ -10,8 +10,8 @@ import 'package:aves/ref/unicode.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:intl/intl.dart';
 
 extension ExtraAvesEntryProps on AvesEntry {
   bool get isValid => !isMissingAtPath && sizeBytes != 0 && width > 0 && height > 0;
@@ -52,8 +52,8 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // text
 
-  String getResolutionText(String locale) {
-    final dimensionFormatter = NumberFormat('0', locale);
+  String getResolutionText(AvesLocale locale) {
+    final dimensionFormatter = locale.numberFormat('0');
     final ws = dimensionFormatter.format(width);
     final hs = dimensionFormatter.format(height);
     return isRotated ? '$hs${AText.resolutionSeparator}$ws' : '$ws${AText.resolutionSeparator}$hs';
@@ -81,7 +81,11 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   bool get isExpiredTrash {
     final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) return false;
+    if (dateMillis == null) {
+      // for trashed items which are for some reason missing trash details,
+      // consider them expired so they are cleaned automatically on launch
+      return true;
+    }
     return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
   }
 
@@ -93,18 +97,34 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // storage
 
+  String? get storagePath {
+    if (trashed) {
+      final _storagePath = trashDetails?.path;
+      if (_storagePath != null) {
+        return _storagePath;
+      } else {
+        // for trashed items which are for some reason missing trash details,
+        // do not fall back to original item path,
+        // but derive storage path from `file` URI
+        final _uri = Uri.parse(uri);
+        return _uri.scheme == 'file' ? _uri.path : null;
+      }
+    } else {
+      return path;
+    }
+  }
+
   String? get storageDirectory {
     if (!trashed) {
       // prefer normalized paths
       return directory;
     }
-    // trash details should be present, but provide fallback path anyway
-    final _storagePath = trashDetails?.path ?? path;
+    final _storagePath = storagePath;
     return _storagePath != null ? pContext.dirname(_storagePath) : null;
   }
 
   bool get isMissingAtPath {
-    final _storagePath = trashed ? trashDetails?.path : path;
+    final _storagePath = storagePath;
     return _storagePath != null && !File(_storagePath).existsSync();
   }
 

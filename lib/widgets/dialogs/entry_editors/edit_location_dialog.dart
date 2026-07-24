@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/number.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/metadata_edition.dart';
@@ -38,7 +39,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gpx/gpx.dart';
-import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
@@ -70,7 +70,10 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   final TextEditingController _latitudeController = TextEditingController(), _longitudeController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  late NumberFormat coordinateFormatter;
+  late ANumberFormat coordinateFormatter;
+  late ANumberParser coordinateParser;
+
+  static const _coordinatePattern = '0.000000';
   static const _gpxProjection = SphericalMercator();
   static const _minDurationToGpxPoint = Duration(hours: 1);
 
@@ -81,18 +84,19 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     mainEntry = entries.firstWhereOrNull((entry) => entry.hasGps) ?? entries.first;
     _mapCoordinates = mainEntry.latLng;
     _copyItemSource = mainEntry;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      coordinateFormatter = NumberFormat('0.000000', context.locale);
-      final latLng = mainEntry.latLng;
-      if (latLng != null) {
-        _latitudeController.text = coordinateFormatter.format(latLng.latitude);
-        _longitudeController.text = coordinateFormatter.format(latLng.longitude);
-      } else {
-        _latitudeController.text = '';
-        _longitudeController.text = '';
-      }
-      setState(_validate);
-    });
+
+    final locale = settings.avesLocale;
+    coordinateFormatter = locale.numberFormat(_coordinatePattern);
+    coordinateParser = locale.numberParser(_coordinatePattern);
+    final latLng = mainEntry.latLng;
+    if (latLng != null) {
+      _latitudeController.text = coordinateFormatter.format(latLng.latitude);
+      _longitudeController.text = coordinateFormatter.format(latLng.longitude);
+    } else {
+      _latitudeController.text = '';
+      _longitudeController.text = '';
+    }
+    setState(_validate);
     _subscriptions.add(AvesApp.intentEventBus.on<LocationReceivedEvent>().listen((event) => _setCustomLocation(event.location)));
   }
 
@@ -389,7 +393,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   }
 
   Future<void> _pickGpxShift() async {
-    final newShift = await showDialog<Duration>(
+    final newShift = await showAvesDialog<Duration>(
       context: context,
       builder: (context) => TimeShiftDialog(
         initialValue: _gpxShift,
@@ -524,7 +528,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
         settings: const RouteSettings(name: LocationPickPage.routeName),
         builder: (context) {
           return ListenableProvider<ValueNotifier<AppMode>>.value(
-            value: ValueNotifier(AppMode.previewMap),
+            value: ValueNotifier(.previewMap),
             child: MapPage(
               collection: mapCollection,
               tracks: tracks,
@@ -556,7 +560,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
     final dateRange = _gpxDateRange(gpx);
     if (dateRange != null) {
       final (firstDate, lastDate) = dateRange;
-      final locale = context.locale;
+      final locale = settings.avesLocale;
       final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
       return Text(
         [
@@ -570,10 +574,9 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   }
 
   Text _coordinatesText(BuildContext context, LatLng? latLng) {
-    final l10n = context.l10n;
     if (latLng != null) {
       return Text(
-        ExtraCoordinateFormat.toDMS(l10n, latLng).join('\n'),
+        ExtraCoordinateFormat.toDMS(settings.avesLocale, context.l10n, latLng).join('\n'),
       );
     } else {
       return _unknownText(context);
@@ -583,7 +586,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
   LatLng? _parseLatLng() {
     double? tryParse(String text) {
       try {
-        return double.tryParse(text) ?? (coordinateFormatter.parse(text).toDouble());
+        return double.tryParse(text) ?? (coordinateParser.parse(text).toDouble());
       } catch (error) {
         // ignore
         return null;

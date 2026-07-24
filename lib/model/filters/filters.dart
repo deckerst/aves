@@ -186,7 +186,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 }
 
 @immutable
-class FilterGridItem<T extends CollectionFilter> with EquatableMixin {
+class FilterGridItem<T extends CollectionFilter> with Equatable {
   final T filter;
   final AvesEntry? entry;
 

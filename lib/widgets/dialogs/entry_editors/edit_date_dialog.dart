@@ -1,10 +1,12 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/time_shift_selector.dart';
@@ -148,7 +150,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(_customDateTime, context.locale, use24hour))),
+          Expanded(child: Text(formatDateTime(_customDateTime, settings.avesLocale, use24hour))),
           IconButton(
             icon: const Icon(AIcons.edit),
             onPressed: _editDate,
@@ -180,7 +182,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(copyItemDate, context.locale, use24hour))),
+          Expanded(child: Text(formatDateTime(copyItemDate, settings.avesLocale, use24hour))),
           const SizedBox(width: 8),
           ItemPicker(
             extent: 48,
@@ -240,13 +242,27 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     final l10n = context.l10n;
     final cancelText = Themes.asButtonLabel(l10n.cancelTooltip);
 
+    final locale = settings.avesLocale;
+    final calendarDelegate = locale.getDatePickerDelegate();
+    DateTime initialDate = _customDateTime;
+    DateTime firstDate = DateTime(1900);
+    DateTime lastDate = DateTime(2100);
+
+    switch (calendarDelegate) {
+      case PersianCalendarDelegate _:
+        initialDate = PersianDateTime.fromGregorian(_customDateTime);
+        firstDate = PersianDateTime.fromGregorian(firstDate);
+        lastDate = PersianDateTime.fromGregorian(lastDate);
+    }
+
     final _date = await showDatePicker(
       context: context,
-      initialDate: _customDateTime,
-      firstDate: DateTime(0),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
       cancelText: cancelText,
       confirmText: l10n.nextButtonLabel,
+      calendarDelegate: calendarDelegate,
     );
     if (_date == null) return;
 

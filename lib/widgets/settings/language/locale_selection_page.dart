@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ui' as ui;
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -20,13 +21,13 @@ class LocaleSelectionPage extends StatefulWidget {
 }
 
 class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
-  late Locale _selectedValue;
+  late ui.Locale _selectedValue;
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
 
   @override
   void initState() {
     super.initState();
-    _selectedValue = settings.locale ?? LocaleTile.systemLocaleOption;
+    _selectedValue = settings.basicLocale ?? LocaleTile.systemLocaleOption;
   }
 
   @override
@@ -49,9 +50,9 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
           valueListenable: _queryNotifier,
           builder: (context, query, child) {
             final upQuery = query.toUpperCase().trim();
-            return RadioGroup<Locale>(
+            return RadioGroup<ui.Locale>(
               groupValue: _selectedValue,
-              onChanged: (v) => Navigator.maybeOf(context)?.pop<Locale>(v),
+              onChanged: (v) => Navigator.maybeOf(context)?.pop<ui.Locale>(v),
               child: ListView(
                 children: [
                   if (!useTvLayout)
@@ -68,7 +69,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
                       .map((kv) {
                         final value = kv.key;
                         final title = kv.value;
-                        return ReselectableRadioListTile<Locale>(
+                        return ReselectableRadioListTile<ui.Locale>(
                           // key is expected by test driver
                           key: Key(value.toString()),
                           value: value,
@@ -90,7 +91,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
     );
   }
 
-  LinkedHashMap<Locale, String> _getLocaleOptions(BuildContext context) {
+  LinkedHashMap<ui.Locale, String> _getLocaleOptions(BuildContext context) {
     final displayLocales = AvesApp.supportedLocales.map((locale) => MapEntry(locale, LocaleTile.getLocaleName(locale))).toList()..sort((a, b) => compareAsciiUpperCase(a.value, b.value));
 
     return LinkedHashMap.of({

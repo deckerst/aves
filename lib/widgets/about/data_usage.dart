@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
@@ -142,7 +143,6 @@ class DataUsageDonut extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final locale = context.locale;
 
     return AvesDonut(
       title: Text(title),
@@ -168,7 +168,7 @@ class DataUsageDonut extends StatelessWidget {
             return d.key;
         }
       },
-      formatValue: (v) => formatFileSize(locale, v, round: 0),
+      formatValue: (v) => formatFileSize(settings.avesLocale, v, round: 0),
       colorize: (context, d) {
         final colors = context.read<AvesColorsData>();
         Color? color;

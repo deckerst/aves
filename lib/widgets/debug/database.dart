@@ -8,8 +8,8 @@ import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/model/viewer/video_playback.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
@@ -68,7 +68,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('DB file size: ${formatFileSize(kAsciiLocale, snapshot.data!)}'),
+                        child: Text('DB file size: ${formatFileSize(AvesLocale.ascii, snapshot.data!)}'),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(

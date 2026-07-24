@@ -150,7 +150,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     ];
 
     final appMode = context.read<ValueNotifier<AppMode>>().value;
-    if (!{AppMode.screenSaver, AppMode.slideshow}.contains(appMode)) {
+    if (!<AppMode>{.screenSaver, .slideshow}.contains(appMode)) {
       final infoPage = NotificationListener<ShowImageNotification>(
         onNotification: (notification) {
           widget.onImagePageRequested();
@@ -389,7 +389,11 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
       await _entry.catalog(background: false, force: false, persist: true);
-      await _entry.locate(background: false, force: false, geocoderLocale: settings.appliedLocale);
+      await _entry.locate(
+        background: false,
+        force: false,
+        geocoderLocale: settings.avesLocale,
+      );
     } else {
       Navigator.maybeOf(context)?.pop();
     }

@@ -1,53 +1,54 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/theme/format.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/time_utils.dart';
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 
 class DateFilter extends CollectionFilter {
   static const type = 'date';
 
   final DateLevel level;
+  late final ACalendar calendar;
   late final DateTime? date;
   late final DateTime _effectiveDate;
   late final EntryPredicate _test;
 
-  static final onThisDay = DateFilter(DateLevel.md, null);
+  // TODO TLAD [calendar] reflect calendar setting
+  static final onThisDay = DateFilter(ACalendar.gregorian, DateLevel.md, null);
 
   @override
-  List<Object?> get props => [level, date, reversed];
+  List<Object?> get props => [calendar, level, date, reversed];
 
-  DateFilter(this.level, this.date, {super.reversed = false}) {
+  DateFilter(this.calendar, this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
+    final calOps = calendar.ops;
     switch (level) {
       case .y:
-        _test = (entry) => entry.bestDate?.isAtSameYearAs(_effectiveDate) ?? false;
+        _test = (entry) => calOps.isSameYear(entry.bestDate, _effectiveDate);
       case .ym:
-        _test = (entry) => entry.bestDate?.isAtSameMonthAs(_effectiveDate) ?? false;
+        _test = (entry) => calOps.isSameYearMonth(entry.bestDate, _effectiveDate);
       case .ymd:
-        _test = (entry) => entry.bestDate?.isAtSameDayAs(_effectiveDate) ?? false;
+        _test = (entry) => calOps.isSameYearMonthDay(entry.bestDate, _effectiveDate);
       case .md:
         final month = _effectiveDate.month;
         final day = _effectiveDate.day;
-        _test = (entry) {
-          final bestDate = entry.bestDate;
-          return bestDate != null && bestDate.month == month && bestDate.day == day;
-        };
+        _test = (entry) => calOps.isOnMonthDay(entry.bestDate, month, day);
       case .m:
         final month = _effectiveDate.month;
-        _test = (entry) => entry.bestDate?.month == month;
+        _test = (entry) => calOps.isOnMonth(entry.bestDate, month);
       case .d:
         final day = _effectiveDate.day;
-        _test = (entry) => entry.bestDate?.day == day;
+        _test = (entry) => calOps.isOnDay(entry.bestDate, day);
     }
   }
 
   factory DateFilter.fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
+      ACalendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,
       DateLevel.values.safeByName(json['level'] as String?) ?? .ymd,
       dateString != null ? DateTime.tryParse(dateString) : null,
       reversed: json['reversed'] as bool? ?? false,
@@ -57,6 +58,7 @@ class DateFilter extends CollectionFilter {
   @override
   Map<String, Object?> toJsonMap() => {
     'type': type,
+    if (calendar != .gregorian) 'calendar': calendar.name,
     'level': level.name,
     'date': date?.toIso8601String(),
     if (reversed) 'reversed': reversed,
@@ -70,12 +72,10 @@ class DateFilter extends CollectionFilter {
 
   @override
   bool isCompatible(CollectionFilter other) {
-    if (other is DateFilter) {
-      if (reversed != other.reversed && this == other.reverse()) return false;
-      return reversed || other.reversed || isCompatibleLevel(level, other.level);
-    } else {
-      return true;
-    }
+    if (other is! DateFilter) return true;
+    if (other.calendar != calendar) return true;
+    if (reversed != other.reversed && this == other.reverse()) return false;
+    return reversed || other.reversed || isCompatibleLevel(level, other.level);
   }
 
   static bool isCompatibleLevel(DateLevel a, DateLevel b) {
@@ -100,24 +100,24 @@ class DateFilter extends CollectionFilter {
 
   @override
   String getLabel(BuildContext context) {
-    final locale = context.locale;
+    final locale = settings.avesLocale.copyWith(calendar: calendar);
     switch (level) {
       case .y:
-        return DateFormat.y(locale).format(_effectiveDate);
+        return locale.y(_effectiveDate);
       case .ym:
-        return DateFormat.yMMM(locale).format(_effectiveDate);
+        return locale.yMMM(_effectiveDate);
       case .ymd:
-        return formatDay(_effectiveDate, locale);
+        return locale.yMMMd(_effectiveDate);
       case .md:
         if (date != null) {
-          return DateFormat.MMMd(locale).format(_effectiveDate);
+          return locale.MMMd(calendar.ops.asNative(_effectiveDate));
         } else {
           return context.l10n.filterOnThisDayLabel;
         }
       case .m:
-        return DateFormat.MMMM(locale).format(_effectiveDate);
+        return locale.MMMM(calendar.ops.asNative(_effectiveDate));
       case .d:
-        return DateFormat.d(locale).format(_effectiveDate);
+        return locale.d(calendar.ops.asNative(_effectiveDate));
     }
   }
 
@@ -128,7 +128,7 @@ class DateFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$level-$date';
+  String get key => '$type-$reversed-$calendar-$level-$date';
 }
 
 enum DateLevel { y, ym, ymd, md, m, d }
