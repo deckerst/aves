@@ -2,7 +2,6 @@ package deckers.thibault.aves.metadata.metadataextractor
 
 import com.drew.lang.StreamReader
 import com.drew.metadata.Metadata
-import com.drew.metadata.gif.GifReader
 import java.io.InputStream
 
 object SafeGifMetadataReader {

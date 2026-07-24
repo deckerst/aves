@@ -276,7 +276,7 @@ object Helper {
     private val calendar: Calendar = GregorianCalendar()
     private const val PARSED_DATE_YEAR_MAX = 10000
 
-    // adapted from `metadata-extractor` v2.20.0 `Directory.getDate()`
+    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()`
     // to also parse dates written as timestamps
     private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone?): Date? {
         var effectiveSubSecond = subSecond

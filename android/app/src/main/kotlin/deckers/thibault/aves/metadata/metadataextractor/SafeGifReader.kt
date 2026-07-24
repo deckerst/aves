@@ -10,7 +10,6 @@ import com.drew.metadata.StringValue
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.gif.GifCommentDirectory
 import com.drew.metadata.gif.GifControlDirectory
-import com.drew.metadata.gif.GifControlDirectory.DisposalMethod
 import com.drew.metadata.gif.GifHeaderDirectory
 import com.drew.metadata.gif.GifImageDirectory
 import com.drew.metadata.icc.IccReader
@@ -19,8 +18,8 @@ import java.io.IOException
 import java.util.Locale
 
 
-// adapted from `metadata-extractor` v2.20.0 `GifReader` to prevent OOM from reading large XMP
-// as of `metadata-extractor` v2.20.0, there is no way to customize the GIF reader
+// adapted from `metadata-extractor` v2.21.0 `GifReader` to prevent OOM from reading large XMP
+// as of `metadata-extractor` v2.21.0, there is no way to customize the GIF reader
 // without copying the whole `extract` function
 class SafeGifReader {
     fun extract(reader: SequentialReader, metadata: Metadata) {
@@ -248,7 +247,7 @@ class SafeGifReader {
         val directory = GifControlDirectory()
 
         val packedFields = reader.uInt8
-        directory.setObject(GifControlDirectory.TAG_DISPOSAL_METHOD, DisposalMethod.typeOf((packedFields.toInt() shr 2) and 7))
+        directory.setInt(GifControlDirectory.TAG_DISPOSAL_METHOD, (packedFields.toInt() shr 2) and 7)
         directory.setBoolean(GifControlDirectory.TAG_USER_INPUT_FLAG, (packedFields.toInt() and 2) shr 1 == 1)
         directory.setBoolean(GifControlDirectory.TAG_TRANSPARENT_COLOR_FLAG, (packedFields.toInt() and 1) == 1)
         directory.setInt(GifControlDirectory.TAG_DELAY, reader.uInt16)
