@@ -170,7 +170,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           final ActionsBuilder<T, CSAD> actionsBuilder = widget.actionsBuilder ?? _buildActions;
           final useTvLayout = settings.useTvLayout;
           return AvesAppBar(
-            contentHeight: getAppBarContentHeight(),
+            contentHeight: _getAppBarContentHeight(context),
             pinned: context.select<Selection<FilterGridItem<T>>, bool>((selection) => selection.isSelecting),
             leading: _buildAppBarLeading(
               hasDrawer: appMode.canNavigate,
@@ -237,9 +237,9 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     );
   }
 
-  bool _showGroupCrumbLine(BuildContext context) => context.read<FilterGrouping?>()?.isNotEmpty ?? false;
+  static bool _showGroupCrumbLine(BuildContext context) => context.read<FilterGrouping?>()?.isNotEmpty ?? false;
 
-  double getAppBarContentHeight() {
+  static double _getAppBarContentHeight(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
@@ -515,7 +515,8 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateAppBarHeight() {
-    widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(getAppBarContentHeight());
+    if (!context.mounted) return;
+    widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(_getAppBarContentHeight(context));
   }
 
   void _onActionSelected(BuildContext context, ChipSetAction action, ChipSetActionDelegate<T> actionDelegate) {
