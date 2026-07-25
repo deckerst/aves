@@ -1,6 +1,7 @@
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Themes {
   static const _titleTextStyle = TextStyle(
@@ -202,7 +203,8 @@ class Themes {
         foregroundColor: _lightActionIconColor,
         // `titleTextStyle.color` is used by text
         titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
-        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
+        // `systemOverlayStyle` is assumed by the app to never be null
+        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : const SystemUiOverlayStyle(),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
@@ -255,7 +257,8 @@ class Themes {
         foregroundColor: _darkTitleColor,
         // `titleTextStyle.color` is used by text
         titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
-        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : null,
+        // `systemOverlayStyle` is assumed by the app to never be null
+        systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : const SystemUiOverlayStyle(),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
