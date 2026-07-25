@@ -207,7 +207,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                   final useTvLayout = settings.useTvLayout;
                   final onFilterTap = canRemoveFilters ? collection.removeFilter : null;
                   return AvesAppBar(
-                    contentHeight: appBarContentHeight,
+                    contentHeight: _getAppBarContentHeight(context),
                     pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
                     leading: _buildAppBarLeading(
                       hasDrawer: appMode.canNavigate,
@@ -269,7 +269,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     );
   }
 
-  double get appBarContentHeight {
+  static bool _showQueryLine(BuildContext context) => context.read<Query?>()?.enabled ?? false;
+
+  double _getAppBarContentHeight(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
@@ -278,7 +280,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     if (showFilterBar) {
       height += FilterBar.preferredHeight;
     }
-    if (context.read<Query>().enabled) {
+    if (_showQueryLine(context)) {
       height += EntryQueryBar.getPreferredHeight(textScaler);
     }
     return height;
@@ -746,15 +748,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateStatusBarHeight() {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     _statusBarHeight = MediaQuery.paddingOf(context).top;
     _updateAppBarHeight();
   }
 
   void _updateAppBarHeight() {
-    widget.appBarHeightNotifier.value = _statusBarHeight + AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);
+    if (!mounted) return;
+    final appBarHeight = AvesAppBar.appBarHeightForContentHeight(_getAppBarContentHeight(context));
+    widget.appBarHeightNotifier.value = _statusBarHeight + appBarHeight;
   }
 
   Future<void> _onActionSelected(EntrySetAction action) async {

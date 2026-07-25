@@ -856,9 +856,7 @@ class _InkResponseState extends State<_InkResponseStateWidget> with AutomaticKee
   }
 
   void handleFocusHighlightModeChange(FocusHighlightMode mode) {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     setState(updateFocusHighlights);
   }
 

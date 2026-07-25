@@ -239,6 +239,8 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   static bool _showGroupCrumbLine(BuildContext context) => context.read<FilterGrouping?>()?.isNotEmpty ?? false;
 
+  static bool _showQueryLine(BuildContext context) => context.read<Query?>()?.enabled ?? false;
+
   static double _getAppBarContentHeight(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
@@ -248,7 +250,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
     if (_showGroupCrumbLine(context)) {
       height += CrumbLine.getPreferredHeight(textScaler);
     }
-    if (context.read<Query>().enabled) {
+    if (_showQueryLine(context)) {
       height += FilterQueryBar.getPreferredHeight(textScaler);
     }
     return height;
@@ -515,7 +517,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateAppBarHeight() {
-    if (!context.mounted) return;
+    if (!mounted) return;
     widget.appBarHeightNotifier.value = AvesAppBar.appBarHeightForContentHeight(_getAppBarContentHeight(context));
   }
 

@@ -339,7 +339,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- panorama rendering with `flutter_cube` is broken with Impeller, cf #1961 -->
+        <!-- as of Flutter v3.47.0-0.1.pre, panorama rendering with `flutter_cube` is broken with Impeller, cf #1961 -->
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
