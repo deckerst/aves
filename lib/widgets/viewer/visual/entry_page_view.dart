@@ -484,7 +484,10 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     return null;
   }
 
-  void _onTap({Alignment? alignment}) => (_handleSideSingleTap(alignment) ?? const ToggleOverlayNotification()).dispatch(context);
+  void _onTap({Alignment? alignment}) {
+    final notification = _handleSideSingleTap(alignment) ?? const ToggleOverlayNotification();
+    return notification.dispatch(context);
+  }
 
   // side gesture handling by precedence:
   // - seek in video by side double tap (if enabled)

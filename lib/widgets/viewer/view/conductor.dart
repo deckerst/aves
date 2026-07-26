@@ -55,7 +55,7 @@ class ViewStateConductor {
       );
       controller = ViewStateController(
         entry: entry,
-        viewStateNotifier: ValueNotifier<ViewState>(initialValue),
+        initialViewState: initialValue,
       );
     }
     _controllers.insert(0, controller);

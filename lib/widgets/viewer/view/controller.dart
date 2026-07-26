@@ -7,14 +7,14 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 class ViewStateController with HistogramMixin {
   final AvesEntry entry;
-  final ValueNotifier<ViewState> viewStateNotifier;
+  late final ValueNotifier<ViewState> viewStateNotifier;
   final ValueNotifier<ImageProvider?> fullImageNotifier = ValueNotifier(null);
 
   ViewState get viewState => viewStateNotifier.value;
 
   ViewStateController({
     required this.entry,
-    required this.viewStateNotifier,
+    required ViewState initialViewState,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
@@ -23,6 +23,7 @@ class ViewStateController with HistogramMixin {
         object: this,
       );
     }
+    viewStateNotifier = ValueNotifier<ViewState>(initialViewState);
   }
 
   void dispose() {
