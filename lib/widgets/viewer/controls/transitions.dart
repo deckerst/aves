@@ -10,7 +10,7 @@ class PageTransitionEffects {
     double opacity = 0;
     double dx = 0;
     double scale = 1;
-    if (pageController.hasClients && pageController.position.haveDimensions) {
+    if (pageController.hasClients && pageController.position.hasViewportDimension) {
       final position = (pageController.page! - index).clamp(-1.0, 1.0);
       final width = pageController.position.viewportDimension;
       opacity = (1 - position.abs()).clamp(0, 1);
@@ -18,6 +18,8 @@ class PageTransitionEffects {
       if (zoomIn) {
         scale = 1 + position;
       }
+    } else {
+      debugPrint('failed to compute transition for child at index=$index because page controller is not ready');
     }
     return Opacity(
       opacity: opacity,
@@ -37,12 +39,14 @@ class PageTransitionEffects {
     required bool parallax,
   }) => (context, child) {
     double dx = 0;
-    if (pageController.hasClients && pageController.position.haveDimensions) {
+    if (pageController.hasClients && pageController.position.hasViewportDimension) {
       final position = (pageController.page! - index).clamp(-1.0, 1.0);
       final width = pageController.position.viewportDimension;
       if (parallax) {
         dx = position * width / 2 * (context.isRtl ? -1 : 1);
       }
+    } else {
+      debugPrint('failed to compute transition for child at index=$index because page controller is not ready');
     }
     return ClipRect(
       child: Transform.translate(
@@ -58,11 +62,13 @@ class PageTransitionEffects {
   ) => (context, child) {
     double opacity = 0;
     double dx = 0;
-    if (pageController.hasClients && pageController.position.haveDimensions) {
+    if (pageController.hasClients && pageController.position.hasViewportDimension) {
       final position = (pageController.page! - index).clamp(-1.0, 1.0);
       final width = pageController.position.viewportDimension;
       opacity = (1 - position.abs()).roundToDouble().clamp(0, 1);
       dx = position * width * (context.isRtl ? -1 : 1);
+    } else {
+      debugPrint('failed to compute transition for child at index=$index because page controller is not ready');
     }
     return Opacity(
       opacity: opacity,

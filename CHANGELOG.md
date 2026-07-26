@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- slideshow transition when system UI was toggled
+
 ## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
 
 ### Added
