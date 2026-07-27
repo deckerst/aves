@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - slideshow transition when system UI was toggled
+- slideshow transition when animations are disabled
 
 ## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
 

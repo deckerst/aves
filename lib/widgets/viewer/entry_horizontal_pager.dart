@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -72,7 +73,9 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
             return Selector<Settings, bool>(
               selector: (context, s) => s.animate,
               builder: (context, animate, child) {
-                if (!animate) return child!;
+                final appMode = context.watch<ValueNotifier<AppMode>>().value;
+                final isSlideshow = <AppMode>{.screenSaver, .slideshow}.contains(appMode);
+                if (!animate && !isSlideshow) return child!;
                 return ListenableBuilder(
                   listenable: pageController,
                   builder: viewerController.transition.builder(pageController, index),
