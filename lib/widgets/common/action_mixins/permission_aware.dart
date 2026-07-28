@@ -17,6 +17,7 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> storageDirs, {Set<AvesEntry>? entries}) async {
+    final restrictedVolumes = await storageService.getRestrictedVolumes();
     final restrictedDirsLowerCase = await storageService.getRestrictedDirectoriesLowerCase();
     while (true) {
       final inaccessibleDirs = await storageService.getInaccessibleDirectories(storageDirs);
@@ -29,31 +30,48 @@ mixin PermissionAwareMixin {
           )
           .where(restrictedDirsLowerCase.contains)
           .toSet();
-      if (restrictedInaccessibleDirsLowerCase.isNotEmpty) {
+      if (restrictedVolumes.isNotEmpty || restrictedInaccessibleDirsLowerCase.isNotEmpty) {
         if (entries != null && await storageService.canRequestMediaFileBulkAccess()) {
           // request media file access for items in restricted directories
           final uris = <String>[], mimeTypes = <String>[];
           entries
               .where((entry) {
-                final dirPath = entry.directory;
+                final dirPath = entry.storageDirectory;
                 if (dirPath == null) return false;
+
                 final dir = androidFileUtils.relativeDirectoryFromPath(dirPath);
-                return restrictedInaccessibleDirsLowerCase.contains(dir?.copyWith(relativeDir: dir.relativeDir.toLowerCase()));
+                if (dir == null) return false;
+
+                final volumePath = dir.volumePath;
+                if (restrictedVolumes.contains(volumePath)) {
+                  // other user storage space (e.g. Dual Messenger) is not visible via the SAF directory picker
+                  return true;
+                }
+
+                final relativeDirLower = dir.relativeDir.toLowerCase();
+                if (restrictedInaccessibleDirsLowerCase.contains(dir.copyWith(relativeDir: relativeDirLower))) {
+                  // some critical directories (e.g. volume roots) are not selectable via the SAF directory picker
+                  return true;
+                }
+
+                return false;
               })
               .forEach((entry) {
                 uris.add(entry.uri);
                 mimeTypes.add(entry.mimeType);
               });
-          var granted = false;
-          try {
-            granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
-          } on TooManyItemsException catch (_) {
-            await showWarningDialog(
-              context: context,
-              message: context.l10n.tooManyItemsErrorDialogMessage,
-            );
+          if (uris.isNotEmpty) {
+            var granted = false;
+            try {
+              granted = await storageService.requestMediaFileAccess(uris, mimeTypes);
+            } on TooManyItemsException catch (_) {
+              await showWarningDialog(
+                context: context,
+                message: context.l10n.tooManyItemsErrorDialogMessage,
+              );
+            }
+            if (!granted) return false;
           }
-          if (!granted) return false;
         } else if (entries == null && await storageService.canInsertMedia(restrictedInaccessibleDirsLowerCase)) {
           // insertion in restricted directories
         } else {
@@ -62,6 +80,7 @@ mixin PermissionAwareMixin {
           return false;
         }
         // clear restricted directories
+        inaccessibleDirs.removeWhere((dir) => restrictedVolumes.contains(dir.volumePath));
         inaccessibleDirs.removeWhere((dir) => restrictedInaccessibleDirsLowerCase.contains(dir.copyWith(relativeDir: dir.relativeDir.toLowerCase())));
       }
 

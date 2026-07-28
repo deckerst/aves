@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- handling media from apps in Samsung Dual Messenger mode
 - edited images not being refreshed in the viewer
 - slideshow transition when system UI was toggled
 - slideshow transition when animations are disabled

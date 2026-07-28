@@ -20,6 +20,7 @@ import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
+import java.util.regex.Pattern
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag<PermissionManager>()
@@ -30,6 +31,24 @@ object PermissionManager {
         Environment.DIRECTORY_PICTURES,
     )
 
+    private val VOLUME_USER_ID_PATTERN = Pattern.compile("(?i)^/storage/emulated/([0-9]+)")
+    const val USER_ID_DUAL_MESSENGER = 95 // Samsung Dual Messenger user ID
+
+    fun getVolumeUserId(volumePath: String): Int? {
+        val matcher = VOLUME_USER_ID_PATTERN.matcher(volumePath)
+        return if (matcher.find()) matcher.group(1)?.toIntOrNull() else null
+    }
+
+    fun getAppUserId(context: Context): Int? {
+        // `context.getUserId()` is a restricted API,
+        // so we derive it from the app external files directory
+        context.getExternalFilesDir(null)?.let { externalFilesDir ->
+            StorageUtils.getVolumePath(context, externalFilesDir.absolutePath)?.let { volumePath ->
+                return getVolumeUserId(volumePath)
+            }
+        }
+        return null
+    }
 
     fun requestDirectoryAccess(activity: Activity, path: String?, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
@@ -226,6 +245,15 @@ object PermissionManager {
             }
         }
         return dirs
+    }
+
+    fun getRestrictedVolumes(context: Context): Set<String> {
+        val appUserId = getAppUserId(context)
+        return StorageUtils.getVolumePaths(context).filter { volumePath ->
+            val volumeUserId = getVolumeUserId(volumePath)
+            // other user storage space (e.g. Dual Messenger) is not visible via the SAF directory picker
+            appUserId != null && volumeUserId != null && appUserId != volumeUserId
+        }.toSet()
     }
 
     // As of Android 11, `MediaStore.getDocumentUri` fails if any of the persisted

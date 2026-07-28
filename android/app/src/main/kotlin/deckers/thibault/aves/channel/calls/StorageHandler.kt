@@ -34,6 +34,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getGrantedDirectories" -> ioScope.launch { safe(call, result, ::getGrantedDirectories) }
             "getInaccessibleDirectories" -> ioScope.launch { safe(call, result, ::getInaccessibleDirectories) }
             "getRestrictedDirectories" -> ioScope.launch { safe(call, result, ::getRestrictedDirectories) }
+            "getRestrictedVolumes" -> ioScope.launch { safe(call, result, ::getRestrictedVolumes) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "deleteEmptyDirectories" -> ioScope.launch { safe(call, result, ::deleteEmptyDirectories) }
             "deleteTempDirectory" -> ioScope.launch { safe(call, result, ::deleteTempDirectory) }
@@ -79,14 +80,24 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         if (storageManager != null) {
             for (volumePath in getVolumePaths(context)) {
                 try {
-                    storageManager.getStorageVolume(File(volumePath))?.let {
+                    storageManager.getStorageVolume(File(volumePath))?.let { volume ->
+                        val primary = volume.isPrimary
+                        var description = volume.getDescription(context)
+                        if (primary) {
+                            val userId = PermissionManager.getVolumeUserId(volumePath)
+                            if (userId == PermissionManager.USER_ID_DUAL_MESSENGER) {
+                                description += " (Dual Messenger)"
+                            } else if (userId != PermissionManager.getAppUserId(context)) {
+                                description += " (user $userId)"
+                            }
+                        }
                         volumes.add(
                             hashMapOf(
                                 "path" to volumePath,
-                                "description" to it.getDescription(context),
-                                "isPrimary" to it.isPrimary,
-                                "isRemovable" to it.isRemovable,
-                                "state" to it.state,
+                                "description" to description,
+                                "isPrimary" to primary,
+                                "isRemovable" to volume.isRemovable,
+                                "state" to volume.state,
                             )
                         )
                     }
@@ -181,6 +192,10 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
     private fun getRestrictedDirectories(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(PermissionManager.getRestrictedDirectories(context))
+    }
+
+    private fun getRestrictedVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(PermissionManager.getRestrictedVolumes(context).toList())
     }
 
     private fun revokeDirectoryAccess(call: MethodCall, result: MethodChannel.Result) {
