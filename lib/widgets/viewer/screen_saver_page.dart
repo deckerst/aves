@@ -60,7 +60,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == .resumed) {
       _viewerController.autopilot = true;
     }
   }

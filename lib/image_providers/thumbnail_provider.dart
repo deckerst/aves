@@ -68,7 +68,7 @@ class ThumbnailProviderKey extends Equatable {
   final double extent;
 
   @override
-  List<Object?> get props => [uri, pageId, dateModifiedMillis, extent];
+  List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, dateModifiedMillis, extent];
 
   const ThumbnailProviderKey({
     required this.uri,
@@ -81,5 +81,7 @@ class ThumbnailProviderKey extends Equatable {
   });
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis, extent=$extent}';
+  String toString() =>
+      '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId'
+      ', rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis, extent=$extent}';
 }

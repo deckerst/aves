@@ -32,7 +32,7 @@ class _ManageMediaTileState extends State<ManageMediaTile> with WidgetsBindingOb
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == .resumed) {
       _initLoader();
       setState(() {});
     }

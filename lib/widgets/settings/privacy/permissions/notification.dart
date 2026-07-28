@@ -33,7 +33,7 @@ class _NotificationPermissionTileState extends State<NotificationPermissionTile>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == .resumed) {
       _initLoader();
       setState(() {});
     }

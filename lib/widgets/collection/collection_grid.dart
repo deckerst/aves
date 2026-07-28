@@ -503,7 +503,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _checkingStoragePermission) {
+    if (state == .resumed && _checkingStoragePermission) {
       _checkingStoragePermission = false;
       _isStoragePermissionGranted.then((granted) {
         if (granted) {

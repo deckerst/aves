@@ -62,7 +62,7 @@ class _RasterImageViewState extends State<RasterImageView> {
         region: entry.fullImageRegion,
       );
     } else {
-      return entry.fullImage;
+      return entry.getFullImage();
     }
   }
 

@@ -1,69 +1,34 @@
-import 'dart:async';
-
 import 'package:aves/image_providers/full_image_provider.dart';
+import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/rendering.dart';
 
 class EntryCache {
-  // ordered descending
-  static final thumbnailRequestExtents = <double>[];
+  static final _requestKeysByUri = <String, Set<Object>>{};
 
-  static void markThumbnailExtent(double extent) {
-    if (!thumbnailRequestExtents.contains(extent)) {
-      thumbnailRequestExtents
-        ..add(extent)
-        ..sort((a, b) => b.compareTo(a));
+  static void registerKey(Object key) {
+    Set<Object> ifAbsent() => {};
+    switch (key) {
+      case ThumbnailProviderKey _:
+        _requestKeysByUri.putIfAbsent(key.uri, ifAbsent).add(key);
+      case FullImage _:
+        _requestKeysByUri.putIfAbsent(key.uri, ifAbsent).add(key);
+      case RegionProviderKey _:
+        _requestKeysByUri.putIfAbsent(key.uri, ifAbsent).add(key);
+      default:
+        debugPrint('failed to register image cache key because of unknown type for key=$key');
     }
   }
 
-  static Future<void> evict(
-    String uri,
-    String mimeType,
-    int? dateModifiedMillis,
-    int rotationDegrees,
-    bool isFlipped,
-    bool isAnimated,
-  ) async {
-    debugPrint('Evict cached images for uri=$uri, mimeType=$mimeType, dateModifiedMillis=$dateModifiedMillis, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, isAnimated=$isAnimated');
+  static void evict(String uri) {
+    final keys = _requestKeysByUri.remove(uri) ?? {};
+    debugPrint('Evict cached images for uri=$uri: ${keys.length} imageCache keys');
+    keys.forEach(imageCache.evict);
+  }
 
-    // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
-    int? pageId;
-
-    // evict fullscreen image
-    await FullImage(
-      uri: uri,
-      mimeType: mimeType,
-      pageId: pageId,
-      rotationDegrees: rotationDegrees,
-      isFlipped: isFlipped,
-      isAnimated: isAnimated,
-    ).evict();
-
-    // evict low quality thumbnail (without specified extents)
-    await ThumbnailProvider(
-      ThumbnailProviderKey(
-        uri: uri,
-        mimeType: mimeType,
-        pageId: pageId,
-        dateModifiedMillis: dateModifiedMillis ?? 0,
-        rotationDegrees: rotationDegrees,
-        isFlipped: isFlipped,
-      ),
-    ).evict();
-
-    await Future.forEach<double>(
-      thumbnailRequestExtents,
-      (extent) => ThumbnailProvider(
-        ThumbnailProviderKey(
-          uri: uri,
-          mimeType: mimeType,
-          pageId: pageId,
-          dateModifiedMillis: dateModifiedMillis ?? 0,
-          rotationDegrees: rotationDegrees,
-          isFlipped: isFlipped,
-          extent: extent,
-        ),
-      ).evict(),
-    );
+  // return keys sorted by descending extent
+  static List<ThumbnailProviderKey> getThumbnailProviderKeys(String uri) {
+    return (_requestKeysByUri[uri] ?? {}).whereType<ThumbnailProviderKey>().sortedByCompare((key) => key.extent, (a, b) => b.compareTo(a));
   }
 }

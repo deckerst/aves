@@ -95,7 +95,7 @@ class AvesApp extends StatefulWidget {
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
   // do not receive events fast enough for time sensitive actions (like PiP when leaving by gesture to home)
   // so we use this notifier to propagate events as soon as received by the top widget `AvesApp`
-  static final ValueNotifier<AppLifecycleState> lifecycleStateNotifier = ValueNotifier(AppLifecycleState.detached);
+  static final ValueNotifier<AppLifecycleState> lifecycleStateNotifier = ValueNotifier(.detached);
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
   // so that we can react to fullscreen `PageRoute`s only
@@ -205,7 +205,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     debugPrint('start listening to app lifecycle');
     WidgetsBinding.instance.addObserver(this);
-    AvesApp.lifecycleStateNotifier.value = WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.detached;
+    AvesApp.lifecycleStateNotifier.value = WidgetsBinding.instance.lifecycleState ?? .detached;
   }
 
   @override

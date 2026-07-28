@@ -53,6 +53,7 @@ class PlatformAppService implements AppService {
 
   static final _knownAppDirs = {
     'com.google.android.apps.photos': {'Google Photos'},
+    'com.iunis.hdr.glow': {'GlowHDR'},
     'com.kakao.talk': {'KakaoTalkDownload'},
     'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
     'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'},

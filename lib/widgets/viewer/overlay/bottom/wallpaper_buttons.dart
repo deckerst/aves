@@ -175,7 +175,7 @@ class WallpaperButtons extends StatelessWidget with FeedbackMixin {
       } else {
         // provider image is already rotated, but not cropped
         needCrop = true;
-        provider = entry.fullImage;
+        provider = entry.getFullImage();
       }
     }
     if (provider == null) return null;

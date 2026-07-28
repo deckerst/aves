@@ -61,7 +61,7 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == .resumed) {
       _initLoader();
       setState(() {});
     }

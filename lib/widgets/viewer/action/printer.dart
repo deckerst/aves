@@ -118,7 +118,7 @@ class EntryPrinter with FeedbackMixin {
         }
       } else {
         return pdf.Image(
-          await flutterImageProvider(entry.fullImage),
+          await flutterImageProvider(entry.getFullImage()),
           fit: _fit,
         );
       }
