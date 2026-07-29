@@ -202,8 +202,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'uri': entry.uri,
       });
       if (result != null) return (result as List).cast<Map>().map((fields) => fields.cast<String, dynamic>()).toList();
-    } on PlatformException catch (e, stack) {
-      await _processPlatformException(entry, e, stack);
+    } on PlatformException catch (e) {
+      // do not report
+      debugPrint('$runtimeType failed to get IPTC for entry=$entry with error=$e');
     }
     return null;
   }

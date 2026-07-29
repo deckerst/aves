@@ -27,8 +27,9 @@ class PlatformGeocodingService implements GeocodingService {
         'maxResults': 2,
       });
       if (result != null) return (result as List).cast<Map>().map(Address.fromMap).toList();
-    } on PlatformException catch (_) {
+    } on PlatformException catch (e) {
       // do not report
+      debugPrint('$runtimeType failed to get address for coordinates=$coordinates with error=$e');
     }
     return [];
   }

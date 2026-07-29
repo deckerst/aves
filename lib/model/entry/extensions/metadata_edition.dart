@@ -30,7 +30,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
       if (isValid && userModifier.action != DateEditAction.copyField) {
-        await reportService.recordError('Failed to get date for modifier=$userModifier, entry=$this');
+        // do not report
+        debugPrint('$runtimeType failed to get date for modifier=$userModifier, entry=$this');
       }
       return {};
     }

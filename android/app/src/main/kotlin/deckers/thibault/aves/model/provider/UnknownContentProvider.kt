@@ -58,11 +58,13 @@ open class UnknownContentProvider : ImageProvider() {
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields[EntryFields.SIZE_BYTES] = cursor.getLong(it) }
                 cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields[EntryFields.PATH] = cursor.getString(it) }
                 // mime type fallback if it was not provided and not found via `metadata-extractor`
-                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1 && mimeType == null) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
+                if (mimeType == null) {
+                    cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
+                }
                 cursor.close()
             }
         } catch (e: Exception) {
-            callback.onFailure(Exception("Failed to query content, error=${e.message}"))
+            callback.onFailure(Exception("Failed to query content", e))
             return
         }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MediaStoreService {
@@ -71,6 +72,8 @@ class PlatformMediaStoreService implements MediaStoreService {
     } on PlatformException catch (e, stack) {
       if (e.code != 'getGeneration-primary') {
         await reportService.recordError(e, stack);
+      } else {
+        debugPrint('$runtimeType failed to get generation with error=$e');
       }
     }
     return null;
