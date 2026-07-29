@@ -64,7 +64,12 @@ class _ExplorerPageState extends State<ExplorerPage> {
         _goToPath(primaryVolume.path);
       }
     }
-    _contents.addListener(() => PrimaryScrollController.of(context).jumpTo(0));
+    _contents.addListener(() {
+      final scrollController = PrimaryScrollController.of(context);
+      if (scrollController.hasClients) {
+        scrollController.positions.where((v) => v.hasContentDimensions).forEach(((v) => v.jumpTo(0)));
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final source = context.read<CollectionSource>();
       _subscriptions.add(source.eventBus.on<AlbumsChangedEvent>().listen((event) => _updateContents()));

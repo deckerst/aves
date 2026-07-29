@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/upnp.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -83,6 +83,44 @@ mixin CastMixin {
     );
   }
 
+  PlayType _toPlayType(String mimeType) {
+    if (MimeTypes.isVideo(mimeType)) {
+      switch (mimeType) {
+        case MimeTypes.mpeg:
+          return VideoMime.mpeg;
+        case MimeTypes.mp4:
+          return VideoMime.mp4;
+        case MimeTypes.mkvX:
+          return VideoMime.xMatroska;
+        case MimeTypes.mov:
+          return VideoMime.quicktime;
+        case MimeTypes.wmv:
+          return VideoMime.xMsWmv;
+        case MimeTypes.avi:
+          return VideoMime.avi;
+        case MimeTypes.flv:
+          return VideoMime.flv;
+        case MimeTypes.mp2t:
+          return VideoMime.ts;
+        default:
+          return VideoMime.any;
+      }
+    } else {
+      switch (mimeType) {
+        case MimeTypes.jpeg:
+          return ImageMime.jpeg;
+        case MimeTypes.png:
+          return ImageMime.png;
+        case MimeTypes.tiff:
+          return ImageMime.tiff;
+        case MimeTypes.gif:
+          return ImageMime.gif;
+        default:
+          return ImageMime.any;
+      }
+    }
+  }
+
   Future<void> castEntry(AvesEntry entry) async {
     final server = _mediaServer;
     final renderer = _renderer;
@@ -93,7 +131,7 @@ mixin CastMixin {
       await renderer.setUrl(
         '$_serverBaseUrl/${entry.id}',
         title: entry.bestTitle ?? '',
-        type: (entry.isVideo ? VideoMime : ImageMime) as PlayType,
+        type: _toPlayType(entry.mimeType),
       );
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
