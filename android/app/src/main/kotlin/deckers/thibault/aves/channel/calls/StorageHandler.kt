@@ -5,9 +5,9 @@ import android.os.Build
 import android.os.storage.StorageManager
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.FileUtils.getFolderSize
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.StorageUtils.getFolderSize
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -75,13 +75,14 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val volumes = ArrayList<Map<String, Any>>()
+        val volumes = ArrayList<Map<String, Any?>>()
         val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
         if (storageManager != null) {
             for (volumePath in getVolumePaths(context)) {
                 try {
                     storageManager.getStorageVolume(File(volumePath))?.let { volume ->
                         val primary = volume.isPrimary
+
                         var description = volume.getDescription(context)
                         if (primary) {
                             val userId = PermissionManager.getVolumeUserId(volumePath)
@@ -91,8 +92,14 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                                 description += " (user $userId)"
                             }
                         }
+
+                        val mediaStoreVolumeName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            StorageUtils.getMediaStoreVolumeName(context, volumePath)
+                        } else null
+
                         volumes.add(
                             hashMapOf(
+                                "mediaStoreVolumeName" to mediaStoreVolumeName,
                                 "path" to volumePath,
                                 "description" to description,
                                 "isPrimary" to primary,

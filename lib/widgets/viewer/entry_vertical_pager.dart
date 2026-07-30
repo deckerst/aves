@@ -9,6 +9,7 @@ import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/behaviour/springy_scroll_physics.dart';
@@ -384,7 +385,15 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
     final _entry = entry;
     if (_entry != null) {
-      _entry.visualChangeNotifier.addListener(_onVisualChanged);
+      final visualChangeNotifier = _entry.visualChangeNotifier;
+      if (!visualChangeNotifier.isDisposed) {
+        visualChangeNotifier.addListener(_onVisualChanged);
+      } else {
+        await reportService.recordError(
+          'Failed to register visual change listener on new entry because its notifier is already disposed'
+          ', changing from old entry=$_oldEntry to new entry=$_entry',
+        );
+      }
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet

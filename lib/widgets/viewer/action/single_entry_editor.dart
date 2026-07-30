@@ -20,7 +20,7 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditor
   Future<void> edit(
     BuildContext context,
     AvesEntry targetEntry,
-    Future<Set<EntryDataType>> Function() apply, {
+    Future<Set<EntryDataType>> Function() applyOp, {
     bool shouldCheckUndatedItems = true,
   }) async {
     if (!await checkStoragePermission(context, {targetEntry})) return;
@@ -35,15 +35,17 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditor
     final source = context.read<CollectionSource?>();
     source?.pauseMonitoring();
 
-    final dataTypes = await apply();
+    String? obsoleteCountryCode = targetEntry.addressDetails?.countryCode;
+    String? obsoleteStateCode = targetEntry.addressDetails?.stateCode;
+    Set<String> obsoleteTags = targetEntry.tags;
+
+    final dataTypes = await applyOp();
     final success = dataTypes.isNotEmpty;
     try {
       if (success) {
         if (isMainMode && source != null) {
-          Set<String> obsoleteTags = targetEntry.tags;
-          String? obsoleteCountryCode = targetEntry.addressDetails?.countryCode;
-          String? obsoleteStateCode = targetEntry.addressDetails?.stateCode;
-
+          // we need to wait entry refreshing, as some fields like file size
+          // may be modified, and are essential for further chained edits
           await source.refreshEntries({targetEntry}, dataTypes);
 
           // invalidate filters derived from values before edition

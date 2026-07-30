@@ -40,7 +40,7 @@ object PermissionManager {
     }
 
     fun getAppUserId(context: Context): Int? {
-        // `context.getUserId()` is a restricted API,
+        // `Context.getUserId()` and `UserHandle.myUserId()` are restricted APIs,
         // so we derive it from the app external files directory
         context.getExternalFilesDir(null)?.let { externalFilesDir ->
             StorageUtils.getVolumePath(context, externalFilesDir.absolutePath)?.let { volumePath ->
@@ -254,6 +254,10 @@ object PermissionManager {
             // other user storage space (e.g. Dual Messenger) is not visible via the SAF directory picker
             appUserId != null && volumeUserId != null && appUserId != volumeUserId
         }.toSet()
+    }
+
+    fun isPathOnRestrictedVolume(context: Context, path: String): Boolean {
+        return getRestrictedVolumes(context).any(path::startsWith)
     }
 
     // As of Android 11, `MediaStore.getDocumentUri` fails if any of the persisted

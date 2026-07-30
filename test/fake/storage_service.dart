@@ -13,6 +13,7 @@ class FakeStorageService extends Fake implements StorageService {
   @override
   Future<Set<StorageVolume>> getStorageVolumes() => SynchronousFuture({
     const StorageVolume(
+      mediaStoreVolumeName: 'primary',
       path: primaryPath,
       description: primaryDescription,
       isPrimary: true,
@@ -20,6 +21,7 @@ class FakeStorageService extends Fake implements StorageService {
       state: 'fake',
     ),
     const StorageVolume(
+      mediaStoreVolumeName: 'removable',
       path: removablePath,
       description: removableDescription,
       isPrimary: false,

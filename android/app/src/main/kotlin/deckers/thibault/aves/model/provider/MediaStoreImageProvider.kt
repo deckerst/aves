@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -30,6 +29,7 @@ import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
@@ -468,7 +468,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 targetDirDocFile = StorageUtils.createDirectoryDocIfAbsent(activity, targetDir)
                 if (!File(targetDir).exists()) {
                     // download subdirectories can be created later by Media Store insertion
-                    if (!isDownloadSubdir(activity, targetDir)) {
+                    if (!StorageUtils.isInDownloadPath(activity, targetDir)) {
                         callback.onFailure(Exception("failed to create directory at path=$targetDir"))
                         return
                     }
@@ -635,7 +635,7 @@ class MediaStoreImageProvider : ImageProvider() {
         defaultExtension: String?,
         write: (OutputStream) -> Unit,
     ): String {
-        if (StorageUtils.isInVault(activity, targetDir)) {
+        if (shouldInsertByFile(activity, targetDir)) {
             return insertByFile(
                 targetDir = targetDir,
                 targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
@@ -643,15 +643,14 @@ class MediaStoreImageProvider : ImageProvider() {
             )
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (isDownloadSubdir(activity, targetDir)) {
-                return insertByMediaStore(
-                    activity = activity,
-                    targetDir = targetDir,
-                    targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
-                    write = write,
-                )
-            }
+        if (shouldInsertByMediaStore(activity, targetDir) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return insertByMediaStore(
+                activity = activity,
+                mimeType = mimeType,
+                targetDir = targetDir,
+                targetFileName = "$targetNameWithoutExtension${extensionFor(mimeType, defaultExtension)}",
+                write = write,
+            )
         }
 
         return insertByTreeDoc(
@@ -665,11 +664,18 @@ class MediaStoreImageProvider : ImageProvider() {
         )
     }
 
-    private fun isDownloadSubdir(context: Context, dir: String): Boolean {
-        val volumePath = StorageUtils.getVolumePath(context, dir) ?: return false
-        val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
-        // effective download path may have a different case
-        return dir.lowercase().startsWith(downloadDirPath.lowercase())
+    private fun shouldInsertByFile(context: Context, targetDir: String): Boolean {
+        return StorageUtils.isInVault(context, targetDir)
+    }
+
+    private fun shouldInsertByMediaStore(context: Context, targetDir: String): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && StorageUtils.isInDownloadPath(context, targetDir)) {
+            return true
+        }
+        if (PermissionManager.isPathOnRestrictedVolume(context, targetDir)) {
+            return true
+        }
+        return false
     }
 
     private fun insertByFile(
@@ -685,12 +691,16 @@ class MediaStoreImageProvider : ImageProvider() {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun insertByMediaStore(
         activity: Activity,
+        mimeType: String,
         targetDir: String,
         targetFileName: String,
         write: (OutputStream) -> Unit,
     ): String {
-        val volumePath = StorageUtils.getVolumePath(activity, targetDir)
+        val volumePath = StorageUtils.getVolumePath(activity, anyPath = targetDir)
         val relativePath = targetDir.substring(volumePath?.length ?: 0)
+
+        val contentUri = StorageUtils.getMediaStoreRootContentUri(activity, mimeType = mimeType, anyPath = targetDir)
+            ?: throw Exception("failed to get MediaStore root content URI for mimeType=$mimeType targetDir=$targetDir")
 
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
@@ -698,7 +708,7 @@ class MediaStoreImageProvider : ImageProvider() {
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
         val resolver = activity.contentResolver
-        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+        val uri = resolver.insert(contentUri, values)
 
         uri?.let {
             resolver.openOutputStream(uri)?.use(write)

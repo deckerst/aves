@@ -9,6 +9,7 @@ import android.webkit.MimeTypeMap
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.utils.FileUtils.getFileSize
 import deckers.thibault.aves.utils.LogUtils
 import java.io.File
 
@@ -35,7 +36,7 @@ internal class FileImageProvider : ImageProvider() {
             // try to guess by file preview read
             var sizeBytes: Long? = null
             try {
-                path?.let { sizeBytes = File(it).length() }
+                path?.let { sizeBytes = getFileSize(it) }
             } catch (e: SecurityException) {
                 callback.onFailure(e)
                 return
@@ -57,7 +58,7 @@ internal class FileImageProvider : ImageProvider() {
                     entry.initFromFile(
                         path = path,
                         title = file.name,
-                        sizeBytes = file.length(),
+                        sizeBytes = getFileSize(path),
                         dateModifiedMillis = file.lastModified(),
                     )
                 }
@@ -112,7 +113,7 @@ internal class FileImageProvider : ImageProvider() {
             val file = File(path)
             if (file.exists()) {
                 newFields[EntryFields.DATE_MODIFIED_MILLIS] = file.lastModified()
-                newFields[EntryFields.SIZE_BYTES] = file.length()
+                newFields[EntryFields.SIZE_BYTES] = getFileSize(path)
             }
             callback.onSuccess(newFields)
         } catch (e: SecurityException) {

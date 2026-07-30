@@ -6,6 +6,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/trash.dart';
@@ -214,7 +215,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
     if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return false;
 
     // permission for modification at origins
-    final originAlbums = entries.map((e) => e.directory).nonNulls.toSet();
+    final originAlbums = entries.map((e) => e.storageDirectory).nonNulls.toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return false;
 
     final hasEnoughSpaceByDestination = await Future.wait(

@@ -8,13 +8,14 @@ import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import androidx.core.net.toUri
+import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -530,6 +531,46 @@ object StorageUtils {
         return SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getMediaStoreVolumeName(context: Context, anyPath: String): String? {
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        return storageManager?.getStorageVolume(File(anyPath))?.let { volume ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                volume.mediaStoreVolumeName
+            } else {
+                // normalization logic from Android source
+                if (volume.isPrimary) {
+                    MediaStore.VOLUME_EXTERNAL_PRIMARY
+                } else {
+                    volume.uuid?.lowercase(Locale.US)
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getMediaStoreRootContentUri(context: Context, mimeType: String, anyPath: String): Uri? {
+        val mediaStoreVolumeName = getMediaStoreVolumeName(context, anyPath) ?: MediaStore.VOLUME_EXTERNAL
+
+        return if (isInDownloadPath(context, anyPath)) {
+            MediaStore.Downloads.getContentUri(mediaStoreVolumeName)
+        } else if (isImage(mimeType)) {
+            MediaStore.Images.Media.getContentUri(mediaStoreVolumeName)
+        } else if (isVideo(mimeType)) {
+            MediaStore.Video.Media.getContentUri(mediaStoreVolumeName)
+        } else {
+            Log.w(LOG_TAG, "failed to find MediaStore content URI for mimeType=$mimeType, path=$anyPath")
+            null
+        }
+    }
+
+    fun isInDownloadPath(context: Context, anyPath: String): Boolean {
+        val volumePath = getVolumePath(context, anyPath) ?: return false
+        val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
+        // effective download path may have a different case
+        return anyPath.lowercase().startsWith(downloadDirPath.lowercase())
+    }
+
     fun getOriginalUri(context: Context, uri: Uri): Uri {
         // we get a permission denial if we require original from a provider other than the media store
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
@@ -608,9 +649,23 @@ object StorageUtils {
         }
     }
 
-    // strip user info, if any
-    // e.g. `content://0@media/...`
-    private fun stripMediaUriUserInfo(uri: Uri) = uri.toString().replaceFirst("${uri.userInfo}@", "").toUri()
+    /*
+        Strip user info, if any
+        e.g. `content://0@media/...`
+          -> `content://media/...`
+
+        `MediaStore` source indicates the following:
+        ------------
+        NOTE: The user-id in URI authority is ONLY required to find the correct MediaProvider
+        process. Once in the correct process, the field is no longer required and may cause
+        breakage in MediaProvider code. This is because per process logic is agnostic of
+        user-id. Hence strip away the user ids from URI, if present.
+        ------------
+     */
+    private fun stripMediaUriUserInfo(uri: Uri): Uri {
+        if (uri.userInfo == null) return uri
+        return uri.buildUpon().authority(uri.host).build()
+    }
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         val effectiveUri = getOriginalUri(context, uri)
@@ -703,18 +758,6 @@ object StorageUtils {
     }
 
     // convenience methods
-
-    fun getFolderSize(f: File): Long {
-        var size: Long = 0
-        if (f.isDirectory) {
-            for (file in f.listFiles()!!) {
-                size += getFolderSize(file)
-            }
-        } else {
-            size = f.length()
-        }
-        return size
-    }
 
     fun ensureTrailingSeparator(dirPath: String): String {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator

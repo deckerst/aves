@@ -42,6 +42,7 @@ import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BmpWriter
+import deckers.thibault.aves.utils.FileUtils.getFileSize
 import deckers.thibault.aves.utils.FileUtils.transferFrom
 import deckers.thibault.aves.utils.FileUtils.transferTo
 import deckers.thibault.aves.utils.LogUtils
@@ -410,7 +411,7 @@ abstract class ImageProvider {
         val editableFile = StorageUtils.createTempFile(context).apply {
             // copy original file to a temporary file for editing
             val inputStream = StorageUtils.openInputStream(context, targetUri)
-            transferFrom(inputStream, File(targetPath).length())
+            transferFrom(inputStream, getFileSize(targetPath))
         }
 
         // copy IPTC / XMP via PixyMeta
@@ -648,11 +649,29 @@ abstract class ImageProvider {
         return detectedMimeType
     }
 
+    // editing may corrupt the file for various reasons,
+    // making them undecodable by some decoders (including Android's and Chrome's)
+    // even though `BitmapFactory` successfully decodes their bounds,
+    // so we check whether decoding it with `ImageDecoder` throws an exception
+    private fun ensureDecodable(mimeType: String, editableFile: File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val isMimeTypeSupported = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ImageDecoder.isMimeTypeSupported(mimeType)
+            } else {
+                true
+            }
+            if (isMimeTypeSupported) {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
+            }
+        }
+    }
+
     private fun editExif(
         context: Context,
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         callback: ImageOpCallback,
         autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
@@ -663,7 +682,10 @@ abstract class ImageProvider {
             return false
         }
 
-        val originalFileSize = File(path).length()
+        // prefer provided `sizeBytes` over file attribute, because the file size
+        // may be temporary incorrect and not match results from `MediaScannerConnection`
+        val originalFileSize = sizeBytes
+
         var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
             val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff }
@@ -696,9 +718,17 @@ abstract class ImageProvider {
         }
 
         try {
+            // ensure file is decodable before editing
+            ensureDecodable(mimeType, editableFile)
+        } catch (e: IOException) {
+            callback.onFailure(Exception("failed to decode editable file before editing", e))
+            return false
+        }
+
+        try {
             edit(ExifInterface(editableFile))
 
-            val editableFileSizeBytes = editableFile.length()
+            val editableFileSizeBytes = getFileSize(editableFile.path)
             if (editableFileSizeBytes == 0L) {
                 callback.onFailure(Exception("editing Exif yielded an empty file"))
                 return false
@@ -709,11 +739,8 @@ abstract class ImageProvider {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for uri=$uri path=$path")
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                // editing may corrupt the file for various reasons,
-                // so we check whether decoding it throws an exception
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
-            }
+            // ensure file is decodable after editing
+            ensureDecodable(mimeType, editableFile)
 
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
@@ -723,7 +750,17 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoBytes?.size, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(
+                    context = context,
+                    path = path,
+                    uri = uri,
+                    mimeType = mimeType,
+                    sizeBytes = sizeBytes,
+                    trailerOffset = trailerVideoBytes?.size,
+                    editedFile = editableFile,
+                    callback = callback,
+                )
+            ) {
                 return false
             }
             editableFile.delete()
@@ -740,6 +777,7 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         callback: ImageOpCallback,
         autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
@@ -750,7 +788,10 @@ abstract class ImageProvider {
             return false
         }
 
-        val originalFileSize = File(path).length()
+        // prefer provided `sizeBytes` over file attribute, because the file size
+        // may be temporary incorrect and not match results from `MediaScannerConnection`
+        val originalFileSize = sizeBytes
+
         var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
             val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff }
@@ -801,7 +842,7 @@ abstract class ImageProvider {
                 }
             }
 
-            if (editableFile.length() == 0L) {
+            if (getFileSize(editableFile.path) == 0L) {
                 callback.onFailure(Exception("editing IPTC yielded an empty file"))
                 return false
             }
@@ -814,7 +855,17 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoBytes?.size, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(
+                    context = context,
+                    path = path,
+                    uri = uri,
+                    mimeType = mimeType,
+                    sizeBytes = sizeBytes,
+                    trailerOffset = trailerVideoBytes?.size,
+                    editedFile = editableFile,
+                    callback = callback,
+                )
+            ) {
                 return false
             }
             editableFile.delete()
@@ -900,6 +951,7 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         callback: ImageOpCallback,
         autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
@@ -923,7 +975,10 @@ abstract class ImageProvider {
             )
         }
 
-        val originalFileSize = File(path).length()
+        // prefer provided `sizeBytes` over file attribute, because the file size
+        // may be temporary incorrect and not match results from `MediaScannerConnection`
+        val originalFileSize = sizeBytes
+
         val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)?.let { it.toInt() + trailerDiff }
         val editableFile = StorageUtils.createTempFile(context).apply {
             try {
@@ -942,7 +997,7 @@ abstract class ImageProvider {
             }
         }
 
-        if (editableFile.length() == 0L) {
+        if (getFileSize(editableFile.path) == 0L) {
             callback.onFailure(Exception("editing XMP yielded an empty file"))
             return false
         }
@@ -951,7 +1006,17 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (autoCorrectTrailerOffset && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoSize, editableFile, callback)) {
+            if (autoCorrectTrailerOffset && !checkTrailerOffset(
+                    context = context,
+                    path = path,
+                    uri = uri,
+                    mimeType = mimeType,
+                    sizeBytes = sizeBytes,
+                    trailerOffset = trailerVideoSize,
+                    editedFile = editableFile,
+                    callback = callback,
+                )
+            ) {
                 return false
             }
             editableFile.delete()
@@ -1012,14 +1077,15 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         trailerOffset: Number?,
         editedFile: File,
         callback: ImageOpCallback,
     ): Boolean {
         if (trailerOffset == null) return true
 
-        val expectedLength = editedFile.length()
-        val actualLength = File(path).length()
+        val expectedLength = getFileSize(editedFile.path)
+        val actualLength = getFileSize(path)
         val diff = (actualLength - expectedLength).toInt()
         if (diff == 0) return true
 
@@ -1028,9 +1094,18 @@ abstract class ImageProvider {
                     "We need to edit XMP to adjust trailer video offset by $diff bytes."
         )
         val newTrailerOffset = trailerOffset.toLong() + diff
-        return editXmp(context, path, uri, mimeType, callback, trailerDiff = diff, editCoreXmp = { xmp ->
-            GoogleXMP.updateTrailingVideoOffset(xmp, trailerOffset, newTrailerOffset)
-        })
+        return editXmp(
+            context = context,
+            path = path,
+            uri = uri,
+            mimeType = mimeType,
+            sizeBytes = sizeBytes,
+            callback = callback,
+            trailerDiff = diff,
+            editCoreXmp = { xmp ->
+                GoogleXMP.updateTrailingVideoOffset(xmp, trailerOffset, newTrailerOffset)
+            },
+        )
     }
 
     fun editOrientation(
@@ -1038,12 +1113,13 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
         val newFields: FieldMap = hashMapOf()
 
-        val success = editExif(context, path, uri, mimeType, callback) { exif ->
+        val success = editExif(context, path, uri, mimeType, sizeBytes, callback) { exif ->
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
             // in that case we explicitly set it to `normal` first
             // because ExifInterface fails to rotate an image with undefined orientation
@@ -1067,17 +1143,18 @@ abstract class ImageProvider {
         }
     }
 
-    fun editDate(
+    fun editExifDate(
         context: Context,
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         dateMillis: Long?,
         shiftSeconds: Long?,
         fields: List<String>,
         callback: ImageOpCallback,
     ) {
-        val success = editExif(context, path, uri, mimeType, callback) { exif ->
+        val success = editExif(context, path, uri, mimeType, sizeBytes, callback) { exif ->
             when {
                 dateMillis != null -> {
                     // set
@@ -1169,6 +1246,7 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         modifier: FieldMap,
         autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
@@ -1192,6 +1270,7 @@ abstract class ImageProvider {
                         path = path,
                         uri = uri,
                         mimeType = mimeType,
+                        sizeBytes = sizeBytes,
                         callback = callback,
                         autoCorrectTrailerOffset = autoCorrectTrailerOffset,
                     ) { exif ->
@@ -1249,6 +1328,7 @@ abstract class ImageProvider {
                     path = path,
                     uri = uri,
                     mimeType = mimeType,
+                    sizeBytes = sizeBytes,
                     callback = callback,
                     autoCorrectTrailerOffset = autoCorrectTrailerOffset,
                     iptc = iptc,
@@ -1282,6 +1362,7 @@ abstract class ImageProvider {
                         path = path,
                         uri = uri,
                         mimeType = mimeType,
+                        sizeBytes = sizeBytes,
                         callback = callback,
                         autoCorrectTrailerOffset = autoCorrectTrailerOffset,
                         coreXmp = coreXmp,
@@ -1299,9 +1380,13 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         callback: ImageOpCallback,
     ) {
-        val originalFileSize = File(path).length()
+        // prefer provided `sizeBytes` over file attribute, because the file size
+        // may be temporary incorrect and not match results from `MediaScannerConnection`
+        val originalFileSize = sizeBytes
+
         val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)
         if (trailerVideoSize == null) {
             callback.onFailure(Exception("failed to get trailer video size"))
@@ -1344,6 +1429,7 @@ abstract class ImageProvider {
         path: String,
         uri: Uri,
         mimeType: String,
+        sizeBytes: Long,
         types: Set<String>,
         callback: ImageOpCallback,
     ) {
@@ -1352,7 +1438,10 @@ abstract class ImageProvider {
             return
         }
 
-        val originalFileSize = File(path).length()
+        // prefer provided `sizeBytes` over file attribute, because the file size
+        // may be temporary incorrect and not match results from `MediaScannerConnection`
+        val originalFileSize = sizeBytes
+
         val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)
         val isTrailerVideoValid = trailerVideoSize != null && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, trailerVideoSize) != null
         val editableFile = StorageUtils.createTempFile(context).apply {
@@ -1370,7 +1459,7 @@ abstract class ImageProvider {
             }
         }
 
-        if (editableFile.length() == 0L) {
+        if (getFileSize(editableFile.path) == 0L) {
             callback.onFailure(Exception("removing metadata yielded an empty file"))
             return
         }
@@ -1379,7 +1468,17 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.transferTo(outputStream(context, mimeType, uri, path))
 
-            if (!types.contains(TYPE_XMP) && isTrailerVideoValid && !checkTrailerOffset(context, path, uri, mimeType, trailerVideoSize, editableFile, callback)) {
+            if (!types.contains(TYPE_XMP) && isTrailerVideoValid && !checkTrailerOffset(
+                    context = context,
+                    path = path,
+                    uri = uri,
+                    mimeType = mimeType,
+                    sizeBytes = sizeBytes,
+                    trailerOffset = trailerVideoSize,
+                    editedFile = editableFile,
+                    callback = callback,
+                )
+            ) {
                 return
             }
             editableFile.delete()
