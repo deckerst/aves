@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- upgraded Flutter to beta v3.47.0-0.3.pre
+
 ### Fixed
 
 - file size tracking for chaining edits on multiple entries
