@@ -6,7 +6,7 @@ class GregorianCalendarOps extends CalendarOps {
 
   static final instance = GregorianCalendarOps._private();
 
-  GregorianCalendarOps._private();
+  new _private();
 
   @override
   DateTime asNative(DateTime date) => date;

@@ -4,14 +4,14 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class EditEntryRatingDialog extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_rating';
 
   final AvesEntry entry;
 
-  const EditEntryRatingDialog({
+  const new({
     super.key,
     required this.entry,
   });

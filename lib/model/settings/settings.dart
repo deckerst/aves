@@ -79,7 +79,7 @@ class Settings
   @override
   SettingsStore get store => settingsStore;
 
-  Settings._private() {
+  new _private() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 

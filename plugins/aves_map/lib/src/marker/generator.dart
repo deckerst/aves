@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 
 // generate bitmap from widget, for Google map
@@ -11,7 +11,7 @@ class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
   final bool Function(T markerKey) isReadyToRender;
   final void Function(T markerKey, Uint8List bitmap) onRendered;
 
-  const MarkerGeneratorWidget({
+  const new({
     super.key,
     required this.markers,
     required this.isReadyToRender,
@@ -105,7 +105,7 @@ class _MarkerGeneratorItem<T extends Key> {
   GlobalKey? globalKey;
   MarkerGeneratorItemState state = MarkerGeneratorItemState.waiting;
 
-  _MarkerGeneratorItem({
+  new({
     required this.markerKey,
     required this.devicePixelRatio,
   });

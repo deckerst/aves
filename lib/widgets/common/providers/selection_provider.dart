@@ -6,7 +6,7 @@ class SelectionProvider<T> extends StatelessWidget {
   final Widget child;
   final Set<T> Function(T item)? toSelectableItems;
 
-  const SelectionProvider({
+  const new({
     super.key,
     this.toSelectableItems,
     required this.child,

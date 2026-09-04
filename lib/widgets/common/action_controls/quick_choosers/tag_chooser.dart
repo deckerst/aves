@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_chooser_mixin.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TagQuickChooser extends StatelessWidget with FilterQuickChooserMixin<CollectionFilter> {
   final ValueNotifier<CollectionFilter?> valueNotifier;
@@ -14,7 +14,7 @@ class TagQuickChooser extends StatelessWidget with FilterQuickChooserMixin<Colle
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
 
-  const TagQuickChooser({
+  const new({
     super.key,
     required this.valueNotifier,
     required this.options,

@@ -17,7 +17,7 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/wallpaper_buttons.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +37,7 @@ class ViewerBottomOverlay extends StatelessWidget {
     return index < entries.length ? entries[index] : null;
   }
 
-  const ViewerBottomOverlay({
+  const new({
     super.key,
     required this.entries,
     required this.index,
@@ -104,7 +104,7 @@ class _BottomOverlayContent extends StatefulWidget {
   final MultiPageController? multiPageController;
   final AnimationController animationController;
 
-  const _BottomOverlayContent({
+  const new({
     required this.entries,
     required this.index,
     required this.mainEntry,
@@ -281,7 +281,7 @@ class ExtraBottomOverlay extends StatelessWidget {
   final EdgeInsets? viewInsets, viewPadding;
   final Widget child;
 
-  const ExtraBottomOverlay({
+  const new({
     super.key,
     this.viewInsets,
     this.viewPadding,

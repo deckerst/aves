@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RenameStoredAlbumDialog extends StatefulWidget {
   static const routeName = '/dialog/rename_stored_album';
 
   final String album;
 
-  const RenameStoredAlbumDialog({
+  const new({
     super.key,
     required this.album,
   });

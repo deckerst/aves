@@ -33,7 +33,7 @@ enum ScreenStateEvent { unlocked, on, off }
 class ScreenStateException implements Exception {
   final String _cause;
 
-  ScreenStateException(this._cause);
+  new(this._cause);
 
   @override
   String toString() => _cause;

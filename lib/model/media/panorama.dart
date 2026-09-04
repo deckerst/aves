@@ -6,13 +6,13 @@ class PanoramaInfo {
   final Size? fullPanoSize;
   final String? projectionType;
 
-  PanoramaInfo({
+  new({
     this.croppedAreaRect,
     this.fullPanoSize,
     this.projectionType,
   });
 
-  factory PanoramaInfo.fromMap(Map map) {
+  factory fromMap(Map map) {
     var cLeft = map['croppedAreaLeft'] as int?;
     var cTop = map['croppedAreaTop'] as int?;
     var cWidth = map['croppedAreaWidth'] as int?;

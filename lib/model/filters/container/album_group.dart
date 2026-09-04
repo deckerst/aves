@@ -2,11 +2,11 @@ import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/filters.dart';
 
-mixin AlbumBaseFilter on CollectionFilter {}
+mixin AlbumBaseFilter on CollectionFilter;
 
 // placeholder to pick a group, distinguishing this root filter from cancelling
 class _RootAlbumGroupFilter extends DummyCollectionFilter with AlbumBaseFilter {
-  _RootAlbumGroupFilter._private({required super.reversed});
+  new _private({required super.reversed});
 }
 
 class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
@@ -14,9 +14,9 @@ class AlbumGroupFilter extends GroupBaseFilter with AlbumBaseFilter {
 
   static AlbumBaseFilter root = _RootAlbumGroupFilter._private(reversed: false);
 
-  AlbumGroupFilter(super.uri, super.filter, {super.reversed = false});
+  new(super.uri, super.filter, {super.reversed = false});
 
-  factory AlbumGroupFilter.empty(Uri uri) => AlbumGroupFilter(uri, SetOrFilter(const {}));
+  factory empty(Uri uri) => AlbumGroupFilter(uri, SetOrFilter(const {}));
 
   static AlbumGroupFilter? fromMap(Map<String, Object?> json) {
     final props = GroupBaseFilter.fromMap(json);

@@ -2,8 +2,8 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/widgets/viewer/view/histogram.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ViewStateController with HistogramMixin {
   final AvesEntry entry;
@@ -12,7 +12,7 @@ class ViewStateController with HistogramMixin {
 
   ViewState get viewState => viewStateNotifier.value;
 
-  ViewStateController({
+  new({
     required this.entry,
     required ViewState initialViewState,
   }) {

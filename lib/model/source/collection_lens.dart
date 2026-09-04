@@ -53,7 +53,7 @@ class CollectionLens with ChangeNotifier {
 
   Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
 
-  CollectionLens({
+  new({
     required this.source,
     Set<CollectionFilter?>? filters,
     this.id,

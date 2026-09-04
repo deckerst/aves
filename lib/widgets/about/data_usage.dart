@@ -9,12 +9,12 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_donut.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 
 class AboutDataUsage extends StatefulWidget {
-  const AboutDataUsage({super.key});
+  const new({super.key});
 
   @override
   State<AboutDataUsage> createState() => _AboutDataUsageState();
@@ -133,7 +133,7 @@ class DataUsageDonut extends StatelessWidget {
   static const String internal = 'internal';
   static const String external = 'external';
 
-  const DataUsageDonut({
+  const new({
     super.key,
     required this.title,
     required this.byTypes,

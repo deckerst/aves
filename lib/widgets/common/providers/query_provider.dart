@@ -7,7 +7,7 @@ class QueryProvider extends StatelessWidget {
   final String? initialQuery;
   final Widget child;
 
-  const QueryProvider({
+  const new({
     super.key,
     this.startEnabled = false,
     this.initialQuery,

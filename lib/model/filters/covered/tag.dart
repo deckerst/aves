@@ -14,7 +14,7 @@ class TagFilter extends CollectionFilter with CoveredFilter, TagBaseFilter {
   @override
   List<Object?> get props => [tag, reversed];
 
-  TagFilter(this.tag, {super.reversed = false}) {
+  new(this.tag, {super.reversed = false}) {
     if (tag.isEmpty) {
       _test = (entry) => entry.tags.isEmpty;
     } else {
@@ -22,7 +22,7 @@ class TagFilter extends CollectionFilter with CoveredFilter, TagBaseFilter {
     }
   }
 
-  factory TagFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return TagFilter(
       json['tag'] as String,
       reversed: json['reversed'] as bool? ?? false,

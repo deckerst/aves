@@ -9,13 +9,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CreateStoredAlbumDialog extends StatefulWidget {
   static const routeName = '/dialog/create_stored_album';
 
-  const CreateStoredAlbumDialog({super.key});
+  const new({super.key});
 
   @override
   State<CreateStoredAlbumDialog> createState() => _CreateStoredAlbumDialogState();

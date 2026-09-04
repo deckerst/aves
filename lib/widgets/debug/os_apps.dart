@@ -6,10 +6,10 @@ import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DebugOSAppSection extends StatefulWidget {
-  const DebugOSAppSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugOSAppSection> createState() => _DebugOSAppSectionState();

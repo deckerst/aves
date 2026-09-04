@@ -2,7 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapDecorator extends StatelessWidget {
@@ -11,7 +11,7 @@ class MapDecorator extends StatelessWidget {
   static const mapBackground = Color(0xFFDBD5D3);
   static const mapLoadingGrid = Color(0xFFC4BEBB);
 
-  const MapDecorator({
+  const new({
     super.key,
     required this.child,
   });

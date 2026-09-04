@@ -6,7 +6,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_chooser_mixin.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AlbumQuickChooser extends StatelessWidget with FilterQuickChooserMixin<String> {
@@ -17,7 +17,7 @@ class AlbumQuickChooser extends StatelessWidget with FilterQuickChooserMixin<Str
   final PopupMenuPosition chooserPosition;
   final Stream<Offset> pointerGlobalPosition;
 
-  const AlbumQuickChooser({
+  const new({
     super.key,
     required this.valueNotifier,
     required this.options,

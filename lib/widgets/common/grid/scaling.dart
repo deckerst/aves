@@ -9,7 +9,7 @@ import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class ScalerMetadata<T> {
   final T item;
 
-  const ScalerMetadata(this.item);
+  const new(this.item);
 }
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
@@ -30,7 +30,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final Object Function(T item)? highlightItem;
   final Widget child;
 
-  const GridScaleGestureDetector({
+  const new({
     super.key,
     required this.scrollableKey,
     required this.tileLayout,

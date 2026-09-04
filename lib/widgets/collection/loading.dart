@@ -4,12 +4,12 @@ import 'package:aves/model/source/events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LoadingEmptyContent extends StatelessWidget {
   final CollectionSource source;
 
-  const LoadingEmptyContent({
+  const new({
     super.key,
     required this.source,
   });

@@ -7,8 +7,8 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader<T> extends StatelessWidget {
@@ -17,7 +17,7 @@ class SectionHeader<T> extends StatelessWidget {
   final String title;
   final bool selectable;
 
-  const SectionHeader({
+  const new({
     super.key,
     required this.sectionKey,
     this.leading,
@@ -184,7 +184,7 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
   final WidgetBuilder? browsingBuilder;
   final VoidCallback? onPressed;
 
-  const _SectionSelectableLeading({
+  const new({
     super.key,
     this.selectable = true,
     required this.sectionKey,
@@ -240,7 +240,7 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
   final SectionKey sectionKey;
   final VoidCallback? onPressed;
 
-  const _SectionSelectingLeading({
+  const new({
     super.key,
     required this.sectionKey,
     required this.onPressed,

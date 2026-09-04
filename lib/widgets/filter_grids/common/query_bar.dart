@@ -2,14 +2,14 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterQueryBar<T extends CollectionFilter> extends StatelessWidget {
   final ValueNotifier<String> queryNotifier;
   final FocusNode focusNode;
 
-  const FilterQueryBar({
+  const new({
     super.key,
     required this.queryNotifier,
     required this.focusNode,

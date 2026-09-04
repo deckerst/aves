@@ -17,8 +17,8 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class RenameEntrySetPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class RenameEntrySetPage extends StatefulWidget {
 
   final List<AvesEntry> entries;
 
-  const RenameEntrySetPage({
+  const new({
     super.key,
     required this.entries,
   });

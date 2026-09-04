@@ -37,8 +37,8 @@ import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +47,7 @@ class HomePage extends StatefulWidget {
 
   final Map<String, Object?>? intentData;
 
-  const HomePage({
+  const new({
     super.key,
     this.intentData,
   });

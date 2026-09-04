@@ -17,7 +17,7 @@ class ServicePolicy {
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
 
-  ServicePolicy._private();
+  new _private();
 
   Future<T> call<T>(
     Future<T> Function() platformCall, {
@@ -113,10 +113,10 @@ class _Task<T> {
   final VoidCallback callback;
   final Completer<T> completer;
 
-  const _Task(this.callback, this.completer);
+  const new(this.callback, this.completer);
 }
 
-class CancelledException {}
+class CancelledException;
 
 class ServiceCallPriority {
   static const int getFastThumbnail = 100;
@@ -131,5 +131,5 @@ class QueueState {
   final Map<int, int> queueByPriority;
   final int runningCount, pausedCount;
 
-  const QueueState(this.queueByPriority, this.runningCount, this.pausedCount);
+  const new(this.queueByPriority, this.runningCount, this.pausedCount);
 }

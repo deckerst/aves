@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class HighlightTitle extends StatelessWidget {
@@ -17,7 +17,7 @@ class HighlightTitle extends StatelessWidget {
   final bool enabled;
   final bool showHighlight;
 
-  const HighlightTitle({
+  const new({
     super.key,
     required this.title,
     this.color,

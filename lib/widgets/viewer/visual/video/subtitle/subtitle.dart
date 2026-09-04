@@ -10,9 +10,9 @@ import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:latlong2/latlong.dart' as angles;
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoSubtitles extends StatelessWidget {
@@ -23,7 +23,7 @@ class VideoSubtitles extends StatelessWidget {
 
   static const baseShadowOffset = Offset(1, 1);
 
-  const VideoSubtitles({
+  const new({
     super.key,
     required this.entry,
     required this.controller,
@@ -291,7 +291,7 @@ class SubtitlePathPainter extends CustomPainter {
   final double scale;
   final Paint? fillPaint, strokePaint;
 
-  SubtitlePathPainter({
+  new({
     required this.paths,
     required this.scale,
     required Color? fillColor,
@@ -328,7 +328,7 @@ class SubtitlePathClipper extends CustomClipper<Path> {
   final List<Path> paths;
   final double scale;
 
-  const SubtitlePathClipper({
+  const new({
     required this.paths,
     required this.scale,
   });

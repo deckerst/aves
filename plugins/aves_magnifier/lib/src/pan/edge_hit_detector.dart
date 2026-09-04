@@ -57,7 +57,7 @@ class EdgeHit extends Equatable {
   @override
   List<Object?> get props => [hasHitMin, hasHitMax];
 
-  const EdgeHit(this.hasHitMin, this.hasHitMax);
+  const new(this.hasHitMin, this.hasHitMax);
 
   bool get hasHitAny => hasHitMin || hasHitMax;
 

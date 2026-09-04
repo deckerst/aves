@@ -29,7 +29,7 @@ class ZoomedBounds extends Equatable {
   @override
   List<Object?> get props => [sw, ne, zoom, rotation];
 
-  const ZoomedBounds({
+  const new({
     required this.sw,
     required this.ne,
     required this.zoom,
@@ -38,7 +38,7 @@ class ZoomedBounds extends Equatable {
 
   static const _collocationMaxDeltaThreshold = 360 / (2 << 19);
 
-  factory ZoomedBounds.fromPoints({
+  factory fromPoints({
     required Set<LatLng> points,
     double collocationZoom = 20,
   }) {

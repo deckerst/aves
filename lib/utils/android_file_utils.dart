@@ -40,7 +40,7 @@ class AndroidFileUtils {
   final Map<String, AlbumType> _albumTypeCache = {};
   final AChangeNotifier albumTypesChangeNotifier = .new();
 
-  AndroidFileUtils._private();
+  new _private();
 
   Future<void> init() async {
     _loader ??= _doInit();

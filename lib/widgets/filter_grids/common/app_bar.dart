@@ -26,7 +26,7 @@ import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +47,7 @@ class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDel
   final ScrollController scrollController;
   final void Function(BuildContext context, T filter)? onGroupCrumbTap;
 
-  const FilterGridAppBar({
+  const new({
     super.key,
     required this.source,
     required this.title,

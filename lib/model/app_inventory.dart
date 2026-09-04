@@ -15,7 +15,7 @@ class AppInventory {
 
   final ValueNotifier<bool> areAppNamesReadyNotifier = ValueNotifier(false);
 
-  AppInventory._private();
+  new _private();
 
   Future<void> initAppNames() async {
     if (_packages.isEmpty) {
@@ -77,7 +77,7 @@ class Package {
   final Set<String> _ownedDirs = {};
   final Set<String> _potentialDirs = {};
 
-  Package({
+  new({
     required this.packageName,
     required this.currentLabel,
     required this.englishLabel,
@@ -85,7 +85,7 @@ class Package {
     required this.isSystem,
   });
 
-  factory Package.fromMap(Map map) {
+  factory fromMap(Map map) {
     return Package(
       packageName: map['packageName'] ?? '',
       currentLabel: map['currentLabel'],

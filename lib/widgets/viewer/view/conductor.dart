@@ -13,7 +13,7 @@ class ViewStateConductor {
 
   static const maxControllerCount = 3;
 
-  ViewStateConductor() {
+  new() {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',

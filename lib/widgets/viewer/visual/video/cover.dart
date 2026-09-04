@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoCover extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
@@ -21,7 +21,7 @@ class VideoCover extends StatefulWidget {
   )
   magnifierBuilder;
 
-  const VideoCover({
+  const new({
     super.key,
     required this.mainEntry,
     required this.pageEntry,

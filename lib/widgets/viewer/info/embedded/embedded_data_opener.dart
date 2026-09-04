@@ -10,14 +10,14 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
   final bool enabled;
   final AvesEntry entry;
   final Widget child;
 
-  const EmbeddedDataOpener({
+  const new({
     super.key,
     required this.enabled,
     required this.entry,

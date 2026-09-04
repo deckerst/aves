@@ -8,13 +8,13 @@ import 'package:aves/widgets/editor/transform/transformation.dart';
 import 'package:aves/widgets/viewer/overlay/top/top.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class Minimap extends StatelessWidget {
   final ValueNotifier<ViewState> viewStateNotifier;
 
-  const Minimap({
+  const new({
     super.key,
     required this.viewStateNotifier,
   });
@@ -61,7 +61,7 @@ class _MinimapPainter extends CustomPainter {
 
   late final Paint fill, minimapStroke, viewportStroke;
 
-  _MinimapPainter({
+  new({
     required this.viewportSize,
     required this.contentSize,
     required this.viewCenterOffset,

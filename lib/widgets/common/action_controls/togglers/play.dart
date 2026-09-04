@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class PlayToggler extends StatefulWidget {
@@ -15,7 +15,7 @@ class PlayToggler extends StatefulWidget {
   final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
-  const PlayToggler({
+  const new({
     super.key,
     required this.controller,
     this.isMenuItem = false,
@@ -107,7 +107,7 @@ class PlayTogglerCaption extends StatelessWidget {
   final AvesVideoController? controller;
   final bool enabled;
 
-  const PlayTogglerCaption({
+  const new({
     super.key,
     required this.controller,
     required this.enabled,

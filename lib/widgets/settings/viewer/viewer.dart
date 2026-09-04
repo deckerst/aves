@@ -13,7 +13,7 @@ import 'package:aves/widgets/settings/viewer/overlay_page.dart';
 import 'package:aves/widgets/settings/viewer/slideshow_page.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerSection extends SettingsSection {

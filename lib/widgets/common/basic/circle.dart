@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CircularIndicator extends StatefulWidget {
   final double radius, lineWidth, percent;
   final Color background, foreground;
   final Widget center;
 
-  const CircularIndicator({
+  const new({
     super.key,
     required this.radius,
     required this.lineWidth,
@@ -52,7 +52,7 @@ class _Circle extends StatelessWidget {
   final double radius, lineWidth, percent;
   final Color color;
 
-  const _Circle({
+  const new({
     required this.radius,
     required this.lineWidth,
     required this.percent,
@@ -77,7 +77,7 @@ class _CirclePainter extends CustomPainter {
   final double radius, lineWidth, percent;
   final Color color;
 
-  const _CirclePainter({
+  const new({
     required this.radius,
     required this.lineWidth,
     required this.percent,

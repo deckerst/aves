@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/controls/controller.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/providers.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryViewerPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class EntryViewerPage extends StatefulWidget {
   final CollectionLens? collection;
   final AvesEntry initialEntry;
 
-  const EntryViewerPage({
+  const new({
     super.key,
     this.collection,
     required this.initialEntry,

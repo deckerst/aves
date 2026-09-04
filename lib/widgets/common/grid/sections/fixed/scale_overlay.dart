@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FixedExtentScaleOverlay extends StatelessWidget {
   final TileLayout tileLayout;
@@ -14,7 +14,7 @@ class FixedExtentScaleOverlay extends StatelessWidget {
   final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
   final Widget Function(Size scaledTileSize) builder;
 
-  FixedExtentScaleOverlay({
+  new({
     super.key,
     required this.tileLayout,
     required this.tileCenter,
@@ -72,7 +72,7 @@ class _OverlayBackground extends StatefulWidget {
   final Offset gradientCenter;
   final Widget child;
 
-  const _OverlayBackground({
+  const new({
     required this.gradientCenter,
     required this.child,
   });

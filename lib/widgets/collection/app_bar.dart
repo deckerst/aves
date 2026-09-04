@@ -42,8 +42,8 @@ import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionAppBar extends StatefulWidget {
@@ -51,7 +51,7 @@ class CollectionAppBar extends StatefulWidget {
   final ScrollController scrollController;
   final CollectionLens collection;
 
-  const CollectionAppBar({
+  const new({
     super.key,
     required this.appBarHeightNotifier,
     required this.scrollController,

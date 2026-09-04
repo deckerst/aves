@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FavouriteToggler extends StatefulWidget {
@@ -17,7 +17,7 @@ class FavouriteToggler extends StatefulWidget {
   final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
-  const FavouriteToggler({
+  const new({
     super.key,
     required this.entries,
     this.isMenuItem = false,
@@ -108,7 +108,7 @@ class FavouriteTogglerCaption extends StatefulWidget {
   final Set<AvesEntry> entries;
   final bool enabled;
 
-  const FavouriteTogglerCaption({
+  const new({
     super.key,
     required this.entries,
     required this.enabled,

@@ -2,7 +2,7 @@ import 'package:aves_map/aves_map.dart';
 import 'package:aves_map/src/marker/arrow_painter.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -21,7 +21,7 @@ class ImageMarker extends StatelessWidget {
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
 
-  const ImageMarker({
+  const new({
     super.key,
     required this.count,
     required this.countFormatter,

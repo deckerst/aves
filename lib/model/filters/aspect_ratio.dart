@@ -17,7 +17,7 @@ class AspectRatioFilter extends CollectionFilter {
   @override
   List<Object?> get props => [threshold, op, reversed];
 
-  AspectRatioFilter(this.threshold, this.op, {super.reversed = false}) {
+  new(this.threshold, this.op, {super.reversed = false}) {
     switch (op) {
       case QueryFilter.opEqual:
         _test = (entry) => entry.displayAspectRatio == threshold;
@@ -28,7 +28,7 @@ class AspectRatioFilter extends CollectionFilter {
     }
   }
 
-  factory AspectRatioFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return AspectRatioFilter(
       json['threshold'] as double,
       json['op'] as String,

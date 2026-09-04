@@ -14,7 +14,7 @@ class EntryHeroInfo extends Equatable {
   @override
   List<Object?> get props => [collection?.id, entry?.uri];
 
-  const EntryHeroInfo(this.collection, this.entry);
+  const new(this.collection, this.entry);
 
   int get tag => Object.hashAll([collection?.id, entry?.uri]);
 }

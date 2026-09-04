@@ -4,9 +4,9 @@ import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // Use a `SliverList` instead of multiple `SliverGrid` because having one `SliverGrid` per section does not scale up.
@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 // cf https://github.com/flutter/flutter/issues/49027
 // adapted from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
 class SectionedListSliver<T> extends StatelessWidget {
-  const SectionedListSliver({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class SectionedListSliver<T> extends StatelessWidget {
 class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   final List<SectionLayout> sectionLayouts;
 
-  const _SliverKnownExtentList({
+  const new({
     required super.delegate,
     required this.sectionLayouts,
   });
@@ -68,7 +68,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     markNeedsLayout();
   }
 
-  _RenderSliverKnownExtentBoxAdaptor({
+  new({
     required super.childManager,
     required this._sectionLayouts,
   });

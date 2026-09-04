@@ -10,12 +10,12 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MetadataTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const MetadataTab({
+  const new({
     super.key,
     required this.entry,
   });

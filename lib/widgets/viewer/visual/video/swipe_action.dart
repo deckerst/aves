@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 enum SwipeAction { brightness, volume }
@@ -33,7 +33,7 @@ class SwipeActionFeedback extends StatelessWidget {
   final SwipeAction action;
   final ValueNotifier<double?> valueNotifier;
 
-  const SwipeActionFeedback({
+  const new({
     super.key,
     required this.action,
     required this.valueNotifier,

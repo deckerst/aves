@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CrumbLine<T> extends StatefulWidget {
@@ -14,7 +14,7 @@ class CrumbLine<T> extends StatefulWidget {
 
   static const EdgeInsets padding = EdgeInsets.only(top: 4, bottom: 8);
 
-  const CrumbLine({
+  const new({
     super.key,
     required this.split,
     required this.combine,

@@ -18,7 +18,7 @@ class QuickActionButton<T extends Object> extends StatelessWidget {
   final Widget Function(T action)? draggableFeedbackBuilder;
   final Widget? child;
 
-  const QuickActionButton({
+  const new({
     super.key,
     required this.placement,
     this.action,

@@ -3,12 +3,12 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/video/video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoSettingsPage extends StatefulWidget {
   static const routeName = '/settings/video';
 
-  const VideoSettingsPage({super.key});
+  const new({super.key});
 
   @override
   State<VideoSettingsPage> createState() => _VideoSettingsPageState();

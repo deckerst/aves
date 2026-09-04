@@ -1,14 +1,14 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ViewerThumbnailPreview extends StatefulWidget {
   final List<AvesEntry> entries;
   final int displayedIndex;
   final double availableWidth;
 
-  const ViewerThumbnailPreview({
+  const new({
     super.key,
     required this.entries,
     required this.displayedIndex,

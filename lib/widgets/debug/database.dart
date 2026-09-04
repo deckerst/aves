@@ -1,3 +1,4 @@
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -9,14 +10,13 @@ import 'package:aves/model/vaults/details.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DebugAppDatabaseSection extends StatefulWidget {
-  const DebugAppDatabaseSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugAppDatabaseSection> createState() => _DebugAppDatabaseSectionState();

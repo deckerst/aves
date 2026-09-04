@@ -21,7 +21,7 @@ abstract class AvesAvailability {
 class LiveAvesAvailability implements AvesAvailability {
   bool? _isConnected, _isLocked;
 
-  LiveAvesAvailability() {
+  new() {
     Connectivity().onConnectivityChanged.listen(_updateConnectivityFromResult);
   }
 

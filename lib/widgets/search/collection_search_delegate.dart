@@ -34,7 +34,7 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, VaultAwareMixin {
@@ -68,7 +68,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     TypeFilter.raw,
   ];
 
-  CollectionSearchDelegate({
+  new({
     required super.searchFieldLabel,
     required super.searchFieldStyle,
     required this.source,

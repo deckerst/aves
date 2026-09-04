@@ -4,7 +4,7 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/identity/aves_donut.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MimeDonut extends StatelessWidget {
@@ -13,7 +13,7 @@ class MimeDonut extends StatelessWidget {
   final Duration animationDuration;
   final AFilterCallback onFilterSelection;
 
-  const MimeDonut({
+  const new({
     super.key,
     required this.icon,
     required this.byMimeTypes,

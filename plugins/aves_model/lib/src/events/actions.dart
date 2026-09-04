@@ -8,15 +8,15 @@ class ActionEvent<T> extends Equatable {
   @override
   List<Object?> get props => [action];
 
-  const ActionEvent(this.action);
+  const new(this.action);
 }
 
 @immutable
 class ActionStartedEvent<T> extends ActionEvent<T> {
-  const ActionStartedEvent(super.action);
+  const new(super.action);
 }
 
 @immutable
 class ActionEndedEvent<T> extends ActionEvent<T> {
-  const ActionEndedEvent(super.action);
+  const new(super.action);
 }

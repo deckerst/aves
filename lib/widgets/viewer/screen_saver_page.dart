@@ -11,7 +11,7 @@ import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ScreenSaverPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class ScreenSaverPage extends StatefulWidget {
 
   final CollectionSource source;
 
-  const ScreenSaverPage({
+  const new({
     super.key,
     required this.source,
   });

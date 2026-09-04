@@ -3,7 +3,7 @@ import 'package:aves/locale/calendar/dateformat/base.dart';
 import 'package:intl/intl.dart';
 
 class IntlDateFormatDelegate extends DateFormatDelegate {
-  const IntlDateFormatDelegate({required super.languageTag});
+  const new({required super.languageTag});
 
   @override
   DateFormatter get y => DateFormat.y(languageTag).format;

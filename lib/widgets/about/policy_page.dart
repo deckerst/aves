@@ -2,13 +2,13 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/markdown_container.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PolicyPage extends StatefulWidget {
   static const routeName = '/about/policy';
 
-  const PolicyPage({super.key});
+  const new({super.key});
 
   @override
   State<PolicyPage> createState() => _PolicyPageState();

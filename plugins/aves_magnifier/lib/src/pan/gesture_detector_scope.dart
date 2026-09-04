@@ -21,7 +21,7 @@ class MagnifierGestureDetectorScope extends InheritedWidget {
 
   final bool? Function(Offset move)? acceptPointerEvent;
 
-  const MagnifierGestureDetectorScope({
+  const new({
     super.key,
     required this.axis,
     this.touchSlopFactor = .8,

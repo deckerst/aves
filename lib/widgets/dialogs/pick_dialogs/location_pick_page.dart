@@ -14,7 +14,7 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -24,7 +24,7 @@ class LocationPickPage extends StatelessWidget {
   final CollectionLens? collection;
   final LatLng? initialLocation;
 
-  const LocationPickPage({
+  const new({
     super.key,
     required this.collection,
     required this.initialLocation,
@@ -51,7 +51,7 @@ class _Content extends StatefulWidget {
   final CollectionLens? collection;
   final LatLng? initialLocation;
 
-  const _Content({
+  const new({
     required this.collection,
     required this.initialLocation,
   });
@@ -173,7 +173,7 @@ class _LocationInfo extends StatelessWidget {
   static const double iconPadding = 8.0;
   static const double _interRowPadding = 2.0;
 
-  const _LocationInfo({
+  const new({
     required this.locationNotifier,
   });
 
@@ -228,7 +228,7 @@ class _LocationInfo extends StatelessWidget {
 class _AddressRow extends StatefulWidget {
   final LatLng? location;
 
-  const _AddressRow({
+  const new({
     required this.location,
   });
 
@@ -316,7 +316,7 @@ class _AddressRowState extends State<_AddressRow> {
 class _CoordinateRow extends StatelessWidget {
   final LatLng? location;
 
-  const _CoordinateRow({
+  const new({
     required this.location,
   });
 

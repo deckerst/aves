@@ -24,13 +24,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens? collection;
 
-  VideoActionDelegate({
+  new({
     required this.collection,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {

@@ -3,14 +3,14 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryQueryBar extends StatefulWidget {
   final ValueNotifier<String> queryNotifier;
   final FocusNode focusNode;
 
-  const EntryQueryBar({
+  const new({
     super.key,
     required this.queryNotifier,
     required this.focusNode,

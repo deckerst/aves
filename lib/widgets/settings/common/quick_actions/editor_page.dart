@@ -13,7 +13,7 @@ import 'package:aves/widgets/settings/common/quick_actions/available_actions.dar
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class QuickActionEditorController<T extends Object> with ChangeNotifier {
@@ -25,7 +25,7 @@ class QuickActionEditorController<T extends Object> with ChangeNotifier {
 
   Stream<EditorControllerEvent<T>> get events => _eventsController.stream;
 
-  QuickActionEditorController({
+  new({
     required this.load,
     required this.save,
   });
@@ -60,15 +60,15 @@ class EditorControllerEvent<T> {
   final int index;
   final T item;
 
-  EditorControllerEvent(this.index, this.item);
+  new(this.index, this.item);
 }
 
 class _ItemAddedEvent<T> extends EditorControllerEvent<T> {
-  _ItemAddedEvent(super.index, super.item);
+  new(super.index, super.item);
 }
 
 class _ItemRemovedEvent<T> extends EditorControllerEvent<T> {
-  _ItemRemovedEvent(super.index, super.item);
+  new(super.index, super.item);
 }
 
 class QuickActionEditorPage<T extends Object> extends StatelessWidget {
@@ -80,7 +80,7 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   final String Function(BuildContext context, T action) actionText;
   final QuickActionEditorController<T> controller;
 
-  const QuickActionEditorPage({
+  const new({
     super.key,
     required this.title,
     this.appBarActions,
@@ -124,7 +124,7 @@ class QuickActionEditorBody<T extends Object> extends StatefulWidget {
   final String Function(BuildContext context, T action) actionText;
   final QuickActionEditorController<T> controller;
 
-  const QuickActionEditorBody({
+  const new({
     super.key,
     required this.bannerText,
     this.displayedButtonsDirection,

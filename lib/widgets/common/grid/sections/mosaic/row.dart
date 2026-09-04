@@ -1,14 +1,14 @@
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MosaicGridRow extends MultiChildRenderObjectWidget {
   final MosaicRowLayout rowLayout;
   final double spacing;
   final TextDirection textDirection;
 
-  const MosaicGridRow({
+  const new({
     super.key,
     required this.rowLayout,
     required this.spacing,
@@ -41,10 +41,10 @@ class MosaicGridRow extends MultiChildRenderObjectWidget {
   }
 }
 
-class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
+class _GridRowParentData extends ContainerBoxParentData<RenderBox>;
 
 class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
-  RenderMosaicGridRow({
+  new({
     List<RenderBox>? children,
     required this._rowLayout,
     required this._spacing,

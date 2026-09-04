@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/video/controls.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoControlButtonsPage extends StatelessWidget {
@@ -16,7 +16,7 @@ class VideoControlButtonsPage extends StatelessWidget {
 
   static const _availableActions = [...EntryActions.videoPlayback, EntryAction.openVideoPlayer];
 
-  const VideoControlButtonsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

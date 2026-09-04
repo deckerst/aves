@@ -12,13 +12,13 @@ import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/settings/settings_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SettingsMobilePage extends StatefulWidget {
-  const SettingsMobilePage({super.key});
+  const new({super.key});
 
   @override
   State<SettingsMobilePage> createState() => _SettingsMobilePageState();

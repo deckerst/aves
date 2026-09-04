@@ -14,7 +14,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/filter_grids/common/list_details_theme.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
@@ -25,7 +25,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
 
   AvesEntry? get entry => gridItem.entry;
 
-  const FilterListDetails({
+  const new({
     super.key,
     required this.gridItem,
     required this.pinned,

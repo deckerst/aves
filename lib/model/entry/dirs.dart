@@ -8,7 +8,7 @@ import 'package:collection/collection.dart';
 final entryDirRepo = EntryDirRepo._private();
 
 class EntryDirRepo {
-  EntryDirRepo._private();
+  new _private();
 
   // mapping between the raw entry directory path to a resolvable directory
   final Map<String?, EntryDir> _dirs = {};
@@ -41,7 +41,7 @@ class EntryDir {
   bool ambiguous = false;
   String? _resolved;
 
-  EntryDir(this.asIs) : asIsLower = asIs?.toLowerCase();
+  new(this.asIs) : asIsLower = asIs?.toLowerCase();
 
   String? get resolved {
     if (!ambiguous) return asIs;

@@ -3,10 +3,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/settings/settings_search_delegate.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SettingsSearchPageRoute extends SearchPageRoute {
-  SettingsSearchPageRoute({
+  new({
     required BuildContext context,
     super.background,
   }) : super(

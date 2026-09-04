@@ -10,7 +10,7 @@ class TrashDetails extends Equatable {
   @override
   List<Object?> get props => [id, path, dateMillis];
 
-  const TrashDetails({
+  const new({
     required this.id,
     required this.path,
     required this.dateMillis,
@@ -26,7 +26,7 @@ class TrashDetails extends Equatable {
     );
   }
 
-  factory TrashDetails.fromMap(Map map) {
+  factory fromMap(Map map) {
     return TrashDetails(
       id: map['id'] as int,
       path: map['path'] as String,

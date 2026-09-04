@@ -11,7 +11,7 @@ import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/editor/transform/transformation.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TransformControlPanel extends StatefulWidget {
@@ -19,7 +19,7 @@ class TransformControlPanel extends StatefulWidget {
   final VoidCallback onCancel;
   final void Function(Transformation transformation) onApply;
 
-  const TransformControlPanel({
+  const new({
     super.key,
     required this.entry,
     required this.onCancel,
@@ -114,7 +114,7 @@ class _TransformControlPanelState extends State<TransformControlPanel> with Tick
 }
 
 class CropControlPanel extends StatelessWidget {
-  const CropControlPanel({super.key});
+  const new({super.key});
 
   static double preferredHeight(BuildContext context) => CropAspectRatio.values.map((v) {
     return CaptionedButton.getSize(context, v.getText(context), showCaption: true).height;
@@ -153,7 +153,7 @@ class CropControlPanel extends StatelessWidget {
 }
 
 class RotationControlPanel extends StatelessWidget {
-  const RotationControlPanel({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

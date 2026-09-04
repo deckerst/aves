@@ -21,7 +21,7 @@ class DateModifier extends Equatable {
   @override
   List<Object?> get props => [action, fields, setDateTime, copyFieldSource, shiftSeconds];
 
-  const DateModifier._private(
+  const new _private(
     this.action, {
     this.fields = const {},
     this.setDateTime,
@@ -29,23 +29,23 @@ class DateModifier extends Equatable {
     this.shiftSeconds,
   });
 
-  factory DateModifier.setCustom(Set<MetadataField> fields, DateTime dateTime) {
+  factory setCustom(Set<MetadataField> fields, DateTime dateTime) {
     return DateModifier._private(DateEditAction.setCustom, fields: fields, setDateTime: dateTime);
   }
 
-  factory DateModifier.copyField(DateFieldSource copyFieldSource) {
+  factory copyField(DateFieldSource copyFieldSource) {
     return DateModifier._private(DateEditAction.copyField, copyFieldSource: copyFieldSource);
   }
 
-  factory DateModifier.extractFromTitle() {
+  factory extractFromTitle() {
     return const DateModifier._private(DateEditAction.extractFromTitle);
   }
 
-  factory DateModifier.shift(Set<MetadataField> fields, int shiftSeconds) {
+  factory shift(Set<MetadataField> fields, int shiftSeconds) {
     return DateModifier._private(DateEditAction.shift, fields: fields, shiftSeconds: shiftSeconds);
   }
 
-  factory DateModifier.remove(Set<MetadataField> fields) {
+  factory remove(Set<MetadataField> fields) {
     return DateModifier._private(DateEditAction.remove, fields: fields);
   }
 }

@@ -25,7 +25,7 @@ class NullableValueListenableBuilder<T> extends StatefulWidget {
   final ValueWidgetBuilder<T?> builder;
   final Widget? child;
 
-  const NullableValueListenableBuilder({
+  const new({
     super.key,
     required this.valueListenable,
     required this.builder,

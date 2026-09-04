@@ -2,12 +2,12 @@ import 'package:aves/ref/upnp.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:dlna_dart/dlna.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CastDialog extends StatefulWidget {
   static const routeName = '/dialog/cast';
 
-  const CastDialog({super.key});
+  const new({super.key});
 
   @override
   State<CastDialog> createState() => _CastDialogState();

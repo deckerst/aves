@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - prefer Media Store API over SAF API on Android >=11
 - require Media Management permission to edit items with Media Store API on Android >=11
 - always save date to metadata when handling undated item
-- upgraded Flutter to beta v3.47.0-0.3.pre
+- upgraded Flutter to stable v3.47.2
 
 ### Fixed
 

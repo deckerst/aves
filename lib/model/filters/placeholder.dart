@@ -24,7 +24,7 @@ class PlaceholderFilter extends CollectionFilter {
   @override
   List<Object?> get props => [placeholder];
 
-  PlaceholderFilter._private(this.placeholder) : super(reversed: false) {
+  new _private(this.placeholder) : super(reversed: false) {
     switch (placeholder) {
       case _country:
         _icon = AIcons.country;
@@ -35,7 +35,7 @@ class PlaceholderFilter extends CollectionFilter {
     }
   }
 
-  factory PlaceholderFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return PlaceholderFilter._private(
       json['placeholder'] as String,
     );

@@ -5,14 +5,14 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ViewerActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/viewer/actions';
 
   static const List<String> settingKeys = [SettingKeys.viewerQuickActionsKey];
 
-  const ViewerActionEditorPage({super.key});
+  const new({super.key});
 
   @override
   State<ViewerActionEditorPage> createState() => _ViewerActionEditorPageState();

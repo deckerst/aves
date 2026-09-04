@@ -197,7 +197,7 @@ class EntryConvertOptions extends Equatable {
   @override
   List<Object?> get props => [action, mimeType, writeMetadata, lengthUnit, width, height, quality];
 
-  const EntryConvertOptions({
+  const new({
     required this.action,
     required this.mimeType,
     required this.writeMetadata,

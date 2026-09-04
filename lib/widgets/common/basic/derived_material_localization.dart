@@ -2,14 +2,14 @@ import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // apply custom regional preferences on context localization
 // until this is fixed: https://github.com/flutter/flutter/issues/122274
 class MaterialLocalizationsRegionalizer extends StatefulWidget {
   final Widget child;
 
-  const MaterialLocalizationsRegionalizer({
+  const new({
     super.key,
     required this.child,
   });
@@ -54,7 +54,7 @@ class DerivedMaterialLocalizationsDelegate extends LocalizationsDelegate<Materia
   final ui.Locale locale;
   final MaterialLocalizations localizations;
 
-  const DerivedMaterialLocalizationsDelegate(this.locale, this.localizations);
+  const new(this.locale, this.localizations);
 
   @override
   bool isSupported(ui.Locale locale) => locale == this.locale;
@@ -72,7 +72,7 @@ class DerivedMaterialLocalizations extends MaterialLocalizations {
   final MaterialLocalizations parent;
   final int? _firstDayOfWeekIndex;
 
-  DerivedMaterialLocalizations({
+  new({
     required this.parent,
     this._firstDayOfWeekIndex,
   });

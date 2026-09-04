@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class GridSelectionGestureDetector<T> extends StatefulWidget {
@@ -19,7 +19,7 @@ class GridSelectionGestureDetector<T> extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
   final Widget child;
 
-  const GridSelectionGestureDetector({
+  const new({
     super.key,
     required this.scrollableKey,
     this.selectable = true,

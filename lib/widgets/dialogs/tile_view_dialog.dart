@@ -9,7 +9,7 @@ import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
@@ -25,7 +25,7 @@ class TileViewDialog<S, G, L> extends StatefulWidget {
   final TileExtentController tileExtentController;
   final bool Function(S? sort, G? section, L? layout)? canSection;
 
-  const TileViewDialog({
+  const new({
     super.key,
     required this.initialValue,
     this.sortOptions = const [],
@@ -256,7 +256,7 @@ class TileViewDialogOption<T> {
   final String title;
   final IconData icon;
 
-  const TileViewDialogOption({
+  const new({
     required this.value,
     required this.title,
     required this.icon,

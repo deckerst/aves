@@ -3,14 +3,14 @@ import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class EditEntryTitleDescriptionDialog extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_title_description';
 
   final String initialTitle, initialDescription;
 
-  const EditEntryTitleDescriptionDialog({
+  const new({
     super.key,
     required this.initialTitle,
     required this.initialDescription,

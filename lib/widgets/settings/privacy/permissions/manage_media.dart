@@ -3,10 +3,10 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ManageMediaTile extends StatefulWidget {
-  const ManageMediaTile({super.key});
+  const new({super.key});
 
   @override
   State<ManageMediaTile> createState() => _ManageMediaTileState();

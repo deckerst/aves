@@ -6,11 +6,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/subtitle.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SubtitleSample extends StatelessWidget {
-  const SubtitleSample({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

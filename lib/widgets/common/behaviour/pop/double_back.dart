@@ -5,8 +5,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class DoubleBackPopHandler extends PopHandler {
   bool _backOnce = false;
   Timer? _backTimer;
 
-  DoubleBackPopHandler._private();
+  new _private();
 
   @override
   bool canPop(BuildContext context) {

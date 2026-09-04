@@ -8,7 +8,7 @@ class MosaicSectionLayout extends SectionLayout {
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, rows, spacing];
 
-  const MosaicSectionLayout({
+  const new({
     required super.sectionKey,
     required super.firstIndex,
     required super.lastIndex,
@@ -60,7 +60,7 @@ class MosaicRowLayout extends Equatable {
   @override
   List<Object?> get props => [firstIndex, lastIndex, minOffset, maxOffset, height, itemWidths];
 
-  const MosaicRowLayout({
+  const new({
     required this.firstIndex,
     required this.lastIndex,
     required this.minOffset,

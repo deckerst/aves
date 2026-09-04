@@ -20,7 +20,7 @@ class GeoTiffInfo extends Equatable {
   @override
   List<Object?> get props => [modelPixelScale, modelTiePoints, modelTransformation, projCSType, projLinearUnits];
 
-  const GeoTiffInfo({
+  const new({
     this.modelPixelScale,
     this.modelTiePoints,
     this.modelTransformation,
@@ -28,7 +28,7 @@ class GeoTiffInfo extends Equatable {
     this.projLinearUnits,
   });
 
-  factory GeoTiffInfo.fromMap(Map map) {
+  factory fromMap(Map map) {
     return GeoTiffInfo(
       modelPixelScale: (map[GeoTiffExifTags.modelPixelScale] as List?)?.cast<double>(),
       modelTiePoints: (map[GeoTiffExifTags.modelTiePoints] as List?)?.cast<double>(),
@@ -51,7 +51,7 @@ class MappedGeoTiff with MapOverlay {
     ..style = PaintingStyle.fill
     ..color = const Color(0xFF000000);
 
-  MappedGeoTiff({
+  new({
     required GeoTiffInfo info,
     required this.entry,
     required double devicePixelRatio,
@@ -180,7 +180,7 @@ class GeoTiffCoordinateConverter {
   late LatLng? Function(Point<int> pixel) pointToLatLng;
   late Point<int>? Function(Point<double> smPoint) epsg3857ToPoint;
 
-  GeoTiffCoordinateConverter({
+  new({
     required GeoTiffInfo info,
     required this.entry,
   }) {

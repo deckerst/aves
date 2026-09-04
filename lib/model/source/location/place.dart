@@ -49,10 +49,10 @@ mixin PlaceMixin on SourceBase {
   }
 }
 
-class PlacesChangedEvent {}
+class PlacesChangedEvent;
 
 class PlaceSummaryInvalidatedEvent {
   final Set<String>? places;
 
-  const PlaceSummaryInvalidatedEvent(this.places);
+  const new(this.places);
 }

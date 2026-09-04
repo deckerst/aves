@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoControlRow extends StatelessWidget {
@@ -17,7 +17,7 @@ class VideoControlRow extends StatelessWidget {
   static const double edgeButtonPadding = 3;
   static const Radius radius = Radius.circular(123);
 
-  const VideoControlRow({
+  const new({
     super.key,
     this.controller,
     this.scale = kAlwaysCompleteAnimation,
@@ -68,7 +68,7 @@ class _VideoOverlayButton extends StatelessWidget {
   final EntryAction action;
   final BorderRadius? borderRadius;
 
-  const _VideoOverlayButton({
+  const new({
     required this.controller,
     required this.scale,
     required this.canOpenVideoPlayer,

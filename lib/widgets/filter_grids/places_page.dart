@@ -11,13 +11,13 @@ import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class PlaceListPage extends StatelessWidget {
   static const routeName = '/places';
 
-  const PlaceListPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

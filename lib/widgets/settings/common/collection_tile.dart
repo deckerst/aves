@@ -4,13 +4,13 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_caption.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SettingsCollectionTile extends StatelessWidget {
   final Set<CollectionFilter> filters;
   final void Function(Set<CollectionFilter>) onSelection;
 
-  const SettingsCollectionTile({
+  const new({
     super.key,
     required this.filters,
     required this.onSelection,

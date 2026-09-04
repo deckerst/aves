@@ -12,7 +12,7 @@ class ScaleLevel extends Equatable {
   @override
   List<Object?> get props => [ref, factor];
 
-  const ScaleLevel({
+  const new({
     this.ref = ScaleReference.absolute,
     this.factor = 1.0,
   });

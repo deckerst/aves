@@ -1,9 +1,9 @@
 import 'package:aves_map/src/theme.dart';
 import 'package:aves_ui/aves_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DotMarker extends StatelessWidget {
-  const DotMarker({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

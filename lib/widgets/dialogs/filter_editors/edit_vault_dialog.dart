@@ -14,7 +14,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditVaultDialog extends StatefulWidget {
@@ -22,7 +22,7 @@ class EditVaultDialog extends StatefulWidget {
 
   final VaultDetails? initialDetails;
 
-  const EditVaultDialog({
+  const new({
     super.key,
     this.initialDetails,
   });

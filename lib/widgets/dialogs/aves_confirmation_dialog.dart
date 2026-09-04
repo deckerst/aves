@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'aves_dialog.dart';
 
@@ -84,7 +84,7 @@ abstract class ConfirmationDialogDelegate {
 class MessageConfirmationDialogDelegate extends ConfirmationDialogDelegate {
   final String message;
 
-  MessageConfirmationDialogDelegate(this.message);
+  new(this.message);
 
   @override
   List<Widget> build(BuildContext context) => [
@@ -102,7 +102,7 @@ class _SkippableConfirmationDialog extends StatefulWidget {
   final ConfirmationDialogDelegate delegate;
   final String confirmationButtonLabel;
 
-  const _SkippableConfirmationDialog({
+  const new({
     required this.type,
     required this.delegate,
     required this.confirmationButtonLabel,

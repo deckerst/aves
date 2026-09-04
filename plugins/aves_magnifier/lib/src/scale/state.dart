@@ -11,7 +11,7 @@ class ScaleStateChange extends Equatable {
   @override
   List<Object?> get props => [state, source, childFocalPoint];
 
-  const ScaleStateChange({
+  const new({
     required this.state,
     required this.source,
     this.childFocalPoint,

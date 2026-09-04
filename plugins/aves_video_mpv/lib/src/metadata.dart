@@ -403,7 +403,7 @@ class _ThumbnailByteInput {
   final int targetWidth;
   final int targetHeight;
 
-  const _ThumbnailByteInput({
+  const new({
     required this.bytes,
     required this.videoWidth,
     required this.videoHeight,
@@ -419,7 +419,7 @@ class _ThumbnailByteOutput {
   final int width;
   final int height;
 
-  const _ThumbnailByteOutput({
+  const new({
     required this.bytes,
     required this.width,
     required this.height,

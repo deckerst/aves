@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CompassPainter extends CustomPainter {
   final Color color;
 
-  const CompassPainter({
+  const new({
     required this.color,
   });
 

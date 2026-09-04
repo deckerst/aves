@@ -7,7 +7,7 @@ class Debouncer {
 
   Timer? _timer;
 
-  Debouncer({required this.delay});
+  new({required this.delay});
 
   void call(VoidCallback action) {
     _timer?.cancel();

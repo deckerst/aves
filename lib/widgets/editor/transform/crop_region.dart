@@ -15,7 +15,7 @@ class CropRegion extends Equatable {
   @override
   List<Object?> get props => [topLeft, topRight, bottomRight, bottomLeft];
 
-  const CropRegion({
+  const new({
     required this.topLeft,
     required this.topRight,
     required this.bottomRight,
@@ -29,7 +29,7 @@ class CropRegion extends Equatable {
     bottomLeft: Offset.zero,
   );
 
-  factory CropRegion.fromRect(Rect rect) {
+  factory fromRect(Rect rect) {
     return CropRegion(
       topLeft: rect.topLeft,
       topRight: rect.topRight,

@@ -11,7 +11,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
 
   EdgeHitDetector? hitDetector;
 
-  MagnifierGestureRecognizer({
+  new({
     super.debugOwner,
     required this.scope,
     required this.doubleTapDetails,

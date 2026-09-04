@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/basic/time_shift_selector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'aves_dialog.dart';
 
@@ -9,7 +9,7 @@ class TimeShiftDialog extends StatefulWidget {
 
   final Duration initialValue;
 
-  const TimeShiftDialog({
+  const new({
     super.key,
     required this.initialValue,
   });

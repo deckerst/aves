@@ -1,10 +1,10 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DrawerEditorBanner extends StatelessWidget {
-  const DrawerEditorBanner({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ class MediaTrackSummary {
   final int? index, width, height;
   final String? codecName, language, title;
 
-  const MediaTrackSummary({
+  const new({
     required this.type,
     required this.index,
     required this.codecName,

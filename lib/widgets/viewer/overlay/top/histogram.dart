@@ -5,13 +5,13 @@ import 'package:aves/widgets/viewer/overlay/top/top.dart';
 import 'package:aves/widgets/viewer/view/controller.dart';
 import 'package:aves/widgets/viewer/view/histogram.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ImageHistogram extends StatefulWidget {
   final ViewStateController viewStateController;
   final ImageProvider image;
 
-  const ImageHistogram({
+  const new({
     super.key,
     required this.viewStateController,
     required this.image,
@@ -93,7 +93,7 @@ class _HistogramPainter extends CustomPainter {
 
   late final Paint fill, borderStroke;
 
-  _HistogramPainter({
+  new({
     required this.levels,
     this.borderColor = Colors.white,
   }) {

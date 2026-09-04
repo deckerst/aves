@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
@@ -23,7 +23,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   static const double minThumbnailAspectRatio = 9 / 32;
   static const double maxThumbnailAspectRatio = 32 / 9;
 
-  MosaicSectionLayoutBuilder({
+  new({
     required super.sections,
     required super.showHeaders,
     required super.getHeaderExtent,

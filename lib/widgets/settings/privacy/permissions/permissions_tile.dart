@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/privacy/permissions/permissions_page.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +31,7 @@ class SettingsTilePermissions extends SettingsTile {
 }
 
 class SettingsTilePermissionsSubtitle extends StatefulWidget {
-  const SettingsTilePermissionsSubtitle({super.key});
+  const new({super.key});
 
   @override
   State<SettingsTilePermissionsSubtitle> createState() => _SettingsTilePermissionsSubtitleState();

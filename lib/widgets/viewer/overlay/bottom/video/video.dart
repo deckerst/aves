@@ -11,7 +11,7 @@ import 'package:aves/widgets/viewer/overlay/bottom/video/progress_bar.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/video/slow_motion_bar.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoControlOverlay extends StatefulWidget {
@@ -20,7 +20,7 @@ class VideoControlOverlay extends StatefulWidget {
   final Animation<double> scale;
   final Function(EntryAction value) onActionSelected;
 
-  const VideoControlOverlay({
+  const new({
     super.key,
     required this.entry,
     required this.controller,

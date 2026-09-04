@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   final ThumbnailProviderKey key;
 
-  const ThumbnailProvider(this.key);
+  const new(this.key);
 
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {
@@ -70,7 +70,7 @@ class ThumbnailProviderKey extends Equatable {
   @override
   List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, dateModifiedMillis, extent];
 
-  const ThumbnailProviderKey({
+  const new({
     required this.uri,
     required this.mimeType,
     required this.pageId,

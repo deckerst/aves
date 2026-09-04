@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // adapted from Flutter `SnackBar` in `/material/snack_bar.dart`
 
@@ -17,7 +17,7 @@ const Curve _snackBarM3FadeInCurve = Interval(0.4, 0.6, curve: Curves.easeInCirc
 const Curve _snackBarFadeOutCurve = Interval(0.72, 1.0, curve: Curves.fastOutSlowIn);
 
 class OverlaySnackBar extends StatefulWidget {
-  const OverlaySnackBar({
+  const new({
     super.key,
     required this.content,
     this.backgroundColor,
@@ -521,7 +521,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
 
 // dart format off
 class _SnackbarDefaultsM3 extends SnackBarThemeData {
-  _SnackbarDefaultsM3(this.context);
+  new(this.context);
 
   final BuildContext context;
   late final ThemeData _theme = Theme.of(context);

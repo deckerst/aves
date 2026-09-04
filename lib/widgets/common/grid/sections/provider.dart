@@ -4,8 +4,8 @@ import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef CoverRatioResolver<T> = double Function(T item);
@@ -20,7 +20,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final CoverRatioResolver<T> coverRatioResolver;
   final Widget child;
 
-  const SectionedListLayoutProvider({
+  const new({
     super.key,
     required this.scrollableWidth,
     required this.tileLayout,

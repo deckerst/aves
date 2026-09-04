@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/thumbnail/overlay.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
@@ -20,7 +20,7 @@ class DecoratedThumbnail extends StatelessWidget {
 
   static double borderWidth(BuildContext context) => AvesBorder.straightBorderWidth(context);
 
-  const DecoratedThumbnail({
+  const new({
     super.key,
     required this.entry,
     required this.tileExtent,

@@ -12,7 +12,7 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoProgressBar extends StatefulWidget {
   final AvesVideoController? controller;
@@ -20,7 +20,7 @@ class VideoProgressBar extends StatefulWidget {
 
   static const padding = EdgeInsets.symmetric(horizontal: 16);
 
-  const VideoProgressBar({
+  const new({
     super.key,
     required this.controller,
     required this.scale,

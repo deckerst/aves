@@ -24,7 +24,7 @@ import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {

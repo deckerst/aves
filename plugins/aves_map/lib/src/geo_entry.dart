@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class GeoEntry<T> extends Clusterable {
   T? entry;
 
-  GeoEntry({
+  new({
     this.entry,
     super.latitude,
     super.longitude,
@@ -15,7 +15,7 @@ class GeoEntry<T> extends Clusterable {
     super.childMarkerId,
   });
 
-  factory GeoEntry.createCluster(BaseCluster cluster, double longitude, double latitude) {
+  factory createCluster(BaseCluster cluster, double longitude, double latitude) {
     return GeoEntry(
       latitude: latitude,
       longitude: longitude,

@@ -9,7 +9,7 @@ class GeoTrack {
   final List<LatLng> points;
   final Color color;
 
-  const GeoTrack({
+  const new({
     required this.points,
     required this.color,
   });

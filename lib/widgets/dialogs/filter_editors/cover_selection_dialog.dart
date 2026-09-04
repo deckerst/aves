@@ -17,8 +17,8 @@ import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/app_pick_page.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
@@ -29,7 +29,7 @@ class CoverSelectionDialog extends StatefulWidget {
   final String? customPackage;
   final Color? customColor;
 
-  const CoverSelectionDialog({
+  const new({
     super.key,
     required this.filter,
     required this.customEntry,

@@ -6,14 +6,14 @@ import 'package:flutter/foundation.dart';
 class EntryAddedEvent {
   final Set<AvesEntry>? entries;
 
-  const EntryAddedEvent([this.entries]);
+  const new([this.entries]);
 }
 
 @immutable
 class EntryRemovedEvent {
   final Set<AvesEntry> entries;
 
-  const EntryRemovedEvent(this.entries);
+  const new(this.entries);
 }
 
 @immutable
@@ -21,24 +21,24 @@ class EntryMovedEvent {
   final MoveType type;
   final Set<AvesEntry> entries;
 
-  const EntryMovedEvent(this.type, this.entries);
+  const new(this.type, this.entries);
 }
 
 @immutable
 class EntryRefreshedEvent {
   final Set<AvesEntry> entries;
 
-  const EntryRefreshedEvent(this.entries);
+  const new(this.entries);
 }
 
 @immutable
 class FilterVisibilityChangedEvent {
-  const FilterVisibilityChangedEvent();
+  const new();
 }
 
 @immutable
 class ProgressEvent {
   final int done, total;
 
-  const ProgressEvent({required this.done, required this.total});
+  const new({required this.done, required this.total});
 }

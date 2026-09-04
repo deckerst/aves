@@ -31,7 +31,7 @@ import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:aves/widgets/stats/top_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -44,7 +44,7 @@ class StatsPage extends StatefulWidget {
   final CollectionSource source;
   final CollectionLens? parentCollection;
 
-  const StatsPage({
+  const new({
     super.key,
     required this.entries,
     required this.source,
@@ -401,7 +401,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
 class _LocationIndicator extends StatelessWidget {
   final Set<AvesEntry> entries;
 
-  const _LocationIndicator({required this.entries});
+  const new({required this.entries});
 
   @override
   Widget build(BuildContext context) {

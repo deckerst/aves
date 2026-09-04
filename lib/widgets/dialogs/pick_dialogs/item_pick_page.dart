@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/query_provider.dart';
 import 'package:aves/widgets/common/providers/selection_provider.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ItemPickPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class ItemPickPage extends StatefulWidget {
   final CollectionLens collection;
   final bool canRemoveFilters;
 
-  const ItemPickPage({
+  const new({
     super.key,
     required this.collection,
     required this.canRemoveFilters,

@@ -3,14 +3,14 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayPositionTitleRow extends StatelessWidget {
   final AvesEntry entry;
   final String? collectionPosition;
   final MultiPageController? multiPageController;
 
-  const OverlayPositionTitleRow({
+  const new({
     super.key,
     required this.entry,
     required this.collectionPosition,

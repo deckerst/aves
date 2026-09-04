@@ -16,7 +16,7 @@ import 'package:aves/widgets/settings/navigation/drawer_editor_page.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class NavigationSection extends SettingsSection {
@@ -49,7 +49,7 @@ class _HomeOption {
   final Set<CollectionFilter> customCollection;
   final String? customExplorerPath;
 
-  const _HomeOption(
+  const new(
     this.page, {
     this.customCollection = const {},
     this.customExplorerPath,

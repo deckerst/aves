@@ -2,14 +2,14 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MapStyleEditorDialog extends StatefulWidget {
   static const routeName = '/dialog/map_style_editor';
 
   final EntryMapStyle? initialValue;
 
-  const MapStyleEditorDialog({
+  const new({
     super.key,
     this.initialValue,
   });

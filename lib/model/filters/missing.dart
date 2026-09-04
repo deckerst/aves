@@ -21,7 +21,7 @@ class MissingFilter extends CollectionFilter {
   @override
   List<Object?> get props => [metadataType, reversed];
 
-  MissingFilter._private(this.metadataType, {super.reversed = false}) {
+  new _private(this.metadataType, {super.reversed = false}) {
     switch (metadataType) {
       case _date:
         _test = (entry) => (entry.catalogMetadata?.dateMillis ?? 0) == 0;
@@ -35,7 +35,7 @@ class MissingFilter extends CollectionFilter {
     }
   }
 
-  factory MissingFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return MissingFilter._private(
       json['metadataType'] as String,
       reversed: json['reversed'] as bool? ?? false,

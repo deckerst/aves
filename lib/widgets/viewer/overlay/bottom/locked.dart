@@ -6,14 +6,14 @@ import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerLockedOverlay extends StatefulWidget {
   final AnimationController animationController;
   final EdgeInsets? viewInsets, viewPadding;
 
-  const ViewerLockedOverlay({
+  const new({
     super.key,
     required this.animationController,
     this.viewInsets,

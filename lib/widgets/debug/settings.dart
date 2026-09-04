@@ -7,11 +7,11 @@ import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class DebugSettingsSection extends StatefulWidget {
-  const DebugSettingsSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugSettingsSection> createState() => _DebugSettingsSectionState();

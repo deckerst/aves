@@ -24,7 +24,7 @@ class ScaleBoundaries extends Equatable {
   @override
   List<Object?> get props => [_allowOriginalScaleBeyondRange, _minScale, _maxScale, _initialScale, viewportSize, contentSize, padding, externalTransform];
 
-  const ScaleBoundaries({
+  const new({
     required this._allowOriginalScaleBeyondRange,
     required this._minScale,
     required this._maxScale,

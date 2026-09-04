@@ -7,11 +7,11 @@ import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 class DebugLeakingSection extends StatefulWidget {
-  const DebugLeakingSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugLeakingSection> createState() => _DebugLeakingSectionState();
@@ -120,7 +120,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
 }
 
 class _CollectorOverlay extends StatefulWidget {
-  const _CollectorOverlay();
+  const new();
 
   @override
   State<_CollectorOverlay> createState() => _CollectorOverlayState();

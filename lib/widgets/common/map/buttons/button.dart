@@ -1,17 +1,17 @@
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapOverlayButton extends StatelessWidget {
   final ValueWidgetBuilder<VisualDensity> builder;
 
-  const MapOverlayButton({
+  const new({
     super.key,
     required this.builder,
   });
 
-  factory MapOverlayButton.icon({
+  factory icon({
     Key? buttonKey,
     required Widget icon,
     required String tooltip,

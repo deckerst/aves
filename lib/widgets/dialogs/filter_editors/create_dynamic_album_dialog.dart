@@ -1,12 +1,12 @@
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CreateDynamicAlbumDialog extends StatefulWidget {
   static const routeName = '/dialog/create_dynamic_album';
 
-  const CreateDynamicAlbumDialog({super.key});
+  const new({super.key});
 
   @override
   State<CreateDynamicAlbumDialog> createState() => _CreateDynamicAlbumDialogState();

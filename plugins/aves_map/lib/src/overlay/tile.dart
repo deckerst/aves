@@ -5,7 +5,7 @@ class MapTile {
   final int width, height;
   final Uint8List data;
 
-  const MapTile({
+  const new({
     required this.width,
     required this.height,
     required this.data,

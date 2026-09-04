@@ -4,12 +4,12 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/share_chooser.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ShareButton extends ChooserQuickButton<ShareAction> {
   final Set<AvesEntry> entries;
 
-  const ShareButton({
+  const new({
     super.key,
     required super.blurred,
     required this.entries,

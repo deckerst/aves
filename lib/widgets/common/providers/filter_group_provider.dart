@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class FilterGroupProvider extends ListenableProvider<FilterGroupNotifier> {
-  FilterGroupProvider({
+  new({
     super.key,
     Uri? initialValue,
     super.child,
@@ -13,5 +13,5 @@ class FilterGroupProvider extends ListenableProvider<FilterGroupNotifier> {
 }
 
 class FilterGroupNotifier extends ValueNotifier<Uri?> {
-  FilterGroupNotifier(super.value);
+  new(super.value);
 }

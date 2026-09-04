@@ -22,7 +22,7 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
@@ -33,7 +33,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final AFilterCallback? onTap;
   final HeroType heroType;
 
-  const CoveredFilterChip({
+  const new({
     super.key,
     required this.filter,
     required this.extent,

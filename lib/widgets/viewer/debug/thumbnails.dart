@@ -5,12 +5,12 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ThumbnailsTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const ThumbnailsTab({
+  const new({
     super.key,
     required this.entry,
   });

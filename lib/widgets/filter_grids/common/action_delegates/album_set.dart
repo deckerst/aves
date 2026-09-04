@@ -42,14 +42,14 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart'
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> with EntryEditorMixin, EntryStorageMixin {
   final Iterable<FilterGridItem<AlbumBaseFilter>> _items;
 
-  AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumBaseFilter>> items) : _items = items;
+  new(Iterable<FilterGridItem<AlbumBaseFilter>> items) : _items = items;
 
   @override
   Iterable<FilterGridItem<AlbumBaseFilter>> get allItems => _items;

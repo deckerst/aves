@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 class DraggedPlaceholder extends StatelessWidget {
   final Widget child;
 
-  const DraggedPlaceholder({
+  const new({
     super.key,
     required this.child,
   });

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // as of Flutter v2.8.1, fading opacity in `SliverAppBar`
 // is not applied to title when `appBarTheme.titleTextStyle` is defined,
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class SliverAppBarTitleWrapper extends StatelessWidget {
   final Widget child;
 
-  const SliverAppBarTitleWrapper({
+  const new({
     super.key,
     required this.child,
   });

@@ -4,12 +4,12 @@ import 'dart:ui' as ui;
 import 'package:aves/image_providers/descriptor_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MetadataThumbnails extends StatefulWidget {
   final AvesEntry entry;
 
-  const MetadataThumbnails({
+  const new({
     super.key,
     required this.entry,
   });

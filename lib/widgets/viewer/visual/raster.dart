@@ -12,15 +12,15 @@ import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RasterImageView extends StatefulWidget {
   final AvesEntry entry;
   final ValueNotifier<ViewState> viewStateNotifier;
   final ImageErrorWidgetBuilder errorBuilder;
 
-  const RasterImageView({
+  const new({
     super.key,
     required this.entry,
     required this.viewStateNotifier,
@@ -390,7 +390,7 @@ class _RegionTile extends StatefulWidget {
   final int sampleSize;
   final FilterQuality quality;
 
-  const _RegionTile({
+  const new({
     required this.entry,
     required this.tileRect,
     required this.regionRect,

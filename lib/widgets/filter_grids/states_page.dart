@@ -12,7 +12,7 @@ import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class StateListPage extends StatelessWidget {
@@ -20,7 +20,7 @@ class StateListPage extends StatelessWidget {
 
   final Set<String> countryCodes;
 
-  const StateListPage({
+  const new({
     super.key,
     required this.countryCodes,
   });

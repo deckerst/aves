@@ -15,7 +15,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class Cropper extends StatefulWidget {
@@ -26,7 +26,7 @@ class Cropper extends StatefulWidget {
   static const double handleDimension = kMinInteractiveDimension;
   static const EdgeInsets imageMargin = EdgeInsets.all(kMinInteractiveDimension);
 
-  const Cropper({
+  const new({
     super.key,
     required this.magnifierController,
     required this.transformController,

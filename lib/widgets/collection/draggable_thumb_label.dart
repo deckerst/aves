@@ -6,14 +6,14 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/grid/draggable_thumb_label.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionDraggableThumbLabel extends StatelessWidget {
   final CollectionLens collection;
   final double offsetY;
 
-  const CollectionDraggableThumbLabel({
+  const new({
     super.key,
     required this.collection,
     required this.offsetY,

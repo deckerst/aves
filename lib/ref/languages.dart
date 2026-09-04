@@ -9,7 +9,7 @@ class Language {
   final String iso639_2, name;
   final String? native;
 
-  const Language({
+  const new({
     required this.iso639_2,
     required this.name,
     this.native,

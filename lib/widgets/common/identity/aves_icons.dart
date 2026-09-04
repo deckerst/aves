@@ -8,13 +8,13 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
   final AvesEntry entry;
 
-  const VideoIcon({
+  const new({
     super.key,
     required this.entry,
   });
@@ -45,7 +45,7 @@ class VideoIcon extends StatelessWidget {
 }
 
 class AnimatedImageIcon extends StatelessWidget {
-  const AnimatedImageIcon({super.key});
+  const new({super.key});
 
   static const scale = .75;
 
@@ -59,7 +59,7 @@ class AnimatedImageIcon extends StatelessWidget {
 }
 
 class GeoTiffIcon extends StatelessWidget {
-  const GeoTiffIcon({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class GeoTiffIcon extends StatelessWidget {
 }
 
 class HdrIcon extends StatelessWidget {
-  const HdrIcon({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,7 @@ class HdrIcon extends StatelessWidget {
 }
 
 class PanoramaIcon extends StatelessWidget {
-  const PanoramaIcon({super.key});
+  const new({super.key});
 
   static const scale = .8;
 
@@ -95,7 +95,7 @@ class PanoramaIcon extends StatelessWidget {
 }
 
 class FavouriteIcon extends StatelessWidget {
-  const FavouriteIcon({super.key});
+  const new({super.key});
 
   static const scale = .9;
 
@@ -112,11 +112,11 @@ class FavouriteIcon extends StatelessWidget {
 class TagIcon extends StatelessWidget {
   final IconData icon;
 
-  const TagIcon._private({required this.icon});
+  const new _private({required this.icon});
 
-  factory TagIcon.tagged() => const TagIcon._private(icon: AIcons.tag);
+  factory tagged() => const TagIcon._private(icon: AIcons.tag);
 
-  factory TagIcon.untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
+  factory untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
 
   static const scale = .9;
 
@@ -133,11 +133,11 @@ class TagIcon extends StatelessWidget {
 class LocationIcon extends StatelessWidget {
   final IconData icon;
 
-  const LocationIcon._private({required this.icon});
+  const new _private({required this.icon});
 
-  factory LocationIcon.located() => const LocationIcon._private(icon: AIcons.location);
+  factory located() => const LocationIcon._private(icon: AIcons.location);
 
-  factory LocationIcon.unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
+  factory unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +148,7 @@ class LocationIcon extends StatelessWidget {
 }
 
 class RawIcon extends StatelessWidget {
-  const RawIcon({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +159,7 @@ class RawIcon extends StatelessWidget {
 }
 
 class MotionPhotoIcon extends StatelessWidget {
-  const MotionPhotoIcon({super.key});
+  const new({super.key});
 
   static const scale = .85;
 
@@ -177,7 +177,7 @@ class MultiPageIcon extends StatelessWidget {
 
   static const scale = .8;
 
-  const MultiPageIcon({
+  const new({
     super.key,
     required this.entry,
   });
@@ -205,7 +205,7 @@ class MultiPageIcon extends StatelessWidget {
 class RatingIcon extends StatelessWidget {
   final AvesEntry entry;
 
-  const RatingIcon({
+  const new({
     super.key,
     required this.entry,
   });
@@ -229,7 +229,7 @@ class TrashIcon extends StatelessWidget {
 
   static const scale = .85;
 
-  const TrashIcon({
+  const new({
     super.key,
     required this.trashDaysLeft,
   });
@@ -260,7 +260,7 @@ class OverlayIcon extends StatelessWidget {
 
   static const defaultMargin = EdgeInsets.only(left: 1, right: 1, bottom: 1);
 
-  const OverlayIcon({
+  const new({
     super.key,
     required this.icon,
     this.iconScale = 1,

@@ -19,7 +19,7 @@ class MagnifierGestureDetector extends StatefulWidget {
   final HitTestBehavior? behavior;
   final Widget? child;
 
-  const MagnifierGestureDetector({
+  const new({
     super.key,
     required this.hitDetector,
     this.onScaleStart,
@@ -132,7 +132,7 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
 class MagnifierDoubleTapGestureRecognizer extends DoubleTapGestureRecognizer {
   final MagnifierDoubleTapPredicate allowDoubleTap;
 
-  MagnifierDoubleTapGestureRecognizer({
+  new({
     super.debugOwner,
     super.supportedDevices,
     super.allowedButtonsFilter,

@@ -6,11 +6,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTvPage extends StatelessWidget {
-  const SettingsTvPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class SettingsTvPage extends StatelessWidget {
 }
 
 class _Content extends StatefulWidget {
-  const _Content();
+  const new();
 
   @override
   State<_Content> createState() => _ContentState();
@@ -125,7 +125,7 @@ class _ContentState extends State<_Content> {
 class _Section extends StatelessWidget {
   final Future<List<SettingsTile>> loader;
 
-  const _Section({required this.loader});
+  const new({required this.loader});
 
   @override
   Widget build(BuildContext context) {

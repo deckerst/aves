@@ -4,8 +4,8 @@ import 'dart:collection';
 import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 // as of Flutter v3.41.9, `InkResponse` does not allow setting long press delay
 // adapted from Flutter `InkResponse` and related classes in `/material/ink_well.dart`
@@ -13,7 +13,7 @@ class AInkResponse extends StatelessWidget {
   /// Creates an area of a [Material] that responds to touch.
   ///
   /// Must have an ancestor [Material] widget in which to cause ink reactions.
-  const AInkResponse({
+  const new({
     super.key,
     this.child,
     this.onTap,
@@ -444,7 +444,7 @@ abstract class _ParentInkResponseState {
 }
 
 class _ParentInkResponseProvider extends InheritedWidget {
-  const _ParentInkResponseProvider({required this.state, required super.child});
+  const new({required this.state, required super.child});
 
   final _ParentInkResponseState state;
 
@@ -460,7 +460,7 @@ typedef _GetRectCallback = RectCallback? Function(RenderBox referenceBox);
 typedef _CheckContext = bool Function(BuildContext context);
 
 class _InkResponseStateWidget extends StatefulWidget {
-  const _InkResponseStateWidget({
+  const new({
     this.child,
     this.onTap,
     this.onTapDown,

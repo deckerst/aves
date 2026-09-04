@@ -7,14 +7,14 @@ import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppPickPage extends StatefulWidget {
   static const routeName = '/app_pick';
 
   final String? initialValue;
 
-  const AppPickPage({
+  const new({
     super.key,
     required this.initialValue,
   });

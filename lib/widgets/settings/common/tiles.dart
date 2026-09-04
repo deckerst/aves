@@ -10,7 +10,7 @@ import 'package:aves/widgets/dialogs/duration_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/multi_selection.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef TitleBuilder = String? Function(BuildContext context);
@@ -21,7 +21,7 @@ class SettingsSubPageTile extends StatelessWidget {
   final String routeName;
   final WidgetBuilder builder;
 
-  const SettingsSubPageTile({
+  const new({
     super.key,
     required this.title,
     this.subtitle,
@@ -56,7 +56,7 @@ class SettingsSwitchListTile extends StatefulWidget {
 
   static const disabledOpacity = .2;
 
-  const SettingsSwitchListTile({
+  const new({
     super.key,
     required this.selector,
     required this.onChanged,
@@ -131,7 +131,7 @@ class SettingsSelectionListTile<T> extends StatelessWidget {
   final String? dialogTitle;
   final TextBuilder<T>? optionSubtitleBuilder;
 
-  const SettingsSelectionListTile({
+  const new({
     super.key,
     required this.values,
     required this.getName,
@@ -177,7 +177,7 @@ class SettingsMultiSelectionListTile<T> extends StatelessWidget {
   final String? dialogTitle;
   final TextBuilder<T>? optionSubtitleBuilder;
 
-  const SettingsMultiSelectionListTile({
+  const new({
     super.key,
     required this.values,
     required this.getName,
@@ -218,7 +218,7 @@ class SettingsDurationListTile extends StatelessWidget {
   final ValueChanged<int> onChanged;
   final TitleBuilder title;
 
-  const SettingsDurationListTile({
+  const new({
     super.key,
     required this.selector,
     required this.onChanged,

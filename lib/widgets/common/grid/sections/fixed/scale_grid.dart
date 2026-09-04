@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FixedExtentGridPainter extends CustomPainter {
   final TileLayout tileLayout;
@@ -12,7 +12,7 @@ class FixedExtentGridPainter extends CustomPainter {
   final Color color;
   final TextDirection textDirection;
 
-  const FixedExtentGridPainter({
+  const new({
     required this.tileLayout,
     required this.tileCenter,
     required this.tileSize,

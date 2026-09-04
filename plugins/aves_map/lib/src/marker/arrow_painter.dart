@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MarkerArrowPainter extends CustomPainter {
   final Color color, outlineColor;
   final double outlineWidth;
   final Size size;
 
-  const MarkerArrowPainter({
+  const new({
     required this.color,
     required this.outlineColor,
     required this.outlineWidth,

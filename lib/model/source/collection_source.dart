@@ -71,7 +71,7 @@ mixin SourceBase {
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
   static const fullScope = <CollectionFilter>{};
 
-  CollectionSource() {
+  new() {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',
@@ -637,4 +637,4 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 }
 
-class AspectRatioChangedEvent {}
+class AspectRatioChangedEvent;

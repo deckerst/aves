@@ -7,7 +7,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class GridTheme extends StatelessWidget {
@@ -16,7 +16,7 @@ class GridTheme extends StatelessWidget {
   final bool? showTrash;
   final Widget child;
 
-  const GridTheme({
+  const new({
     super.key,
     required this.extent,
     this.showLocation = true,
@@ -65,7 +65,7 @@ class GridThemeData {
   final bool showLocated, showUnlocated, showTagged, showUntagged;
   late final GridThemeIconBuilder iconBuilder;
 
-  GridThemeData({
+  new({
     required this.iconSize,
     required this.fontSize,
     required this.highlightBorderWidth,

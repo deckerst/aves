@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum MapNavigationButton { back, close, map, none }
 
@@ -10,7 +10,7 @@ class MapThemeData {
   final double? mapHeight;
   final EdgeInsets attributionPadding;
 
-  const MapThemeData({
+  const new({
     required this.interactive,
     required this.showCoordinateFilter,
     required this.navigationButton,

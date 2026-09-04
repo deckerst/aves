@@ -1,5 +1,5 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'aves_dialog.dart';
 
@@ -8,7 +8,7 @@ class VideoSpeedDialog extends StatefulWidget {
 
   final double current, min, max;
 
-  const VideoSpeedDialog({
+  const new({
     super.key,
     required this.current,
     required this.min,

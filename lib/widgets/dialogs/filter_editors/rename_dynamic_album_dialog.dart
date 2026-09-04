@@ -1,14 +1,14 @@
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RenameDynamicAlbumDialog extends StatefulWidget {
   static const routeName = '/dialog/rename_dynamic_album';
 
   final String name;
 
-  const RenameDynamicAlbumDialog({
+  const new({
     super.key,
     required this.name,
   });

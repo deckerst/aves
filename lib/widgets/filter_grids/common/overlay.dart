@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ChipHighlightOverlay extends StatefulWidget {
@@ -11,7 +11,7 @@ class ChipHighlightOverlay extends StatefulWidget {
   final double extent;
   final BorderRadius borderRadius;
 
-  const ChipHighlightOverlay({
+  const new({
     super.key,
     required this.filter,
     required this.extent,

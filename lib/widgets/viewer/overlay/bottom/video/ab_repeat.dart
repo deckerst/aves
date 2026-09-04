@@ -2,13 +2,13 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoABRepeatOverlay extends StatefulWidget {
   final AvesVideoController? controller;
   final Animation<double> scale;
 
-  const VideoABRepeatOverlay({
+  const new({
     super.key,
     required this.controller,
     required this.scale,

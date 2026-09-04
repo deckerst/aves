@@ -1,12 +1,12 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoView extends StatefulWidget {
   final AvesEntry entry;
   final AvesVideoController controller;
 
-  const VideoView({
+  const new({
     super.key,
     required this.entry,
     required this.controller,

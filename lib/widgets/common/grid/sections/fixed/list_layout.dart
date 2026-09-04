@@ -3,14 +3,14 @@ import 'dart:math';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FixedExtentSectionedListLayout<T> extends SectionedListLayout<T> {
   final int columnCount;
   final double tileWidth, tileHeight;
 
-  const FixedExtentSectionedListLayout({
+  const new({
     required super.sections,
     required super.showHeaders,
     required this.columnCount,

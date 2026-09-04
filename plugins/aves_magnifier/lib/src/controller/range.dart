@@ -9,7 +9,7 @@ class EdgeRange extends Equatable {
   @override
   List<Object?> get props => [min, max];
 
-  const EdgeRange(this.min, this.max);
+  const new(this.min, this.max);
 
   static const EdgeRange zero = EdgeRange(0, 0);
 }

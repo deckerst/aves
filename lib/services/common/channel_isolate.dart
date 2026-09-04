@@ -14,7 +14,7 @@ class ChannelIsolate {
   late Future<SendPort> _isolateRequestPort;
   final String channelName;
 
-  ChannelIsolate(this.channelName) {
+  new(this.channelName) {
     _isolateRequestPort = _initRequestPort();
   }
 
@@ -108,7 +108,7 @@ class IsolateChannelRequest extends Equatable {
   @override
   List<Object?> get props => [id, method, arguments];
 
-  const IsolateChannelRequest(this.id, this.channelName, this.method, this.arguments);
+  const new(this.id, this.channelName, this.method, this.arguments);
 }
 
 @immutable
@@ -121,13 +121,13 @@ class IsolateChannelResponse extends Equatable {
   @override
   List<Object?> get props => [id, result, error, stack];
 
-  const IsolateChannelResponse._private(this.id, this.result, this.error, this.stack);
+  const new _private(this.id, this.result, this.error, this.stack);
 
-  factory IsolateChannelResponse.success(int id, Object? result) {
+  factory success(int id, Object? result) {
     return IsolateChannelResponse._private(id, result, null, null);
   }
 
-  factory IsolateChannelResponse.exception(int id, Exception? e, [StackTrace? stack]) {
+  factory exception(int id, Exception? e, [StackTrace? stack]) {
     return IsolateChannelResponse._private(id, null, e, stack);
   }
 }
@@ -136,7 +136,7 @@ class _IsolateData {
   final RootIsolateToken token;
   final SendPort answerPort;
 
-  _IsolateData({
+  new({
     required this.token,
     required this.answerPort,
   });

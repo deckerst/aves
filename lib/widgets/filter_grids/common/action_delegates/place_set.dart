@@ -8,7 +8,7 @@ import 'package:aves_model/aves_model.dart';
 class PlaceChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
   final Iterable<FilterGridItem<LocationFilter>> _items;
 
-  PlaceChipSetActionDelegate(Iterable<FilterGridItem<LocationFilter>> items) : _items = items;
+  new(Iterable<FilterGridItem<LocationFilter>> items) : _items = items;
 
   @override
   Iterable<FilterGridItem<LocationFilter>> get allItems => _items;

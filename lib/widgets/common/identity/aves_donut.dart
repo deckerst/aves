@@ -7,7 +7,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:collection/collection.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef DatumKeyFormatter = String Function(AvesDonutDatum d);
@@ -24,7 +24,7 @@ class AvesDonut extends StatefulWidget {
   final DatumColorizer colorize;
   final DatumCallback? onTap;
 
-  const AvesDonut({
+  const new({
     super.key,
     required this.title,
     required this.byTypes,
@@ -196,7 +196,7 @@ class AvesDonutDatum extends Equatable {
   @override
   List<Object?> get props => [key, value];
 
-  const AvesDonutDatum({
+  const new({
     required this.key,
     required this.value,
   });

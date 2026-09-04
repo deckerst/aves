@@ -1,7 +1,7 @@
 import 'package:aves_model/aves_model.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension ExtraWidgetOutline on WidgetOutline {
   Future<Color?> color(Brightness brightness) async {

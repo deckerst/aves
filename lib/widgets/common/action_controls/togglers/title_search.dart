@@ -3,7 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TitleSearchToggler extends StatelessWidget {
@@ -11,7 +11,7 @@ class TitleSearchToggler extends StatelessWidget {
   final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
-  const TitleSearchToggler({
+  const new({
     super.key,
     required this.queryEnabled,
     this.isMenuItem = false,
@@ -40,7 +40,7 @@ class TitleSearchToggler extends StatelessWidget {
 class TitleSearchTogglerCaption extends StatelessWidget {
   final bool enabled;
 
-  const TitleSearchTogglerCaption({
+  const new({
     super.key,
     required this.enabled,
   });

@@ -6,7 +6,7 @@ class FixedExtentSectionLayout extends SectionLayout {
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileHeight, spacing];
 
-  const FixedExtentSectionLayout({
+  const new({
     required super.sectionKey,
     required super.firstIndex,
     required super.lastIndex,

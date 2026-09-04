@@ -1,6 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ class EmptyContent extends StatelessWidget {
   final double fontSize;
   final bool safeBottom;
 
-  const EmptyContent({
+  const new({
     super.key,
     this.icon,
     required this.text,

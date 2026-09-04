@@ -3,11 +3,11 @@ import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 
 class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
-  const MosaicSectionedListLayout({
+  const new({
     required super.sections,
     required super.showHeaders,
     required super.spacing,

@@ -1,12 +1,12 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ManageMediaDialog extends StatefulWidget {
   static const routeName = '/dialog/manage_media';
 
-  const ManageMediaDialog({super.key});
+  const new({super.key});
 
   @override
   State<ManageMediaDialog> createState() => _ManageMediaDialogState();

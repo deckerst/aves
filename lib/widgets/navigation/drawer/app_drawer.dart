@@ -35,7 +35,7 @@ import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -45,7 +45,7 @@ class AppDrawer extends StatefulWidget {
   // current path loaded in the `ExplorerPage`, if any
   final String? currentExplorerPath;
 
-  const AppDrawer({
+  const new({
     super.key,
     this.currentCollection,
     this.currentExplorerPath,

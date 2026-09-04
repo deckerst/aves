@@ -2,7 +2,7 @@ import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class GridItemSelectionOverlay<T> extends StatelessWidget {
@@ -10,7 +10,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
   final BorderRadius? borderRadius;
   final EdgeInsets? padding;
 
-  const GridItemSelectionOverlay({
+  const new({
     super.key,
     required this.item,
     this.borderRadius,

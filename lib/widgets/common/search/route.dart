@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // adapted from Flutter `_SearchBody` in `/material/search.dart`
@@ -9,7 +9,7 @@ enum SearchBody { suggestions, results }
 
 // adapted from Flutter `_SearchPageRoute` in `/material/search.dart`
 class SearchPageRoute<T> extends PageRoute<T> {
-  SearchPageRoute({
+  new({
     required this.delegate,
     this.background,
   }) : super(settings: RouteSettings(name: delegate.routeName)) {

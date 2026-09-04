@@ -17,7 +17,7 @@ import 'package:aves/widgets/settings/common/collection_tile.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class HomeWidgetSettingsPage extends StatefulWidget {
@@ -25,7 +25,7 @@ class HomeWidgetSettingsPage extends StatefulWidget {
 
   final int widgetId;
 
-  const HomeWidgetSettingsPage({
+  const new({
     super.key,
     required this.widgetId,
   });
@@ -227,7 +227,7 @@ class _WidgetShapeBorder extends ShapeBorder {
 
   static const _devicePixelRatio = 1.0;
 
-  const _WidgetShapeBorder(this.outline, this.shape, this.outlineColors, this.cornerRadius);
+  const new(this.outline, this.shape, this.outlineColors, this.cornerRadius);
 
   @override
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
@@ -261,7 +261,7 @@ class HomeWidgetOutlineSelector extends StatefulWidget {
   final ValueSetter<WidgetOutline> setter;
   final Map<Brightness, Map<WidgetOutline, Color?>> outlineColorsByBrightness;
 
-  const HomeWidgetOutlineSelector({
+  const new({
     super.key,
     required this.getter,
     required this.setter,

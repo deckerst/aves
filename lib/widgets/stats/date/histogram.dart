@@ -17,7 +17,7 @@ import 'package:collection/collection.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class Histogram extends StatefulWidget {
   final Duration animationDuration;
   final AFilterCallback onFilterSelection;
 
-  const Histogram({
+  const new({
     super.key,
     required this.entries,
     required this.animationDuration,
@@ -374,14 +374,14 @@ class _EntryByDate extends Equatable {
   @override
   List<Object?> get props => [date, entryCount];
 
-  const _EntryByDate({
+  const new({
     required this.date,
     required this.entryCount,
   });
 }
 
 class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
-  _CircleSymbolRenderer({super.isSolid = true});
+  new({super.isSolid = true});
 
   @override
   charts.Color? getSolidFillColor(charts.Color? fillColor) => fillColor;
@@ -393,7 +393,7 @@ class _DataInterpolationArg {
   final DateTime? firstDate, lastDate;
   final Map<DateTime, int> entryCountPerDate;
 
-  const _DataInterpolationArg({
+  const new({
     required this.calendar,
     required this.level,
     required this.firstDate,

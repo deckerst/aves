@@ -5,12 +5,12 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayShootingRow extends StatelessWidget {
   final OverlayMetadata details;
 
-  const OverlayShootingRow({
+  const new({
     super.key,
     required this.details,
   });

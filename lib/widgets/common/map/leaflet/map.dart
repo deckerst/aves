@@ -12,9 +12,9 @@ import 'package:aves/widgets/common/map/leaflet/tile_layers.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryLeafletMap<T> extends StatefulWidget {
@@ -36,7 +36,7 @@ class EntryLeafletMap<T> extends StatefulWidget {
   final MarkerTapCallback<T>? onMarkerTap;
   final MarkerLongPressCallback<T>? onMarkerLongPress;
 
-  const EntryLeafletMap({
+  const new({
     super.key,
     required this.controller,
     required this.clusterListenable,

@@ -35,8 +35,8 @@ import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 Future<AlbumBaseFilter?> pickAlbum({
@@ -76,7 +76,7 @@ class _AlbumPickPage extends StatefulWidget {
   final Uri? initialGroup;
   final GroupUriPredicate? isValidGroupPick;
 
-  const _AlbumPickPage({
+  const new({
     required this.source,
     required this.moveType,
     required this.chipTypes,

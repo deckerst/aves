@@ -18,8 +18,8 @@ import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search_delegate.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class InfoAppBar extends StatelessWidget {
@@ -29,7 +29,7 @@ class InfoAppBar extends StatelessWidget {
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
   final VoidCallback onBackPressed;
 
-  const InfoAppBar({
+  const new({
     super.key,
     required this.entry,
     required this.collection,

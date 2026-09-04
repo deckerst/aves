@@ -16,13 +16,13 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart'
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
   final Iterable<FilterGridItem<TagBaseFilter>> _items;
 
-  TagChipSetActionDelegate(Iterable<FilterGridItem<TagBaseFilter>> items) : _items = items;
+  new(Iterable<FilterGridItem<TagBaseFilter>> items) : _items = items;
 
   @override
   Iterable<FilterGridItem<TagBaseFilter>> get allItems => _items;

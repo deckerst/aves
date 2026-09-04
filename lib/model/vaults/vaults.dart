@@ -24,7 +24,7 @@ class Vaults {
 
   static const _fileScheme = 'file';
 
-  Vaults._private();
+  new _private();
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllVaults();

@@ -18,7 +18,7 @@ import 'package:aves/widgets/viewer/overlay/top/details/shooting.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerDetailOverlay extends StatefulWidget {
@@ -29,7 +29,7 @@ class ViewerDetailOverlay extends StatefulWidget {
   final ValueNotifier<bool> expandedNotifier;
   final Size availableSize;
 
-  const ViewerDetailOverlay({
+  const new({
     super.key,
     required this.entries,
     required this.index,
@@ -133,7 +133,7 @@ class ViewerDetailOverlayContent extends StatelessWidget {
 
   static List<Shadow>? shadows(BuildContext context) => Theme.of(context).isDark ? AStyles.embossShadows : null;
 
-  const ViewerDetailOverlayContent({
+  const new({
     super.key,
     required this.pageEntry,
     required this.details,

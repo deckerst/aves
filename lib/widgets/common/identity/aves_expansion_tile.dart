@@ -2,7 +2,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AvesExpansionTile extends StatelessWidget {
@@ -14,7 +14,7 @@ class AvesExpansionTile extends StatelessWidget {
   final bool initiallyExpanded, showHighlight;
   final List<Widget> children;
 
-  const AvesExpansionTile({
+  const new({
     super.key,
     String? value,
     this.leading,

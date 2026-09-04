@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FixedExtentGridRow extends MultiChildRenderObjectWidget {
   final double width, height, spacing;
   final TextDirection textDirection;
 
-  const FixedExtentGridRow({
+  const new({
     super.key,
     required this.width,
     required this.height,
@@ -42,10 +42,10 @@ class FixedExtentGridRow extends MultiChildRenderObjectWidget {
   }
 }
 
-class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
+class _GridRowParentData extends ContainerBoxParentData<RenderBox>;
 
 class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
-  RenderFixedExtentGridRow({
+  new({
     List<RenderBox>? children,
     required this._width,
     required this._height,

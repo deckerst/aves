@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MetadataDirectory {
   final String name;
@@ -18,7 +18,7 @@ class MetadataDirectory {
   static const mediaDirectory = 'Media'; // custom
   static const mpfImageDirectoryPrefix = 'MPF Image #'; // custom
 
-  const MetadataDirectory(
+  const new(
     this.name,
     this.allTags, {
     SplayTreeMap<String, String>? tags,

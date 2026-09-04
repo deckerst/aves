@@ -8,7 +8,7 @@ class PageEntryBuilder extends StatelessWidget {
   final MultiPageController? multiPageController;
   final Widget Function(AvesEntry? pageEntry) builder;
 
-  const PageEntryBuilder({
+  const new({
     super.key,
     required this.multiPageController,
     required this.builder,

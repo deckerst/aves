@@ -9,7 +9,7 @@ import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/navigation/nav_bar/floating.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AppBottomNavBar extends StatefulWidget {
@@ -20,7 +20,7 @@ class AppBottomNavBar extends StatefulWidget {
 
   static double get height => kBottomNavigationBarHeight + AvesFloatingBar.margin.vertical;
 
-  const AppBottomNavBar({
+  const new({
     super.key,
     required this.events,
     this.currentCollection,
@@ -139,7 +139,7 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
 }
 
 class NavBarPaddingSliver extends StatelessWidget {
-  const NavBarPaddingSliver({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

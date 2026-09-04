@@ -3,14 +3,14 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 final TvNavigationPopHandler tvNavigationPopHandler = TvNavigationPopHandler._private();
 
 // address `TV-DB` requirement from https://developer.android.com/docs/quality-guidelines/tv-app-quality
 class TvNavigationPopHandler implements PopHandler {
-  TvNavigationPopHandler._private();
+  new _private();
 
   @override
   bool canPop(BuildContext context) {

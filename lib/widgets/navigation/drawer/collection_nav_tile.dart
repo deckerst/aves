@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMixin {
@@ -20,7 +20,7 @@ class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMi
   final Set<CollectionFilter?>? filters;
   final bool Function() isSelected;
 
-  const CollectionNavTile({
+  const new({
     super.key,
     required this.leading,
     required this.title,
@@ -87,7 +87,7 @@ class AlbumNavTile extends StatelessWidget {
   final AlbumBaseFilter filter;
   final bool Function() isSelected;
 
-  const AlbumNavTile({
+  const new({
     super.key,
     required this.filter,
     required this.isSelected,

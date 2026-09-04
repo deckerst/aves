@@ -19,7 +19,7 @@ class TileExtentController {
 
   Size get viewportSize => _viewportSize;
 
-  TileExtentController({
+  new({
     required this.settingsRouteKey,
     this.columnCountMin = 2,
     required this.columnCountDefault,

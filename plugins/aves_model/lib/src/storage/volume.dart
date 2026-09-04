@@ -10,7 +10,7 @@ class StorageVolume extends Equatable {
   @override
   List<Object?> get props => [mediaStoreVolumeName, description, path, state, isPrimary, isRemovable];
 
-  const StorageVolume({
+  const new({
     required this.mediaStoreVolumeName,
     required this.description,
     required this.isPrimary,
@@ -19,7 +19,7 @@ class StorageVolume extends Equatable {
     required this.state,
   });
 
-  factory StorageVolume.fromMap(Map map) {
+  factory fromMap(Map map) {
     return StorageVolume(
       mediaStoreVolumeName: map['mediaStoreVolumeName'],
       description: map['description'],

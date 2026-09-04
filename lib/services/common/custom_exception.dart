@@ -6,14 +6,14 @@ class CustomPlatformException {
   final Object? details;
   final String? stacktrace;
 
-  CustomPlatformException({
+  new({
     required this.code,
     this.message,
     this.details,
     this.stacktrace,
   });
 
-  factory CustomPlatformException.fromStandard(PlatformException e) {
+  factory fromStandard(PlatformException e) {
     return CustomPlatformException(
       code: e.code,
       message: e.message,

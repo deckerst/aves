@@ -2,7 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 class MarkdownContainer extends StatelessWidget {
@@ -10,7 +10,7 @@ class MarkdownContainer extends StatelessWidget {
   final TextDirection? textDirection;
   final ScrollController? scrollController;
 
-  const MarkdownContainer({
+  const new({
     super.key,
     required this.data,
     this.textDirection,

@@ -1,11 +1,11 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/styles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AboutSectionTitle extends StatelessWidget {
   final String text;
 
-  const AboutSectionTitle({
+  const new({
     super.key,
     required this.text,
   });

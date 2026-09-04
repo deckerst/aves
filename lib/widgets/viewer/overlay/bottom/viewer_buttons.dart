@@ -33,8 +33,8 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerButtons extends StatelessWidget {
@@ -49,7 +49,7 @@ class ViewerButtons extends StatelessWidget {
 
   static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
 
-  const ViewerButtons({
+  const new({
     super.key,
     required this.mainEntry,
     required this.pageEntry,
@@ -115,7 +115,7 @@ class _TvButtonRowContent extends StatelessWidget {
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
 
-  const _TvButtonRowContent({
+  const new({
     required this.actionDelegate,
     required this.scale,
     required this.mainEntry,
@@ -217,7 +217,7 @@ class ViewerButtonRowContent extends StatefulWidget {
 
   static const double padding = 8;
 
-  const ViewerButtonRowContent({
+  const new({
     super.key,
     required this.actionDelegate,
     required this.quickActions,

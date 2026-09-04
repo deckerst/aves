@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef XmpExtractedCard = (Map<String, XmpProp>, List<XmpCardData>?);
 
@@ -18,7 +18,7 @@ class XmpCard extends StatefulWidget {
   final String Function(XmpProp prop) formatValue;
   final Map<String, InfoValueSpanBuilder> Function(int? index)? spanBuilders;
 
-  XmpCard({
+  new({
     super.key,
     required this.title,
     required Map<int?, XmpExtractedCard> structByIndex,

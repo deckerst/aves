@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 class ABRepeat {
   final int? start, end;
 
-  ABRepeat({this.start, this.end});
+  new({this.start, this.end});
 
   ABRepeat sanitize() {
     if (start != null && end != null && start! > end!) {

@@ -3,12 +3,12 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:aves/widgets/filter_grids/common/section_header.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends SectionedListLayoutProvider<FilterGridItem<T>> {
   final bool selectable;
 
-  const SectionedFilterListLayoutProvider({
+  const new({
     super.key,
     required this.sections,
     required this.showHeaders,

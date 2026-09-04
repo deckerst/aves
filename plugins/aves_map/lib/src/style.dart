@@ -22,7 +22,7 @@ class EntryMapStyle extends Equatable {
   @override
   List<Object?> get props => [key, name, isRaster, url];
 
-  const EntryMapStyle({
+  const new({
     required this.key,
     this.name,
     this.isRaster = true,

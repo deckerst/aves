@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/control_buttons_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoControlsPage extends StatelessWidget {
   static const routeName = '/settings/video/controls';
@@ -16,7 +16,7 @@ class VideoControlsPage extends StatelessWidget {
     SettingKeys.videoGestureVerticalDragBrightnessVolumeKey,
   ];
 
-  const VideoControlsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

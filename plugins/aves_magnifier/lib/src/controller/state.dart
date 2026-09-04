@@ -12,7 +12,7 @@ class MagnifierState extends Equatable {
   @override
   List<Object?> get props => [position, scale, source];
 
-  const MagnifierState({
+  const new({
     required this.position,
     required this.scale,
     required this.source,

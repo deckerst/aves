@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MenuRow extends StatelessWidget {
   final String text;
   final Widget? icon;
 
-  const MenuRow({
+  const new({
     super.key,
     required this.text,
     this.icon,

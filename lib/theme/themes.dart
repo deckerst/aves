@@ -1,7 +1,7 @@
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 class Themes {
   static const _titleTextStyle = TextStyle(

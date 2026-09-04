@@ -7,7 +7,7 @@ import 'package:intl4x/datetime_format.dart';
 class Intl4xDateFormatDelegate extends DateFormatDelegate {
   final Locale _locale4x;
 
-  Intl4xDateFormatDelegate({
+  new({
     required super.languageTag,
     required ACalendar calendar,
     required bool forceWesternArabicNumerals,

@@ -17,7 +17,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryDateDialog extends StatefulWidget {
@@ -26,7 +26,7 @@ class EditEntryDateDialog extends StatefulWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
 
-  const EditEntryDateDialog({
+  const new({
     super.key,
     required this.entry,
     this.collection,

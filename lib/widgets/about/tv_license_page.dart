@@ -5,9 +5,9 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Flow;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart' hide Flow;
 
 // as of Flutter v3.7.7, `LicensePage` is not designed for Android TV
 // and gets rejected from Google Play review:
@@ -17,7 +17,7 @@ import 'package:flutter/services.dart';
 // For example, your app (version code 94) in the "Show All Licenses" section text is cut off from the bottom of the screen.
 // ```
 class TvLicensePage extends StatefulWidget {
-  const TvLicensePage({super.key});
+  const new({super.key});
 
   @override
   State<TvLicensePage> createState() => _TvLicensePageState();
@@ -191,7 +191,7 @@ class _LicenseData {
 
 // adapted from Flutter `_PackageLicensePage` in `/material/about.dart`
 class _PackageLicensePage extends StatefulWidget {
-  const _PackageLicensePage({
+  const new({
     required this.packageName,
     required this.licenseEntries,
     required this.scrollController,
@@ -361,7 +361,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
 // adapted from Flutter `_PackageLicensePageTitle` in `/material/about.dart`
 // unmodified, modulo format & lints
 class _PackageLicensePageTitle extends StatelessWidget {
-  const _PackageLicensePageTitle({
+  const new({
     required this.title,
     required this.subtitle,
     required this.theme,

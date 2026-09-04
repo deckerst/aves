@@ -59,7 +59,7 @@ class AvesMagnifier extends StatefulWidget {
   final MagnifierDoubleTapCallback? onDoubleTap;
   final Widget child;
 
-  const AvesMagnifier({
+  const new({
     super.key,
     required this.controller,
     required this.contentSize,
@@ -522,7 +522,7 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equ
   @override
   List<Object?> get props => [subjectSize, basePosition, applyScale];
 
-  const _CenterWithOriginalSizeDelegate(
+  const new(
     this.subjectSize,
     this.basePosition,
     this.applyScale,

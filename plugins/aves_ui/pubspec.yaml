@@ -3,12 +3,13 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.12.0 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
 resolution: workspace
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui:
 
 dev_dependencies:
   flutter_lints:

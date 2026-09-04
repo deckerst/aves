@@ -1,5 +1,5 @@
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SliderListTile extends StatelessWidget {
   final TitleBuilder title;
@@ -11,7 +11,7 @@ class SliderListTile extends StatelessWidget {
   final EdgeInsetsGeometry titlePadding;
   final Widget Function(BuildContext context, double value)? titleTrailing;
 
-  const SliderListTile({
+  const new({
     super.key,
     required this.title,
     required this.value,

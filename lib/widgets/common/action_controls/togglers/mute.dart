@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MuteToggler extends StatelessWidget {
   final AvesVideoController? controller;
@@ -14,7 +14,7 @@ class MuteToggler extends StatelessWidget {
   final FocusNode? focusNode;
   final VoidCallback? onPressed;
 
-  const MuteToggler({
+  const new({
     super.key,
     required this.controller,
     this.isMenuItem = false,
@@ -58,7 +58,7 @@ class MuteTogglerCaption extends StatelessWidget {
   final AvesVideoController? controller;
   final bool enabled;
 
-  const MuteTogglerCaption({
+  const new({
     super.key,
     required this.controller,
     required this.enabled,

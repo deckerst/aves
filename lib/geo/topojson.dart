@@ -46,7 +46,7 @@ TopoJsonObjectType? _parseTopoJsonObjectType(String? data) {
 class TopologyJsonObject {
   final List<num>? bbox;
 
-  TopologyJsonObject.parse(Map<String, Object?> data) : bbox = data.containsKey('bbox') ? (data['bbox'] as List).cast<num>().toList() : null;
+  new parse(Map<String, Object?> data) : bbox = data.containsKey('bbox') ? (data['bbox'] as List).cast<num>().toList() : null;
 }
 
 class Topology extends TopologyJsonObject {
@@ -54,7 +54,7 @@ class Topology extends TopologyJsonObject {
   final List<List<List<num>>> arcs;
   final Transform? transform;
 
-  Topology.parse(super.data)
+  new parse(super.data)
     : objects = Map.fromEntries(
         (data['objects'] as Map).cast<String, Object?>().entries.map((kv) {
           final name = kv.key;
@@ -128,14 +128,14 @@ class Transform {
   final List<num> scale;
   final List<num> translate;
 
-  Transform.parse(Map<String, Object?> data) : scale = (data['scale'] as List).cast<num>(), translate = (data['translate'] as List).cast<num>();
+  new parse(Map<String, Object?> data) : scale = (data['scale'] as List).cast<num>(), translate = (data['translate'] as List).cast<num>();
 }
 
 abstract class Geometry extends TopologyJsonObject {
   final Object? id;
   final Map<String, Object?>? properties;
 
-  Geometry.parse(super.data) : id = data.containsKey('id') ? data['id'] : null, properties = data.containsKey('properties') ? data['properties'] as Map<String, Object?>? : null, super.parse();
+  new parse(super.data) : id = data.containsKey('id') ? data['id'] : null, properties = data.containsKey('properties') ? data['properties'] as Map<String, Object?>? : null, super.parse();
 
   static Geometry? build(Map<String, Object?> data) {
     final type = _parseTopoJsonObjectType(data['type'] as String?);
@@ -166,31 +166,31 @@ abstract class Geometry extends TopologyJsonObject {
 class Point extends Geometry {
   final List<num> coordinates;
 
-  Point.parse(super.data) : coordinates = (data['coordinates'] as List).cast<num>(), super.parse();
+  new parse(super.data) : coordinates = (data['coordinates'] as List).cast<num>(), super.parse();
 }
 
 class MultiPoint extends Geometry {
   final List<List<num>> coordinates;
 
-  MultiPoint.parse(super.data) : coordinates = (data['coordinates'] as List).cast<List>().map((position) => position.cast<num>()).toList(), super.parse();
+  new parse(super.data) : coordinates = (data['coordinates'] as List).cast<List>().map((position) => position.cast<num>()).toList(), super.parse();
 }
 
 class LineString extends Geometry {
   final List<int> arcs;
 
-  LineString.parse(super.data) : arcs = (data['arcs'] as List).cast<int>(), super.parse();
+  new parse(super.data) : arcs = (data['arcs'] as List).cast<int>(), super.parse();
 }
 
 class MultiLineString extends Geometry {
   final List<List<int>> arcs;
 
-  MultiLineString.parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<int>()).toList(), super.parse();
+  new parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<int>()).toList(), super.parse();
 }
 
 class Polygon extends Geometry {
   final List<List<int>> arcs;
 
-  Polygon.parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<int>()).toList(), super.parse();
+  new parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<int>()).toList(), super.parse();
 
   List<List<List<num>>>? _rings;
 
@@ -208,7 +208,7 @@ class Polygon extends Geometry {
 class MultiPolygon extends Geometry {
   final List<List<List<int>>> arcs;
 
-  MultiPolygon.parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((polygon) => polygon.cast<List>().map((arc) => arc.cast<int>()).toList()).toList(), super.parse();
+  new parse(super.data) : arcs = (data['arcs'] as List).cast<List>().map((polygon) => polygon.cast<List>().map((arc) => arc.cast<int>()).toList()).toList(), super.parse();
 
   List<List<List<List<num>>>>? _polygons;
 
@@ -226,7 +226,7 @@ class MultiPolygon extends Geometry {
 class GeometryCollection extends Geometry {
   final List<Geometry> geometries;
 
-  GeometryCollection.parse(super.data) : geometries = (data['geometries'] as List).cast<Map<String, Object?>>().map(Geometry.build).nonNulls.toList(), super.parse();
+  new parse(super.data) : geometries = (data['geometries'] as List).cast<Map<String, Object?>>().map(Geometry.build).nonNulls.toList(), super.parse();
 
   @override
   bool containsPoint(Topology topology, List<num> point) {

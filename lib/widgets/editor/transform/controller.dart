@@ -33,7 +33,7 @@ class TransformController {
 
   final Size displaySize;
 
-  TransformController(this.displaySize) {
+  new(this.displaySize) {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',

@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/language/locale_selection_page.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ class LocaleTile extends StatelessWidget {
 
   static const List<String> settingKeys = [SettingKeys.localeKey];
 
-  const LocaleTile({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

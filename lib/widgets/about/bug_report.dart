@@ -24,14 +24,14 @@ import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class BugReport extends StatefulWidget {
-  const BugReport({super.key});
+  const new({super.key});
 
   @override
   State<BugReport> createState() => _BugReportState();
@@ -71,7 +71,7 @@ class _BugReportState extends State<BugReport> {
 }
 
 class BugReportContent extends StatefulWidget {
-  const BugReportContent({super.key});
+  const new({super.key});
 
   @override
   State<BugReportContent> createState() => _BugReportContentState();

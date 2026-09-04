@@ -15,7 +15,7 @@ import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TagListPage extends StatelessWidget {
@@ -23,7 +23,7 @@ class TagListPage extends StatelessWidget {
 
   final Uri? initialGroup;
 
-  const TagListPage({
+  const new({
     super.key,
     required this.initialGroup,
   });

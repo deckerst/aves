@@ -9,8 +9,8 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AvesAppBar extends StatelessWidget {
@@ -26,7 +26,7 @@ class AvesAppBar extends StatelessWidget {
   static const titleHeroTag = 'appbar-title';
   static const double _titleMinWidth = 96;
 
-  const AvesAppBar({
+  const new({
     super.key,
     required this.contentHeight,
     required this.pinned,
@@ -188,7 +188,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final double height;
   final Widget child;
 
-  const _SliverAppBarDelegate({
+  const new({
     required this.height,
     required this.child,
   });
@@ -213,7 +213,7 @@ class AvesFloatingBar extends StatefulWidget {
   static const margin = EdgeInsets.all(8);
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
-  const AvesFloatingBar({
+  const new({
     super.key,
     required this.builder,
     this.child,

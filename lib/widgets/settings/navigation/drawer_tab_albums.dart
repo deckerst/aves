@@ -7,12 +7,12 @@ import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DrawerAlbumTab extends StatefulWidget {
   final List<AlbumBaseFilter> items;
 
-  const DrawerAlbumTab({
+  const new({
     super.key,
     required this.items,
   });

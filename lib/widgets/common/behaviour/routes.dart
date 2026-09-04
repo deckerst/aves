@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DirectPageTransitionsTheme extends PageTransitionsTheme {
-  const DirectPageTransitionsTheme();
+  const new();
 
   @override
   Widget buildTransitions<T>(
@@ -14,7 +14,7 @@ class DirectPageTransitionsTheme extends PageTransitionsTheme {
 }
 
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
-  DirectMaterialPageRoute({
+  new({
     super.settings,
     required WidgetBuilder builder,
   }) : super(
@@ -29,7 +29,7 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
 }
 
 class TransparentMaterialPageRoute<T> extends PageRouteBuilder<T> {
-  TransparentMaterialPageRoute({
+  new({
     super.settings,
     required super.pageBuilder,
   });

@@ -1,7 +1,7 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef TileRouteBuilder = Route Function(BuildContext context, String routeName, bool topLevel);
 
@@ -12,7 +12,7 @@ class PageNavTile extends StatelessWidget {
   final AvesNavItem navItem;
   final bool Function()? isSelected;
 
-  const PageNavTile({
+  const new({
     super.key,
     this.leading,
     this.title,

@@ -4,10 +4,10 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TimeToTakeActionTile extends StatefulWidget {
-  const TimeToTakeActionTile({super.key});
+  const new({super.key});
 
   static const List<String> settingKeys = [SettingKeys.timeToTakeActionKey];
 

@@ -13,7 +13,7 @@ import 'package:flutter/widgets.dart';
 class RegionProvider extends ImageProvider<RegionProviderKey> {
   final RegionProviderKey key;
 
-  const RegionProvider(this.key);
+  const new(this.key);
 
   @override
   Future<RegionProviderKey> obtainKey(ImageConfiguration configuration) {
@@ -71,7 +71,7 @@ class RegionProviderKey extends Equatable {
   @override
   List<Object?> get props => [uri, mimeType, pageId, sizeBytes, rotationDegrees, isFlipped, sampleSize, regionRect, imageSize];
 
-  const RegionProviderKey({
+  const new({
     required this.uri,
     required this.mimeType,
     required this.pageId,

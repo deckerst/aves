@@ -3,7 +3,7 @@ import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_grid.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef MosaicItemBuilder = Widget Function(int index, double targetExtent);
 
@@ -13,7 +13,7 @@ class MosaicScaleOverlay extends StatelessWidget {
   final ValueNotifier<Size> scaledSizeNotifier;
   final MosaicItemBuilder itemBuilder;
 
-  const MosaicScaleOverlay({
+  const new({
     super.key,
     required this.contentRect,
     required this.spacing,
@@ -78,7 +78,7 @@ class MosaicScaleOverlay extends StatelessWidget {
 class _OverlayBackground extends StatefulWidget {
   final Widget child;
 
-  const _OverlayBackground({
+  const new({
     required this.child,
   });
 

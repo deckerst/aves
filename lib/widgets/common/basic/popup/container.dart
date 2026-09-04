@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PopupMenuItemContainer<T> extends PopupMenuEntry<T> {
   final Widget child;
 
-  const PopupMenuItemContainer({
+  const new({
     super.key,
     this.height = kMinInteractiveDimension,
     required this.child,

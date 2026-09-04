@@ -1,7 +1,7 @@
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // do not use as `T` a record containing a collection
 // because radio value comparison will fail without deep equality
@@ -14,7 +14,7 @@ class AvesSingleSelectionDialog<T> extends StatefulWidget {
   final String? title, message, confirmationButtonLabel;
   final bool? dense;
 
-  const AvesSingleSelectionDialog({
+  const new({
     super.key,
     required this.initialValue,
     required this.options,

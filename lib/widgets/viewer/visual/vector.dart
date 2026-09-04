@@ -11,14 +11,14 @@ import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VectorImageView extends StatefulWidget {
   final AvesEntry entry;
   final ValueNotifier<ViewState> viewStateNotifier;
   final ImageErrorWidgetBuilder errorBuilder;
 
-  const VectorImageView({
+  const new({
     super.key,
     required this.entry,
     required this.viewStateNotifier,
@@ -305,7 +305,7 @@ class _RegionTile extends StatefulWidget {
   final Color? backgroundColor;
   final _BackgroundFrameBuilder? backgroundFrameBuilder;
 
-  const _RegionTile({
+  const new({
     required this.entry,
     required this.tileRect,
     required this.regionRect,
@@ -397,7 +397,7 @@ class _CheckeredBackgroundDecoration extends Decoration {
   final double checkSize;
   final Offset offset;
 
-  const _CheckeredBackgroundDecoration({
+  const new({
     required this.viewportSize,
     required this.checkSize,
     required this.offset,
@@ -412,7 +412,7 @@ class _CheckeredBackgroundDecoration extends Decoration {
 class _CheckeredBackgroundDecorationPainter extends BoxPainter {
   final _CheckeredBackgroundDecoration decoration;
 
-  const _CheckeredBackgroundDecorationPainter(this.decoration, VoidCallback? onChanged) : super(onChanged);
+  const new(this.decoration, VoidCallback? onChanged) : super(onChanged);
 
   static const deflation = Offset(.5, .5);
 

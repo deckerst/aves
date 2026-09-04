@@ -12,7 +12,7 @@ class OverlayMetadata extends Equatable {
 
   bool get hasShootingDetails => aperture != null || exposureTime != null || focalLength != null || iso != null;
 
-  const OverlayMetadata({
+  const new({
     this.aperture,
     this.description,
     this.exposureTime,
@@ -20,7 +20,7 @@ class OverlayMetadata extends Equatable {
     this.iso,
   });
 
-  factory OverlayMetadata.fromMap(Map map) {
+  factory fromMap(Map map) {
     return OverlayMetadata(
       aperture: map['aperture'] as double?,
       description: map['description'] as String?,

@@ -1,6 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapTheme extends StatelessWidget {
@@ -12,7 +12,7 @@ class MapTheme extends StatelessWidget {
   final EdgeInsets attributionPadding;
   final Widget child;
 
-  const MapTheme({
+  const new({
     super.key,
     required this.interactive,
     required this.showCoordinateFilter,

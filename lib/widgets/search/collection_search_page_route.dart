@@ -4,11 +4,11 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/search/collection_search_delegate.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionSearchPageRoute extends SearchPageRoute {
-  CollectionSearchPageRoute({
+  new({
     required BuildContext context,
     CollectionLens? parentCollection,
     bool canPop = true,

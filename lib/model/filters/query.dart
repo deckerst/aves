@@ -34,7 +34,7 @@ class QueryFilter extends CollectionFilter {
   static const opLower = '<';
   static const opGreater = '>';
 
-  QueryFilter(this.query, {this.colorful = true, this.live = false, super.reversed = false}) {
+  new(this.query, {this.colorful = true, this.live = false, super.reversed = false}) {
     // allow regex queries wrapped with `/.../`
     var matches = _regexRegex.allMatches(query);
     if (matches.length == 1) {
@@ -76,7 +76,7 @@ class QueryFilter extends CollectionFilter {
     _test = not ? (entry) => !testTitle(entry) : testTitle;
   }
 
-  factory QueryFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return QueryFilter(
       json['query'] as String,
       reversed: json['reversed'] as bool? ?? false,

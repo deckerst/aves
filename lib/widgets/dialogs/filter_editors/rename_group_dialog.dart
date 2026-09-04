@@ -1,7 +1,7 @@
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RenameGroupDialog extends StatefulWidget {
   static const routeName = '/dialog/rename_group';
@@ -9,7 +9,7 @@ class RenameGroupDialog extends StatefulWidget {
   final FilterGrouping grouping;
   final Uri groupUri;
 
-  const RenameGroupDialog({
+  const new({
     super.key,
     required this.grouping,
     required this.groupUri,

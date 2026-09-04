@@ -21,11 +21,11 @@ class CoordinateFilter extends CollectionFilter {
   @override
   List<Object?> get props => [sw, ne, reversed];
 
-  CoordinateFilter(this.sw, this.ne, {this.minuteSecondPadding = false, super.reversed = false}) {
+  new(this.sw, this.ne, {this.minuteSecondPadding = false, super.reversed = false}) {
     _test = (entry) => GeoUtils.contains(sw, ne, entry.latLng);
   }
 
-  factory CoordinateFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return CoordinateFilter(
       LatLng.fromJson(json['sw'] as Map<String, Object?>),
       LatLng.fromJson(json['ne'] as Map<String, Object?>),

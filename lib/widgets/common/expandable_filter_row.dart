@@ -6,7 +6,7 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TitledExpandableFilterRow extends StatelessWidget {
   final String title;
@@ -17,7 +17,7 @@ class TitledExpandableFilterRow extends StatelessWidget {
   final AFilterCallback onTap;
   final OffsetFilterCallback? onLongPress;
 
-  const TitledExpandableFilterRow({
+  const new({
     super.key,
     required this.title,
     required this.filters,
@@ -106,7 +106,7 @@ class ExpandableFilterRow extends StatelessWidget {
   static const double verticalPadding = 8;
   static const int topFilterCount = 50;
 
-  const ExpandableFilterRow({
+  const new({
     super.key,
     required this.filters,
     required this.isExpanded,
@@ -175,7 +175,7 @@ class _ExpandedFilterRow extends StatefulWidget {
   final List<CollectionFilter> filters;
   final Widget Function(CollectionFilter filter) chipBuilder;
 
-  const _ExpandedFilterRow({required this.filters, required this.chipBuilder});
+  const new({required this.filters, required this.chipBuilder});
 
   @override
   State<_ExpandedFilterRow> createState() => _ExpandedFilterRowState();

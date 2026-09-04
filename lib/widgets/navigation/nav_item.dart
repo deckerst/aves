@@ -19,7 +19,7 @@ import 'package:aves/widgets/navigation/nav_display.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AvesNavItem extends Equatable {
@@ -30,7 +30,7 @@ class AvesNavItem extends Equatable {
   @override
   List<Object?> get props => [route, filters, path];
 
-  const AvesNavItem({
+  const new({
     required this.route,
     this.filters,
     this.path,

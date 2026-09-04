@@ -3,7 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QueryBar extends StatefulWidget {
   final ValueNotifier<String> queryNotifier;
@@ -13,7 +13,7 @@ class QueryBar extends StatefulWidget {
   final String? hintText;
   final bool editable;
 
-  const QueryBar({
+  const new({
     super.key,
     required this.queryNotifier,
     this.focusNode,

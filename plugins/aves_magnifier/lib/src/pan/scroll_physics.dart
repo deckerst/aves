@@ -14,7 +14,7 @@ class MagnifierScrollerPhysics extends ScrollPhysics {
   // 1: less reactive but gives the most leeway to Magnifier recognizers
   final double touchSlopFactor;
 
-  const MagnifierScrollerPhysics({
+  const new({
     required this.gestureSettings,
     this.touchSlopFactor = 1,
     super.parent,

@@ -31,14 +31,14 @@ import 'package:aves/widgets/debug/os_storage.dart';
 import 'package:aves/widgets/debug/settings.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AppDebugPage extends StatelessWidget {
   static const routeName = '/debug';
 
-  const AppDebugPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

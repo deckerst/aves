@@ -16,7 +16,7 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:csv/csv.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +30,7 @@ class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMi
   final bool sortByCount;
   final AFilterCallback onFilterSelection;
 
-  const StatsTopPage({
+  const new({
     super.key,
     required this.title,
     required this.totalEntryCount,

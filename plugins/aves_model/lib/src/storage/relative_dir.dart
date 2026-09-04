@@ -11,12 +11,12 @@ class VolumeRelativeDirectory extends Equatable {
 
   String get dirPath => '$volumePath$relativeDir';
 
-  const VolumeRelativeDirectory({
+  const new({
     required this.volumePath,
     required this.relativeDir,
   });
 
-  factory VolumeRelativeDirectory.volume(StorageVolume volume) {
+  factory volume(StorageVolume volume) {
     return VolumeRelativeDirectory(volumePath: volume.path, relativeDir: '');
   }
 

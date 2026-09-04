@@ -29,11 +29,11 @@ class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFi
   @override
   List<Object?> get props => [album, reversed];
 
-  StoredAlbumFilter(this.album, this.displayName, {super.reversed = false}) {
+  new(this.album, this.displayName, {super.reversed = false}) {
     _test = (entry) => entry.directory == album;
   }
 
-  factory StoredAlbumFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return StoredAlbumFilter(
       json['album'] as String,
       json['uniqueName'] as String?,

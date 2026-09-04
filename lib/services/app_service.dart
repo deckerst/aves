@@ -276,4 +276,4 @@ class PlatformAppService implements AppService {
   }
 }
 
-class TooManyItemsException implements Exception {}
+class TooManyItemsException implements Exception;

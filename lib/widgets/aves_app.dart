@@ -54,11 +54,11 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations_plus/flutter_localizations_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -105,7 +105,7 @@ class AvesApp extends StatefulWidget {
 
   static EventBus get intentEventBus => _AvesAppState._intentEventBus;
 
-  const AvesApp({
+  const new({
     super.key,
     required this.flavor,
     this.debugIntentData,
@@ -312,11 +312,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   );
                                 },
                                 navigatorObservers: _navigatorObservers,
-                                builder: (context, child) => AvesAppContentDecorator(
-                                  initialized: initialized,
-                                  source: _mediaStoreSource,
-                                  child: child,
-                                ),
+                                builder: (context, child) {
+                                  // TODO TLAD remove `MaterialUiCompatibilityBridge` when widgets are migrated to `material_ui`
+                                  // ignore: deprecated_member_use
+                                  return MaterialUiCompatibilityBridge(
+                                    child: AvesAppContentDecorator(
+                                      initialized: initialized,
+                                      source: _mediaStoreSource,
+                                      child: child,
+                                    ),
+                                  );
+                                },
                                 onGenerateTitle: (context) => context.l10n.appName,
                                 theme: lightTheme,
                                 darkTheme: darkTheme,
@@ -634,7 +640,7 @@ typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);
 class LocationReceivedEvent {
   final LatLng location;
 
-  const LocationReceivedEvent(this.location);
+  const new(this.location);
 }
 
 class AvesAppContentDecorator extends StatefulWidget {
@@ -642,7 +648,7 @@ class AvesAppContentDecorator extends StatefulWidget {
   final CollectionSource source;
   final Widget? child;
 
-  const AvesAppContentDecorator({
+  const new({
     super.key,
     required this.initialized,
     required this.source,

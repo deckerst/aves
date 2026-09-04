@@ -37,5 +37,5 @@ abstract class ReportService {
 }
 
 class UnreportedStateError extends StateError {
-  UnreportedStateError(super.message);
+  new(super.message);
 }

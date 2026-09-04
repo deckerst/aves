@@ -220,5 +220,5 @@ class Contributor {
   final String name;
   final String? weblateEmail;
 
-  const Contributor(this.name, this.weblateEmail);
+  const new(this.name, this.weblateEmail);
 }

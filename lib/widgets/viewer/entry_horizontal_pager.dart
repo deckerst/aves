@@ -12,7 +12,7 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MultiEntryScroller extends StatefulWidget {
@@ -22,7 +22,7 @@ class MultiEntryScroller extends StatefulWidget {
   final ValueChanged<int> onPageChanged;
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
-  const MultiEntryScroller({
+  const new({
     super.key,
     required this.collection,
     required this.viewerController,
@@ -147,7 +147,7 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
   final ViewerController viewerController;
 
-  const SingleEntryScroller({
+  const new({
     super.key,
     required this.entry,
     required this.viewerController,

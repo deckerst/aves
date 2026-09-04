@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
 import 'package:provider/provider.dart';
@@ -28,7 +28,7 @@ class EntryGoogleMap<T> extends StatefulWidget {
   final MarkerTapCallback<T>? onMarkerTap;
   final MarkerLongPressCallback<T>? onMarkerLongPress;
 
-  const EntryGoogleMap({
+  const new({
     super.key,
     required this.controller,
     required this.clusterListenable,
@@ -348,7 +348,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
 class GmsGeoTiffTileProvider extends TileProvider {
   MapOverlay overlayEntry;
 
-  GmsGeoTiffTileProvider(this.overlayEntry);
+  new(this.overlayEntry);
 
   @override
   Future<Tile> getTile(int x, int y, int? zoom) async {

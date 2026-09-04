@@ -11,9 +11,9 @@ import 'package:community_charts_flutter/community_charts_flutter.dart' as chart
 class TimeAxisSpec {
   final List<charts.TickSpec<DateTime>> tickSpecs;
 
-  TimeAxisSpec(this.tickSpecs);
+  new(this.tickSpecs);
 
-  factory TimeAxisSpec.forLevel({
+  factory forLevel({
     required AvesLocale locale,
     required DateLevel level,
     required DateTime first,
@@ -30,7 +30,7 @@ class TimeAxisSpec {
     }
   }
 
-  factory TimeAxisSpec.days(AvesLocale locale, DateTime first, DateTime last) {
+  factory days(AvesLocale locale, DateTime first, DateTime last) {
     final daysTickLongFormat = locale.MMMd;
     final daysTickShortFormat = locale.d;
     final calOps = locale.calendar.ops;
@@ -57,7 +57,7 @@ class TimeAxisSpec {
     return TimeAxisSpec(ticks);
   }
 
-  factory TimeAxisSpec.months(AvesLocale locale, DateTime first, DateTime last) {
+  factory months(AvesLocale locale, DateTime first, DateTime last) {
     final monthsTickLongFormat = locale.yMMM;
     final monthsTickShortFormat = locale.MMM;
     final calOps = locale.calendar.ops;
@@ -88,7 +88,7 @@ class TimeAxisSpec {
     return TimeAxisSpec(ticks);
   }
 
-  factory TimeAxisSpec.years(AvesLocale locale, DateTime first, DateTime last) {
+  factory years(AvesLocale locale, DateTime first, DateTime last) {
     final dateFormat = locale.y;
     final calOps = locale.calendar.ops;
 

@@ -27,7 +27,7 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,7 @@ class ExplorerPage extends StatefulWidget {
 
   final String? path;
 
-  const ExplorerPage({super.key, this.path});
+  const new({super.key, this.path});
 
   @override
   State<ExplorerPage> createState() => _ExplorerPageState();
@@ -214,7 +214,7 @@ class _ExplorerPageContent extends StatelessWidget {
   final ValueNotifier<VolumeRelativeDirectory?> contentsDirectoryNotifier;
   final ValueNotifier<List<Directory>> contentsNotifier;
 
-  const _ExplorerPageContent({
+  const new({
     required this.directoryNotifier,
     required this.contentsDirectoryNotifier,
     required this.contentsNotifier,
@@ -318,7 +318,7 @@ class _ExplorerPageContent extends StatelessWidget {
 class _ExplorerContentLine extends StatelessWidget {
   final FileSystemEntity entity;
 
-  const _ExplorerContentLine({
+  const new({
     required this.entity,
   });
 
@@ -356,26 +356,26 @@ class _ExplorerContentLine extends StatelessWidget {
 }
 
 abstract class _ExplorerNotification extends Notification {
-  const _ExplorerNotification();
+  const new();
 }
 
 @immutable
 class _GoToDirectoryNotification extends _ExplorerNotification {
   final VolumeRelativeDirectory? dir;
 
-  const _GoToDirectoryNotification(this.dir);
+  const new(this.dir);
 }
 
 @immutable
 class _GoToPathNotification extends _ExplorerNotification {
   final String path;
 
-  const _GoToPathNotification(this.path);
+  const new(this.path);
 }
 
 @immutable
 class _GoToCollectionPageNotification extends _ExplorerNotification {
   final CollectionFilter filter;
 
-  const _GoToCollectionPageNotification(this.filter);
+  const new(this.filter);
 }

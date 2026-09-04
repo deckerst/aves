@@ -3,12 +3,12 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/navigation/nav_display.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DrawerFilterIcon extends StatelessWidget {
   final CollectionFilter? filter;
 
-  const DrawerFilterIcon({
+  const new({
     super.key,
     required this.filter,
   });
@@ -27,7 +27,7 @@ class DrawerFilterIcon extends StatelessWidget {
 class DrawerFilterTitle extends StatelessWidget {
   final CollectionFilter? filter;
 
-  const DrawerFilterTitle({
+  const new({
     super.key,
     required this.filter,
   });
@@ -39,7 +39,7 @@ class DrawerFilterTitle extends StatelessWidget {
 class DrawerPageIcon extends StatelessWidget {
   final String route;
 
-  const DrawerPageIcon({
+  const new({
     super.key,
     required this.route,
   });
@@ -66,7 +66,7 @@ class DrawerPageIcon extends StatelessWidget {
 class DrawerPageTitle extends StatelessWidget {
   final String route;
 
-  const DrawerPageTitle({
+  const new({
     super.key,
     required this.route,
   });

@@ -36,7 +36,7 @@ class TypeFilter extends CollectionFilter {
   @override
   List<Object?> get props => [itemType, reversed];
 
-  TypeFilter._private(this.itemType, {super.reversed = false}) {
+  new _private(this.itemType, {super.reversed = false}) {
     switch (itemType) {
       case _animated:
         _test = (entry) => entry.isAnimated;
@@ -65,7 +65,7 @@ class TypeFilter extends CollectionFilter {
     }
   }
 
-  factory TypeFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return TypeFilter._private(
       json['itemType'] as String,
       reversed: json['reversed'] as bool? ?? false,

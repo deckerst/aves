@@ -44,7 +44,7 @@ class Covers {
 
   // do not subscribe to events from other modules in constructor
   // so that modules can subscribe to each other
-  Covers._private();
+  new _private();
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllCovers();
@@ -330,7 +330,7 @@ class CoverProps extends Equatable {
   @override
   List<Object?> get props => [entryId, packageName, color];
 
-  const CoverProps(this.entryId, this.packageName, this.color);
+  const new(this.entryId, this.packageName, this.color);
 }
 
 @immutable
@@ -341,7 +341,7 @@ class CoverRow extends Equatable {
   @override
   List<Object?> get props => [filter, coverProps];
 
-  const CoverRow({
+  const new({
     required this.filter,
     required this.coverProps,
   });

@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class PinDialog extends StatefulWidget {
@@ -8,7 +8,7 @@ class PinDialog extends StatefulWidget {
 
   final bool needConfirmation;
 
-  const PinDialog({
+  const new({
     super.key,
     required this.needConfirmation,
   });

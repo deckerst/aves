@@ -1,7 +1,7 @@
 import 'package:aves/widgets/common/aves_highlight.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
 
 class SourceViewerPage extends StatefulWidget {
@@ -9,7 +9,7 @@ class SourceViewerPage extends StatefulWidget {
 
   final Future<String> Function() loader;
 
-  const SourceViewerPage({
+  const new({
     super.key,
     required this.loader,
   });

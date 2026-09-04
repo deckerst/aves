@@ -3,11 +3,11 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class NotificationPermissionTile extends StatefulWidget {
-  const NotificationPermissionTile({super.key});
+  const new({super.key});
 
   @override
   State<NotificationPermissionTile> createState() => _NotificationPermissionTileState();

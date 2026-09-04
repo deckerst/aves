@@ -6,12 +6,12 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayLocationRow extends AnimatedWidget {
   final AvesEntry entry;
 
-  OverlayLocationRow({
+  new({
     super.key,
     required this.entry,
   }) : super(listenable: entry.addressChangeNotifier);

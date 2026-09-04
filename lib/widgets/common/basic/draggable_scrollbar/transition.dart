@@ -5,7 +5,7 @@ class SlideFadeTransition extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
 
-  const SlideFadeTransition({
+  const new({
     super.key,
     required this.animation,
     required this.child,

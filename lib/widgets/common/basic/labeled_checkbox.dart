@@ -1,12 +1,12 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LabeledCheckbox extends StatefulWidget {
   final bool value;
   final ValueChanged<bool?> onChanged;
   final String text;
 
-  const LabeledCheckbox({
+  const new({
     super.key,
     required this.value,
     required this.onChanged,

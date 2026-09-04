@@ -6,7 +6,7 @@ class AvesPopScope extends StatelessWidget {
   final List<PopHandler> handlers;
   final Widget child;
 
-  const AvesPopScope({
+  const new({
     super.key,
     required this.handlers,
     required this.child,
@@ -37,7 +37,7 @@ class APopHandler implements PopHandler {
   final bool Function(BuildContext context) _canPop;
   final void Function(BuildContext context) _onPopBlocked;
 
-  APopHandler({
+  new({
     required this._canPop,
     required this._onPopBlocked,
   });
@@ -50,4 +50,4 @@ class APopHandler implements PopHandler {
 }
 
 @immutable
-class PopExitNotification extends Notification {}
+class PopExitNotification extends Notification;

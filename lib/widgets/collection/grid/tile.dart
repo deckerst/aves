@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class InteractiveTile extends StatelessWidget {
@@ -21,7 +21,7 @@ class InteractiveTile extends StatelessWidget {
   final TileLayout tileLayout;
   final ValueNotifier<bool>? isScrollingNotifier;
 
-  const InteractiveTile({
+  const new({
     super.key,
     required this.collection,
     required this.entry,
@@ -79,7 +79,7 @@ class Tile extends StatelessWidget {
   final ValueNotifier<bool>? isScrollingNotifier;
   final Object? Function()? heroTagger;
 
-  const Tile({
+  const new({
     super.key,
     required this.entry,
     required this.thumbnailExtent,

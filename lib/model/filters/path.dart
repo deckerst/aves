@@ -19,7 +19,7 @@ class PathFilter extends CollectionFilter {
   @override
   List<Object?> get props => [path, reversed];
 
-  PathFilter(String path, {super.reversed = false}) {
+  new(String path, {super.reversed = false}) {
     this.path = path.endsWith(pContext.separator) ? path : '$path${pContext.separator}';
     _rootAlbum = this.path.substring(0, this.path.length - 1);
     _test = (entry) {
@@ -30,7 +30,7 @@ class PathFilter extends CollectionFilter {
     };
   }
 
-  factory PathFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return PathFilter(
       json['path'] as String,
       reversed: json['reversed'] as bool? ?? false,

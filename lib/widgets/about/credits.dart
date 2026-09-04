@@ -1,10 +1,10 @@
 import 'package:aves/widgets/about/title.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AboutCredits extends StatelessWidget {
-  const AboutCredits({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

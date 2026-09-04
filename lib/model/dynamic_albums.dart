@@ -23,7 +23,7 @@ class DynamicAlbums with ChangeNotifier {
 
   // do not subscribe to events from other modules in constructor
   // so that modules can subscribe to each other
-  DynamicAlbums._private() {
+  new _private() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
@@ -144,7 +144,7 @@ class DynamicAlbumRow extends Equatable {
   @override
   List<Object?> get props => [name, filter];
 
-  const DynamicAlbumRow({
+  const new({
     required this.name,
     required this.filter,
   });
@@ -174,5 +174,5 @@ class DynamicAlbumRow extends Equatable {
 class DynamicAlbumChangedEvent {
   final Map<DynamicAlbumFilter, DynamicAlbumFilter?> changes;
 
-  const DynamicAlbumChangedEvent(this.changes);
+  const new(this.changes);
 }

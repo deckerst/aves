@@ -5,7 +5,7 @@ class MediaQueryDataProvider extends StatelessWidget {
   final MediaQueryData? value;
   final Widget child;
 
-  const MediaQueryDataProvider({
+  const new({
     super.key,
     this.value,
     required this.child,

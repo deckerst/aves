@@ -7,13 +7,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PanoramaOverlay extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
   final Animation<double> scale;
 
-  const PanoramaOverlay({
+  const new({
     super.key,
     required this.entry,
     required this.scale,

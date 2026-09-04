@@ -2,7 +2,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/view/conductor.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MultiPageOverlay extends StatefulWidget {
@@ -10,7 +10,7 @@ class MultiPageOverlay extends StatefulWidget {
   final double availableWidth;
   final bool scrollable;
 
-  const MultiPageOverlay({
+  const new({
     super.key,
     required this.controller,
     required this.availableWidth,

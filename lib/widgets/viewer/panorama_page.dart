@@ -11,8 +11,8 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class PanoramaPage extends StatefulWidget {
   final AvesEntry entry;
   final PanoramaInfo info;
 
-  const PanoramaPage({
+  const new({
     super.key,
     required this.entry,
     required this.info,

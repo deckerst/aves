@@ -36,7 +36,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gpx/gpx.dart';
 import 'package:latlong2/latlong.dart';
@@ -48,7 +48,7 @@ class EditEntryLocationDialog extends StatefulWidget {
   final Set<AvesEntry> entries;
   final CollectionLens? collection;
 
-  const EditEntryLocationDialog({
+  const new({
     super.key,
     required this.entries,
     this.collection,

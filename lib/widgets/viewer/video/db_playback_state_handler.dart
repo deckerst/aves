@@ -7,7 +7,7 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DatabasePlaybackStateHandler extends PlaybackStateHandler {
   static const resumeTimeSaveMinProgress = .05;

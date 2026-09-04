@@ -18,7 +18,7 @@ import 'package:aves/widgets/settings/privacy/hidden_items_page.dart';
 import 'package:aves/widgets/settings/privacy/permissions/permissions_tile.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class PrivacySection extends SettingsSection {

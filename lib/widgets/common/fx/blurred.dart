@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const _blurConfig = ImageFilterConfig.blur(sigmaX: 4, sigmaY: 4);
 // do not use `ColorFilter.matrix` for identity,
@@ -11,7 +11,7 @@ class BlurredRect extends StatelessWidget {
   final bool enabled;
   final Widget child;
 
-  const BlurredRect({
+  const new({
     super.key,
     this.enabled = true,
     required this.child,
@@ -35,14 +35,14 @@ class BlurredRRect extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Widget child;
 
-  const BlurredRRect({
+  const new({
     super.key,
     this.enabled = true,
     required this.borderRadius,
     required this.child,
   });
 
-  factory BlurredRRect.all({
+  factory all({
     Key? key,
     bool enabled = true,
     required double borderRadius,
@@ -74,7 +74,7 @@ class BlurredOval extends StatelessWidget {
   final bool enabled;
   final Widget child;
 
-  const BlurredOval({
+  const new({
     super.key,
     this.enabled = true,
     required this.child,

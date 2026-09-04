@@ -5,14 +5,14 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'info_row.dart';
 
 class MapAddressRow extends StatefulWidget {
   final AvesEntry? entry;
 
-  const MapAddressRow({
+  const new({
     super.key,
     required this.entry,
   });

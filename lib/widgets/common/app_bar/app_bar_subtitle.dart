@@ -5,13 +5,13 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SourceStateAwareAppBarTitle extends StatelessWidget {
   final Widget title;
   final CollectionSource source;
 
-  const SourceStateAwareAppBarTitle({
+  const new({
     super.key,
     required this.title,
     required this.source,
@@ -52,7 +52,7 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
 class SourceStateSubtitle extends StatelessWidget {
   final CollectionSource source;
 
-  const SourceStateSubtitle({
+  const new({
     super.key,
     required this.source,
   });

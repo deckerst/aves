@@ -42,7 +42,7 @@ class Address extends Equatable {
   @override
   List<Object?> get props => [addressLine, adminArea, countryCode, countryName, featureName, locality, postalCode, subAdminArea, subLocality, subThoroughfare, thoroughfare];
 
-  const Address({
+  const new({
     this.addressLine,
     this.adminArea,
     this.countryCode,
@@ -56,7 +56,7 @@ class Address extends Equatable {
     this.thoroughfare,
   });
 
-  factory Address.fromMap(Map map) => Address(
+  factory fromMap(Map map) => Address(
     addressLine: map['addressLine'],
     adminArea: map['adminArea'],
     countryCode: map['countryCode'],

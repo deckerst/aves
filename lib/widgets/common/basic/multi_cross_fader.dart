@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MultiCrossFader extends StatefulWidget {
   final Duration duration;
@@ -7,7 +7,7 @@ class MultiCrossFader extends StatefulWidget {
   final AnimatedCrossFadeBuilder layoutBuilder;
   final Widget child;
 
-  const MultiCrossFader({
+  const new({
     super.key,
     required this.duration,
     this.fadeCurve = Curves.linear,

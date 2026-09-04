@@ -18,7 +18,7 @@ class FullImage extends ImageProvider<FullImage> with Equatable {
   @override
   List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, isAnimated, sizeBytes, scale];
 
-  const FullImage({
+  const new({
     required this.uri,
     required this.mimeType,
     required this.pageId,

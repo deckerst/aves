@@ -13,7 +13,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -173,7 +173,7 @@ class ReportOverlay<T> extends StatefulWidget {
   static const double diameter = 160.0;
   static const double strokeWidth = 8.0;
 
-  const ReportOverlay({
+  const new({
     super.key,
     required this.opStream,
     required this.itemCount,
@@ -314,7 +314,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 class ReportProgressIndicator extends StatelessWidget {
   final double opacity;
 
-  const ReportProgressIndicator({
+  const new({
     super.key,
     this.opacity = 1,
   });
@@ -343,7 +343,7 @@ class _FeedbackMessage extends StatefulWidget {
   final DateTime? start, stop;
   final Color progressColor;
 
-  const _FeedbackMessage({
+  const new({
     required this.type,
     required this.message,
     required this.progressColor,
@@ -466,7 +466,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 class _WarnIndicator extends CustomPainter {
   final Color color;
 
-  const _WarnIndicator(this.color);
+  const new(this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -485,7 +485,7 @@ class _WarnIndicator extends CustomPainter {
 class ActionFeedback extends StatefulWidget {
   final Widget? child;
 
-  const ActionFeedback({
+  const new({
     super.key,
     required this.child,
   });

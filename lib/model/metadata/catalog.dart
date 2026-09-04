@@ -24,7 +24,7 @@ class CatalogMetadata {
   static const _isHdr = 1 << 6; // for images: embedded HDR gainmap, for videos: HDR color transfer
   static const _isSlowMotion = 1 << 7;
 
-  CatalogMetadata({
+  new({
     required this.id,
     this.mimeType,
     this.dateMillis,
@@ -89,7 +89,7 @@ class CatalogMetadata {
     );
   }
 
-  factory CatalogMetadata.fromMap(Map map) {
+  factory fromMap(Map map) {
     final flags = map['flags'] ?? 0;
     return CatalogMetadata(
       id: map['id'],

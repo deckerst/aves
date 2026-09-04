@@ -263,18 +263,18 @@ mixin AlbumMixin on SourceBase {
   }
 }
 
-class AlbumsChangedEvent {}
+class AlbumsChangedEvent;
 
 class DynamicAlbumSummaryInvalidatedEvent {
-  const DynamicAlbumSummaryInvalidatedEvent();
+  const new();
 }
 
 class AlbumGroupSummaryInvalidatedEvent {
-  const AlbumGroupSummaryInvalidatedEvent();
+  const new();
 }
 
 class StoredAlbumSummaryInvalidatedEvent {
   final Set<String?>? directories;
 
-  const StoredAlbumSummaryInvalidatedEvent(this.directories);
+  const new(this.directories);
 }

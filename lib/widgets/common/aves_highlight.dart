@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
 
 // adapted from package `flutter_highlight` v0.7.0 `HighlightView`
@@ -29,7 +29,7 @@ class AvesHighlightView extends StatelessWidget {
   /// Specify text styles such as font family and font size
   final TextStyle? textStyle;
 
-  AvesHighlightView({
+  new({
     super.key,
     required String input,
     this.language,

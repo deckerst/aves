@@ -1,7 +1,7 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MosaicGrid extends StatelessWidget {
   final Rect contentRect;
@@ -22,7 +22,7 @@ class MosaicGrid extends StatelessWidget {
     4 / 3,
   ];
 
-  const MosaicGrid({
+  const new({
     super.key,
     required this.contentRect,
     required this.tileSize,

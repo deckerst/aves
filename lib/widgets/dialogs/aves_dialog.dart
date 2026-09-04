@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AvesDialog extends StatefulWidget {
@@ -22,7 +22,7 @@ class AvesDialog extends StatefulWidget {
   static const EdgeInsets actionsPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static const EdgeInsets buttonPadding = EdgeInsets.symmetric(horizontal: 8);
 
-  const AvesDialog({
+  const new({
     super.key,
     this.title,
     this.scrollController,
@@ -154,7 +154,7 @@ class _AvesDialogState extends State<AvesDialog> {
 class DialogTitle extends StatelessWidget {
   final String title;
 
-  const DialogTitle({
+  const new({
     super.key,
     required this.title,
   });
@@ -225,7 +225,7 @@ class CancelButton<T> extends StatelessWidget {
   final String? text;
   final T? result;
 
-  const CancelButton({
+  const new({
     super.key,
     this.text,
     this.result,
@@ -245,7 +245,7 @@ class OkButton<T> extends StatelessWidget {
   final String? text;
   final T? result;
 
-  const OkButton({
+  const new({
     super.key,
     this.text,
     this.result,
@@ -265,13 +265,13 @@ class AvesMessageDialog extends StatelessWidget {
   final String message;
   final List<Widget> actions;
 
-  const AvesMessageDialog({
+  const new({
     super.key,
     required this.message,
     required this.actions,
   });
 
-  factory AvesMessageDialog.info(String message) {
+  factory info(String message) {
     return AvesMessageDialog(
       message: message,
       actions: const [OkButton()],

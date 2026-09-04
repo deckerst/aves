@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // `RadioListTile` that can trigger `onChanged` on tap when already selected, if `reselectable` is true
 class ReselectableRadioListTile<T> extends StatelessWidget {
@@ -15,7 +15,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
   final ListTileControlAffinity controlAffinity;
   final bool autofocus;
 
-  const ReselectableRadioListTile({
+  const new({
     super.key,
     required this.value,
     this.toggleable = false,
