@@ -770,7 +770,7 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
         // and the required delay is unknown, so we monitor the change on the platform side
         final statusBarVisible = fields['status_bar'];
         final navBarVisible = fields['nav_bar'];
-        if (statusBarVisible == true && navBarVisible == true) {
+        if (statusBarVisible == true && navBarVisible == true && context.mounted) {
           AvesApp.setSystemUIStyle(Theme.of(context));
         }
     }

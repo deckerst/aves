@@ -24,13 +24,13 @@ import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
-import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.indexOfBytes
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.DataInputStream

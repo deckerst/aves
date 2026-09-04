@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.os.Build
 import android.provider.Settings
@@ -14,7 +13,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
-class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
+class AccessibilityHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "areAnimationsRemoved" -> safe(call, result, ::areAnimationsRemoved)
@@ -29,7 +28,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
     private fun areAnimationsRemoved(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var removed = false
         try {
-            removed = Settings.Global.getFloat(contextWrapper.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
+            removed = Settings.Global.getFloat(context.contentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE) == 0f
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get settings with error=${e.message}", null)
         }
@@ -70,7 +69,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
             }
         }
 
-        val accessibilityManager = contextWrapper.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
         if (accessibilityManager == null) {
             result.error("getRecommendedTimeoutMillis-service", "failed to get accessibility manager", null)
             return
@@ -85,7 +84,7 @@ class AccessibilityHandler(private val contextWrapper: ContextWrapper) : MethodC
     private fun shouldUseBoldFont(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var shouldBold = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val config = contextWrapper.resources.configuration
+            val config = context.resources.configuration
             val fontWeightAdjustment = config.fontWeightAdjustment
             shouldBold = if (fontWeightAdjustment != Configuration.FONT_WEIGHT_ADJUSTMENT_UNDEFINED && fontWeightAdjustment != 0) {
                 fontWeightAdjustment >= BOLD_TEXT_WEIGHT_ADJUSTMENT

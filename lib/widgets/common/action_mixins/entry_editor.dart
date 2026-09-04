@@ -9,13 +9,9 @@ import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/placeholder.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/about/app_ref.dart';
-import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
@@ -161,72 +157,21 @@ mixin EntryEditorMixin {
     }).toSet();
 
     if (undatedItems.isNotEmpty) {
-      final confirmationDialogDelegate = MoveUndatedConfirmationDialogDelegate();
-      final confirmed = await showSkippableConfirmationDialog(
-        context: context,
-        type: ConfirmationDialog.moveUndatedItems,
-        delegate: confirmationDialogDelegate,
-        confirmationButtonLabel: context.l10n.continueButtonLabel,
-      );
-      confirmationDialogDelegate.dispose();
-      if (!confirmed) return false;
-
-      if (settings.setMetadataDateBeforeFileOp) {
-        final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
-        if (entriesToDate.isNotEmpty) {
-          await EntrySetActionDelegate().editDate(
-            context,
-            entries: entriesToDate,
-            modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
-            showResult: false,
-          );
-          // recatalog so that the metadata dates are not ignored when best dates are evaluated
-          await Future.forEach(entriesToDate, (entry) async {
-            await entry.catalog(background: false, force: true, persist: true);
-          });
-        }
+      // save metadata date before file operation
+      final entriesToDate = undatedItems.where((entry) => entry.canEditDate).toSet();
+      if (entriesToDate.isNotEmpty) {
+        await EntrySetActionDelegate().editDate(
+          context,
+          entries: entriesToDate,
+          modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
+          showResult: false,
+        );
+        // recatalog so that the metadata dates are not ignored when best dates are evaluated
+        await Future.forEach(entriesToDate, (entry) async {
+          await entry.catalog(background: false, force: true, persist: true);
+        });
       }
     }
     return true;
   }
-}
-
-class MoveUndatedConfirmationDialogDelegate extends ConfirmationDialogDelegate {
-  final ValueNotifier<bool> _setMetadataDate = ValueNotifier(false);
-
-  MoveUndatedConfirmationDialogDelegate() {
-    _setMetadataDate.value = settings.setMetadataDateBeforeFileOp;
-  }
-
-  void dispose() {
-    _setMetadataDate.dispose();
-  }
-
-  @override
-  List<Widget> build(BuildContext context) => [
-    Padding(
-      padding: const EdgeInsets.all(16) + const EdgeInsets.only(top: 8),
-      child: Row(
-        children: [
-          Expanded(child: Text(context.l10n.moveUndatedConfirmationDialogMessage)),
-          IconButton(
-            icon: const Icon(AIcons.help),
-            onPressed: () => AvesApp.launchUrl('${AppReference.avesFaq}#whats-in-a-date'),
-            tooltip: 'FAQ',
-          ),
-        ],
-      ),
-    ),
-    ValueListenableBuilder<bool>(
-      valueListenable: _setMetadataDate,
-      builder: (context, flag, child) => SwitchListTile(
-        value: flag,
-        onChanged: (v) => _setMetadataDate.value = v,
-        title: Text(context.l10n.moveUndatedConfirmationDialogSetDate),
-      ),
-    ),
-  ];
-
-  @override
-  void apply() => settings.setMetadataDateBeforeFileOp = _setMetadataDate.value;
 }

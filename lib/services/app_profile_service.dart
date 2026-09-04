@@ -79,9 +79,7 @@ class PlatformAppProfileService implements AppProfileService {
   Future<List<String>> getTargetUserProfiles() async {
     try {
       final result = await _platform.invokeMethod('getTargetUserProfiles');
-      if (result != null) {
-        return (result as List).cast<String>();
-      }
+      if (result != null) return (result as List).cast<String>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

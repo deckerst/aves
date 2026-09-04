@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MediaStoreService {
@@ -11,9 +10,9 @@ abstract class MediaStoreService {
 
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById);
 
-  Future<List<String>> getChangedUris(int sinceGeneration);
+  Future<List<String>> getChangedUris(Map<String, int> sinceGenerationByVolume);
 
-  Future<int?> getGeneration();
+  Future<Map<String, int>?> getGenerationByVolume();
 
   // knownEntries: map of contentId -> dateModifiedMillis
   Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory});
@@ -53,10 +52,10 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Future<List<String>> getChangedUris(int sinceGeneration) async {
+  Future<List<String>> getChangedUris(Map<String, int> sinceGenerationByVolume) async {
     try {
       final result = await _platform.invokeMethod('getChangedUris', <String, Object?>{
-        'sinceGeneration': sinceGeneration,
+        'sinceGenerationByVolume': sinceGenerationByVolume,
       });
       return (result as List).cast<String>();
     } on PlatformException catch (e, stack) {
@@ -66,15 +65,12 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Future<int?> getGeneration() async {
+  Future<Map<String, int>?> getGenerationByVolume() async {
     try {
-      return await _platform.invokeMethod('getGeneration');
+      var result = await _platform.invokeMethod('getGenerationByVolume');
+      if (result != null) return (result as Map).cast<String, int>();
     } on PlatformException catch (e, stack) {
-      if (e.code != 'getGeneration-primary') {
-        await reportService.recordError(e, stack);
-      } else {
-        debugPrint('$runtimeType failed to get generation with error=$e');
-      }
+      await reportService.recordError(e, stack);
     }
     return null;
   }

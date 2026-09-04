@@ -361,9 +361,7 @@ class Settings
           case SettingKeys.confirmCreateVaultKey:
           case SettingKeys.confirmDeleteForeverKey:
           case SettingKeys.confirmMoveToBinKey:
-          case SettingKeys.confirmMoveUndatedItemsKey:
           case SettingKeys.confirmAfterMoveToBinKey:
-          case SettingKeys.setMetadataDateBeforeFileOpKey:
           case SettingKeys.collectionSortReverseKey:
           case SettingKeys.showThumbnailFavouriteKey:
           case SettingKeys.showThumbnailHdrKey:

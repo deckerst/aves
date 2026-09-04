@@ -16,12 +16,12 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
 import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
-import deckers.thibault.aves.utils.StorageUtils
 import org.mp4parser.boxes.UserBox
 import java.util.TimeZone
 

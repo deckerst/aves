@@ -50,3 +50,6 @@ app.*.map.json
 
 # generated files
 /lib/l10ngen/app_localizations*
+
+# Widget Preview related
+.widget_preview/

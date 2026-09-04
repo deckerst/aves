@@ -38,7 +38,7 @@ class SettingsTilePermissionsSubtitle extends StatefulWidget {
 }
 
 class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermissionsSubtitle> with WidgetsBindingObserver {
-  late Future<bool> _isMediaManagementAllowedLoader;
+  late Future<bool> _isMediaManagementGrantedLoader;
   late Future<bool> _areNotificationsEnabledLoader;
 
   @override
@@ -55,7 +55,7 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
   }
 
   void _initLoader() {
-    _isMediaManagementAllowedLoader = deviceService.canManageMedia();
+    _isMediaManagementGrantedLoader = deviceService.isMediaManagementGranted();
     _areNotificationsEnabledLoader = Permission.notification.status.then((v) => v == PermissionStatus.granted);
   }
 
@@ -74,9 +74,9 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
       builder: (context, notificationSnapshot) {
         final areNotificationsEnabled = notificationSnapshot.data ?? false;
         return FutureBuilder<bool>(
-          future: _isMediaManagementAllowedLoader,
+          future: _isMediaManagementGrantedLoader,
           builder: (context, mediaManagementSnapshot) {
-            final isMediaManagementAllowed = mediaManagementSnapshot.data ?? false;
+            final isMediaManagementGranted = mediaManagementSnapshot.data ?? false;
 
             final permissions = <(IconData, bool)>[];
             permissions.add((AIcons.app, context.select<Settings, bool>((s) => s.isInstalledAppAccessAllowed)));
@@ -85,7 +85,7 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
             }
             permissions.add((AIcons.notifications, areNotificationsEnabled));
             if (!settings.useTvLayout && device.canRequestMediaManagementPermission) {
-              permissions.add((AIcons.allCollection, isMediaManagementAllowed));
+              permissions.add((AIcons.allCollection, isMediaManagementGranted));
             }
 
             final theme = Theme.of(context);

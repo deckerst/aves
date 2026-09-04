@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- prefer Media Store API over SAF API on Android >=11
+- require Media Management permission to edit items with Media Store API on Android >=11
+- always save date to metadata when handling undated item
 - upgraded Flutter to beta v3.47.0-0.3.pre
 
 ### Fixed
@@ -15,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - edited images not being refreshed in the viewer
 - slideshow transition when system UI was toggled
 - slideshow transition when animations are disabled
+- restoring binned item when its original directory is not accessible
 
 ## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
 

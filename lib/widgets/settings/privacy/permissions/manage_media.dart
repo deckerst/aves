@@ -28,7 +28,7 @@ class _ManageMediaTileState extends State<ManageMediaTile> with WidgetsBindingOb
     super.dispose();
   }
 
-  void _initLoader() => _loader = deviceService.canManageMedia();
+  void _initLoader() => _loader = deviceService.isMediaManagementGranted();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -46,7 +46,7 @@ class _ManageMediaTileState extends State<ManageMediaTile> with WidgetsBindingOb
         final loading = snapshot.connectionState != ConnectionState.done;
         final current = snapshot.data ?? false;
 
-        final onChanged = loading ? null : (v) => deviceService.requestMediaManagePermission();
+        final onChanged = loading ? null : (v) => deviceService.requestMediaManagementPermission();
         final leading = AnimatedOpacity(
           opacity: current && onChanged != null ? 1 : SettingsSwitchListTile.disabledOpacity,
           duration: ADurations.toggleableTransitionLoose,

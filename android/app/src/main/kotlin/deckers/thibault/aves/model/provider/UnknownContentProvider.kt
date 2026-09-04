@@ -10,9 +10,9 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils
 
 open class UnknownContentProvider : ImageProvider() {
     open val reliableProviderMimeType: Boolean
@@ -64,12 +64,12 @@ open class UnknownContentProvider : ImageProvider() {
                 cursor.close()
             }
         } catch (e: Exception) {
-            callback.onFailure(Exception("Failed to query content", e))
+            callback.onFailure(Exception("failed to query content", e))
             return
         }
 
         if (fields[EntryFields.SOURCE_MIME_TYPE] == null) {
-            callback.onFailure(Exception("Failed to find MIME type for uri=$uri"))
+            callback.onFailure(Exception("failed to find MIME type for uri=$uri"))
             return
         }
 

@@ -196,8 +196,8 @@ class PlatformAppService implements AppService {
         entries,
         // loosen MIME type to a generic one, so we can share with badly defined apps
         // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
-        (e) => e.mimeTypeAnySubtype,
-      ).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList())),
+        (entry) => entry.mimeTypeAnySubtype,
+      ).map((k, v) => MapEntry(k, v.map((entry) => entry.uri).toList())),
     );
   }
 

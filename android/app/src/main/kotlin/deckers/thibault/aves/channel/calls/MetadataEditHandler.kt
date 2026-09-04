@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ContextWrapper
+import android.content.Context
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.Mp4FragmentedException
@@ -10,7 +10,7 @@ import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.utils.FileDescriptorException
+import deckers.thibault.aves.storage.FileDescriptorException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -20,7 +20,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 
-class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
+class MetadataEditHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -66,7 +66,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(contextWrapper, uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("editOrientation-provider", "failed to find provider for uri=$uri", null)
             return
@@ -74,7 +74,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         val callback = MetadataOpCallback("editOrientation", entryMap, result)
         provider.editOrientation(
-            context = contextWrapper,
+            context = context,
             path = path,
             uri = uri,
             mimeType = mimeType,
@@ -103,7 +103,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(contextWrapper, uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("editExifDate-provider", "failed to find provider for uri=$uri", null)
             return
@@ -111,7 +111,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         val callback = MetadataOpCallback("editExifDate", entryMap, result)
         provider.editExifDate(
-            context = contextWrapper,
+            context = context,
             path = path,
             uri = uri,
             mimeType = mimeType,
@@ -141,7 +141,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(contextWrapper, uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("editMetadata-provider", "failed to find provider for uri=$uri", null)
             return
@@ -149,7 +149,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         val callback = MetadataOpCallback("editMetadata", entryMap, result)
         provider.editMetadata(
-            context = contextWrapper,
+            context = context,
             path = path,
             uri = uri,
             mimeType = mimeType,
@@ -176,7 +176,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(contextWrapper, uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("removeTrailerVideo-provider", "failed to find provider for uri=$uri", null)
             return
@@ -184,7 +184,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         val callback = MetadataOpCallback("removeTrailerVideo", entryMap, result)
         provider.removeTrailerVideo(
-            context = contextWrapper,
+            context = context,
             path = path,
             uri = uri,
             mimeType = mimeType,
@@ -210,7 +210,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
             return
         }
 
-        val provider = getProvider(contextWrapper, uri)
+        val provider = getProvider(context, uri)
         if (provider == null) {
             result.error("removeTypes-provider", "failed to find provider for uri=$uri", null)
             return
@@ -218,7 +218,7 @@ class MetadataEditHandler(private val contextWrapper: ContextWrapper) : MethodCa
 
         val callback = MetadataOpCallback("removeTypes", entryMap, result)
         provider.removeMetadataTypes(
-            context = contextWrapper,
+            context = context,
             path = path,
             uri = uri,
             mimeType = mimeType,

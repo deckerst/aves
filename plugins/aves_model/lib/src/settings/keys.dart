@@ -61,9 +61,7 @@ class SettingKeys {
   static const confirmCreateVaultKey = 'confirm_create_vault';
   static const confirmDeleteForeverKey = 'confirm_delete_forever';
   static const confirmMoveToBinKey = 'confirm_move_to_bin';
-  static const confirmMoveUndatedItemsKey = 'confirm_move_undated_items';
   static const confirmAfterMoveToBinKey = 'confirm_after_move_to_bin';
-  static const setMetadataDateBeforeFileOpKey = 'set_metadata_date_before_file_op';
   static const drawerTypeBookmarksKey = 'drawer_type_bookmarks';
   static const drawerAlbumBookmarksKey = 'drawer_album_bookmarks';
   static const drawerPageBookmarksKey = 'drawer_page_bookmarks';

@@ -9,7 +9,6 @@ class ConfirmationDialogPage extends StatelessWidget {
   static const routeName = '/settings/navigation_confirmation';
 
   static const List<String> settingKeys = [
-    SettingKeys.confirmMoveUndatedItemsKey,
     SettingKeys.confirmMoveToBinKey,
     SettingKeys.confirmDeleteForeverKey,
     SettingKeys.confirmAfterMoveToBinKey,
@@ -28,11 +27,6 @@ class ConfirmationDialogPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSwitchListTile(
-              selector: (context, s) => s.confirmMoveUndatedItems,
-              onChanged: (v) => settings.confirmMoveUndatedItems = v,
-              title: (_) => l10n.settingsConfirmationBeforeMoveUndatedItems,
-            ),
             SettingsSwitchListTile(
               selector: (context, s) => s.confirmMoveToBin,
               onChanged: (v) => settings.confirmMoveToBin = v,

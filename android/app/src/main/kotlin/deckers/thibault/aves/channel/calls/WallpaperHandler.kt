@@ -3,7 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_LOCK
 import android.app.WallpaperManager.FLAG_SYSTEM
-import android.content.ContextWrapper
+import android.content.Context
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class WallpaperHandler(private val contextWrapper: ContextWrapper) : MethodCallHandler {
+class WallpaperHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -32,7 +32,7 @@ class WallpaperHandler(private val contextWrapper: ContextWrapper) : MethodCallH
             return
         }
 
-        val manager = WallpaperManager.getInstance(contextWrapper)
+        val manager = WallpaperManager.getInstance(context)
         if (!manager.isWallpaperSupported || !manager.isSetWallpaperAllowed) {
             result.error("setWallpaper-unsupported", "failed because setting wallpaper is not allowed", null)
             return

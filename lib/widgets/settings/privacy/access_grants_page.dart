@@ -25,7 +25,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
     _load();
   }
 
-  void _load() => _pathLoader = storageService.getGrantedDirectories();
+  void _load() => _pathLoader = storagePermissionService.getSafGrantedDirectories();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                     trailing: IconButton(
                       icon: const Icon(AIcons.clear),
                       onPressed: () async {
-                        await storageService.revokeDirectoryAccess(path);
+                        await storagePermissionService.revokeSafDirectoryAccess(path);
                         _load();
                         setState(() {});
                       },

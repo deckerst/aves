@@ -61,8 +61,6 @@ bool _shouldConfirm(ConfirmationDialog type) {
       return settings.confirmDeleteForever;
     case .moveToBin:
       return settings.confirmMoveToBin;
-    case .moveUndatedItems:
-      return settings.confirmMoveUndatedItems;
   }
 }
 
@@ -74,8 +72,6 @@ void _skipConfirmation(ConfirmationDialog type) {
       settings.confirmDeleteForever = false;
     case .moveToBin:
       settings.confirmMoveToBin = false;
-    case .moveUndatedItems:
-      settings.confirmMoveUndatedItems = false;
   }
 }
 

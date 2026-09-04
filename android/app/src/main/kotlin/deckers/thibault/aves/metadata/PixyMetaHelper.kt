@@ -12,8 +12,8 @@ import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_DUCKY
 import deckers.thibault.aves.metadata.Metadata.TYPE_PHOTOSHOP_IRB
 import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils
 import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataEntry
 import pixy.meta.meta.MetadataType

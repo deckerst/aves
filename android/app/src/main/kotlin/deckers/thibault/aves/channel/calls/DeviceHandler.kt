@@ -10,7 +10,6 @@ import android.content.res.Resources
 import android.location.Geocoder
 import android.os.Build
 import android.os.LocaleList
-import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
@@ -19,6 +18,7 @@ import androidx.core.text.util.LocalePreferences
 import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -34,7 +34,6 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "canManageMedia" -> safe(call, result, ::canManageMedia)
             "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
             "getLocales" -> safe(call, result, ::getLocales)
             "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
@@ -43,7 +42,8 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getWidgetCornerRadiusPx" -> safe(call, result, ::getWidgetCornerRadiusPx)
             "isLocked" -> safe(call, result, ::isLocked)
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
-            "requestMediaManagePermission" -> safe(call, result, ::requestMediaManagePermission)
+            "isMediaManagementGranted" -> safe(call, result, ::isMediaManagementGranted)
+            "requestMediaManagementPermission" -> safe(call, result, ::requestMediaManagementPermission)
             "getHeapSizes" -> safe(call, result, ::getHeapSizes)
             "getRamSizes" -> safe(call, result, ::getRamSizes)
             "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
@@ -51,16 +51,12 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun canManageMedia(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        result.success(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaStore.canManageMedia(context) else false)
-    }
-
     private fun getCapabilities(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         result.success(
             hashMapOf(
                 "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
                 "canRenderSubdivisionFlagEmojis" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
-                "canRequestMediaManagementPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S),
+                "canRequestMediaManagementPermission" to MediaStorePermissions.canRequestMediaManagement(),
                 "canRequestNotificationPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
@@ -142,9 +138,13 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         result.success(enabled)
     }
 
-    private fun requestMediaManagePermission(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+    private fun isMediaManagementGranted(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(MediaStorePermissions.isMediaManagementGranted(context))
+    }
+
+    private fun requestMediaManagementPermission(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            result.error("requestMediaManagePermission-unsupported", "media management permission is not available before Android 12", null)
+            result.error("requestMediaManagementPermission-unsupported", "media management permission is not available before Android 12", null)
             return
         }
 

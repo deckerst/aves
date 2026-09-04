@@ -338,7 +338,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
+    final storageDirs = entries.map((entry) => entry.storageDirectory).nonNulls.toSet();
     final todoCount = entries.length;
 
     if (!await showSkippableConfirmationDialog(
@@ -528,7 +528,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     bool shouldCheckUndatedItems = true,
     bool showResult = true,
   }) async {
-    final selectionDirs = todoEntries.map((e) => e.directory).nonNulls.toSet();
+    final selectionDirs = todoEntries.map((entry) => entry.directory).nonNulls.toSet();
     final todoCount = todoEntries.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoEntries)) return;

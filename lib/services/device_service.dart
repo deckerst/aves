@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 enum MemorySizeType { advertised, available, free, max, total, used }
 
 abstract class DeviceService {
-  Future<bool> canManageMedia();
-
   Future<Map<String, Object?>> getCapabilities();
 
   Future<List<ui.Locale>> getLocales();
@@ -27,7 +25,9 @@ abstract class DeviceService {
 
   Future<bool> isSystemFilePickerEnabled();
 
-  Future<void> requestMediaManagePermission();
+  Future<bool> isMediaManagementGranted();
+
+  Future<void> requestMediaManagementPermission();
 
   Future<int> getAvailableHeapSize() async {
     final sizes = await getHeapSizes({.available});
@@ -43,17 +43,6 @@ abstract class DeviceService {
 
 class PlatformDeviceService extends DeviceService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/device');
-
-  @override
-  Future<bool> canManageMedia() async {
-    try {
-      final result = await _platform.invokeMethod('canManageMedia');
-      if (result != null) return result as bool;
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return false;
-  }
 
   @override
   Future<Map<String, Object?>> getCapabilities() async {
@@ -159,9 +148,20 @@ class PlatformDeviceService extends DeviceService {
   }
 
   @override
-  Future<void> requestMediaManagePermission() async {
+  Future<bool> isMediaManagementGranted() async {
     try {
-      await _platform.invokeMethod('requestMediaManagePermission');
+      final result = await _platform.invokeMethod('isMediaManagementGranted');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return false;
+  }
+
+  @override
+  Future<void> requestMediaManagementPermission() async {
+    try {
+      await _platform.invokeMethod('requestMediaManagementPermission');
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

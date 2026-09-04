@@ -1,17 +1,18 @@
 package deckers.thibault.aves.model.provider
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.utils.FileUtils
 import deckers.thibault.aves.utils.FileUtils.getFileSize
 import deckers.thibault.aves.utils.LogUtils
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 internal class FileImageProvider : ImageProvider() {
     override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
@@ -76,20 +77,8 @@ internal class FileImageProvider : ImageProvider() {
         }
     }
 
-    override fun delete(contextWrapper: ContextWrapper, uri: Uri, path: String?, mimeType: String) {
-        path ?: throw Exception("failed to delete file because path is null")
-
-        val file = File(path)
-        if (file.exists()) {
-            Log.d(LOG_TAG, "delete file at path=$path")
-            if (!file.delete()) {
-                throw Exception("failed to delete entry with uri=$uri path=$path")
-            }
-        }
-    }
-
     override suspend fun renameSingle(
-        activity: Activity,
+        context: Context,
         mimeType: String,
         oldMediaUri: Uri,
         oldPath: String,
@@ -123,5 +112,46 @@ internal class FileImageProvider : ImageProvider() {
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<MediaStoreImageProvider>()
+
+        fun insert(
+            targetDirPath: String,
+            targetFileName: String,
+            write: (OutputStream) -> Unit,
+        ): String {
+            val targetDir = File(targetDirPath)
+            targetDir.mkdirs()
+            if (!targetDir.exists()) {
+                throw Exception("failed to create directory at path=$targetDirPath")
+            }
+
+            val file = File(targetDir, targetFileName)
+            FileOutputStream(file).use(write)
+            return file.path
+        }
+
+        fun move(
+            sourceFile: File,
+            targetFile: File,
+            copy: Boolean,
+        ): String {
+            Log.d(LOG_TAG, "move file from path=$sourceFile to path=$targetFile")
+
+            if (targetFile.exists()) {
+                throw Exception("failed to move file because target file exists at path=$targetFile")
+            }
+
+            val targetDir = targetFile.parentFile
+            targetDir?.mkdirs()
+            if (targetDir == null || !targetDir.exists()) {
+                throw Exception("failed to create parent directory of file at path=$targetFile")
+            }
+
+            if (copy) {
+                FileUtils.copy(sourceFile, targetFile)
+            } else {
+                FileUtils.move(sourceFile, targetFile)
+            }
+            return targetFile.path
+        }
     }
 }

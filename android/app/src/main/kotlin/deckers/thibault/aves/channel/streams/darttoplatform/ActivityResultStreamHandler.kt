@@ -11,11 +11,12 @@ import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.channel.streams.BaseStreamHandler
+import deckers.thibault.aves.storage.StorageUtils
+import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
+import deckers.thibault.aves.storage.apis.MediaStorePermissions
+import deckers.thibault.aves.storage.apis.SafPermissions
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.PermissionManager
-import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.anyCauseIs
 import kotlinx.coroutines.launch
 
@@ -39,9 +40,9 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         // as it will be closed when getting that activity result
         val closeStream = false
         when (op) {
-            "requestAnyDirectoryAccess" -> ioScope.launch { safe(::requestAnyDirectoryAccess, closeStream) }
-            "requestDirectoryAccess" -> ioScope.launch { safe(::requestDirectoryAccess, closeStream) }
-            "requestMediaFileAccess" -> ioScope.launch { safe(::requestMediaFileAccess, closeStream) }
+            "requestSafAnyDirectoryAccess" -> ioScope.launch { safe(::requestSafAnyDirectoryAccess, closeStream) }
+            "requestSafMediaDirectoryAccess" -> ioScope.launch { safe(::requestSafMediaDirectoryAccess, closeStream) }
+            "requestMediaStoreFileAccess" -> ioScope.launch { safe(::requestMediaStoreFileAccess, closeStream) }
             "createFile" -> ioScope.launch { safe(::createFile, closeStream) }
             "openFile" -> ioScope.launch { safe(::openFile, closeStream) }
             "copyFile" -> ioScope.launch { safe(::copyFile, closeStream) }
@@ -56,8 +57,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         endOfStream()
     }
 
-    private fun requestAnyDirectoryAccess() {
-        PermissionManager.requestDirectoryAccess(activity, path = null, {
+    private fun requestSafAnyDirectoryAccess() {
+        SafPermissions.requestDirectoryAccess(activity, path = null, {
             val dirPath = StorageUtils.convertTreeDocumentUriToDirPath(activity, it)
             success(dirPath)
             endOfStream()
@@ -67,14 +68,14 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         })
     }
 
-    private fun requestDirectoryAccess() {
+    private fun requestSafMediaDirectoryAccess() {
         val path = args["path"] as String?
         if (path == null) {
-            error("requestDirectoryAccess-args", "missing arguments", null)
+            error("requestSafMediaDirectoryAccess-args", "missing arguments", null)
             return
         }
 
-        PermissionManager.requestDirectoryAccess(activity, ensureTrailingSeparator(path), {
+        SafPermissions.requestDirectoryAccess(activity, ensureTrailingSeparator(path), {
             success(true)
             endOfStream()
         }, {
@@ -83,35 +84,35 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         })
     }
 
-    private fun requestMediaFileAccess() {
+    private fun requestMediaStoreFileAccess() {
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) it.toUri() else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.filterIsInstance<String>()
         if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
-            error("requestMediaFileAccess-args", "missing arguments", null)
+            error("requestMediaStoreFileAccess-args", "missing arguments", null)
             return
         }
 
         if (uris.any { !StorageUtils.isMediaStoreContentUri(it) }) {
-            error("requestMediaFileAccess-nonmediastore", "request is only valid for Media Store content URIs, uris=$uris", null)
+            error("requestMediaStoreFileAccess-nonmediastore", "request is only valid for Media Store content URIs, uris=$uris", null)
             return
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            error("requestMediaFileAccess-unsupported", "media file bulk access is not allowed before Android 11", null)
+            error("requestMediaStoreFileAccess-unsupported", "media file bulk access is not allowed before Android 11", null)
             return
         }
 
         try {
-            val granted = PermissionManager.requestMediaFileAccess(activity, uris, mimeTypes)
+            val granted = MediaStorePermissions.requestFileAccess(activity, uris, mimeTypes)
             success(granted)
             endOfStream()
         } catch (e: Exception) {
             if (e.anyCauseIs<TransactionTooLargeException>()) {
-                error("requestMediaFileAccess-large", "transaction too large with ${uris.size} uris", e)
+                error("requestMediaStoreFileAccess-large", "transaction too large with ${uris.size} uris", e)
             } else {
-                val byFromMediaStore = uris.groupBy { uri -> uri.toString().startsWith("content://media/") }
+                val byFromMediaStore = uris.groupBy(StorageUtils::isMediaStoreContentUri)
                 error(
-                    "requestMediaFileAccess-request", "failed to request access to ${uris.size} uris" +
+                    "requestMediaStoreFileAccess-request", "failed to request access to ${uris.size} uris" +
                             " (${byFromMediaStore[true]?.size ?: 0} from media store" +
                             ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
                             ")", e.message
@@ -221,14 +222,10 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         fun onGranted(uri: Uri) {
             ioScope.launch {
                 try {
-                    StorageUtils.openInputStream(activity, sourceUri)?.use { input ->
-                        // truncate is necessary when overwriting a longer file
-                        activity.contentResolver.openOutputStream(uri, "wt")?.use { output ->
-                            val buffer = ByteArray(BUFFER_SIZE)
-                            var len: Int
-                            while (input.read(buffer).also { len = it } != -1) {
-                                output.write(buffer, 0, len)
-                            }
+                    // truncate is necessary when overwriting a longer file
+                    activity.contentResolver.openOutputStream(uri, "wt")?.use { output ->
+                        StorageUtils.openInputStream(activity, sourceUri)?.use { input ->
+                            input.copyTo(output)
                         }
                     }
                     success(true)

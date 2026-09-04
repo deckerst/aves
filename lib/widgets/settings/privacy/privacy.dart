@@ -61,7 +61,7 @@ class SettingsTilePrivacyAutoExportSettings extends SettingsTile with Permission
       if (v) {
         if (!await checkSystemFilePickerEnabled(context)) return;
 
-        final dirPath = await storageService.requestAnyDirectoryAccess();
+        final dirPath = await storagePermissionService.requestSafAnyDirectoryAccess();
         if (dirPath == null) return;
 
         settings.autoExportPath = dirPath;

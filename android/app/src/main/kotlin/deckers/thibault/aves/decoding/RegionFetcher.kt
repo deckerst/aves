@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.describe
@@ -21,7 +22,6 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
@@ -98,7 +98,7 @@ class RegionFetcher internal constructor(
 
             val options = BitmapFactory.Options().apply {
                 inSampleSize = effectiveSampleSize
-                // Specifying preferred config and color space avoids the need for conversion afterwards,
+                // Specifying preferred config and color space avoids the need for conversion afterward,
                 // but may prevent decoding (e.g. from RGBA_1010102 to ARGB_8888 on some devices).
                 inPreferredConfig = PREFERRED_CONFIG
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,7 +117,7 @@ class RegionFetcher internal constructor(
             var bitmap = decoder.decodeRegion(effectiveRect, options)
             if (bitmap == null) {
                 // retry without specifying config or color space,
-                // falling back to custom byte conversion afterwards
+                // falling back to custom byte conversion afterward
                 options.inPreferredConfig = null
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && options.inPreferredColorSpace != null) {
                     options.inPreferredColorSpace = null

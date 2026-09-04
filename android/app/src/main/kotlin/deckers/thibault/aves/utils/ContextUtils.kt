@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 
 object ContextUtils {

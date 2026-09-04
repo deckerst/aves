@@ -59,7 +59,7 @@ class CountryListPage extends StatelessWidget {
 
   static Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _groupToSections(Iterable<FilterGridItem<LocationFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<LocationFilter>();
-    final byPin = groupBy<FilterGridItem<LocationFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
+    final byPin = groupBy<FilterGridItem<LocationFilter>, bool>(sortedMapEntries, (v) => pinned.contains(v.filter));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 

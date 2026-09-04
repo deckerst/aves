@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.streams.darttoplatform
 
-import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
@@ -11,12 +11,12 @@ import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
+import deckers.thibault.aves.storage.StorageUtils
+import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.StorageUtils
-import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import kotlinx.coroutines.launch
 
-class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : BaseStreamHandler() {
+class ImageOpStreamHandler(private val context: Context, private val arguments: Any?) : BaseStreamHandler() {
     private var op: String? = null
     private var opId: String? = null
     private val entryMapList = ArrayList<FieldMap>()
@@ -66,9 +66,9 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
                 result["skipped"] = true
             } else {
                 result["success"] = false
-                getProvider(activity, uri)?.let { provider ->
+                getProvider(context, uri)?.let { provider ->
                     try {
-                        provider.delete(activity, uri, path, mimeType)
+                        provider.deleteSingle(context, uri, path, mimeType)
                         result["success"] = true
                     } catch (e: Exception) {
                         Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
@@ -93,7 +93,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
         val writeMetadata = arguments["writeMetadata"] as Boolean?
-        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        val nameConflictStrategy = NameConflictStrategy.fromKey(arguments["nameConflictStrategy"] as String?)
         if (destinationDir == null || mimeType == null || quality == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
             error("convert-args", "missing arguments", null)
             return
@@ -101,7 +101,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
         // assume same provider for all entries
         val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.toUri()?.let { getProvider(activity, it) }
+        val provider = (firstEntry["uri"] as String?)?.toUri()?.let { getProvider(context, it) }
         if (provider == null) {
             error("convert-provider", "failed to find provider for entry=$firstEntry", null)
             return
@@ -110,7 +110,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         destinationDir = ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
         provider.convertMultiple(
-            activity = activity,
+            context = context,
             imageExportMimeType = mimeType,
             targetDir = destinationDir,
             entries = entries,
@@ -135,7 +135,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         }
 
         val copy = arguments["copy"] as Boolean?
-        val nameConflictStrategy = NameConflictStrategy.get(arguments["nameConflictStrategy"] as String?)
+        val nameConflictStrategy = NameConflictStrategy.fromKey(arguments["nameConflictStrategy"] as String?)
         val rawEntryMap = arguments["entriesByDestination"] as Map<*, *>?
         if (copy == null || nameConflictStrategy == null || rawEntryMap.isNullOrEmpty()) {
             error("move-args", "missing arguments", null)
@@ -157,7 +157,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
         val provider = MediaStoreImageProvider()
 
         provider.moveMultiple(
-            activity = activity,
+            context = context,
             copy = copy,
             nameConflictStrategy = nameConflictStrategy,
             entriesByTargetDir = entriesByTargetDir,
@@ -190,7 +190,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
             entriesToNewName[AvesEntry(rawEntry)] = newName
         }
 
-        val byProvider = entriesToNewName.entries.groupBy { kv -> getProvider(activity, kv.key.uri) }
+        val byProvider = entriesToNewName.entries.groupBy { kv -> getProvider(context, kv.key.uri) }
         for ((provider, entryList) in byProvider) {
             if (provider == null) {
                 error("rename-provider", "failed to find provider for entry=${entryList.firstOrNull()}", null)
@@ -199,7 +199,7 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
             val entryMap = mapOf(*entryList.map { Pair(it.key, it.value) }.toTypedArray())
             provider.renameMultiple(
-                activity = activity,
+                context = context,
                 entriesToNewName = entryMap,
                 isCancelledOp = ::isCancelledOp,
                 callback = object : ImageOpCallback {

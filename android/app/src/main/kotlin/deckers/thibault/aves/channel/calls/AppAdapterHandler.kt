@@ -41,6 +41,7 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
 import deckers.thibault.aves.utils.queryIntentActivitiesCompat
@@ -502,16 +503,12 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         const val CHANNEL = "deckers.thibault/aves/app"
 
         fun getShareableUri(context: Context, uri: Uri): Uri? {
-            return when (uri.scheme?.lowercase(Locale.ROOT)) {
-                ContentResolver.SCHEME_FILE -> {
-                    uri.path?.let { path ->
-                        val authority = "${context.applicationContext.packageName}.file_provider"
-                        FileProvider.getUriForFile(context, authority, File(path))
-                    }
+            return if (uri.isFileScheme) {
+                uri.path?.let { path ->
+                    val authority = "${context.applicationContext.packageName}.file_provider"
+                    FileProvider.getUriForFile(context, authority, File(path))
                 }
-
-                else -> uri
-            }
+            } else uri
         }
     }
 }

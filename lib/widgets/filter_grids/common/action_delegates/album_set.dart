@@ -326,7 +326,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     final source = context.read<CollectionSource>();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoAlbums = filters.map((v) => v.album).toSet();
-    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
+    final filledAlbums = todoEntries.map((entry) => entry.directory).nonNulls.toSet();
     final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     if (enableBin && filledAlbums.isNotEmpty) {
@@ -358,7 +358,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     source.forgetNewAlbums(todoAlbums);
     source.cleanEmptyAlbums(emptyAlbums);
 
-    if (!await checkStoragePermissionForAlbums(context, filledAlbums)) return;
+    if (!await checkStoragePermissionForAlbums(context, filledAlbums, entries: todoEntries)) return;
 
     await _deleteEntriesForever(context, todoEntries);
 
@@ -374,7 +374,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
     if (todoEntries.isEmpty) return;
 
     final source = context.read<CollectionSource>();
-    final filledAlbums = todoEntries.map((e) => e.directory).nonNulls.toSet();
+    final filledAlbums = todoEntries.map((entry) => entry.directory).nonNulls.toSet();
 
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
@@ -470,14 +470,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
         final dir = androidFileUtils.relativeDirectoryFromPath(album);
         // do not allow renaming volume root
         if (dir == null || dir.relativeDir.isEmpty) return;
-
-        // check whether renaming is possible given OS restrictions,
-        // before asking to input a new name
-        final restrictedDirsLowerCase = await storageService.getRestrictedDirectoriesLowerCase();
-        if (restrictedDirsLowerCase.contains(dir.copyWith(relativeDir: dir.relativeDir.toLowerCase()))) {
-          await showRestrictedDirectoryDialog(context, dir);
-          return;
-        }
       }
 
       final newName = await showAvesDialog<String>(

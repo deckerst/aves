@@ -203,6 +203,28 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
       entriesByDestination.removeWhere((_, entries) => entries.isEmpty);
     }
 
+    if (moveType == MoveType.fromBin) {
+      final restorationAlbums = entriesByDestination.keys.toSet();
+      final apiByDir = await storagePermissionService.getEditionApis(restorationAlbums, insertion: true);
+      final restrictedDirPaths = apiByDir.entries.where((kv) => kv.value.isEmpty).map((kv) {
+        final volume = kv.key;
+        return androidFileUtils.removeTrailingSeparator(volume.dirPath);
+      }).toSet();
+      if (restrictedDirPaths.isNotEmpty) {
+        // restore to a safe directory, if original directories are no longer accessible
+        final recoveryPathByVolume = await androidFileUtils.getBinRestoreRecoveryPathByVolume();
+        restrictedDirPaths.forEach((restrictedDirPath) {
+          final storageVolume = androidFileUtils.getStorageVolume(restrictedDirPath);
+          final recoveryPath = recoveryPathByVolume[storageVolume];
+          if (recoveryPath != null) {
+            final redirectedItems = {restrictedDirPath, recoveryPath}.expand<AvesEntry>((v) => entriesByDestination.remove(v) ?? {}).toSet();
+            entriesByDestination[recoveryPath] = redirectedItems;
+            debugPrint('restore ${redirectedItems.length} trashed items from restricted dir=$restrictedDirPath to recovery dir=$recoveryPath');
+          }
+        });
+      }
+    }
+
     final entries = entriesByDestination.values.expand((v) => v).toSet();
     final todoCount = entries.length;
     if (todoCount == 0) return true;
@@ -215,7 +237,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
     if (!await checkStoragePermissionForAlbums(context, destinationAlbums)) return false;
 
     // permission for modification at origins
-    final originAlbums = entries.map((e) => e.storageDirectory).nonNulls.toSet();
+    final originAlbums = entries.map((entry) => entry.storageDirectory).nonNulls.toSet();
     if ({MoveType.move, MoveType.toBin}.contains(moveType) && !await checkStoragePermissionForAlbums(context, originAlbums, entries: entries)) return false;
 
     final hasEnoughSpaceByDestination = await Future.wait(
@@ -397,7 +419,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
       case .toBin:
         entriesByDestination[AndroidFileUtils.trashDirPath] = entries;
       case .fromBin:
-        groupBy<AvesEntry, String?>(entries, (e) => e.directory).forEach((originAlbum, dirEntries) {
+        groupBy<AvesEntry, String?>(entries, (entry) => entry.directory).forEach((originAlbum, dirEntries) {
           if (originAlbum != null) {
             entriesByDestination[originAlbum] = dirEntries.toSet();
           }

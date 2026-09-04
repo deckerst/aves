@@ -36,8 +36,7 @@ extension ExtraNumIterable on Iterable<int?> {
 }
 
 extension ExtraEnum<T extends Enum> on Iterable<T> {
-  // similar to `EnumByName` extension `byName()`,
-  // but check full name too, and fall back to a default value
+  // similar to `EnumByName` extension `byName()`, but check full name too
   T? safeByName(String? name, {bool ignoreCase = false}) {
     if (name == null) return null;
 

@@ -116,7 +116,7 @@ class TagListPage extends StatelessWidget {
 
   static Map<ChipSectionKey, List<FilterGridItem<TagBaseFilter>>> groupToSections(Iterable<FilterGridItem<TagBaseFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<TagFilter>();
-    final byPin = groupBy<FilterGridItem<TagBaseFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
+    final byPin = groupBy<FilterGridItem<TagBaseFilter>, bool>(sortedMapEntries, (v) => pinned.contains(v.filter));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 

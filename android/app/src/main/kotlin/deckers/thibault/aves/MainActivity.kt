@@ -1,6 +1,5 @@
 package deckers.thibault.aves
 
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
@@ -44,6 +43,7 @@ import deckers.thibault.aves.channel.calls.MetadataEditHandler
 import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.calls.SecurityHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
+import deckers.thibault.aves.channel.calls.StoragePermissionHandler
 import deckers.thibault.aves.channel.calls.WallpaperHandler
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
@@ -59,7 +59,9 @@ import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStre
 import deckers.thibault.aves.channel.streams.platformtodart.SettingsChangeStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.WindowChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.storage.apis.SafPermissions
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.UriUtils.isGeoScheme
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -156,6 +158,7 @@ open class MainActivity : FlutterFragmentActivity() {
         // - need Context
         analysisHandler = AnalysisHandler(this, ::onAnalysisCompleted)
         mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, AnalysisHandler.CHANNEL).setMethodCallHandler(analysisHandler)
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
@@ -164,16 +167,15 @@ open class MainActivity : FlutterFragmentActivity() {
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
         MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
+        MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
+        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, SecurityHandler.CHANNEL).setMethodCallHandler(SecurityHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        // - need ContextWrapper
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
-        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
+        MethodChannel(messenger, StoragePermissionHandler.CHANNEL).setMethodCallHandler(StoragePermissionHandler(this))
         MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
         // - need Activity
         MethodChannel(messenger, AppProfileHandler.CHANNEL).setMethodCallHandler(AppProfileHandler(this))
@@ -182,9 +184,9 @@ open class MainActivity : FlutterFragmentActivity() {
         // result streaming: dart -> platform ->->-> dart
         // - need Context
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
+        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
         // - need Activity
-        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, ActivityResultStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ActivityResultStreamHandler(this, args) }
 
         // intent handling
@@ -336,19 +338,7 @@ open class MainActivity : FlutterFragmentActivity() {
             return
         }
 
-        val canPersist = (intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
-        @SuppressLint("WrongConstant")
-        if (canPersist) {
-            // save access permissions across reboots
-            val takeFlags = (intent.flags
-                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-            try {
-                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-            } catch (e: SecurityException) {
-                Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
-            }
-        }
+        SafPermissions.takePersistableUriPermission(this, intent.flags, treeUri)
 
         // resume pending action
         onStorageAccessResult(requestCode, treeUri)
@@ -375,7 +365,7 @@ open class MainActivity : FlutterFragmentActivity() {
             "com.android.camera.action.REVIEW",
             "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
-                    if (uri.scheme == "geo") {
+                    if (uri.isGeoScheme) {
                         return hashMapOf(
                             INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW_GEO,
                             INTENT_DATA_KEY_URI to uri.toString(),
@@ -631,6 +621,7 @@ open class MainActivity : FlutterFragmentActivity() {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val INTENT_CHANNEL = "deckers.thibault/aves/intent"
         const val EXTRA_STRING_ARRAY_SEPARATOR = "###"
+
         const val DOCUMENT_TREE_ACCESS_REQUEST = 1
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3

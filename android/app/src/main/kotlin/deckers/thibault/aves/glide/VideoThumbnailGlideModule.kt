@@ -25,10 +25,10 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeFloat
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
+import deckers.thibault.aves.storage.StorageUtils.openMetadataRetriever
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
-import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

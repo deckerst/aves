@@ -18,10 +18,12 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/debug_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +56,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         return settings.hiddenFilters.contains(filter);
       case .lockVault:
         return (filter is StoredAlbumFilter && vaults.isVault(filter.album) && !vaults.isLocked(filter.album));
+      case .debug:
+        return !kReleaseMode;
     }
   }
 
@@ -102,6 +106,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         if (filter is StoredAlbumFilter) {
           lockFilters({filter});
         }
+      case .debug:
+        _goToDebug(context, filter);
     }
   }
 
@@ -118,6 +124,15 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         builder: pageBuilder,
       ),
       (route) => false,
+    );
+  }
+
+  void _goToDebug(BuildContext context, CollectionFilter filter) {
+    Navigator.maybeOf(context)?.push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: FilterDebugPage.routeName),
+        builder: (context) => FilterDebugPage(filter: filter),
+      ),
     );
   }
 
