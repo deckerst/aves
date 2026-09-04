@@ -312,17 +312,11 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   );
                                 },
                                 navigatorObservers: _navigatorObservers,
-                                builder: (context, child) {
-                                  // TODO TLAD remove `MaterialUiCompatibilityBridge` when widgets are migrated to `material_ui`
-                                  // ignore: deprecated_member_use
-                                  return MaterialUiCompatibilityBridge(
-                                    child: AvesAppContentDecorator(
-                                      initialized: initialized,
-                                      source: _mediaStoreSource,
-                                      child: child,
-                                    ),
-                                  );
-                                },
+                                builder: (context, child) => AvesAppContentDecorator(
+                                  initialized: initialized,
+                                  source: _mediaStoreSource,
+                                  child: child,
+                                ),
                                 onGenerateTitle: (context) => context.l10n.appName,
                                 theme: lightTheme,
                                 darkTheme: darkTheme,
