@@ -3,7 +3,7 @@ import 'package:aves/services/intent_service.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:material_ui/material_ui.dart';
 
 class SettingsCollectionTile extends StatelessWidget {
@@ -42,7 +42,7 @@ class SettingsCollectionTile extends StatelessWidget {
                         // fallback to `ListTile` M3 default style
                         style: theme.listTileTheme.titleTextStyle ?? theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurface),
                       ),
-                      if (hasSubtitle) AvesCaption(l10n.drawerCollectionAll),
+                      if (hasSubtitle) AvesListSubtitle(l10n.drawerCollectionAll),
                     ],
                   ),
                   const Spacer(),

@@ -4,7 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/duration_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
@@ -150,7 +150,7 @@ class SettingsSelectionListTile<T> extends StatelessWidget {
       builder: (context, current, child) {
         return ListTile(
           title: Text(tileTitle(context) ?? '?'),
-          subtitle: AvesCaption(getName(context, current)),
+          subtitle: AvesListSubtitle(getName(context, current)),
           trailing: trailingBuilder?.call(context),
           onTap: () => showSelectionDialog<T>(
             context: context,
@@ -196,7 +196,7 @@ class SettingsMultiSelectionListTile<T> extends StatelessWidget {
       builder: (context, current, child) {
         return ListTile(
           title: Text(tileTitle),
-          subtitle: AvesCaption(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator)),
+          subtitle: AvesListSubtitle(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator)),
           onTap: () => showSelectionDialog<List<T>>(
             context: context,
             builder: (context) => AvesMultiSelectionDialog<T>(
@@ -241,7 +241,7 @@ class SettingsDurationListTile extends StatelessWidget {
 
         return ListTile(
           title: Text(title(context) ?? '?'),
-          subtitle: AvesCaption(subtitle),
+          subtitle: AvesListSubtitle(subtitle),
           onTap: () async {
             final seconds = await showAvesDialog<int>(
               context: context,

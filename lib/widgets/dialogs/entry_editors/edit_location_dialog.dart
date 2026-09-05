@@ -25,7 +25,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
@@ -36,10 +36,10 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gpx/gpx.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditEntryLocationDialog extends StatefulWidget {
@@ -344,7 +344,7 @@ class _EditEntryLocationDialogState extends State<EditEntryLocationDialog> with 
                     crossAxisAlignment: .start,
                     children: [
                       Text(l10n.editEntryLocationDialogTimeShift),
-                      AvesCaption(_formatShiftDuration(_gpxShift)),
+                      AvesListSubtitle(_formatShiftDuration(_gpxShift)),
                     ],
                   ),
                 ),

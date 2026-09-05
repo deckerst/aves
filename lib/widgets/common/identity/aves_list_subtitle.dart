@@ -3,7 +3,7 @@ import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AvesCaption extends StatelessWidget {
+class AvesListSubtitle extends StatelessWidget {
   final String data;
 
   const new(
@@ -11,10 +11,15 @@ class AvesCaption extends StatelessWidget {
     super.key,
   });
 
+  // cf `_LisTileDefaultsM3` used by `ListTile`
+  TextStyle _defaultTextStyle(ThemeData theme) {
+    return theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final subtitleStyle = theme.textTheme.bodySmall!;
+    final subtitleStyle = theme.listTileTheme.subtitleTextStyle ?? _defaultTextStyle(theme);
     final subtitleChangeShadowColor = theme.colorScheme.onSurface;
     return ChangeHighlightText(
       // provide key to refresh on theme brightness change

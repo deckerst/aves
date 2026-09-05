@@ -8,7 +8,7 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
@@ -104,7 +104,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
         if (_lockTypeOptions.length > 1)
           ListTile(
             title: Text(l10n.vaultDialogLockTypeLabel),
-            subtitle: AvesCaption(_lockType.getText(context)),
+            subtitle: AvesListSubtitle(_lockType.getText(context)),
             onTap: () {
               _unfocus();
               showSelectionDialog<VaultLockType>(

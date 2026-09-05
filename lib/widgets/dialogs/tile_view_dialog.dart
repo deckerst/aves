@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:material_ui/material_ui.dart';
@@ -99,7 +99,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             _selectedSort = v;
             _reverseSort = false;
           },
-          bottom: _selectedSort != null ? AvesCaption(widget.sortOrder(_selectedSort as S, _reverseSort)) : null,
+          bottom: _selectedSort != null ? AvesListSubtitle(widget.sortOrder(_selectedSort as S, _reverseSort)) : null,
         ),
         AnimatedSwitcher(
           duration: context.read<DurationsData>().formTransition,
