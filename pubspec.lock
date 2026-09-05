@@ -118,7 +118,7 @@ packages:
     description:
       path: community_charts_common
       ref: aves
-      resolved-ref: "221b81bf649f2b0be754322658013a5d8086fbe1"
+      resolved-ref: "9b0edd47ff6fb7c505bf9aab8a2c7009b1ce19d7"
       url: "https://github.com/deckerst/flutter_community_charts.git"
     source: git
     version: "1.0.4"
@@ -127,7 +127,7 @@ packages:
     description:
       path: community_charts_flutter
       ref: aves
-      resolved-ref: "221b81bf649f2b0be754322658013a5d8086fbe1"
+      resolved-ref: "9b0edd47ff6fb7c505bf9aab8a2c7009b1ce19d7"
       url: "https://github.com/deckerst/flutter_community_charts.git"
     source: git
     version: "1.0.4"
@@ -473,7 +473,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4d664e32a579fcd0f834dda836549348328d53b9"
+      resolved-ref: "1cea5fa91ec64a7a8e663e8c5afca6c11ab23485"
       url: "https://github.com/deckerst/flutter_localizations_plus.git"
     source: git
     version: "0.0.1"
@@ -760,11 +760,12 @@ packages:
   kurd_localization:
     dependency: transitive
     description:
-      name: kurd_localization
-      sha256: ba283a76fc04818ccf9c067bccc05a0350f46aad0a322a3090631adbd3caf183
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
+      path: "."
+      ref: aves
+      resolved-ref: b80ff817fe5bc86371f8eb037817689652922953
+      url: "https://github.com/deckerst/flutter_kurd_localization"
+    source: git
+    version: "1.0.2"
   latlong2:
     dependency: "direct main"
     description:
@@ -1012,7 +1013,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: f2c6903040bde097d574531fc6a6aa297f8915b0
+      resolved-ref: ef569e1de54c568ee71e4772f624ffd78f69d64e
       url: "https://github.com/deckerst/overlay_support.git"
     source: git
     version: "2.1.2"
@@ -1045,7 +1046,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: "6bdc7a7996abb469037e90aa07585fbe5bf5d1c3"
+      resolved-ref: "1f186c8e5dbf618b2d9d950b79a50eaad6f0084a"
       url: "https://github.com/deckerst/aves_panorama.git"
     source: git
     version: "0.4.1"
@@ -1142,7 +1143,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: bfc6db3dcf2f9b2b6812fe5f00c0883919f8de28
+      resolved-ref: "71643a4c2ce9b8f8fbd4645cb479a0ee0fe3d2c3"
       url: "https://github.com/deckerst/flutter_percent_indicator.git"
     source: git
     version: "4.2.5"

@@ -328,6 +328,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   ...LocalizationsKmr.delegates,
                                   ...LocalizationsNn.delegates,
                                   ...AppLocalizations.localizationsDelegates,
+                                  ...GlobalMaterialLocalizations.delegates,
                                 ],
                                 supportedLocales: AvesApp.supportedLocales,
                                 scrollBehavior: AvesScrollBehavior(),
