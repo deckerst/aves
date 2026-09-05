@@ -5,15 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 @immutable
-class GeoTrack {
-  final List<LatLng> points;
-  final Color color;
-
-  const new({
-    required this.points,
-    required this.color,
-  });
-
+class const GeoTrack({
+  required final List<LatLng> points,
+  required final Color color,
+}) {
   static const defaultStart = Color(0xFF216DFF); // cold indigo
   static const defaultEnd = Color(0xFF856DCC); // warm indigo
 

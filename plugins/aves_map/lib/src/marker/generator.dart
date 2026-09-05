@@ -2,22 +2,16 @@ import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 // generate bitmap from widget, for Google map
-class MarkerGeneratorWidget<T extends Key> extends StatefulWidget {
-  final List<Widget> markers;
-  final bool Function(T markerKey) isReadyToRender;
-  final void Function(T markerKey, Uint8List bitmap) onRendered;
-
-  const new({
-    super.key,
-    required this.markers,
-    required this.isReadyToRender,
-    required this.onRendered,
-  });
-
+class const MarkerGeneratorWidget<T extends Key>({
+  super.key,
+  required final List<Widget> markers,
+  required final bool Function(T markerKey) isReadyToRender,
+  required final void Function(T markerKey, Uint8List bitmap) onRendered,
+}) extends StatefulWidget {
   @override
   State<MarkerGeneratorWidget<T>> createState() => _MarkerGeneratorWidgetState<T>();
 }
@@ -99,16 +93,12 @@ class _MarkerGeneratorWidgetState<T extends Key> extends State<MarkerGeneratorWi
 
 enum MarkerGeneratorItemState { waiting, rendering, done }
 
-class _MarkerGeneratorItem<T extends Key> {
-  final T markerKey;
-  final double devicePixelRatio;
+class _MarkerGeneratorItem<T extends Key>({
+  required final T markerKey,
+  required final double devicePixelRatio,
+}) {
   GlobalKey? globalKey;
   MarkerGeneratorItemState state = MarkerGeneratorItemState.waiting;
-
-  new({
-    required this.markerKey,
-    required this.devicePixelRatio,
-  });
 
   bool get isWaiting => state == MarkerGeneratorItemState.waiting;
 

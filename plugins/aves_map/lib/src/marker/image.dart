@@ -2,16 +2,17 @@ import 'package:aves_map/aves_map.dart';
 import 'package:aves_map/src/marker/arrow_painter.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 
-class ImageMarker extends StatelessWidget {
-  final int? count;
-  final String Function(num count) countFormatter;
-  final bool drawArrow;
-  final Widget Function(double extent) buildThumbnailImage;
-
+class const ImageMarker({
+  super.key,
+  required final int? count,
+  required final String Function(num count) countFormatter,
+  final bool drawArrow = true,
+  required final Widget Function(double extent) buildThumbnailImage,
+}) extends StatelessWidget {
   static const double outerBorderRadiusDim = 8;
   static const outerBorderWidth = MapThemeData.markerOuterBorderWidth;
   static const innerBorderWidth = MapThemeData.markerInnerBorderWidth;
@@ -20,14 +21,6 @@ class ImageMarker extends StatelessWidget {
   static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
   static const innerRadius = Radius.circular(outerBorderRadiusDim - outerBorderWidth);
   static const innerBorderRadius = BorderRadius.all(innerRadius);
-
-  const new({
-    super.key,
-    required this.count,
-    required this.countFormatter,
-    this.drawArrow = true,
-    required this.buildThumbnailImage,
-  });
 
   @override
   Widget build(BuildContext context) {

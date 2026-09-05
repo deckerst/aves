@@ -3,19 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class ScaleStateChange extends Equatable {
-  final ScaleState state;
-  final ChangeSource source;
-  final Offset? childFocalPoint;
-
+class const ScaleStateChange({
+  required final ScaleState state,
+  required final ChangeSource source,
+  final Offset? childFocalPoint,
+}) extends Equatable {
   @override
   List<Object?> get props => [state, source, childFocalPoint];
-
-  const new({
-    required this.state,
-    required this.source,
-    this.childFocalPoint,
-  });
 }
 
 enum ScaleState {

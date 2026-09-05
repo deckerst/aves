@@ -56,24 +56,12 @@ class AvesMapController {
 
 abstract class AvesMapEvent;
 
-class MapControllerMoveEvent extends AvesMapEvent {
-  final LatLng latLng;
+class MapControllerMoveEvent(final LatLng latLng) extends AvesMapEvent;
 
-  new(this.latLng);
-}
-
-class MapControllerZoomEvent extends AvesMapEvent {
-  final double delta;
-
-  new(this.delta);
-}
+class MapControllerZoomEvent(final double delta) extends AvesMapEvent;
 
 class MapControllerRotationResetEvent extends AvesMapEvent;
 
-class MapIdleUpdate extends AvesMapEvent {
-  final ZoomedBounds bounds;
-
-  new(this.bounds);
-}
+class MapIdleUpdate(final ZoomedBounds bounds) extends AvesMapEvent;
 
 class MapMarkerLocationChangeEvent extends AvesMapEvent;

@@ -8,10 +8,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 @immutable
-class ZoomedBounds extends Equatable {
-  final LatLng sw, ne;
-  final double zoom, rotation;
-
+class const ZoomedBounds({
+  required final LatLng sw,
+  required final LatLng ne,
+  required final double zoom,
+  required final double rotation,
+}) extends Equatable {
   // returns [southwestLng, southwestLat, northeastLng, northeastLat], as expected by Fluster
   List<double> get boundingBox => [sw.longitude, sw.latitude, ne.longitude, ne.latitude];
 
@@ -28,13 +30,6 @@ class ZoomedBounds extends Equatable {
 
   @override
   List<Object?> get props => [sw, ne, zoom, rotation];
-
-  const new({
-    required this.sw,
-    required this.ne,
-    required this.zoom,
-    required this.rotation,
-  });
 
   static const _collocationMaxDeltaThreshold = 360 / (2 << 19);
 

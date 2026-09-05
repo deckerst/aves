@@ -1,13 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-class MapTile {
-  final int width, height;
-  final Uint8List data;
-
-  const new({
-    required this.width,
-    required this.height,
-    required this.data,
-  });
-}
+class const MapTile({
+  required final int width,
+  required final int height,
+  required final Uint8List data,
+});

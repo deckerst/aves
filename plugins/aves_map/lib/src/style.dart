@@ -8,32 +8,23 @@ import 'package:flutter/foundation.dart';
 // Leaflet providers preview: https://leaflet-extras.github.io/leaflet-providers/preview/
 // OpenMapTiles styles: https://openmaptiles.org/styles/
 // Examples: https://github.com/deckerst/aves/wiki/Custom-maps
-class EntryMapStyle extends Equatable {
-  final String key;
-  final String? name;
-  final bool isRaster;
-  final String? url; // not strictly a `Uri` as it may contain templates like `{x}`
-  final List<String> subdomains;
-  final String? userAgent;
-  final bool needMobileService;
-  final bool isHeavy;
-  final double minZoom, maxZoom;
+class const EntryMapStyle({
+  required final String key,
+  final String? name,
+  final bool isRaster = true,
+  // not strictly a `Uri` as it may contain templates like `{x}`
+  final String? url,
+  List<String>? subdomains,
+  final String? userAgent,
+  final bool needMobileService = false,
+  final bool isHeavy = false,
+  final double minZoom = 2,
+  final double maxZoom = 22,
+}) extends Equatable {
+  final List<String> subdomains = subdomains ?? const ['a', 'b', 'c'];
 
   @override
   List<Object?> get props => [key, name, isRaster, url];
-
-  const new({
-    required this.key,
-    this.name,
-    this.isRaster = true,
-    this.url,
-    List<String>? subdomains,
-    this.userAgent,
-    this.needMobileService = false,
-    this.isHeavy = false,
-    this.minZoom = 2,
-    this.maxZoom = 22,
-  }) : subdomains = subdomains ?? const ['a', 'b', 'c'];
 
   static EntryMapStyle? fromJson(String? jsonString) {
     if (jsonString == null || jsonString.isEmpty) return null;

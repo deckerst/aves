@@ -6,20 +6,14 @@ import 'package:flutter/widgets.dart';
 // `kTouchSlop` (or platform settings, cf gestures/events.dart `computeHitSlop`).
 // We cannot change that, but we can prevent the scrollable from panning until this threshold is reached
 // and let other recognizers accept the gesture instead.
-class MagnifierScrollerPhysics extends ScrollPhysics {
-  final DeviceGestureSettings? gestureSettings;
-
+class const MagnifierScrollerPhysics({
+  required final DeviceGestureSettings? gestureSettings,
   // in [0, 1]
   // 0: most reactive but will not let Magnifier recognizers accept gestures
   // 1: less reactive but gives the most leeway to Magnifier recognizers
-  final double touchSlopFactor;
-
-  const new({
-    required this.gestureSettings,
-    this.touchSlopFactor = 1,
-    super.parent,
-  });
-
+  final double touchSlopFactor = 1,
+  super.parent,
+}) extends ScrollPhysics {
   @override
   MagnifierScrollerPhysics applyTo(ScrollPhysics? ancestor) {
     return MagnifierScrollerPhysics(

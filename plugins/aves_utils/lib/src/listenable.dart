@@ -20,18 +20,12 @@ class AChangeNotifier extends ChangeNotifier {
 }
 
 // contrary to standard `ValueListenableBuilder`, this widget allows providing a null listenable
-class NullableValueListenableBuilder<T> extends StatefulWidget {
-  final ValueListenable<T?>? valueListenable;
-  final ValueWidgetBuilder<T?> builder;
-  final Widget? child;
-
-  const new({
-    super.key,
-    required this.valueListenable,
-    required this.builder,
-    this.child,
-  });
-
+class const NullableValueListenableBuilder<T>({
+  super.key,
+  required final ValueListenable<T?>? valueListenable,
+  required final ValueWidgetBuilder<T?> builder,
+  final Widget? child,
+}) extends StatefulWidget {
   @override
   State<NullableValueListenableBuilder> createState() => _NullableValueListenableBuilderState<T>();
 }

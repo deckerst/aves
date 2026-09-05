@@ -1,17 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
-class MarkerArrowPainter extends CustomPainter {
-  final Color color, outlineColor;
-  final double outlineWidth;
-  final Size size;
-
-  const new({
-    required this.color,
-    required this.outlineColor,
-    required this.outlineWidth,
-    required this.size,
-  });
-
+class const MarkerArrowPainter({
+  required final Color color,
+  required final Color outlineColor,
+  required final double outlineWidth,
+  required final Size size,
+}) extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final triangleWidth = this.size.width;

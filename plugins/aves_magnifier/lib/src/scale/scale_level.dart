@@ -5,17 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 @immutable
-class ScaleLevel extends Equatable {
-  final ScaleReference ref;
-  final double factor;
-
+class const ScaleLevel({
+  final ScaleReference ref = ScaleReference.absolute,
+  final double factor = 1.0,
+}) extends Equatable {
   @override
   List<Object?> get props => [ref, factor];
-
-  const new({
-    this.ref = ScaleReference.absolute,
-    this.factor = 1.0,
-  });
 
   static double scaleForContained(Size viewportSize, Size contentSize) => min(viewportSize.width / contentSize.width, viewportSize.height / contentSize.height);
 

@@ -6,30 +6,20 @@ import 'package:flutter/widgets.dart';
 ///
 /// Useful when placing Magnifier inside a gesture sensitive context,
 /// such as [PageView], [Dismissible], [BottomSheet].
-class MagnifierGestureDetectorScope extends InheritedWidget {
-  final List<Axis> axis;
-
+class const MagnifierGestureDetectorScope({
+  super.key,
+  required final List<Axis> axis,
   // in [0, 1[
   // 0: most reactive but will not let tap recognizers accept gestures
   // <1: less reactive but gives the most leeway to other recognizers
   // 1: will not be able to compete with a `HorizontalDragGestureRecognizer` up the widget tree
-  final double touchSlopFactor;
-
+  final double touchSlopFactor = .8,
   // when zoomed in and hitting an edge, allow using a fling gesture to go to the previous/next page,
   // instead of yielding to the outer scrollable right away
-  final bool escapeByFling;
-
-  final bool? Function(Offset move)? acceptPointerEvent;
-
-  const new({
-    super.key,
-    required this.axis,
-    this.touchSlopFactor = .8,
-    this.escapeByFling = true,
-    this.acceptPointerEvent,
-    required super.child,
-  });
-
+  final bool escapeByFling = true,
+  final bool? Function(Offset move)? acceptPointerEvent,
+  required super.child,
+}) extends InheritedWidget {
   static MagnifierGestureDetectorScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MagnifierGestureDetectorScope>();
   }

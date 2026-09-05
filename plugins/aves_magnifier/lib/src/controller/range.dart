@@ -2,14 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class EdgeRange extends Equatable {
-  final double min;
-  final double max;
-
+class const EdgeRange(
+  final double min,
+  final double max,
+) extends Equatable {
   @override
   List<Object?> get props => [min, max];
-
-  const new(this.min, this.max);
 
   static const EdgeRange zero = EdgeRange(0, 0);
 }

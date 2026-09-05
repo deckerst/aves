@@ -9,31 +9,20 @@ import 'package:flutter/widgets.dart';
 /// Internal class to wrap custom scale boundaries (min, max and initial)
 /// Also, stores values regarding the two sizes: the container and the content.
 @immutable
-class ScaleBoundaries extends Equatable {
-  final bool _allowOriginalScaleBeyondRange;
-  final ScaleLevel _minScale;
-  final ScaleLevel _maxScale;
-  final ScaleLevel _initialScale;
-  final Size viewportSize;
-  final Size contentSize;
-  final EdgeInsets Function(double scale)? padding;
-  final Matrix4? externalTransform;
-
+class const ScaleBoundaries({
+  required final bool _allowOriginalScaleBeyondRange,
+  required final ScaleLevel _minScale,
+  required final ScaleLevel _maxScale,
+  required final ScaleLevel _initialScale,
+  required final Size viewportSize,
+  required final Size contentSize,
+  final EdgeInsets Function(double scale)? padding,
+  final Matrix4? externalTransform,
+}) extends Equatable {
   static const Alignment basePosition = Alignment.center;
 
   @override
   List<Object?> get props => [_allowOriginalScaleBeyondRange, _minScale, _maxScale, _initialScale, viewportSize, contentSize, padding, externalTransform];
-
-  const new({
-    required this._allowOriginalScaleBeyondRange,
-    required this._minScale,
-    required this._maxScale,
-    required this._initialScale,
-    required this.viewportSize,
-    required this.contentSize,
-    this.padding,
-    this.externalTransform,
-  });
 
   static const ScaleBoundaries zero = ScaleBoundaries(
     allowOriginalScaleBeyondRange: true,

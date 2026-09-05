@@ -4,19 +4,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class MagnifierState extends Equatable {
-  final Offset position;
-  final double? scale;
-  final ChangeSource source;
-
+class const MagnifierState({
+  required final Offset position,
+  required final double? scale,
+  required final ChangeSource source,
+}) extends Equatable {
   @override
   List<Object?> get props => [position, scale, source];
-
-  const new({
-    required this.position,
-    required this.scale,
-    required this.source,
-  });
 }
 
 enum ChangeSource { internal, gesture, animation }

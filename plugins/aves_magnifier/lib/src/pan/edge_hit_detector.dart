@@ -50,14 +50,12 @@ mixin EdgeHitDetector on AvesMagnifierControllerDelegate {
 }
 
 @immutable
-class EdgeHit extends Equatable {
-  final bool hasHitMin;
-  final bool hasHitMax;
-
+class const EdgeHit(
+  final bool hasHitMin,
+  final bool hasHitMax,
+) extends Equatable {
   @override
   List<Object?> get props => [hasHitMin, hasHitMax];
-
-  const new(this.hasHitMin, this.hasHitMax);
 
   bool get hasHitAny => hasHitMin || hasHitMax;
 

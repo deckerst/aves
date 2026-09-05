@@ -1,18 +1,15 @@
 import 'package:material_ui/material_ui.dart';
 
-class AvesDot extends StatelessWidget {
-  final double diameter, outerBorderWidth, innerBorderWidth;
-  final Color Function(bool isDark) getOuterBorderColor, getInnerBorderColor;
+typedef ColorBuilder = Color Function(bool isDark);
 
-  const new({
-    super.key,
-    this.diameter = 16,
-    this.outerBorderWidth = 1.5,
-    this.innerBorderWidth = 2,
-    this.getOuterBorderColor = themedOuterBorderColor,
-    this.getInnerBorderColor = themedInnerBorderColor,
-  });
-
+class const AvesDot({
+  super.key,
+  final double diameter = 16,
+  final double outerBorderWidth = 1.5,
+  final double innerBorderWidth = 2,
+  final ColorBuilder getOuterBorderColor = themedOuterBorderColor,
+  final ColorBuilder getInnerBorderColor = themedInnerBorderColor,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

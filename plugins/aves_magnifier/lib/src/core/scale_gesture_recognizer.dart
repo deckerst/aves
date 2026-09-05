@@ -5,17 +5,12 @@ import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
-  final MagnifierGestureDetectorScope scope;
-  final ValueNotifier<TapDownDetails?> doubleTapDetails;
-
+class MagnifierGestureRecognizer({
+  super.debugOwner,
+  required final MagnifierGestureDetectorScope scope,
+  required final ValueNotifier<TapDownDetails?> doubleTapDetails,
+}) extends ScaleGestureRecognizer {
   EdgeHitDetector? hitDetector;
-
-  new({
-    super.debugOwner,
-    required this.scope,
-    required this.doubleTapDetails,
-  });
 
   Map<int, Offset> _pointerLocations = <int, Offset>{};
 

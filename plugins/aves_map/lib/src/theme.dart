@@ -2,24 +2,15 @@ import 'package:material_ui/material_ui.dart';
 
 enum MapNavigationButton { back, close, map, none }
 
-class MapThemeData {
-  final bool interactive, showCoordinateFilter;
-  final MapNavigationButton navigationButton;
-  final Animation<double> scale;
-  final VisualDensity visualDensity;
-  final double? mapHeight;
-  final EdgeInsets attributionPadding;
-
-  const new({
-    required this.interactive,
-    required this.showCoordinateFilter,
-    required this.navigationButton,
-    required this.scale,
-    required this.visualDensity,
-    required this.mapHeight,
-    required this.attributionPadding,
-  });
-
+class const MapThemeData({
+  required final bool interactive,
+  required final bool showCoordinateFilter,
+  required final MapNavigationButton navigationButton,
+  required final Animation<double> scale,
+  required final VisualDensity visualDensity,
+  required final double? mapHeight,
+  required final EdgeInsets attributionPadding,
+}) {
   double get buttonPadding => 8 + visualDensity.horizontal * 2;
 
   static const double markerOuterBorderWidth = 1.5;

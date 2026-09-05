@@ -395,36 +395,21 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
 }
 
 @immutable
-class _ThumbnailByteInput {
-  final Uint8List bytes;
-  final int videoWidth;
-  final int videoHeight;
-  final int videoRotationDegrees;
-  final int targetWidth;
-  final int targetHeight;
-
-  const new({
-    required this.bytes,
-    required this.videoWidth,
-    required this.videoHeight,
-    required this.videoRotationDegrees,
-    required this.targetWidth,
-    required this.targetHeight,
-  });
-}
+class const _ThumbnailByteInput({
+  required final Uint8List bytes,
+  required final int videoWidth,
+  required final int videoHeight,
+  required final int videoRotationDegrees,
+  required final int targetWidth,
+  required final int targetHeight,
+});
 
 @immutable
-class _ThumbnailByteOutput {
-  final Uint8List bytes;
-  final int width;
-  final int height;
-
-  const new({
-    required this.bytes,
-    required this.width,
-    required this.height,
-  });
-}
+class const _ThumbnailByteOutput({
+  required final Uint8List bytes,
+  required final int width,
+  required final int height,
+});
 
 const double _rescaleReductionThreshold = .15;
 

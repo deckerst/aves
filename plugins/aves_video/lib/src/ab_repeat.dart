@@ -2,11 +2,7 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class ABRepeat {
-  final int? start, end;
-
-  new({this.start, this.end});
-
+class ABRepeat({final int? start, final int? end}) {
   ABRepeat sanitize() {
     if (start != null && end != null && start! > end!) {
       return ABRepeat(start: end, end: start);

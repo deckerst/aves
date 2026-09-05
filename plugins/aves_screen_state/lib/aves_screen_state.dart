@@ -30,11 +30,7 @@ class AvesScreenState {
 
 enum ScreenStateEvent { unlocked, on, off }
 
-class ScreenStateException implements Exception {
-  final String _cause;
-
-  new(this._cause);
-
+class ScreenStateException(final String _cause) implements Exception {
   @override
   String toString() => _cause;
 }

@@ -53,24 +53,24 @@ enum MetadataType {
 }
 
 class MetadataTypes {
-  static const main = {
-    MetadataType.exif,
-    MetadataType.xmp,
+  static const main = <MetadataType>{
+    .exif,
+    .xmp,
   };
 
-  static const common = {
-    MetadataType.exif,
-    MetadataType.xmp,
-    MetadataType.comment,
-    MetadataType.iccProfile,
-    MetadataType.iptc,
-    MetadataType.photoshopIrb,
+  static const common = <MetadataType>{
+    .exif,
+    .xmp,
+    .comment,
+    .iccProfile,
+    .iptc,
+    .photoshopIrb,
   };
 
-  static const jpeg = {
-    MetadataType.jfif,
-    MetadataType.jpegAdobe,
-    MetadataType.jpegDucky,
+  static const jpeg = <MetadataType>{
+    .jfif,
+    .jpegAdobe,
+    .jpegDucky,
   };
 }
 

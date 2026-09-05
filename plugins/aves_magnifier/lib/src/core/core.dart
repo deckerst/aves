@@ -25,63 +25,34 @@ import 'package:flutter/widgets.dart';
   - added single & double tap position feedback
   - fixed focus when scaling by double-tap/pinch
  */
-class AvesMagnifier extends StatefulWidget {
-  static const double defaultPanInertia = .2;
-
-  final AvesMagnifierController controller;
-  final EdgeInsets viewportPadding;
-
+class const AvesMagnifier({
+  super.key,
+  required final AvesMagnifierController controller,
   // The size of the custom [child]. This value is used to compute the relation between the child and the container's size to calculate the scale value.
-  final Size contentSize;
-
-  final bool allowOriginalScaleBeyondRange;
-  final bool allowGestureScaleBeyondRange;
-  final MagnifierDoubleTapCallback? allowDoubleTap;
-  final double panInertia;
-
+  required final Size contentSize,
+  final EdgeInsets viewportPadding = EdgeInsets.zero,
+  final bool allowOriginalScaleBeyondRange = true,
+  final bool allowGestureScaleBeyondRange = true,
+  final MagnifierDoubleTapCallback? allowDoubleTap,
   // Defines the minimum size in which the image will be allowed to assume, it is proportional to the original image size.
-  final ScaleLevel minScale;
-
+  final ScaleLevel minScale = const ScaleLevel(factor: .0),
   // Defines the maximum size in which the image will be allowed to assume, it is proportional to the original image size.
-  final ScaleLevel maxScale;
-
+  final ScaleLevel maxScale = const ScaleLevel(factor: double.infinity),
   // Defines the size the image will assume when the component is initialized, it is proportional to the original image size.
-  final ScaleLevel initialScale;
-
-  final ScaleStateCycle scaleStateCycle;
-  final bool applyScale;
-  final MagnifierGestureScaleStartCallback? onScaleStart;
-  final MagnifierGestureScaleUpdateCallback? onScaleUpdate;
-  final MagnifierGestureScaleEndCallback? onScaleEnd;
-  final MagnifierGestureFlingCallback? onFling;
-  final MagnifierTapCallback? onTap;
-  final GestureLongPressCallback? onLongPress;
-  final MagnifierDoubleTapCallback? onDoubleTap;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.contentSize,
-    this.viewportPadding = EdgeInsets.zero,
-    this.allowOriginalScaleBeyondRange = true,
-    this.allowGestureScaleBeyondRange = true,
-    this.allowDoubleTap,
-    this.minScale = const ScaleLevel(factor: .0),
-    this.maxScale = const ScaleLevel(factor: double.infinity),
-    this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
-    this.scaleStateCycle = defaultScaleStateCycle,
-    this.applyScale = true,
-    this.panInertia = defaultPanInertia,
-    this.onScaleStart,
-    this.onScaleUpdate,
-    this.onScaleEnd,
-    this.onFling,
-    this.onTap,
-    this.onLongPress,
-    this.onDoubleTap,
-    required this.child,
-  });
+  final ScaleLevel initialScale = const ScaleLevel(ref: ScaleReference.contained),
+  final ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
+  final bool applyScale = true,
+  final double panInertia = defaultPanInertia,
+  final MagnifierGestureScaleStartCallback? onScaleStart,
+  final MagnifierGestureScaleUpdateCallback? onScaleUpdate,
+  final MagnifierGestureScaleEndCallback? onScaleEnd,
+  final MagnifierGestureFlingCallback? onFling,
+  final MagnifierTapCallback? onTap,
+  final GestureLongPressCallback? onLongPress,
+  final MagnifierDoubleTapCallback? onDoubleTap,
+  required final Widget child,
+}) extends StatefulWidget {
+  static const double defaultPanInertia = .2;
 
   @override
   State<StatefulWidget> createState() => _AvesMagnifierState();
@@ -514,19 +485,13 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
 }
 
 @immutable
-class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equatable {
-  final Size subjectSize;
-  final Alignment basePosition;
-  final bool applyScale;
-
+class const _CenterWithOriginalSizeDelegate(
+  final Size subjectSize,
+  final Alignment basePosition,
+  final bool applyScale,
+) extends SingleChildLayoutDelegate with Equatable {
   @override
   List<Object?> get props => [subjectSize, basePosition, applyScale];
-
-  const new(
-    this.subjectSize,
-    this.basePosition,
-    this.applyScale,
-  );
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
@@ -552,13 +517,12 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate with Equ
   }
 }
 
-typedef MagnifierTapCallback =
-    Function(
-      BuildContext context,
-      MagnifierState state,
-      Alignment alignment,
-      Offset childTapPosition,
-    );
+typedef MagnifierTapCallback = Function(
+  BuildContext context,
+  MagnifierState state,
+  Alignment alignment,
+  Offset childTapPosition,
+);
 typedef MagnifierDoubleTapPredicate = bool Function(Offset localPosition);
 typedef MagnifierDoubleTapCallback = bool Function(Alignment alignment);
 typedef MagnifierGestureScaleStartCallback = void Function(ScaleStartDetails details, bool doubleTap, ScaleBoundaries boundaries);

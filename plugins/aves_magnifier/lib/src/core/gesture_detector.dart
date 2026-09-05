@@ -3,37 +3,20 @@ import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-class MagnifierGestureDetector extends StatefulWidget {
-  final EdgeHitDetector hitDetector;
-
-  final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart;
-  final GestureScaleUpdateCallback? onScaleUpdate;
-  final GestureScaleEndCallback? onScaleEnd;
-
-  final GestureTapDownCallback? onTapDown;
-  final GestureTapUpCallback? onTapUp;
-  final GestureLongPressCallback? onLongPress;
-  final GestureTapDownCallback? onDoubleTap;
-
-  final MagnifierDoubleTapPredicate? allowDoubleTap;
-  final HitTestBehavior? behavior;
-  final Widget? child;
-
-  const new({
-    super.key,
-    required this.hitDetector,
-    this.onScaleStart,
-    this.onScaleUpdate,
-    this.onScaleEnd,
-    this.onTapDown,
-    this.onTapUp,
-    this.onLongPress,
-    this.onDoubleTap,
-    this.allowDoubleTap,
-    this.behavior,
-    this.child,
-  });
-
+class const MagnifierGestureDetector({
+  super.key,
+  required final EdgeHitDetector hitDetector,
+  final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart,
+  final GestureScaleUpdateCallback? onScaleUpdate,
+  final GestureScaleEndCallback? onScaleEnd,
+  final GestureTapDownCallback? onTapDown,
+  final GestureTapUpCallback? onTapUp,
+  final GestureLongPressCallback? onLongPress,
+  final GestureTapDownCallback? onDoubleTap,
+  final MagnifierDoubleTapPredicate? allowDoubleTap,
+  final HitTestBehavior? behavior,
+  final Widget? child,
+}) extends StatefulWidget {
   @override
   State<MagnifierGestureDetector> createState() => _MagnifierGestureDetectorState();
 }
