@@ -40,6 +40,7 @@ class SupportedLocales {
     'sk': 'Slovenčina',
     'sv': 'Svenska',
     'ta': 'தமிழ்',
+    'th': 'ไทย',
     'tr': 'Türkçe',
     'uk': 'Українська',
     'vi': 'Tiếng Việt',
