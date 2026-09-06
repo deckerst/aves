@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Thai translation (thanks Nattapong K, agguser)
+
 ### Changed
 
 - prefer Media Store API over SAF API on Android >=11
