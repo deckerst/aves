@@ -301,7 +301,6 @@
     "nameConflictDialogSingleSourceMessage": "Vissa filer i destinationsmappen har samma namn.",
     "nameConflictDialogMultipleSourceMessage": "Vissa filer har samma namn.",
     "noMatchingAppDialogMessage": "Det finns inga applikationer som kan hantera detta.",
-    "moveUndatedConfirmationDialogSetDate": "Spara datum",
     "videoResumeDialogMessage": "Vill du återuppta uppspelningen vid tidpunkten {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -530,7 +529,6 @@
     "stopTooltip": "Stopp",
     "chipActionGoToExplorerPage": "Visa i Utforskaren",
     "videoRepeatActionSetEnd": "Ange slut",
-    "moveUndatedConfirmationDialogMessage": "Registrera datum för objekten innan vi går vidare?",
     "renameProcessorHash": "Hash",
     "editEntryDateDialogSetCustom": "Ange anpassat datum",
     "editEntryDateDialogCopyField": "Kopiera från annat datum",
@@ -715,7 +713,6 @@
     "settingsKeepScreenOnDialogTitle": "Behåll Skärmen Aktiv",
     "settingsConfirmationDialogTitle": "Bekräftelsedialoger",
     "settingsConfirmationBeforeMoveToBinItems": "Fråga innan objekt flyttas till papperskorgen",
-    "settingsConfirmationBeforeMoveUndatedItems": "Fråga innan odaterade objekt flyttas",
     "settingsConfirmationAfterMoveToBinItems": "Visa ett meddelande efter att objekt flyttats till papperskorgen",
     "settingsConfirmationVaultDataLoss": "Visa varning för dataförlust i valv",
     "settingsNavigationDrawerTile": "Navigeringsmeny",

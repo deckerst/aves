@@ -179,8 +179,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Desar les dates dels elements abans de continuar?",
-    "moveUndatedConfirmationDialogSetDate": "Guardar dates",
     "videoResumeDialogMessage": "Vols continuar reproduint a {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -608,7 +606,6 @@
     "settingsConfirmationTile": "Diàlegs de confirmació",
     "settingsConfirmationDialogTitle": "Diàlegs de Confirmació",
     "settingsConfirmationBeforeDeleteItems": "Pregunta abans d’esborrar elements per sempre",
-    "settingsConfirmationBeforeMoveUndatedItems": "Pregunta abans de moure elements sense data",
     "settingsConfirmationAfterMoveToBinItems": "Mostra missatge després de moure elements a la paperera de reciclatge",
     "settingsConfirmationVaultDataLoss": "Mostra l’avís de pèrdua de dades d’una caixa forta",
     "settingsNavigationDrawerTile": "Menú de navegació",

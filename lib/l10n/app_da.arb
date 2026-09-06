@@ -452,7 +452,6 @@
     "sortOrderNewestFirst": "Nyeste først",
     "settingsConfirmationAfterMoveToBinItems": "Vis besked efter elementer flyttes til papirkurven",
     "settingsNavigationDrawerTile": "Navigationsmenu",
-    "settingsConfirmationBeforeMoveUndatedItems": "Spørg før udaterede elementer flyttes",
     "settingsCollectionBrowsingQuickActionEditorBanner": "Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises, når du gennemser elementer.",
     "settingsCollectionQuickActionEditorPageTitle": "Hurtighandlinger",
     "settingsCollectionBurstPatternsNone": "Ingen",
@@ -854,7 +853,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogSetDate": "Gem datoer",
     "vaultDialogLockTypeLabel": "Låsetype",
     "patternDialogConfirm": "Bekræft mønster",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{Flyt dette element til papirkurven?} other{Flyt {count} elementer til papirkurven?}}",
@@ -938,7 +936,6 @@
     "collectionSelectSectionTooltip": "Vælg sektion",
     "videoStreamSelectionDialogNoSelection": "Der er ingen andre spor.",
     "addShortcutDialogLabel": "Genvejsetiket",
-    "moveUndatedConfirmationDialogMessage": "Gem elementdatoer, før du fortsætter?",
     "albumMimeTypeMixed": "Blandet",
     "videoActionCaptureFrame": "Tag billede af frame",
     "videoActionSelectStreams": "Vælg spor",

@@ -279,10 +279,8 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Uložit data položek, než budete pokračovat?",
     "missingSystemFilePickerDialogMessage": "Systémový nástroj pro výběr souborů chybí nebo je zakázaný. Prosím povolte jej a zkuste to znovu.",
     "addShortcutDialogLabel": "Název zástupce",
-    "moveUndatedConfirmationDialogSetDate": "Uložit tada",
     "videoResumeDialogMessage": "Chcete obnovit přehrávání v čase {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -450,9 +448,9 @@
     "settingsVideoControlsTile": "Ovládání",
     "settingsVideoGestureDoubleTapTogglePlay": "Dvojité stisknutí pro spuštění / pauzu",
     "settingsVideoGestureSideDoubleTapSeek": "Dvojití stisknutí v rozích obrazovky pro posun vzad / vpřed",
-    "settingsAllowInstalledAppAccess": "Povolit přístup do aplikačního inventáře",
+    "settingsAllowInstalledAppAccess": "Přístup do aplikačního inventáře",
     "settingsAllowInstalledAppAccessSubtitle": "Používá se pro zlepšení zobrazení alb",
-    "settingsAllowErrorReporting": "Povolit anonymní chybová hlášení",
+    "settingsAllowErrorReporting": "Anonymní chybová hlášení",
     "settingsSaveSearchHistory": "Uložit historii vyhledávání",
     "settingsEnableBin": "Používat koš",
     "settingsEnableBinSubtitle": "Ponechat v koši smazané položky po dobu 30 dní",
@@ -745,7 +743,6 @@
     "settingsNavigationDrawerEditorPageTitle": "Navigační menu",
     "settingsCollectionQuickActionEditorPageTitle": "Rychlé akce",
     "settingsConfirmationDialogTitle": "Potvrzovací dialogy",
-    "settingsConfirmationBeforeMoveUndatedItems": "Zeptat se před přesunem položek bez data",
     "settingsConfirmationBeforeMoveToBinItems": "Zeptat se před přesunem položek do koše",
     "settingsNavigationDrawerBanner": "Stiskněte a podržte pro přesun položek a změnu jejich pořadí.",
     "settingsCollectionQuickActionTabBrowsing": "Procházení",
@@ -946,5 +943,18 @@
     "createButtonLabel": "VYTVOŘIT",
     "settingsViewerShowZoomLevel": "Zobrazit úroveň přiblížení",
     "settingsEnabled": "Povoleno",
-    "settingsForced": "Vynuceno"
+    "settingsForced": "Vynuceno",
+    "filterTypeSlowMotionVideoLabel": "Zpomalené",
+    "calendarGregorian": "Gregoriánský",
+    "calendarPersian": "Perský",
+    "collectionActionExportGpx": "Exportovat GPX",
+    "drawerCollectionSlowMotionVideos": "Zpomalená videa",
+    "showThumbnailSlowMotionVideoIcon": "Zobrazit ikonu zpomalených",
+    "settingsAutoExportSettings": "Automatický export nastavení",
+    "settingsAllowNotifications": "Povolit oznámení",
+    "settingsPermissionsTile": "Oprávnění",
+    "settingsPermissionsPageTitle": "Oprávnění",
+    "settingsCalendarTile": "Kalendář",
+    "mapShowItemTracks": "Zobrazit cesty",
+    "mapHideItemTracks": "Skrýt cesty"
 }

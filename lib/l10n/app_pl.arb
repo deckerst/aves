@@ -322,12 +322,10 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Zapisać daty elementów przed kontynuacją?",
     "newAlbumDialogTitle": "Nowy album",
     "newAlbumDialogNameLabelAlreadyExistsHelper": "Katalog już istnieje",
     "missingSystemFilePickerDialogMessage": "Brak selektora plików systemowych lub jest on wyłączony. Włącz go i spróbuj ponownie.",
     "setCoverDialogAuto": "Automatycznie",
-    "moveUndatedConfirmationDialogSetDate": "Zapisz daty",
     "videoStartOverButtonLabel": "ZACZNIJ OD NOWA",
     "setCoverDialogCustom": "Własny",
     "collectionActionCopy": "Kopiuj do albumu",
@@ -700,7 +698,6 @@
     "viewerInfoViewXmlLinkText": "Zobacz XML",
     "viewerInfoOpenEmbeddedFailureFeedback": "Nie udało się wyodrębnić osadzonych danych",
     "settingsConfirmationBeforeMoveToBinItems": "Zapytaj, zanim przeniesiesz elementy do kosza",
-    "settingsConfirmationBeforeMoveUndatedItems": "Zapytaj, zanim przeniesiesz niedatowane elementy",
     "settingsConfirmationAfterMoveToBinItems": "Pokaż komunikat po przeniesieniu elementów do Kosza",
     "settingsNavigationDrawerEditorPageTitle": "Menu nawigacyjne",
     "settingsNavigationDrawerBanner": "Dotknij i przytrzymaj, aby przenieść i zmienić kolejność pozycji menu.",

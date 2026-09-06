@@ -395,7 +395,6 @@
     },
     "settingsViewerSlideshowPageTitle": "تصاویر گردان",
     "viewerInfoLabelUri": "URI",
-    "moveUndatedConfirmationDialogSetDate": "نگه‌داری تاریخ ها",
     "editEntryLocationDialogLongitude": "طول جغرافیایی",
     "viewerOpenPanoramaButtonLabel": "بازکردن پانوراما",
     "statsTopAlbumsSectionTitle": "آلبوم‌های ممتاز",
@@ -632,7 +631,6 @@
     "settingsKeepScreenOnDialogTitle": "صفحه را روشن نگه دار",
     "settingsDoubleBackExit": "برای خروج دوبار روی «بازگشت» ضربه بزنید",
     "settingsNavigationDrawerEditorPageTitle": "گزینه‌های پیمایش",
-    "settingsConfirmationBeforeMoveUndatedItems": "پیش از جابجایی موارد بدون تاریخ بپرسید",
     "settingsNavigationDrawerBanner": "برای جابجایی و مرتب کردن دوباره موارد، لمس کنید و نگه دارید.",
     "settingsConfirmationVaultDataLoss": "نمایش هشدار از دست دادن داده‌های گاوصندوق",
     "settingsNavigationDrawerTabAlbums": "آلبوم ها",
@@ -883,7 +881,6 @@
     "aboutBugReportInstruction": "در گیت‌هاب با گزارش ها و ریزگان دستگاه گزارش کنید",
     "settingsViewerShowShootingDetails": "نمایش ریزگان تصویربرداری",
     "settingsHiddenFiltersBanner": "تصاویر و ویدیوهایی که با پالایش‌های مخفی سازگار نیستند در مجموعه شما دیده نمیشوند.",
-    "moveUndatedConfirmationDialogMessage": "پیش از ادامه دادن تاریخ موارد نگه‌داری شود؟",
     "settingsAllowInstalledAppAccess": "دسترسی به دارایی برنامه",
     "collectionEditFailureFeedback": "{count, plural, =1{ویرایش ۱ مورد ناموفق بود} other{ویرایش {count} مورد ناموفق بود}}",
     "@collectionEditFailureFeedback": {

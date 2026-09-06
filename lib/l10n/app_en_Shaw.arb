@@ -350,8 +350,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "¿𐑕𐑱𐑝 𐑲𐑑𐑩𐑥 𐑛𐑱𐑑𐑕 𐑚𐑦𐑓𐑹 𐑐𐑮𐑩𐑕𐑰𐑛𐑦𐑙?",
-    "moveUndatedConfirmationDialogSetDate": "𐑕𐑱𐑝 𐑛𐑱𐑑𐑕",
     "videoResumeDialogMessage": "¿𐑛𐑵 𐑿 𐑢𐑪𐑯𐑑 𐑑 𐑮𐑦𐑟𐑿𐑥 𐑨𐑑 {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -727,7 +725,6 @@
     "settingsConfirmationTile": "𐑒𐑪𐑯𐑓𐑼𐑥𐑱𐑖𐑩𐑯 𐑛𐑲𐑩𐑤𐑪𐑜𐑟",
     "settingsConfirmationBeforeDeleteItems": "𐑭𐑕𐑒 𐑚𐑦𐑓𐑹 𐑛𐑦𐑤𐑰𐑑𐑦𐑙 𐑲𐑑𐑩𐑥𐑟 𐑓𐑼𐑧𐑝𐑼",
     "settingsConfirmationBeforeMoveToBinItems": "𐑭𐑕𐑒 𐑚𐑦𐑓𐑹 𐑥𐑵𐑝𐑦𐑙 𐑲𐑑𐑩𐑥𐑟 𐑑 𐑞 𐑮𐑰𐑕𐑲𐑒𐑩𐑤 𐑚𐑦𐑯",
-    "settingsConfirmationBeforeMoveUndatedItems": "𐑭𐑕𐑒 𐑚𐑦𐑓𐑹 𐑥𐑵𐑝𐑦𐑙 𐑳𐑯𐑛𐑱𐑑𐑩𐑛 𐑲𐑑𐑩𐑥𐑟",
     "settingsConfirmationVaultDataLoss": "𐑖𐑴 𐑝𐑷𐑤𐑑 𐑛𐑱𐑑𐑩 𐑤𐑪𐑕 𐑢𐑹𐑯𐑦𐑙",
     "settingsNavigationDrawerTile": "𐑯𐑨𐑝𐑦𐑜𐑱𐑖𐑩𐑯 𐑥𐑧𐑯𐑿",
     "settingsNavigationDrawerBanner": "𐑑𐑳𐑗 𐑯 𐑣𐑴𐑤𐑛 𐑑 𐑥𐑵𐑝 𐑯 𐑮𐑰𐑹𐑛𐑼 𐑥𐑧𐑯𐑿 𐑲𐑑𐑩𐑥𐑟.",

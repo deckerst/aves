@@ -318,7 +318,6 @@
     },
     "addShortcutButtonLabel": "HOZZÁAD",
     "renameEntrySetPagePreviewSectionTitle": "Előnézet",
-    "moveUndatedConfirmationDialogSetDate": "Dátumok mentése",
     "newVaultDialogTitle": "Új széf",
     "configureVaultDialogTitle": "Széf konfigurálása",
     "vaultDialogLockTypeLabel": "Zárolás típusa",
@@ -528,7 +527,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Mented az elemek dátumait a végrehajtás előtt?",
     "videoStartOverButtonLabel": "KEZDÉS ELÖLRŐL",
     "setCoverDialogAuto": "Automatikus",
     "noMatchingAppDialogMessage": "Nincs alkalmazás ami elboldogul ezzel.",
@@ -697,7 +695,6 @@
     "settingsConfirmationDialogTitle": "Megerősítési kérdések",
     "settingsConfirmationBeforeDeleteItems": "Kérdés az elemek végleges törlése előtt",
     "settingsConfirmationBeforeMoveToBinItems": "Kérdés az elemek kukába helyezése előtt",
-    "settingsConfirmationBeforeMoveUndatedItems": "Kérdés a dátum nélküli elemek áthelyezése előtt",
     "settingsConfirmationAfterMoveToBinItems": "Üzenet az elemek kukába helyezése után",
     "settingsThumbnailOverlayTile": "Átfedés",
     "settingsThumbnailOverlayPageTitle": "Átfedés",

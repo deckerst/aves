@@ -185,7 +185,6 @@
     "collectionSelectSectionTooltip": "Chọn phần",
     "settingsAllowInstalledAppAccessSubtitle": "Được sử dụng để cải thiện hiển thị bộ sưu tập",
     "aboutLicensesBanner": "Ứng dụng này sử dụng các gói và thư viện nguồn mở.",
-    "moveUndatedConfirmationDialogSetDate": "Lưu thời gian",
     "coordinateDmsNorth": "Bắc",
     "dateYesterday": "Hôm qua",
     "viewerInfoLabelDate": "Thời gian",
@@ -431,7 +430,6 @@
     "searchCollectionFieldHint": "Tìm bộ sưu tập",
     "settingsDoubleBackExit": "Gõ “quay lại” hai lần để thoát",
     "drawerCollectionSphericalVideos": "Video 360 độ",
-    "moveUndatedConfirmationDialogMessage": "Lưu thời gian của mục trước khi tiếp tục?",
     "collectionEditFailureFeedback": "{count, plural, =1{Lỗi khi chỉnh sửa tệp} other{Lỗi khi chỉnh sửa {count} tệp}}",
     "@collectionEditFailureFeedback": {
         "placeholders": {
@@ -533,7 +531,6 @@
     },
     "settingsScreenSaverPageTitle": "Bảo vệ màn hình",
     "settingsNavigationDrawerEditorPageTitle": "Menu điều hướng",
-    "settingsConfirmationBeforeMoveUndatedItems": "Hỏi trước khi di chuyển các mục không ghi ngày tháng",
     "albumPageTitle": "Bộ sưu tập",
     "editEntryLocationDialogTitle": "Vị trí",
     "statsWithGps": "{count, plural, =1{1 mục với thông tin vị trí} other{{count}mục với thông tin vị trí}}",

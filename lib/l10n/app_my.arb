@@ -223,9 +223,7 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "ရှေ့မဆက်ခင် ဓာတ်ပုံ/ဗီဒီယိုပါ ရက်စွဲတွေကို သိမ်းမှာလား?",
     "videoStartOverButtonLabel": "အစကပဲပြန်စမည်",
-    "moveUndatedConfirmationDialogSetDate": "သိမ်းမည်",
     "videoResumeDialogMessage": "ကြည့်လက်စ {time} မိနစ်ကနေ ဆက်ကြည့်ချင်ပါသလား?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -464,7 +462,6 @@
     "settingsConfirmationDialogTitle": "အတည်ပြုဒိုင်ယာလော့ခ်များ",
     "settingsConfirmationBeforeDeleteItems": "ပုံများကို အပြီးမဖျက်ခင်ပြန်မေးရန်",
     "settingsConfirmationBeforeMoveToBinItems": "ပြန်သုံးအမှိုက်ပုံးသို့မရွှေ့ခင် ပြန်မေးရန်",
-    "settingsConfirmationBeforeMoveUndatedItems": "ရက်စွဲမပါသောပုံများကိုမရွှေ့ခင် ပြန်မေးရန်",
     "settingsConfirmationAfterMoveToBinItems": "ပြန်သုံးအမှိုက်ပုံးထဲထည့်ပြီးလျှင် ပြီးကြောင်း စာဖြင့်ပြပေးရန်",
     "settingsConfirmationVaultDataLoss": "လျှို့ဝှက်သိုလှောင်ခန်းရှိ ဒေတာဆုံးရှုံးမှုသတိပေးချက်များ ပြပေးရန်",
     "albumCamera": "ကင်မရာ",

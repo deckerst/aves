@@ -85,7 +85,6 @@
     "collectionSelectSectionTooltip": "Velja hluta",
     "settingsAllowInstalledAppAccessSubtitle": "Notað til að bæta birtingu albúma",
     "aboutLicensesBanner": "Þetta forrit notar eftirfarandi pakka og aðgerðasöfn með opnum grunnkóða.",
-    "moveUndatedConfirmationDialogSetDate": "Vista dagsetningar",
     "coordinateDmsNorth": "N",
     "dateYesterday": "Í gær",
     "viewerInfoLabelDate": "Dagsetning",
@@ -343,7 +342,6 @@
     "settingsDoubleBackExit": "Ýttu tvisvar á „Til baka“ til að hætta",
     "entryActionShare": "Deila",
     "drawerCollectionSphericalVideos": "360° myndskeið",
-    "moveUndatedConfirmationDialogMessage": "Vista dagsetningar atriðis áður en haldið er áfram?",
     "collectionEditFailureFeedback": "{count, plural, =1{Mistókst að breyta 1 atriði} other{Mistókst að breyta {count} atriðum}}",
     "@collectionEditFailureFeedback": {
         "placeholders": {
@@ -423,7 +421,6 @@
     "hideTooltip": "Fela",
     "settingsScreenSaverPageTitle": "Skjáhvíla",
     "settingsNavigationDrawerEditorPageTitle": "Flakkvalmynd",
-    "settingsConfirmationBeforeMoveUndatedItems": "Spyrja áður en ódagsett atriði eru færð",
     "albumPageTitle": "Albúm",
     "editEntryLocationDialogTitle": "Staðsetning",
     "statsWithGps": "{count, plural, =1{1 atriði með staðsetningu} other{{count} atriði með staðsetningum}}",
@@ -956,5 +953,8 @@
     "settingsPermissionsTile": "Heimildir",
     "settingsPermissionsPageTitle": "Heimildir",
     "mapShowItemTracks": "Sýna slóðir",
-    "mapHideItemTracks": "Fela slóðir"
+    "mapHideItemTracks": "Fela slóðir",
+    "calendarGregorian": "Gregoríanskt",
+    "calendarPersian": "Persneskt",
+    "settingsCalendarTile": "Dagatal"
 }
