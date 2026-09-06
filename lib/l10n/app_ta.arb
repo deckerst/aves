@@ -256,7 +256,6 @@
     "settingsConfirmationDialogTitle": "உறுதிப்படுத்தல் உரையாடல்கள்",
     "settingsConfirmationBeforeDeleteItems": "பொருட்களை எப்போதும் நீக்குவதற்கு முன் கேளு",
     "settingsConfirmationBeforeMoveToBinItems": "மறுசுழற்சி தொட்டியில் பொருட்களை நகர்த்துவதற்கு முன் கேளு",
-    "settingsConfirmationBeforeMoveUndatedItems": "மதிப்பிடப்படாத பொருட்களை நகர்த்துவதற்கு முன் கேளு",
     "settingsConfirmationAfterMoveToBinItems": "மறுசுழற்சி தொட்டியில் உருப்படிகளை நகர்த்திய பின் செய்தியைக் காட்டு",
     "settingsConfirmationVaultDataLoss": "பெட்டக தரவு இழப்பு எச்சரிக்கையைக் காட்டு",
     "settingsNavigationDrawerTile": "வழிசெலுத்தல் பட்டியல்",
@@ -755,8 +754,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "தொடர்வதற்கு முன் உருப்படி தேதிகளைச் சேமிக்கவா?",
-    "moveUndatedConfirmationDialogSetDate": "தேதிகளைச் சேமி",
     "videoResumeDialogMessage": "{time} இல் மீண்டும் இயக்குவதை விரும்புகிறீர்களா?",
     "@videoResumeDialogMessage": {
         "placeholders": {

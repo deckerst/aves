@@ -79,7 +79,6 @@
     "rootDirectoryDescription": "rotmappe",
     "widgetOpenPageCollection": "Åpne samling",
     "nameConflictDialogMultipleSourceMessage": "Noen filer har samme navn.",
-    "moveUndatedConfirmationDialogSetDate": "Lagre datoer",
     "videoResumeButtonLabel": "FORTSETT",
     "renameEntrySetPageTitle": "Gi nytt navn",
     "exportEntryDialogFormat": "Format:",
@@ -547,7 +546,6 @@
         }
     },
     "settingsThumbnailShowLocationIcon": "Vis plasserings-ikon",
-    "settingsConfirmationBeforeMoveUndatedItems": "Spør før flytting av ikke-daterte elementer",
     "entryInfoActionEditLocation": "Rediger plassering",
     "editEntryDateDialogShift": "Bytt",
     "locationPickerUseThisLocationButton": "Bruk denne plasseringen",
@@ -690,7 +688,6 @@
     "coordinateFormatDms": "G-M-S",
     "settingsCollectionBrowsingQuickActionEditorBanner": "Trykk og hold for å flytte knapper og velge hvilke handlinger som skal vises ved utforskning av elementer.",
     "mapAttributionStamen": "Flis av [Stamen Design](https://stamen.com), [CC BY 3.0](https://creativecommons.org/licenses/by/3.0)",
-    "moveUndatedConfirmationDialogMessage": "Lagre elementdatoer før fortsettelse?",
     "restrictedAccessDialogMessage": "Dette kartet kan ikke endre filer i {directory} for «{volume}».\n\nBruk en pre-installert filbehandler eller et galleriprogram for å flytte elementene til en annen mappe.",
     "@restrictedAccessDialogMessage": {
         "placeholders": {

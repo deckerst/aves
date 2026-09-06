@@ -229,8 +229,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Salvați datele articolului înainte de a continua?",
-    "moveUndatedConfirmationDialogSetDate": "Salvați datele",
     "videoResumeDialogMessage": "Doriți să reluați redarea la {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -656,7 +654,6 @@
     "tagPageTitle": "Etichete",
     "settingsConfirmationBeforeMoveToBinItems": "Întreabă înainte de a muta obiecte în coșul de reciclare",
     "settingsConfirmationBeforeDeleteItems": "Întreabă înainte de a șterge articole pentru totdeauna",
-    "settingsConfirmationBeforeMoveUndatedItems": "Întreabă înainte de a muta articole fără dată",
     "settingsConfirmationAfterMoveToBinItems": "Afișare mesaj după mutarea elementelor în coșul de reciclare",
     "settingsNavigationDrawerEditorPageTitle": "Meniu de navigare",
     "settingsNavigationDrawerAddAlbum": "Adăugare album",
@@ -953,5 +950,11 @@
     "drawerCollectionSlowMotionVideos": "Videoclipuri cu încetinitorul",
     "showThumbnailSlowMotionVideoIcon": "Afișează pictograma cu încetinitorul",
     "mapShowItemTracks": "Afișează căile",
-    "mapHideItemTracks": "Ascunde căile"
+    "mapHideItemTracks": "Ascunde căile",
+    "calendarGregorian": "Gregorian",
+    "calendarPersian": "Persian",
+    "settingsAllowNotifications": "Permite notificări",
+    "settingsPermissionsTile": "Permisiuni",
+    "settingsPermissionsPageTitle": "Permisiuni",
+    "settingsCalendarTile": "Calendar"
 }

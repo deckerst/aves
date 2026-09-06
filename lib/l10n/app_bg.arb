@@ -48,7 +48,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Запазвам ли датите на елементите преди продължаване?",
     "setCoverDialogAuto": "Авто",
     "hideFilterConfirmationDialogMessage": "Съответстващите снимки и видеоклипове ще бъдат скрити от вашата колекция. Можете да ги покажете отново от настройките „Поверителност“.\n\nСигурни ли сте, че искате да ги скриете?",
     "newVaultWarningDialogMessage": "Елементите в трезорите са достъпни само за това приложение и за никое друго.\n\nАко деинсталирате или изчистите данните на това приложение, ще загубите цялото съдържание на трезора.",
@@ -421,7 +420,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogSetDate": "Запазване дата",
     "videoResumeDialogMessage": "Да възобновени възпроизвеждането от {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -755,7 +753,6 @@
     "genericDangerWarningDialogMessage": "Сигурен ли сте?",
     "drawerPlacePage": "Места",
     "settingsActionImport": "Внасяне",
-    "settingsConfirmationBeforeMoveUndatedItems": "Попитай, преди преместване на елементи без дата",
     "settingsViewerUseCutout": "Използвай зоната на изрязване",
     "settingsViewerMaximumBrightness": "Максимална яркост",
     "settingsMotionPhotoAutoPlay": "Автоматично възпроизвеждане на снимки с движение",

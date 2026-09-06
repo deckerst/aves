@@ -372,8 +372,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "ບັນທຶກວັນທີຂອງລາຍການກ່ອນດຳເນີນການຕໍ່ບໍ?",
-    "moveUndatedConfirmationDialogSetDate": "ບັນທຶກວັນທີ",
     "videoResumeDialogMessage": "ທ່ານຕ້ອງການຫຼິ້ນຕໍ່ຈາກເວລາ {time} ບໍ?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -754,7 +752,6 @@
     "settingsConfirmationDialogTitle": "ກ່ອງຢືນຢັນ",
     "settingsConfirmationBeforeDeleteItems": "ຖາມກ່ອນລຶບລາຍການຖາວອນ",
     "settingsConfirmationBeforeMoveToBinItems": "ຖາມກ່ອນຍ້າຍລາຍການໄປທີ່ກະຕ່າຂີ້ເຫຍື້ອ",
-    "settingsConfirmationBeforeMoveUndatedItems": "ຖາມກ່ອນຍ້າຍລາຍການທີ່ບໍ່ມີວັນທີ",
     "settingsConfirmationAfterMoveToBinItems": "ສະແດງຂໍ້ຄວາມຫຼັງຍ້າຍລາຍການໄປທີ່ກະຕ່າຂີ້ເຫຍື້ອ",
     "settingsConfirmationVaultDataLoss": "ສະແດງຄຳເຕືອນການສູນເສຍຂໍ້ມູນໃນຕູ້ນິລະໄພ",
     "settingsNavigationDrawerTile": "ເມນູນຳທາງ",

@@ -362,8 +362,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Tallennetaanko tiedoston päivämäärä(t) ennen jatkamista?",
-    "moveUndatedConfirmationDialogSetDate": "Tallenna päivämäärät",
     "videoResumeDialogMessage": "Haluatko jatkaa toistamista kohdasta {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -705,7 +703,6 @@
     "settingsConfirmationDialogTitle": "Vahvistusikkunat",
     "settingsConfirmationBeforeDeleteItems": "Kysy ennen kohteiden poistoa pysyvästi",
     "settingsConfirmationBeforeMoveToBinItems": "Kysy ennen kohteiden siirtämistä roskakoriin",
-    "settingsConfirmationBeforeMoveUndatedItems": "Kysy ennen päiväämättömien kohteiden siirtämistä",
     "settingsConfirmationAfterMoveToBinItems": "Näytä viesti kohteiden roskakoriin siirtämisen jälkeen",
     "settingsConfirmationVaultDataLoss": "Näytä holvin datan menettämisen varoitus",
     "settingsNavigationDrawerTile": "Navigaatiovalikko",
