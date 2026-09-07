@@ -86,6 +86,7 @@ class SettingKeys {
 
   // filter grids
   static const albumSectionFactorKey = 'album_section_factor';
+  static const tagSectionFactorKey = 'tag_section_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const stateSortFactorKey = 'state_sort_factor';

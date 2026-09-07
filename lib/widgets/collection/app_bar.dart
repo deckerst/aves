@@ -817,7 +817,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
+    final value = await showAvesDialog<(EntrySortFactor, EntrySectionFactor, TileLayout, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
@@ -835,9 +835,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      settings.collectionSortFactor = value.$1!;
-      settings.collectionSectionFactor = value.$2!;
-      settings.setTileLayout(CollectionPage.routeName, value.$3!);
+      settings.collectionSortFactor = value.$1;
+      settings.collectionSectionFactor = value.$2;
+      settings.setTileLayout(CollectionPage.routeName, value.$3);
       settings.collectionSortReverse = value.$4;
     }
   }

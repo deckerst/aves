@@ -421,6 +421,7 @@ class Settings
           case SettingKeys.thumbnailLocationIconKey:
           case SettingKeys.thumbnailTagIconKey:
           case SettingKeys.albumSectionFactorKey:
+          case SettingKeys.tagSectionFactorKey:
           case SettingKeys.albumSortFactorKey:
           case SettingKeys.countrySortFactorKey:
           case SettingKeys.stateSortFactorKey:

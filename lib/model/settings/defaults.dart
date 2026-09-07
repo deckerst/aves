@@ -1,5 +1,6 @@
 import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/recent.dart';
 import 'package:aves/model/naming_pattern.dart';
@@ -37,7 +38,7 @@ class SettingsDefaults {
   static const homePage = HomePageSetting.collection;
   static const confirm = true;
   static const setMetadataDateBeforeFileOp = false;
-  static final drawerTypeBookmarks = [
+  static final drawerTypeBookmarks = <CollectionFilter?>[
     null,
     RecentlyAddedFilter.instance,
   ];
@@ -57,12 +58,12 @@ class SettingsDefaults {
   // collection
   static const collectionSectionFactor = EntrySectionFactor.month;
   static const collectionSortFactor = EntrySortFactor.date;
-  static const collectionBrowsingQuickActions = [
-    EntrySetAction.searchCollection,
+  static const collectionBrowsingQuickActions = <EntrySetAction>[
+    .searchCollection,
   ];
-  static const collectionSelectionQuickActions = [
-    EntrySetAction.share,
-    EntrySetAction.delete,
+  static const collectionSelectionQuickActions = <EntrySetAction>[
+    .share,
+    .delete,
   ];
   static const showThumbnailFavourite = true;
   static const showThumbnailHdr = true;
@@ -74,15 +75,15 @@ class SettingsDefaults {
   static const showThumbnailVideoDuration = true;
 
   // filter grids
-  static const albumGroupFactor = AlbumChipSectionFactor.importance;
-  static const chipListSortFactor = ChipSortFactor.name;
+  static const chipSectionFactor = ChipSectionFactor.importance;
+  static const chipSortFactor = ChipSortFactor.name;
 
   // viewer
-  static const viewerQuickActions = [
-    EntryAction.rotateScreen,
-    EntryAction.toggleFavourite,
-    EntryAction.share,
-    EntryAction.delete,
+  static const viewerQuickActions = <EntryAction>[
+    .rotateScreen,
+    .toggleFavourite,
+    .share,
+    .delete,
   ];
   static const showOverlayOnOpening = true;
   static const showOverlayMinimap = false;

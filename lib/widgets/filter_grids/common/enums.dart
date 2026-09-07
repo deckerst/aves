@@ -6,54 +6,55 @@ enum ChipType { regular, group }
 
 enum AlbumChipType { stored, dynamic, group }
 
-enum AlbumImportance { newAlbum, pinned, group, special, apps, vaults, dynamic, regular }
+enum ChipImportance { newAlbum, pinned, group, special, apps, vaults, dynamic, regular }
 
-extension ExtraAlbumImportance on AlbumImportance {
+extension ExtraChipImportanceView on ChipImportance {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AlbumImportance.newAlbum => l10n.albumTierNew,
-      AlbumImportance.pinned => l10n.albumTierPinned,
-      AlbumImportance.group => l10n.albumTierGroups,
-      AlbumImportance.special => l10n.albumTierSpecial,
-      AlbumImportance.apps => l10n.albumTierApps,
-      AlbumImportance.vaults => l10n.albumTierVaults,
-      AlbumImportance.dynamic => l10n.albumTierDynamic,
-      AlbumImportance.regular => l10n.albumTierRegular,
+      .newAlbum => l10n.albumTierNew,
+      .pinned => l10n.albumTierPinned,
+      .group => l10n.albumTierGroups,
+      .special => l10n.albumTierSpecial,
+      .apps => l10n.albumTierApps,
+      .vaults => l10n.albumTierVaults,
+      .dynamic => l10n.albumTierDynamic,
+      .regular => l10n.albumTierRegular,
     };
   }
 
   IconData getIcon() {
     return switch (this) {
-      AlbumImportance.newAlbum => AIcons.newTier,
-      AlbumImportance.pinned => AIcons.pin,
-      AlbumImportance.group => AIcons.group,
-      AlbumImportance.special => AIcons.important,
-      AlbumImportance.apps => AIcons.app,
-      AlbumImportance.vaults => AIcons.locked,
-      AlbumImportance.dynamic => AIcons.dynamicAlbum,
-      AlbumImportance.regular => AIcons.album,
+      .newAlbum => AIcons.newTier,
+      .pinned => AIcons.pin,
+      .group => AIcons.group,
+      .special => AIcons.important,
+      .apps => AIcons.app,
+      .vaults => AIcons.locked,
+      .dynamic => AIcons.dynamicAlbum,
+      // depends on chip page
+      .regular => AIcons.album,
     };
   }
 }
 
 enum AlbumMimeType { images, videos, mixed }
 
-extension ExtraAlbumMimeType on AlbumMimeType {
+extension ExtraAlbumMimeTypeView on AlbumMimeType {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AlbumMimeType.images => l10n.drawerCollectionImages,
-      AlbumMimeType.videos => l10n.drawerCollectionVideos,
-      AlbumMimeType.mixed => l10n.albumMimeTypeMixed,
+      .images => l10n.drawerCollectionImages,
+      .videos => l10n.drawerCollectionVideos,
+      .mixed => l10n.albumMimeTypeMixed,
     };
   }
 
   IconData getIcon() {
     return switch (this) {
-      AlbumMimeType.images => AIcons.image,
-      AlbumMimeType.videos => AIcons.video,
-      AlbumMimeType.mixed => AIcons.mimeType,
+      .images => AIcons.image,
+      .videos => AIcons.video,
+      .mixed => AIcons.mimeType,
     };
   }
 }

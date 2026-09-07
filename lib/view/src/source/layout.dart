@@ -7,17 +7,17 @@ extension ExtraTileLayoutView on TileLayout {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      TileLayout.mosaic => l10n.tileLayoutMosaic,
-      TileLayout.grid => l10n.tileLayoutGrid,
-      TileLayout.list => l10n.tileLayoutList,
+      .mosaic => l10n.tileLayoutMosaic,
+      .grid => l10n.tileLayoutGrid,
+      .list => l10n.tileLayoutList,
     };
   }
 
   IconData get icon {
     return switch (this) {
-      TileLayout.mosaic => AIcons.layoutMosaic,
-      TileLayout.grid => AIcons.layoutGrid,
-      TileLayout.list => AIcons.layoutList,
+      .mosaic => AIcons.layoutMosaic,
+      .grid => AIcons.layoutGrid,
+      .list => AIcons.layoutList,
     };
   }
 }

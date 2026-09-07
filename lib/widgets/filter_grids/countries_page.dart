@@ -29,7 +29,7 @@ class CountryListPage extends StatelessWidget {
         const eq = DeepCollectionEquality();
         return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3));
       },
-      builder: (context, s, child) {
+      builder: (context, _, child) {
         return StreamBuilder(
           stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, snapshot) {

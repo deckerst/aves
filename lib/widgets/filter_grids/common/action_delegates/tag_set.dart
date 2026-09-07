@@ -40,10 +40,22 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
   set sortReverse(bool value) => settings.tagSortReverse = value;
 
   @override
+  ChipSectionFactor get sectionFactor => settings.tagSectionFactor;
+
+  @override
+  set sectionFactor(ChipSectionFactor factor) => settings.tagSectionFactor = factor;
+
+  @override
   TileLayout get tileLayout => settings.getTileLayout(TagListPage.routeName);
 
   @override
   set tileLayout(TileLayout tileLayout) => settings.setTileLayout(TagListPage.routeName, tileLayout);
+
+  @override
+  List<ChipSectionFactor> get sectionOptions => [
+    .importance,
+    .none,
+  ];
 
   @override
   bool isVisible(

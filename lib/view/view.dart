@@ -20,7 +20,7 @@ export 'src/settings/enums.dart';
 export 'src/settings/thumbnail_overlay_location_icon.dart';
 export 'src/settings/thumbnail_overlay_tag_icon.dart';
 export 'src/source/album.dart';
-export 'src/source/group.dart';
+export 'src/source/section.dart';
 export 'src/source/layout.dart';
 export 'src/source/sort.dart';
 export 'src/source/state.dart';

@@ -117,9 +117,9 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, ChipSortFactor>(
-              selector: (context, s) => s.tagSortFactor,
-              builder: (context, s, child) {
+            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
+              selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor),
+              builder: (context, _, child) {
                 return StreamBuilder(
                   stream: source.eventBus.on<TagsChangedEvent>(),
                   builder: (context, snapshot) {
@@ -142,10 +142,10 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
                           scrollController: scrollController,
-                          sections: TagListPage.groupToSections(gridItems),
+                          sections: TagListPage.groupToSections(context, gridItems),
                           newFilters: const {},
                           sortFactor: settings.tagSortFactor,
-                          showHeaders: false,
+                          showHeaders: settings.tagSectionFactor != ChipSectionFactor.none,
                           selectable: false,
                           emptyBuilder: () => isPickingGroup
                               ? EmptyContent(

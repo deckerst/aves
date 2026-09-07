@@ -67,9 +67,9 @@ extension ExtraDisplayRefreshRateModeView on DisplayRefreshRateMode {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      DisplayRefreshRateMode.auto => l10n.settingsSystemDefault,
-      DisplayRefreshRateMode.highest => l10n.displayRefreshRatePreferHighest,
-      DisplayRefreshRateMode.lowest => l10n.displayRefreshRatePreferLowest,
+      .auto => l10n.settingsSystemDefault,
+      .highest => l10n.displayRefreshRatePreferHighest,
+      .lowest => l10n.displayRefreshRatePreferLowest,
     };
   }
 }

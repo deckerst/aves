@@ -21,13 +21,11 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/entry_editor.dart';
 import 'package:aves/widgets/common/action_mixins/entry_storage.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
-import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/create_stored_album_dialog.dart';
@@ -36,14 +34,13 @@ import 'package:aves/widgets/dialogs/filter_editors/rename_dynamic_album_dialog.
 import 'package:aves/widgets/dialogs/filter_editors/rename_group_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/rename_stored_album_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
-import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> with EntryEditorMixin, EntryStorageMixin {
@@ -67,16 +64,29 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   set sortReverse(bool value) => settings.albumSortReverse = value;
 
   @override
+  ChipSectionFactor get sectionFactor => settings.albumSectionFactor;
+
+  @override
+  set sectionFactor(ChipSectionFactor factor) => settings.albumSectionFactor = factor;
+
+  @override
   TileLayout get tileLayout => settings.getTileLayout(AlbumListPage.routeName);
 
   @override
   set tileLayout(TileLayout tileLayout) => settings.setTileLayout(AlbumListPage.routeName, tileLayout);
 
-  static const _sectionOptions = [
-    AlbumChipSectionFactor.importance,
-    AlbumChipSectionFactor.mimeType,
-    AlbumChipSectionFactor.volume,
-    AlbumChipSectionFactor.none,
+  @override
+  List<ChipSortFactor> get sortOptions => [
+    ...super.sortOptions,
+    .path,
+  ];
+
+  @override
+  List<ChipSectionFactor> get sectionOptions => [
+    .importance,
+    .mimeType,
+    .volume,
+    .none,
   ];
 
   @override
@@ -186,39 +196,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
   Set<DynamicAlbumFilter> _getSelectedDynamicAlbumFilters(BuildContext context) {
     return getSelectedFilters(context).whereType<DynamicAlbumFilter>().toSet();
-  }
-
-  @override
-  Future<void> configureView(BuildContext context) async {
-    final initialValue = (
-      sortFactor,
-      settings.albumSectionFactor,
-      tileLayout,
-      sortReverse,
-    );
-    final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(ChipSortFactor?, AlbumChipSectionFactor?, TileLayout?, bool)>(
-      context: context,
-      builder: (context) {
-        return TileViewDialog<ChipSortFactor, AlbumChipSectionFactor, TileLayout>(
-          initialValue: initialValue,
-          sortOptions: ChipSetActionDelegate.albumSortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          layoutOptions: ChipSetActionDelegate.layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
-          tileExtentController: extentController,
-        );
-      },
-      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
-    );
-    // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
-    if (value != null && initialValue != value) {
-      sortFactor = value.$1!;
-      settings.albumSectionFactor = value.$2!;
-      tileLayout = value.$3!;
-      sortReverse = value.$4;
-    }
   }
 
   void _createStoredAlbum(BuildContext context, {required bool locked}) async {

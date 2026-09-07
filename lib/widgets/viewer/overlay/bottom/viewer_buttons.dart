@@ -86,7 +86,7 @@ class ViewerButtons extends StatelessWidget {
           final availableCount = ((constraints.maxWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
           return Selector<Settings, bool>(
             selector: (context, s) => s.isRotationLocked,
-            builder: (context, s, child) {
+            builder: (context, _, child) {
               final quickActions = (trashed ? EntryActions.trashed : settings.viewerQuickActions).where(isVisible).where(actionDelegate.canApply).take(max(0, availableCount - 1)).toList();
               List<EntryAction> getMenuActions(List<EntryAction> categoryActions) {
                 return categoryActions.where((action) => !quickActions.contains(action)).where(isVisible).toList();

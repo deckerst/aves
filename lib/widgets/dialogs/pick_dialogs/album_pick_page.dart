@@ -133,9 +133,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor)>(
+            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
               selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
-              builder: (context, s, child) {
+              builder: (context, _, child) {
                 return StreamBuilder(
                   stream: source.eventBus.on<AlbumsChangedEvent>(),
                   builder: (context, snapshot) {
@@ -161,7 +161,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                           sections: AlbumListPage.groupToSections(context, source, gridItems),
                           newFilters: source.getNewAlbumFilters(context),
                           sortFactor: settings.albumSortFactor,
-                          showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
+                          showHeaders: settings.albumSectionFactor != ChipSectionFactor.none,
                           selectable: false,
                           emptyBuilder: () => isPickingGroup
                               ? EmptyContent(

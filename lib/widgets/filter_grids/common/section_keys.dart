@@ -20,29 +20,30 @@ class ChipSectionKey extends SectionKey with Equatable {
   Widget? get leading => null;
 }
 
-class AlbumImportanceSectionKey extends ChipSectionKey {
-  final AlbumImportance importance;
+class ChipImportanceSectionKey extends ChipSectionKey {
+  final ChipImportance importance;
+  final IconData? icon;
 
-  new _private(BuildContext context, this.importance) : super(title: importance.getText(context));
+  new _private(BuildContext context, this.importance, {this.icon}) : super(title: importance.getText(context));
 
-  factory newAlbum(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.newAlbum);
+  factory newAlbum(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.newAlbum);
 
-  factory pinned(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.pinned);
+  factory pinned(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.pinned);
 
-  factory group(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.group);
+  factory group(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.group);
 
-  factory special(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.special);
+  factory special(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.special);
 
-  factory apps(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.apps);
+  factory apps(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.apps);
 
-  factory vault(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.vaults);
+  factory vault(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.vaults);
 
-  factory dynamic(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.dynamic);
+  factory dynamic(BuildContext context) => ChipImportanceSectionKey._private(context, ChipImportance.dynamic);
 
-  factory regular(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.regular);
+  factory regular(BuildContext context, IconData icon) => ChipImportanceSectionKey._private(context, ChipImportance.regular, icon: icon);
 
   @override
-  Widget get leading => Icon(importance.getIcon());
+  Widget get leading => Icon(icon ?? importance.getIcon());
 }
 
 class MimeTypeSectionKey extends ChipSectionKey {

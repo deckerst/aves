@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Tags: section options
 - Thai translation (thanks Nattapong K, agguser)
 
 ### Changed
@@ -1263,7 +1264,7 @@ All notable changes to this project will be documented in this file.
 - mosaic layout
 - reverse filters to filter out/in
 - Collection: selection edit actions available as quick actions
-- Albums: group by content type
+- Albums: section by content type
 - Info: improved display for XMP
 - Stats: top albums
 - Stats: open full top listings
@@ -1396,7 +1397,7 @@ All notable changes to this project will be documented in this file.
 
 - Bottom navigation bar
 - Collection: thumbnail overlay tag icon
-- Collection: fast-scrolling shows breadcrumbs from groups
+- Collection: fast-scrolling shows breadcrumbs from sections
 - Settings: search
 - Pick: allow selecting multiple items according to request intent
 - `huawei` app flavor (Petal Maps, no Crashlytics)
@@ -1499,7 +1500,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: `Export` action renamed to `Convert`
 - Viewer: actual size zoom level respects device pixel ratio
 - Viewer: allow zooming out small items to actual size
-- Collection: improved performance for sort/group by name
+- Collection: improved performance for sort/section by name
 - load previous top items on startup
 - locale independent colors for known filters
 - upgraded Flutter to stable v2.10.2
@@ -1746,7 +1747,7 @@ All notable changes to this project will be documented in this file.
 
 - Albums / Countries / Tags: multiple selection
 - Albums: action to create empty albums
-- Collection: burst shot grouping (Samsung naming pattern)
+- Collection: burst shot stacking (Samsung naming pattern)
 - Collection: support motion photos defined by XMP Container namespace
 - Settings: hidden paths to exclude folders and their subfolders
 - Settings: option to disable viewer overlay blur effect (for older/slower devices)
@@ -1961,7 +1962,7 @@ All notable changes to this project will be documented in this file.
 - Collection: identify multipage TIFF & multitrack HEIF
 - Viewer: support for multipage TIFF
 - Viewer: support for cropped panoramas
-- Albums: grouping options
+- Albums: section options
 
 ### Changed
 
