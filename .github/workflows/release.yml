@@ -36,6 +36,12 @@ jobs:
       - name: Get Flutter packages
         run: ./flutterw pub get
 
+      - name: Remove build ID from native lib
+        # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
+        run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' ${PUB_CACHE}/hosted/*/jni-*/src/CMakeLists.txt
+        env:
+          PUB_CACHE: ~/.pub-cache
+
       - name: Generate app localizations
         run: ./flutterw gen-l10n
 
