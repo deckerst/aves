@@ -40,7 +40,6 @@ class AvesAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final appBarTheme = theme.appBarTheme;
     final colorScheme = theme.colorScheme;
     final textScaler = MediaQuery.textScalerOf(context);
     final useTvLayout = settings.useTvLayout;
@@ -97,7 +96,7 @@ class AvesAppBar extends StatelessWidget {
           start: !useTvLayout,
           bottom: false,
           child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: appBarTheme.systemOverlayStyle!,
+            value: AvesApp.themeSystemOverlayStyle(theme),
             child: AvesFloatingBar(
               builder: (context, backgroundColor, child) => Material(
                 color: backgroundColor,
@@ -131,7 +130,7 @@ class AvesAppBar extends StatelessWidget {
                               : const SizedBox(width: 16),
                           Expanded(
                             child: DefaultTextStyle(
-                              style: appBarTheme.titleTextStyle!,
+                              style: theme.appBarTheme.titleTextStyle!,
                               child: _title,
                             ),
                           ),

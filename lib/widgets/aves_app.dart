@@ -126,8 +126,11 @@ class AvesApp extends StatefulWidget {
   }
 
   static void setSystemUIStyle(ThemeData theme) {
-    final style = theme.appBarTheme.systemOverlayStyle ?? systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
-    SystemChrome.setSystemUIOverlayStyle(style);
+    SystemChrome.setSystemUIOverlayStyle(themeSystemOverlayStyle(theme));
+  }
+
+  static SystemUiOverlayStyle themeSystemOverlayStyle(ThemeData theme) {
+    return theme.appBarTheme.systemOverlayStyle ?? systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
   }
 
   static SystemUiOverlayStyle systemUIStyleForBrightness(Brightness themeBrightness, Color backgroundColor) {
