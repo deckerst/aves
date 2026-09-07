@@ -23,17 +23,18 @@ class DebugAppDatabaseSection extends StatefulWidget {
 }
 
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
-  late Future<int> _dbFileSizeLoader;
-  late Future<Set<AvesEntry>> _dbEntryLoader;
-  late Future<Map<int?, int?>> _dbDateLoader;
-  late Future<Set<CatalogMetadata>> _dbMetadataLoader;
-  late Future<Set<AddressDetails>> _dbAddressLoader;
-  late Future<Set<TrashDetails>> _dbTrashLoader;
-  late Future<Set<VaultDetails>> _dbVaultsLoader;
-  late Future<Set<FavouriteRow>> _dbFavouritesLoader;
-  late Future<Set<CoverRow>> _dbCoversLoader;
-  late Future<Set<DynamicAlbumRow>> _dbDynamicAlbumsLoader;
-  late Future<Set<VideoPlaybackRow>> _dbVideoPlaybackLoader;
+  late Future<int> _fileSizeLoader;
+  late Future<Iterable<AvesEntry>> _entryLoader;
+  late Future<Map<int?, int?>> _dateLoader;
+  late Future<Iterable<CatalogMetadata>> _metadataLoader;
+  late Future<Iterable<AddressDetails>> _addressLoader;
+  late Future<Iterable<TrashDetails>> _trashLoader;
+  late Future<Iterable<VaultDetails>> _vaultLoader;
+  late Future<Iterable<FavouriteRow>> _favouriteLoader;
+  late Future<Iterable<CoverRow>> _coverLoader;
+  late Future<Iterable<DynamicAlbumRow>> _dynamicAlbumLoader;
+  late Future<Iterable<VideoPlaybackRow>> _videoPlaybackLoader;
+  late Future<Iterable<String>> _debugLoader;
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
           child: Column(
             children: [
               FutureBuilder<int>(
-                future: _dbFileSizeLoader,
+                future: _fileSizeLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -79,8 +80,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set<AvesEntry>>(
-                future: _dbEntryLoader,
+              FutureBuilder<Iterable<AvesEntry>>(
+                future: _entryLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -103,7 +104,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 },
               ),
               FutureBuilder<Map<int?, int?>>(
-                future: _dbDateLoader,
+                future: _dateLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -123,8 +124,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbMetadataLoader,
+              FutureBuilder<Iterable>(
+                future: _metadataLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -144,8 +145,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbAddressLoader,
+              FutureBuilder<Iterable>(
+                future: _addressLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -165,8 +166,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbTrashLoader,
+              FutureBuilder<Iterable>(
+                future: _trashLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -186,8 +187,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbVaultsLoader,
+              FutureBuilder<Iterable>(
+                future: _vaultLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -207,8 +208,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbFavouritesLoader,
+              FutureBuilder<Iterable>(
+                future: _favouriteLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -228,8 +229,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbCoversLoader,
+              FutureBuilder<Iterable>(
+                future: _coverLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -257,8 +258,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbDynamicAlbumsLoader,
+              FutureBuilder<Iterable>(
+                future: _dynamicAlbumLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -286,8 +287,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Set>(
-                future: _dbVideoPlaybackLoader,
+              FutureBuilder<Iterable>(
+                future: _videoPlaybackLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
@@ -307,6 +308,27 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
+              FutureBuilder<Iterable>(
+                future: _debugLoader,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text('debug log rows: ${snapshot.data!.length}'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => localMediaDb.clearDebugLog().then((_) => _reload()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -320,22 +342,23 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   }
 
   void _startDbReport() {
-    _dbFileSizeLoader = localMediaDb.dbFileSize();
-    _dbEntryLoader = localMediaDb.loadEntries();
-    _dbDateLoader = localMediaDb.loadDates();
-    _dbMetadataLoader = localMediaDb.loadCatalogMetadata();
-    _dbAddressLoader = localMediaDb.loadAddresses();
-    _dbTrashLoader = localMediaDb.loadAllTrashDetails();
-    _dbVaultsLoader = localMediaDb.loadAllVaults();
-    _dbFavouritesLoader = localMediaDb.loadAllFavourites();
-    _dbCoversLoader = localMediaDb.loadAllCovers();
-    _dbDynamicAlbumsLoader = localMediaDb.loadAllDynamicAlbums();
-    _dbVideoPlaybackLoader = localMediaDb.loadAllVideoPlayback();
+    _fileSizeLoader = localMediaDb.dbFileSize();
+    _entryLoader = localMediaDb.loadEntries();
+    _dateLoader = localMediaDb.loadDates();
+    _metadataLoader = localMediaDb.loadCatalogMetadata();
+    _addressLoader = localMediaDb.loadAddresses();
+    _trashLoader = localMediaDb.loadAllTrashDetails();
+    _vaultLoader = localMediaDb.loadAllVaults();
+    _favouriteLoader = localMediaDb.loadAllFavourites();
+    _coverLoader = localMediaDb.loadAllCovers();
+    _dynamicAlbumLoader = localMediaDb.loadAllDynamicAlbums();
+    _videoPlaybackLoader = localMediaDb.loadAllVideoPlayback();
+    _debugLoader = localMediaDb.loadAllDebugLog();
     setState(() {});
   }
 
   Future<void> _disposeLoadedContent() async {
-    (await _dbEntryLoader).forEach((v) => v.dispose());
+    (await _entryLoader).forEach((v) => v.dispose());
   }
 
   @override

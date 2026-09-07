@@ -184,7 +184,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _mediaStoreChangeChannel = const OptionalEventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
-  final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
+  final EventChannel _platformMessageChannel = const OptionalEventChannel('deckers.thibault/aves/platform_messages');
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
@@ -199,7 +199,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((_) => _onAnalysisCompletion()));
-    _subscriptions.add(_errorChannel.receiveBroadcastStream().cast<String>().listen(_onError));
+    _subscriptions.add(_platformMessageChannel.receiveBroadcastStream().cast<Map>().listen(_onPlatformMessage));
     _appModeNotifier.addListener(_onAppModeChanged);
 
     debugPrint('start listening to app lifecycle');
@@ -598,7 +598,18 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onError(String error) => reportService.recordError(error);
+  void _onPlatformMessage(Map fields) {
+    final level = fields['level'] as String?;
+    final message = fields['message'] as String?;
+    if (level != null && message != null) {
+      switch (level) {
+        case 'ERROR':
+          reportService.recordError(message);
+        case 'DEBUG':
+          localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} $message');
+      }
+    }
+  }
 
   void _onAppModeChanged() {
     final appMode = _appModeNotifier.value;

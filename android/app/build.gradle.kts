@@ -107,6 +107,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         resValues = true
     }
 
@@ -214,7 +215,6 @@ dependencies {
     implementation(libs.androidx.performance)
     implementation(libs.androidx.lifecycle)
     implementation(libs.androidx.media)
-    implementation(libs.androidx.multidex)
     // Jetpack `security-crypto` library is deprecated:
     // https://developer.android.com/privacy-and-security/cryptography#security-crypto-jetpack-deprecated
     implementation(libs.androidx.security.crypto)

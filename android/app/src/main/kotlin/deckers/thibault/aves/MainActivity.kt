@@ -52,7 +52,7 @@ import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandl
 import deckers.thibault.aves.channel.streams.darttoplatform.ImageOpStreamHandler
 import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.AnalysisStreamHandler
-import deckers.thibault.aves.channel.streams.platformtodart.ErrorStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MessageStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.IntentStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStreamHandler
@@ -138,8 +138,8 @@ open class MainActivity : FlutterFragmentActivity() {
         analysisStreamHandler = AnalysisStreamHandler().apply {
             EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
         }
-        errorStreamHandler = ErrorStreamHandler().apply {
-            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
+        messageStreamHandler = MessageStreamHandler().apply {
+            EventChannel(messenger, MessageStreamHandler.CHANNEL).setStreamHandler(this)
         }
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
             EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
@@ -355,6 +355,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_PAGE to intent.getStringExtra(EXTRA_KEY_PAGE),
                     INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
                     INTENT_DATA_KEY_EXPLORER_PATH to intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH),
+                    INTENT_DATA_KEY_DEBUG to intent.getBooleanExtra(EXTRA_KEY_DEBUG, false),
                 )
             }
 
@@ -608,7 +609,18 @@ open class MainActivity : FlutterFragmentActivity() {
             )
             .build()
 
-        val shortcutInfoList = listOf(videos, search, map)
+        val shortcutInfoList = arrayListOf(videos, search, map)
+        if (BuildConfig.DEBUG) {
+            val debug = ShortcutInfoCompat.Builder(this, "debug")
+                .setShortLabel("debug")
+                .setIntent(
+                    Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                        .putExtra(EXTRA_KEY_DEBUG, true)
+                )
+                .build()
+            shortcutInfoList.add(debug)
+        }
+
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcutInfoList)
         Log.i(LOG_TAG, "set shortcuts: ${shortcutInfoList.joinToString(", ") { v -> v.id }}")
     }
@@ -657,12 +669,14 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
+        const val INTENT_DATA_KEY_DEBUG = "debug"
 
         const val EXTRA_KEY_PAGE = "page"
         const val EXTRA_KEY_EXPLORER_PATH = "explorerPath"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
+        const val EXTRA_KEY_DEBUG = "debug"
 
         // dart page routes
         const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
@@ -690,11 +704,16 @@ open class MainActivity : FlutterFragmentActivity() {
             }
         }
 
-        private var errorStreamHandler: ErrorStreamHandler? = null
+        private var messageStreamHandler: MessageStreamHandler? = null
 
-        fun notifyError(error: String) {
-            Log.e(LOG_TAG, "notifyError error=$error")
-            errorStreamHandler?.notifyError(error)
+        fun notifyDebug(message: String) {
+            Log.d(LOG_TAG, "notifyDebug message=$message")
+            messageStreamHandler?.notifyDebug(message)
+        }
+
+        fun notifyError(message: String) {
+            Log.e(LOG_TAG, "notifyError message=$message")
+            messageStreamHandler?.notifyError(message)
         }
     }
 }

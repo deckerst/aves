@@ -37,7 +37,6 @@ androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "andr
 androidx-performance = { group = "androidx.core", name = "core-performance", version.ref = "androidxCorePerformance" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-process", version.ref = "androidxLifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "androidxMedia" }
-androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidxMultidex" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidxSecurity" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidxWork" }
 commonsware-cwac = { module = "com.commonsware.cwac:document", version.ref = "commonswareCwac" }
