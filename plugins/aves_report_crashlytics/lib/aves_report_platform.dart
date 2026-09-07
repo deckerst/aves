@@ -75,7 +75,7 @@ class PlatformReportService extends ReportService {
     }
     if (exception is! UnreportedStateError) {
       stack ??= ReportService.buildReportStack(Trace.current(), level: 1);
-      return _instance?.recordError(exception, stack);
+      return _instance?.recordError(exception, stack, printDetails: true);
     }
   }
 
