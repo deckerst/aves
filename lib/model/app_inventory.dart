@@ -7,7 +7,7 @@ final AppInventory appInventory = AppInventory._private();
 class AppInventory {
   Set<Package> _packages = {};
   Set<Package> _launcherPackages = {};
-  List<String> _potentialAppDirs = [];
+  Set<String> _potentialAppDirs = {};
 
   final Map<String, bool> _isPotentialAppDirCache = {};
   final Map<String, String?> _albumAppPackageNameCache = {};
@@ -23,7 +23,7 @@ class AppInventory {
 
       _packages = await appService.getPackages();
       _launcherPackages = _packages.where((v) => v.categoryLauncher).toSet();
-      _potentialAppDirs = _launcherPackages.expand((v) => v.potentialDirs).toList();
+      _potentialAppDirs = _launcherPackages.expand((v) => v.potentialDirs).toSet();
 
       _invalidateCaches();
       areAppNamesReadyNotifier.value = true;
@@ -47,16 +47,19 @@ class AppInventory {
     _currentAppNameCache.clear();
   }
 
-  bool isPotentialAppDir(String dir) {
-    return _isPotentialAppDirCache.putIfAbsent(dir, () {
-      return _potentialAppDirs.contains(Package.normalizePotentialDir(dir));
+  bool _testAppDirPath(String normalizedDirPath, Iterable<String> potentialDirs) => potentialDirs.any(normalizedDirPath.endsWith);
+
+  bool isPotentialAppDir(String dirPath) {
+    return _isPotentialAppDirCache.putIfAbsent(dirPath, () {
+      final normalizedPath = Package.normalizePotentialDir(dirPath);
+      return _testAppDirPath(normalizedPath, _potentialAppDirs);
     });
   }
 
-  String? getAlbumAppPackageName(String albumPath) {
-    return _albumAppPackageNameCache.putIfAbsent(albumPath, () {
-      final dir = Package.normalizePotentialDir(pContext.split(albumPath).last);
-      final package = _launcherPackages.firstWhereOrNull((v) => v.potentialDirs.contains(dir));
+  String? getAlbumAppPackageName(String dirPath) {
+    return _albumAppPackageNameCache.putIfAbsent(dirPath, () {
+      final normalizedPath = Package.normalizePotentialDir(dirPath);
+      final package = _launcherPackages.firstWhereOrNull((v) => _testAppDirPath(normalizedPath, v.potentialDirs));
       return package?.packageName;
     });
   }

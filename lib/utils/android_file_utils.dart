@@ -164,10 +164,9 @@ class AndroidFileUtils {
       if (isScreenshotsPath(dirPath)) return AlbumType.screenshots;
       if (isVideoCapturesPath(dirPath)) return AlbumType.videoCaptures;
 
-      final dir = pContext.split(dirPath).lastOrNull;
       // do not restrict to directories on primary storage, as the directory could
       // legitimately be elsewhere (e.g. Dual Messenger storage in `/storage/emulated/95/`)
-      if (dir != null && appInventory.isPotentialAppDir(dir)) return AlbumType.app;
+      if (appInventory.isPotentialAppDir(dirPath)) return AlbumType.app;
 
       return AlbumType.regular;
     });

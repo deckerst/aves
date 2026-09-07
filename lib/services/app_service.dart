@@ -8,6 +8,7 @@ import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/ref/app_dirs.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
@@ -51,24 +52,13 @@ class PlatformAppService implements AppService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/app');
   static final _stream = AvesStreamsChannel('deckers.thibault/aves/activity_result_stream');
 
-  static final _knownAppDirs = {
-    'com.google.android.apps.photos': {'Google Photos'},
-    'com.iunis.hdr.glow': {'GlowHDR'},
-    'com.kakao.talk': {'KakaoTalkDownload'},
-    'com.sony.playmemories.mobile': {'Imaging Edge Mobile'},
-    'com.whatsapp': {'WhatsApp Animated Gifs', 'WhatsApp Documents', 'WhatsApp Images', 'WhatsApp Video'},
-    'nekox.messenger': {'NekoX'},
-    'org.telegram.messenger': {'Telegram Images', 'Telegram Video'},
-    'ru.tech.imageresizershrinker': {'ImageToolbox'},
-  };
-
   @override
   Future<Set<Package>> getPackages() async {
     try {
       final result = await _platform.invokeMethod('getPackages');
       final packages = (result as List).cast<Map>().map(Package.fromMap).toSet();
       // additional info for known directories
-      _knownAppDirs.forEach((packageName, dirs) {
+      AppDirs.knownAppDirs.forEach((packageName, dirs) {
         final package = packages.firstWhereOrNull((package) => package.packageName == packageName);
         if (package != null) {
           package.addOwnedDirs(dirs);
