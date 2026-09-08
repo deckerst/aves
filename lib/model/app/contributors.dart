@@ -185,6 +185,7 @@ class Contributors {
     Contributor('Matěj Bagar', 'matej.bjgar@atlas.cz'),
     Contributor('PONYATIN', 'nikolay-delete@yandex.ru'),
     Contributor('agguser', 'agguser@gmail.com'),
+    Contributor('Ikko Eltociear Ashimine', 'eltociear@gmail.com'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
