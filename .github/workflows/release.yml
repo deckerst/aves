@@ -30,17 +30,28 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
+      - name: Set up Clang
+        uses: egor-tensin/setup-clang@v2
+        with:
+          version: 19
+
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Get Flutter packages
-        run: ./flutterw pub get
+        run: |
+          ./flutterw doctor -v
+          ./flutterw pub get
 
+      # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
       - name: Remove build ID from native lib
-        # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
-        run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' ${PUB_CACHE}/hosted/*/jni-*/src/CMakeLists.txt
-        env:
-          PUB_CACHE: ~/.pub-cache
+        run: |
+          PUB_CACHE=$HOME/.pub-cache
+          echo "PUB_CACHE=$PUB_CACHE"
+          echo "Edit native lib build scripts from pub-cache hosted packages:"
+          ls ${PUB_CACHE}/hosted/*
+          sed -i -e 's/-Wl,/-Wl,--build-id=none,/' ${PUB_CACHE}/hosted/*/jni-*/src/CMakeLists.txt 2>/dev/null || true
 
       - name: Generate app localizations
         run: ./flutterw gen-l10n
