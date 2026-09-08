@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.0"></a>[v1.15.0] - 2026-09-08
+
 ### Added
 
 - Tags: section options
