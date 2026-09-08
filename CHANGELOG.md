@@ -21,7 +21,8 @@ All notable changes to this project will be documented in this file.
 - HEIC thumbnail rotation
 - file size tracking for chaining edits on multiple entries
 - handling media from apps in Samsung Dual Messenger mode
-- edited images not being refreshed in the viewer
+- Viewer: edited images not being refreshed
+- Viewer: obsolete description in overlay
 - slideshow transition when system UI was toggled
 - slideshow transition when animations are disabled
 - restoring binned item when its original directory is not accessible

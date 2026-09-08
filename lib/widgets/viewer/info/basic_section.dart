@@ -88,34 +88,30 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   }
 
   void _registerWidget(BasicSection widget) {
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
     widget.isScrollingNotifier.addListener(_onScrollingChanged);
   }
 
   void _unregisterWidget(BasicSection widget) {
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
     widget.isScrollingNotifier.removeListener(_onScrollingChanged);
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final entry = widget.entry;
-    return ListenableBuilder(
-      listenable: entry.metadataChangeNotifier,
-      builder: (context, child) {
-        return Column(
-          crossAxisAlignment: .start,
-          children: [
-            _BasicInfo(entry: entry),
-            Focus(
-              focusNode: _chipFocusNode,
-              skipTraversal: true,
-              canRequestFocus: false,
-              child: _buildChips(context),
-            ),
-            _buildEditButtons(context),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        _BasicInfo(entry: widget.entry),
+        Focus(
+          focusNode: _chipFocusNode,
+          skipTraversal: true,
+          canRequestFocus: false,
+          child: _buildChips(context),
+        ),
+        _buildEditButtons(context),
+      ],
     );
   }
 
@@ -267,6 +263,8 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
       },
     );
   }
+
+  void _onMetadataChanged() => setState(() {});
 
   void _onScrollingChanged() {
     if (!widget.isScrollingNotifier.value) {
