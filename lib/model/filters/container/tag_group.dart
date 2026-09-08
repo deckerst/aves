@@ -2,11 +2,11 @@ import 'package:aves/model/filters/container/group_base.dart';
 import 'package:aves/model/filters/container/set_or.dart';
 import 'package:aves/model/filters/filters.dart';
 
-mixin TagBaseFilter on CollectionFilter {}
+mixin TagBaseFilter on CollectionFilter;
 
 // placeholder to pick a group, distinguishing this root filter from cancelling
 class _RootTagGroupFilter extends DummyCollectionFilter with TagBaseFilter {
-  _RootTagGroupFilter._private({required super.reversed});
+  new _private({required super.reversed});
 }
 
 class TagGroupFilter extends GroupBaseFilter with TagBaseFilter {
@@ -14,9 +14,9 @@ class TagGroupFilter extends GroupBaseFilter with TagBaseFilter {
 
   static TagBaseFilter root = _RootTagGroupFilter._private(reversed: false);
 
-  TagGroupFilter(super.uri, super.filter, {super.reversed = false});
+  new(super.uri, super.filter, {super.reversed = false});
 
-  factory TagGroupFilter.empty(Uri uri) => TagGroupFilter(uri, SetOrFilter(const {}));
+  factory empty(Uri uri) => TagGroupFilter(uri, SetOrFilter(const {}));
 
   static TagGroupFilter? fromMap(Map<String, Object?> json) {
     final props = GroupBaseFilter.fromMap(json);

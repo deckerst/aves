@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TvPageTransitionsBuilder extends PageTransitionsBuilder {
-  const TvPageTransitionsBuilder();
+  const new();
 
   @override
   Widget buildTransitions<T>(
@@ -21,7 +21,7 @@ class _TvPageTransition extends StatelessWidget {
 
   static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
 
-  _TvPageTransition({
+  new({
     required Animation<double> routeAnimation,
     required this.child,
   }) : _opacityAnimation = routeAnimation.drive(_easeInTween);

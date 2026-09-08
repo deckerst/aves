@@ -139,16 +139,16 @@ mixin TagMixin on SourceBase {
   }
 }
 
-class CatalogMetadataChangedEvent {}
+class CatalogMetadataChangedEvent;
 
-class TagsChangedEvent {}
+class TagsChangedEvent;
 
 class TagGroupSummaryInvalidatedEvent {
-  const TagGroupSummaryInvalidatedEvent();
+  const new();
 }
 
 class TagSummaryInvalidatedEvent {
   final Set<String>? tags;
 
-  const TagSummaryInvalidatedEvent(this.tags);
+  const new(this.tags);
 }

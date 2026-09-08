@@ -2,12 +2,12 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TimeShiftSelector extends StatefulWidget {
   final TimeShiftController controller;
 
-  const TimeShiftSelector({
+  const new({
     super.key,
     required this.controller,
   });
@@ -147,5 +147,5 @@ class TimeShiftController {
   final Duration initialValue;
   Duration value;
 
-  TimeShiftController({required this.initialValue}) : value = initialValue;
+  new({required this.initialValue}) : value = initialValue;
 }

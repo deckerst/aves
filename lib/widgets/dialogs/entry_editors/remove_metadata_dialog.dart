@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class RemoveEntryMetadataDialog extends StatefulWidget {
@@ -19,7 +19,7 @@ class RemoveEntryMetadataDialog extends StatefulWidget {
 
   final bool showJpegTypes;
 
-  const RemoveEntryMetadataDialog({
+  const new({
     super.key,
     required this.showJpegTypes,
   });

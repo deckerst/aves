@@ -20,7 +20,7 @@ import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AlbumListPage extends StatelessWidget {
@@ -28,7 +28,7 @@ class AlbumListPage extends StatelessWidget {
 
   final Uri? initialGroup;
 
-  const AlbumListPage({
+  const new({
     super.key,
     required this.initialGroup,
   });
@@ -44,32 +44,32 @@ class AlbumListPage extends StatelessWidget {
         // to access filter group provider from subtree context
         builder: (context) {
           final source = context.read<CollectionSource>();
-          return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>, Set<CollectionFilter>)>(
+          return Selector<Settings, (ChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>, Set<CollectionFilter>)>(
             selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor, s.albumSortReverse, s.hiddenFilters, s.pinnedFilters),
             shouldRebuild: (t1, t2) {
               // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
               const eq = DeepCollectionEquality();
               return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4) && eq.equals(t1.$5, t2.$5));
             },
-            builder: (context, s, child) {
+            builder: (context, _, child) {
               return ListenableBuilder(
                 listenable: appInventory.areAppNamesReadyNotifier,
                 builder: (context, child) {
                   return ListenableBuilder(
                     listenable: Listenable.merge({albumGrouping, dynamicAlbums}),
-                    builder: (context, child) => StreamBuilder(
+                    builder: (context, child) => StreamBuilder<AlbumsChangedEvent>(
                       stream: source.eventBus.on<AlbumsChangedEvent>(),
-                      builder: (context, snapshot) {
+                      builder: (context, _) {
                         final groupUri = context.watch<FilterGroupNotifier>().value;
                         final gridItems = getGridItems(context, source, AlbumChipType.values.toSet(), groupUri);
                         return StreamBuilder<Set<CollectionFilter>?>(
                           // to update sections by tier
                           stream: covers.packageChangeStream,
-                          builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
+                          builder: (context, _) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
                             source: source,
                             title: context.l10n.albumPageTitle,
                             sortFactor: settings.albumSortFactor,
-                            showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
+                            showHeaders: settings.albumSectionFactor != ChipSectionFactor.none,
                             actionDelegate: AlbumChipSetActionDelegate(gridItems),
                             filterSections: groupToSections(context, source, gridItems),
                             newFilters: source.getNewAlbumFilters(context),
@@ -168,15 +168,19 @@ class AlbumListPage extends StatelessWidget {
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumBaseFilter>>>{};
     switch (settings.albumSectionFactor) {
       case .importance:
-        final groupKey = AlbumImportanceSectionKey.group(context);
-        final specialKey = AlbumImportanceSectionKey.special(context);
-        final appsKey = AlbumImportanceSectionKey.apps(context);
-        final vaultKey = AlbumImportanceSectionKey.vault(context);
-        final regularKey = AlbumImportanceSectionKey.regular(context);
-        final dynamicKey = AlbumImportanceSectionKey.dynamic(context);
+        final groupKey = ChipImportanceSectionKey.group(context);
+        final specialKey = ChipImportanceSectionKey.special(context);
+        final appsKey = ChipImportanceSectionKey.apps(context);
+        final vaultKey = ChipImportanceSectionKey.vault(context);
+        final dynamicKey = ChipImportanceSectionKey.dynamic(context);
+        final regularKey = ChipImportanceSectionKey.regular(context, AIcons.album);
         sections = groupBy<FilterGridItem<AlbumBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           final filter = kv.filter;
           switch (filter) {
+            case AlbumGroupFilter _:
+              return groupKey;
+            case DynamicAlbumFilter _:
+              return dynamicKey;
             case StoredAlbumFilter _:
               switch (covers.effectiveAlbumType(filter.album)) {
                 case .regular:
@@ -188,12 +192,9 @@ class AlbumListPage extends StatelessWidget {
                 default:
                   return specialKey;
               }
-            case DynamicAlbumFilter _:
-              return dynamicKey;
-            case AlbumGroupFilter _:
-              return groupKey;
+            default:
+              return specialKey;
           }
-          return specialKey;
         });
 
         sections = {
@@ -233,14 +234,14 @@ class AlbumListPage extends StatelessWidget {
 
     if (pinnedMapEntries.isNotEmpty) {
       sections = Map.fromEntries([
-        MapEntry(AlbumImportanceSectionKey.pinned(context), pinnedMapEntries),
+        MapEntry(ChipImportanceSectionKey.pinned(context), pinnedMapEntries),
         ...sections.entries,
       ]);
     }
 
     if (newMapEntries.isNotEmpty) {
       sections = Map.fromEntries([
-        MapEntry(AlbumImportanceSectionKey.newAlbum(context), newMapEntries),
+        MapEntry(ChipImportanceSectionKey.newAlbum(context), newMapEntries),
         ...sections.entries,
       ]);
     }

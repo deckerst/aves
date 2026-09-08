@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class SectionKey {
-  const SectionKey();
+  const new();
 }
 
 class EntryAlbumSectionKey extends SectionKey with Equatable {
@@ -12,7 +12,7 @@ class EntryAlbumSectionKey extends SectionKey with Equatable {
   @override
   List<Object?> get props => [directory];
 
-  const EntryAlbumSectionKey(this.directory);
+  const new(this.directory);
 }
 
 class EntryDateSectionKey extends SectionKey with Equatable {
@@ -21,7 +21,7 @@ class EntryDateSectionKey extends SectionKey with Equatable {
   @override
   List<Object?> get props => [year, month, day];
 
-  const EntryDateSectionKey({this.year, this.month, this.day});
+  const new({this.year, this.month, this.day});
 
   static const EntryDateSectionKey unknown = EntryDateSectionKey();
 }
@@ -32,5 +32,5 @@ class EntryRatingSectionKey extends SectionKey with Equatable {
   @override
   List<Object?> get props => [rating];
 
-  const EntryRatingSectionKey(this.rating);
+  const new(this.rating);
 }

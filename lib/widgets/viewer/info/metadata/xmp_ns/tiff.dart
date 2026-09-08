@@ -4,7 +4,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/tiff.md
 class XmpTiffNamespace extends XmpNamespace {
-  XmpTiffNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.tiff);
+  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.tiff);
 
   @override
   String formatValue(XmpProp prop) {

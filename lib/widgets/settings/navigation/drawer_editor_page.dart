@@ -19,7 +19,7 @@ import 'package:aves/widgets/search/collection_search_delegate.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_albums.dart';
 import 'package:aves/widgets/settings/navigation/drawer_tab_fixed.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NavigationDrawerEditorPage extends StatefulWidget {
   static const routeName = '/settings/navigation/drawer';
@@ -46,7 +46,7 @@ class NavigationDrawerEditorPage extends StatefulWidget {
     SearchPage.routeName,
   ];
 
-  const NavigationDrawerEditorPage({super.key});
+  const new({super.key});
 
   @override
   State<NavigationDrawerEditorPage> createState() => _NavigationDrawerEditorPageState();

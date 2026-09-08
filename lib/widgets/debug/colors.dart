@@ -1,9 +1,9 @@
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DebugColorSection extends StatefulWidget {
-  const DebugColorSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugColorSection> createState() => _DebugColorSectionState();

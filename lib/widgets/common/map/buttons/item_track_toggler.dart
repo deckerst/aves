@@ -2,14 +2,14 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapItemTrackToggler extends StatelessWidget {
   final bool isMenuItem;
   final VoidCallback? onPressed;
 
-  const MapItemTrackToggler({
+  const new({
     super.key,
     this.isMenuItem = false,
     this.onPressed,

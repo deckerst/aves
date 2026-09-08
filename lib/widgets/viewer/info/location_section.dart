@@ -16,7 +16,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class LocationSection extends StatefulWidget {
@@ -26,7 +26,7 @@ class LocationSection extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
   final AFilterCallback onFilterSelection;
 
-  const LocationSection({
+  const new({
     super.key,
     required this.collection,
     required this.entry,
@@ -192,7 +192,7 @@ class _LocationSectionState extends State<LocationSection> {
 class _AddressInfoGroup extends StatefulWidget {
   final AvesEntry entry;
 
-  const _AddressInfoGroup({required this.entry});
+  const new({required this.entry});
 
   @override
   State<_AddressInfoGroup> createState() => _AddressInfoGroupState();

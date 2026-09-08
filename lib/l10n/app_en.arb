@@ -421,8 +421,6 @@
       }
     }
   },
-  "moveUndatedConfirmationDialogMessage": "Save item dates before proceeding?",
-  "moveUndatedConfirmationDialogSetDate": "Save dates",
 
   "videoResumeDialogMessage": "Do you want to resume playing at {time}?",
   "@videoResumeDialogMessage": {
@@ -874,7 +872,6 @@
   "settingsConfirmationDialogTitle": "Confirmation Dialogs",
   "settingsConfirmationBeforeDeleteItems": "Ask before deleting items forever",
   "settingsConfirmationBeforeMoveToBinItems": "Ask before moving items to the recycle bin",
-  "settingsConfirmationBeforeMoveUndatedItems": "Ask before moving undated items",
   "settingsConfirmationAfterMoveToBinItems": "Show message after moving items to the recycle bin",
   "settingsConfirmationVaultDataLoss": "Show vault data loss warning",
 

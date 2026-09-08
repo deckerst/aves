@@ -167,8 +167,6 @@
     "noMatchingAppDialogMessage": "Нет приложений, которые могли бы с этим справиться.",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{Переместить этот объект в корзину?} few{Переместить эти {count} объекта в корзину?} other{Переместить эти {count} объектов в корзину?}}",
     "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Вы уверены, что хотите удалить этот объект?} few{Вы уверены, что хотите удалить эти {count} объекта?} other{Вы уверены, что хотите удалить эти {count} объектов?}}",
-    "moveUndatedConfirmationDialogMessage": "Сохранить даты элементов, прежде чем продолжить?",
-    "moveUndatedConfirmationDialogSetDate": "Установить дату",
     "videoResumeDialogMessage": "Хотите ли вы возобновить воспроизведение на {time}?",
     "videoStartOverButtonLabel": "ВОСПРОИЗВЕСТИ СНАЧАЛА",
     "videoResumeButtonLabel": "ПРОДОЛЖИТЬ",
@@ -378,7 +376,6 @@
     "settingsConfirmationDialogTitle": "Диалоги подтверждения",
     "settingsConfirmationBeforeDeleteItems": "Спросить, прежде чем удалять объекты навсегда",
     "settingsConfirmationBeforeMoveToBinItems": "Спросить, прежде чем перемещать объекты в корзину",
-    "settingsConfirmationBeforeMoveUndatedItems": "Спросить, прежде чем перемещать объекты без даты в метаданных",
     "settingsConfirmationAfterMoveToBinItems": "Показывать сообщение после перемещения в корзину",
     "settingsNavigationDrawerTile": "Навигационное меню",
     "settingsNavigationDrawerEditorPageTitle": "Навигационное меню",
@@ -737,5 +734,8 @@
     "mapShowItemTracks": "Показать пути к файлам",
     "mapHideItemTracks": "Скрыть пути к файлам",
     "filterTypeSlowMotionVideoLabel": "Слоу-мо",
-    "showThumbnailSlowMotionVideoIcon": "Показать значок слоу-мо"
+    "showThumbnailSlowMotionVideoIcon": "Показать значок слоу-мо",
+    "calendarGregorian": "Григорианский",
+    "calendarPersian": "Персидский",
+    "settingsCalendarTile": "Календарь"
 }

@@ -2,7 +2,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QuickChooser extends StatelessWidget {
   final bool blurred;
@@ -11,7 +11,7 @@ class QuickChooser extends StatelessWidget {
   static const margin = EdgeInsets.all(8);
   static const padding = EdgeInsets.symmetric(horizontal: 8);
 
-  const QuickChooser({
+  const new({
     super.key,
     required this.blurred,
     required this.child,

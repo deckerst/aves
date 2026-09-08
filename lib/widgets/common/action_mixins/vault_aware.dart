@@ -9,9 +9,9 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/password_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/pattern_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/pin_dialog.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:material_ui/material_ui.dart';
 
 mixin VaultAwareMixin on FeedbackMixin {
   Future<bool> _tryUnlock(BuildContext context, String dirPath) async {

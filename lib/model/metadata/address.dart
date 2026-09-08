@@ -16,7 +16,7 @@ class AddressDetails extends Equatable {
 
   String? get stateName => GeoStates.stateCountryCodes.contains(countryCode) ? adminArea : null;
 
-  const AddressDetails({
+  const new({
     required this.id,
     this.countryCode,
     this.countryName,
@@ -36,7 +36,7 @@ class AddressDetails extends Equatable {
     );
   }
 
-  factory AddressDetails.fromMap(Map map) {
+  factory fromMap(Map map) {
     return AddressDetails(
       id: map['id'] as int,
       countryCode: map['countryCode'] as String?,

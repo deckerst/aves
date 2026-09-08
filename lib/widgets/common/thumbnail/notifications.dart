@@ -5,5 +5,5 @@ import 'package:flutter/widgets.dart';
 class OpenViewerNotification extends Notification {
   final AvesEntry entry;
 
-  const OpenViewerNotification(this.entry);
+  const new(this.entry);
 }

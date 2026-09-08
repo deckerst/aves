@@ -5,14 +5,14 @@ import 'package:aves/widgets/common/grid/sections/fixed/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
   final List<Size> _itemSizes;
 
-  FixedExtentSectionLayoutBuilder({
+  new({
     required super.sections,
     required super.showHeaders,
     required super.getHeaderExtent,

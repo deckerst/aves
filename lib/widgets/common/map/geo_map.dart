@@ -24,8 +24,8 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:fluster/fluster.dart';
-import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class GeoMap extends StatefulWidget {
@@ -57,7 +57,7 @@ class GeoMap extends StatefulWidget {
   onMarkerLongPress;
   final void Function(BuildContext context)? openMapPage;
 
-  const GeoMap({
+  const new({
     super.key,
     required this.controller,
     this.collection,

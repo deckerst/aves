@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TextDropdownButton<T> extends StatefulWidget {
   final List<T> values;
@@ -12,7 +12,7 @@ class TextDropdownButton<T> extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final ValueChanged<T?>? onChanged;
 
-  const TextDropdownButton({
+  const new({
     super.key,
     required this.values,
     required this.valueText,

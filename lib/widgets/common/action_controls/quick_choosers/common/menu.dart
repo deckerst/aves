@@ -5,7 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
 import 'package:aves_ui/aves_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class MenuQuickChooser<T> extends StatefulWidget {
 
   static const int maxVisibleOptionCount = 5;
 
-  MenuQuickChooser({
+  new({
     super.key,
     required this.valueNotifier,
     required List<T> options,

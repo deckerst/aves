@@ -60,11 +60,11 @@ import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gpx/gpx.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin, VaultAwareMixin {
@@ -338,7 +338,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final l10n = context.l10n;
     final source = context.read<CollectionSource>();
-    final storageDirs = entries.map((e) => e.storageDirectory).nonNulls.toSet();
+    final storageDirs = entries.map((entry) => entry.storageDirectory).nonNulls.toSet();
     final todoCount = entries.length;
 
     if (!await showSkippableConfirmationDialog(
@@ -524,20 +524,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _edit(
     BuildContext context,
     Set<AvesEntry> todoEntries,
-    Future<Set<EntryDataType>> Function(AvesEntry entry) op, {
+    Future<Set<EntryDataType>> Function(AvesEntry entry) applyOp, {
     bool shouldCheckUndatedItems = true,
     bool showResult = true,
   }) async {
-    final selectionDirs = todoEntries.map((e) => e.directory).nonNulls.toSet();
+    final selectionDirs = todoEntries.map((entry) => entry.directory).nonNulls.toSet();
     final todoCount = todoEntries.length;
 
     if (!await checkStoragePermissionForAlbums(context, selectionDirs, entries: todoEntries)) return;
 
     if (shouldCheckUndatedItems && !await checkUndatedItems(context, todoEntries)) return;
 
-    Set<String> obsoleteTags = todoEntries.expand((entry) => entry.tags).toSet();
     Set<String> obsoleteCountryCodes = todoEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls.toSet();
     Set<String> obsoleteStateCodes = todoEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls.toSet();
+    Set<String> obsoleteTags = todoEntries.expand((entry) => entry.tags).toSet();
 
     final dataTypes = <EntryDataType>{};
     final source = context.read<CollectionSource>();
@@ -549,7 +549,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         if (cancelled) {
           return ImageOpEvent(success: true, skipped: true, uri: entry.uri);
         } else {
-          final opDataTypes = await op(entry);
+          final opDataTypes = await applyOp(entry);
           dataTypes.addAll(opDataTypes);
           return ImageOpEvent(success: opDataTypes.isNotEmpty, skipped: false, uri: entry.uri);
         }
@@ -561,25 +561,24 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final editedOps = successOps.where((op) => !op.skipped).toSet();
         source.resumeMonitoring();
 
-        unawaited(
-          source.refreshUris(editedOps.map((op) => op.uri).toSet()).then((_) {
-            // invalidate filters derived from values before edition
-            // this invalidation must happen after the source is refreshed,
-            // otherwise filter chips may eagerly rebuild in between with the old state
-            if (obsoleteCountryCodes.isNotEmpty) {
-              source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
-            }
-            if (obsoleteStateCodes.isNotEmpty) {
-              source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
-            }
-            if (obsoleteTags.isNotEmpty) {
-              source.invalidateTagFilterSummary(tags: obsoleteTags);
-            }
-          }),
-        );
+        final editedUris = editedOps.map((op) => op.uri).toSet();
+        final editedEntries = todoEntries.where((entry) => editedUris.contains(entry.uri)).toSet();
 
-        if (dataTypes.contains(EntryDataType.aspectRatio)) {
-          source.onAspectRatioChanged();
+        // we need to wait entry refreshing, as some fields like file size
+        // may be modified, and are essential for further chained edits
+        await source.refreshEntries(editedEntries, dataTypes);
+
+        // invalidate filters derived from values before edition
+        // this invalidation must happen after the source is refreshed,
+        // otherwise filter chips may eagerly rebuild in between with the old state
+        if (obsoleteCountryCodes.isNotEmpty) {
+          source.invalidateCountryFilterSummary(countryCodes: obsoleteCountryCodes);
+        }
+        if (obsoleteStateCodes.isNotEmpty) {
+          source.invalidateStateFilterSummary(stateCodes: obsoleteStateCodes);
+        }
+        if (obsoleteTags.isNotEmpty) {
+          source.invalidateTagFilterSummary(tags: obsoleteTags);
         }
 
         if (showResult) {

@@ -1,5 +1,5 @@
 import 'package:aves/widgets/common/extensions/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesBorder {
   static Color _borderColor(BuildContext context) => Theme.of(context).isDark ? Colors.white30 : Colors.black26;

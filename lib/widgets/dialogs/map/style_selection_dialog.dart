@@ -12,13 +12,13 @@ import 'package:aves/widgets/dialogs/selection_dialogs/radio_list_tile.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapStyleSelectionDialog extends StatefulWidget {
   static const routeName = '/dialog/map_style_selection';
 
-  const MapStyleSelectionDialog({super.key});
+  const new({super.key});
 
   @override
   State<MapStyleSelectionDialog> createState() => _MapStyleSelectionDialogState();

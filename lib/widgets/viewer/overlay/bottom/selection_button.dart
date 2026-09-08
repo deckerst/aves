@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SelectionButton extends StatelessWidget {
@@ -16,7 +16,7 @@ class SelectionButton extends StatelessWidget {
 
   static const double padding = 8;
 
-  const SelectionButton({
+  const new({
     super.key,
     required this.mainEntry,
     required this.scale,

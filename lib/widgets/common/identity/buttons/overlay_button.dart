@@ -3,7 +3,7 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayButton extends StatefulWidget {
   final Animation<double> scale;
@@ -11,7 +11,7 @@ class OverlayButton extends StatefulWidget {
   final FocusNode? focusNode;
   final Widget child;
 
-  const OverlayButton({
+  const new({
     super.key,
     this.scale = kAlwaysCompleteAnimation,
     this.borderRadius,
@@ -131,7 +131,7 @@ class ScalingOverlayTextButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget child;
 
-  const ScalingOverlayTextButton({
+  const new({
     super.key,
     required this.scale,
     this.onPressed,
@@ -154,7 +154,7 @@ class OverlayTextButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Widget child;
 
-  const OverlayTextButton({
+  const new({
     super.key,
     this.onPressed,
     required this.child,

@@ -55,10 +55,10 @@ mixin CountryMixin on SourceBase {
   }
 }
 
-class CountriesChangedEvent {}
+class CountriesChangedEvent;
 
 class CountrySummaryInvalidatedEvent {
   final Set<String>? countryCodes;
 
-  const CountrySummaryInvalidatedEvent(this.countryCodes);
+  const new(this.countryCodes);
 }

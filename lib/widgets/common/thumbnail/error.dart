@@ -7,13 +7,13 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ErrorThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
 
-  const ErrorThumbnail({
+  const new({
     super.key,
     required this.entry,
     required this.extent,

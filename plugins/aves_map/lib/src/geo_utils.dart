@@ -106,7 +106,7 @@ class MapServiceHelper {
   final int tileSize;
   late final double initialResolution, originShift;
 
-  MapServiceHelper(this.tileSize) {
+  new(this.tileSize) {
     initialResolution = 2 * pi * 6378137 / tileSize;
     originShift = 2 * pi * 6378137 / 2.0;
   }

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MediaStoreScanDirDialog extends StatefulWidget {
-  const MediaStoreScanDirDialog({super.key});
+  const new({super.key});
 
   @override
   State<MediaStoreScanDirDialog> createState() => _MediaStoreScanDirDialogState();

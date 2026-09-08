@@ -23,7 +23,7 @@ class AvesMapController {
 
   Stream<MapMarkerLocationChangeEvent> get markerLocationChanges => _events.where((event) => event is MapMarkerLocationChangeEvent).cast<MapMarkerLocationChangeEvent>();
 
-  AvesMapController() {
+  new() {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',
@@ -54,26 +54,14 @@ class AvesMapController {
   void notifyMarkerLocationChange() => _streamController.add(MapMarkerLocationChangeEvent());
 }
 
-abstract class AvesMapEvent {}
+abstract class AvesMapEvent;
 
-class MapControllerMoveEvent extends AvesMapEvent {
-  final LatLng latLng;
+class MapControllerMoveEvent(final LatLng latLng) extends AvesMapEvent;
 
-  MapControllerMoveEvent(this.latLng);
-}
+class MapControllerZoomEvent(final double delta) extends AvesMapEvent;
 
-class MapControllerZoomEvent extends AvesMapEvent {
-  final double delta;
+class MapControllerRotationResetEvent extends AvesMapEvent;
 
-  MapControllerZoomEvent(this.delta);
-}
+class MapIdleUpdate(final ZoomedBounds bounds) extends AvesMapEvent;
 
-class MapControllerRotationResetEvent extends AvesMapEvent {}
-
-class MapIdleUpdate extends AvesMapEvent {
-  final ZoomedBounds bounds;
-
-  MapIdleUpdate(this.bounds);
-}
-
-class MapMarkerLocationChangeEvent extends AvesMapEvent {}
+class MapMarkerLocationChangeEvent extends AvesMapEvent;

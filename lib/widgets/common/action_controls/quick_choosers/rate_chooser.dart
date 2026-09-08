@@ -4,14 +4,14 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RateQuickChooser extends StatefulWidget {
   final bool blurred;
   final ValueNotifier<int?> valueNotifier;
   final Stream<Offset> pointerGlobalPosition;
 
-  const RateQuickChooser({
+  const new({
     super.key,
     required this.blurred,
     required this.valueNotifier,

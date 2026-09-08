@@ -275,8 +275,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Elementuen datak gorde nahi al dituzu aurrera egin aurretik?",
-    "moveUndatedConfirmationDialogSetDate": "Gorde datak",
     "videoResumeDialogMessage": "Erreprodukzioa {time} denboran jarraitzea nahi al duzu?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -596,7 +594,6 @@
     "settingsConfirmationTile": "Baieztapen-leihoak",
     "settingsConfirmationBeforeDeleteItems": "Galdetu elementuak betirako ezabatu aurretik",
     "settingsConfirmationBeforeMoveToBinItems": "Galdetu elementuak zakarrontzira bidali aurretik",
-    "settingsConfirmationBeforeMoveUndatedItems": "Galdetu data ez duten elementuak mugitu aurretik",
     "settingsConfirmationAfterMoveToBinItems": "Mezua erakutsi elementuak zakarrontzira bidali ondoren",
     "settingsNavigationDrawerEditorPageTitle": "Nabigazio-menua",
     "settingsNavigationDrawerBanner": "Sakatu eta mantendu menuko elementuak mugitu edo berrordenatzeko.",

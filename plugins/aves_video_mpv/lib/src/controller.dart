@@ -8,7 +8,7 @@ import 'package:aves_video_mpv/aves_video_mpv.dart';
 import 'package:aves_video_mpv/src/tracks.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as p;
@@ -55,7 +55,7 @@ class MpvVideoController extends AvesVideoController {
   @override
   final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
 
-  MpvVideoController(
+  new(
     super.entry, {
     required super.playbackStateHandler,
     required super.settings,

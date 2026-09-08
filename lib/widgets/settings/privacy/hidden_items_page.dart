@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class HiddenItemsPage extends StatelessWidget {
@@ -18,7 +18,7 @@ class HiddenItemsPage extends StatelessWidget {
     SettingKeys.deactivatedHiddenFiltersKey,
   ];
 
-  const HiddenItemsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,7 @@ class HiddenItemsPage extends StatelessWidget {
 class _Banner extends StatelessWidget {
   final String bannerText;
 
-  const _Banner({required this.bannerText});
+  const new({required this.bannerText});
 
   @override
   Widget build(BuildContext context) {

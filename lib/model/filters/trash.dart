@@ -15,9 +15,9 @@ class TrashFilter extends CollectionFilter {
   @override
   List<Object?> get props => [reversed];
 
-  const TrashFilter._private({super.reversed = false});
+  const new _private({super.reversed = false});
 
-  factory TrashFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     final reversed = json['reversed'] as bool? ?? false;
     return reversed ? instanceReversed : instance;
   }

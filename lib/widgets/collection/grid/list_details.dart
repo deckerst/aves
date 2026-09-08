@@ -10,13 +10,13 @@ import 'package:aves/widgets/collection/grid/list_details_theme.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryListDetails extends StatelessWidget {
   final AvesEntry entry;
 
-  const EntryListDetails({
+  const new({
     super.key,
     required this.entry,
   });

@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // This widget should be added on top of Scaffolds with:
@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 // - a vertically scrollable body.
 // It will prevent the body from scrolling when a user swipe from bottom to use Android 10 style navigation gestures.
 class BottomGestureAreaProtector extends StatelessWidget {
-  const BottomGestureAreaProtector({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
 
 // It will prevent the body from scrolling when a user swipe from top to show the status bar when system UI is hidden.
 class TopGestureAreaProtector extends StatelessWidget {
-  const TopGestureAreaProtector({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class TopGestureAreaProtector extends StatelessWidget {
 
 // It will prevent the body from scrolling when a user swipe from edges to use Android 10 style navigation gestures.
 class SideGestureAreaProtector extends StatelessWidget {
-  const SideGestureAreaProtector({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class SideGestureAreaProtector extends StatelessWidget {
 class GestureAreaProtectorStack extends StatelessWidget {
   final Widget child;
 
-  const GestureAreaProtectorStack({
+  const new({
     super.key,
     required this.child,
   });
@@ -107,7 +107,7 @@ class GestureAreaProtectorStack extends StatelessWidget {
 }
 
 class BottomPaddingSliver extends StatelessWidget {
-  const BottomPaddingSliver({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +123,7 @@ class BottomPaddingSliver extends StatelessWidget {
 }
 
 class TvTileGridBottomPaddingSliver extends StatelessWidget {
-  const TvTileGridBottomPaddingSliver({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class SafeCutoutArea extends StatelessWidget {
   final Animation<double>? animation;
   final Widget child;
 
-  const SafeCutoutArea({
+  const new({
     super.key,
     this.animation,
     required this.child,
@@ -198,7 +198,7 @@ class DirectionalSafeArea extends StatelessWidget {
   final bool maintainBottomViewPadding;
   final Widget child;
 
-  const DirectionalSafeArea({
+  const new({
     super.key,
     this.start = true,
     this.top = true,

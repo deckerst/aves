@@ -1,5 +1,5 @@
 import 'package:aves/locale/calendar/delegate/base.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 // placeholder to use as `DateTime` in the picker
@@ -7,14 +7,14 @@ class PersianDateTime extends DateTime {
   final int jMonth;
   final int jDay;
 
-  PersianDateTime(super.year, [super.month = 1, super.day = 1]) : jMonth = month, jDay = day;
+  new(super.year, [super.month = 1, super.day = 1]) : jMonth = month, jDay = day;
 
-  factory PersianDateTime.now() {
+  factory now() {
     final j = Jalali.now();
     return PersianDateTime(j.year, j.month, j.day);
   }
 
-  factory PersianDateTime.fromGregorian(DateTime gregorian) {
+  factory fromGregorian(DateTime gregorian) {
     final j = Jalali.fromDateTime(gregorian);
     return PersianDateTime(j.year, j.month, j.day);
   }
@@ -38,7 +38,7 @@ class PersianCalendarDelegate extends AvesCalendarDelegate<PersianDateTime> {
   static const int daysPerWeek = DateTime.daysPerWeek;
   static const int monthsPerYear = DateTime.monthsPerYear;
 
-  const PersianCalendarDelegate(super.locale);
+  const new(super.locale);
 
   @override
   DateTime toDateForIntl4xFormat(PersianDateTime date) {

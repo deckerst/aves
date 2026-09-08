@@ -7,7 +7,7 @@ class PersianCalendarOps extends CalendarOps {
 
   static final instance = PersianCalendarOps._private();
 
-  PersianCalendarOps._private();
+  new _private();
 
   Jalali? toNative(DateTime? date) => date?.toJalali();
 

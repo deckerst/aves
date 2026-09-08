@@ -55,10 +55,10 @@ mixin StateMixin on SourceBase {
   }
 }
 
-class StatesChangedEvent {}
+class StatesChangedEvent;
 
 class StateSummaryInvalidatedEvent {
   final Set<String>? stateCodes;
 
-  const StateSummaryInvalidatedEvent(this.stateCodes);
+  const new(this.stateCodes);
 }

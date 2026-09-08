@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CollectionActionEditorPage extends StatefulWidget {
   static const routeName = '/settings/collection_actions';
@@ -14,7 +14,7 @@ class CollectionActionEditorPage extends StatefulWidget {
     SettingKeys.collectionSelectionQuickActionsKey,
   ];
 
-  const CollectionActionEditorPage({super.key});
+  const new({super.key});
 
   @override
   State<CollectionActionEditorPage> createState() => _CollectionActionEditorPageState();

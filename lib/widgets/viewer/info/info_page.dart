@@ -22,7 +22,7 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class InfoPage extends StatefulWidget {
@@ -31,7 +31,7 @@ class InfoPage extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
   final ValueNotifier<double> pageInViewNotifier;
 
-  const InfoPage({
+  const new({
     super.key,
     required this.collection,
     required this.entryNotifier,
@@ -140,7 +140,7 @@ class _InfoPageContent extends StatefulWidget {
   final bool split;
   final VoidCallback goToViewer;
 
-  const _InfoPageContent({
+  const new({
     required this.collection,
     required this.entry,
     required this.isScrollingNotifier,

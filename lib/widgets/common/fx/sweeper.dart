@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 
 class Sweeper extends StatefulWidget {
@@ -14,7 +14,7 @@ class Sweeper extends StatefulWidget {
   final bool centerSweep;
   final VoidCallback? onSweepEnd;
 
-  const Sweeper({
+  const new({
     super.key,
     required this.builder,
     this.startAngle = -pi / 2,
@@ -130,7 +130,7 @@ class _SweepClipPath extends CustomClipper<Path> {
   final double startAngle;
   final double sweepAngle;
 
-  const _SweepClipPath({required this.startAngle, required this.sweepAngle});
+  const new({required this.startAngle, required this.sweepAngle});
 
   @override
   Path getClip(Size size) {

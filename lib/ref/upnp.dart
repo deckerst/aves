@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class Upnp {
   static const String upnpDeviceTypeMediaRenderer = 'urn:schemas-upnp-org:device:MediaRenderer:1';
@@ -19,7 +19,7 @@ class Upnp {
 class UpnpProtocolInfo {
   late final Set<UpnpProtocolInfoEntry> entries;
 
-  UpnpProtocolInfo(String text) {
+  new(String text) {
     entries = text.split(',').where((v) => v.isNotEmpty).map(UpnpProtocolInfoEntry.new).toSet();
   }
 }
@@ -28,7 +28,7 @@ class UpnpProtocolInfo {
 class UpnpProtocolInfoEntry {
   late final String protocol, network, contentFormat, additionalInfo;
 
-  UpnpProtocolInfoEntry(String text) {
+  new(String text) {
     final parts = text.split(':');
     protocol = parts[0];
     network = parts[1];

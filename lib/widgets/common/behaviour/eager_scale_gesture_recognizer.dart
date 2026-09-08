@@ -26,9 +26,9 @@ enum _ScaleState {
 }
 
 class _PointerPanZoomData {
-  _PointerPanZoomData.fromStartEvent(this.parent, PointerPanZoomStartEvent event) : _position = event.position, _pan = Offset.zero, _scale = 1, _rotation = 0;
+  new fromStartEvent(this.parent, PointerPanZoomStartEvent event) : _position = event.position, _pan = Offset.zero, _scale = 1, _rotation = 0;
 
-  _PointerPanZoomData.fromUpdateEvent(this.parent, PointerPanZoomUpdateEvent event) : _position = event.position, _pan = event.pan, _scale = event.scale, _rotation = event.rotation;
+  new fromUpdateEvent(this.parent, PointerPanZoomUpdateEvent event) : _position = event.position, _pan = event.pan, _scale = event.scale, _rotation = event.rotation;
 
   final EagerScaleGestureRecognizer parent;
   final Offset _position;
@@ -71,7 +71,7 @@ class _LineBetweenPointers {
   /// Creates a [_LineBetweenPointers]. None of the [pointerStartLocation], [pointerStartId]
   /// [pointerEndLocation] and [pointerEndId] must be null. [pointerStartId] and [pointerEndId]
   /// should be different.
-  _LineBetweenPointers({
+  new({
     this.pointerStartLocation = Offset.zero,
     this.pointerStartId = 0,
     this.pointerEndLocation = Offset.zero,
@@ -99,7 +99,7 @@ class EagerScaleGestureRecognizer extends OneSequenceGestureRecognizer {
   /// Create a gesture recognizer for interactions intended for scaling content.
   ///
   /// {@macro flutter.gestures.GestureRecognizer.supportedDevices}
-  EagerScaleGestureRecognizer({
+  new({
     super.debugOwner,
     super.supportedDevices,
     super.allowedButtonsFilter,

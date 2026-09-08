@@ -5,14 +5,14 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RenameEntryDialog extends StatefulWidget {
   static const routeName = '/dialog/rename_entry';
 
   final AvesEntry entry;
 
-  const RenameEntryDialog({
+  const new({
     super.key,
     required this.entry,
   });

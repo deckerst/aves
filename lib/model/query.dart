@@ -8,7 +8,7 @@ class Query extends ChangeNotifier {
   final ValueNotifier<String> _queryNotifier = ValueNotifier('');
   final StreamController<bool> _enabledStreamController = StreamController.broadcast();
 
-  Query({required bool enabled, required String? initialValue}) {
+  new({required bool enabled, required String? initialValue}) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     _enabled = enabled;
     if (initialValue != null && initialValue.isNotEmpty) {

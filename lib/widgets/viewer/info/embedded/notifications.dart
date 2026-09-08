@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum EmbeddedDataSource { googleDevice, motionPhotoVideo, mpf, videoCover, xmp }
 
@@ -10,7 +10,7 @@ class OpenEmbeddedDataNotification extends Notification {
   final String? mimeType, dataUri;
   final int? mpfId;
 
-  const OpenEmbeddedDataNotification._private({
+  const new _private({
     required this.source,
     this.props,
     this.mimeType,
@@ -18,27 +18,27 @@ class OpenEmbeddedDataNotification extends Notification {
     this.mpfId,
   });
 
-  factory OpenEmbeddedDataNotification.googleDevice({
+  factory googleDevice({
     required String dataUri,
   }) => OpenEmbeddedDataNotification._private(
     source: EmbeddedDataSource.googleDevice,
     dataUri: dataUri,
   );
 
-  factory OpenEmbeddedDataNotification.motionPhotoVideo() => const OpenEmbeddedDataNotification._private(
+  factory motionPhotoVideo() => const OpenEmbeddedDataNotification._private(
     source: EmbeddedDataSource.motionPhotoVideo,
   );
 
-  factory OpenEmbeddedDataNotification.mpf(int id) => OpenEmbeddedDataNotification._private(
+  factory mpf(int id) => OpenEmbeddedDataNotification._private(
     source: EmbeddedDataSource.mpf,
     mpfId: id,
   );
 
-  factory OpenEmbeddedDataNotification.videoCover() => const OpenEmbeddedDataNotification._private(
+  factory videoCover() => const OpenEmbeddedDataNotification._private(
     source: EmbeddedDataSource.videoCover,
   );
 
-  factory OpenEmbeddedDataNotification.xmp({
+  factory xmp({
     required List<Object?> props,
     required String mimeType,
   }) => OpenEmbeddedDataNotification._private(

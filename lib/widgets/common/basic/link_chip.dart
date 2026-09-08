@@ -1,6 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LinkChip extends StatelessWidget {
   final Widget? leading;
@@ -12,7 +12,7 @@ class LinkChip extends StatelessWidget {
 
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
-  const LinkChip({
+  const new({
     super.key,
     this.leading,
     required this.text,

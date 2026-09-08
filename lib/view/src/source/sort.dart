@@ -7,35 +7,35 @@ extension ExtraEntrySortFactorView on EntrySortFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      EntrySortFactor.date => l10n.sortByDate,
-      EntrySortFactor.name => l10n.sortByAlbumFileName,
-      EntrySortFactor.rating => l10n.sortByRating,
-      EntrySortFactor.size => l10n.sortBySize,
-      EntrySortFactor.duration => l10n.sortByDuration,
-      EntrySortFactor.path => l10n.sortByPath,
+      .date => l10n.sortByDate,
+      .name => l10n.sortByAlbumFileName,
+      .rating => l10n.sortByRating,
+      .size => l10n.sortBySize,
+      .duration => l10n.sortByDuration,
+      .path => l10n.sortByPath,
     };
   }
 
   IconData get icon {
     return switch (this) {
-      EntrySortFactor.date => AIcons.date,
-      EntrySortFactor.name => AIcons.name,
-      EntrySortFactor.rating => AIcons.rating,
-      EntrySortFactor.size => AIcons.size,
-      EntrySortFactor.duration => AIcons.duration,
-      EntrySortFactor.path => AIcons.path,
+      .date => AIcons.date,
+      .name => AIcons.name,
+      .rating => AIcons.rating,
+      .size => AIcons.size,
+      .duration => AIcons.duration,
+      .path => AIcons.path,
     };
   }
 
   String getOrderName(BuildContext context, bool reverse) {
     final l10n = context.l10n;
     return switch (this) {
-      EntrySortFactor.date => reverse ? l10n.sortOrderOldestFirst : l10n.sortOrderNewestFirst,
-      EntrySortFactor.name => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
-      EntrySortFactor.rating => reverse ? l10n.sortOrderLowestFirst : l10n.sortOrderHighestFirst,
-      EntrySortFactor.size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
-      EntrySortFactor.duration => reverse ? l10n.sortOrderShortestFirst : l10n.sortOrderLongestFirst,
-      EntrySortFactor.path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
+      .date => reverse ? l10n.sortOrderOldestFirst : l10n.sortOrderNewestFirst,
+      .name => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
+      .rating => reverse ? l10n.sortOrderLowestFirst : l10n.sortOrderHighestFirst,
+      .size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
+      .duration => reverse ? l10n.sortOrderShortestFirst : l10n.sortOrderLongestFirst,
+      .path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
     };
   }
 }
@@ -44,30 +44,30 @@ extension ExtraChipSortFactorView on ChipSortFactor {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ChipSortFactor.date => l10n.sortByDate,
-      ChipSortFactor.name => l10n.sortByName,
-      ChipSortFactor.count => l10n.sortByItemCount,
-      ChipSortFactor.size => l10n.sortBySize,
-      ChipSortFactor.path => l10n.sortByPath,
+      .date => l10n.sortByDate,
+      .name => l10n.sortByName,
+      .count => l10n.sortByItemCount,
+      .size => l10n.sortBySize,
+      .path => l10n.sortByPath,
     };
   }
 
   IconData get icon {
     return switch (this) {
-      ChipSortFactor.date => AIcons.date,
-      ChipSortFactor.name => AIcons.name,
-      ChipSortFactor.count => AIcons.count,
-      ChipSortFactor.size => AIcons.size,
-      ChipSortFactor.path => AIcons.path,
+      .date => AIcons.date,
+      .name => AIcons.name,
+      .count => AIcons.count,
+      .size => AIcons.size,
+      .path => AIcons.path,
     };
   }
 
   String getOrderName(BuildContext context, bool reverse) {
     final l10n = context.l10n;
     return switch (this) {
-      ChipSortFactor.date => reverse ? l10n.sortOrderOldestFirst : l10n.sortOrderNewestFirst,
-      ChipSortFactor.name || ChipSortFactor.path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
-      ChipSortFactor.count || ChipSortFactor.size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
+      .date => reverse ? l10n.sortOrderOldestFirst : l10n.sortOrderNewestFirst,
+      .name || .path => reverse ? l10n.sortOrderZtoA : l10n.sortOrderAtoZ,
+      .count || .size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
     };
   }
 }

@@ -29,7 +29,7 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionPage extends StatefulWidget {
@@ -39,7 +39,7 @@ class CollectionPage extends StatefulWidget {
   final Set<CollectionFilter?>? filters;
   final bool Function(AvesEntry element)? highlightTest;
 
-  const CollectionPage({
+  const new({
     super.key,
     required this.source,
     required this.filters,

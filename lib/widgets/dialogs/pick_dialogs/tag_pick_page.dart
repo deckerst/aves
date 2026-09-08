@@ -28,8 +28,8 @@ import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 Future<TagBaseFilter?> pickTag({
@@ -66,7 +66,7 @@ class _TagPickPage extends StatefulWidget {
   final Uri? initialGroup;
   final GroupUriPredicate? isValidGroupPick;
 
-  const _TagPickPage({
+  const new({
     required this.source,
     required this.chipTypes,
     required this.initialGroup,
@@ -117,12 +117,12 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, ChipSortFactor>(
-              selector: (context, s) => s.tagSortFactor,
-              builder: (context, s, child) {
-                return StreamBuilder(
+            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
+              selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor),
+              builder: (context, _, child) {
+                return StreamBuilder<TagsChangedEvent>(
                   stream: source.eventBus.on<TagsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = TagListPage.getGridItems(source, chipTypes, groupUri);
                     final scrollController = PrimaryScrollController.of(context);
@@ -142,10 +142,10 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
                           ),
                           appBarHeightNotifier: _appBarHeightNotifier,
                           scrollController: scrollController,
-                          sections: TagListPage.groupToSections(gridItems),
+                          sections: TagListPage.groupToSections(context, gridItems),
                           newFilters: const {},
                           sortFactor: settings.tagSortFactor,
-                          showHeaders: false,
+                          showHeaders: settings.tagSectionFactor != ChipSectionFactor.none,
                           selectable: false,
                           emptyBuilder: () => isPickingGroup
                               ? EmptyContent(

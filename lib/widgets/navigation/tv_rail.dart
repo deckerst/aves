@@ -19,7 +19,7 @@ import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TvRailController {
@@ -34,7 +34,7 @@ class TvRail extends StatefulWidget {
 
   static const double minExtendedWidth = 256;
 
-  const TvRail({
+  const new({
     super.key,
     required this.controller,
     this.currentCollection,
@@ -292,7 +292,7 @@ class _NavEntry {
   final bool isHome, isSelected;
   final VoidCallback onSelection;
 
-  const _NavEntry({
+  const new({
     required this.icon,
     required this.label,
     required this.isHome,

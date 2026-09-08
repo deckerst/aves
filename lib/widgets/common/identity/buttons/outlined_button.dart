@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesOutlinedButton extends StatelessWidget {
   final Widget? icon;
   final String label;
   final VoidCallback? onPressed;
 
-  const AvesOutlinedButton({
+  const new({
     super.key,
     this.icon,
     required this.label,

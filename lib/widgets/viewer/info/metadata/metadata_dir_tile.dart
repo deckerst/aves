@@ -15,7 +15,7 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MetadataDirTile extends StatelessWidget {
@@ -25,7 +25,7 @@ class MetadataDirTile extends StatelessWidget {
   final ValueNotifier<String?>? expandedDirectoryNotifier;
   final bool initiallyExpanded, showThumbnails;
 
-  const MetadataDirTile({
+  const new({
     super.key,
     required this.entry,
     required this.title,
@@ -71,7 +71,7 @@ class MetadataDirTileBody extends StatelessWidget {
   final MetadataDirectory dir;
   final bool showThumbnails;
 
-  const MetadataDirTileBody({
+  const new({
     super.key,
     required this.entry,
     required this.dir,

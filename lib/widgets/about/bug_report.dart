@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aves/app_flavor.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -12,7 +13,6 @@ import 'package:aves/services/device_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
 import 'package:aves/widgets/aves_app.dart';
@@ -24,14 +24,14 @@ import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class BugReport extends StatefulWidget {
-  const BugReport({super.key});
+  const new({super.key});
 
   @override
   State<BugReport> createState() => _BugReportState();
@@ -71,7 +71,7 @@ class _BugReportState extends State<BugReport> {
 }
 
 class BugReportContent extends StatefulWidget {
-  const BugReportContent({super.key});
+  const new({super.key});
 
   @override
   State<BugReportContent> createState() => _BugReportContentState();
@@ -153,7 +153,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
     final connections = await Connectivity().checkConnectivity();
     final storageVolumes = await storageService.getStorageVolumes();
-    final storageGrants = await storageService.getGrantedDirectories();
+    final safGrants = await storagePermissionService.getSafGrantedDirectories();
 
     final source = context.read<CollectionSource>();
     final entryCount = source.allEntries.length;
@@ -172,7 +172,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
       'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
-      'Storage grants: ${storageGrants.join(', ')}',
+      'SAF grants: ${safGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',
       'Collection: $entryCount items, $albumCount albums, $tagCount tags',
     ].join('\n');

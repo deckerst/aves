@@ -16,7 +16,7 @@ abstract class GroupBaseFilter extends CollectionFilter with ContainerFilter, Co
   @override
   List<Object?> get props => [uri.toString(), reversed];
 
-  GroupBaseFilter(this.uri, this.filter, {super.reversed = false}) {
+  new(this.uri, this.filter, {super.reversed = false}) {
     _name = FilterGrouping.getGroupName(uri) ?? '';
   }
 

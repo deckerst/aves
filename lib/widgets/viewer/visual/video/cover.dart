@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoCover extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
@@ -21,7 +21,7 @@ class VideoCover extends StatefulWidget {
   )
   magnifierBuilder;
 
-  const VideoCover({
+  const new({
     super.key,
     required this.mainEntry,
     required this.pageEntry,
@@ -59,7 +59,7 @@ class _VideoCoverState extends State<VideoCover> {
   Size get videoDisplaySize => widget.videoDisplaySize;
 
   // use the high res photo as cover for the video part of a motion photo
-  ImageProvider get videoCoverUriImage => (mainEntry.isMotionPhoto ? mainEntry : entry).fullImage;
+  ImageProvider get videoCoverUriImage => (mainEntry.isMotionPhoto ? mainEntry : entry).getFullImage();
 
   @override
   void initState() {
@@ -102,7 +102,7 @@ class _VideoCoverState extends State<VideoCover> {
     // fade out image to ease transition with the player
     return StreamBuilder<VideoStatus>(
       stream: videoController.statusStream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final showCover = !videoController.isReady;
         return IgnorePointer(
           ignoring: !showCover,

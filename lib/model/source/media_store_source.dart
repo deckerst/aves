@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 class MediaStoreSource extends CollectionSource {
   final Debouncer _changeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
-  int? _lastGeneration;
+  Map<String, int>? _lastGenerationByVolume;
   SourceScope _loadedScope, _targetScope;
   bool _canAnalyze = true;
   Future<void>? _essentialLoader;
@@ -417,16 +417,16 @@ class MediaStoreSource extends CollectionSource {
   }
 
   Future<void> checkForChanges() async {
-    final sinceGeneration = _lastGeneration;
+    final sinceGeneration = _lastGenerationByVolume;
+    await updateGeneration();
     if (sinceGeneration != null) {
       _changedUris.addAll(await mediaStoreService.getChangedUris(sinceGeneration));
       onStoreChanged(null);
     }
-    await updateGeneration();
   }
 
   Future<void> updateGeneration() async {
-    _lastGeneration = await mediaStoreService.getGeneration();
+    _lastGenerationByVolume = await mediaStoreService.getGenerationByVolume();
   }
 
   // vault

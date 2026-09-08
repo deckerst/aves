@@ -67,6 +67,10 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
+    if (!kReleaseMode) {
+      await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata ${entry.path ?? entry.uri}');
+    }
+
     Future<CatalogMetadata?> call() async {
       try {
         // returns map with:
@@ -80,14 +84,12 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'longitude': longitude (double)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitle': XMP title (string)
-        final result =
-            await _channel.invokeMethod('getCatalogMetadata', <String, Object?>{
-                  'mimeType': entry.mimeType,
-                  'uri': entry.uri,
-                  'path': entry.path,
-                  'sizeBytes': entry.sizeBytes,
-                })
-                as Map;
+        final result = await _channel.invokeMethod('getCatalogMetadata', <String, Object?>{
+          'mimeType': entry.mimeType,
+          'uri': entry.uri,
+          'path': entry.path,
+          'sizeBytes': entry.sizeBytes,
+        }) as Map;
         result['id'] = entry.id;
         AvesEntry.normalizeMimeTypeFields(result);
         return CatalogMetadata.fromMap(result);
@@ -115,14 +117,12 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // 'exposureTime' (string),
         // 'focalLength' (double),
         // 'iso' (int),
-        final result =
-            await _channel.invokeMethod('getOverlayMetadata', <String, Object?>{
-                  'mimeType': entry.mimeType,
-                  'uri': entry.uri,
-                  'sizeBytes': entry.sizeBytes,
-                  'fields': fields.map((v) => v.toPlatform).toList(),
-                })
-                as Map;
+        final result = await _channel.invokeMethod('getOverlayMetadata', <String, Object?>{
+          'mimeType': entry.mimeType,
+          'uri': entry.uri,
+          'sizeBytes': entry.sizeBytes,
+          'fields': fields.map((v) => v.toPlatform).toList(),
+        }) as Map;
         return OverlayMetadata.fromMap(result);
       } on PlatformException catch (e, stack) {
         await _processPlatformException(entry, e, stack);
@@ -134,13 +134,11 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   @override
   Future<GeoTiffInfo?> getGeoTiffInfo(AvesEntry entry) async {
     try {
-      final result =
-          await _channel.invokeMethod('getGeoTiffInfo', <String, Object?>{
-                'mimeType': entry.mimeType,
-                'uri': entry.uri,
-                'sizeBytes': entry.sizeBytes,
-              })
-              as Map;
+      final result = await _channel.invokeMethod('getGeoTiffInfo', <String, Object?>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      }) as Map;
       return GeoTiffInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
@@ -180,13 +178,11 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
       // 'fullPanoWidth' (int), 'fullPanoHeight' (int)
-      final result =
-          await _channel.invokeMethod('getPanoramaInfo', <String, Object?>{
-                'mimeType': entry.mimeType,
-                'uri': entry.uri,
-                'sizeBytes': entry.sizeBytes,
-              })
-              as Map;
+      final result = await _channel.invokeMethod('getPanoramaInfo', <String, Object?>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      }) as Map;
       return PanoramaInfo.fromMap(result);
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
@@ -202,8 +198,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'uri': entry.uri,
       });
       if (result != null) return (result as List).cast<Map>().map((fields) => fields.cast<String, dynamic>()).toList();
-    } on PlatformException catch (e, stack) {
-      await _processPlatformException(entry, e, stack);
+    } on PlatformException catch (e) {
+      // do not report
+      debugPrint('$runtimeType failed to get IPTC for entry=$entry with error=$e');
     }
     return null;
   }

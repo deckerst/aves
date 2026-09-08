@@ -49,6 +49,7 @@ mixin TrashMixin on SourceBase {
       debugPrint('Recovering ${untrackedPaths.length} untracked bin items');
       final recoveryPath = pContext.join(androidFileUtils.picturesPath, AndroidFileUtils.recoveryDir);
       await Future.forEach(untrackedPaths, (untrackedPath) async {
+        debugPrint('Recovering bin item at path=$untrackedPath');
         final isDirectory = await FileSystemEntity.isDirectory(untrackedPath);
         if (isDirectory) {
           await reportService.recordError('Untracked bin item at path=$untrackedPath is a directory. Deleting...');
@@ -69,6 +70,7 @@ mixin TrashMixin on SourceBase {
           if (entry != null) {
             // there is already a matching entry
             // but missing trash details, and possibly not marked as trash
+            debugPrint('Recovering bin item at uri=$uri yielded known entry=$entry');
             final id = entry.id;
             entry.contentId = null;
             entry.trashed = true;
@@ -79,6 +81,7 @@ mixin TrashMixin on SourceBase {
           } else {
             // there is no matching entry
             final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
+            debugPrint('Recovering bin item at uri=$uri yielded new entry=$sourceEntry');
             if (sourceEntry != null) {
               final id = localMediaDb.nextId;
               sourceEntry.id = id;

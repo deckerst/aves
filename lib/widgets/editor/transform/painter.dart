@@ -1,13 +1,13 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CropperPainter extends CustomPainter {
   final Rect rect;
   final double gridOpacity;
   final int gridDivision;
 
-  const CropperPainter({
+  const new({
     required this.rect,
     required this.gridOpacity,
     required this.gridDivision,
@@ -93,7 +93,7 @@ class ScrimPainter extends CustomPainter {
   final Path excludePath;
   final double opacity;
 
-  const ScrimPainter({
+  const new({
     required this.excludePath,
     required this.opacity,
   });

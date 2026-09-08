@@ -9,7 +9,7 @@ import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/filter_chip_grid_decorator.dart';
 import 'package:aves/widgets/filter_grids/common/list_details.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef FilterTileTapCallback<T extends CollectionFilter> = void Function(FilterGridItem<T> gridItem, void Function(Route route) navigate);
 
@@ -21,7 +21,7 @@ class InteractiveFilterTile<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
   final FilterTileTapCallback<T> onTap;
 
-  const InteractiveFilterTile({
+  const new({
     super.key,
     required this.gridItem,
     required this.chipExtent,
@@ -85,7 +85,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
   final AFilterCallback? onTap;
   final HeroType heroType;
 
-  const FilterTile({
+  const new({
     super.key,
     required this.gridItem,
     required this.chipExtent,

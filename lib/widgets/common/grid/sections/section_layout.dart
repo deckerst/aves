@@ -1,6 +1,6 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 @immutable
 abstract class SectionLayout extends Equatable {
@@ -13,7 +13,7 @@ abstract class SectionLayout extends Equatable {
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, spacing];
 
-  const SectionLayout({
+  const new({
     required this.sectionKey,
     required this.firstIndex,
     required this.lastIndex,

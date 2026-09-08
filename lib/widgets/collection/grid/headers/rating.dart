@@ -1,13 +1,13 @@
 import 'package:aves/model/filters/rating.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RatingSectionHeader<T> extends StatelessWidget {
   final int rating;
   final bool selectable;
 
-  const RatingSectionHeader({
+  const new({
     super.key,
     required this.rating,
     required this.selectable,

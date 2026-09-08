@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ViewerEntryProvider extends ListenableProvider<ViewerEntryNotifier> {
-  ViewerEntryProvider({
+  new({
     super.key,
     super.child,
   }) : super(
@@ -13,5 +13,5 @@ class ViewerEntryProvider extends ListenableProvider<ViewerEntryNotifier> {
 }
 
 class ViewerEntryNotifier extends ValueNotifier<AvesEntry?> {
-  ViewerEntryNotifier(super.value);
+  new(super.value);
 }

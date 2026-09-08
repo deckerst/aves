@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/item_picker.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/item_pick_page.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'aves_dialog.dart';
 
@@ -17,7 +17,7 @@ class AddShortcutDialog extends StatefulWidget {
   final CollectionLens? collection;
   final String defaultName;
 
-  const AddShortcutDialog({
+  const new({
     super.key,
     required this.defaultName,
     this.collection,

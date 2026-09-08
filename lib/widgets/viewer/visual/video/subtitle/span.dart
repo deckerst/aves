@@ -11,7 +11,7 @@ class StyledSubtitleSpan extends Equatable with Diagnosticable {
   @override
   List<Object?> get props => [textSpan, extraStyle];
 
-  const StyledSubtitleSpan({
+  const new({
     required this.textSpan,
     required this.extraStyle,
   });

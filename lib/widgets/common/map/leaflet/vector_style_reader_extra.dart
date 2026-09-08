@@ -129,5 +129,5 @@ class _SpriteUri {
   final String json;
   final String image;
 
-  const _SpriteUri({required this.json, required this.image});
+  const new({required this.json, required this.image});
 }

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 // adapted from Flutter `EventChannel` in `/services/platform_channel.dart`
 // to use an `OptionalMethodChannel` when subscribing to events
 class OptionalEventChannel extends EventChannel {
-  const OptionalEventChannel(super.name, [super.codec = const StandardMethodCodec(), super.binaryMessenger]);
+  const new(super.name, [super.codec = const StandardMethodCodec(), super.binaryMessenger]);
 
   @override
   Stream<dynamic> receiveBroadcastStream([dynamic arguments]) {

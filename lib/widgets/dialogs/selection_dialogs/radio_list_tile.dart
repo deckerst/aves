@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/basic/list_tiles/reselectable_radio.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SelectionRadioListTile<T> extends StatelessWidget {
   final T value;
@@ -9,7 +9,7 @@ class SelectionRadioListTile<T> extends StatelessWidget {
   final bool? dense;
   final Widget? secondary;
 
-  const SelectionRadioListTile({
+  const new({
     super.key,
     required this.value,
     required this.title,

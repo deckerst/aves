@@ -3,11 +3,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class DebugGroupsSection extends StatefulWidget {
-  const DebugGroupsSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugGroupsSection> createState() => _DebugGroupsSectionState();

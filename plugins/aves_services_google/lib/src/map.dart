@@ -3,54 +3,33 @@ import 'dart:typed_data';
 
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as ll;
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryGoogleMap<T> extends StatefulWidget {
-  final AvesMapController controller;
-  final Listenable clusterListenable;
-  final ValueNotifier<ZoomedBounds> boundsNotifier;
-  final double? minZoom, maxZoom;
-  final EntryMapStyle style;
-  final TransitionBuilder decoratorBuilder;
-  final WidgetBuilder buttonPanelBuilder;
-  final MarkerClusterBuilder<T> markerClusterBuilder;
-  final MarkerWidgetBuilder<T> markerWidgetBuilder;
-  final MarkerImageReadyChecker<T> markerImageReadyChecker;
-  final ValueNotifier<ll.LatLng?>? dotLocationNotifier;
-  final ValueNotifier<List<GeoTrack>> tracksNotifier;
-  final ValueNotifier<double>? overlayOpacityNotifier;
-  final MapOverlay? overlayEntry;
-  final UserZoomChangeCallback? onUserZoomChange;
-  final MapTapCallback? onMapTap;
-  final MarkerTapCallback<T>? onMarkerTap;
-  final MarkerLongPressCallback<T>? onMarkerLongPress;
-
-  const EntryGoogleMap({
-    super.key,
-    required this.controller,
-    required this.clusterListenable,
-    required this.boundsNotifier,
-    this.minZoom,
-    this.maxZoom,
-    required this.style,
-    required this.decoratorBuilder,
-    required this.buttonPanelBuilder,
-    required this.markerClusterBuilder,
-    required this.markerWidgetBuilder,
-    required this.markerImageReadyChecker,
-    required this.dotLocationNotifier,
-    required this.tracksNotifier,
-    this.overlayOpacityNotifier,
-    this.overlayEntry,
-    this.onUserZoomChange,
-    this.onMapTap,
-    this.onMarkerTap,
-    this.onMarkerLongPress,
-  });
-
+class const EntryGoogleMap<T>({
+  super.key,
+  required final AvesMapController controller,
+  required final Listenable clusterListenable,
+  required final ValueNotifier<ZoomedBounds> boundsNotifier,
+  final double? minZoom,
+  final double? maxZoom,
+  required final EntryMapStyle style,
+  required final TransitionBuilder decoratorBuilder,
+  required final WidgetBuilder buttonPanelBuilder,
+  required final MarkerClusterBuilder<T> markerClusterBuilder,
+  required final MarkerWidgetBuilder<T> markerWidgetBuilder,
+  required final MarkerImageReadyChecker<T> markerImageReadyChecker,
+  required final ValueNotifier<ll.LatLng?>? dotLocationNotifier,
+  required final ValueNotifier<List<GeoTrack>> tracksNotifier,
+  final ValueNotifier<double>? overlayOpacityNotifier,
+  final MapOverlay? overlayEntry,
+  final UserZoomChangeCallback? onUserZoomChange,
+  final MapTapCallback? onMapTap,
+  final MarkerTapCallback<T>? onMarkerTap,
+  final MarkerLongPressCallback<T>? onMarkerLongPress,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _EntryGoogleMapState<T>();
 }
@@ -132,7 +111,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
   }
 
   Widget _buildMap() {
-    return StreamBuilder(
+    return StreamBuilder<MarkerKey<T>>(
       stream: _markerBitmapReadyStreamController.stream,
       builder: (context, _) {
         final mediaMarkers = <Marker>{};
@@ -348,7 +327,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
 class GmsGeoTiffTileProvider extends TileProvider {
   MapOverlay overlayEntry;
 
-  GmsGeoTiffTileProvider(this.overlayEntry);
+  new(this.overlayEntry);
 
   @override
   Future<Tile> getTile(int x, int y, int? zoom) async {

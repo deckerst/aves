@@ -15,7 +15,7 @@ import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
@@ -25,7 +25,7 @@ class ConvertEntryDialog extends StatefulWidget {
 
   final Set<AvesEntry> entries;
 
-  const ConvertEntryDialog({
+  const new({
     super.key,
     required this.entries,
   });

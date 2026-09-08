@@ -6,12 +6,12 @@ import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class DebugGeneralSection extends StatefulWidget {
-  const DebugGeneralSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugGeneralSection> createState() => _DebugGeneralSectionState();
@@ -100,7 +100,7 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
 }
 
 class _TaskQueueOverlay extends StatelessWidget {
-  const _TaskQueueOverlay();
+  const new();
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +118,8 @@ class _TaskQueueOverlay extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return const SizedBox();
                   final queuedEntries = <MapEntry<dynamic, int>>[];
-                  if (snapshot.hasData) {
-                    final state = snapshot.data!;
+                  final state = snapshot.data;
+                  if (state != null) {
                     queuedEntries.add(MapEntry('run', state.runningCount));
                     queuedEntries.add(MapEntry('paused', state.pausedCount));
                     queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));

@@ -1,12 +1,12 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayDescriptionRow extends StatelessWidget {
   final String description;
 
-  const OverlayDescriptionRow({
+  const new({
     super.key,
     required this.description,
   });

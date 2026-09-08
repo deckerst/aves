@@ -18,7 +18,7 @@ class AvesMagnifierController {
   ScaleBoundaries? _scaleBoundaries;
   late ScaleStateChange _currentScaleState, previousScaleState;
 
-  AvesMagnifierController({
+  new({
     MagnifierState? initialState,
   }) : super() {
     if (kFlutterMemoryAllocationsEnabled) {

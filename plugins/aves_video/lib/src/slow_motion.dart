@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 class SlowMotionRange {
   final double start, end; // in [0, 1]
 
-  SlowMotionRange({
+  new({
     required double start,
     required double end,
   }) : start = start.clamp(0, 1),

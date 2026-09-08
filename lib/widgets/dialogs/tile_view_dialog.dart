@@ -6,44 +6,34 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
-class TileViewDialog<S, G, L> extends StatefulWidget {
+class const TileViewDialog<S, G, L>({
+  super.key,
+  required final (S sort, G section, L layout, bool reverse) initialValue,
+  final List<TileViewDialogOption<S>> sortOptions = const [],
+  final List<TileViewDialogOption<G>> sectionOptions = const [],
+  final List<TileViewDialogOption<L>> layoutOptions = const [],
+  required final String Function(S sort, bool reverse) sortOrder,
+  final bool Function(S? sort, G? section, L? layout)? canSection,
+  required final TileExtentController tileExtentController,
+}) extends StatefulWidget {
   static const routeName = '/dialog/tile_view';
-
-  final (S? sort, G? section, L? layout, bool reverse) initialValue;
-  final List<TileViewDialogOption<S>> sortOptions;
-  final List<TileViewDialogOption<G>> sectionOptions;
-  final List<TileViewDialogOption<L>> layoutOptions;
-  final String Function(S sort, bool reverse) sortOrder;
-  final TileExtentController tileExtentController;
-  final bool Function(S? sort, G? section, L? layout)? canSection;
-
-  const TileViewDialog({
-    super.key,
-    required this.initialValue,
-    this.sortOptions = const [],
-    this.sectionOptions = const [],
-    this.layoutOptions = const [],
-    required this.sortOrder,
-    this.canSection,
-    required this.tileExtentController,
-  });
 
   @override
   State<TileViewDialog> createState() => _TileViewDialogState<S, G, L>();
 }
 
 class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with SingleTickerProviderStateMixin {
-  late S? _selectedSort;
-  late G? _selectedSection;
-  late L? _selectedLayout;
+  late S _selectedSort;
+  late G _selectedSection;
+  late L _selectedLayout;
   late bool _reverseSort;
   late int _columnMin, _columnMax;
   late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
@@ -96,10 +86,10 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           options: sortOptions,
           value: _selectedSort,
           onChanged: (v) {
-            _selectedSort = v;
+            _selectedSort = v as S;
             _reverseSort = false;
           },
-          bottom: _selectedSort != null ? AvesCaption(widget.sortOrder(_selectedSort as S, _reverseSort)) : null,
+          bottom: _selectedSort != null ? AvesListSubtitle(widget.sortOrder(_selectedSort, _reverseSort)) : null,
         ),
         AnimatedSwitcher(
           duration: context.read<DurationsData>().formTransition,
@@ -112,7 +102,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             title: l10n.viewDialogGroupSectionTitle,
             options: sectionOptions,
             value: _selectedSection,
-            onChanged: (v) => _selectedSection = v,
+            onChanged: (v) => _selectedSection = v as G,
           ),
         ),
         _buildSection(
@@ -120,7 +110,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           title: l10n.viewDialogLayoutSectionTitle,
           options: layoutOptions,
           value: _selectedLayout,
-          onChanged: (v) => _selectedLayout = v,
+          onChanged: (v) => _selectedLayout = v as L,
         ),
         if (settings.showPinchGestureAlternatives)
           Padding(
@@ -152,7 +142,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.maybeOf(context)?.pop<(S?, G?, L?, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
+            Navigator.maybeOf(context)?.pop<(S, G, L, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         ),
@@ -251,14 +241,8 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 }
 
 @immutable
-class TileViewDialogOption<T> {
-  final T value;
-  final String title;
-  final IconData icon;
-
-  const TileViewDialogOption({
-    required this.value,
-    required this.title,
-    required this.icon,
-  });
-}
+class const TileViewDialogOption<T>({
+  required final T value,
+  required final String title,
+  required final IconData icon,
+});

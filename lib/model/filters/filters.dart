@@ -58,7 +58,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 
   final bool reversed;
 
-  const CollectionFilter({required this.reversed});
+  const new({required this.reversed});
 
   static CollectionFilter? _fromMap(Map<String, Object?> jsonMap) {
     final type = jsonMap['type'];
@@ -193,14 +193,14 @@ class FilterGridItem<T extends CollectionFilter> with Equatable {
   @override
   List<Object?> get props => [filter, entry?.uri];
 
-  const FilterGridItem(this.filter, this.entry);
+  const new(this.filter, this.entry);
 }
 
 typedef EntryPredicate = bool Function(AvesEntry entry);
 typedef CollectionFilterPredicate = bool Function(CollectionFilter filter);
 
 abstract class DummyCollectionFilter extends CollectionFilter {
-  const DummyCollectionFilter({required super.reversed});
+  const new({required super.reversed});
 
   @override
   String get category => throw UnimplementedError();

@@ -5,13 +5,13 @@ import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppReference extends StatelessWidget {
   static const avesGithub = 'https://github.com/deckerst/aves';
   static const avesFaq = '$avesGithub/wiki/FAQ';
 
-  const AppReference({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

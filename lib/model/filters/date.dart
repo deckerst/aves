@@ -22,7 +22,7 @@ class DateFilter extends CollectionFilter {
   @override
   List<Object?> get props => [calendar, level, date, reversed];
 
-  DateFilter(this.calendar, this.level, this.date, {super.reversed = false}) {
+  new(this.calendar, this.level, this.date, {super.reversed = false}) {
     _effectiveDate = date ?? DateTime.now();
     final calOps = calendar.ops;
     switch (level) {
@@ -45,7 +45,7 @@ class DateFilter extends CollectionFilter {
     }
   }
 
-  factory DateFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     final dateString = json['date'] as String?;
     return DateFilter(
       ACalendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,

@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.12.0 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
 resolution: workspace
 
 dependencies:
@@ -17,6 +17,7 @@ dependencies:
     path: ../aves_utils
   collection:
   image:
+  material_ui:
   media_kit:
   media_kit_libs_android_video:
   media_kit_video:

@@ -4,12 +4,12 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/map/info_row.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MapDateRow extends StatelessWidget {
   final AvesEntry? entry;
 
-  const MapDateRow({
+  const new({
     super.key,
     required this.entry,
   });

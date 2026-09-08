@@ -30,7 +30,7 @@ import 'package:aves/widgets/viewer/visual/video/video_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
@@ -42,7 +42,7 @@ class EntryPageView extends StatefulWidget {
   static const rasterMaxScale = ScaleLevel(factor: 5);
   static const vectorMaxScale = ScaleLevel(factor: 25);
 
-  const EntryPageView({
+  const new({
     super.key,
     required this.mainEntry,
     required this.pageEntry,
@@ -484,7 +484,10 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     return null;
   }
 
-  void _onTap({Alignment? alignment}) => (_handleSideSingleTap(alignment) ?? const ToggleOverlayNotification()).dispatch(context);
+  void _onTap({Alignment? alignment}) {
+    final notification = _handleSideSingleTap(alignment) ?? const ToggleOverlayNotification();
+    return notification.dispatch(context);
+  }
 
   // side gesture handling by precedence:
   // - seek in video by side double tap (if enabled)

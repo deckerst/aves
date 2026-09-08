@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // adapted from Flutter `_PopupMenuRouteLayout` in `/material/popup_menu.dart`
 class QuickChooserRouteLayout extends SingleChildLayoutDelegate {
@@ -10,7 +10,7 @@ class QuickChooserRouteLayout extends SingleChildLayoutDelegate {
 
   static const double _kMenuScreenPadding = 8.0;
 
-  QuickChooserRouteLayout(
+  new(
     this.triggerRect,
     this.menuPosition,
     this.padding,

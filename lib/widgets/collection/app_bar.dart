@@ -42,8 +42,8 @@ import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CollectionAppBar extends StatefulWidget {
@@ -51,7 +51,7 @@ class CollectionAppBar extends StatefulWidget {
   final ScrollController scrollController;
   final CollectionLens collection;
 
-  const CollectionAppBar({
+  const new({
     super.key,
     required this.appBarHeightNotifier,
     required this.scrollController,
@@ -207,7 +207,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                   final useTvLayout = settings.useTvLayout;
                   final onFilterTap = canRemoveFilters ? collection.removeFilter : null;
                   return AvesAppBar(
-                    contentHeight: appBarContentHeight,
+                    contentHeight: _getAppBarContentHeight(context),
                     pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
                     leading: _buildAppBarLeading(
                       hasDrawer: appMode.canNavigate,
@@ -269,7 +269,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     );
   }
 
-  double get appBarContentHeight {
+  static bool _showQueryLine(BuildContext context) => context.read<Query?>()?.enabled ?? false;
+
+  double _getAppBarContentHeight(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     double height = textScaler.scale(kToolbarHeight);
     if (settings.useTvLayout) {
@@ -278,7 +280,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     if (showFilterBar) {
       height += FilterBar.preferredHeight;
     }
-    if (context.read<Query>().enabled) {
+    if (_showQueryLine(context)) {
       height += EntryQueryBar.getPreferredHeight(textScaler);
     }
     return height;
@@ -746,15 +748,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _updateStatusBarHeight() {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     _statusBarHeight = MediaQuery.paddingOf(context).top;
     _updateAppBarHeight();
   }
 
   void _updateAppBarHeight() {
-    widget.appBarHeightNotifier.value = _statusBarHeight + AvesAppBar.appBarHeightForContentHeight(appBarContentHeight);
+    if (!mounted) return;
+    final appBarHeight = AvesAppBar.appBarHeightForContentHeight(_getAppBarContentHeight(context));
+    widget.appBarHeightNotifier.value = _statusBarHeight + appBarHeight;
   }
 
   Future<void> _onActionSelected(EntrySetAction action) async {
@@ -815,7 +817,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(EntrySortFactor?, EntrySectionFactor?, TileLayout?, bool)>(
+    final value = await showAvesDialog<(EntrySortFactor, EntrySectionFactor, TileLayout, bool)>(
       context: context,
       builder: (context) {
         return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
@@ -833,9 +835,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      settings.collectionSortFactor = value.$1!;
-      settings.collectionSectionFactor = value.$2!;
-      settings.setTileLayout(CollectionPage.routeName, value.$3!);
+      settings.collectionSortFactor = value.$1;
+      settings.collectionSectionFactor = value.$2;
+      settings.setTileLayout(CollectionPage.routeName, value.$3);
       settings.collectionSortReverse = value.$4;
     }
   }

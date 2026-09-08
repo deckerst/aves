@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/basic/draggable_scrollbar/arrow_clipper.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/scrollbar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesScrollThumb {
   static const EdgeInsetsGeometry _margin = EdgeInsetsDirectional.only(end: 1);

@@ -1,17 +1,12 @@
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
-class FilterChipSectionHeader<T> extends StatelessWidget {
-  final ChipSectionKey sectionKey;
-  final bool selectable;
-
-  const FilterChipSectionHeader({
-    super.key,
-    required this.sectionKey,
-    required this.selectable,
-  });
-
+class const FilterChipSectionHeader<T>({
+  super.key,
+  required final ChipSectionKey sectionKey,
+  required final bool selectable,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionHeader<T>(

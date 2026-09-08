@@ -2,7 +2,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,7 @@ class EntryListDetailsTheme extends StatelessWidget {
   static const EdgeInsets contentPadding = EdgeInsets.symmetric(vertical: 4);
   static const double titleDetailPadding = 6;
 
-  const EntryListDetailsTheme({
+  const new({
     super.key,
     required this.extent,
     required this.child,
@@ -101,7 +101,7 @@ class EntryListDetailsThemeData {
   final TextStyle titleStyle, captionStyle;
   final IconThemeData iconTheme;
 
-  const EntryListDetailsThemeData({
+  const new({
     required this.extent,
     required this.titleMaxLines,
     required this.isMinExtent,

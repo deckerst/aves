@@ -62,17 +62,9 @@ mixin NavigationSettings on SettingsAccess {
 
   set confirmMoveToBin(bool newValue) => set(SettingKeys.confirmMoveToBinKey, newValue);
 
-  bool get confirmMoveUndatedItems => getBool(SettingKeys.confirmMoveUndatedItemsKey) ?? SettingsDefaults.confirm;
-
-  set confirmMoveUndatedItems(bool newValue) => set(SettingKeys.confirmMoveUndatedItemsKey, newValue);
-
   bool get confirmAfterMoveToBin => getBool(SettingKeys.confirmAfterMoveToBinKey) ?? SettingsDefaults.confirm;
 
   set confirmAfterMoveToBin(bool newValue) => set(SettingKeys.confirmAfterMoveToBinKey, newValue);
-
-  bool get setMetadataDateBeforeFileOp => getBool(SettingKeys.setMetadataDateBeforeFileOpKey) ?? SettingsDefaults.setMetadataDateBeforeFileOp;
-
-  set setMetadataDateBeforeFileOp(bool newValue) => set(SettingKeys.setMetadataDateBeforeFileOpKey, newValue);
 
   static const _noFilterPlaceholder = '';
 

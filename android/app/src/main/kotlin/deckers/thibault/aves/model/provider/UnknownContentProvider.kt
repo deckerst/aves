@@ -10,9 +10,9 @@ import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils
 
 open class UnknownContentProvider : ImageProvider() {
     open val reliableProviderMimeType: Boolean
@@ -58,16 +58,18 @@ open class UnknownContentProvider : ImageProvider() {
                 cursor.getColumnIndex(OpenableColumns.SIZE).let { if (it != -1) fields[EntryFields.SIZE_BYTES] = cursor.getLong(it) }
                 cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields[EntryFields.PATH] = cursor.getString(it) }
                 // mime type fallback if it was not provided and not found via `metadata-extractor`
-                cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1 && mimeType == null) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
+                if (mimeType == null) {
+                    cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
+                }
                 cursor.close()
             }
         } catch (e: Exception) {
-            callback.onFailure(Exception("Failed to query content, error=${e.message}"))
+            callback.onFailure(Exception("failed to query content", e))
             return
         }
 
         if (fields[EntryFields.SOURCE_MIME_TYPE] == null) {
-            callback.onFailure(Exception("Failed to find MIME type for uri=$uri"))
+            callback.onFailure(Exception("failed to find MIME type for uri=$uri"))
             return
         }
 

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class InteractiveAppBarTitle extends StatelessWidget {
   final GestureTapCallback? onTap;
   final Widget child;
 
-  const InteractiveAppBarTitle({
+  const new({
     super.key,
     this.onTap,
     required this.child,

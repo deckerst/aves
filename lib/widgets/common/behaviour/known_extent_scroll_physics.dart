@@ -6,7 +6,7 @@ class KnownExtentScrollPhysics extends ScrollPhysics {
   final double Function(int index) indexToScrollOffset;
   final int Function(double offset) scrollOffsetToIndex;
 
-  const KnownExtentScrollPhysics({
+  const new({
     required this.indexToScrollOffset,
     required this.scrollOffsetToIndex,
     super.parent,

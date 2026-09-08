@@ -21,10 +21,10 @@ import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.resource.bitmap.ExifInterfaceImageHeaderParser
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.StorageUtils
 
 @GlideModule
 class AvesAppGlideModule : AppGlideModule() {

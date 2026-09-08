@@ -2,7 +2,7 @@ import 'package:aves/ref/unicode.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/line.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AssParser {
   // the optional `*` before the tags seems to be used for inner overrides

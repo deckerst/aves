@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class AvesColorsProvider extends StatelessWidget {
 
   static final Map<(AvesThemeColorMode, bool), AvesColorsData> _schemeCache = {};
 
-  const AvesColorsProvider({
+  const new({
     super.key,
     this.allowMonochrome = true,
     required this.child,

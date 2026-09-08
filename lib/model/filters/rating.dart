@@ -18,7 +18,7 @@ class RatingFilter extends CollectionFilter {
   @override
   List<Object?> get props => [rating, op, reversed];
 
-  RatingFilter(this.rating, {this.op = opEqual, super.reversed = false}) {
+  new(this.rating, {this.op = opEqual, super.reversed = false}) {
     _test = switch (op) {
       opOrLower => (entry) => entry.rating <= rating && entry.rating > 0,
       opOrGreater => (entry) => entry.rating >= rating,
@@ -32,7 +32,7 @@ class RatingFilter extends CollectionFilter {
     reversed: reversed,
   );
 
-  factory RatingFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return RatingFilter(
       json['rating'] as int? ?? 0,
       op: json['op'] as String? ?? opEqual,

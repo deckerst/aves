@@ -22,7 +22,7 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
@@ -33,7 +33,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final AFilterCallback? onTap;
   final HeroType heroType;
 
-  const CoveredFilterChip({
+  const new({
     super.key,
     required this.filter,
     required this.extent,
@@ -73,7 +73,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<Set<CollectionFilter>?>(
       stream: covers.entryChangeStream.where((event) => event == null || event.contains(filter)),
-      builder: (context, snapshot) => Consumer<CollectionSource>(
+      builder: (context, _) => Consumer<CollectionSource>(
         builder: (context, source, child) {
           switch (filter) {
             case StoredAlbumFilter filter:
@@ -81,28 +81,28 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
                 final album = filter.album;
                 return StreamBuilder<StoredAlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<StoredAlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             case DynamicAlbumFilter _:
               {
                 return StreamBuilder<DynamicAlbumSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<DynamicAlbumSummaryInvalidatedEvent>(),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             case AlbumGroupFilter _:
               {
                 return StreamBuilder<AlbumGroupSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<AlbumGroupSummaryInvalidatedEvent>(),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             case TagGroupFilter _:
               {
                 return StreamBuilder<TagGroupSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<TagGroupSummaryInvalidatedEvent>(),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             case LocationFilter filter:
@@ -110,7 +110,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
                 final countryCode = filter.code;
                 return StreamBuilder<CountrySummaryInvalidatedEvent>(
                   stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             case TagFilter filter:
@@ -118,7 +118,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
                 final tag = filter.tag;
                 return StreamBuilder<TagSummaryInvalidatedEvent>(
                   stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
-                  builder: (context, snapshot) => _buildChip(context, source),
+                  builder: (context, _) => _buildChip(context, source),
                 );
               }
             default:
@@ -159,21 +159,18 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           child: entry == null
               ? StreamBuilder<Set<CollectionFilter>?>(
                   stream: covers.colorChangeStream.where((event) => event == null || event.contains(_filter)),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     return FutureBuilder<Color>(
                       future: _filter.color(context),
                       builder: (context, snapshot) {
-                        final color = snapshot.data;
                         const neutral = Colors.white;
+                        final color = snapshot.data ?? neutral;
                         return Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [
-                                neutral,
-                                color ?? neutral,
-                              ],
+                              colors: [neutral, color],
                             ),
                           ),
                         );

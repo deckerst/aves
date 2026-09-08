@@ -15,7 +15,7 @@ class MultiPageInfo {
 
   int get pageCount => _pages.length;
 
-  MultiPageInfo({
+  new({
     required this.mainEntry,
     required List<SinglePageInfo> pages,
   }) : _pages = pages {
@@ -53,7 +53,7 @@ class MultiPageInfo {
     _transientEntries.forEach((entry) => entry.dispose());
   }
 
-  factory MultiPageInfo.fromPageMaps(AvesEntry mainEntry, List<Map> pageMaps) {
+  factory fromPageMaps(AvesEntry mainEntry, List<Map> pageMaps) {
     return MultiPageInfo(
       mainEntry: mainEntry,
       pages: pageMaps.map(SinglePageInfo.fromMap).toList(),
@@ -154,7 +154,7 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
   final int width, height;
   final int? rotationDegrees, durationMillis;
 
-  const SinglePageInfo({
+  const new({
     required this.index,
     required this.pageId,
     required this.isDefault,
@@ -185,7 +185,7 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
     );
   }
 
-  factory SinglePageInfo.fromMap(Map map) {
+  factory fromMap(Map map) {
     final index = map['page'] as int;
     return SinglePageInfo(
       index: index,

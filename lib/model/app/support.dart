@@ -19,6 +19,7 @@ class AppSupport {
     MimeTypes.jxl,
     MimeTypes.pat,
     MimeTypes.pcx,
+    MimeTypes.pcxX,
     MimeTypes.pbm,
     MimeTypes.pgm,
     MimeTypes.pnm,

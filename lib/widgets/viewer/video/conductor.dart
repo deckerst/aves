@@ -24,7 +24,7 @@ class VideoConductor {
 
   static const _defaultMaxControllerCount = 3;
 
-  VideoConductor({this._collection}) {
+  new({this._collection}) {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',

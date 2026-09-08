@@ -1,12 +1,12 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ActionPanel extends StatelessWidget {
   final bool highlight;
   final Widget child;
 
-  const ActionPanel({
+  const new({
     super.key,
     this.highlight = false,
     required this.child,

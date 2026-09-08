@@ -1,17 +1,17 @@
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DaySectionHeader<T> extends StatelessWidget {
   final SectionKey sectionKey;
   final DateTime? date;
   final bool selectable;
 
-  const DaySectionHeader({
+  const new({
     super.key,
     required this.sectionKey,
     required this.date,
@@ -48,7 +48,7 @@ class MonthSectionHeader<T> extends StatelessWidget {
   final DateTime? date;
   final bool selectable;
 
-  const MonthSectionHeader({
+  const new({
     super.key,
     required this.sectionKey,
     required this.date,

@@ -1,14 +1,14 @@
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SettingSwitchTrailingIcon extends StatelessWidget {
   final IconData icon;
   final bool disabled;
 
-  const SettingSwitchTrailingIcon({
+  const new({
     super.key,
     required this.icon,
     required this.disabled,

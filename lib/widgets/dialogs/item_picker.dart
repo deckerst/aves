@@ -6,14 +6,14 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ItemPicker extends StatelessWidget {
   final double extent;
   final AvesEntry entry;
   final GestureTapCallback? onTap;
 
-  const ItemPicker({
+  const new({
     super.key,
     required this.extent,
     required this.entry,

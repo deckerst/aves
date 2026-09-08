@@ -5,10 +5,10 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DebugOSStorageSection extends StatefulWidget {
-  const DebugOSStorageSection({super.key});
+  const new({super.key});
 
   @override
   State<DebugOSStorageSection> createState() => _DebugOSStorageSectionState();
@@ -44,6 +44,7 @@ class _DebugOSStorageSectionState extends State<DebugOSStorageSection> with Auto
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: InfoRowGroup(
                 info: {
+                  'mediaStoreVolumeName': '${v.mediaStoreVolumeName}',
                   'description': v.getDescription(context),
                   'isPrimary': '${v.isPrimary}',
                   'isRemovable': '${v.isRemovable}',

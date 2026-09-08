@@ -4,13 +4,13 @@ import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SettingsTileLeading extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const SettingsTileLeading({
+  const new({
     super.key,
     required this.icon,
     required this.color,

@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/map/info_row.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MapEntryScroller extends StatefulWidget {
   final ValueNotifier<CollectionLens?> regionCollectionNotifier;
@@ -16,7 +16,7 @@ class MapEntryScroller extends StatefulWidget {
   final ValueNotifier<int?> selectedIndexNotifier;
   final void Function(int index) onTap;
 
-  const MapEntryScroller({
+  const new({
     super.key,
     required this.regionCollectionNotifier,
     required this.dotEntryNotifier,

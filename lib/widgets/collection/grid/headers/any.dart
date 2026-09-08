@@ -9,7 +9,7 @@ import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
 import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CollectionSectionHeader extends StatelessWidget {
   final CollectionLens collection;
@@ -17,7 +17,7 @@ class CollectionSectionHeader extends StatelessWidget {
   final double height;
   final bool selectable;
 
-  const CollectionSectionHeader({
+  const new({
     super.key,
     required this.collection,
     required this.sectionKey,

@@ -12,7 +12,7 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VideoProgressBar extends StatefulWidget {
   final AvesVideoController? controller;
@@ -20,7 +20,7 @@ class VideoProgressBar extends StatefulWidget {
 
   static const padding = EdgeInsets.symmetric(horizontal: 16);
 
-  const VideoProgressBar({
+  const new({
     super.key,
     required this.controller,
     required this.scale,
@@ -106,7 +106,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                 children: [
                                   StreamBuilder<int>(
                                     stream: positionStream,
-                                    builder: (context, snapshot) {
+                                    builder: (context, _) {
                                       // do not use stream snapshot because it is obsolete when switching between videos
                                       final position = controller?.currentPosition.floor() ?? 0;
                                       return _buildText(formatFriendlyDuration(Duration(milliseconds: position)));
@@ -122,7 +122,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                                   textDirection: kVideoPlaybackDirection,
                                   child: StreamBuilder<int>(
                                     stream: positionStream,
-                                    builder: (context, snapshot) {
+                                    builder: (context, _) {
                                       // do not use stream snapshot because it is obsolete when switching between videos
                                       var progress = controller?.progress ?? 0.0;
                                       if (!progress.isFinite) progress = 0.0;
@@ -186,7 +186,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   Widget _buildSpeedIndicator() => StreamBuilder<double>(
     stream: controller?.speedStream ?? Stream.value(1.0),
-    builder: (context, snapshot) {
+    builder: (context, _) {
       final speed = controller?.speed ?? 1.0;
       return speed != 1
           ? Padding(
@@ -199,7 +199,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
   Widget _buildMuteIndicator() => StreamBuilder<double>(
     stream: controller?.volumeStream ?? Stream.value(1.0),
-    builder: (context, snapshot) {
+    builder: (context, _) {
       final textScaler = MediaQuery.textScalerOf(context);
       final isMuted = controller?.isMuted ?? false;
       return isMuted

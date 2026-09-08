@@ -11,7 +11,7 @@ class AnimatedDiffText extends StatefulWidget {
   final Curve curve;
   final Duration duration;
 
-  const AnimatedDiffText(
+  const new(
     this.text, {
     super.key,
     this.textStyle,

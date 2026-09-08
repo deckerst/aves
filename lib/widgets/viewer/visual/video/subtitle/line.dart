@@ -12,7 +12,7 @@ class StyledSubtitleLine extends Equatable with Diagnosticable {
   @override
   List<Object?> get props => [spans, clip, position];
 
-  const StyledSubtitleLine({
+  const new({
     required this.spans,
     this.clip,
     this.position,

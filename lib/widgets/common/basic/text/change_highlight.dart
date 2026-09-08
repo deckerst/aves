@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ChangeHighlightText extends StatefulWidget {
   final String data;
@@ -7,7 +7,7 @@ class ChangeHighlightText extends StatefulWidget {
   final Curve curve;
   final Duration duration;
 
-  const ChangeHighlightText(
+  const new(
     this.data, {
     super.key,
     required this.style,
@@ -69,7 +69,7 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
 }
 
 class ShadowedTextStyleTween extends Tween<TextStyle> {
-  ShadowedTextStyleTween({super.begin, super.end});
+  new({super.begin, super.end});
 
   @override
   TextStyle lerp(double t) {

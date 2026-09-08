@@ -3,7 +3,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.12.0 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
 resolution: workspace
 
 dependencies:
@@ -18,6 +18,7 @@ dependencies:
   flutter_map:
   latlong2:
   leak_tracker:
+  material_ui:
   provider:
 
 dev_dependencies:

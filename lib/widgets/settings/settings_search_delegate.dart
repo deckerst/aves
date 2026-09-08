@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef _SectionPredicate = List<SettingsTile> Function(BuildContext context, SettingsSection section);
 
@@ -15,7 +15,7 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
 
   static const pageRouteName = '/settings/search';
 
-  SettingsSearchDelegate({
+  new({
     required super.searchFieldLabel,
     required super.searchFieldStyle,
     required this.sections,

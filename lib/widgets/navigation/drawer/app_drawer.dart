@@ -35,7 +35,7 @@ import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -45,7 +45,7 @@ class AppDrawer extends StatefulWidget {
   // current path loaded in the `ExplorerPage`, if any
   final String? currentExplorerPath;
 
-  const AppDrawer({
+  const new({
     super.key,
     this.currentCollection,
     this.currentExplorerPath,
@@ -104,15 +104,10 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case .resumed:
-        if (_profileSwitchPermissionRequested) {
-          _profileSwitchPermissionRequested = false;
-          _initProfileSwitchFuture();
-          setState(() {});
-        }
-      default:
-        break;
+    if (state == .resumed && _profileSwitchPermissionRequested) {
+      _profileSwitchPermissionRequested = false;
+      _initProfileSwitchFuture();
+      setState(() {});
     }
   }
 
@@ -347,9 +342,9 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
   Widget _buildAlbumLinks(BuildContext context) {
     final source = context.read<CollectionSource>();
     final currentFilters = currentCollection?.filters;
-    return StreamBuilder(
+    return StreamBuilder<AlbumsChangedEvent>(
       stream: source.eventBus.on<AlbumsChangedEvent>(),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final albums = AppDrawer.effectiveAlbumBookmarks(context);
         if (albums.isEmpty) return const SizedBox();
         return Column(
@@ -381,22 +376,22 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
         Widget? trailing;
         switch (route) {
           case AlbumListPage.routeName:
-            trailing = StreamBuilder(
+            trailing = StreamBuilder<AlbumsChangedEvent>(
               stream: source.eventBus.on<AlbumsChangedEvent>(),
               builder: (context, _) => Text('${source.rawAlbums.length}'),
             );
           case CountryListPage.routeName:
-            trailing = StreamBuilder(
+            trailing = StreamBuilder<CountriesChangedEvent>(
               stream: source.eventBus.on<CountriesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedCountries.length}'),
             );
           case PlaceListPage.routeName:
-            trailing = StreamBuilder(
+            trailing = StreamBuilder<PlacesChangedEvent>(
               stream: source.eventBus.on<PlacesChangedEvent>(),
               builder: (context, _) => Text('${source.sortedPlaces.length}'),
             );
           case TagListPage.routeName:
-            trailing = StreamBuilder(
+            trailing = StreamBuilder<TagsChangedEvent>(
               stream: source.eventBus.on<TagsChangedEvent>(),
               builder: (context, _) => Text('${source.sortedTags.length}'),
             );

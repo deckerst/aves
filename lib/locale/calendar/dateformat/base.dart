@@ -49,7 +49,7 @@ typedef DateFormatter = String Function(DateTime date);
 abstract class DateFormatDelegate {
   final String languageTag;
 
-  const DateFormatDelegate({required this.languageTag});
+  const new({required this.languageTag});
 
   DateFormatter get y;
 

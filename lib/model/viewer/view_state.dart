@@ -17,7 +17,7 @@ class ViewState extends Equatable {
   @override
   List<Object?> get props => [position, scale, viewportSize, contentSize];
 
-  const ViewState({
+  const new({
     required this.position,
     required this.scale,
     required this.viewportSize,

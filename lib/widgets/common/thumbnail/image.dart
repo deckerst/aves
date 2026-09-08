@@ -14,7 +14,7 @@ import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/thumbnail/error.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailImage extends StatefulWidget {
@@ -27,7 +27,7 @@ class ThumbnailImage extends StatefulWidget {
   final Object? heroTag;
   final HeroPlaceholderBuilder? heroPlaceholderBuilder;
 
-  const ThumbnailImage({
+  const new({
     super.key,
     required this.entry,
     required this.extent,
@@ -339,7 +339,7 @@ class _ConditionalImageProvider {
   final ImageProvider provider;
   final bool Function(ImageInfo?)? predicate;
 
-  const _ConditionalImageProvider(this.provider, [this.predicate]);
+  const new(this.provider, [this.predicate]);
 }
 
 class _ProviderStream {
@@ -347,7 +347,7 @@ class _ProviderStream {
   final ImageStream _stream;
   final ImageStreamListener listener;
 
-  _ProviderStream(this.provider, this.listener) : _stream = provider.provider.resolve(ImageConfiguration.empty);
+  new(this.provider, this.listener) : _stream = provider.provider.resolve(ImageConfiguration.empty);
 
   void startListening() => _stream.addListener(listener);
 

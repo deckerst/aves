@@ -3,13 +3,13 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/any.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesEntry> {
   final CollectionLens collection;
   final bool selectable;
 
-  SectionedEntryListLayoutProvider({
+  new({
     super.key,
     required this.collection,
     required this.selectable,

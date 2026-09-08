@@ -4,14 +4,14 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class Attribution extends StatelessWidget {
   final EntryMapStyle? style;
 
-  const Attribution({
+  const new({
     super.key,
     required this.style,
   });

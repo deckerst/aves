@@ -12,7 +12,7 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +21,7 @@ class SlideshowBottomOverlay extends StatelessWidget {
   final Size availableSize;
   final EdgeInsets? viewInsets, viewPadding;
 
-  const SlideshowBottomOverlay({
+  const new({
     super.key,
     required this.animationController,
     required this.availableSize,
@@ -54,7 +54,7 @@ class SlideshowButtons extends StatefulWidget {
   final EdgeInsets? viewInsets, viewPadding;
   final AnimationController animationController;
 
-  const SlideshowButtons({
+  const new({
     super.key,
     required this.availableSize,
     required this.viewInsets,

@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 
 // as of Flutter v3.3.7, text style background does not have consistent height
@@ -12,7 +12,7 @@ class TextBackgroundPainter extends StatelessWidget {
   final TextAlign textAlign;
   final Widget child;
 
-  const TextBackgroundPainter({
+  const new({
     super.key,
     required this.spans,
     required this.style,

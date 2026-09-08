@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScrollLabel extends StatelessWidget {
   final Animation<double> animation;
   final Color backgroundColor;
   final Widget child;
 
-  const ScrollLabel({
+  const new({
     super.key,
     required this.child,
     required this.animation,

@@ -3,7 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef ItemWidgetBuilder<T> = Widget Function(T item);
@@ -14,7 +14,7 @@ class DrawerFixedListTab<T> extends StatefulWidget {
   final ItemWidgetBuilder<T> leading;
   final ItemWidgetBuilder<T> title;
 
-  const DrawerFixedListTab({
+  const new({
     super.key,
     required this.items,
     required this.visibleItems,

@@ -38,7 +38,7 @@ class ExoVideoController extends AvesVideoController {
   @override
   final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
 
-  ExoVideoController(
+  new(
     super.entry, {
     required super.playbackStateHandler,
     required super.settings,

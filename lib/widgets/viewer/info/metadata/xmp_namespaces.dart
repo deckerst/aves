@@ -17,7 +17,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 @immutable
@@ -29,13 +29,13 @@ class XmpNamespace extends Equatable {
   @override
   List<Object?> get props => [nsUri, nsPrefix];
 
-  XmpNamespace({
+  new({
     required this.nsUri,
     required this.schemaRegistryPrefixes,
     required this.rawProps,
   }) : nsPrefix = prefixForUri(schemaRegistryPrefixes, nsUri);
 
-  factory XmpNamespace.create(Map<String, String> schemaRegistryPrefixes, String nsPrefix, Map<String, String> rawProps) {
+  factory create(Map<String, String> schemaRegistryPrefixes, String nsPrefix, Map<String, String> rawProps) {
     final nsUri = schemaRegistryPrefixes[nsPrefix] ?? '';
     switch (nsUri) {
       case XmpNamespaces.creatorAtom:
@@ -154,7 +154,7 @@ class XmpProp implements Comparable<XmpProp> {
   final String path, value;
   final String displayKey;
 
-  XmpProp(this.path, this.value) : displayKey = formatKey(path);
+  new(this.path, this.value) : displayKey = formatKey(path);
 
   static String formatKey(String propPath) {
     return propPath.splitMapJoin(
@@ -188,7 +188,7 @@ class XmpCardData {
 
   static final titlePattern = RegExp(r'(.*?)[\\/]');
 
-  XmpCardData(
+  new(
     this.pattern, {
     String? title,
     this.spanBuilders,

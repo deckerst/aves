@@ -20,7 +20,7 @@ import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
@@ -33,7 +33,7 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   final Set<T>? newFilters;
   final Widget Function() emptyBuilder;
 
-  const FilterNavigationPage({
+  const new({
     super.key,
     required this.source,
     required this.title,

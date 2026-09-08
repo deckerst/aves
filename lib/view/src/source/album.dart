@@ -6,12 +6,12 @@ extension ExtraAlbumTypeView on AlbumType {
   String? getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      AlbumType.camera => l10n.albumCamera,
-      AlbumType.download => l10n.albumDownload,
-      AlbumType.screenshots => l10n.albumScreenshots,
-      AlbumType.screenRecordings => l10n.albumScreenRecordings,
-      AlbumType.videoCaptures => l10n.albumVideoCaptures,
-      AlbumType.regular || AlbumType.vault || AlbumType.app => null,
+      .camera => l10n.albumCamera,
+      .download => l10n.albumDownload,
+      .screenshots => l10n.albumScreenshots,
+      .screenRecordings => l10n.albumScreenRecordings,
+      .videoCaptures => l10n.albumVideoCaptures,
+      .regular || .vault || .app => null,
     };
   }
 }

@@ -8,7 +8,7 @@ num smallestPowerOf2(num x, {bool allowNegativePower = false}) {
   return pow(2, (log(x) / ln2).ceil());
 }
 
-double roundToPrecision(final double value, {required final int decimals}) => (value * pow(10, decimals)).round() / pow(10, decimals);
+double roundToPrecision(double value, {required int decimals}) => (value * pow(10, decimals)).round() / pow(10, decimals);
 
 // cf https://en.wikipedia.org/wiki/Intersection_(geometry)#Two_line_segments
 Offset? segmentIntersection((Offset, Offset) s1, (Offset, Offset) s2) {

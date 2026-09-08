@@ -23,7 +23,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:csv/csv.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 class ExportCollectionStatsPage extends StatefulWidget {
@@ -31,7 +31,7 @@ class ExportCollectionStatsPage extends StatefulWidget {
 
   final Set<AvesEntry> entries;
 
-  const ExportCollectionStatsPage({
+  const new({
     super.key,
     required this.entries,
   });

@@ -6,7 +6,7 @@ class TileExtentControllerProvider extends StatelessWidget {
   final TileExtentController controller;
   final Widget child;
 
-  const TileExtentControllerProvider({
+  const new({
     super.key,
     required this.controller,
     required this.child,

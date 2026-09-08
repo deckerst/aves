@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class AppIconImage extends ImageProvider<AppIconImageKey> {
-  const AppIconImage({
+  const new({
     required this.packageName,
     required this.size,
     this.scale = 1.0,
@@ -63,7 +63,7 @@ class AppIconImageKey extends Equatable {
   @override
   List<Object?> get props => [packageName, size, scale];
 
-  const AppIconImageKey({
+  const new({
     required this.packageName,
     required this.size,
     this.scale = 1.0,

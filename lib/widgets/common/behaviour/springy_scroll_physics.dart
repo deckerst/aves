@@ -4,7 +4,7 @@ class SpringyScrollPhysics extends ScrollPhysics {
   @override
   final SpringDescription spring;
 
-  const SpringyScrollPhysics({
+  const new({
     required this.spring,
     super.parent,
   });

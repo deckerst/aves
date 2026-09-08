@@ -1,10 +1,10 @@
 import 'package:aves/locale/aves_locale.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class AvesCalendarDelegate<T extends DateTime> extends CalendarDelegate<T> {
   final AvesLocale locale;
 
-  const AvesCalendarDelegate(this.locale);
+  const new(this.locale);
 
   DateTime toDateForIntl4xFormat(T date);
 

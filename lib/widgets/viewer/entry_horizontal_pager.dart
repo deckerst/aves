@@ -1,3 +1,4 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -11,7 +12,7 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MultiEntryScroller extends StatefulWidget {
@@ -21,7 +22,7 @@ class MultiEntryScroller extends StatefulWidget {
   final ValueChanged<int> onPageChanged;
   final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
-  const MultiEntryScroller({
+  const new({
     super.key,
     required this.collection,
     required this.viewerController,
@@ -72,7 +73,9 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
             return Selector<Settings, bool>(
               selector: (context, s) => s.animate,
               builder: (context, animate, child) {
-                if (!animate) return child!;
+                final appMode = context.watch<ValueNotifier<AppMode>>().value;
+                final isSlideshow = <AppMode>{.screenSaver, .slideshow}.contains(appMode);
+                if (!animate && !isSlideshow) return child!;
                 return ListenableBuilder(
                   listenable: pageController,
                   builder: viewerController.transition.builder(pageController, index),
@@ -144,7 +147,7 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
   final ViewerController viewerController;
 
-  const SingleEntryScroller({
+  const new({
     super.key,
     required this.entry,
     required this.viewerController,

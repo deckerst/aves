@@ -11,13 +11,13 @@ import 'package:aves/widgets/settings/settings_definition.dart';
 import 'package:aves/widgets/settings/video/controls_page.dart';
 import 'package:aves/widgets/settings/video/playback_page.dart';
 import 'package:aves/widgets/settings/video/subtitle_theme_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class VideoSection extends SettingsSection {
   final bool standalonePage;
 
-  VideoSection({
+  new({
     this.standalonePage = false,
   });
 

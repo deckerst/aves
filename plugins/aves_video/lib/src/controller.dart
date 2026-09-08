@@ -27,7 +27,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
 
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
-  AvesVideoController(
+  new(
     AvesEntryBase entry, {
     required this.playbackStateHandler,
     required this.settings,
@@ -157,9 +157,9 @@ enum VideoStatus {
   error,
 }
 
-class VideoEvent {}
+class VideoEvent;
 
-class LagEvent extends VideoEvent {}
+class LagEvent extends VideoEvent;
 
 abstract class PlaybackStateHandler {
   Future<int?> getResumeTime({required int entryId, required BuildContext context});

@@ -2,24 +2,20 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-class StorageVolume extends Equatable {
-  final String? description;
-  final String path, state;
-  final bool isPrimary, isRemovable;
-
+class const StorageVolume({
+  required final String? mediaStoreVolumeName,
+  required final String? description,
+  required final bool isPrimary,
+  required final bool isRemovable,
+  required final String path,
+  required final String state,
+}) extends Equatable {
   @override
-  List<Object?> get props => [description, path, state, isPrimary, isRemovable];
+  List<Object?> get props => [mediaStoreVolumeName, description, path, state, isPrimary, isRemovable];
 
-  const StorageVolume({
-    required this.description,
-    required this.isPrimary,
-    required this.isRemovable,
-    required this.path,
-    required this.state,
-  });
-
-  factory StorageVolume.fromMap(Map map) {
+  factory fromMap(Map map) {
     return StorageVolume(
+      mediaStoreVolumeName: map['mediaStoreVolumeName'],
       description: map['description'],
       isPrimary: map['isPrimary'] ?? false,
       isRemovable: map['isRemovable'] ?? false,

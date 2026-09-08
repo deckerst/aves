@@ -3,7 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterBar extends StatefulWidget {
@@ -16,7 +16,7 @@ class FilterBar extends StatefulWidget {
   final bool interactive;
   final AFilterCallback? onTap, onRemove;
 
-  FilterBar({
+  new({
     super.key,
     required Set<CollectionFilter> filters,
     required this.interactive,
@@ -128,7 +128,7 @@ class _Chip extends StatelessWidget {
   final bool single, interactive;
   final AFilterCallback? onTap, onRemove;
 
-  const _Chip({
+  const new({
     required this.filter,
     required this.single,
     required this.interactive,

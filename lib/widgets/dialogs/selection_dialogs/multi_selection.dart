@@ -1,7 +1,7 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesMultiSelectionDialog<T> extends StatefulWidget {
   static const routeName = '/dialog/multi_selection';
@@ -12,7 +12,7 @@ class AvesMultiSelectionDialog<T> extends StatefulWidget {
   final String? title, message;
   final bool? dense;
 
-  const AvesMultiSelectionDialog({
+  const new({
     super.key,
     required this.initialValue,
     required this.options,

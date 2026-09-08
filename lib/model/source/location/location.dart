@@ -208,4 +208,4 @@ mixin LocationMixin on CountryMixin, StateMixin {
   }
 }
 
-class AddressMetadataChangedEvent {}
+class AddressMetadataChangedEvent;

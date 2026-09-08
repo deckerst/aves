@@ -60,7 +60,7 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, Object?>> editExifDate(AvesEntry entry, DateModifier modifier) async {
     try {
-      final result = await _platform.invokeMethod('editDate', <String, Object?>{
+      final result = await _platform.invokeMethod('editExifDate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'shiftSeconds': modifier.shiftSeconds,

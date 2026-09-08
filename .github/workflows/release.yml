@@ -18,14 +18,14 @@ jobs:
       id-token: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
 
       # Building relies on the Android Gradle plugin,
       # which requires a modern Java version (not the default one).
       - name: Set up JDK for Android Gradle plugin
-        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -35,6 +35,12 @@ jobs:
 
       - name: Get Flutter packages
         run: ./flutterw pub get
+
+      - name: Remove build ID from native lib
+        # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
+        run: sed -i -e 's/-Wl,/-Wl,--build-id=none,/' ${PUB_CACHE}/hosted/*/jni-*/src/CMakeLists.txt
+        env:
+          PUB_CACHE: ~/.pub-cache
 
       - name: Generate app localizations
         run: ./flutterw gen-l10n
@@ -71,7 +77,7 @@ jobs:
           AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
 
       - name: Generate artifact attestation
-        uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
         with:
           subject-path: 'outputs/*'
 
@@ -94,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
           egress-policy: audit
 

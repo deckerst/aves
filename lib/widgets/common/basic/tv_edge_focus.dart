@@ -1,5 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // to be placed at the edges of lists and grids,
@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 class TvEdgeFocus extends StatelessWidget {
   final FocusNode? focusNode;
 
-  const TvEdgeFocus({
+  const new({
     super.key,
     this.focusNode,
   });

@@ -3,20 +3,16 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-class VolumeRelativeDirectory extends Equatable {
-  final String volumePath, relativeDir;
-
+class const VolumeRelativeDirectory({
+  required final String volumePath,
+  required final String relativeDir,
+}) extends Equatable {
   @override
   List<Object?> get props => [volumePath, relativeDir];
 
   String get dirPath => '$volumePath$relativeDir';
 
-  const VolumeRelativeDirectory({
-    required this.volumePath,
-    required this.relativeDir,
-  });
-
-  factory VolumeRelativeDirectory.volume(StorageVolume volume) {
+  factory volume(StorageVolume volume) {
     return VolumeRelativeDirectory(volumePath: volume.path, relativeDir: '');
   }
 

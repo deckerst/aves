@@ -9,13 +9,13 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class DbTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const DbTab({
+  const new({
     super.key,
     required this.entry,
   });

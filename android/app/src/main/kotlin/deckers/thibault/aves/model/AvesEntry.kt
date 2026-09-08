@@ -1,8 +1,8 @@
 package deckers.thibault.aves.model
 
-import android.content.ContentResolver
 import android.net.Uri
 import androidx.core.net.toUri
+import deckers.thibault.aves.utils.UriUtils.isFileScheme
 
 class AvesEntry(map: FieldMap) {
     val uri: Uri = (map[EntryFields.URI] as String).toUri() // content or file URI
@@ -23,7 +23,7 @@ class AvesEntry(map: FieldMap) {
             // for trashed items which are for some reason missing trash details,
             // do not fall back to original item path,
             // but derive storage path from `file` URI
-            if (uri.scheme == ContentResolver.SCHEME_FILE) uri.path else null
+            if (uri.isFileScheme) uri.path else null
         } else {
             path
         }

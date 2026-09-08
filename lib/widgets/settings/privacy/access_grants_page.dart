@@ -4,12 +4,12 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class StorageAccessPage extends StatefulWidget {
   static const routeName = '/settings/storage_access';
 
-  const StorageAccessPage({super.key});
+  const new({super.key});
 
   @override
   State<StorageAccessPage> createState() => _StorageAccessPageState();
@@ -25,7 +25,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
     _load();
   }
 
-  void _load() => _pathLoader = storageService.getGrantedDirectories();
+  void _load() => _pathLoader = storagePermissionService.getSafGrantedDirectories();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                     trailing: IconButton(
                       icon: const Icon(AIcons.clear),
                       onPressed: () async {
-                        await storageService.revokeDirectoryAccess(path);
+                        await storagePermissionService.revokeSafDirectoryAccess(path);
                         _load();
                         setState(() {});
                       },
@@ -91,7 +91,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header();
+  const new();
 
   @override
   Widget build(BuildContext context) {

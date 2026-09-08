@@ -8,13 +8,13 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_caption.dart';
+import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/single_selection.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditVaultDialog extends StatefulWidget {
@@ -22,7 +22,7 @@ class EditVaultDialog extends StatefulWidget {
 
   final VaultDetails? initialDetails;
 
-  const EditVaultDialog({
+  const new({
     super.key,
     this.initialDetails,
   });
@@ -104,7 +104,7 @@ class _EditVaultDialogState extends State<EditVaultDialog> with FeedbackMixin, V
         if (_lockTypeOptions.length > 1)
           ListTile(
             title: Text(l10n.vaultDialogLockTypeLabel),
-            subtitle: AvesCaption(_lockType.getText(context)),
+            subtitle: AvesListSubtitle(_lockType.getText(context)),
             onTap: () {
               _unfocus();
               showSelectionDialog<VaultLockType>(

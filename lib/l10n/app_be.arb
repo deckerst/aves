@@ -289,8 +289,6 @@
     "addShortcutDialogLabel": "Назва ярлыка",
     "addShortcutButtonLabel": "ДАДАЦЬ",
     "noMatchingAppDialogMessage": "Няма праграм, якія б з гэтым справіліся.",
-    "moveUndatedConfirmationDialogMessage": "Захаваць даты элементаў, перш чым працягнуць?",
-    "moveUndatedConfirmationDialogSetDate": "Захаваць даты",
     "videoResumeDialogMessage": "Вы хочаце аднавіць прайграванне на {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -646,7 +644,6 @@
     "albumPickPageTitleMove": "Перамясціць у альбом",
     "coverDialogTabCover": "Вокладка",
     "settingsConfirmationBeforeDeleteItems": "Спытаць, перш чым выдаляць элементы назаўжды",
-    "settingsConfirmationBeforeMoveUndatedItems": "Спытаць, перш чым перамяшчаць прадметы без даты",
     "settingsConfirmationAfterMoveToBinItems": "Паказваць паведамленне пасля перамяшчэння элементаў у сметніцу",
     "settingsConfirmationBeforeMoveToBinItems": "Спытаць перад тым, як пераносіць элементы ў сметніцу",
     "settingsNavigationDrawerAddAlbum": "Дадаць альбом",

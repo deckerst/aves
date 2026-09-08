@@ -1,3 +1,4 @@
+import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_model/aves_model.dart';
@@ -22,10 +23,21 @@ extension ExtraChipActionView on ChipAction {
       .hide => l10n.chipActionHide,
       .show => l10n.showTooltip,
       .lockVault => l10n.chipActionLock,
+      .debug => 'Debug',
     };
   }
 
-  Widget getIcon() => Icon(_getIconData());
+  Widget getIcon() {
+    final child = Icon(_getIconData());
+    return switch (this) {
+      .debug => ShaderMask(
+        shaderCallback: AvesColorsData.debugGradient.createShader,
+        blendMode: BlendMode.srcIn,
+        child: child,
+      ),
+      _ => child,
+    };
+  }
 
   IconData _getIconData() => switch (this) {
     .goToAlbumPage => AIcons.album,
@@ -39,5 +51,6 @@ extension ExtraChipActionView on ChipAction {
     .hide => AIcons.hide,
     .show => AIcons.show,
     .lockVault => AIcons.vaultLock,
+    .debug => AIcons.debug,
   };
 }

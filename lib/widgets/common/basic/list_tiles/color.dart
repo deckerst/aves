@@ -4,14 +4,14 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ColorListTile extends StatelessWidget {
   final TitleBuilder title;
   final Color value;
   final ValueSetter<Color> onChanged;
 
-  const ColorListTile({
+  const new({
     super.key,
     required this.title,
     required this.value,
@@ -47,7 +47,7 @@ class ColorPickerDialog extends StatefulWidget {
 
   final Color initialValue;
 
-  const ColorPickerDialog({
+  const new({
     super.key,
     required this.initialValue,
   });

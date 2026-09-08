@@ -335,7 +335,6 @@
     "genericSuccessFeedback": "Feito!",
     "genericDangerWarningDialogMessage": "Está certo?",
     "lengthUnitPercent": "%",
-    "moveUndatedConfirmationDialogSetDate": "Gardar datas",
     "videoResumeDialogMessage": "Desexa continuar a reproducción dende {time}?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -407,7 +406,6 @@
     "widgetTapUpdateWidget": "Actualizar widget",
     "storageVolumeDescriptionFallbackPrimary": "Almacenaxe interna",
     "nameConflictDialogMultipleSourceMessage": "Algúns arquivos teñen o mesmo nome.",
-    "moveUndatedConfirmationDialogMessage": "Gardar as datas dos elementos antes de continuar?",
     "passwordDialogEnter": "Inserir contrasinal",
     "passwordDialogConfirm": "Confirmar contrasinal",
     "renameAlbumDialogLabel": "Nome novo",
@@ -615,7 +613,6 @@
     },
     "settingsSearchEmpty": "Sen coincidencia",
     "settingsActionImport": "Importar",
-    "settingsConfirmationBeforeMoveUndatedItems": "Preguntar antes de mover elementos sen data",
     "settingsActionImportDialogTitle": "Importar",
     "settingsCollectionQuickActionTabSelecting": "Escolmando",
     "settingsConfirmationVaultDataLoss": "Amosar aviso de perda de datos en cofre",

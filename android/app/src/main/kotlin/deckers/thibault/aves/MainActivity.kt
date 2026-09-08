@@ -1,6 +1,5 @@
 package deckers.thibault.aves
 
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
@@ -44,6 +43,7 @@ import deckers.thibault.aves.channel.calls.MetadataEditHandler
 import deckers.thibault.aves.channel.calls.MetadataFetchHandler
 import deckers.thibault.aves.channel.calls.SecurityHandler
 import deckers.thibault.aves.channel.calls.StorageHandler
+import deckers.thibault.aves.channel.calls.StoragePermissionHandler
 import deckers.thibault.aves.channel.calls.WallpaperHandler
 import deckers.thibault.aves.channel.calls.window.ActivityWindowHandler
 import deckers.thibault.aves.channel.calls.window.WindowHandler
@@ -52,14 +52,16 @@ import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandl
 import deckers.thibault.aves.channel.streams.darttoplatform.ImageOpStreamHandler
 import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.AnalysisStreamHandler
-import deckers.thibault.aves.channel.streams.platformtodart.ErrorStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MessageStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.IntentStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.SettingsChangeStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.WindowChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.storage.apis.SafPermissions
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.UriUtils.isGeoScheme
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getParcelableExtraCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -136,8 +138,8 @@ open class MainActivity : FlutterFragmentActivity() {
         analysisStreamHandler = AnalysisStreamHandler().apply {
             EventChannel(messenger, AnalysisStreamHandler.CHANNEL).setStreamHandler(this)
         }
-        errorStreamHandler = ErrorStreamHandler().apply {
-            EventChannel(messenger, ErrorStreamHandler.CHANNEL).setStreamHandler(this)
+        messageStreamHandler = MessageStreamHandler().apply {
+            EventChannel(messenger, MessageStreamHandler.CHANNEL).setStreamHandler(this)
         }
         mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
             EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
@@ -156,6 +158,7 @@ open class MainActivity : FlutterFragmentActivity() {
         // - need Context
         analysisHandler = AnalysisHandler(this, ::onAnalysisCompleted)
         mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, AnalysisHandler.CHANNEL).setMethodCallHandler(analysisHandler)
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
@@ -164,16 +167,15 @@ open class MainActivity : FlutterFragmentActivity() {
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
         MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
         MethodChannel(messenger, HomeWidgetHandler.CHANNEL).setMethodCallHandler(HomeWidgetHandler(this))
+        MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
         MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
+        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, SecurityHandler.CHANNEL).setMethodCallHandler(SecurityHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        // - need ContextWrapper
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
-        MethodChannel(messenger, MediaEditHandler.CHANNEL).setMethodCallHandler(MediaEditHandler(this))
-        MethodChannel(messenger, MetadataEditHandler.CHANNEL).setMethodCallHandler(MetadataEditHandler(this))
+        MethodChannel(messenger, StoragePermissionHandler.CHANNEL).setMethodCallHandler(StoragePermissionHandler(this))
         MethodChannel(messenger, WallpaperHandler.CHANNEL).setMethodCallHandler(WallpaperHandler(this))
         // - need Activity
         MethodChannel(messenger, AppProfileHandler.CHANNEL).setMethodCallHandler(AppProfileHandler(this))
@@ -182,9 +184,9 @@ open class MainActivity : FlutterFragmentActivity() {
         // result streaming: dart -> platform ->->-> dart
         // - need Context
         StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
+        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
         // - need Activity
-        StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageOpStreamHandler(this, args) }
         StreamsChannel(messenger, ActivityResultStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ActivityResultStreamHandler(this, args) }
 
         // intent handling
@@ -336,19 +338,7 @@ open class MainActivity : FlutterFragmentActivity() {
             return
         }
 
-        val canPersist = (intent.flags and Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION) != 0
-        @SuppressLint("WrongConstant")
-        if (canPersist) {
-            // save access permissions across reboots
-            val takeFlags = (intent.flags
-                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-            try {
-                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-            } catch (e: SecurityException) {
-                Log.w(LOG_TAG, "failed to take persistable URI permission for uri=$treeUri", e)
-            }
-        }
+        SafPermissions.takePersistableUriPermission(this, intent.flags, treeUri)
 
         // resume pending action
         onStorageAccessResult(requestCode, treeUri)
@@ -365,6 +355,7 @@ open class MainActivity : FlutterFragmentActivity() {
                     INTENT_DATA_KEY_PAGE to intent.getStringExtra(EXTRA_KEY_PAGE),
                     INTENT_DATA_KEY_FILTERS to extractFiltersFromIntent(intent),
                     INTENT_DATA_KEY_EXPLORER_PATH to intent.getStringExtra(EXTRA_KEY_EXPLORER_PATH),
+                    INTENT_DATA_KEY_DEBUG to intent.getBooleanExtra(EXTRA_KEY_DEBUG, false),
                 )
             }
 
@@ -375,7 +366,7 @@ open class MainActivity : FlutterFragmentActivity() {
             "com.android.camera.action.REVIEW",
             "com.android.camera.action.SPLIT_SCREEN_REVIEW" -> {
                 (intent.data ?: intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM))?.let { uri ->
-                    if (uri.scheme == "geo") {
+                    if (uri.isGeoScheme) {
                         return hashMapOf(
                             INTENT_DATA_KEY_ACTION to INTENT_ACTION_VIEW_GEO,
                             INTENT_DATA_KEY_URI to uri.toString(),
@@ -618,7 +609,18 @@ open class MainActivity : FlutterFragmentActivity() {
             )
             .build()
 
-        val shortcutInfoList = listOf(videos, search, map)
+        val shortcutInfoList = arrayListOf(videos, search, map)
+        if (BuildConfig.DEBUG) {
+            val debug = ShortcutInfoCompat.Builder(this, "debug")
+                .setShortLabel("debug")
+                .setIntent(
+                    Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                        .putExtra(EXTRA_KEY_DEBUG, true)
+                )
+                .build()
+            shortcutInfoList.add(debug)
+        }
+
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcutInfoList)
         Log.i(LOG_TAG, "set shortcuts: ${shortcutInfoList.joinToString(", ") { v -> v.id }}")
     }
@@ -631,6 +633,7 @@ open class MainActivity : FlutterFragmentActivity() {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val INTENT_CHANNEL = "deckers.thibault/aves/intent"
         const val EXTRA_STRING_ARRAY_SEPARATOR = "###"
+
         const val DOCUMENT_TREE_ACCESS_REQUEST = 1
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3
@@ -666,12 +669,14 @@ open class MainActivity : FlutterFragmentActivity() {
         const val INTENT_DATA_KEY_SECURE_URIS = "secureUris"
         const val INTENT_DATA_KEY_URI = "uri"
         const val INTENT_DATA_KEY_WIDGET_ID = "widgetId"
+        const val INTENT_DATA_KEY_DEBUG = "debug"
 
         const val EXTRA_KEY_PAGE = "page"
         const val EXTRA_KEY_EXPLORER_PATH = "explorerPath"
         const val EXTRA_KEY_FILTERS_ARRAY = "filters"
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
+        const val EXTRA_KEY_DEBUG = "debug"
 
         // dart page routes
         const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
@@ -699,11 +704,16 @@ open class MainActivity : FlutterFragmentActivity() {
             }
         }
 
-        private var errorStreamHandler: ErrorStreamHandler? = null
+        private var messageStreamHandler: MessageStreamHandler? = null
 
-        fun notifyError(error: String) {
-            Log.e(LOG_TAG, "notifyError error=$error")
-            errorStreamHandler?.notifyError(error)
+        fun notifyDebug(message: String) {
+            Log.d(LOG_TAG, "notifyDebug message=$message")
+            messageStreamHandler?.notifyDebug(message)
+        }
+
+        fun notifyError(message: String) {
+            Log.e(LOG_TAG, "notifyError message=$message")
+            messageStreamHandler?.notifyError(message)
         }
     }
 }

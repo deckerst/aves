@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/privacy/permissions/permissions_page.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -31,14 +31,14 @@ class SettingsTilePermissions extends SettingsTile {
 }
 
 class SettingsTilePermissionsSubtitle extends StatefulWidget {
-  const SettingsTilePermissionsSubtitle({super.key});
+  const new({super.key});
 
   @override
   State<SettingsTilePermissionsSubtitle> createState() => _SettingsTilePermissionsSubtitleState();
 }
 
 class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermissionsSubtitle> with WidgetsBindingObserver {
-  late Future<bool> _isMediaManagementAllowedLoader;
+  late Future<bool> _isMediaManagementGrantedLoader;
   late Future<bool> _areNotificationsEnabledLoader;
 
   @override
@@ -55,13 +55,13 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
   }
 
   void _initLoader() {
-    _isMediaManagementAllowedLoader = deviceService.canManageMedia();
+    _isMediaManagementGrantedLoader = deviceService.isMediaManagementGranted();
     _areNotificationsEnabledLoader = Permission.notification.status.then((v) => v == PermissionStatus.granted);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == .resumed) {
       _initLoader();
       setState(() {});
     }
@@ -74,9 +74,9 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
       builder: (context, notificationSnapshot) {
         final areNotificationsEnabled = notificationSnapshot.data ?? false;
         return FutureBuilder<bool>(
-          future: _isMediaManagementAllowedLoader,
+          future: _isMediaManagementGrantedLoader,
           builder: (context, mediaManagementSnapshot) {
-            final isMediaManagementAllowed = mediaManagementSnapshot.data ?? false;
+            final isMediaManagementGranted = mediaManagementSnapshot.data ?? false;
 
             final permissions = <(IconData, bool)>[];
             permissions.add((AIcons.app, context.select<Settings, bool>((s) => s.isInstalledAppAccessAllowed)));
@@ -85,7 +85,7 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
             }
             permissions.add((AIcons.notifications, areNotificationsEnabled));
             if (!settings.useTvLayout && device.canRequestMediaManagementPermission) {
-              permissions.add((AIcons.allCollection, isMediaManagementAllowed));
+              permissions.add((AIcons.allCollection, isMediaManagementGranted));
             }
 
             final theme = Theme.of(context);

@@ -167,8 +167,6 @@
     "noMatchingAppDialogMessage": "Es gibt keine Anwendungen, die dies bewältigen können.",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{Dieses Element in den Papierkorb verschieben?} other{Diese {count} Elemente in den Papierkorb verschieben?}}",
     "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Sicher, dass dieses Element gelöscht werden soll?} other{Sicher, dass diese {count} Elemente gelöscht werden sollen?}}",
-    "moveUndatedConfirmationDialogMessage": "Daten speichern, bevor es weitergeht?",
-    "moveUndatedConfirmationDialogSetDate": "Datum einstellen",
     "videoResumeDialogMessage": "Soll bei {time} weiter abspielt werden?",
     "videoStartOverButtonLabel": "NEU BEGINNEN",
     "videoResumeButtonLabel": "FORTSETZTEN",
@@ -378,7 +376,6 @@
     "settingsConfirmationDialogTitle": "Bestätigungsdialoge",
     "settingsConfirmationBeforeDeleteItems": "Vor dem endgültigen Löschen von Elementen fragen",
     "settingsConfirmationBeforeMoveToBinItems": "Vor dem Verschieben von Elementen in den Papierkorb fragen",
-    "settingsConfirmationBeforeMoveUndatedItems": "Vor Verschiebung von Objekten ohne Metadaten-Datum fragen",
     "settingsConfirmationAfterMoveToBinItems": "Nachricht nach dem Verschieben von Elementen in den Papierkorb anzeigen",
     "settingsNavigationDrawerTile": "Menü Navigation",
     "settingsNavigationDrawerEditorPageTitle": "Menü Navigation",
@@ -737,5 +734,8 @@
     "settingsAutoExportSettings": "Automatischer Export der Einstellungen",
     "settingsAllowNotifications": "Benachrichtigungen zulassen",
     "settingsPermissionsTile": "Berechtigungen",
-    "settingsPermissionsPageTitle": "Berechtigungen"
+    "settingsPermissionsPageTitle": "Berechtigungen",
+    "calendarGregorian": "Gregorianisch",
+    "calendarPersian": "Persisch",
+    "settingsCalendarTile": "Kalender"
 }

@@ -14,11 +14,11 @@ class WeekDayFilter extends CollectionFilter {
   List<Object?> get props => [weekday, reversed];
 
   // `weekday` should be in [1, 7], with 1 as Monday
-  WeekDayFilter(this.weekday, {super.reversed = false}) {
+  new(this.weekday, {super.reversed = false}) {
     _test = (entry) => entry.bestDate?.weekday == weekday;
   }
 
-  factory WeekDayFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return WeekDayFilter(
       json['weekday'] as int,
       reversed: json['reversed'] as bool? ?? false,

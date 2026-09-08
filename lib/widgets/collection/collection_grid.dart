@@ -50,7 +50,7 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -67,7 +67,7 @@ class CollectionGrid extends StatefulWidget {
 
   static int get columnCountDefault => settings.useTvLayout ? 6 : 4;
 
-  const CollectionGrid({
+  const new({
     super.key,
     required this.settingsRouteKey,
   });
@@ -108,7 +108,7 @@ class _CollectionGridState extends State<CollectionGrid> {
 }
 
 class _CollectionGridContent extends StatefulWidget {
-  const _CollectionGridContent();
+  const new();
 
   @override
   State<_CollectionGridContent> createState() => _CollectionGridContentState();
@@ -170,9 +170,9 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                             _goToViewer(collection, notification.entry);
                             return true;
                           },
-                          child: StreamBuilder(
+                          child: StreamBuilder<AspectRatioChangedEvent>(
                             stream: source.eventBus.on<AspectRatioChangedEvent>(),
-                            builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                            builder: (context, _) => SectionedEntryListLayoutProvider(
                               collection: collection,
                               selectable: selectable,
                               scrollableWidth: scrollableWidth,
@@ -302,7 +302,7 @@ class _CollectionSectionedContent extends StatefulWidget {
   final TileLayout tileLayout;
   final bool selectable;
 
-  const _CollectionSectionedContent({
+  const new({
     required this.collection,
     required this.isScrollingNotifier,
     required this.scrollController,
@@ -387,7 +387,7 @@ class _CollectionScaler extends StatelessWidget {
   final TileLayout tileLayout;
   final Widget child;
 
-  const _CollectionScaler({
+  const new({
     required this.scrollableKey,
     required this.appBarHeightNotifier,
     required this.tileLayout,
@@ -448,7 +448,7 @@ class _CollectionScrollView extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
 
-  const _CollectionScrollView({
+  const new({
     required this.scrollableKey,
     required this.collection,
     required this.appBar,
@@ -503,7 +503,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _checkingStoragePermission) {
+    if (state == .resumed && _checkingStoragePermission) {
       _checkingStoragePermission = false;
       _isStoragePermissionGranted.then((granted) {
         if (granted) {

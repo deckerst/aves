@@ -14,9 +14,9 @@ import 'package:aves/widgets/settings/settings_tv_page.dart';
 import 'package:aves/widgets/settings/thumbnails/thumbnails.dart';
 import 'package:aves/widgets/settings/video/video.dart';
 import 'package:aves/widgets/settings/viewer/viewer.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
     LanguageSection(),
   ];
 
-  const SettingsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
 class SettingsListView extends StatelessWidget {
   final List<Widget> children;
 
-  const SettingsListView({
+  const new({
     super.key,
     required this.children,
   });

@@ -14,13 +14,13 @@ import 'package:aves/widgets/explorer/explorer_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ExplorerActionDelegate with FeedbackMixin {
   final VolumeRelativeDirectory directory;
 
-  ExplorerActionDelegate({required this.directory});
+  new({required this.directory});
 
   bool isVisible(
     ExplorerAction action, {

@@ -40,7 +40,7 @@ class AndroidFileUtils {
   final Map<String, AlbumType> _albumTypeCache = {};
   final AChangeNotifier albumTypesChangeNotifier = .new();
 
-  AndroidFileUtils._private();
+  new _private();
 
   Future<void> init() async {
     _loader ??= _doInit();
@@ -96,12 +96,42 @@ class AndroidFileUtils {
 
   bool isDownloadPath(String path) => path.toLowerCase() == downloadPath;
 
-  StorageVolume? getStorageVolume(String? path) {
-    if (path == null) return null;
-    final volume = storageVolumes.firstWhereOrNull((v) => path.startsWith(v.path));
+  StorageVolume? getStorageVolume(String? anyPath) {
+    if (anyPath == null) return null;
+    final volume = storageVolumes.firstWhereOrNull((v) => anyPath.startsWith(v.path));
     // storage volume path includes trailing '/', but argument path may or may not,
     // which is an issue when the path is at the root
-    return volume != null || path.endsWith(separator) ? volume : getStorageVolume('$path$separator');
+    return volume != null || anyPath.endsWith(separator) ? volume : getStorageVolume('$anyPath$separator');
+  }
+
+  Future<Map<StorageVolume, String>> getBinRestoreRecoveryPathByVolume() async {
+    String recoveryPathForStorageVolume(String volumePath) {
+      final picturesPath = pContext.join(volumePath, standardDirPictures);
+      return pContext.join(picturesPath, recoveryDir);
+    }
+
+    final primaryRecoveryPath = recoveryPathForStorageVolume(primaryStorage);
+    final recoveryPathByVolume = Map.fromEntries(
+      await Future.wait(
+        storageVolumes.map((volume) async {
+          final recoveryPath = recoveryPathForStorageVolume(volume.path);
+          final recoveryApiByDir = await storagePermissionService.getEditionApis({recoveryPath}, insertion: true);
+          final isRestricted = recoveryApiByDir.entries.any((kv) => kv.value.isEmpty);
+          return MapEntry(volume, isRestricted ? primaryRecoveryPath : recoveryPath);
+        }),
+      ),
+    );
+    return recoveryPathByVolume;
+  }
+
+  String? ensureTrailingSeparator(String? dirPath) {
+    if (dirPath == null) return null;
+    return dirPath.endsWith(separator) ? dirPath : dirPath + separator;
+  }
+
+  String? removeTrailingSeparator(String? dirPath) {
+    if (dirPath == null) return null;
+    return dirPath.endsWith(separator) ? dirPath.substring(0, dirPath.length - 1) : dirPath;
   }
 
   // prefer static method over a null returning factory constructor
@@ -134,8 +164,9 @@ class AndroidFileUtils {
       if (isScreenshotsPath(dirPath)) return AlbumType.screenshots;
       if (isVideoCapturesPath(dirPath)) return AlbumType.videoCaptures;
 
-      final dir = pContext.split(dirPath).lastOrNull;
-      if (dir != null && dirPath.startsWith(primaryStorage) && appInventory.isPotentialAppDir(dir)) return AlbumType.app;
+      // do not restrict to directories on primary storage, as the directory could
+      // legitimately be elsewhere (e.g. Dual Messenger storage in `/storage/emulated/95/`)
+      if (appInventory.isPotentialAppDir(dirPath)) return AlbumType.app;
 
       return AlbumType.regular;
     });

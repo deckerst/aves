@@ -5,8 +5,8 @@ import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterListDetailsTheme extends StatelessWidget {
@@ -18,7 +18,7 @@ class FilterListDetailsTheme extends StatelessWidget {
   static const double titleIconPadding = 8;
   static const double titleDetailPadding = 6;
 
-  const FilterListDetailsTheme({
+  const new({
     super.key,
     required this.extent,
     required this.child,
@@ -106,7 +106,7 @@ class FilterListDetailsThemeData {
   final double titleIconSize;
   final IconThemeData captionIconTheme;
 
-  const FilterListDetailsThemeData({
+  const new({
     required this.extent,
     required this.titleMaxLines,
     required this.isMinExtent,

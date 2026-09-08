@@ -46,8 +46,8 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef QueryTest<T extends CollectionFilter> = List<FilterGridItem<T>> Function(BuildContext context, List<FilterGridItem<T>> filters, String query);
@@ -67,7 +67,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final FilterTileTapCallback<T> onTileTap;
   final StreamController<DraggableScrollbarEvent> _draggableScrollBarEventStreamController = StreamController.broadcast();
 
-  FilterGridPage({
+  new({
     super.key,
     this.settingsRouteKey,
     required this.appBar,
@@ -181,7 +181,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
   final FilterTileTapCallback<T> onTileTap;
 
-  const _FilterGrid({
+  const new({
     super.key,
     required this.settingsRouteKey,
     required this.appBar,
@@ -268,7 +268,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final HeroType heroType;
   final FilterTileTapCallback<T> onTileTap;
 
-  const _FilterGridContent({
+  const new({
     super.key,
     required this.appBar,
     required this.appBarHeight,
@@ -470,7 +470,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   final ScrollController scrollController;
   final TileLayout tileLayout;
 
-  const _FilterSectionedContent({
+  const new({
     required this.appBar,
     required this.appBarHeightNotifier,
     required this.visibleSections,
@@ -611,7 +611,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
   final String? Function(BuildContext context, T filter) bannerBuilder;
   final Widget child;
 
-  const _FilterScaler({
+  const new({
     required this.scrollableKey,
     required this.appBarHeightNotifier,
     required this.tileLayout,
@@ -676,7 +676,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   final Widget Function() emptyBuilder;
   final ScrollController scrollController;
 
-  const _FilterScrollView({
+  const new({
     required this.scrollableKey,
     required this.appBar,
     required this.appBarHeightNotifier,

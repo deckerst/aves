@@ -8,13 +8,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AlbumSectionHeader extends StatelessWidget {
   final String? directory, albumName;
   final bool selectable;
 
-  const AlbumSectionHeader({
+  const new({
     super.key,
     required this.directory,
     required this.albumName,

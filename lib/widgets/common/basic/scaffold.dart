@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
@@ -10,7 +10,7 @@ class AvesScaffold extends StatelessWidget {
   final bool? resizeToAvoidBottomInset;
   final bool extendBody;
 
-  const AvesScaffold({
+  const new({
     super.key,
     this.appBar,
     this.body,

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // from https://stackoverflow.com/a/71099304/786656
 class DashedPathPainter extends CustomPainter {
@@ -12,7 +12,7 @@ class DashedPathPainter extends CustomPainter {
   final double dashLength;
   late DashedPathProperties _dashedPathProperties;
 
-  DashedPathPainter({
+  new({
     required this.originalPath,
     required this.pathColor,
     this.strokeWidth = 3.0,
@@ -71,7 +71,7 @@ class DashedPathProperties {
   double _remainingDashGapLength;
   bool _previousWasDash;
 
-  DashedPathProperties({
+  new({
     required this.path,
     required double dashLength,
     required double dashGapLength,

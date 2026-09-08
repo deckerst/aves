@@ -133,7 +133,6 @@
     "collectionSelectSectionTooltip": "اختر القسم",
     "settingsAllowInstalledAppAccessSubtitle": "يستخدم لتحسين عرض الألبوم",
     "aboutLicensesBanner": "يستخدم هذا التطبيق الحزم والمكتبات مفتوحة المصدر التالية.",
-    "moveUndatedConfirmationDialogSetDate": "حفظ التواريخ",
     "coordinateDmsNorth": "شمال",
     "dateYesterday": "أمس",
     "viewerInfoLabelDate": "التاريخ",
@@ -390,7 +389,6 @@
     "settingsDoubleBackExit": "اضغط على «رجوع» مرتين للخروج",
     "entryActionShare": "مشاركة",
     "drawerCollectionSphericalVideos": "فيديوهات 360°",
-    "moveUndatedConfirmationDialogMessage": "هل تريد حفظ تواريخ العناصر قبل المتابعة؟",
     "collectionEditFailureFeedback": "{count, plural, =1{فشل تحرير عنصر واحد} other{فشل التحرير {count} items}}",
     "@collectionEditFailureFeedback": {
         "placeholders": {
@@ -495,7 +493,6 @@
     },
     "settingsScreenSaverPageTitle": "شاشة التوقف",
     "settingsNavigationDrawerEditorPageTitle": "قائمة التنقل",
-    "settingsConfirmationBeforeMoveUndatedItems": "اسأل قبل نقل العناصر غير المؤرخة",
     "albumPageTitle": "الألبومات",
     "editEntryLocationDialogTitle": "موقع",
     "statsWithGps": "{count, plural, =1{1 عنصر مع الموقع} other{{count} العناصر مع الموقع}}",

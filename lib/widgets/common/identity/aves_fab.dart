@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvesFab extends StatelessWidget {
   final String tooltip;
   final Widget icon;
   final VoidCallback? onPressed;
 
-  const AvesFab({
+  const new({
     super.key,
     required this.tooltip,
     required this.icon,

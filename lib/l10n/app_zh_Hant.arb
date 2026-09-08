@@ -176,8 +176,6 @@
     "addShortcutDialogLabel": "捷徑標籤",
     "addShortcutButtonLabel": "新增",
     "noMatchingAppDialogMessage": "無對應的 app 能處理.",
-    "moveUndatedConfirmationDialogMessage": "處理前儲存項目日期?",
-    "moveUndatedConfirmationDialogSetDate": "儲存日期",
     "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{刪除這個項目?} other{刪除這 {count} 項目?}}",
     "@deleteEntriesConfirmationDialogMessage": {
         "placeholders": {
@@ -387,7 +385,6 @@
     "settingsConfirmationDialogTitle": "確認對話框",
     "settingsConfirmationBeforeDeleteItems": "永久刪除項目前先詢問",
     "settingsConfirmationBeforeMoveToBinItems": "移動項目到資源回收桶前先詢問",
-    "settingsConfirmationBeforeMoveUndatedItems": "日期不詳的項目移動前先詢問",
     "settingsConfirmationAfterMoveToBinItems": "移動項目到資源回收桶後顯示訊息",
     "settingsNavigationDrawerEditorPageTitle": "操作選單",
     "settingsNavigationDrawerTabTypes": "類型",

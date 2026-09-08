@@ -13,7 +13,7 @@ class VaultDetails extends Equatable {
   @override
   List<Object?> get props => [name, autoLockScreenOff, useBin, lockType];
 
-  const VaultDetails({
+  const new({
     required this.name,
     required this.autoLockScreenOff,
     required this.useBin,
@@ -31,7 +31,7 @@ class VaultDetails extends Equatable {
     );
   }
 
-  factory VaultDetails.fromMap(Map map) {
+  factory fromMap(Map map) {
     return VaultDetails(
       name: map['name'] as String,
       autoLockScreenOff: (map['autoLock'] as int? ?? 0) != 0,

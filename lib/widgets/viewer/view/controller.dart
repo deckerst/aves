@@ -2,19 +2,19 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/widgets/viewer/view/histogram.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ViewStateController with HistogramMixin {
   final AvesEntry entry;
-  final ValueNotifier<ViewState> viewStateNotifier;
+  late final ValueNotifier<ViewState> viewStateNotifier;
   final ValueNotifier<ImageProvider?> fullImageNotifier = ValueNotifier(null);
 
   ViewState get viewState => viewStateNotifier.value;
 
-  ViewStateController({
+  new({
     required this.entry,
-    required this.viewStateNotifier,
+    required ViewState initialViewState,
   }) {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
@@ -23,6 +23,7 @@ class ViewStateController with HistogramMixin {
         object: this,
       );
     }
+    viewStateNotifier = ValueNotifier<ViewState>(initialViewState);
   }
 
   void dispose() {

@@ -6,10 +6,10 @@ extension ExtraVaultLockTypeView on VaultLockType {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      VaultLockType.system => l10n.settingsSystemDefault,
-      VaultLockType.pattern => l10n.vaultLockTypePattern,
-      VaultLockType.pin => l10n.vaultLockTypePin,
-      VaultLockType.password => l10n.vaultLockTypePassword,
+      .system => l10n.settingsSystemDefault,
+      .pattern => l10n.vaultLockTypePattern,
+      .pin => l10n.vaultLockTypePin,
+      .password => l10n.vaultLockTypePassword,
     };
   }
 }

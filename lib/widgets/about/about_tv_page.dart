@@ -11,11 +11,11 @@ import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AboutTvPage extends StatelessWidget {
-  const AboutTvPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class AboutTvPage extends StatelessWidget {
 }
 
 class _Content extends StatefulWidget {
-  const _Content();
+  const new();
 
   @override
   State<_Content> createState() => _ContentState();

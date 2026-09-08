@@ -4,12 +4,12 @@ import 'package:aves/widgets/common/basic/wheel.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DurationDialog extends StatefulWidget {
   final int initialSeconds;
 
-  const DurationDialog({
+  const new({
     super.key,
     required this.initialSeconds,
   });

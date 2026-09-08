@@ -223,7 +223,6 @@
     "videoPlaybackSkip": "छोड़े",
     "newAlbumDialogNameLabelAlreadyExistsHelper": "डायरेक्टरी पहले से मौजूद",
     "coordinateDmsEast": "पू",
-    "moveUndatedConfirmationDialogSetDate": "तारीख सहेजें",
     "notEnoughSpaceDialogMessage": "इस ऑपरेशन को पूरा करने के लिए \"{volume}\" पर “{neededSize}” खाली जगह की आवश्यकता है, लेकिन केवल {freeSize} जगह है।।",
     "@notEnoughSpaceDialogMessage": {
         "placeholders": {
@@ -343,7 +342,6 @@
     "addShortcutDialogLabel": "शॉर्टकट लेबल",
     "newVaultWarningDialogMessage": "वॉल्ट में आइटम केवल इस ऐप के लिए व अन्य के लिए नहीं उपलब्ध हैं।\n\nयदि आप इस ऐप को अनइंस्टॉल करते हैं, या इस ऐप डेटा को साफ़ करते हैं, तो आप इन सभी आइटम को खो देंगे।।",
     "configureVaultDialogTitle": "वॉल्ट को कॉन्फ़िगर करना",
-    "moveUndatedConfirmationDialogMessage": "आगे बढ़ने से पहले आइटम की तारीख सेव करे?",
     "setCoverDialogLatest": "नवीनतम आइटम",
     "hideFilterConfirmationDialogMessage": "मैचिंग तस्वीरें और वीडियो आपके कलेक्शन से छिपे होंगे। आप उन्हें फिर से \"गोपनीयता\" सेटिंग्स से दिखा सकते हैं।\n\nक्या आप उन्हें छिपाना चाहते हैं?",
     "renameEntrySetPageTitle": "नाम बदलें",
@@ -719,7 +717,6 @@
     "appExportFavourites": "पसंदीदा",
     "settingsNavigationSectionTitle": "नेविगेशन",
     "settingsHomeDialogTitle": "होम",
-    "settingsConfirmationBeforeMoveUndatedItems": "अदिनांकित आइटम को ले जाने से पहले पूछे",
     "settingsNavigationDrawerTile": "नेविगेशन मेनू",
     "settingsNavigationDrawerTabPages": "पेज़",
     "mapStyleOsmLiberty": "OSM Liberty",

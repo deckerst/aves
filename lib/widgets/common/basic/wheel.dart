@@ -1,5 +1,5 @@
 import 'package:aves/theme/durations.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,7 @@ class WheelSelector<T> extends StatefulWidget {
   final TextAlign textAlign;
   final String Function(T v) format;
 
-  const WheelSelector({
+  const new({
     super.key,
     required this.valueNotifier,
     required this.values,
@@ -158,13 +158,13 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
 }
 
 class _AdjustValueIntent extends Intent {
-  const _AdjustValueIntent({
+  const new({
     required this.type,
   });
 
-  const _AdjustValueIntent.up() : type = _ValueAdjustmentType.up;
+  const new up() : type = _ValueAdjustmentType.up;
 
-  const _AdjustValueIntent.down() : type = _ValueAdjustmentType.down;
+  const new down() : type = _ValueAdjustmentType.down;
 
   final _ValueAdjustmentType type;
 }

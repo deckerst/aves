@@ -24,7 +24,7 @@ class MimeFilter extends CollectionFilter {
   @override
   List<Object?> get props => [mime, reversed];
 
-  MimeFilter(this.mime, {super.reversed = false}) {
+  new(this.mime, {super.reversed = false}) {
     IconData? icon;
     var lowMime = mime.toLowerCase();
     if (lowMime.endsWith('/*')) {
@@ -43,7 +43,7 @@ class MimeFilter extends CollectionFilter {
     _icon = icon ?? AIcons.vector;
   }
 
-  factory MimeFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return MimeFilter(
       json['mime'] as String,
       reversed: json['reversed'] as bool? ?? false,

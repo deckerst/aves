@@ -3,20 +3,19 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ConfirmationDialogPage extends StatelessWidget {
   static const routeName = '/settings/navigation_confirmation';
 
   static const List<String> settingKeys = [
-    SettingKeys.confirmMoveUndatedItemsKey,
     SettingKeys.confirmMoveToBinKey,
     SettingKeys.confirmDeleteForeverKey,
     SettingKeys.confirmAfterMoveToBinKey,
     SettingKeys.confirmCreateVaultKey,
   ];
 
-  const ConfirmationDialogPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +27,6 @@ class ConfirmationDialogPage extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
-            SettingsSwitchListTile(
-              selector: (context, s) => s.confirmMoveUndatedItems,
-              onChanged: (v) => settings.confirmMoveUndatedItems = v,
-              title: (_) => l10n.settingsConfirmationBeforeMoveUndatedItems,
-            ),
             SettingsSwitchListTile(
               selector: (context, s) => s.confirmMoveToBin,
               onChanged: (v) => settings.confirmMoveToBin = v,

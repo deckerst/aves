@@ -39,9 +39,9 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryViewerStack extends StatefulWidget {
@@ -49,7 +49,7 @@ class EntryViewerStack extends StatefulWidget {
   final AvesEntry initialEntry;
   final ViewerController viewerController;
 
-  const EntryViewerStack({
+  const new({
     super.key,
     this.collection,
     required this.initialEntry,

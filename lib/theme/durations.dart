@@ -92,7 +92,7 @@ class DurationsData {
   // delays & refresh intervals
   final Duration staggeredAnimationDelay;
 
-  const DurationsData({
+  const new({
     this.expansionTileAnimation = const Duration(milliseconds: 200),
     this.formTransition = const Duration(milliseconds: 200),
     this.formTextStyleTransition = const Duration(milliseconds: 800),
@@ -108,7 +108,7 @@ class DurationsData {
     this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
   }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
 
-  factory DurationsData.noAnimation() {
+  factory noAnimation() {
     return DurationsData(
       // as of Flutter v2.5.1, `ExpansionPanelList` throws if animation duration is zero
       expansionTileAnimation: const Duration(microseconds: 1),

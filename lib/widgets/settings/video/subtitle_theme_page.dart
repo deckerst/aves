@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/video/subtitle_sample.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SubtitleThemePage extends StatelessWidget {
@@ -22,7 +22,7 @@ class SubtitleThemePage extends StatelessWidget {
     SettingKeys.subtitleShowOutlineKey,
   ];
 
-  const SubtitleThemePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

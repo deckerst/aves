@@ -7,7 +7,7 @@ import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 class TvMetadataPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class TvMetadataPage extends StatefulWidget {
   final AvesEntry entry;
   final Map<String, MetadataDirectory> metadata;
 
-  const TvMetadataPage({
+  const new({
     super.key,
     required this.entry,
     required this.metadata,

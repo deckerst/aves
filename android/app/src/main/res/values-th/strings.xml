@@ -5,7 +5,8 @@
     <string name="wallpaper">ภาพพื้นหลัง</string>
     <string name="search_shortcut_short_label">ค้นหา</string>
     <string name="videos_shortcut_short_label">วิดีโอ</string>
-    <string name="analysis_channel_name">สแกนสื่อบันเทิง</string>
-    <string name="analysis_notification_default_title">กำลังสแกนสื่อบันเทิง</string>
+    <string name="analysis_channel_name">สแกนสื่อ</string>
+    <string name="analysis_notification_default_title">กำลังสแกนสื่อ</string>
     <string name="analysis_notification_action_stop">หยุด</string>
+    <string name="map_shortcut_short_label">แผนที่</string>
 </resources>

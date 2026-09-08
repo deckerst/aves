@@ -2,13 +2,13 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/fx/colors.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class AvesLogo extends StatelessWidget {
   final double size;
 
-  const AvesLogo({
+  const new({
     super.key,
     required this.size,
   });

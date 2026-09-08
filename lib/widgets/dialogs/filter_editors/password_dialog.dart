@@ -1,13 +1,13 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PasswordDialog extends StatefulWidget {
   static const routeName = '/dialog/password';
 
   final bool needConfirmation;
 
-  const PasswordDialog({
+  const new({
     super.key,
     required this.needConfirmation,
   });

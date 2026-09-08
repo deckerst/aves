@@ -12,7 +12,7 @@ import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TagEditorPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class TagEditorPage extends StatefulWidget {
 
   final Map<AvesEntry, Set<TagFilter>> tagsByEntry;
 
-  const TagEditorPage({
+  const new({
     super.key,
     required this.tagsByEntry,
   });
@@ -319,7 +319,7 @@ class _FilterRow extends StatelessWidget {
   final ValueNotifier<String?> expandedNotifier;
   final void Function(CollectionFilter filter) onTap;
 
-  const _FilterRow({
+  const new({
     required this.title,
     required this.filters,
     required this.expandedNotifier,
@@ -344,7 +344,7 @@ class _FilterRow extends StatelessWidget {
 class _TagCount extends StatelessWidget {
   final int count;
 
-  const _TagCount({
+  const new({
     required this.count,
   });
 

@@ -7,10 +7,10 @@ import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AboutTranslators extends StatelessWidget {
-  const AboutTranslators({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _RandomTextSpanHighlighter extends StatefulWidget {
   final List<String> spans;
   final Color color;
 
-  const _RandomTextSpanHighlighter({
+  const new({
     required this.spans,
     required this.color,
   });

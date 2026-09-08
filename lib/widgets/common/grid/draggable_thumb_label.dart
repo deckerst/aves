@@ -1,13 +1,13 @@
 import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class DraggableCrumbLabel extends StatelessWidget {
   final String label;
 
-  const DraggableCrumbLabel({
+  const new({
     super.key,
     required this.label,
   });
@@ -28,7 +28,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   final double offsetY;
   final List<String> Function(BuildContext context, T item) lineBuilder;
 
-  const DraggableThumbLabel({
+  const new({
     super.key,
     required this.offsetY,
     required this.lineBuilder,

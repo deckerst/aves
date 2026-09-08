@@ -4,14 +4,14 @@ import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 
 class SectionRow extends StatelessWidget {
   final IconData icon;
   final EdgeInsets padding;
 
-  const SectionRow({
+  const new({
     super.key,
     required this.icon,
     this.padding = const EdgeInsets.symmetric(vertical: 16),
@@ -62,7 +62,7 @@ class InfoRowGroup extends StatefulWidget {
     return theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant).merge(_keyStyle);
   }
 
-  const InfoRowGroup({
+  const new({
     super.key,
     required this.info,
     this.maxValueLength = defaultMaxValueLength,

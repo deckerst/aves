@@ -7,13 +7,13 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OverlayDateRow extends StatelessWidget {
   final AvesEntry entry;
   final MultiPageController? multiPageController;
 
-  const OverlayDateRow({
+  const new({
     super.key,
     required this.entry,
     required this.multiPageController,

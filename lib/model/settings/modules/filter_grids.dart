@@ -7,27 +7,31 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:synchronized/synchronized.dart';
 
 mixin FilterGridsSettings on SettingsAccess {
-  AlbumChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumSectionFactorKey, SettingsDefaults.albumGroupFactor, AlbumChipSectionFactor.values);
+  ChipSectionFactor get albumSectionFactor => getEnumOrDefault(SettingKeys.albumSectionFactorKey, SettingsDefaults.chipSectionFactor, ChipSectionFactor.values);
 
-  set albumSectionFactor(AlbumChipSectionFactor newValue) => set(SettingKeys.albumSectionFactorKey, newValue.name);
+  set albumSectionFactor(ChipSectionFactor newValue) => set(SettingKeys.albumSectionFactorKey, newValue.name);
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+  ChipSectionFactor get tagSectionFactor => getEnumOrDefault(SettingKeys.tagSectionFactorKey, SettingsDefaults.chipSectionFactor, ChipSectionFactor.values);
+
+  set tagSectionFactor(ChipSectionFactor newValue) => set(SettingKeys.tagSectionFactorKey, newValue.name);
+
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => set(SettingKeys.albumSortFactorKey, newValue.name);
 
-  ChipSortFactor get countrySortFactor => getEnumOrDefault(SettingKeys.countrySortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(SettingKeys.countrySortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
 
   set countrySortFactor(ChipSortFactor newValue) => set(SettingKeys.countrySortFactorKey, newValue.name);
 
-  ChipSortFactor get stateSortFactor => getEnumOrDefault(SettingKeys.stateSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+  ChipSortFactor get stateSortFactor => getEnumOrDefault(SettingKeys.stateSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
 
   set stateSortFactor(ChipSortFactor newValue) => set(SettingKeys.stateSortFactorKey, newValue.name);
 
-  ChipSortFactor get placeSortFactor => getEnumOrDefault(SettingKeys.placeSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+  ChipSortFactor get placeSortFactor => getEnumOrDefault(SettingKeys.placeSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
 
   set placeSortFactor(ChipSortFactor newValue) => set(SettingKeys.placeSortFactorKey, newValue.name);
 
-  ChipSortFactor get tagSortFactor => getEnumOrDefault(SettingKeys.tagSortFactorKey, SettingsDefaults.chipListSortFactor, ChipSortFactor.values);
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(SettingKeys.tagSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => set(SettingKeys.tagSortFactorKey, newValue.name);
 

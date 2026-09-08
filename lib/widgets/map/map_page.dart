@@ -36,9 +36,9 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapPage extends StatelessWidget {
@@ -51,7 +51,7 @@ class MapPage extends StatelessWidget {
   final MappedGeoTiff? overlayEntry;
   final List<GeoTrack>? tracks;
 
-  const MapPage({
+  const new({
     super.key,
     required this.collection,
     this.initialLocation,
@@ -100,7 +100,7 @@ class _Content extends StatefulWidget {
   final MappedGeoTiff? overlayEntry;
   final List<GeoTrack>? tracks;
 
-  const _Content({
+  const new({
     required this.collection,
     this.initialLocation,
     this.initialZoom,

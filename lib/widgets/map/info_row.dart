@@ -2,7 +2,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/widgets/map/address_row.dart';
 import 'package:aves/widgets/map/date_row.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MapInfoRow extends StatelessWidget {
   final ValueNotifier<AvesEntry?> entryNotifier;
@@ -10,7 +10,7 @@ class MapInfoRow extends StatelessWidget {
   static const double iconPadding = 8.0;
   static const double _interRowPadding = 2.0;
 
-  const MapInfoRow({
+  const new({
     super.key,
     required this.entryNotifier,
   });

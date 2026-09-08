@@ -1,6 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class PopupMenuExpansionPanel<T> extends PopupMenuEntry<T> {
@@ -11,7 +11,7 @@ class PopupMenuExpansionPanel<T> extends PopupMenuEntry<T> {
   final String title;
   final List<PopupMenuEntry<T>> items;
 
-  const PopupMenuExpansionPanel({
+  const new({
     super.key,
     this.enabled = true,
     this.height = kMinInteractiveDimension,

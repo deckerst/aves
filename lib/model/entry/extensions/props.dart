@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -10,7 +11,6 @@ import 'package:aves/ref/unicode.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/time_utils.dart';
 
 extension ExtraAvesEntryProps on AvesEntry {
@@ -114,6 +114,7 @@ extension ExtraAvesEntryProps on AvesEntry {
     }
   }
 
+  // storage directory path, without the trailing separator
   String? get storageDirectory {
     if (!trashed) {
       // prefer normalized paths

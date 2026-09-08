@@ -17,60 +17,61 @@ extension ExtraAvesEntryImages on AvesEntry {
   }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
-    final requestExtent = extent.roundToDouble();
-    EntryCache.markThumbnailExtent(requestExtent);
-    return ThumbnailProviderKey(
+    final key = ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       dateModifiedMillis: dateModifiedMillis ?? -1,
-      extent: requestExtent,
+      extent: extent.roundToDouble(),
     );
+    EntryCache.registerKey(key);
+    return key;
   }
 
   RegionProvider getRegion({int sampleSize = 1, double scale = 1, required Rectangle<num> region}) {
-    return RegionProvider(
-      RegionProviderKey(
-        uri: uri,
-        mimeType: mimeType,
-        pageId: pageId,
-        sizeBytes: sizeBytes,
-        rotationDegrees: rotationDegrees,
-        isFlipped: isFlipped,
-        sampleSize: sampleSize,
-        regionRect: Rectangle(
-          (region.left * scale).round(),
-          (region.top * scale).round(),
-          (region.width * scale).round(),
-          (region.height * scale).round(),
-        ),
-        imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
+    final key = RegionProviderKey(
+      uri: uri,
+      mimeType: mimeType,
+      pageId: pageId,
+      sizeBytes: sizeBytes,
+      rotationDegrees: rotationDegrees,
+      isFlipped: isFlipped,
+      sampleSize: sampleSize,
+      regionRect: Rectangle(
+        (region.left * scale).round(),
+        (region.top * scale).round(),
+        (region.width * scale).round(),
+        (region.height * scale).round(),
       ),
+      imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
     );
+    EntryCache.registerKey(key);
+    return RegionProvider(key);
   }
 
   Rectangle<double> get fullImageRegion => Rectangle<double>(.0, .0, width.toDouble(), height.toDouble());
 
-  FullImage get fullImage => FullImage(
-    uri: uri,
-    mimeType: mimeType,
-    pageId: pageId,
-    rotationDegrees: rotationDegrees,
-    isFlipped: isFlipped,
-    isAnimated: isAnimated,
-    sizeBytes: sizeBytes,
-  );
+  FullImage getFullImage() {
+    var key = FullImage(
+      uri: uri,
+      mimeType: mimeType,
+      pageId: pageId,
+      rotationDegrees: rotationDegrees,
+      isFlipped: isFlipped,
+      isAnimated: isAnimated,
+      sizeBytes: sizeBytes,
+    );
+    EntryCache.registerKey(key);
+    return key;
+  }
 
   bool _isReady(Object providerKey) => imageCache.statusForKey(providerKey).keepAlive;
 
-  List<ThumbnailProvider> get cachedThumbnails => EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).where(_isReady).map(ThumbnailProvider.new).toList();
+  List<ThumbnailProvider> get cachedThumbnails => EntryCache.getThumbnailProviderKeys(uri).where(_isReady).map(ThumbnailProvider.new).toList();
 
-  ThumbnailProvider get bestCachedThumbnail {
-    final sizedThumbnailKey = EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).firstWhereOrNull(_isReady);
-    return sizedThumbnailKey != null ? ThumbnailProvider(sizedThumbnailKey) : getThumbnail();
-  }
+  ThumbnailProvider get bestCachedThumbnail => cachedThumbnails.firstOrNull ?? getThumbnail();
 
   static int sampleSizeForScale({
     required double magnifierScale,

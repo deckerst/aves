@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CheckeredPainter extends CustomPainter {
   final Paint lightPaint, darkPaint;
   final double checkSize;
   final Offset offset;
 
-  CheckeredPainter({
+  new({
     Color light = const Color(0xFF999999),
     Color dark = const Color(0xFF666666),
     this.checkSize = 20,

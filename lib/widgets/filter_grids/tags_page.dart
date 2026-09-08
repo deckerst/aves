@@ -15,7 +15,7 @@ import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class TagListPage extends StatelessWidget {
@@ -23,7 +23,7 @@ class TagListPage extends StatelessWidget {
 
   final Uri? initialGroup;
 
-  const TagListPage({
+  const new({
     super.key,
     required this.initialGroup,
   });
@@ -39,27 +39,28 @@ class TagListPage extends StatelessWidget {
         // to access filter group provider from subtree context
         builder: (context) {
           final source = context.read<CollectionSource>();
-          return Selector<Settings, (ChipSortFactor, bool, Set<CollectionFilter>)>(
-            selector: (context, s) => (s.tagSortFactor, s.tagSortReverse, s.pinnedFilters),
+          return Selector<Settings, (ChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
+            selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor, s.tagSortReverse, s.pinnedFilters),
             shouldRebuild: (t1, t2) {
               // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records
               const eq = DeepCollectionEquality();
-              return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3));
+              return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3) && eq.equals(t1.$4, t2.$4));
             },
-            builder: (context, s, child) {
+            builder: (context, _, child) {
               return ListenableBuilder(
                 listenable: tagGrouping,
-                builder: (context, child) => StreamBuilder(
+                builder: (context, child) => StreamBuilder<TagsChangedEvent>(
                   stream: source.eventBus.on<TagsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = getGridItems(source, ChipType.values.toSet(), groupUri);
                     return FilterNavigationPage<TagBaseFilter, TagChipSetActionDelegate>(
                       source: source,
                       title: context.l10n.tagPageTitle,
                       sortFactor: settings.tagSortFactor,
+                      showHeaders: settings.tagSectionFactor != ChipSectionFactor.none,
                       actionDelegate: TagChipSetActionDelegate(gridItems),
-                      filterSections: groupToSections(gridItems),
+                      filterSections: groupToSections(context, gridItems),
                       emptyBuilder: () => EmptyContent(
                         icon: AIcons.tag,
                         text: context.l10n.tagEmpty,
@@ -114,18 +115,52 @@ class TagListPage extends StatelessWidget {
     return FilterNavigationPage.sort(settings.tagSortFactor, settings.tagSortReverse, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<TagBaseFilter>>> groupToSections(Iterable<FilterGridItem<TagBaseFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<TagBaseFilter>>> groupToSections(BuildContext context, Iterable<FilterGridItem<TagBaseFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<TagFilter>();
-    final byPin = groupBy<FilterGridItem<TagBaseFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
+    final byPin = groupBy<FilterGridItem<TagBaseFilter>, bool>(sortedMapEntries, (v) => pinned.contains(v.filter));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 
-    return {
-      if (pinnedMapEntries.isNotEmpty || unpinnedMapEntries.isNotEmpty)
-        const ChipSectionKey(): [
-          ...pinnedMapEntries,
-          ...unpinnedMapEntries,
-        ],
-    };
+    var sections = <ChipSectionKey, List<FilterGridItem<TagBaseFilter>>>{};
+    switch (settings.tagSectionFactor) {
+      case ChipSectionFactor.importance:
+        final groupKey = ChipImportanceSectionKey.group(context);
+        final regularKey = ChipImportanceSectionKey.regular(context, AIcons.tag);
+        sections = groupBy<FilterGridItem<TagBaseFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
+          final filter = kv.filter;
+          switch (filter) {
+            case TagGroupFilter _:
+              return groupKey;
+            case TagFilter _:
+            default:
+              return regularKey;
+          }
+        });
+
+        sections = {
+          // group ordering
+          if (sections.containsKey(groupKey)) groupKey: sections[groupKey]!,
+          if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
+        };
+      case ChipSectionFactor.mimeType:
+      case ChipSectionFactor.volume:
+      case ChipSectionFactor.none:
+        return {
+          if (sortedMapEntries.isNotEmpty)
+            const ChipSectionKey(): [
+              ...pinnedMapEntries,
+              ...unpinnedMapEntries,
+            ],
+        };
+    }
+
+    if (pinnedMapEntries.isNotEmpty) {
+      sections = Map.fromEntries([
+        MapEntry(ChipImportanceSectionKey.pinned(context), pinnedMapEntries),
+        ...sections.entries,
+      ]);
+    }
+
+    return sections;
   }
 }

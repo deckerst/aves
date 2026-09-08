@@ -333,8 +333,6 @@
             }
         }
     },
-    "moveUndatedConfirmationDialogMessage": "Kas enne jätkamist salvestame objekti kuupäevad?",
-    "moveUndatedConfirmationDialogSetDate": "Salvesta kuupäevad",
     "videoResumeDialogMessage": "Kas sa soovid jätkata esitamist {time} kohalt?",
     "@videoResumeDialogMessage": {
         "placeholders": {
@@ -735,7 +733,6 @@
     "settingsDoubleBackExit": "Väljumiseks klõpsi „Tagasi“ nuppu kaks korda",
     "settingsConfirmationTile": "Kinnitused",
     "settingsConfirmationBeforeMoveToBinItems": "Küsi kinnitust enne objektide viskamist prügikasti",
-    "settingsConfirmationBeforeMoveUndatedItems": "Küsi kinnitust enne kuupäevadeta objektide teisaldamist",
     "settingsNavigationDrawerTile": "Ikooniriba",
     "settingsNavigationDrawerBanner": "Menüüobjektide teisaldamiseks ja järjekorra muutmiseks vajuta ja hoia all.",
     "settingsThumbnailSectionTitle": "Pisipildid",

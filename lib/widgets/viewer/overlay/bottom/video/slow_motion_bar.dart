@@ -8,13 +8,13 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/video/progress_bar.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SlowMotionBar extends StatefulWidget {
   final AvesVideoController? controller;
   final Animation<double> scale;
 
-  const SlowMotionBar({
+  const new({
     super.key,
     required this.controller,
     required this.scale,
@@ -130,7 +130,7 @@ class _SlowMotionRangePainter extends CustomPainter {
   static const double _slowLinePeriod = 16;
   static const double _slowLineAmplitude = 4;
 
-  _SlowMotionRangePainter({
+  new({
     required this.range,
     required this.handleColor,
     required this.lineColor,

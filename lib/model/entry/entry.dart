@@ -55,7 +55,7 @@ class AvesEntry with AvesEntryBase {
 
   final AChangeNotifier metadataChangeNotifier = .new(), addressChangeNotifier = .new();
 
-  AvesEntry({
+  new({
     required int? id,
     required this.uri,
     required String? path,
@@ -130,7 +130,7 @@ class AvesEntry with AvesEntryBase {
   }
 
   // from DB or platform source entry
-  factory AvesEntry.fromMap(Map map) {
+  factory fromMap(Map map) {
     return AvesEntry(
       id: map[EntryFields.id] as int?,
       uri: map[EntryFields.uri] as String,
@@ -491,7 +491,8 @@ class AvesEntry with AvesEntryBase {
     bool oldIsFlipped,
   ) async {
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
-      await EntryCache.evict(uri, oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped, isAnimated);
+      EntryCache.evict(uri);
+      await mediaFetchService.clearDecoders();
       visualChangeNotifier.notify();
     }
   }

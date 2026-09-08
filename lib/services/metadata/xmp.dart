@@ -10,7 +10,7 @@ class AvesXmp extends Equatable {
   @override
   List<Object?> get props => [xmpString, extendedXmpString];
 
-  const AvesXmp({
+  const new({
     required this.xmpString,
     this.extendedXmpString,
   });

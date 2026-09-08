@@ -2,7 +2,7 @@ import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 
 class XmpCrsNamespace extends XmpNamespace {
-  XmpCrsNamespace({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.crs);
+  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.crs);
 
   @override
   late final List<XmpCardData> cards = [

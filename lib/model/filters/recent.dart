@@ -23,11 +23,11 @@ class RecentlyAddedFilter extends CollectionFilter {
   @override
   List<Object?> get props => [reversed];
 
-  RecentlyAddedFilter._private({super.reversed = false}) {
+  new _private({super.reversed = false}) {
     updateNow();
   }
 
-  factory RecentlyAddedFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     final reversed = json['reversed'] as bool? ?? false;
     return reversed ? instanceReversed : instance;
   }

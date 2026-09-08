@@ -6,14 +6,14 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 
 class HomeError extends StatefulWidget {
   final Object error;
   final StackTrace stack;
 
-  const HomeError({
+  const new({
     super.key,
     required this.error,
     required this.stack,

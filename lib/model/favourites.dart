@@ -12,7 +12,7 @@ final Favourites favourites = Favourites._private();
 class Favourites with ChangeNotifier {
   Set<FavouriteRow> _rows = {};
 
-  Favourites._private() {
+  new _private() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
@@ -111,11 +111,11 @@ class FavouriteRow extends Equatable {
   @override
   List<Object?> get props => [entryId];
 
-  const FavouriteRow({
+  const new({
     required this.entryId,
   });
 
-  factory FavouriteRow.fromMap(Map map) {
+  factory fromMap(Map map) {
     return FavouriteRow(
       entryId: map['id'] as int,
     );

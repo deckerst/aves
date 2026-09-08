@@ -7,13 +7,13 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
   final AvesEntry entry;
 
-  const ThumbnailEntryOverlay({
+  const new({
     super.key,
     required this.entry,
   });
@@ -37,7 +37,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 class ThumbnailHighlightOverlay extends StatefulWidget {
   final AvesEntry entry;
 
-  const ThumbnailHighlightOverlay({
+  const new({
     super.key,
     required this.entry,
   });
@@ -85,7 +85,7 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
 class ThumbnailZoomOverlay extends StatelessWidget {
   final VoidCallback? onZoom;
 
-  const ThumbnailZoomOverlay({
+  const new({
     super.key,
     this.onZoom,
   });

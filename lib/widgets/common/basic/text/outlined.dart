@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class OutlinedText extends StatelessWidget {
   final List<TextSpan> textSpans;
@@ -14,7 +14,7 @@ class OutlinedText extends StatelessWidget {
 
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
-  const OutlinedText({
+  const new({
     super.key,
     required this.textSpans,
     double? outlineWidth,

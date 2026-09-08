@@ -2,13 +2,13 @@ import 'dart:io' as io;
 
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/map/leaflet/vector_style_reader_extra.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:vector_map_tiles/src/io/io.dart' as vmtio show Directory; // ignore: implementation_imports
 import 'package:vector_map_tiles/vector_map_tiles.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vtr;
 
 class OsmLibertyLayer extends StatefulWidget {
-  const OsmLibertyLayer({super.key});
+  const new({super.key});
 
   @override
   State<OsmLibertyLayer> createState() => _OsmLibertyLayerState();

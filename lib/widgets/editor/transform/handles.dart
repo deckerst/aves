@@ -1,5 +1,5 @@
 import 'package:aves/widgets/editor/transform/cropper.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class VertexHandle extends StatefulWidget {
   final EdgeInsets margin;
@@ -7,7 +7,7 @@ class VertexHandle extends StatefulWidget {
   final ValueSetter<Offset> setPosition;
   final VoidCallback onDragStart, onDragEnd;
 
-  const VertexHandle({
+  const new({
     super.key,
     required this.margin,
     required this.getPosition,
@@ -63,7 +63,7 @@ class EdgeHandle extends StatefulWidget {
   final ValueSetter<Rect> setEdge;
   final VoidCallback onDragStart, onDragEnd;
 
-  const EdgeHandle({
+  const new({
     super.key,
     required this.margin,
     required this.getEdge,

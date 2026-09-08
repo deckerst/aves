@@ -54,11 +54,11 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations_plus/flutter_localizations_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -84,7 +84,6 @@ class AvesApp extends StatefulWidget {
     'sat', // Santali
     'sl', // Slovenian
     'sr', // Serbian
-    'th', // Thai
     'ur', // Urdu
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
@@ -95,7 +94,7 @@ class AvesApp extends StatefulWidget {
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
   // do not receive events fast enough for time sensitive actions (like PiP when leaving by gesture to home)
   // so we use this notifier to propagate events as soon as received by the top widget `AvesApp`
-  static final ValueNotifier<AppLifecycleState> lifecycleStateNotifier = ValueNotifier(AppLifecycleState.detached);
+  static final ValueNotifier<AppLifecycleState> lifecycleStateNotifier = ValueNotifier(.detached);
 
   // do not monitor all `ModalRoute`s, which would include popup menus,
   // so that we can react to fullscreen `PageRoute`s only
@@ -105,7 +104,7 @@ class AvesApp extends StatefulWidget {
 
   static EventBus get intentEventBus => _AvesAppState._intentEventBus;
 
-  const AvesApp({
+  const new({
     super.key,
     required this.flavor,
     this.debugIntentData,
@@ -127,8 +126,11 @@ class AvesApp extends StatefulWidget {
   }
 
   static void setSystemUIStyle(ThemeData theme) {
-    final style = theme.appBarTheme.systemOverlayStyle ?? systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
-    SystemChrome.setSystemUIOverlayStyle(style);
+    SystemChrome.setSystemUIOverlayStyle(themeSystemOverlayStyle(theme));
+  }
+
+  static SystemUiOverlayStyle themeSystemOverlayStyle(ThemeData theme) {
+    return theme.appBarTheme.systemOverlayStyle ?? systemUIStyleForBrightness(theme.brightness, theme.colorScheme.surfaceContainer);
   }
 
   static SystemUiOverlayStyle systemUIStyleForBrightness(Brightness themeBrightness, Color backgroundColor) {
@@ -185,7 +187,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   final EventChannel _mediaStoreChangeChannel = const OptionalEventChannel('deckers.thibault/aves/media_store_change');
   final EventChannel _newIntentChannel = const OptionalEventChannel('deckers.thibault/aves/new_intent_stream');
   final EventChannel _analysisCompletionChannel = const OptionalEventChannel('deckers.thibault/aves/analysis_events');
-  final EventChannel _errorChannel = const OptionalEventChannel('deckers.thibault/aves/error');
+  final EventChannel _platformMessageChannel = const OptionalEventChannel('deckers.thibault/aves/platform_messages');
 
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: 'app-navigator');
   static ScreenBrightness? _screenBrightness;
@@ -200,12 +202,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
     _subscriptions.add(_analysisCompletionChannel.receiveBroadcastStream().listen((_) => _onAnalysisCompletion()));
-    _subscriptions.add(_errorChannel.receiveBroadcastStream().cast<String>().listen(_onError));
+    _subscriptions.add(_platformMessageChannel.receiveBroadcastStream().cast<Map>().listen(_onPlatformMessage));
     _appModeNotifier.addListener(_onAppModeChanged);
 
     debugPrint('start listening to app lifecycle');
     WidgetsBinding.instance.addObserver(this);
-    AvesApp.lifecycleStateNotifier.value = WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.detached;
+    AvesApp.lifecycleStateNotifier.value = WidgetsBinding.instance.lifecycleState ?? .detached;
   }
 
   @override
@@ -328,6 +330,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   ...LocalizationsKmr.delegates,
                                   ...LocalizationsNn.delegates,
                                   ...AppLocalizations.localizationsDelegates,
+                                  ...GlobalMaterialLocalizations.delegates,
                                 ],
                                 supportedLocales: AvesApp.supportedLocales,
                                 scrollBehavior: AvesScrollBehavior(),
@@ -598,7 +601,18 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _mediaStoreSource.updateDerivedFilters();
   }
 
-  void _onError(String error) => reportService.recordError(error);
+  void _onPlatformMessage(Map fields) {
+    final level = fields['level'] as String?;
+    final message = fields['message'] as String?;
+    if (level != null && message != null) {
+      switch (level) {
+        case 'ERROR':
+          reportService.recordError(message);
+        case 'DEBUG':
+          localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} $message');
+      }
+    }
+  }
 
   void _onAppModeChanged() {
     final appMode = _appModeNotifier.value;
@@ -634,7 +648,7 @@ typedef TvMediaQueryModifier = MediaQueryData Function(MediaQueryData);
 class LocationReceivedEvent {
   final LatLng location;
 
-  const LocationReceivedEvent(this.location);
+  const new(this.location);
 }
 
 class AvesAppContentDecorator extends StatefulWidget {
@@ -642,7 +656,7 @@ class AvesAppContentDecorator extends StatefulWidget {
   final CollectionSource source;
   final Widget? child;
 
-  const AvesAppContentDecorator({
+  const new({
     super.key,
     required this.initialized,
     required this.source,
@@ -770,7 +784,7 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
         // and the required delay is unknown, so we monitor the change on the platform side
         final statusBarVisible = fields['status_bar'];
         final navBarVisible = fields['nav_bar'];
-        if (statusBarVisible == true && navBarVisible == true) {
+        if (statusBarVisible == true && navBarVisible == true && context.mounted) {
           AvesApp.setSystemUIStyle(Theme.of(context));
         }
     }

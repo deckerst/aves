@@ -28,9 +28,9 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   }
 
   @override
-  Future<int?> getGeneration() async {
+  Future<Map<String, int>?> getGenerationByVolume() async {
     if (latency != null) await Future.delayed(latency!);
-    return 0;
+    return null;
   }
 
   @override

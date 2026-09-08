@@ -19,7 +19,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +33,7 @@ class AvesFilterDecoration {
   final Radius radius;
   final Widget widget;
 
-  const AvesFilterDecoration({
+  const new({
     required this.radius,
     required this.widget,
   });
@@ -65,7 +65,7 @@ class AvesFilterChip extends StatefulWidget {
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
 
-  const AvesFilterChip({
+  const new({
     super.key,
     required this.filter,
     this.showLeading = true,

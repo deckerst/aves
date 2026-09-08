@@ -114,6 +114,7 @@ class ScreenSaverService : DreamService() {
         // dart -> platform -> dart
         // - need Context
         mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
@@ -121,8 +122,6 @@ class ScreenSaverService : DreamService() {
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
-        // - need ContextWrapper
-        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
         // - need Service
         MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ServiceWindowHandler(this))
 

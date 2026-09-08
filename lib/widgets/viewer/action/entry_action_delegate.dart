@@ -42,8 +42,8 @@ import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, EntryEditorMixin, EntryStorageMixin, SingleEntryEditorMixin, VaultAwareMixin {
@@ -51,7 +51,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   final CollectionLens? collection;
   final EntryInfoActionDelegate _metadataActionDelegate = EntryInfoActionDelegate();
 
-  EntryActionDelegate(this.mainEntry, this.pageEntry, this.collection);
+  new(this.mainEntry, this.pageEntry, this.collection);
 
   bool isVisible({
     required AppMode appMode,

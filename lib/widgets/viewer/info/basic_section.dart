@@ -34,7 +34,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class BasicSection extends StatefulWidget {
@@ -45,7 +45,7 @@ class BasicSection extends StatefulWidget {
   final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
   final AFilterCallback onFilterSelection;
 
-  const BasicSection({
+  const new({
     super.key,
     required this.entry,
     this.collection,
@@ -88,34 +88,30 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   }
 
   void _registerWidget(BasicSection widget) {
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
     widget.isScrollingNotifier.addListener(_onScrollingChanged);
   }
 
   void _unregisterWidget(BasicSection widget) {
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
     widget.isScrollingNotifier.removeListener(_onScrollingChanged);
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final entry = widget.entry;
-    return ListenableBuilder(
-      listenable: entry.metadataChangeNotifier,
-      builder: (context, child) {
-        return Column(
-          crossAxisAlignment: .start,
-          children: [
-            _BasicInfo(entry: entry),
-            Focus(
-              focusNode: _chipFocusNode,
-              skipTraversal: true,
-              canRequestFocus: false,
-              child: _buildChips(context),
-            ),
-            _buildEditButtons(context),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        _BasicInfo(entry: widget.entry),
+        Focus(
+          focusNode: _chipFocusNode,
+          skipTraversal: true,
+          canRequestFocus: false,
+          child: _buildChips(context),
+        ),
+        _buildEditButtons(context),
+      ],
     );
   }
 
@@ -268,6 +264,8 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
     );
   }
 
+  void _onMetadataChanged() => setState(() {});
+
   void _onScrollingChanged() {
     if (!widget.isScrollingNotifier.value) {
       if (settings.useTvLayout) {
@@ -285,7 +283,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
 class _BasicInfo extends StatefulWidget {
   final AvesEntry entry;
 
-  const _BasicInfo({
+  const new({
     required this.entry,
   });
 

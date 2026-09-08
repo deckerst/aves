@@ -8,7 +8,7 @@ import 'package:aves/model/settings/enums/widget_shape.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HomeWidgetPainter {
   final AvesEntry? entry;
@@ -21,7 +21,7 @@ class HomeWidgetPainter {
     colors: AColors.boraBoraGradient,
   );
 
-  HomeWidgetPainter({
+  new({
     required this.entry,
     required this.devicePixelRatio,
   });

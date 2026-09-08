@@ -34,6 +34,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   static const vaultTable = SqfliteLocalMediaDbSchema.vaultTable;
   static const trashTable = SqfliteLocalMediaDbSchema.trashTable;
   static const videoPlaybackTable = SqfliteLocalMediaDbSchema.videoPlaybackTable;
+  static const debugTable = SqfliteLocalMediaDbSchema.debugTable;
 
   static const _entryInsertSliceMaxCount = 10000; // number of entries
   static const _queryCursorBufferSize = 1000; // number of rows
@@ -48,7 +49,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       await path,
       onCreate: (db, version) => SqfliteLocalMediaDbSchema.createLatestVersion(db),
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 15,
+      version: 16,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -99,6 +100,25 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       }
     });
     await batch.commit(noResult: true);
+  }
+
+  // debug
+
+  @override
+  Future<void> clearDebugLog() async {
+    final count = await _db.delete(debugTable, where: '1');
+    debugPrint('$runtimeType clearDebugLog deleted $count rows');
+  }
+
+  @override
+  Future<List<String>> loadAllDebugLog() async {
+    final rows = await _db.query(debugTable);
+    return rows.map((row) => row['message'] as String).toList();
+  }
+
+  @override
+  Future<void> addDebugLog(String message) async {
+    await _db.insert(debugTable, {'message': message});
   }
 
   // entries

@@ -10,7 +10,7 @@ import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditorImage extends StatefulWidget {
@@ -21,7 +21,7 @@ class EditorImage extends StatefulWidget {
   final ValueNotifier<ViewState> viewStateNotifier;
   final AvesEntry entry;
 
-  const EditorImage({
+  const new({
     super.key,
     required this.magnifierController,
     required this.transformController,

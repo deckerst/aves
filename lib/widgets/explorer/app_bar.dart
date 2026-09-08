@@ -26,15 +26,15 @@ import 'package:aves/widgets/explorer/explorer_action_delegate.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ExplorerAppBar extends StatefulWidget {
   final ValueNotifier<VolumeRelativeDirectory?> directoryNotifier;
   final void Function(VolumeRelativeDirectory? dir) goToDir;
 
-  const ExplorerAppBar({
+  const new({
     super.key,
     required this.directoryNotifier,
     required this.goToDir,

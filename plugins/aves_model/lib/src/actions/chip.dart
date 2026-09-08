@@ -11,4 +11,5 @@ enum ChipAction {
   hide,
   show,
   lockVault,
+  debug,
 }

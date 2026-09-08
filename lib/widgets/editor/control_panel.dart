@@ -9,7 +9,7 @@ import 'package:aves/widgets/editor/transform/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class EditorControlPanel extends StatelessWidget {
@@ -18,7 +18,7 @@ class EditorControlPanel extends StatelessWidget {
 
   static const padding = ViewerButtonRowContent.padding;
 
-  const EditorControlPanel({
+  const new({
     super.key,
     required this.entry,
     required this.actionNotifier,
@@ -109,7 +109,7 @@ class _TopLevelPanel extends StatelessWidget {
     EditorAction.transform,
   ];
 
-  const _TopLevelPanel({
+  const new({
     required this.actionNotifier,
   });
 

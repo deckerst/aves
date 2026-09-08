@@ -8,7 +8,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves/widgets/settings/privacy/permissions/manage_media.dart';
 import 'package:aves/widgets/settings/privacy/permissions/notification.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class PermissionsPage extends StatelessWidget {
@@ -19,7 +19,7 @@ class PermissionsPage extends StatelessWidget {
     SettingKeys.isErrorReportingAllowedKey,
   ];
 
-  const PermissionsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

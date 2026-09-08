@@ -23,7 +23,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
             "checkObsoleteContentIds" -> ioScope.launch { safe(call, result, ::checkObsoleteContentIds) }
             "checkObsoletePaths" -> ioScope.launch { safe(call, result, ::checkObsoletePaths) }
             "getChangedUris" -> ioScope.launch { safe(call, result, ::getChangedUris) }
-            "getGeneration" -> ioScope.launch { safe(call, result, ::getGeneration) }
+            "getGenerationByVolume" -> ioScope.launch { safe(call, result, ::getGenerationByVolume) }
             "scanFile" -> ioScope.launch { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
@@ -48,29 +48,24 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getChangedUris(call: MethodCall, result: MethodChannel.Result) {
-        val sinceGeneration = call.argument<Int>("sinceGeneration")
-        if (sinceGeneration == null) {
+        val sinceGenerationByVolume: Map<String, Long>? = call.argument<Map<String, Number>>("sinceGenerationByVolume")?.mapValues { kv -> kv.value.toLong() }
+        if (sinceGenerationByVolume == null) {
             result.error("getChangedUris-args", "missing arguments", null)
             return
         }
-        val uris = MediaStoreImageProvider().getChangedUris(context, sinceGeneration)
+        val uris = MediaStoreImageProvider().getChangedUris(context, sinceGenerationByVolume)
         result.success(uris)
     }
 
-    private fun getGeneration(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val generation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                MediaStore.getGeneration(context, MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            } catch (e: Exception) {
-                // may yield `IllegalArgumentException: Volume external_primary not found`
-                val volumes = MediaStore.getExternalVolumeNames(context).joinToString(", ")
-                result.error("getGeneration-primary", e.message + " (available volumes are [$volumes])", e)
-                return
+    private fun getGenerationByVolume(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val generationByVolume: Map<String, Long>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            MediaStore.getExternalVolumeNames(context).associateWith { volumeName ->
+                MediaStore.getGeneration(context, volumeName)
             }
         } else {
             null
         }
-        result.success(generation)
+        result.success(generationByVolume)
     }
 
     private fun scanFile(call: MethodCall, result: MethodChannel.Result) {

@@ -79,7 +79,7 @@ class Settings
   @override
   SettingsStore get store => settingsStore;
 
-  Settings._private() {
+  new _private() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
@@ -361,9 +361,7 @@ class Settings
           case SettingKeys.confirmCreateVaultKey:
           case SettingKeys.confirmDeleteForeverKey:
           case SettingKeys.confirmMoveToBinKey:
-          case SettingKeys.confirmMoveUndatedItemsKey:
           case SettingKeys.confirmAfterMoveToBinKey:
-          case SettingKeys.setMetadataDateBeforeFileOpKey:
           case SettingKeys.collectionSortReverseKey:
           case SettingKeys.showThumbnailFavouriteKey:
           case SettingKeys.showThumbnailHdrKey:
@@ -423,6 +421,7 @@ class Settings
           case SettingKeys.thumbnailLocationIconKey:
           case SettingKeys.thumbnailTagIconKey:
           case SettingKeys.albumSectionFactorKey:
+          case SettingKeys.tagSectionFactorKey:
           case SettingKeys.albumSortFactorKey:
           case SettingKeys.countrySortFactorKey:
           case SettingKeys.stateSortFactorKey:

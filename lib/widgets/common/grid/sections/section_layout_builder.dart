@@ -3,8 +3,8 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef TileBuilder<T> = Widget Function(T item, Size tileSize);
@@ -22,7 +22,7 @@ abstract class SectionLayoutBuilder<T> {
   final Duration tileAnimationDelay;
   final bool animate;
 
-  const SectionLayoutBuilder({
+  const new({
     required this.sections,
     required this.showHeaders,
     required this.getHeaderExtent,

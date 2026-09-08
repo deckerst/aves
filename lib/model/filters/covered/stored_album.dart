@@ -16,19 +16,24 @@ import 'package:provider/provider.dart';
 class StoredAlbumFilter extends CollectionFilter with CoveredFilter, AlbumBaseFilter {
   static const type = 'album';
 
+  // album directory path, without the trailing separator
   final String album;
+
+  // contextual album name, possibly translated,
+  // possibly including parent name for disambiguation
   final String? displayName;
+
   late final EntryPredicate _test;
 
   // do not include contextual `displayName` to `props`
   @override
   List<Object?> get props => [album, reversed];
 
-  StoredAlbumFilter(this.album, this.displayName, {super.reversed = false}) {
+  new(this.album, this.displayName, {super.reversed = false}) {
     _test = (entry) => entry.directory == album;
   }
 
-  factory StoredAlbumFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return StoredAlbumFilter(
       json['album'] as String,
       json['uniqueName'] as String?,

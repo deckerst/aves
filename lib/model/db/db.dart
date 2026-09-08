@@ -133,4 +133,12 @@ abstract class LocalMediaDb {
   Future<void> addVideoPlayback(Set<VideoPlaybackRow> rows);
 
   Future<void> removeVideoPlayback(Set<int> ids);
+
+  // debug
+
+  Future<void> clearDebugLog();
+
+  Future<List<String>> loadAllDebugLog();
+
+  Future<void> addDebugLog(String message);
 }

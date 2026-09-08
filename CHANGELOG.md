@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.0"></a>[v1.15.0] - 2026-09-08
+
+### Added
+
+- Tags: section options
+- Thai translation (thanks Nattapong K, agguser)
+
+### Changed
+
+- prefer Media Store API over SAF API on Android >=11
+- require Media Management permission to edit items with Media Store API on Android >=11
+- always save date to metadata when handling undated item
+- upgraded Flutter to stable v3.47.2
+
+### Fixed
+
+- HEIC thumbnail rotation
+- file size tracking for chaining edits on multiple entries
+- handling media from apps in Samsung Dual Messenger mode
+- Viewer: edited images not being refreshed
+- Viewer: obsolete description in overlay
+- slideshow transition when system UI was toggled
+- slideshow transition when animations are disabled
+- restoring binned item when its original directory is not accessible
+
 ## <a id="v1.14.9"></a>[v1.14.9] - 2026-07-24
 
 ### Added
@@ -193,7 +218,7 @@ All notable changes to this project will be documented in this file.
 - crash when editing some MP4 with large boxes
 - crash when decoding large Base64 images embedded in SVG
 - crash when decoding large app icons
-- crash when getting info from some multipage HEIC
+- crash when getting info from some multi-track HEIC
 - crash when fetching some video thumbnails
 - GPX matching implementation
 - missing home screen shortcut icon
@@ -239,7 +264,7 @@ All notable changes to this project will be documented in this file.
 - rescanning items in vaults
 - grouping when renaming album
 - thumbnail orientation for some RAW formats
-- converting portrait HEIF/RAW to requested size
+- converting portrait HEIC/RAW to requested size
 
 ## <a id="v1.13.8"></a>[v1.13.8] - 2025-09-08
 
@@ -788,7 +813,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - motion photo detection for xml variant of google container item
-- HEIF size detection for some corrupted files
+- HEIC size detection for some corrupted files
 - viewer transition direction & effects for RTL locales
 
 ## <a id="v1.10.3"></a>[v1.10.3] - 2024-01-29
@@ -973,7 +998,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - crash when cataloguing PSD with large XMP
-- crash when cataloguing large HEIF
+- crash when cataloguing large HEIC
 
 ## <a id="v1.8.7"></a>[v1.8.7] - 2023-05-26 [YANKED]
 
@@ -1243,7 +1268,7 @@ All notable changes to this project will be documented in this file.
 - mosaic layout
 - reverse filters to filter out/in
 - Collection: selection edit actions available as quick actions
-- Albums: group by content type
+- Albums: section by content type
 - Info: improved display for XMP
 - Stats: top albums
 - Stats: open full top listings
@@ -1303,8 +1328,8 @@ All notable changes to this project will be documented in this file.
 - Albums / Countries / Tags: live title filter
 - option to hide confirmation message after moving items to the recycle bin
 - Collection / Info: edit description via Exif / IPTC / XMP
-- Info: read XMP from HEIF on Android >=11
-- Collection: support HEIF motion photos on Android >=11
+- Info: read XMP from HEIC on Android >=11
+- Collection: support HEIC motion photos on Android >=11
 - Search: `recently added` filter
 - Dutch translation (thanks Martijn Fabrie, Koen Koppens)
 
@@ -1376,7 +1401,7 @@ All notable changes to this project will be documented in this file.
 
 - Bottom navigation bar
 - Collection: thumbnail overlay tag icon
-- Collection: fast-scrolling shows breadcrumbs from groups
+- Collection: fast-scrolling shows breadcrumbs from sections
 - Settings: search
 - Pick: allow selecting multiple items according to request intent
 - `huawei` app flavor (Petal Maps, no Crashlytics)
@@ -1479,7 +1504,7 @@ All notable changes to this project will be documented in this file.
 - Viewer: `Export` action renamed to `Convert`
 - Viewer: actual size zoom level respects device pixel ratio
 - Viewer: allow zooming out small items to actual size
-- Collection: improved performance for sort/group by name
+- Collection: improved performance for sort/section by name
 - load previous top items on startup
 - locale independent colors for known filters
 - upgraded Flutter to stable v2.10.2
@@ -1716,7 +1741,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - auto album identification and naming
-- opening HEIF images from downloads content URI on Android >=11
+- opening HEIC images from downloads content URI on Android >=11
 
 ## [v1.4.7] - 2021-08-06 [YANKED]
 
@@ -1726,7 +1751,7 @@ All notable changes to this project will be documented in this file.
 
 - Albums / Countries / Tags: multiple selection
 - Albums: action to create empty albums
-- Collection: burst shot grouping (Samsung naming pattern)
+- Collection: burst shot stacking (Samsung naming pattern)
 - Collection: support motion photos defined by XMP Container namespace
 - Settings: hidden paths to exclude folders and their subfolders
 - Settings: option to disable viewer overlay blur effect (for older/slower devices)
@@ -1811,7 +1836,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Motion photo support
-- Viewer: play videos in multi-track HEIF
+- Viewer: play videos in multi-track HEIC
 - Handle share intent
 
 ### Changed
@@ -1918,8 +1943,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Viewer: support for multi-track HEIF
-- Viewer: export image (including multipage TIFF/HEIF and images embedded in XMP)
+- Viewer: support for multi-track HEIC
+- Viewer: export image (including multipage TIFF/HEIC and images embedded in XMP)
 - Info: show owner app (Android >=10)
 - listen to Media Store changes
 
@@ -1938,10 +1963,10 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Collection: identify multipage TIFF & multitrack HEIF
+- Collection: identify multipage TIFF & multi-track HEIC
 - Viewer: support for multipage TIFF
 - Viewer: support for cropped panoramas
-- Albums: grouping options
+- Albums: section options
 
 ### Changed
 
@@ -2051,7 +2076,7 @@ All notable changes to this project will be documented in this file.
 
 - Viewer: leave when the loaded item is deleted and it is the last one
 - Viewer: refresh the viewer overlay and info page when the loaded image is modified
-- Info: prevent reporting a "Media" section for images other than HEIF
+- Info: prevent reporting a "Media" section for images other than HEIC
 - Fixed opening items shared via a "file" media content URI
 
 ### Removed

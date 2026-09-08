@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class DescriptorImageProvider extends ImageProvider<DescriptorImageProvider> {
-  const DescriptorImageProvider(this.descriptor, {this.scale = 1.0});
+  const new(this.descriptor, {this.scale = 1.0});
 
   final ui.ImageDescriptor descriptor;
   final double scale;

@@ -13,7 +13,7 @@ final CountryTopology countryTopology = CountryTopology._private();
 class CountryTopology {
   static const topoJsonAsset = 'assets/countries-50m.json';
 
-  CountryTopology._private();
+  new _private();
 
   Topology? _topology;
 

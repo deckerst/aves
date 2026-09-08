@@ -9,11 +9,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class Licenses extends StatefulWidget {
-  const Licenses({super.key});
+  const new({super.key});
 
   @override
   State<Licenses> createState() => _LicensesState();
@@ -122,7 +122,7 @@ class _LicensesState extends State<Licenses> {
 class _LicenseRow extends StatelessWidget {
   final Dependency package;
 
-  const _LicenseRow({
+  const new({
     required this.package,
   });
 

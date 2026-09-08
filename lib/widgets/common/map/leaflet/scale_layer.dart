@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ScaleLayerOptions {
   final UnitSystem unitSystem;
   final Widget Function(double width, String distance) builder;
 
-  ScaleLayerOptions({
+  new({
     this.unitSystem = UnitSystem.metric,
     this.builder = defaultBuilder,
   });
@@ -28,7 +28,7 @@ class ScaleLayerWidget extends StatelessWidget {
 
   final Distance _distanceCalculator = const Distance();
 
-  const ScaleLayerWidget({
+  const new({
     super.key,
     required this.options,
   });
@@ -115,7 +115,7 @@ class ScaleBar extends StatelessWidget {
   static const double outlineWidth = .5;
   static const double barThickness = 1;
 
-  const ScaleBar({
+  const new({
     super.key,
     required this.distance,
     required this.width,

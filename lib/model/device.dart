@@ -42,7 +42,7 @@ class Device {
 
   bool get supportPictureInPicture => _supportPictureInPicture;
 
-  Device._private();
+  new _private();
 
   Future<void> init() async {
     final packageInfo = await PackageInfo.fromPlatform();

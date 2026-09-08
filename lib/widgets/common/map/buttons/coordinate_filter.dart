@@ -7,14 +7,14 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class OverlayCoordinateFilterChip extends StatefulWidget {
   final ValueNotifier<ZoomedBounds> boundsNotifier;
   final double padding;
 
-  const OverlayCoordinateFilterChip({
+  const new({
     super.key,
     required this.boundsNotifier,
     required this.padding,

@@ -8,9 +8,9 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils
 
 object MultiTrackMedia {
     private val LOG_TAG = LogUtils.createTag<MultiTrackMedia>()

@@ -8,7 +8,7 @@ class ColorIndicator extends StatelessWidget {
 
   static const double radius = 16;
 
-  const ColorIndicator({
+  const new({
     super.key,
     required this.value,
     this.alternate,

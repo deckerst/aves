@@ -9,12 +9,12 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LocaleSelectionPage extends StatefulWidget {
   static const routeName = '/settings/locale';
 
-  const LocaleSelectionPage({super.key});
+  const new({super.key});
 
   @override
   State<LocaleSelectionPage> createState() => _LocaleSelectionPageState();

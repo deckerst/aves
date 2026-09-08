@@ -6,13 +6,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ScreenSaverSettingsPage extends StatelessWidget {
   static const routeName = '/settings/screen_saver';
 
-  const ScreenSaverSettingsPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

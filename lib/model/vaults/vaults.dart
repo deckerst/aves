@@ -24,7 +24,7 @@ class Vaults {
 
   static const _fileScheme = 'file';
 
-  Vaults._private();
+  new _private();
 
   Future<void> init() async {
     _rows = await localMediaDb.loadAllVaults();
@@ -180,6 +180,7 @@ class Vaults {
     if (untrackedPaths.isNotEmpty) {
       debugPrint('Recovering ${untrackedPaths.length} untracked vault items');
       await Future.forEach(untrackedPaths, (untrackedPath) async {
+        debugPrint('Recovering vault item at path=$untrackedPath');
         final isDirectory = await FileSystemEntity.isDirectory(untrackedPath);
         if (isDirectory) {
           await reportService.recordError('Untracked vault item at path=$untrackedPath is a directory. Deleting...');
@@ -191,6 +192,7 @@ class Vaults {
         } else {
           final uri = Uri.file(untrackedPath).toString();
           final sourceEntry = await mediaFetchService.getEntry(uri, null, allowUnsized: true);
+          debugPrint('Recovering vault item at uri=$uri yielded new entry=$sourceEntry');
           if (sourceEntry != null) {
             sourceEntry.id = localMediaDb.nextId;
             sourceEntry.origin = EntryOrigins.vault;

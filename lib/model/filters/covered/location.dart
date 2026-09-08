@@ -24,7 +24,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   @override
   List<Object?> get props => [level, _location, _code, reversed];
 
-  LocationFilter(this.level, String location, {super.reversed = false}) {
+  new(this.level, String location, {super.reversed = false}) {
     final split = location.split(locationSeparator);
     _location = split.isNotEmpty ? split[0] : location;
     _code = split.length > 1 ? split[1] : null;
@@ -43,7 +43,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
     }
   }
 
-  factory LocationFilter.fromMap(Map<String, Object?> json) {
+  factory fromMap(Map<String, Object?> json) {
     return LocationFilter(
       LocationLevel.values.safeByName(json['level'] as String?) ?? .place,
       json['location'] as String,

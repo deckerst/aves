@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 
 // adapted from Flutter `_ImageState` in `/widgets/image.dart`
@@ -16,7 +16,7 @@ class TransitionImage extends StatefulWidget {
   final BoxFit thumbnailFit, viewerFit;
   final Color? background;
 
-  const TransitionImage({
+  const new({
     super.key,
     required this.image,
     required this.animation,
@@ -250,7 +250,7 @@ class _TransitionImagePainter extends CustomPainter {
     ..filterQuality = FilterQuality.medium;
   static const _alignment = Alignment.center;
 
-  const _TransitionImagePainter({
+  const new({
     required this.image,
     required this.scale,
     required this.t,

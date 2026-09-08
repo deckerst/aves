@@ -14,7 +14,7 @@ import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NavigationDisplay {
   static String getFilterTitle(BuildContext context, CollectionFilter? filter) {

@@ -11,8 +11,8 @@ import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
@@ -21,7 +21,7 @@ class SearchPage extends StatefulWidget {
   final AvesSearchDelegate delegate;
   final Animation<double> animation;
 
-  const SearchPage({
+  const new({
     super.key,
     required this.delegate,
     required this.animation,

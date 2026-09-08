@@ -35,8 +35,8 @@ import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 Future<AlbumBaseFilter?> pickAlbum({
@@ -76,7 +76,7 @@ class _AlbumPickPage extends StatefulWidget {
   final Uri? initialGroup;
   final GroupUriPredicate? isValidGroupPick;
 
-  const _AlbumPickPage({
+  const new({
     required this.source,
     required this.moveType,
     required this.chipTypes,
@@ -133,12 +133,12 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, (AlbumChipSectionFactor, ChipSortFactor)>(
+            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
               selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
-              builder: (context, s, child) {
-                return StreamBuilder(
+              builder: (context, _, child) {
+                return StreamBuilder<AlbumsChangedEvent>(
                   stream: source.eventBus.on<AlbumsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = AlbumListPage.getGridItems(context, source, albumChipTypes, groupUri);
                     final scrollController = PrimaryScrollController.of(context);
@@ -161,7 +161,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
                           sections: AlbumListPage.groupToSections(context, source, gridItems),
                           newFilters: source.getNewAlbumFilters(context),
                           sortFactor: settings.albumSortFactor,
-                          showHeaders: settings.albumSectionFactor != AlbumChipSectionFactor.none,
+                          showHeaders: settings.albumSectionFactor != ChipSectionFactor.none,
                           selectable: false,
                           emptyBuilder: () => isPickingGroup
                               ? EmptyContent(

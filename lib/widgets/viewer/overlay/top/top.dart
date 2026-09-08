@@ -14,7 +14,7 @@ import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:aves/widgets/viewer/view/controller.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
@@ -30,7 +30,7 @@ class ViewerTopOverlay extends StatelessWidget {
   static const Color componentBorderColor = Colors.white30;
   static const double componentDimension = 96;
 
-  const ViewerTopOverlay({
+  const new({
     super.key,
     required this.entries,
     required this.index,
@@ -162,7 +162,7 @@ class ViewerTopOverlay extends StatelessWidget {
 class ZoomLevelIndicator extends StatelessWidget {
   final ValueNotifier<ViewState> viewStateNotifier;
 
-  const ZoomLevelIndicator({
+  const new({
     super.key,
     required this.viewStateNotifier,
   });

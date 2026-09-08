@@ -21,7 +21,7 @@ class SetAndFilter extends CollectionFilter with ContainerFilter {
 
   CollectionFilter? get _first => _filters.firstOrNull;
 
-  SetAndFilter(Set<CollectionFilter> filters, {super.reversed = false}) {
+  new(Set<CollectionFilter> filters, {super.reversed = false}) {
     _filters = filters.toList().sorted();
     _test = (entry) => _filters.every((v) => v.test(entry));
     switch (_first) {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FloatingNavBar extends StatefulWidget {
   final ScrollController? scrollController;
@@ -10,7 +10,7 @@ class FloatingNavBar extends StatefulWidget {
   final double childHeight;
   final Widget child;
 
-  const FloatingNavBar({
+  const new({
     super.key,
     required this.scrollController,
     required this.events,

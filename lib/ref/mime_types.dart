@@ -33,7 +33,8 @@ class MimeTypes {
   static const jpx = 'image/jpx';
   static const jxl = 'image/jxl';
   static const pat = 'image/x-coreldrawpattern';
-  static const pcx = 'image/x-pcx';
+  static const pcx = 'image/pcx'; // https://en.wikipedia.org/wiki/PCX
+  static const pcxX = 'image/x-pcx'; // https://en.wikipedia.org/wiki/PCX
   static const pbm = 'image/x-portable-bitmap'; // https://en.wikipedia.org/wiki/Netpbm
   static const pgm = 'image/x-portable-graymap'; // https://en.wikipedia.org/wiki/Netpbm
   static const pnm = 'image/x-portable-anymap'; // https://en.wikipedia.org/wiki/Netpbm

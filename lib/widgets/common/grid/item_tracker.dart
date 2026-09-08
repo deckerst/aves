@@ -6,7 +6,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class GridItemTracker<T> extends StatefulWidget {
@@ -16,7 +16,7 @@ class GridItemTracker<T> extends StatefulWidget {
   final ScrollController scrollController;
   final Widget child;
 
-  const GridItemTracker({
+  const new({
     super.key,
     required this.scrollableKey,
     required this.appBarHeightNotifier,

@@ -12,13 +12,13 @@ import 'package:aves/widgets/dialogs/map/style_selection_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class MapActionDelegate with FeedbackMixin {
   final AvesMapController controller;
 
-  const MapActionDelegate(this.controller);
+  const new(this.controller);
 
   bool _isMapPage(BuildContext context) => context.currentRouteName == MapPage.routeName;
 
@@ -98,4 +98,4 @@ class MapActionDelegate with FeedbackMixin {
   }
 }
 
-class OpenMapAppNotification extends Notification {}
+class OpenMapAppNotification extends Notification;

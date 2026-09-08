@@ -3,7 +3,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:provider/provider.dart';
 
 class DurationsProvider extends ProxyProvider<Settings, DurationsData> {
-  DurationsProvider({
+  new({
     super.key,
     super.child,
   }) : super(

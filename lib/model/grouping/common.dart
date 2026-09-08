@@ -53,7 +53,7 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   // do not subscribe to events from other modules in constructor
   // so that modules can subscribe to each other
-  FilterGrouping._private(this._host, this._createGroupFilter) {
+  new _private(this._host, this._createGroupFilter) {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
   }
 
@@ -414,5 +414,5 @@ class GroupUriChangedEvent {
   final Uri oldGroupUri;
   final Uri newGroupUri;
 
-  const GroupUriChangedEvent(this.oldGroupUri, this.newGroupUri);
+  const new(this.oldGroupUri, this.newGroupUri);
 }

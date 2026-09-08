@@ -17,7 +17,7 @@ import 'package:aves/widgets/viewer/providers.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SlideshowPage extends StatefulWidget {
@@ -25,7 +25,7 @@ class SlideshowPage extends StatefulWidget {
 
   final CollectionLens collection;
 
-  const SlideshowPage({
+  const new({
     super.key,
     required this.collection,
   });
@@ -182,5 +182,5 @@ class _SlideshowPageState extends State<SlideshowPage> {
 class SlideshowActionNotification extends Notification {
   final SlideshowAction action;
 
-  SlideshowActionNotification(this.action);
+  new(this.action);
 }

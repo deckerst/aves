@@ -8,12 +8,12 @@ import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart'
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/states_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
   final Iterable<FilterGridItem<LocationFilter>> _items;
 
-  CountryChipSetActionDelegate(Iterable<FilterGridItem<LocationFilter>> items) : _items = items;
+  new(Iterable<FilterGridItem<LocationFilter>> items) : _items = items;
 
   @override
   Iterable<FilterGridItem<LocationFilter>> get allItems => _items;

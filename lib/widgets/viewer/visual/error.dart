@@ -7,13 +7,13 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ErrorView extends StatefulWidget {
   final AvesEntry entry;
   final VoidCallback onTap;
 
-  const ErrorView({
+  const new({
     super.key,
     required this.entry,
     required this.onTap,

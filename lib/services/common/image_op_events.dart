@@ -9,13 +9,13 @@ class ImageOpEvent extends Equatable {
   @override
   List<Object?> get props => [success, skipped, uri];
 
-  const ImageOpEvent({
+  const new({
     required this.success,
     required this.skipped,
     required this.uri,
   });
 
-  factory ImageOpEvent.fromMap(Map map) {
+  factory fromMap(Map map) {
     final skipped = map['skipped'] ?? false;
     return ImageOpEvent(
       success: (map['success'] ?? false) || skipped,
@@ -33,7 +33,7 @@ class MoveOpEvent extends ImageOpEvent {
   @override
   List<Object?> get props => [success, skipped, uri, newFields, deleted];
 
-  const MoveOpEvent({
+  const new({
     required super.success,
     required super.skipped,
     required super.uri,
@@ -41,7 +41,7 @@ class MoveOpEvent extends ImageOpEvent {
     required this.deleted,
   });
 
-  factory MoveOpEvent.fromMap(Map map) {
+  factory fromMap(Map map) {
     final newFields = map['newFields'] ?? {};
     final skipped = (map['skipped'] ?? false) || (newFields['skipped'] ?? false);
     final deleted = (map['deleted'] ?? false) || (newFields['deleted'] ?? false);
@@ -62,7 +62,7 @@ class ExportOpEvent extends MoveOpEvent {
   @override
   List<Object?> get props => [success, skipped, uri, pageId, newFields];
 
-  const ExportOpEvent({
+  const new({
     required super.success,
     required super.skipped,
     required super.uri,
@@ -72,7 +72,7 @@ class ExportOpEvent extends MoveOpEvent {
          deleted: false,
        );
 
-  factory ExportOpEvent.fromMap(Map map) {
+  factory fromMap(Map map) {
     final newFields = map['newFields'] ?? {};
     final skipped = (map['skipped'] ?? false) || (newFields['skipped'] ?? false);
     return ExportOpEvent(

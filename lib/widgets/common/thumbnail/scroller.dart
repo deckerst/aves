@@ -5,7 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/known_extent_scroll_physics.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ThumbnailScroller extends StatefulWidget {
   final double availableWidth;
@@ -16,7 +16,7 @@ class ThumbnailScroller extends StatefulWidget {
   final Object? Function(AvesEntry entry)? heroTagger;
   final bool scrollable, highlightable, showLocation;
 
-  const ThumbnailScroller({
+  const new({
     super.key,
     required this.availableWidth,
     required this.entryCount,

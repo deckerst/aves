@@ -10,21 +10,21 @@ extension ExtraTransformOrientation on TransformOrientation {
   TransformOrientation flipHorizontally() {
     switch (this) {
       case .normal:
-        return TransformOrientation.flipHorizontal;
+        return .flipHorizontal;
       case .rotate90:
-        return TransformOrientation.transverse;
+        return .transverse;
       case .rotate180:
-        return TransformOrientation.flipVertical;
+        return .flipVertical;
       case .rotate270:
-        return TransformOrientation.transpose;
+        return .transpose;
       case .transverse:
-        return TransformOrientation.rotate90;
+        return .rotate90;
       case .flipVertical:
-        return TransformOrientation.rotate180;
+        return .rotate180;
       case .transpose:
-        return TransformOrientation.rotate270;
+        return .rotate270;
       case .flipHorizontal:
-        return TransformOrientation.normal;
+        return .normal;
     }
   }
 
@@ -46,21 +46,21 @@ extension ExtraTransformOrientation on TransformOrientation {
   TransformOrientation rotateClockwise() {
     switch (this) {
       case .normal:
-        return TransformOrientation.rotate90;
+        return .rotate90;
       case .rotate90:
-        return TransformOrientation.rotate180;
+        return .rotate180;
       case .rotate180:
-        return TransformOrientation.rotate270;
+        return .rotate270;
       case .rotate270:
-        return TransformOrientation.normal;
+        return .normal;
       case .transverse:
-        return TransformOrientation.flipHorizontal;
+        return .flipHorizontal;
       case .flipVertical:
-        return TransformOrientation.transverse;
+        return .transverse;
       case .transpose:
-        return TransformOrientation.flipVertical;
+        return .flipVertical;
       case .flipHorizontal:
-        return TransformOrientation.transpose;
+        return .transpose;
     }
   }
 }

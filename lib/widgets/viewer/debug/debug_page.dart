@@ -10,7 +10,7 @@ import 'package:aves/widgets/viewer/debug/thumbnails.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ViewerDebugPage extends StatelessWidget {
@@ -18,7 +18,7 @@ class ViewerDebugPage extends StatelessWidget {
 
   final AvesEntry entry;
 
-  const ViewerDebugPage({
+  const new({
     super.key,
     required this.entry,
   });
