@@ -48,7 +48,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
       stream: statusStream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         // do not use stream snapshot because it is obsolete when switching between videos
         final status = controller?.status ?? VideoStatus.idle;
 

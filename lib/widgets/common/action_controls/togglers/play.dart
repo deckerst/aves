@@ -119,7 +119,7 @@ class PlayTogglerCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
       stream: controller?.statusStream ?? Stream.value(VideoStatus.idle),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         return CaptionedButtonText(
           text: isPlaying ? context.l10n.videoActionPause : context.l10n.videoActionPlay,
           enabled: enabled,

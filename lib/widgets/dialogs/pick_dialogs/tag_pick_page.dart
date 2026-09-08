@@ -120,9 +120,9 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
             return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
               selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor),
               builder: (context, _, child) {
-                return StreamBuilder(
+                return StreamBuilder<TagsChangedEvent>(
                   stream: source.eventBus.on<TagsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = TagListPage.getGridItems(source, chipTypes, groupUri);
                     final scrollController = PrimaryScrollController.of(context);

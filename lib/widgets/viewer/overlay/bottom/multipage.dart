@@ -60,7 +60,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   Widget build(BuildContext context) {
     return StreamBuilder<MultiPageInfo?>(
       stream: controller.infoStream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final multiPageInfo = controller.info;
         return ThumbnailScroller(
           key: ValueKey(multiPageInfo),

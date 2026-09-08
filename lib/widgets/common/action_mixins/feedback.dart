@@ -239,7 +239,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
       canPop: false,
       child: StreamBuilder<T>(
         stream: opStream,
-        builder: (context, snapshot) {
+        builder: (context, _) {
           final processedCount = processed.length;
           final total = widget.itemCount;
           final double percent;

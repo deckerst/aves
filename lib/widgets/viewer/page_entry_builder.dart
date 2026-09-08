@@ -19,7 +19,7 @@ class PageEntryBuilder extends StatelessWidget {
     final controller = multiPageController;
     return StreamBuilder<MultiPageInfo?>(
       stream: controller != null ? controller.infoStream : Stream.value(null),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final multiPageInfo = controller?.info;
         return NullableValueListenableBuilder<int?>(
           valueListenable: controller?.pageNotifier,

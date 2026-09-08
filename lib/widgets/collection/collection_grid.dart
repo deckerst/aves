@@ -170,9 +170,9 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                             _goToViewer(collection, notification.entry);
                             return true;
                           },
-                          child: StreamBuilder(
+                          child: StreamBuilder<AspectRatioChangedEvent>(
                             stream: source.eventBus.on<AspectRatioChangedEvent>(),
-                            builder: (context, snapshot) => SectionedEntryListLayoutProvider(
+                            builder: (context, _) => SectionedEntryListLayoutProvider(
                               collection: collection,
                               selectable: selectable,
                               scrollableWidth: scrollableWidth,

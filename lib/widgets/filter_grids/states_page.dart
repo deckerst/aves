@@ -36,9 +36,9 @@ class StateListPage extends StatelessWidget {
         return !(eq.equals(t1.$1, t2.$1) && eq.equals(t1.$2, t2.$2) && eq.equals(t1.$3, t2.$3));
       },
       builder: (context, _, child) {
-        return StreamBuilder(
+        return StreamBuilder<PlacesChangedEvent>(
           stream: source.eventBus.on<PlacesChangedEvent>(),
-          builder: (context, snapshot) {
+          builder: (context, _) {
             final gridItems = _getGridItems(source);
             return FilterNavigationPage<LocationFilter, StateChipSetActionDelegate>(
               source: source,

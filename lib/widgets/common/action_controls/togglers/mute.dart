@@ -32,7 +32,7 @@ class MuteToggler extends StatelessWidget {
         final canDo = value ?? false;
         return StreamBuilder<double>(
           stream: controller?.volumeStream ?? Stream.value(1.0),
-          builder: (context, snapshot) {
+          builder: (context, _) {
             final icon = Icon(isMuted ? AIcons.unmute : AIcons.mute);
             final text = isMuted ? context.l10n.videoActionUnmute : context.l10n.videoActionMute;
 
@@ -74,7 +74,7 @@ class MuteTogglerCaption extends StatelessWidget {
         final canDo = value ?? false;
         return StreamBuilder<double>(
           stream: controller?.volumeStream ?? Stream.value(1.0),
-          builder: (context, snapshot) {
+          builder: (context, _) {
             return CaptionedButtonText(
               text: isMuted ? context.l10n.videoActionUnmute : context.l10n.videoActionMute,
               enabled: canDo && enabled,

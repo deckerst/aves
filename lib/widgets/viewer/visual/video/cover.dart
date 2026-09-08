@@ -102,7 +102,7 @@ class _VideoCoverState extends State<VideoCover> {
     // fade out image to ease transition with the player
     return StreamBuilder<VideoStatus>(
       stream: videoController.statusStream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final showCover = !videoController.isReady;
         return IgnorePointer(
           ignoring: !showCover,

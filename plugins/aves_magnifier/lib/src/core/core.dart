@@ -428,9 +428,9 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
       stream: controller.stateStream,
       initialData: controller.previousState,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox();
+        final magnifierState = snapshot.data;
+        if (magnifierState == null) return const SizedBox();
 
-        final magnifierState = snapshot.data!;
         final position = magnifierState.position;
         final applyScale = widget.applyScale;
 

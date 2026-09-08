@@ -49,9 +49,9 @@ class TagListPage extends StatelessWidget {
             builder: (context, _, child) {
               return ListenableBuilder(
                 listenable: tagGrouping,
-                builder: (context, child) => StreamBuilder(
+                builder: (context, child) => StreamBuilder<TagsChangedEvent>(
                   stream: source.eventBus.on<TagsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = getGridItems(source, ChipType.values.toSet(), groupUri);
                     return FilterNavigationPage<TagBaseFilter, TagChipSetActionDelegate>(

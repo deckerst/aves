@@ -1,3 +1,4 @@
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/filters/aspect_ratio.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
@@ -23,7 +24,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -232,9 +232,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   Widget _buildAlbumFilters(CollectionFilterPredicate containQuery) {
     return ListenableBuilder(
       listenable: dynamicAlbums,
-      builder: (context, child) => StreamBuilder(
+      builder: (context, child) => StreamBuilder<AlbumsChangedEvent>(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
-        builder: (context, snapshot) {
+        builder: (context, _) {
           final filters = [
             ...albumGrouping.getGroups().map(albumGrouping.uriToFilter),
             ...source.rawAlbums.map(
@@ -256,9 +256,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildCountryFilters(CollectionFilterPredicate containQuery) {
-    return StreamBuilder(
+    return StreamBuilder<CountriesChangedEvent>(
       stream: source.eventBus.on<CountriesChangedEvent>(),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchCountriesSectionTitle,
@@ -269,9 +269,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildStateFilters(CollectionFilterPredicate containQuery) {
-    return StreamBuilder(
+    return StreamBuilder<PlacesChangedEvent>(
       stream: source.eventBus.on<PlacesChangedEvent>(),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchStatesSectionTitle,
@@ -282,9 +282,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildPlaceFilters(CollectionFilterPredicate containQuery) {
-    return StreamBuilder(
+    return StreamBuilder<PlacesChangedEvent>(
       stream: source.eventBus.on<PlacesChangedEvent>(),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         return _buildFilterRow(
           context: context,
           title: context.l10n.searchPlacesSectionTitle,
@@ -295,9 +295,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildTagFilters(CollectionFilterPredicate containQuery) {
-    return StreamBuilder(
+    return StreamBuilder<TagsChangedEvent>(
       stream: source.eventBus.on<TagsChangedEvent>(),
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final filters = [
           ...tagGrouping.getGroups().map(tagGrouping.uriToFilter),
           ...source.sortedTags.map(TagFilter.new),

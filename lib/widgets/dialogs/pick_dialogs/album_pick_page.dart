@@ -136,9 +136,9 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
             return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
               selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
               builder: (context, _, child) {
-                return StreamBuilder(
+                return StreamBuilder<AlbumsChangedEvent>(
                   stream: source.eventBus.on<AlbumsChangedEvent>(),
-                  builder: (context, snapshot) {
+                  builder: (context, _) {
                     final groupUri = context.watch<FilterGroupNotifier>().value;
                     final gridItems = AlbumListPage.getGridItems(context, source, albumChipTypes, groupUri);
                     final scrollController = PrimaryScrollController.of(context);

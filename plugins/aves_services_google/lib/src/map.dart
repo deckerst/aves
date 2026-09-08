@@ -111,7 +111,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
   }
 
   Widget _buildMap() {
-    return StreamBuilder(
+    return StreamBuilder<MarkerKey<T>>(
       stream: _markerBitmapReadyStreamController.stream,
       builder: (context, _) {
         final mediaMarkers = <Marker>{};

@@ -57,15 +57,15 @@ class AlbumListPage extends StatelessWidget {
                 builder: (context, child) {
                   return ListenableBuilder(
                     listenable: Listenable.merge({albumGrouping, dynamicAlbums}),
-                    builder: (context, child) => StreamBuilder(
+                    builder: (context, child) => StreamBuilder<AlbumsChangedEvent>(
                       stream: source.eventBus.on<AlbumsChangedEvent>(),
-                      builder: (context, snapshot) {
+                      builder: (context, _) {
                         final groupUri = context.watch<FilterGroupNotifier>().value;
                         final gridItems = getGridItems(context, source, AlbumChipType.values.toSet(), groupUri);
                         return StreamBuilder<Set<CollectionFilter>?>(
                           // to update sections by tier
                           stream: covers.packageChangeStream,
-                          builder: (context, snapshot) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
+                          builder: (context, _) => FilterNavigationPage<AlbumBaseFilter, AlbumChipSetActionDelegate>(
                             source: source,
                             title: context.l10n.albumPageTitle,
                             sortFactor: settings.albumSortFactor,

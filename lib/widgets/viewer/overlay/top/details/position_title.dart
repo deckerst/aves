@@ -33,7 +33,7 @@ class OverlayPositionTitleRow extends StatelessWidget {
 
     return StreamBuilder<MultiPageInfo?>(
       stream: multiPageController!.infoStream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final multiPageInfo = multiPageController!.info;
         String? pagePosition;
         if (multiPageInfo != null) {
