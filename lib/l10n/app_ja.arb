@@ -689,5 +689,15 @@
     "selectStorageVolumeDialogTitle": "ストレージを選択",
     "sortOrderShortestFirst": "短いものから表示",
     "sortOrderLongestFirst": "長いものから表示",
-    "collectionActionAddDynamicAlbum": "ダイナミックアルバムを追加"
+    "collectionActionAddDynamicAlbum": "ダイナミックアルバムを追加",
+    "createButtonLabel": "作成",
+    "chipActionDecompose": "分離",
+    "chipActionGroup": "グループ化を変更",
+    "chipActionCreateGroup": "グループを作成",
+    "filterTypeSlowMotionVideoLabel": "スローモーション",
+    "calendarGregorian": "グレゴリオ暦",
+    "calendarPersian": "ペルシャ暦",
+    "newGroupDialogTitle": "新規グループ",
+    "newGroupDialogNameLabel": "グループ名",
+    "groupAlreadyExists": "グループはすでに存在します"
 }
