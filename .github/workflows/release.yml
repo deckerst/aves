@@ -30,12 +30,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5229015364
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v2
-        with:
-          version: 19
-
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -57,10 +51,17 @@ jobs:
         run: ./flutterw gen-l10n
 
       - name: Build signed artifacts
+        # specify NDK for `icu4x` hook linker
+        # cf https://github.com/deckerst/aves/issues/1521#issuecomment-5599985874
+        #
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
         run: |
+          ANDROID_SDK=/usr/local/lib/android/sdk
+          echo "ANDROID_SDK=$ANDROID_SDK
+          ANDROID_NDK=$ANDROID_SDK/ndk/28.2.13676358
+          echo "ANDROID_NDK=$ANDROID_NDK
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
