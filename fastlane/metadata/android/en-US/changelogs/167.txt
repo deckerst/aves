@@ -1,3 +1,0 @@
-In v1.14.3:
-- export media selection as GPX track
-Full changelog available on GitHub

@@ -1,5 +1,0 @@
-In v1.14.1:
-- stat export
-- regex search
-- predictive back gesture
-Full changelog available on GitHub

@@ -1,4 +1,0 @@
-In v1.14.6:
-- find and play with your slow motion videos
-- enjoy the app in Kurdish (Kurmanji)
-Full changelog available on GitHub

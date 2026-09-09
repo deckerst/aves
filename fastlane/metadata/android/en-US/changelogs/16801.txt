@@ -1,4 +1,0 @@
-In v1.14.4:
-- bottom nav bar on the Explorer page
-- enjoy the app in Lao
-Full changelog available on GitHub
