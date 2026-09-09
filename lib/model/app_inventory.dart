@@ -72,21 +72,15 @@ class AppInventory {
   }
 }
 
-class Package {
-  final String packageName;
-  final String? currentLabel, englishLabel;
-  final bool categoryLauncher, isSystem;
-
+class Package({
+  required final String packageName,
+  required final String? currentLabel,
+  required final String? englishLabel,
+  required final bool categoryLauncher,
+  required final bool isSystem,
+}) {
   final Set<String> _ownedDirs = {};
   final Set<String> _potentialDirs = {};
-
-  new({
-    required this.packageName,
-    required this.currentLabel,
-    required this.englishLabel,
-    required this.categoryLauncher,
-    required this.isSystem,
-  });
 
   factory fromMap(Map map) {
     return Package(
@@ -105,12 +99,13 @@ class Package {
 
   Set<String> get potentialDirs {
     if (_potentialDirs.isEmpty) {
+      final separator = pContext.separator;
       _potentialDirs.addAll(
         [
           currentLabel,
           englishLabel,
           ..._ownedDirs,
-        ].nonNulls.map(normalizePotentialDir),
+        ].nonNulls.map(normalizePotentialDir).map((v) => '$separator$v'),
       );
     }
     return _potentialDirs;
@@ -121,5 +116,8 @@ class Package {
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$_ownedDirs}';
+  String toString() =>
+      '$runtimeType#${shortHash(this)}{'
+      'packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, '
+      'currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$_ownedDirs}';
 }

@@ -10,7 +10,7 @@ publish_to: none
 # - izzy changelog:       /fastlane/metadata/android/en-US/changelogs/XXX01.txt
 # - libre changelog:      /fastlane/metadata/android/en-US/changelogs/XXX.txt
 # - run `scripts/gen_flavors.sh`
-version: 1.15.1+175
+version: 1.15.2+176
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
