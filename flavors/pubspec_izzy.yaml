@@ -26,7 +26,7 @@ workspace:
   - plugins/aves_map
   - plugins/aves_model
   - plugins/aves_report
-  - plugins/aves_report_crashlytics
+  - plugins/aves_report_console
   - plugins/aves_screen_state
   - plugins/aves_services
   - plugins/aves_services_google
@@ -51,7 +51,7 @@ dependencies:
   aves_report:
     path: plugins/aves_report
   aves_report_platform:
-    path: plugins/aves_report_crashlytics
+    path: plugins/aves_report_console
   aves_screen_state:
     path: plugins/aves_screen_state
   aves_services:
