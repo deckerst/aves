@@ -3,11 +3,9 @@ if [ ! -d "scripts" ]; then
   cd ..
 fi
 
-PUBSPEC_PATH="pubspec.yaml"
-
 ./flutterw clean
 
-sed -i 's|plugins/aves_services_.*|plugins/aves_services_none|g' "$PUBSPEC_PATH"
-sed -i 's|plugins/aves_report_.*|plugins/aves_report_console|g' "$PUBSPEC_PATH"
+cp flavors/pubspec_libre.lock pubspec.lock
+cp flavors/pubspec_libre.yaml pubspec.yaml
 
-./flutterw pub get
+./flutterw pub get --enforce-lockfile
