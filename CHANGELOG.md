@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- album app detection false positive
+
 ## <a id="v1.15.1"></a>[v1.15.1] - 2026-09-09
 
 ### Changed
