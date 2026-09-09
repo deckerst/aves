@@ -58,10 +58,19 @@ jobs:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
         run: |
-          ANDROID_SDK=/usr/local/lib/android/sdk
-          echo "ANDROID_SDK=$ANDROID_SDK"
-          ANDROID_NDK=$ANDROID_SDK/ndk/28.2.13676358
+          echo "Default Android NDK environment paths:"
           echo "ANDROID_NDK=$ANDROID_NDK"
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
+          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
+          echo "ANDROID_NDK_LATEST_HOME=$ANDROID_NDK_LATEST_HOME"
+          NDK_VERSION=28.2.13676358
+          echo "Set Android NDK to version $NDK_VERSION:"
+          ANDROID_NDK=$ANDROID_SDK_ROOT/ndk/$NDK_VERSION
+          ANDROID_NDK_HOME=$ANDROID_NDK
+          ANDROID_NDK_ROOT=$ANDROID_NDK
+          echo "ANDROID_NDK=$ANDROID_NDK"
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
+          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
