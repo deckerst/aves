@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.15.2"></a>[v1.15.2] - 2026-09-09
+## <a id="v1.15.3"></a>[v1.15.3] - 2026-09-09
 
 ### Changed
 
 - release: specify NDK for `icu4x` hook linker
+
+## <a id="v1.15.2"></a>[v1.15.2] - 2026-09-09
 
 ### Fixed
 
