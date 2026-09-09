@@ -59,9 +59,9 @@ jobs:
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
         run: |
           ANDROID_SDK=/usr/local/lib/android/sdk
-          echo "ANDROID_SDK=$ANDROID_SDK
+          echo "ANDROID_SDK=$ANDROID_SDK"
           ANDROID_NDK=$ANDROID_SDK/ndk/28.2.13676358
-          echo "ANDROID_NDK=$ANDROID_NDK
+          echo "ANDROID_NDK=$ANDROID_NDK"
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc

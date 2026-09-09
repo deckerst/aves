@@ -8,12 +8,15 @@ All notable changes to this project will be documented in this file.
 
 - album app detection false positive
 
+### Changed
+
+- release: specify NDK for `icu4x` hook linker
+
 ## <a id="v1.15.1"></a>[v1.15.1] - 2026-09-09
 
 ### Changed
 
 - release: lock pub package versions for all flavors
-- release: specify NDK for `icu4x` hook linker
 
 ## <a id="v1.15.0"></a>[v1.15.0] - 2026-09-08
 
