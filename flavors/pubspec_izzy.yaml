@@ -4,12 +4,10 @@ repository: https://github.com/deckerst/aves
 publish_to: none
 
 # version bump checklist:
-# - pubspec version
-# - GitHub changelog:     /CHANGELOG.md
-# - Play Store changelog: /whatsnew/whatsnew-en-US
-# - izzy changelog:       /fastlane/metadata/android/en-US/changelogs/XXX01.txt
-# - libre changelog:      /fastlane/metadata/android/en-US/changelogs/XXX.txt
-# - run `scripts/gen_flavors.sh`
+# - increase app version       /pubspec.yaml
+# - edit GitHub changelog:     /CHANGELOG.md
+# - edit Play Store changelog: /whatsnew/whatsnew-en-US
+# - run `scripts/apply_version_bump.sh`
 version: 1.15.3+177
 
 environment:

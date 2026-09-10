@@ -1,0 +1,3 @@
+In v1.15.3:
+- enjoy the app in Thai
+Full changelog available on GitHub
