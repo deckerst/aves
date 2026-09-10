@@ -1,4 +1,5 @@
 class IntentActions {
+  static const appSettings = 'app_settings';
   static const edit = 'edit';
   static const pickItems = 'pick_items';
   static const pickCollectionFilters = 'pick_collection_filters';

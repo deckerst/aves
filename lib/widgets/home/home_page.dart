@@ -38,6 +38,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     ExplorerPage.routeName,
     MapPage.routeName,
     SearchPage.routeName,
+    SettingsPage.routeName,
   ];
 
   @override
@@ -160,6 +162,8 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
 
         switch (intentAction) {
+          case IntentActions.appSettings:
+            _initialRouteName = SettingsPage.routeName;
           case IntentActions.view:
             appMode = .view;
             _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
@@ -459,6 +463,8 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           canPop: false,
           initialQuery: _initialSearchQuery,
         );
+      case SettingsPage.routeName:
+        return buildRoute((context) => const SettingsPage());
       case CollectionPage.routeName:
       default:
         return buildRoute((context) => CollectionPage(source: source, filters: filters));

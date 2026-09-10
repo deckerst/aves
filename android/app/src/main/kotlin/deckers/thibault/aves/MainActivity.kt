@@ -52,10 +52,10 @@ import deckers.thibault.aves.channel.streams.darttoplatform.ImageByteStreamHandl
 import deckers.thibault.aves.channel.streams.darttoplatform.ImageOpStreamHandler
 import deckers.thibault.aves.channel.streams.darttoplatform.MediaStoreStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.AnalysisStreamHandler
-import deckers.thibault.aves.channel.streams.platformtodart.MessageStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.IntentStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaCommandStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.MediaStoreChangeStreamHandler
+import deckers.thibault.aves.channel.streams.platformtodart.MessageStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.SettingsChangeStreamHandler
 import deckers.thibault.aves.channel.streams.platformtodart.WindowChangeStreamHandler
 import deckers.thibault.aves.model.FieldMap
@@ -466,6 +466,12 @@ open class MainActivity : FlutterFragmentActivity() {
                 )
             }
 
+            Intent.ACTION_APPLICATION_PREFERENCES -> {
+                return hashMapOf(
+                    INTENT_DATA_KEY_ACTION to INTENT_ACTION_APP_SETTINGS,
+                )
+            }
+
             INTENT_ACTION_PICK_COLLECTION_FILTERS -> {
                 val initialFilters = extractFiltersFromIntent(intent)
                 return hashMapOf(
@@ -586,7 +592,7 @@ open class MainActivity : FlutterFragmentActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_search else R.drawable.ic_shortcut_search))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_PAGE, SEARCH_PAGE_ROUTE_NAME)
+                    .putExtra(EXTRA_KEY_PAGE, RouteNames.SEARCH_PAGE)
             )
             .build()
 
@@ -595,7 +601,7 @@ open class MainActivity : FlutterFragmentActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_map else R.drawable.ic_shortcut_map))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_PAGE, MAP_PAGE_ROUTE_NAME)
+                    .putExtra(EXTRA_KEY_PAGE, RouteNames.MAP_PAGE)
             )
             .build()
 
@@ -604,7 +610,7 @@ open class MainActivity : FlutterFragmentActivity() {
             .setIcon(IconCompat.createWithResource(this, if (supportAdaptiveIcon) R.mipmap.ic_shortcut_movie else R.drawable.ic_shortcut_movie))
             .setIntent(
                 Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                    .putExtra(EXTRA_KEY_PAGE, COLLECTION_PAGE_ROUTE_NAME)
+                    .putExtra(EXTRA_KEY_PAGE, RouteNames.COLLECTION_PAGE)
                     .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
             )
             .build()
@@ -643,6 +649,7 @@ open class MainActivity : FlutterFragmentActivity() {
         const val PICK_COLLECTION_FILTERS_REQUEST = 7
         const val EDIT_REQUEST = 8
 
+        const val INTENT_ACTION_APP_SETTINGS = "app_settings"
         const val INTENT_ACTION_EDIT = "edit"
         const val INTENT_ACTION_PICK_ITEMS = "pick_items"
         const val INTENT_ACTION_PICK_COLLECTION_FILTERS = "pick_collection_filters"
@@ -677,13 +684,6 @@ open class MainActivity : FlutterFragmentActivity() {
         const val EXTRA_KEY_FILTERS_STRING = "filtersString"
         const val EXTRA_KEY_WIDGET_ID = "widgetId"
         const val EXTRA_KEY_DEBUG = "debug"
-
-        // dart page routes
-        const val COLLECTION_PAGE_ROUTE_NAME = "/collection"
-        const val ENTRY_VIEWER_PAGE_ROUTE_NAME = "/viewer"
-        const val EXPLORER_PAGE_ROUTE_NAME = "/explorer"
-        const val MAP_PAGE_ROUTE_NAME = "/map"
-        const val SEARCH_PAGE_ROUTE_NAME = "/search"
 
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()

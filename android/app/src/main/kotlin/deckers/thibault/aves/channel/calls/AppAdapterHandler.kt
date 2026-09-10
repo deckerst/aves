@@ -25,16 +25,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.MainActivity.Companion.COLLECTION_PAGE_ROUTE_NAME
-import deckers.thibault.aves.MainActivity.Companion.ENTRY_VIEWER_PAGE_ROUTE_NAME
-import deckers.thibault.aves.MainActivity.Companion.EXPLORER_PAGE_ROUTE_NAME
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_EXPLORER_PATH
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_ARRAY
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_FILTERS_STRING
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_KEY_PAGE
 import deckers.thibault.aves.MainActivity.Companion.EXTRA_STRING_ARRAY_SEPARATOR
-import deckers.thibault.aves.MainActivity.Companion.MAP_PAGE_ROUTE_NAME
 import deckers.thibault.aves.R
+import deckers.thibault.aves.RouteNames
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
@@ -429,14 +426,14 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             val supportAdaptiveIcon = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
             val resId = when (route) {
-                MAP_PAGE_ROUTE_NAME -> if (supportAdaptiveIcon) R.mipmap.ic_shortcut_map else R.drawable.ic_shortcut_map
+                RouteNames.MAP_PAGE -> if (supportAdaptiveIcon) R.mipmap.ic_shortcut_map else R.drawable.ic_shortcut_map
                 else -> if (supportAdaptiveIcon) R.mipmap.ic_shortcut_collection else R.drawable.ic_shortcut_collection
             }
             icon = IconCompat.createWithResource(context, resId)
         }
 
         val intent: Intent = when (route) {
-            COLLECTION_PAGE_ROUTE_NAME -> {
+            RouteNames.COLLECTION_PAGE -> {
                 if (filters == null) {
                     result.error("pin-filters", "collection shortcut requires filters", null)
                     return
@@ -449,7 +446,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                     .putExtra(EXTRA_KEY_FILTERS_STRING, filters.joinToString(EXTRA_STRING_ARRAY_SEPARATOR))
             }
 
-            ENTRY_VIEWER_PAGE_ROUTE_NAME -> {
+            RouteNames.ENTRY_VIEWER_PAGE -> {
                 if (viewUri == null) {
                     result.error("pin-viewUri", "viewer shortcut requires URI", null)
                     return
@@ -457,13 +454,13 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 Intent(Intent.ACTION_VIEW, viewUri, context, MainActivity::class.java)
             }
 
-            EXPLORER_PAGE_ROUTE_NAME -> {
+            RouteNames.EXPLORER_PAGE -> {
                 Intent(Intent.ACTION_MAIN, null, context, MainActivity::class.java)
                     .putExtra(EXTRA_KEY_PAGE, route)
                     .putExtra(EXTRA_KEY_EXPLORER_PATH, explorerPath)
             }
 
-            MAP_PAGE_ROUTE_NAME -> {
+            RouteNames.MAP_PAGE -> {
                 if (geoUri == null) {
                     result.error("pin-geoUri", "map shortcut requires URI", null)
                     return
