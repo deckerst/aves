@@ -5,6 +5,7 @@
 ## Aves
 
 ![Version badge][Version badge]
+![RB badge][RB badge]
 ![Build badge][Build badge]
 
 Aves is a gallery and metadata explorer app. It is built for Android, with Flutter.
@@ -76,11 +77,15 @@ The list of changes for past and future releases is available [here](https://git
 
 ## Permissions
 
-Aves requires a few permissions to do its job:
-- **read contents of shared storage**: the app only accesses media files, and modifying them requires explicit access grants from the user,
-- **read locations from media collection**: necessary to display the media coordinates, and to group them by country (via reverse geocoding),
-- **have network access**: necessary for the map view, and most likely for precise reverse geocoding too,
-- **view network connections**: checking for connection states allows Aves to gracefully degrade features that depend on internet.
+| Permission                                                                                                                                             | Purpose                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| READ_MEDIA_IMAGES<br>READ_MEDIA_VIDEO<br>READ_MEDIA_VISUAL_USER_SELECTED<br>ACCESS_MEDIA_LOCATION                                                      | Media collection read access  |
+| MANAGE_MEDIA                                                                                                                                           | Media collection write access |
+| FOREGROUND_SERVICE<br>FOREGROUND_SERVICE_MEDIA_PROCESSING<br>POST_NOTIFICATIONS<br>ACCESS_NETWORK_STATE<br>ACCESS_WIFI_STATE<br>RECEIVE_BOOT_COMPLETED | Media scan service feedback   |
+| INTERNET                                                                                                                                               | Map view, reverse geocoding   |
+| SET_WALLPAPER                                                                                                                                          | Wallpaper setting             |
+| USE_BIOMETRIC<br>USE_FINGERPRINT                                                                                                                       | Vault lock                    |
+| WAKE_LOCK                                                                                                                                              | Keeping screen on             |
 
 ## Contributing
 
@@ -138,4 +143,5 @@ process handle SIGSEGV --pass true --stop false --notify true
 ```
 
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
+[RB badge]: https://shields.rbtlog.dev/simple/deckers.thibault.aves
 [Build badge]: https://img.shields.io/github/actions/workflow/status/deckerst/aves/quality-check.yml?branch=develop
