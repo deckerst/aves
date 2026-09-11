@@ -82,6 +82,7 @@ jobs:
         # build in profile mode, instead of release,
         # so that setting up signing environment variables is not required
         run: |
+          scripts/gen_flavor_play.sh
           scripts/apply_flavor_play.sh
           ./flutterw build apk --profile -t lib/main_play.dart --flavor play
 
