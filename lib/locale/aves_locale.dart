@@ -7,10 +7,10 @@ import 'package:aves/locale/intl4x.dart';
 import 'package:aves/locale/number.dart';
 import 'package:aves/ref/locales.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/datetime_format.dart' as date4x;
 import 'package:intl4x/number_format.dart' as num4x;
+import 'package:material_ui/material_ui.dart';
 
 typedef ACalendar = date4x.Calendar;
 
@@ -71,6 +71,7 @@ class AvesLocale {
   // as delegates may rely on custom `DateTime` subclasses
   CalendarDelegate getDatePickerDelegate() {
     switch (calendar) {
+      // TODO TLAD [hijri]
       case .persian:
         return PersianCalendarDelegate(this);
       default:
@@ -80,6 +81,7 @@ class AvesLocale {
 
   DateFormatDelegate _getDateFormatDelegate() {
     switch (calendar) {
+      // TODO TLAD [hijri]
       case .persian:
         return Intl4xDateFormatDelegate(
           languageTag: languageTag,
