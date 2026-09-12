@@ -369,13 +369,16 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           collection = CollectionLens(
             source: source,
             filters: {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))},
-            listenToSource: false,
+            listenToSource: true,
             // if we group bursts/RAWs, opening a sub-entry should:
             // - identify and select the containing main entry,
             // - select the sub-entry in the Viewer page.
             stackBursts: false,
             stackDevelopedRaws: false,
           );
+          // useful when opening transient images from camera apps
+          await source.checkForChanges();
+
           final viewerEntryUri = viewerEntry.uri;
           final viewerEntryPath = viewerEntry.path;
           final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) {

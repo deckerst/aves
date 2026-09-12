@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.47.4
 
+### Fixed
+
+- opening transient images from camera apps
+
 ## <a id="v1.15.3"></a>[v1.15.3] - 2026-09-09
 
 ### Changed
