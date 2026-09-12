@@ -238,6 +238,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           case .view:
           case .edit:
           case .setWallpaper:
+            await _initViewerEssentials();
             if (intentUri != null) {
               _viewerEntry = await _initViewerEntry(
                 uri: intentUri,
@@ -288,12 +289,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
               source.canAnalyze = true;
               await source.init(scope: {StoredAlbumFilter(directory, null)});
             }
-          } else {
-            await _initViewerEssentials();
           }
-        case .edit:
-        case .setWallpaper:
-          await _initViewerEssentials();
         default:
           break;
       }
@@ -315,7 +311,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
   }
 
   Future<void> _initViewerEssentials() async {
-    // for video playback storage
+    // for video playback storage, debug log
     await localMediaDb.init();
   }
 
