@@ -376,8 +376,11 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
             stackBursts: false,
             stackDevelopedRaws: false,
           );
+          final viewerEntryUri = viewerEntry.uri;
           final viewerEntryPath = viewerEntry.path;
-          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
+          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) {
+            return entry.uri == viewerEntryUri || entry.path == viewerEntryPath;
+          });
           if (collectionEntry != null) {
             viewerEntry = collectionEntry;
           } else {
