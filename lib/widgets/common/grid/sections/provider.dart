@@ -61,6 +61,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
             ).updateLayouts(context);
           case .grid:
           case .list:
+          case .calendar:
+            // TODO TLAD [calendar]
             return FixedExtentSectionLayoutBuilder<T>(
               sections: sections,
               showHeaders: showHeaders,

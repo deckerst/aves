@@ -70,6 +70,9 @@ class FixedExtentGridPainter extends CustomPainter {
             1,
           ],
         );
+      case .calendar:
+        // TODO TLAD [calendar]
+        return;
     }
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke

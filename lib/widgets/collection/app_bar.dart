@@ -82,31 +82,33 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   bool get showFilterBar => visibleFilters.isNotEmpty;
 
-  static const _sortOptions = [
-    EntrySortFactor.date,
-    EntrySortFactor.size,
-    EntrySortFactor.name,
-    EntrySortFactor.rating,
-    EntrySortFactor.duration,
-    EntrySortFactor.path,
+  static const _layoutOptions = <TileLayout>[
+    .mosaic,
+    .grid,
+    .list,
+    // TODO TLAD [calendar]
+    // .calendar,
   ];
 
-  static const _sectionOptions = [
-    EntrySectionFactor.album,
-    EntrySectionFactor.month,
-    EntrySectionFactor.day,
-    EntrySectionFactor.none,
+  static const _sortOptions = <EntrySortFactor>[
+    .date,
+    .size,
+    .name,
+    .rating,
+    .duration,
+    .path,
   ];
 
-  static const _layoutOptions = [
-    TileLayout.mosaic,
-    TileLayout.grid,
-    TileLayout.list,
+  static const _sectionOptions = <EntrySectionFactor>[
+    .album,
+    .month,
+    .day,
+    .none,
   ];
 
-  static const _trashSelectionQuickActions = [
-    EntrySetAction.delete,
-    EntrySetAction.restore,
+  static const _trashSelectionQuickActions = <EntrySetAction>[
+    .delete,
+    .restore,
   ];
 
   @override
@@ -702,11 +704,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       child: Row(
         children: [
           buildDivider(),
-          buildItem(EntrySetAction.rotateCCW),
+          buildItem(.rotateCCW),
           buildDivider(),
-          buildItem(EntrySetAction.rotateCW),
+          buildItem(.rotateCW),
           buildDivider(),
-          buildItem(EntrySetAction.flip),
+          buildItem(.flip),
           buildDivider(),
         ],
       ),
@@ -811,22 +813,24 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   Future<void> _configureView() async {
     final initialValue = (
+      settings.getTileLayout(CollectionPage.routeName),
       settings.collectionSortFactor,
       settings.collectionSectionFactor,
-      settings.getTileLayout(CollectionPage.routeName),
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(EntrySortFactor, EntrySectionFactor, TileLayout, bool)>(
+    final value = await showAvesDialog<(TileLayout, EntrySortFactor, EntrySectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<EntrySortFactor, EntrySectionFactor, TileLayout>(
+        return TileViewDialog<TileLayout, EntrySortFactor, EntrySectionFactor>(
           initialValue: initialValue,
+          layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
-          canSection: (s, g, l) => s == EntrySortFactor.date,
+          canSort: (l, s, g) => l != .calendar,
+          canSection: (l, s, g) => l != .calendar && s == .date,
+          canScale: (l, s, g) => l != .calendar,
           tileExtentController: extentController,
         );
       },
@@ -835,9 +839,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      settings.collectionSortFactor = value.$1;
-      settings.collectionSectionFactor = value.$2;
-      settings.setTileLayout(CollectionPage.routeName, value.$3);
+      settings.setTileLayout(CollectionPage.routeName, value.$1);
+      settings.collectionSortFactor = value.$2;
+      settings.collectionSectionFactor = value.$3;
       settings.collectionSortReverse = value.$4;
     }
   }

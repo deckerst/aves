@@ -8,4 +8,4 @@ enum EntrySortFactor { date, name, rating, size, duration, path }
 
 enum EntrySectionFactor { none, album, month, day }
 
-enum TileLayout { mosaic, grid, list }
+enum TileLayout { mosaic, grid, list, calendar }

@@ -39,6 +39,10 @@ import 'package:provider/provider.dart';
 abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
 
+  TileLayout get tileLayout;
+
+  set tileLayout(TileLayout tileLayout);
+
   ChipSortFactor get sortFactor;
 
   set sortFactor(ChipSortFactor factor);
@@ -51,9 +55,11 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sectionFactor(ChipSectionFactor factor) {}
 
-  TileLayout get tileLayout;
-
-  set tileLayout(TileLayout tileLayout);
+  List<TileLayout> get layoutOptions => [
+    .mosaic,
+    .grid,
+    .list,
+  ];
 
   List<ChipSortFactor> get sortOptions => [
     .date,
@@ -63,12 +69,6 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   ];
 
   List<ChipSectionFactor> get sectionOptions => [];
-
-  List<TileLayout> get layoutOptions => [
-    .mosaic,
-    .grid,
-    .list,
-  ];
 
   bool isVisible(
     ChipSetAction action, {
@@ -272,20 +272,20 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   Future<void> configureView(BuildContext context) async {
     final initialValue = (
+      tileLayout,
       sortFactor,
       sectionFactor,
-      tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(ChipSortFactor, ChipSectionFactor, TileLayout, bool)>(
+    final value = await showAvesDialog<(TileLayout, ChipSortFactor, ChipSectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<ChipSortFactor, ChipSectionFactor, TileLayout>(
+        return TileViewDialog<TileLayout, ChipSortFactor, ChipSectionFactor>(
           initialValue: initialValue,
+          layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOptions: sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sectionOptions: sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           tileExtentController: extentController,
         );
@@ -295,9 +295,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      sortFactor = value.$1;
-      sectionFactor = value.$2;
-      tileLayout = value.$3;
+      tileLayout = value.$1;
+      sortFactor = value.$2;
+      sectionFactor = value.$3;
       sortReverse = value.$4;
     }
   }

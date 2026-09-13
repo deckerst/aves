@@ -96,6 +96,7 @@ class AIcons {
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
   static const layoutList = Symbols.list;
+  static const layoutCalendar = Symbols.calendar_today;
   static const sort = Symbols.sort;
   static const sortOrder = Symbols.swap_vert;
   static const thumbnailLarge = Symbols.photo_size_select_large;

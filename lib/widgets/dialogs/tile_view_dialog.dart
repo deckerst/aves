@@ -1,60 +1,70 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
-class const TileViewDialog<S, G, L>({
+class const TileViewDialog<L, S, G>({
   super.key,
-  required final (S sort, G section, L layout, bool reverse) initialValue,
+  required final (L layout, S sort, G section, bool reverse) initialValue,
+  final List<TileViewDialogOption<L>> layoutOptions = const [],
   final List<TileViewDialogOption<S>> sortOptions = const [],
   final List<TileViewDialogOption<G>> sectionOptions = const [],
-  final List<TileViewDialogOption<L>> layoutOptions = const [],
   required final String Function(S sort, bool reverse) sortOrder,
-  final bool Function(S? sort, G? section, L? layout)? canSection,
+  final bool Function(L? layout, S? sort, G? section)? canSort,
+  final bool Function(L? layout, S? sort, G? section)? canSection,
+  final bool Function(L? layout, S? sort, G? section)? canScale,
   required final TileExtentController tileExtentController,
 }) extends StatefulWidget {
   static const routeName = '/dialog/tile_view';
 
   @override
-  State<TileViewDialog> createState() => _TileViewDialogState<S, G, L>();
+  State<TileViewDialog> createState() => _TileViewDialogState<L, S, G>();
 }
 
-class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with SingleTickerProviderStateMixin {
+class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with SingleTickerProviderStateMixin {
+  late L _selectedLayout;
   late S _selectedSort;
   late G _selectedSection;
-  late L _selectedLayout;
   late bool _reverseSort;
   late int _columnMin, _columnMax;
   late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
+
+  List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
 
   List<TileViewDialogOption<S>> get sortOptions => widget.sortOptions;
 
   List<TileViewDialogOption<G>> get sectionOptions => widget.sectionOptions;
 
-  List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
-
   TileExtentController get tileExtentController => widget.tileExtentController;
 
-  bool get canSection => (widget.canSection ?? (s, g, l) => true).call(_selectedSort, _selectedSection, _selectedLayout);
+  bool get canSort => (widget.canSort ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
+
+  bool get canSection => (widget.canSection ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
+
+  bool get canScale => (widget.canScale ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
 
   @override
   void initState() {
     super.initState();
     final initialValue = widget.initialValue;
-    _selectedSort = initialValue.$1;
-    _selectedSection = initialValue.$2;
-    _selectedLayout = initialValue.$3;
+    _selectedLayout = initialValue.$1;
+    _selectedSort = initialValue.$2;
+    _selectedSection = initialValue.$3;
     _reverseSort = initialValue.$4;
 
     final extentController = tileExtentController;
@@ -75,28 +85,48 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
 
     return AvesDialog(
       scrollableContent: [
-        _buildSection(
-          icon: AIcons.sort,
-          title: l10n.viewDialogSortSectionTitle,
-          trailing: IconButton(
-            icon: const Icon(AIcons.sortOrder),
-            onPressed: () => setState(() => _reverseSort = !_reverseSort),
-            tooltip: l10n.viewDialogReverseSortOrder,
-          ),
-          options: sortOptions,
-          value: _selectedSort,
-          onChanged: (v) {
-            _selectedSort = v as S;
-            _reverseSort = false;
-          },
-          bottom: _selectedSort != null ? AvesListSubtitle(widget.sortOrder(_selectedSort, _reverseSort)) : null,
+        _buildSelector(
+          icon: AIcons.layout,
+          title: l10n.viewDialogLayoutSectionTitle,
+          options: layoutOptions,
+          value: _selectedLayout,
+          onChanged: (v) => _selectedLayout = v as L,
         ),
         AnimatedSwitcher(
           duration: context.read<DurationsData>().formTransition,
           switchInCurve: Curves.easeInOutCubic,
           switchOutCurve: Curves.easeInOutCubic,
           transitionBuilder: AvesTransitions.formTransitionBuilder,
-          child: _buildSection(
+          child: _buildSelector(
+            show: canSort,
+            icon: AIcons.sort,
+            title: l10n.viewDialogSortSectionTitle,
+            options: sortOptions,
+            value: _selectedSort,
+            onChanged: (v) {
+              _selectedSort = v as S;
+              _reverseSort = false;
+            },
+            bottom: _selectedSort != null
+                ? Row(
+                    children: [
+                      Expanded(child: AvesListSubtitle(widget.sortOrder(_selectedSort, _reverseSort))),
+                      IconButton(
+                        icon: const Icon(AIcons.sortOrder),
+                        onPressed: () => setState(() => _reverseSort = !_reverseSort),
+                        tooltip: l10n.viewDialogReverseSortOrder,
+                      ),
+                    ],
+                  )
+                : null,
+          ),
+        ),
+        AnimatedSwitcher(
+          duration: context.read<DurationsData>().formTransition,
+          switchInCurve: Curves.easeInOutCubic,
+          switchOutCurve: Curves.easeInOutCubic,
+          transitionBuilder: AvesTransitions.formTransitionBuilder,
+          child: _buildSelector(
             show: canSection,
             icon: AIcons.section,
             title: l10n.viewDialogGroupSectionTitle,
@@ -105,34 +135,14 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             onChanged: (v) => _selectedSection = v as G,
           ),
         ),
-        _buildSection(
-          icon: AIcons.layout,
-          title: l10n.viewDialogLayoutSectionTitle,
-          options: layoutOptions,
-          value: _selectedLayout,
-          onChanged: (v) => _selectedLayout = v as L,
-        ),
         if (settings.showPinchGestureAlternatives)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Row(
-              children: [
-                const Icon(AIcons.thumbnailLarge),
-                Expanded(
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: _columnCountNotifier,
-                    builder: (context, columnCount, child) => Slider(
-                      label: context.l10n.columnCount(columnCount),
-                      value: columnCount.toDouble(),
-                      onChanged: (v) => _columnCountNotifier.value = v.round(),
-                      min: _columnMin.toDouble(),
-                      max: _columnMax.toDouble(),
-                      divisions: (_columnMax - _columnMin),
-                    ),
-                  ),
-                ),
-                const Icon(AIcons.thumbnailSmall),
-              ],
+          AnimatedSwitcher(
+            duration: context.read<DurationsData>().formTransition,
+            switchInCurve: Curves.easeInOutCubic,
+            switchOutCurve: Curves.easeInOutCubic,
+            transitionBuilder: AvesTransitions.formTransitionBuilder,
+            child: _buildScaler(
+              show: canScale,
             ),
           ),
       ],
@@ -142,7 +152,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.maybeOf(context)?.pop<(S, G, L, bool)>((_selectedSort, _selectedSection, _selectedLayout, _reverseSort));
+            Navigator.maybeOf(context)?.pop<(L, S, G, bool)>((_selectedLayout, _selectedSort, _selectedSection, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         ),
@@ -150,11 +160,10 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     );
   }
 
-  Widget _buildSection<T>({
+  Widget _buildSelector<T>({
     bool show = true,
     required IconData icon,
     required String title,
-    Widget? trailing,
     required List<TileViewDialogOption<T>> options,
     required T value,
     required ValueChanged<T?> onChanged,
@@ -162,22 +171,20 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
   }) {
     if (options.isEmpty || !show) return const SizedBox();
 
-    final label = ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-      child: FontSizeIconTheme(
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(width: 16),
-            Expanded(
-              child: HighlightTitle(
-                title: title,
-                showHighlight: false,
-              ),
+    final shadows = Theme.of(context).isDark ? AStyles.embossShadows : null;
+
+    final label = FontSizeIconTheme(
+      child: Row(
+        children: [
+          DecoratedIcon(icon, shadows: shadows),
+          const SizedBox(width: 16),
+          Expanded(
+            child: HighlightTitle(
+              title: title,
+              showHighlight: false,
             ),
-            ?trailing,
-          ],
-        ),
+          ),
+        ],
       ),
     );
     final selector = TextDropdownButton<T>(
@@ -193,7 +200,7 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
     final textScaler = MediaQuery.textScalerOf(context);
     final iconSize = textScaler.scale(IconTheme.of(context).size!);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    final child = isPortrait
+    Widget child = isPortrait
         ? Column(
             mainAxisSize: .min,
             crossAxisAlignment: .start,
@@ -214,7 +221,12 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             mainAxisSize: .min,
             crossAxisAlignment: .start,
             children: [
-              Expanded(child: label),
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
+                  child: label,
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -228,13 +240,48 @@ class _TileViewDialogState<S, G, L> extends State<TileViewDialog<S, G, L>> with 
             ],
           );
 
-    return TooltipTheme(
+    child = TooltipTheme(
       data: TooltipTheme.of(context).copyWith(
         preferBelow: false,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 16, top: 8, right: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: child,
+      ),
+    );
+
+    child = Column(
+      children: [
+        const ThinDivider(),
+        child,
+      ],
+    );
+    return child;
+  }
+
+  Widget _buildScaler({bool show = true}) {
+    if (!show) return const SizedBox();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Row(
+        children: [
+          const Icon(AIcons.thumbnailLarge),
+          Expanded(
+            child: ValueListenableBuilder<int>(
+              valueListenable: _columnCountNotifier,
+              builder: (context, columnCount, child) => Slider(
+                label: context.l10n.columnCount(columnCount),
+                value: columnCount.toDouble(),
+                onChanged: (v) => _columnCountNotifier.value = v.round(),
+                min: _columnMin.toDouble(),
+                max: _columnMax.toDouble(),
+                divisions: (_columnMax - _columnMin),
+              ),
+            ),
+          ),
+          const Icon(AIcons.thumbnailSmall),
+        ],
       ),
     );
   }

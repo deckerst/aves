@@ -95,6 +95,7 @@ class Tile extends StatelessWidget {
     switch (tileLayout) {
       case .mosaic:
       case .grid:
+      case .calendar:
         return _buildThumbnail();
       case .list:
         return Row(
