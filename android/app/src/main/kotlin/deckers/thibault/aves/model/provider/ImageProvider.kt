@@ -215,10 +215,10 @@ abstract class ImageProvider {
     // - there is a content row in the Media Store and there is a file on storage
     // - there is a content row in the Media Store, but there is no longer a file on storage
     // - there is no content row in the Media Store, but there is a file on storage
-    fun deleteSingle(context: Context, uri: Uri, path: String?, mimeType: String) {
-        path ?: throw Exception("failed to delete file because path is null")
+    fun deleteSingle(context: Context, uri: Uri, filePath: String?, mimeType: String) {
+        filePath ?: throw Exception("failed to delete file because path is null")
 
-        val file = File(path)
+        val file = File(filePath)
 
         val initialContentExists = contentExists(context, uri)
         val initialFileExists = file.exists()
@@ -251,7 +251,7 @@ abstract class ImageProvider {
 
                         MainActivity.pendingScopedStoragePermissionCompleter = null
                         if (granted) {
-                            deleteSingle(context, uri, path, mimeType)
+                            deleteSingle(context, uri, filePath, mimeType)
                             return
                         } else {
                             throw Exception("failed to get delete permission")
@@ -271,12 +271,12 @@ abstract class ImageProvider {
         } else if (uri.isFileScheme) {
             val uriFilePath = File(uri.path!!).path
             // URI and path both point to the same non-existent path
-            if (uriFilePath == path) return
+            if (uriFilePath == filePath) return
         }
 
         if (file.exists()) {
-            Log.d(LOG_TAG, "delete document at path=$path")
-            val df = StorageUtils.getDocumentFile(context, path, uri)
+            Log.d(LOG_TAG, "delete document at path=$filePath")
+            val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)
             if (df == null || !df.delete()) {
                 throw Exception("failed to delete document with df=$df")
             }
@@ -285,7 +285,7 @@ abstract class ImageProvider {
         if (contentExists(context, uri) && StorageUtils.isMediaStoreContentUri(uri)) {
             // in theory, scanning an obsolete path should remove the entry from the Media Store
             // in practice, the entry may still be there afterward
-            MediaStoreImageProvider.scanObsoletePath(context, uri, path, mimeType)
+            MediaStoreImageProvider.scanObsoletePath(context, uri, filePath, mimeType)
         }
     }
 
@@ -1321,7 +1321,7 @@ abstract class ImageProvider {
                 context = context,
                 mimeType = mimeType,
                 uri = uri,
-                path = path,
+                filePath = path,
                 // do not truncate with "t"
                 // "w" is enough on API 29+, but it will yield an empty file on API <29
                 // so "r" is necessary for backward compatibility
@@ -1901,15 +1901,15 @@ abstract class ImageProvider {
         context: Context,
         mimeType: String,
         uri: Uri,
-        path: String
+        filePath: String
     ): OutputStream {
         // truncate is necessary when overwriting a longer file
         val mode = "wt"
         return if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
             StorageUtils.openOutputStream(context, mimeType, uri, mode) ?: throw Exception("failed to open output stream for uri=$uri")
         } else {
-            val documentUri = StorageUtils.getDocumentFile(context, path, uri)?.uri ?: throw Exception("failed to get document file for path=$path, uri=$uri")
-            context.contentResolver.openOutputStream(documentUri, mode) ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$path, uri=$uri")
+            val documentUri = StorageUtils.getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for path=$filePath, uri=$uri")
+            context.contentResolver.openOutputStream(documentUri, mode) ?: throw Exception("failed to open output stream from documentUri=$documentUri for path=$filePath, uri=$uri")
         }
     }
 

@@ -167,7 +167,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         if (dirPath != null) {
             // save to provided directory
             val filePath = ensureTrailingSeparator(dirPath) + name
-            val docFile = StorageUtils.getDocumentFile(activity, filePath, mediaUri = null)
+            val docFile = StorageUtils.getDocumentFileForNewFile(activity, filePath = filePath, mimeType = mimeType)
             if (docFile != null) {
                 onGranted(docFile.uri)
             } else {

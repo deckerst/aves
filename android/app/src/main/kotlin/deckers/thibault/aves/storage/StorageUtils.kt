@@ -119,13 +119,13 @@ object StorageUtils {
         return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
     }
 
-    private fun getPathStepIterator(context: Context, anyPath: String, root: String?): Iterator<String?>? {
-        val rootLength = (root ?: getVolumePath(context, anyPath))?.length ?: return null
+    private fun getPathStepIterator(anyPath: String, root: String): Iterator<String?>? {
+        val rootLength = root.length
 
         var fileName: String? = null
         var relativePath: String? = null
         val lastSeparatorIndex = anyPath.lastIndexOf(File.separator) + 1
-        if (lastSeparatorIndex > rootLength) {
+        if (lastSeparatorIndex >= rootLength) {
             fileName = anyPath.substring(lastSeparatorIndex)
             relativePath = anyPath.substring(rootLength, lastSeparatorIndex)
         }
@@ -395,11 +395,11 @@ object StorageUtils {
      * Document files
      */
 
-    fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri?): DocumentFileCompat? {
+    fun getDocumentFileForExistingFile(context: Context, filePath: String, mediaUri: Uri): DocumentFileCompat? {
         try {
-            if (!FilePermissions.canEdit(context, anyPath)) {
+            if (!FilePermissions.canEdit(context, filePath)) {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mediaUri != null && isMediaStoreContentUri(mediaUri)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
                     SafPermissions.sanitizePersistedUriPermissions(context)
                     try {
@@ -412,21 +412,38 @@ object StorageUtils {
                     }
                 }
 
-                // fallback for older APIs
-                val df = getVolumePath(context, anyPath)?.let { convertDirPathToTreeDocumentUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
-                if (df != null) return df
+                val docFile = getDocumentFileByTreeDoc(context, filePath)
+                if (docFile != null) return docFile
 
                 // try to strip user info, if any
-                if (mediaUri?.userInfo != null) {
+                if (mediaUri.userInfo != null) {
                     val genericMediaUri = stripMediaUriUserInfo(mediaUri)
                     Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
-                    return getDocumentFile(context, anyPath, genericMediaUri)
+                    return getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = genericMediaUri)
                 }
             }
+
             // good old `File`
-            return DocumentFileCompat.fromFile(File(anyPath))
+            return DocumentFileCompat.fromFile(File(filePath))
         } catch (e: SecurityException) {
             Log.w(LOG_TAG, "failed to get document file from mediaUri=$mediaUri", e)
+        }
+        return null
+    }
+
+    fun getDocumentFileForNewFile(context: Context, filePath: String, mimeType: String): DocumentFileCompat? {
+        try {
+            if (!FilePermissions.canEdit(context, filePath)) {
+                val docFile = getOrCreateDocumentFileByTreeDoc(context, anyPath = filePath) { parentFile, displayName ->
+                    parentFile?.createFile(mimeType, displayName)
+                }
+                if (docFile != null) return docFile
+            }
+
+            // good old `File`
+            return DocumentFileCompat.fromFile(File(filePath))
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file for filePath=$filePath", e)
         }
         return null
     }
@@ -438,7 +455,9 @@ object StorageUtils {
             val targetDirPath = ensureTrailingSeparator(dirPath)
             return when {
                 FilePermissions.canEdit(context, targetDirPath) -> createDirectoryDocByFile(targetDirPath)
-                else -> createDirectoryDocByTreeDoc(context, targetDirPath)
+                else -> getOrCreateDocumentFileByTreeDoc(context, anyPath = targetDirPath) { parentFile, displayName ->
+                    parentFile?.createDirectory(displayName)
+                }
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to create directory at path=$dirPath", e)
@@ -456,51 +475,49 @@ object StorageUtils {
         return DocumentFileCompat.fromFile(directory)
     }
 
-    private fun createDirectoryDocByTreeDoc(context: Context, dirPath: String): DocumentFileCompat? {
-        val grantedDir = PermissionManager.getAccessibleDirs(context).firstOrNull { dirPath.startsWith(it) } ?: return null
+    private fun getDocumentFileByTreeDoc(
+        context: Context,
+        anyPath: String,
+    ): DocumentFileCompat? = getOrCreateDocumentFileByTreeDoc(context, anyPath, null)
+
+    private fun getOrCreateDocumentFileByTreeDoc(
+        context: Context,
+        anyPath: String,
+        create: ((parentFile: DocumentFileCompat?, displayName: String?) -> DocumentFileCompat?)?,
+    ): DocumentFileCompat? {
+        val grantedDir = PermissionManager.getAccessibleDirs(context).firstOrNull { anyPath.startsWith(it) } ?: return null
         val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
 
         var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
-        var currentDirPath = ensureTrailingSeparator(grantedDir)
-        val pathIterator = getPathStepIterator(context, dirPath, grantedDir)
+        var currentPath = ensureTrailingSeparator(grantedDir)
+        val pathIterator = getPathStepIterator(anyPath = anyPath, root = grantedDir)
 
         while (pathIterator?.hasNext() == true) {
-            val dirName = pathIterator.next()
-            var treeDocFile = findDocumentFileIgnoreCase(parentFile, dirName)
-            currentDirPath = ensureTrailingSeparator(currentDirPath + dirName)
+            val displayName = pathIterator.next()
+            var treeDocFile = findDocumentFileIgnoreCase(parentFile, displayName)
+            currentPath = ensureTrailingSeparator(currentPath + displayName)
 
-            if (treeDocFile == null && File(currentDirPath).exists()) {
+            if (treeDocFile == null && File(currentPath).exists()) {
                 // `DocumentsProvider` may be temporarily buggy and fail to list children directories.
                 // Better to fail fast and revoke directory access, so that the user is aware
                 // of the issue when trying again with `ACTION_OPEN_DOCUMENT_TREE`.
                 // Otherwise, we would try to recreate the existing (but unlisted) directory,
                 // and the document provider will create a new one with a "(1)" suffix.
-                Log.e(LOG_TAG, "failed to get document file for existing path=$currentDirPath from granted dir=$grantedDir. Revoking granted dir...")
+                Log.e(LOG_TAG, "failed to get document file for existing path=$currentPath from granted dir=$grantedDir. Revoking granted dir...")
                 SafPermissions.revokeDirectoryAccess(context, grantedDir)
-                throw Exception("failed to get document file for existing path=$currentDirPath from grantedDir=$grantedDir")
+                throw Exception("failed to get document file for existing path=$currentPath from grantedDir=$grantedDir")
             }
 
             if (treeDocFile == null || !treeDocFile.exists()) {
-                treeDocFile = parentFile?.createDirectory(dirName)
+                treeDocFile = create?.invoke(parentFile, displayName)
                 if (treeDocFile == null) {
-                    Log.e(LOG_TAG, "failed to create directory with name=$dirName from parent=$parentFile")
+                    Log.e(LOG_TAG, "failed to create tree document file with name=$displayName from parent=$parentFile")
                     return null
                 }
             }
             parentFile = treeDocFile
         }
         return parentFile
-    }
-
-    private fun getDocumentFileFromVolumeTree(context: Context, rootTreeDocumentUri: Uri, anyPath: String): DocumentFileCompat? {
-        var documentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
-
-        // follow the entry path down the document tree
-        val pathIterator = getPathStepIterator(context, anyPath, null)
-        while (pathIterator?.hasNext() == true) {
-            documentFile = findDocumentFileIgnoreCase(documentFile, pathIterator.next()) ?: return null
-        }
-        return documentFile
     }
 
     // variation on `DocumentFileCompat.findFile()` to allow case insensitive search
@@ -704,18 +721,18 @@ object StorageUtils {
         }
     }
 
-    fun openOutputFileDescriptor(context: Context, mimeType: String, uri: Uri, path: String, mode: String): ParcelFileDescriptor? {
+    fun openOutputFileDescriptor(context: Context, mimeType: String, uri: Uri, filePath: String, mode: String): ParcelFileDescriptor? {
         val effectiveUri = if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
             getMediaStoreScopedStorageSafeUri(uri, mimeType)
         } else {
-            getDocumentFile(context, path, uri)?.uri ?: throw Exception("failed to get document file for path=$path, uri=$uri")
+            getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for path=$filePath, uri=$uri")
         }
         return try {
             context.contentResolver.openFileDescriptor(effectiveUri, mode)
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for uri=$uri path=$path", e)
+            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for uri=$uri path=$filePath", e)
             null
         }
     }
