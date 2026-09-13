@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -44,7 +45,7 @@ class HiddenItemsPage extends StatelessWidget {
                     crossAxisAlignment: .start,
                     children: [
                       _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
-                      const Divider(height: 0),
+                      const ThinDivider(),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(8),
@@ -62,7 +63,7 @@ class HiddenItemsPage extends StatelessWidget {
                 return ListView(
                   children: [
                     _Banner(bannerText: context.l10n.settingsHiddenFiltersBanner),
-                    const Divider(height: 0),
+                    const ThinDivider(),
                     const SizedBox(height: 8),
                     ...filterList.map((filter) {
                       void onRemove(CollectionFilter filter) => settings.changeFilterVisibility({filter}, true);

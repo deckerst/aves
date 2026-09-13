@@ -1,5 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:material_ui/material_ui.dart';
@@ -64,7 +65,7 @@ class AvesExpansionTile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          const Divider(thickness: 1, height: 1),
+          const ThinDivider(),
           const SizedBox(height: 4),
           if (enabled) ...children,
         ],

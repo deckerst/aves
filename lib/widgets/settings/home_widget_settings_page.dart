@@ -9,6 +9,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -146,7 +147,7 @@ class _HomeWidgetSettingsPageState extends State<HomeWidgetSettingsPage> {
                     ],
                   ),
                 ),
-                const Divider(height: 0),
+                const ThinDivider(),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: AvesOutlinedButton(

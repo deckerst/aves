@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/list_tiles/color.dart';
 import 'package:aves/widgets/common/basic/list_tiles/slider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
@@ -42,7 +43,7 @@ class SubtitleThemePage extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   child: SubtitleSample(),
                 ),
-                const Divider(height: 0),
+                const ThinDivider(),
                 Expanded(
                   child: ListView(
                     children: [

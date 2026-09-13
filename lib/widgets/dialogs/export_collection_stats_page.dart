@@ -13,6 +13,7 @@ import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
@@ -80,7 +81,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
                 children: _entryFieldOptions.map(_toTile).toList(),
               ),
             ),
-            const Divider(height: 0),
+            const ThinDivider(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(

@@ -8,6 +8,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -225,7 +226,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                 ),
               ),
             ),
-            const Divider(height: 0),
+            const ThinDivider(),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8),

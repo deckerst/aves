@@ -8,6 +8,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -112,7 +113,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           mainAxisSize: .min,
           children: [
             const SizedBox(height: 8),
-            const Divider(height: 0),
+            const ThinDivider(),
             SafeArea(
               top: false,
               bottom: false,

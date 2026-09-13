@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -241,7 +242,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
               ],
             ),
           ),
-          const Divider(height: 0),
+          const ThinDivider(),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(

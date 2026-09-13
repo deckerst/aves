@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/album_pick_page.dart';
@@ -30,7 +31,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
       children: [
         if (!settings.useTvLayout) ...[
           const DrawerEditorBanner(),
-          const Divider(height: 0),
+          const ThinDivider(),
         ],
         Flexible(
           child: ReorderableListView.builder(
@@ -58,7 +59,7 @@ class _DrawerAlbumTabState extends State<DrawerAlbumTab> {
             shrinkWrap: true,
           ),
         ),
-        const Divider(height: 0),
+        const ThinDivider(),
         const SizedBox(height: 8),
         SafeArea(
           child: AvesOutlinedButton(

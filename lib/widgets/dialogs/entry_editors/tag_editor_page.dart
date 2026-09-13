@@ -7,6 +7,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/expandable_filter_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -208,7 +209,7 @@ class _TagEditorPageState extends State<TagEditorPage> {
                           duration: ADurations.tagEditorTransition,
                         ),
                       ),
-                      const Divider(height: 0),
+                      const ThinDivider(),
                       _FilterRow(
                         title: l10n.statsTopTagsSectionTitle,
                         filters: topTagFilters,
