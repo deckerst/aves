@@ -142,6 +142,18 @@ To debug the app Kotlin code, if attaching the debugger from Android Studio fail
 process handle SIGSEGV --pass true --stop false --notify true
 ```
 
+## Certificate Fingerprint
+
+```
+Owner: CN=Thibault Deckers
+Issuer: CN=Thibault Deckers
+Serial number: 12957861
+Valid from: Wed Dec 07 08:07:30 CET 2016 until: Sun Dec 01 08:07:30 CET 2041
+Certificate fingerprints:
+         SHA1: 59:A5:00:13:FA:7A:2F:97:91:1B:52:D6:81:CA:FA:EB:F8:35:05:E8
+         SHA256: F4:79:47:27:E4:54:16:D8:7C:48:71:38:29:2B:70:9F:11:D1:CD:7D:AB:55:84:D8:C6:85:7D:92:E0:66:60:4B
+```
+
 [Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
 [RB badge]: https://shields.rbtlog.dev/simple/deckers.thibault.aves
 [Build badge]: https://img.shields.io/github/actions/workflow/status/deckerst/aves/quality-check.yml?branch=develop
