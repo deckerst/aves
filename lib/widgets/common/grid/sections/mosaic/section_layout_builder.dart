@@ -12,33 +12,31 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
+class MosaicSectionLayoutBuilder<T>({
+  required super.sections,
+  required super.showHeaders,
+  required super.getHeaderExtent,
+  required super.buildHeader,
+  required super.scrollableWidth,
+  required super.tileLayout,
+  required super.columnCount,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.tileWidth,
+  required super.tileHeight,
+  required super.tileBuilder,
+  required Duration tileAnimationDelay,
+  required final CoverRatioResolver<T> coverRatioResolver,
+}) extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
   late double Function(int itemCount) rowAvailableWidth;
   late double rowHeightMax;
-  final CoverRatioResolver<T> coverRatioResolver;
-
   static const double heightMaxFactor = 2.4;
   static const double minThumbnailAspectRatio = 9 / 32;
   static const double maxThumbnailAspectRatio = 32 / 9;
 
-  new({
-    required super.sections,
-    required super.showHeaders,
-    required super.getHeaderExtent,
-    required super.buildHeader,
-    required super.scrollableWidth,
-    required super.tileLayout,
-    required super.columnCount,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.tileWidth,
-    required super.tileHeight,
-    required super.tileBuilder,
-    required Duration tileAnimationDelay,
-    required this.coverRatioResolver,
-  }) : super(tileAnimationDelay: Duration(milliseconds: (tileAnimationDelay.inMilliseconds / columnCount).ceil())) {
+  this : super(tileAnimationDelay: Duration(milliseconds: (tileAnimationDelay.inMilliseconds / columnCount).ceil())) {
     final rowWidth = scrollableWidth - horizontalPadding * 2;
     rowAvailableWidth = (itemCount) => rowWidth - (itemCount - 1) * spacing;
     rowHeightMax = tileWidth * heightMaxFactor;

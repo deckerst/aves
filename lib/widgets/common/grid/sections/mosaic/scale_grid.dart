@@ -3,12 +3,13 @@ import 'package:aves/widgets/common/grid/sections/mosaic/scale_overlay.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/section_layout_builder.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MosaicGrid extends StatelessWidget {
-  final Rect contentRect;
-  final Size tileSize;
-  final double spacing;
-  final MosaicItemBuilder builder;
-
+class const MosaicGrid({
+  super.key,
+  required final Rect contentRect,
+  required final Size tileSize,
+  required final double spacing,
+  required final MosaicItemBuilder builder,
+}) extends StatelessWidget {
   static const _itemRatios = <double>[
     3 / 4,
     16 / 9,
@@ -21,14 +22,6 @@ class MosaicGrid extends StatelessWidget {
     4 / 3,
     4 / 3,
   ];
-
-  const new({
-    super.key,
-    required this.contentRect,
-    required this.tileSize,
-    required this.spacing,
-    required this.builder,
-  });
 
   @override
   Widget build(BuildContext context) {

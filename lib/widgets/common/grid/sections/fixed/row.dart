@@ -1,19 +1,14 @@
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentGridRow extends MultiChildRenderObjectWidget {
-  final double width, height, spacing;
-  final TextDirection textDirection;
-
-  const new({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.spacing,
-    required this.textDirection,
-    required super.children,
-  });
-
+class const FixedExtentGridRow({
+  super.key,
+  required final double width,
+  required final double height,
+  required final double spacing,
+  required final TextDirection textDirection,
+  required super.children,
+}) extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFixedExtentGridRow(

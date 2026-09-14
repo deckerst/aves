@@ -6,21 +6,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentSectionedListLayout<T> extends SectionedListLayout<T> {
-  final int columnCount;
-  final double tileWidth, tileHeight;
-
-  const new({
-    required super.sections,
-    required super.showHeaders,
-    required this.columnCount,
-    required this.tileWidth,
-    required this.tileHeight,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.sectionLayouts,
-  });
-
+class const FixedExtentSectionedListLayout<T>({
+  required super.sections,
+  required super.showHeaders,
+  required final int columnCount,
+  required final double tileWidth,
+  required final double tileHeight,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.sectionLayouts,
+}) extends SectionedListLayout<T> {
   @override
   Rect? getTileRect(T item) {
     final MapEntry<SectionKey?, List<T>>? section = sections.entries.firstWhereOrNull((kv) => kv.value.contains(item));

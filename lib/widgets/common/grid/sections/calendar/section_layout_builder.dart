@@ -200,7 +200,9 @@ class CalendarSectionLayoutBuilder<T>({
   }
 }
 
-class const _DayOfWeekTile({required final int day}) extends StatelessWidget {
+class const _DayOfWeekTile({
+  required final int day,
+}) extends StatelessWidget {
   static const _padding = EdgeInsets.all(4);
 
   @override

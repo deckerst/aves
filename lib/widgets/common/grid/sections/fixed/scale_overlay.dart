@@ -6,27 +6,19 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentScaleOverlay extends StatelessWidget {
-  final TileLayout tileLayout;
-  final Offset tileCenter;
-  final double xMin, xMax;
-  final ValueNotifier<Size> scaledSizeNotifier;
-  final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
-  final Widget Function(Size scaledTileSize) builder;
-
-  new({
-    super.key,
-    required this.tileLayout,
-    required this.tileCenter,
-    required Rect contentRect,
-    required this.scaledSizeNotifier,
-    required this.gridBuilder,
-    required this.builder,
-  }) : xMin = contentRect.left,
-       xMax = contentRect.right;
-
+class const FixedExtentScaleOverlay({
+  super.key,
+  required final TileLayout tileLayout,
+  required final Offset tileCenter,
+  required final Rect contentRect,
+  required final ValueNotifier<Size> scaledSizeNotifier,
+  required final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder,
+  required final Widget Function(Size scaledTileSize) builder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final xMin = contentRect.left;
+    final xMax = contentRect.right;
     return MediaQueryDataProvider(
       child: IgnorePointer(
         child: _OverlayBackground(
@@ -68,15 +60,10 @@ class FixedExtentScaleOverlay extends StatelessWidget {
   }
 }
 
-class _OverlayBackground extends StatefulWidget {
-  final Offset gradientCenter;
-  final Widget child;
-
-  const new({
-    required this.gradientCenter,
-    required this.child,
-  });
-
+class const _OverlayBackground({
+  required final Offset gradientCenter,
+  required final Widget child,
+}) extends StatefulWidget {
   @override
   State<_OverlayBackground> createState() => _OverlayBackgroundState();
 }

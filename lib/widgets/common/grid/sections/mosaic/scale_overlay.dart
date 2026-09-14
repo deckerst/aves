@@ -7,21 +7,14 @@ import 'package:material_ui/material_ui.dart';
 
 typedef MosaicItemBuilder = Widget Function(int index, double targetExtent);
 
-class MosaicScaleOverlay extends StatelessWidget {
-  final Rect contentRect;
-  final double spacing, extentMax;
-  final ValueNotifier<Size> scaledSizeNotifier;
-  final MosaicItemBuilder itemBuilder;
-
-  const new({
-    super.key,
-    required this.contentRect,
-    required this.spacing,
-    required this.extentMax,
-    required this.scaledSizeNotifier,
-    required this.itemBuilder,
-  });
-
+class const MosaicScaleOverlay({
+  super.key,
+  required final Rect contentRect,
+  required final double spacing,
+  required final double extentMax,
+  required final ValueNotifier<Size> scaledSizeNotifier,
+  required final MosaicItemBuilder itemBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
@@ -75,13 +68,9 @@ class MosaicScaleOverlay extends StatelessWidget {
   }
 }
 
-class _OverlayBackground extends StatefulWidget {
-  final Widget child;
-
-  const new({
-    required this.child,
-  });
-
+class const _OverlayBackground({
+  required final Widget child,
+}) extends StatefulWidget {
   @override
   State<_OverlayBackground> createState() => _OverlayBackgroundState();
 }

@@ -3,27 +3,17 @@ import 'dart:ui' as ui;
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentGridPainter extends CustomPainter {
-  final TileLayout tileLayout;
-  final Offset tileCenter;
-  final Size tileSize;
-  final double spacing, horizontalPadding, borderWidth;
-  final Radius borderRadius;
-  final Color color;
-  final TextDirection textDirection;
-
-  const new({
-    required this.tileLayout,
-    required this.tileCenter,
-    required this.tileSize,
-    required this.spacing,
-    required this.horizontalPadding,
-    required this.borderWidth,
-    required this.borderRadius,
-    required this.color,
-    required this.textDirection,
-  });
-
+class const FixedExtentGridPainter({
+  required final TileLayout tileLayout,
+  required final Offset tileCenter,
+  required final Size tileSize,
+  required final double spacing,
+  required final double horizontalPadding,
+  required final double borderWidth,
+  required final Radius borderRadius,
+  required final Color color,
+  required final TextDirection textDirection,
+}) extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     late final Offset chipCenter;
@@ -31,8 +21,6 @@ class FixedExtentGridPainter extends CustomPainter {
     late final int deltaColumn;
     late final Shader strokeShader;
     switch (tileLayout) {
-      case .mosaic:
-        return;
       case .grid:
         chipCenter = tileCenter;
         chipSize = tileSize;
@@ -70,8 +58,8 @@ class FixedExtentGridPainter extends CustomPainter {
             1,
           ],
         );
+      case .mosaic:
       case .calendar:
-        // TODO TLAD [calendar]
         return;
     }
     final strokePaint = Paint()

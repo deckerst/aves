@@ -3,19 +3,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MosaicGridRow extends MultiChildRenderObjectWidget {
-  final VariableExtentRowLayout rowLayout;
-  final double spacing;
-  final TextDirection textDirection;
-
-  const new({
-    super.key,
-    required this.rowLayout,
-    required this.spacing,
-    required this.textDirection,
-    required super.children,
-  });
-
+class const MosaicGridRow({
+  super.key,
+  required final VariableExtentRowLayout rowLayout,
+  required final double spacing,
+  required final TextDirection textDirection,
+  required super.children,
+}) extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderMosaicGridRow(

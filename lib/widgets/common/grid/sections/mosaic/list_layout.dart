@@ -1,20 +1,18 @@
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
+import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
-class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
-  const new({
-    required super.sections,
-    required super.showHeaders,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.sectionLayouts,
-  });
-
+class const MosaicSectionedListLayout<T>({
+  required super.sections,
+  required super.showHeaders,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.sectionLayouts,
+}) extends SectionedListLayout<T> {
   List<VariableExtentRowLayout> _rowsFor(SectionLayout sectionLayout) => (sectionLayout as VariableExtentSectionLayout).rows;
 
   @override
