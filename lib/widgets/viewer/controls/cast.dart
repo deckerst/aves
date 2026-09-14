@@ -136,7 +136,11 @@ mixin CastMixin {
       debugPrint('cast: play entry=$entry');
       unawaited(renderer.play());
     } catch (error, stack) {
-      await reportService.recordError(error, stack);
+      if (error is HttpException) {
+        debugPrint('failed to cast with error=$error\n$stack');
+      } else {
+        await reportService.recordError(error, stack);
+      }
     }
   }
 

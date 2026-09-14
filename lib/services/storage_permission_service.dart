@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/channel.dart';
+import 'package:aves/services/common/custom_exception.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 enum StorageApi { file, mediaStore, saf }
@@ -174,7 +176,7 @@ class PlatformStoragePermissionService implements StoragePermissionService {
           );
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
-    } on PlatformException catch (e, stack) {
+    } on PlatformException catch (e) {
       if (e.code == 'requestMediaStoreFileAccess-large') {
         throw TooManyItemsException();
       } else {
@@ -184,10 +186,18 @@ class PlatformStoragePermissionService implements StoragePermissionService {
         // 2) has no `images` or `video` entry,
         // 3) is in a restricted directory
         if (message == null || !message.contains('/external/file/')) {
-          await reportService.recordError(e, stack);
+          await mediaStoreFileAccessDenied(CustomPlatformException.fromStandard(e));
         }
       }
     }
     return false;
+  }
+
+  // distinct exceptions to convince Crashlytics to split reports into distinct issues
+  // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
+
+  Future<void> mediaStoreFileAccessDenied(CustomPlatformException e) {
+    debugPrint('mediaStoreFileAccessDenied $e');
+    return reportService.recordError(e);
   }
 }

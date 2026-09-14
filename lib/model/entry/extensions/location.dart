@@ -75,7 +75,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
           addressDetails = _addressDetails;
         } else {
           // broken geocoder, discard result, do not report
-          debugPrint('Failed to get valid address details for latLng=$latLng, address=$v');
+          debugPrint('failed to get valid address details for latLng=$latLng, address=$v');
         }
       }
     } catch (error, stack) {
