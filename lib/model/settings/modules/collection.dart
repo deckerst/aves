@@ -72,5 +72,5 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   EntrySortFactor get effectiveCollectionSortFactor => effectiveCollectionTileLayout == .calendar ? .date : collectionSortFactor;
 
-  bool get effectiveCollectionSortReverse => effectiveCollectionTileLayout == .calendar ? true : collectionSortReverse;
+  bool get effectiveCollectionSortReverse => effectiveCollectionTileLayout == .calendar ? false : collectionSortReverse;
 }

@@ -1,17 +1,20 @@
 import 'package:aves/locale/calendar/calendar_utils.dart';
+import 'package:aves/locale/number.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/theme/styles.dart';
+import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/sections/calendar/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/row.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 class CalendarSectionLayoutBuilder<T>({
@@ -32,11 +35,14 @@ class CalendarSectionLayoutBuilder<T>({
 }) extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
+  double _weekdayLineHeight = 0;
 
   static const daysPerWeek = DateTime.daysPerWeek;
 
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {
+    _weekdayLineHeight = _DayOfWeekTile.computeLineHeight(context);
+
     final sectionLayouts = sections.keys
         .map(
           (sectionKey) => buildSectionLayout(
@@ -80,19 +86,10 @@ class CalendarSectionLayoutBuilder<T>({
     final locale = settings.avesLocale;
     final calendarDelegate = locale.getDatePickerDelegate();
     final numberFormat = locale.decimalNumberFormat();
-
     final daysInMonth = calendarDelegate.getDaysInMonth(year, month);
     final dayOffset = calendarDelegate.firstDayOffset(year, month, localizations);
 
-    final List<WidgetBuilder> dayTiles = List.generate(daysPerWeek, (column) {
-      final dayForColumn = (localizations.firstDayOfWeekIndex + column) % daysPerWeek;
-      final String weekday = localizations.narrowWeekdays[dayForColumn];
-      return (context) => Center(
-        child: Text(weekday),
-      );
-    });
-
-    final byDay = groupBy(section, (v) {
+    final itemsByDay = groupBy(section, (v) {
       if (v is! AvesEntry) return null;
       final itemDate = v.bestDate;
       if (itemDate == null) return null;
@@ -100,52 +97,26 @@ class CalendarSectionLayoutBuilder<T>({
       return day;
     });
 
-    final itemSize = Size.square(tileWidth);
-    final dayTilePadding = EdgeInsets.symmetric(horizontal: tileWidth / 25);
+    final dayTileBuilders = <WidgetBuilder>[
+      ...List.generate(columnCount, (column) {
+        final day = (localizations.firstDayOfWeekIndex + column) % columnCount;
+        return (context) => _DayOfWeekTile(day: day);
+      }),
+      ...List.generate(dayOffset + daysInMonth, (column) {
+        final day = column - dayOffset + 1;
+        return (context) => day < 1
+            ? const SizedBox()
+            : _DayTile(
+                dayToBuild: calendarDelegate.getDay(year, month, day),
+                tileWidth: tileWidth,
+                dayItem: itemsByDay[day]?.firstOrNull,
+                tileBuilder: tileBuilder,
+                numberFormat: numberFormat,
+              );
+      }),
+    ];
 
-    int day = -dayOffset;
-    while (day < daysInMonth) {
-      day++;
-      if (day < 1) {
-        dayTiles.add((context) => const SizedBox());
-      } else {
-        final dayToBuild = calendarDelegate.getDay(year, month, day);
-        final dayItem = byDay[day]?.firstOrNull;
-        dayTiles.add((context) {
-          Widget dayTile = IgnorePointer(
-            child: Container(
-              alignment: AlignmentGeometry.topStart,
-              padding: dayTilePadding,
-              foregroundDecoration: BoxDecoration(
-                border: Border.fromBorderSide(
-                  BorderSide(
-                    color: DecoratedThumbnail.borderColor(context),
-                    width: DecoratedThumbnail.borderWidth(context),
-                  ),
-                ),
-              ),
-              child: Text(
-                numberFormat.format(dayToBuild.day),
-                style: TextStyle(
-                  shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,
-                ),
-              ),
-            ),
-          );
-          if (dayItem != null) {
-            dayTile = Stack(
-              children: [
-                tileBuilder(dayItem, itemSize),
-                dayTile,
-              ],
-            );
-          }
-          return dayTile;
-        });
-      }
-    }
-
-    final rowCount = (dayTiles.length / columnCount).ceil();
+    final rowCount = (dayTileBuilders.length / columnCount).ceil();
     final sectionChildCount = 1 + rowCount;
 
     final sectionFirstIndex = _currentIndex;
@@ -153,17 +124,38 @@ class CalendarSectionLayoutBuilder<T>({
     final sectionLastIndex = _currentIndex - 1;
 
     final sectionMinOffset = _currentOffset;
-    _currentOffset += headerExtent + tileHeight * rowCount + spacing * (rowCount - 1);
+    _currentOffset += headerExtent + _weekdayLineHeight + (tileHeight * (rowCount - 1)) + spacing * (rowCount - 1);
     final sectionMaxOffset = _currentOffset;
 
-    return FixedExtentSectionLayout(
+    final itemWidths = List.generate(columnCount, (_) => tileWidth);
+    final rowLayouts = <VariableExtentRowLayout>[];
+    int firstIndex = 0;
+    double minOffset = 0;
+    for (var i = 0; i < rowCount; i++) {
+      final isWeekdayHeader = i == 0;
+      final lastIndex = firstIndex + columnCount - 1;
+      final rowHeight = (isWeekdayHeader ? _weekdayLineHeight : tileHeight) + spacing;
+      rowLayouts.add(
+        VariableExtentRowLayout(
+          firstIndex: firstIndex,
+          lastIndex: lastIndex,
+          minOffset: minOffset,
+          height: rowHeight,
+          itemWidths: itemWidths,
+        ),
+      );
+      firstIndex = lastIndex + 1;
+      minOffset += rowHeight;
+    }
+
+    return VariableExtentSectionLayout(
       sectionKey: sectionKey,
       firstIndex: sectionFirstIndex,
       lastIndex: sectionLastIndex,
       minOffset: sectionMinOffset,
       maxOffset: sectionMaxOffset,
       headerExtent: headerExtent,
-      tileHeight: tileHeight,
+      rows: rowLayouts,
       spacing: spacing,
       builder: (context, listIndex) {
         final textDirection = Directionality.of(context);
@@ -175,16 +167,17 @@ class CalendarSectionLayoutBuilder<T>({
           return animate ? buildAnimation(context, sectionGridIndex, header) : header;
         }
 
-        final sectionItemCount = dayTiles.length;
+        final sectionItemCount = dayTileBuilders.length;
         final itemMin = (sectionChildIndex - 1) * columnCount;
         final itemMax = sectionChildIndex * columnCount;
         final minItemIndex = itemMin.clamp(0, sectionItemCount);
         final maxItemIndex = itemMax.clamp(0, sectionItemCount);
         final childrenCount = maxItemIndex - minItemIndex;
+        final isWeekdayHeader = minItemIndex < daysPerWeek;
         final children = <Widget>[];
         for (var i = 0; i < childrenCount; i++) {
           final item = RepaintBoundary(
-            child: dayTiles[minItemIndex + i](context),
+            child: dayTileBuilders[minItemIndex + i](context),
           );
           if (animate) {
             children.add(buildAnimation(context, sectionGridIndex + i, item));
@@ -196,13 +189,101 @@ class CalendarSectionLayoutBuilder<T>({
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: FixedExtentGridRow(
             width: tileWidth,
-            height: tileHeight,
+            height: isWeekdayHeader ? _weekdayLineHeight : tileHeight,
             spacing: spacing,
             textDirection: textDirection,
             children: children,
           ),
         );
       },
+    );
+  }
+}
+
+class const _DayOfWeekTile({required final int day}) extends StatelessWidget {
+  static const _padding = EdgeInsets.all(4);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: .center,
+      color: Themes.secondLayerColor(context),
+      foregroundDecoration: _DayTile.tileDecoration(context),
+      child: Text(_narrowWeekdays(context)[day]),
+    );
+  }
+
+  static double computeLineHeight(BuildContext context) {
+    final paragraph = RenderParagraph(
+      TextSpan(
+        children: _narrowWeekdays(context).map((v) => TextSpan(text: v)).toList(),
+      ),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout(const BoxConstraints(), parentUsesSize: true);
+    final textHeight = paragraph.getMaxIntrinsicHeight(double.infinity);
+    paragraph.dispose();
+    return textHeight + _padding.vertical;
+  }
+
+  static List<String> _narrowWeekdays(BuildContext context) => MaterialLocalizations.of(context).narrowWeekdays;
+}
+
+class const _DayTile<T>({
+  required final DateTime dayToBuild,
+  required final double tileWidth,
+  required final T? dayItem,
+  required final TileBuilder<T> tileBuilder,
+  required final ANumberFormat numberFormat,
+}) extends StatelessWidget {
+  static List<Shadow> shadows(BuildContext context) => [
+    Shadow(
+      color: Theme.of(context).isDark ? Colors.black : Colors.white,
+      offset: const Offset(0, 1),
+      blurRadius: 2,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final _item = dayItem;
+    return Stack(
+      children: [
+        _item != null
+            ? tileBuilder(_item, Size.square(tileWidth))
+            : Container(
+                color: Themes.secondLayerColor(context),
+              ),
+        IgnorePointer(
+          child: Container(
+            alignment: .topStart,
+            padding: EdgeInsets.symmetric(horizontal: tileWidth / 25),
+            foregroundDecoration: tileDecoration(context),
+            child: OutlinedText(
+              textSpans: [
+                TextSpan(
+                  text: numberFormat.format(dayToBuild.day),
+                  style: TextStyle(
+                    shadows: shadows(context),
+                  ),
+                ),
+              ],
+              outlineColor: Themes.firstLayerColor(context),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Decoration tileDecoration(BuildContext context) {
+    return BoxDecoration(
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: DecoratedThumbnail.borderColor(context),
+          width: DecoratedThumbnail.borderWidth(context),
+        ),
+      ),
     );
   }
 }

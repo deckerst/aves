@@ -1,10 +1,10 @@
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 class MosaicGridRow extends MultiChildRenderObjectWidget {
-  final MosaicRowLayout rowLayout;
+  final VariableExtentRowLayout rowLayout;
   final double spacing;
   final TextDirection textDirection;
 
@@ -35,7 +35,7 @@ class MosaicGridRow extends MultiChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MosaicRowLayout>('rowLayout', rowLayout));
+    properties.add(DiagnosticsProperty<VariableExtentRowLayout>('rowLayout', rowLayout));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }
@@ -53,10 +53,10 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
     addAll(children);
   }
 
-  MosaicRowLayout get rowLayout => _rowLayout;
-  MosaicRowLayout _rowLayout;
+  VariableExtentRowLayout get rowLayout => _rowLayout;
+  VariableExtentRowLayout _rowLayout;
 
-  set rowLayout(MosaicRowLayout value) {
+  set rowLayout(VariableExtentRowLayout value) {
     if (_rowLayout == value) return;
     _rowLayout = value;
     markNeedsLayout();
@@ -150,7 +150,7 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MosaicRowLayout>('rowLayout', rowLayout));
+    properties.add(DiagnosticsProperty<VariableExtentRowLayout>('rowLayout', rowLayout));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }

@@ -1,6 +1,6 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
@@ -15,7 +15,7 @@ class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
     required super.sectionLayouts,
   });
 
-  List<MosaicRowLayout> _rowsFor(SectionLayout sectionLayout) => (sectionLayout as MosaicSectionLayout).rows;
+  List<VariableExtentRowLayout> _rowsFor(SectionLayout sectionLayout) => (sectionLayout as VariableExtentSectionLayout).rows;
 
   @override
   Rect? getTileRect(T item) {

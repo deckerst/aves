@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/mosaic/row.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
@@ -93,7 +93,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     _currentOffset += headerExtent + rows.map((v) => v.height).sum - spacing;
     final sectionMaxOffset = _currentOffset;
 
-    return MosaicSectionLayout(
+    return VariableExtentSectionLayout(
       sectionKey: sectionKey,
       firstIndex: sectionFirstIndex,
       lastIndex: sectionLastIndex,
@@ -133,7 +133,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     );
   }
 
-  static List<MosaicRowLayout> computeMosaicRows<T>({
+  static List<VariableExtentRowLayout> computeMosaicRows<T>({
     required List<T> section,
     required double Function(int itemCount) availableWidthFor,
     required double heightMax,
@@ -142,7 +142,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     required double bottom,
     required CoverRatioResolver<T> coverRatioResolver,
   }) {
-    final rows = <MosaicRowLayout>[];
+    final rows = <VariableExtentRowLayout>[];
     final items = <T>[];
     double ratioSum = 0, ratioMin = double.infinity;
     int firstIndex = 0;
@@ -163,7 +163,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
 
       height += bottom;
       rows.add(
-        MosaicRowLayout(
+        VariableExtentRowLayout(
           firstIndex: firstIndex,
           lastIndex: i - 1,
           minOffset: minOffset,

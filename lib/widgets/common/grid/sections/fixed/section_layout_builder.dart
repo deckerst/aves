@@ -1,7 +1,7 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/fixed/row.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layouts/fixed_extent.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';

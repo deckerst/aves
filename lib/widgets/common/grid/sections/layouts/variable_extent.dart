@@ -2,23 +2,19 @@ import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-class MosaicSectionLayout extends SectionLayout {
-  final List<MosaicRowLayout> rows;
-
+class const VariableExtentSectionLayout({
+  required super.sectionKey,
+  required super.firstIndex,
+  required super.lastIndex,
+  required super.minOffset,
+  required super.maxOffset,
+  required super.headerExtent,
+  required final List<VariableExtentRowLayout> rows,
+  required super.spacing,
+  required super.builder,
+}) extends SectionLayout {
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, rows, spacing];
-
-  const new({
-    required super.sectionKey,
-    required super.firstIndex,
-    required super.lastIndex,
-    required super.minOffset,
-    required super.maxOffset,
-    required super.headerExtent,
-    required this.rows,
-    required super.spacing,
-    required super.builder,
-  });
 
   @override
   double indexToLayoutOffset(int index) {
@@ -52,19 +48,15 @@ class MosaicSectionLayout extends SectionLayout {
   }
 }
 
-class MosaicRowLayout extends Equatable {
-  final int firstIndex, lastIndex;
-  final double minOffset, maxOffset, height;
-  final List<double> itemWidths;
+class const VariableExtentRowLayout({
+  required final int firstIndex,
+  required final int lastIndex,
+  required final double minOffset,
+  required final double height,
+  required final List<double> itemWidths,
+}) extends Equatable {
+  final double maxOffset = minOffset + height;
 
   @override
   List<Object?> get props => [firstIndex, lastIndex, minOffset, maxOffset, height, itemWidths];
-
-  const new({
-    required this.firstIndex,
-    required this.lastIndex,
-    required this.minOffset,
-    required this.height,
-    required this.itemWidths,
-  }) : maxOffset = minOffset + height;
 }
