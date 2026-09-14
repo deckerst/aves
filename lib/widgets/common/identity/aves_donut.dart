@@ -94,7 +94,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
             width: dim,
             height: dim,
             child: Stack(
-              alignment: Alignment.center,
+              alignment: .center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(dim)),

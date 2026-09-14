@@ -81,7 +81,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
                 }),
                 if (!settings.useTvLayout)
                   Container(
-                    alignment: Alignment.center,
+                    alignment: .center,
                     padding: const EdgeInsets.only(top: 4, bottom: 8),
                     child: AvesOutlinedButton(
                       icon: const Icon(AIcons.add),

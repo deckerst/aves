@@ -412,7 +412,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         preferBelow: false,
       ),
       child: Align(
-        alignment: AlignmentDirectional.bottomEnd,
+        alignment: .bottomEnd,
         child: SlideshowBottomOverlay(
           animationController: _overlayAnimationController,
           availableSize: availableSize,

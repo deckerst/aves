@@ -18,7 +18,7 @@ class InteractiveAppBarTitle extends StatelessWidget {
       // use a `Container` with a dummy color to make it expand
       // so that we can also detect taps around the title `Text`
       child: Container(
-        alignment: AlignmentDirectional.centerStart,
+        alignment: .centerStart,
         color: Colors.transparent,
         height: textScaler.scale(kToolbarHeight),
         child: child,

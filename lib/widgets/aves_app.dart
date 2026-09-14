@@ -352,7 +352,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
   Widget _buildError(Object error) {
     return Container(
-      alignment: Alignment.center,
+      alignment: .center,
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: .min,

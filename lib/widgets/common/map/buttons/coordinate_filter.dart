@@ -61,7 +61,7 @@ class _OverlayCoordinateFilterChipState extends State<OverlayCoordinateFilterChi
     final blurred = settings.enableBlurEffect;
     final theme = Theme.of(context);
     return Align(
-      alignment: Alignment.topLeft,
+      alignment: .topLeft,
       child: Selector<MapThemeData, Animation<double>>(
         selector: (context, v) => v.scale,
         builder: (context, scale, child) => SizeTransition(

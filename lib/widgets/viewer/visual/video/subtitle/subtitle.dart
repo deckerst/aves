@@ -81,7 +81,7 @@ class VideoSubtitles extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 100.0),
                           child: Align(
-                            alignment: Alignment.topLeft,
+                            alignment: .topLeft,
                             child: OutlinedText(
                               textSpans: [
                                 TextSpan(
@@ -212,7 +212,7 @@ class VideoSubtitles extends StatelessWidget {
                           if (!transform.isIdentity()) {
                             child = Transform(
                               transform: transform,
-                              alignment: Alignment.center,
+                              alignment: .center,
                               child: child,
                             );
                           }

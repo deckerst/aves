@@ -197,7 +197,7 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
 
   Widget _debugBuildErrorWidget(BuildContext context, Object error) {
     return Stack(
-      alignment: Alignment.center,
+      alignment: .center,
       children: <Widget>[
         const Positioned.fill(child: Placeholder(color: Color(0xCF8D021F))),
         Padding(

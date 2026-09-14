@@ -75,7 +75,7 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
         }
         final animate = context.select<Settings, bool>((v) => v.animate);
         return Stack(
-          alignment: Alignment.center,
+          alignment: .center,
           children: [
             IconButton(
               icon: isFavourite ? isFavouriteIcon : isNotFavouriteIcon,

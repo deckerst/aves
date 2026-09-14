@@ -90,7 +90,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
 
     if (selected) {
       child = Align(
-        alignment: AlignmentDirectional.centerStart,
+        alignment: .centerStart,
         child: child,
       );
     }

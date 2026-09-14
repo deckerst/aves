@@ -78,7 +78,7 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
         child = EmptyContent(
           icon: AIcons.image,
           text: context.l10n.collectionEmptyImages,
-          alignment: Alignment.center,
+          alignment: .center,
         );
       } else {
         child = MultiProvider(

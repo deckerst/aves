@@ -244,7 +244,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                 child: ValueListenableBuilder<double>(
                   valueListenable: _thumbOffsetNotifier,
                   builder: (context, thumbOffset, child) => Container(
-                    alignment: AlignmentDirectional.topEnd,
+                    alignment: .topEnd,
                     padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
                     child: widget.scrollThumbBuilder(
                       widget.backgroundColor,

@@ -112,7 +112,7 @@ class SectionHeader<T> extends StatelessWidget {
           : Focus(child: child);
     }
     return Container(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: .centerStart,
       margin: margin,
       child: child,
     );

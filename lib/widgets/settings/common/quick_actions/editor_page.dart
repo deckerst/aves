@@ -264,20 +264,20 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                   children: [
                     Positioned.fill(
                       child: FractionallySizedBox(
-                        alignment: AlignmentDirectional.centerStart,
+                        alignment: .centerStart,
                         widthFactor: .5,
                         child: header,
                       ),
                     ),
                     Positioned.fill(
                       child: FractionallySizedBox(
-                        alignment: AlignmentDirectional.centerEnd,
+                        alignment: .centerEnd,
                         widthFactor: .5,
                         child: footer,
                       ),
                     ),
                     Container(
-                      alignment: Alignment.center,
+                      alignment: .center,
                       child: AnimatedList(
                         key: _animatedListKey,
                         initialItemCount: _quickActions.length,

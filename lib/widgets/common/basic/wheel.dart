@@ -94,8 +94,8 @@ class _WheelSelectorState<T> extends State<WheelSelector<T>> {
                 height: itemSize.height * 3,
                 child: ShaderMask(
                   shaderCallback: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: .topCenter,
+                    end: .bottomCenter,
                     colors: [
                       background,
                       foreground,

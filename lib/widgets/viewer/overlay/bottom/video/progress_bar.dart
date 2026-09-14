@@ -97,7 +97,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                         ],
                         Container(
                           key: _progressBarKey,
-                          alignment: Alignment.center,
+                          alignment: .center,
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
                             mainAxisSize: .min,

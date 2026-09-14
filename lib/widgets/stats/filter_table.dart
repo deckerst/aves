@@ -69,7 +69,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     // so we define margins here instead, but they should be symmetric
                     // to keep all cells vertically aligned on the center/middle
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    alignment: AlignmentDirectional.centerStart,
+                    alignment: .centerStart,
                     child: AvesFilterChip(
                       filter: filter,
                       onTap: onFilterSelection,
@@ -83,7 +83,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                         return Stack(
                           // use a stack instead of `center` field, so that the widgets
                           // are centered even when the center child has larger height
-                          alignment: Alignment.center,
+                          alignment: .center,
                           children: [
                             LinearPercentIndicator(
                               percent: percent,

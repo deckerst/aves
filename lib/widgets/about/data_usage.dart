@@ -47,7 +47,7 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
             constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              alignment: AlignmentDirectional.centerStart,
+              alignment: .centerStart,
               child: Text(l10n.aboutDataUsageSectionTitle, style: AStyles.knownTitleText),
             ),
           ),

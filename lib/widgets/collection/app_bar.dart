@@ -431,7 +431,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       if (fabAction != null) ...[
         toCaptionedButton(fabAction),
         const Align(
-          alignment: Alignment.topCenter,
+          alignment: .topCenter,
           child: SizedBox(
             width: 16,
             height: kMinInteractiveDimension,

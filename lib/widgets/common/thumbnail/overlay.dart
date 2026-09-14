@@ -24,7 +24,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
     final children = iconBuilder(context, entry);
     if (children.isEmpty) return const SizedBox();
     return Align(
-      alignment: AlignmentDirectional.bottomStart,
+      alignment: .bottomStart,
       child: Column(
         mainAxisSize: .min,
         crossAxisAlignment: .start,

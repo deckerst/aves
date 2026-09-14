@@ -92,7 +92,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
                     switchOutCurve: widget.curve,
                     layoutBuilder: (currentChild, previousChildren) {
                       return Stack(
-                        alignment: Alignment.center,
+                        alignment: .center,
                         children: [
                           ...previousChildren.map(
                             (child) => ConstrainedBox(

@@ -206,7 +206,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
             children: [
               const SizedBox(height: 6),
               Align(
-                alignment: AlignmentDirectional.centerStart,
+                alignment: .centerStart,
                 child: Wrap(
                   spacing: 16,
                   crossAxisAlignment: .center,

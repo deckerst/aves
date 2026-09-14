@@ -74,7 +74,7 @@ class MapTheme extends StatelessWidget {
                 viewPadding: EdgeInsets.lerp(fromMediaQuery.viewPadding, toMediaQuery.viewPadding, t),
               ),
               child: Align(
-                alignment: Alignment.topCenter,
+                alignment: .topCenter,
                 child: SizedBox.fromSize(
                   size: Size.lerp(fromRenderBox.size, toRenderBox.size, t),
                   child: child,

@@ -34,7 +34,7 @@ class VideoControlButtonsPage extends StatelessWidget {
               children: [
                 ActionPanel(
                   child: Container(
-                    alignment: AlignmentDirectional.center,
+                    alignment: .center,
                     height: OverlayButton.getSize(context) + 48,
                     child: selectedActionList.isNotEmpty
                         ? VideoControlRow(onActionSelected: (_) {})

@@ -27,7 +27,7 @@ class LoadingEmptyContent extends StatelessWidget {
       bottom: Padding(
         padding: const EdgeInsets.only(top: 16),
         child: Stack(
-          alignment: Alignment.center,
+          alignment: .center,
           children: [
             const ReportProgressIndicator(),
             ValueListenableBuilder<ProgressEvent>(

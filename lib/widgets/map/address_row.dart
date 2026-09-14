@@ -48,7 +48,7 @@ class _MapAddressRowState extends State<MapAddressRow> {
   Widget build(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     return Container(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: .centerStart,
       // addresses can include non-latin scripts with inconsistent line height,
       // which is especially an issue for relayout/painting of heavy Google map,
       // so we give extra height to give breathing room to the text and stabilize layout

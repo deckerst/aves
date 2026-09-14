@@ -27,7 +27,7 @@ class _CircularIndicatorState extends State<CircularIndicator> {
     return SizedBox.square(
       dimension: widget.radius * 2,
       child: Stack(
-        alignment: Alignment.center,
+        alignment: .center,
         children: [
           _Circle(
             radius: widget.radius,

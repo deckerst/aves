@@ -139,7 +139,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
         setState(_validate);
       },
       title: Align(
-        alignment: Alignment.centerLeft,
+        alignment: .centerLeft,
         child: OutlinedText(
           textSpans: [
             TextSpan(

@@ -103,7 +103,7 @@ class _MapEntryScrollerState extends State<MapEntryScroller> {
                   return infoEntry == null && regionCollection != null && regionCollection.isEmpty
                       ? EmptyContent(
                           text: context.l10n.mapEmptyRegion,
-                          alignment: Alignment.center,
+                          alignment: .center,
                           fontSize: 18,
                         )
                       : const SizedBox();

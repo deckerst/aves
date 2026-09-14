@@ -127,7 +127,7 @@ class _RasterImageViewState extends State<RasterImageView> {
         return SizedBox.fromSize(
           size: _displaySize * magnifierScale,
           child: Stack(
-            alignment: Alignment.center,
+            alignment: .center,
             children: [
               if (entry.canHaveAlpha && viewportSized) _buildBackground(),
               _buildLoading(),

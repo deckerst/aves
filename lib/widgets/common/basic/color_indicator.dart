@@ -24,8 +24,8 @@ class ColorIndicator extends StatelessWidget {
     final _alternate = alternate;
     if (_value != null && _alternate != null && _alternate != _value) {
       gradient = LinearGradient(
-        begin: AlignmentDirectional.topStart,
-        end: AlignmentDirectional.bottomEnd,
+        begin: .topStart,
+        end: .bottomEnd,
         colors: [_value, _value, _alternate, _alternate],
         stops: const [0, .5, .5, 1],
       );

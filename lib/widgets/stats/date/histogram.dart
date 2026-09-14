@@ -303,8 +303,8 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
     if (drawArea) {
       chart = ShaderMask(
         shaderCallback: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: .topCenter,
+          end: .bottomCenter,
           colors: [
             accentColor.withAlpha(180),
             accentColor.withAlpha(0),

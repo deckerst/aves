@@ -168,8 +168,8 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
                         return Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                              begin: .topLeft,
+                              end: .bottomRight,
                               colors: [neutral, color],
                             ),
                           ),

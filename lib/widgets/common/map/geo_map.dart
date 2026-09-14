@@ -260,7 +260,7 @@ class _GeoMapState extends State<GeoMap> {
         );
 
         return AnimatedSize(
-          alignment: Alignment.topCenter,
+          alignment: .topCenter,
           curve: Curves.easeInOutCubic,
           duration: ADurations.mapStyleSwitchAnimation,
           child: ValueListenableBuilder<bool>(

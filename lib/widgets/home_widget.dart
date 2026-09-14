@@ -16,8 +16,8 @@ class HomeWidgetPainter {
 
   // do not use `AlignmentDirectional` as there is no `TextDirection` in context
   static const backgroundGradient = LinearGradient(
-    begin: Alignment.bottomLeft,
-    end: Alignment.topRight,
+    begin: .bottomLeft,
+    end: .topRight,
     colors: AColors.boraBoraGradient,
   );
 

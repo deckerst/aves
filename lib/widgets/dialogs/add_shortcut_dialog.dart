@@ -65,7 +65,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
             scrollableContent: [
               if (_coverEntry != null)
                 Container(
-                  alignment: Alignment.center,
+                  alignment: .center,
                   padding: const EdgeInsets.only(top: 16),
                   child: ItemPicker(
                     extent: extent,

@@ -29,7 +29,7 @@ class GridItemSelectionOverlay<T> extends StatelessWidget {
               selector: (context, selection) => selection.countSelected({item}).toDouble() / selectableCount,
               builder: (context, selectedRatio, child) {
                 return AnimatedContainer(
-                  alignment: AlignmentDirectional.topEnd,
+                  alignment: .topEnd,
                   padding: padding,
                   decoration: _buildDecoration(context, selectedRatio),
                   duration: duration,

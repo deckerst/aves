@@ -307,7 +307,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
       if (decoration != null) {
         content = Align(
-          alignment: Alignment.bottomCenter,
+          alignment: .bottomCenter,
           child: ClipRRect(
             borderRadius: decoration.textBorderRadius,
             child: Container(
@@ -396,12 +396,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   borderRadius: borderRadius,
                   child: Align(
                     // align to corner the scaled down banner in RTL
-                    alignment: AlignmentDirectional.topStart,
+                    alignment: .topStart,
                     child: Transform(
                       transform: Matrix4.identity().scaledByDouble(scale, scale, scale, 1),
                       child: Banner(
                         message: banner.toUpperCase(),
-                        location: BannerLocation.topStart,
+                        location: .topStart,
                         color: Theme.of(context).colorScheme.primary,
                         child: const SizedBox(),
                       ),

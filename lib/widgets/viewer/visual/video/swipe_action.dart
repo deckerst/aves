@@ -83,7 +83,7 @@ class SwipeActionFeedback extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(radius),
                   child: Align(
-                    alignment: Alignment.bottomCenter,
+                    alignment: .bottomCenter,
                     child: Container(
                       color: fillColor,
                       width: width,

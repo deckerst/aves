@@ -120,7 +120,7 @@ class _VectorImageViewState extends State<VectorImageView> {
         return SizedBox.fromSize(
           size: _displaySize * viewState.scale!,
           child: Stack(
-            alignment: Alignment.center,
+            alignment: .center,
             children: [
               _buildLoading(),
               ..._getTiles(devicePixelRatio),

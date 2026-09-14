@@ -47,7 +47,7 @@ class HighlightTitle extends StatelessWidget {
 
     final colors = context.watch<AvesColorsData>();
     return Align(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: .centerStart,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         decoration: showHighlight && context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)

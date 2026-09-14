@@ -56,7 +56,7 @@ class _BugReportState extends State<BugReport> {
             constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              alignment: AlignmentDirectional.centerStart,
+              alignment: .centerStart,
               child: Text(context.l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
             ),
           ),

@@ -314,7 +314,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       );
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        alignment: AlignmentDirectional.centerStart,
+        alignment: .centerStart,
         // prevent ink response when tapping the header does nothing,
         // because otherwise Play Store reviewers think it is broken navigation
         child: onHeaderPressed != null
@@ -425,7 +425,7 @@ class _LocationIndicator extends StatelessWidget {
                 child: Stack(
                   // use a stack instead of `center` field, so that the widgets
                   // are centered even when the center child has larger height
-                  alignment: Alignment.center,
+                  alignment: .center,
                   children: [
                     LinearPercentIndicator(
                       percent: withGpsPercent,

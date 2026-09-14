@@ -258,7 +258,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
           return FadeTransition(
             opacity: _animation,
             child: Stack(
-              alignment: Alignment.center,
+              alignment: .center,
               children: [
                 Container(
                   width: diameter + 2,

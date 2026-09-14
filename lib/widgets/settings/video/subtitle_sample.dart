@@ -33,8 +33,8 @@ class SubtitleSample extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              begin: AlignmentDirectional.bottomStart,
-              end: AlignmentDirectional.topEnd,
+              begin: .bottomStart,
+              end: .topEnd,
               colors: AColors.boraBoraGradient,
             ),
             border: AvesBorder.border(context),

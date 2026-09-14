@@ -271,7 +271,7 @@ class _AddressRowState extends State<_AddressRow> {
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
           child: Container(
-            alignment: AlignmentDirectional.centerStart,
+            alignment: .centerStart,
             // addresses can include non-latin scripts with inconsistent line height,
             // which is especially an issue for relayout/painting of heavy Google map,
             // so we give extra height to give breathing room to the text and stabilize layout

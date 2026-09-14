@@ -126,7 +126,7 @@ class ScaleBar extends StatelessWidget {
     return Container(
       // keep `left` (and not `start`) because zoom buttons are kept right
       // because `Google` logo on Google layers are always in the bottom left
-      alignment: Alignment.bottomLeft,
+      alignment: .bottomLeft,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         mainAxisSize: .min,

@@ -65,7 +65,7 @@ class _DurationDialogState extends State<DurationDialog> {
                       TableRow(
                         children: [
                           Align(
-                            alignment: Alignment.centerRight,
+                            alignment: .centerRight,
                             child: WheelSelector(
                               valueNotifier: _minutes,
                               values: List.generate(Duration.minutesPerHour, (i) => i),
@@ -82,7 +82,7 @@ class _DurationDialogState extends State<DurationDialog> {
                             ),
                           ),
                           Align(
-                            alignment: Alignment.centerLeft,
+                            alignment: .centerLeft,
                             child: WheelSelector(
                               valueNotifier: _seconds,
                               values: List.generate(Duration.secondsPerMinute, (i) => i),
