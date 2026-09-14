@@ -121,14 +121,6 @@ mixin AppSettings on SettingsAccess {
 
   set catalogTimeZoneOffsetMillis(int newValue) => set(SettingKeys.catalogTimeZoneOffsetMillisKey, newValue);
 
-  double getTileExtent(String routeName) => getDouble(SettingKeys.tileExtentPrefixKey + routeName) ?? 0;
-
-  void setTileExtent(String routeName, double newValue) => set(SettingKeys.tileExtentPrefixKey + routeName, newValue);
-
-  TileLayout getTileLayout(String routeName) => getEnumOrDefault(SettingKeys.tileLayoutPrefixKey + routeName, SettingsDefaults.tileLayout, TileLayout.values);
-
-  void setTileLayout(String routeName, TileLayout newValue) => set(SettingKeys.tileLayoutPrefixKey + routeName, newValue.name);
-
   String get entryRenamingPattern => getString(SettingKeys.entryRenamingPatternKey) ?? SettingsDefaults.entryRenamingPattern;
 
   set entryRenamingPattern(String newValue) => set(SettingKeys.entryRenamingPatternKey, newValue);

@@ -1,14 +1,16 @@
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/model/settings/modules/common_layout.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves_model/aves_model.dart';
 
-mixin CollectionSettings on SettingsAccess {
+mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   List<String> get collectionBurstPatterns => getStringList(SettingKeys.collectionBurstPatternsKey) ?? [];
 
   set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
 
-  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
+  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
 
-  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.name);
+  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
 
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
 
@@ -61,4 +63,14 @@ mixin CollectionSettings on SettingsAccess {
   bool get showThumbnailVideoDuration => getBool(SettingKeys.showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 
   set showThumbnailVideoDuration(bool newValue) => set(SettingKeys.showThumbnailVideoDurationKey, newValue);
+
+  // composite
+
+  TileLayout get effectiveCollectionTileLayout => getTileLayout(CollectionPage.routeName);
+
+  EntrySectionFactor get effectiveCollectionSectionFactor => effectiveCollectionTileLayout == .calendar ? .month : collectionSectionFactor;
+
+  EntrySortFactor get effectiveCollectionSortFactor => effectiveCollectionTileLayout == .calendar ? .date : collectionSortFactor;
+
+  bool get effectiveCollectionSortReverse => effectiveCollectionTileLayout == .calendar ? true : collectionSortReverse;
 }

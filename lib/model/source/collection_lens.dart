@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -20,8 +22,6 @@ import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/locale/aves_locale.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -31,6 +31,7 @@ class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   List<String> burstPatterns;
+  TileLayout tileLayout;
   EntrySectionFactor sectionFactor;
   EntrySortFactor sortFactor;
   bool sortReverse;
@@ -64,9 +65,10 @@ class CollectionLens with ChangeNotifier {
     this.fixedSelection,
   }) : filters = (filters ?? {}).nonNulls.toSet(),
        burstPatterns = settings.collectionBurstPatterns,
-       sectionFactor = settings.collectionSectionFactor,
-       sortFactor = settings.collectionSortFactor,
-       sortReverse = settings.collectionSortReverse,
+       tileLayout = settings.effectiveCollectionTileLayout,
+       sectionFactor = settings.effectiveCollectionSectionFactor,
+       sortFactor = settings.effectiveCollectionSortFactor,
+       sortReverse = settings.effectiveCollectionSortReverse,
        calendar = settings.calendar {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     id ??= hashCode;
@@ -107,7 +109,7 @@ class CollectionLens with ChangeNotifier {
             (event) => [
               SettingKeys.collectionBurstPatternsKey,
               SettingKeys.collectionSortFactorKey,
-              SettingKeys.collectionGroupFactorKey,
+              SettingKeys.collectionSectionFactorKey,
               SettingKeys.collectionSortReverseKey,
               SettingKeys.calendarKey,
             ].contains(event.key),
@@ -215,12 +217,37 @@ class CollectionLens with ChangeNotifier {
     _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
-    if (stackBursts) {
-      _stackBursts();
+    if (tileLayout == .calendar) {
+      _stackByDate();
+    } else {
+      if (stackBursts) {
+        _stackBursts();
+      }
+      if (stackDevelopedRaws) {
+        _stackDevelopedRaws();
+      }
     }
-    if (stackDevelopedRaws) {
-      _stackDevelopedRaws();
-    }
+  }
+
+  void _stackByDate() {
+    final calOps = calendar.ops;
+    final byDate = groupBy<AvesEntry, DateTime?>(_filteredSortedEntries, (entry) {
+      final date = entry.bestDate;
+      return date != null ? calOps.dateOnly(date) : null;
+    }).whereNotNullKey();
+    byDate.forEach((date, stackedEntries) {
+      if (stackedEntries.length > 1) {
+        stackedEntries.sort(AvesEntrySort.compareByDate);
+        final mainEntry = stackedEntries.first;
+        final subEntries = stackedEntries.skip(1).toList();
+
+        final stackEntry = mainEntry.copyWith(stackedEntries: stackedEntries);
+        _syntheticEntries.add(stackEntry);
+
+        subEntries.forEach(_filteredSortedEntries.remove);
+        _filteredSortedEntries.replace(mainEntry, stackEntry);
+      }
+    });
   }
 
   void _stackBursts() {
@@ -358,9 +385,9 @@ class CollectionLens with ChangeNotifier {
 
   void _onSettingsChanged() {
     final newBurstPatterns = settings.collectionBurstPatterns;
-    final newSortFactor = settings.collectionSortFactor;
-    final newSectionFactor = settings.collectionSectionFactor;
-    final newSortReverse = settings.collectionSortReverse;
+    final newSortFactor = settings.effectiveCollectionSortFactor;
+    final newSectionFactor = settings.effectiveCollectionSectionFactor;
+    final newSortReverse = settings.effectiveCollectionSortReverse;
     final newCalendar = settings.calendar;
 
     final needFilter = burstPatterns != newBurstPatterns;

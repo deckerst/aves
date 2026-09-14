@@ -19,6 +19,9 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   Iterable<FilterGridItem<LocationFilter>> get allItems => _items;
 
   @override
+  String get settingsRouteKey => CountryListPage.routeName;
+
+  @override
   ChipSortFactor get sortFactor => settings.countrySortFactor;
 
   @override
@@ -29,12 +32,6 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
 
   @override
   set sortReverse(bool value) => settings.countrySortReverse = value;
-
-  @override
-  TileLayout get tileLayout => settings.getTileLayout(CountryListPage.routeName);
-
-  @override
-  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(CountryListPage.routeName, tileLayout);
 
   @override
   bool isVisible(

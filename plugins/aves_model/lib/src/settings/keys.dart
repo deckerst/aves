@@ -69,7 +69,7 @@ class SettingKeys {
 
   // collection
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
-  static const collectionGroupFactorKey = 'collection_group_factor';
+  static const collectionSectionFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';

@@ -118,11 +118,12 @@ class Tile extends StatelessWidget {
   Widget _buildThumbnail() => DecoratedThumbnail(
     entry: entry,
     tileExtent: thumbnailExtent,
-    isMosaic: tileLayout == TileLayout.mosaic,
+    isMosaic: tileLayout == .mosaic,
     // when the user is scrolling faster than we can retrieve the thumbnails,
     // the retrieval task queue can pile up for thumbnails that got disposed
     // in this case we pause the image retrieval task to get it out of the queue
     cancellableNotifier: isScrollingNotifier,
+    drawOverlay: tileLayout != .calendar,
     selectable: selectable,
     highlightable: highlightable,
     heroTagger: heroTagger,

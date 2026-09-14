@@ -14,6 +14,9 @@ class StateChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
   Iterable<FilterGridItem<LocationFilter>> get allItems => _items;
 
   @override
+  String get settingsRouteKey => StateListPage.routeName;
+
+  @override
   ChipSortFactor get sortFactor => settings.stateSortFactor;
 
   @override
@@ -24,10 +27,4 @@ class StateChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
 
   @override
   set sortReverse(bool value) => settings.stateSortReverse = value;
-
-  @override
-  TileLayout get tileLayout => settings.getTileLayout(StateListPage.routeName);
-
-  @override
-  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(StateListPage.routeName, tileLayout);
 }

@@ -28,6 +28,9 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
   Iterable<FilterGridItem<TagBaseFilter>> get allItems => _items;
 
   @override
+  String get settingsRouteKey => TagListPage.routeName;
+
+  @override
   ChipSortFactor get sortFactor => settings.tagSortFactor;
 
   @override
@@ -44,12 +47,6 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
 
   @override
   set sectionFactor(ChipSectionFactor factor) => settings.tagSectionFactor = factor;
-
-  @override
-  TileLayout get tileLayout => settings.getTileLayout(TagListPage.routeName);
-
-  @override
-  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(TagListPage.routeName, tileLayout);
 
   @override
   List<ChipSectionFactor> get sectionOptions => [

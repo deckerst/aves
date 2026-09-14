@@ -11,7 +11,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double tileExtent;
   final ValueNotifier<bool>? cancellableNotifier;
-  final bool isMosaic, selectable, highlightable;
+  final bool isMosaic, drawOverlay, selectable, highlightable;
   final Object? Function()? heroTagger;
   final HeroPlaceholderBuilder? heroPlaceholderBuilder;
   final TransitionBuilder? imageDecorator;
@@ -26,6 +26,7 @@ class DecoratedThumbnail extends StatelessWidget {
     required this.tileExtent,
     this.cancellableNotifier,
     this.isMosaic = false,
+    this.drawOverlay = true,
     this.selectable = true,
     this.highlightable = true,
     this.heroTagger,
@@ -62,7 +63,7 @@ class DecoratedThumbnail extends StatelessWidget {
       fit: StackFit.passthrough,
       children: [
         imageDecorator?.call(context, child) ?? child,
-        ThumbnailEntryOverlay(entry: entry),
+        if (drawOverlay) ThumbnailEntryOverlay(entry: entry),
         if (selectable) ...[
           GridItemSelectionOverlay<AvesEntry>(
             item: entry,

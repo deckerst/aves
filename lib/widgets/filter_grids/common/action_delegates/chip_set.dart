@@ -39,9 +39,7 @@ import 'package:provider/provider.dart';
 abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
 
-  TileLayout get tileLayout;
-
-  set tileLayout(TileLayout tileLayout);
+  String get settingsRouteKey;
 
   ChipSortFactor get sortFactor;
 
@@ -272,7 +270,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   Future<void> configureView(BuildContext context) async {
     final initialValue = (
-      tileLayout,
+      settings.getTileLayout(settingsRouteKey),
       sortFactor,
       sectionFactor,
       sortReverse,
@@ -295,7 +293,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      tileLayout = value.$1;
+      settings.setTileLayout(settingsRouteKey, value.$1);
       sortFactor = value.$2;
       sectionFactor = value.$3;
       sortReverse = value.$4;

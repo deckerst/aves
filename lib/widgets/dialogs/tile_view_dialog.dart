@@ -262,27 +262,32 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
   Widget _buildScaler({bool show = true}) {
     if (!show) return const SizedBox();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        children: [
-          const Icon(AIcons.thumbnailLarge),
-          Expanded(
-            child: ValueListenableBuilder<int>(
-              valueListenable: _columnCountNotifier,
-              builder: (context, columnCount, child) => Slider(
-                label: context.l10n.columnCount(columnCount),
-                value: columnCount.toDouble(),
-                onChanged: (v) => _columnCountNotifier.value = v.round(),
-                min: _columnMin.toDouble(),
-                max: _columnMax.toDouble(),
-                divisions: (_columnMax - _columnMin),
+    return Column(
+      children: [
+        const ThinDivider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Row(
+            children: [
+              const Icon(AIcons.thumbnailLarge),
+              Expanded(
+                child: ValueListenableBuilder<int>(
+                  valueListenable: _columnCountNotifier,
+                  builder: (context, columnCount, child) => Slider(
+                    label: context.l10n.columnCount(columnCount),
+                    value: columnCount.toDouble(),
+                    onChanged: (v) => _columnCountNotifier.value = v.round(),
+                    min: _columnMin.toDouble(),
+                    max: _columnMax.toDouble(),
+                    divisions: (_columnMax - _columnMin),
+                  ),
+                ),
               ),
-            ),
+              const Icon(AIcons.thumbnailSmall),
+            ],
           ),
-          const Icon(AIcons.thumbnailSmall),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

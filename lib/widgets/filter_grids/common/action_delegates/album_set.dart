@@ -52,6 +52,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   Iterable<FilterGridItem<AlbumBaseFilter>> get allItems => _items;
 
   @override
+  String get settingsRouteKey => AlbumListPage.routeName;
+
+  @override
   ChipSortFactor get sortFactor => settings.albumSortFactor;
 
   @override
@@ -68,12 +71,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
   @override
   set sectionFactor(ChipSectionFactor factor) => settings.albumSectionFactor = factor;
-
-  @override
-  TileLayout get tileLayout => settings.getTileLayout(AlbumListPage.routeName);
-
-  @override
-  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(AlbumListPage.routeName, tileLayout);
 
   @override
   List<ChipSortFactor> get sortOptions => [

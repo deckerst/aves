@@ -86,8 +86,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     .mosaic,
     .grid,
     .list,
-    // TODO TLAD [calendar]
-    // .calendar,
+    .calendar,
   ];
 
   static const _sortOptions = <EntrySortFactor>[
@@ -813,7 +812,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   Future<void> _configureView() async {
     final initialValue = (
-      settings.getTileLayout(CollectionPage.routeName),
+      settings.effectiveCollectionTileLayout,
       settings.collectionSortFactor,
       settings.collectionSectionFactor,
       settings.collectionSortReverse,
