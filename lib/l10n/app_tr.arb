@@ -737,5 +737,6 @@
     "settingsPermissionsPageTitle": "İzinler",
     "calendarGregorian": "Gregoryan",
     "calendarPersian": "İran",
-    "settingsCalendarTile": "Takvim"
+    "settingsCalendarTile": "Takvim",
+    "tileLayoutCalendar": "Takvim"
 }

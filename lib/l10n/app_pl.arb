@@ -956,5 +956,6 @@
     "settingsPermissionsPageTitle": "Uprawnienia",
     "calendarGregorian": "Gregoriański",
     "calendarPersian": "Perski",
-    "settingsCalendarTile": "Kalendarz"
+    "settingsCalendarTile": "Kalendarz",
+    "tileLayoutCalendar": "Kalendarz"
 }
