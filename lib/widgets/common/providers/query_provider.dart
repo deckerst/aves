@@ -2,18 +2,12 @@ import 'package:aves/model/query.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class QueryProvider extends StatelessWidget {
-  final bool startEnabled;
-  final String? initialQuery;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.startEnabled = false,
-    this.initialQuery,
-    required this.child,
-  });
-
+class const QueryProvider({
+  super.key,
+  final bool startEnabled = false,
+  final String? initialQuery,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Query>(

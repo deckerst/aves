@@ -8,26 +8,16 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:material_ui/material_ui.dart';
 
-class TitledExpandableFilterRow extends StatelessWidget {
-  final String title;
-  final List<CollectionFilter> filters;
-  final ValueNotifier<String?> expandedNotifier;
-  final bool showGenericIcon;
-  final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
-  final AFilterCallback onTap;
-  final OffsetFilterCallback? onLongPress;
-
-  const new({
-    super.key,
-    required this.title,
-    required this.filters,
-    required this.expandedNotifier,
-    this.showGenericIcon = true,
-    this.heroTypeBuilder,
-    required this.onTap,
-    required this.onLongPress,
-  });
-
+class const TitledExpandableFilterRow({
+  super.key,
+  required final String title,
+  required final List<CollectionFilter> filters,
+  required final ValueNotifier<String?> expandedNotifier,
+  final bool showGenericIcon = true,
+  final HeroType Function(CollectionFilter filter)? heroTypeBuilder,
+  required final AFilterCallback onTap,
+  required final OffsetFilterCallback? onLongPress,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (filters.isEmpty) return const SizedBox();
@@ -92,31 +82,20 @@ class TitledExpandableFilterRow extends StatelessWidget {
   }
 }
 
-class ExpandableFilterRow extends StatelessWidget {
-  final List<CollectionFilter> filters;
-  final bool isExpanded;
-  final bool showGenericIcon;
-  final Widget? Function(CollectionFilter)? leadingBuilder;
-  final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
-  final AFilterCallback onTap;
-  final AFilterCallback? onRemove;
-  final OffsetFilterCallback? onLongPress;
-
+class const ExpandableFilterRow({
+  super.key,
+  required final List<CollectionFilter> filters,
+  required final bool isExpanded,
+  final bool showGenericIcon = true,
+  final Widget? Function(CollectionFilter)? leadingBuilder,
+  final HeroType Function(CollectionFilter filter)? heroTypeBuilder,
+  required final AFilterCallback onTap,
+  final AFilterCallback? onRemove,
+  required final OffsetFilterCallback? onLongPress,
+}) extends StatelessWidget {
   static const double horizontalPadding = 8;
   static const double verticalPadding = 8;
   static const int topFilterCount = 50;
-
-  const new({
-    super.key,
-    required this.filters,
-    required this.isExpanded,
-    this.showGenericIcon = true,
-    this.leadingBuilder,
-    this.heroTypeBuilder,
-    required this.onTap,
-    this.onRemove,
-    required this.onLongPress,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -171,12 +150,10 @@ class ExpandableFilterRow extends StatelessWidget {
   }
 }
 
-class _ExpandedFilterRow extends StatefulWidget {
-  final List<CollectionFilter> filters;
-  final Widget Function(CollectionFilter filter) chipBuilder;
-
-  const new({required this.filters, required this.chipBuilder});
-
+class const _ExpandedFilterRow({
+  required final List<CollectionFilter> filters,
+  required final Widget Function(CollectionFilter filter) chipBuilder,
+}) extends StatefulWidget {
   @override
   State<_ExpandedFilterRow> createState() => _ExpandedFilterRowState();
 }

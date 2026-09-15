@@ -3,24 +3,22 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-abstract class AvesSearchDelegate extends SearchDelegate {
-  final String routeName;
-  final bool canPop;
+abstract class AvesSearchDelegate({
+  required final String routeName,
+  final bool canPop = true,
+  String? initialQuery,
+  required super.searchFieldLabel,
+  required super.searchFieldStyle,
+}) extends SearchDelegate {
   final TextEditingController queryTextController = TextEditingController();
   final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
 
-  new({
-    required this.routeName,
-    this.canPop = true,
-    String? initialQuery,
-    required super.searchFieldLabel,
-    required super.searchFieldStyle,
-  }) {
+  this {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',

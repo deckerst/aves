@@ -12,6 +12,4 @@ class FilterGroupProvider extends ListenableProvider<FilterGroupNotifier> {
        );
 }
 
-class FilterGroupNotifier extends ValueNotifier<Uri?> {
-  new(super.value);
-}
+class FilterGroupNotifier(super.value) extends ValueNotifier<Uri?>;

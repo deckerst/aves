@@ -7,10 +7,15 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-class TileExtentController {
-  final String settingsRouteKey;
-  final int columnCountMin, columnCountDefault;
-  final double extentMin, extentMax, spacing, horizontalPadding;
+class TileExtentController({
+  required final String settingsRouteKey,
+  final int columnCountMin = 2,
+  required final int columnCountDefault,
+  required final double extentMin,
+  required final double extentMax,
+  required final double spacing,
+  required final double horizontalPadding,
+}) {
   late final ValueNotifier<double> extentNotifier;
 
   late double userPreferredExtent;
@@ -19,15 +24,7 @@ class TileExtentController {
 
   Size get viewportSize => _viewportSize;
 
-  new({
-    required this.settingsRouteKey,
-    this.columnCountMin = 2,
-    required this.columnCountDefault,
-    required this.extentMin,
-    required this.extentMax,
-    required this.spacing,
-    required this.horizontalPadding,
-  }) {
+  this {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',
