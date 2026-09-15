@@ -11,14 +11,10 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoIcon extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const VideoIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gridTheme = context.watch<GridThemeData>();
@@ -44,9 +40,7 @@ class VideoIcon extends StatelessWidget {
   }
 }
 
-class AnimatedImageIcon extends StatelessWidget {
-  const new({super.key});
-
+class const AnimatedImageIcon({super.key}) extends StatelessWidget {
   static const scale = .75;
 
   @override
@@ -58,9 +52,7 @@ class AnimatedImageIcon extends StatelessWidget {
   }
 }
 
-class GeoTiffIcon extends StatelessWidget {
-  const new({super.key});
-
+class const GeoTiffIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
@@ -69,9 +61,7 @@ class GeoTiffIcon extends StatelessWidget {
   }
 }
 
-class HdrIcon extends StatelessWidget {
-  const new({super.key});
-
+class const HdrIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
@@ -80,9 +70,7 @@ class HdrIcon extends StatelessWidget {
   }
 }
 
-class PanoramaIcon extends StatelessWidget {
-  const new({super.key});
-
+class const PanoramaIcon({super.key}) extends StatelessWidget {
   static const scale = .8;
 
   @override
@@ -94,9 +82,7 @@ class PanoramaIcon extends StatelessWidget {
   }
 }
 
-class FavouriteIcon extends StatelessWidget {
-  const new({super.key});
-
+class const FavouriteIcon({super.key}) extends StatelessWidget {
   static const scale = .9;
 
   @override
@@ -147,9 +133,7 @@ class LocationIcon extends StatelessWidget {
   }
 }
 
-class RawIcon extends StatelessWidget {
-  const new({super.key});
-
+class const RawIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
@@ -158,9 +142,7 @@ class RawIcon extends StatelessWidget {
   }
 }
 
-class MotionPhotoIcon extends StatelessWidget {
-  const new({super.key});
-
+class const MotionPhotoIcon({super.key}) extends StatelessWidget {
   static const scale = .85;
 
   @override
@@ -172,15 +154,11 @@ class MotionPhotoIcon extends StatelessWidget {
   }
 }
 
-class MultiPageIcon extends StatelessWidget {
-  final AvesEntry entry;
-
+class const MultiPageIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
   static const scale = .8;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -202,14 +180,10 @@ class MultiPageIcon extends StatelessWidget {
   }
 }
 
-class RatingIcon extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const RatingIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
@@ -224,15 +198,11 @@ class RatingIcon extends StatelessWidget {
   }
 }
 
-class TrashIcon extends StatelessWidget {
-  final int? trashDaysLeft;
-
+class const TrashIcon({
+  super.key,
+  required final int? trashDaysLeft,
+}) extends StatelessWidget {
   static const scale = .85;
-
-  const new({
-    super.key,
-    required this.trashDaysLeft,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,24 +221,16 @@ class TrashIcon extends StatelessWidget {
   }
 }
 
-class OverlayIcon extends StatelessWidget {
-  final IconData icon;
-  final String? text;
-  final double iconScale;
-  final EdgeInsetsGeometry margin;
-  final Offset? relativeOffset;
-
+class const OverlayIcon({
+  super.key,
+  required final IconData icon,
+  final double iconScale = 1,
+  final String? text,
+  // default margin for multiple icons in a `Column`
+  final EdgeInsetsGeometry margin = defaultMargin,
+  final Offset? relativeOffset,
+}) extends StatelessWidget {
   static const defaultMargin = EdgeInsets.only(left: 1, right: 1, bottom: 1);
-
-  const new({
-    super.key,
-    required this.icon,
-    this.iconScale = 1,
-    this.text,
-    // default margin for multiple icons in a `Column`
-    this.margin = defaultMargin,
-    this.relativeOffset,
-  });
 
   @override
   Widget build(BuildContext context) {
