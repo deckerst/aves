@@ -10,20 +10,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class GridTheme extends StatelessWidget {
-  final double extent;
-  final bool showLocation;
-  final bool? showTrash;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.extent,
-    this.showLocation = true,
-    this.showTrash,
-    required this.child,
-  });
-
+class const GridTheme({
+  super.key,
+  required final double extent,
+  final bool showLocation = true,
+  final bool? showTrash,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider2<Settings, MediaQueryData, GridThemeData>(
@@ -58,32 +51,29 @@ class GridTheme extends StatelessWidget {
 
 typedef GridThemeIconBuilder = List<Widget> Function(BuildContext context, AvesEntry entry);
 
-class GridThemeData {
-  final double iconSize, fontSize, highlightBorderWidth, interactiveDimension;
-  final bool useTvLayout;
-  final bool showFavourite, showHdr, showMotionPhoto, showRating, showRaw, showTrash, showVideoDuration;
-  final bool showLocated, showUnlocated, showTagged, showUntagged;
+class GridThemeData({
+  required final double iconSize,
+  required final double fontSize,
+  required final double highlightBorderWidth,
+  required final double interactiveDimension,
+  required final bool useTvLayout,
+  required final bool showFavourite,
+  required final bool showHdr,
+  required ThumbnailOverlayLocationIcon locationIcon,
+  required ThumbnailOverlayTagIcon tagIcon,
+  required final bool showMotionPhoto,
+  required final bool showRating,
+  required final bool showRaw,
+  required final bool showTrash,
+  required final bool showVideoDuration,
+}) {
+  final showLocated = locationIcon == ThumbnailOverlayLocationIcon.located;
+  final showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated;
+  final showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged;
+  final showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged;
   late final GridThemeIconBuilder iconBuilder;
 
-  new({
-    required this.iconSize,
-    required this.fontSize,
-    required this.highlightBorderWidth,
-    required this.interactiveDimension,
-    required this.useTvLayout,
-    required this.showFavourite,
-    required this.showHdr,
-    required ThumbnailOverlayLocationIcon locationIcon,
-    required ThumbnailOverlayTagIcon tagIcon,
-    required this.showMotionPhoto,
-    required this.showRating,
-    required this.showRaw,
-    required this.showTrash,
-    required this.showVideoDuration,
-  }) : showLocated = locationIcon == ThumbnailOverlayLocationIcon.located,
-       showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated,
-       showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged,
-       showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged {
+  this {
     iconBuilder = (context, entry) {
       final located = entry.hasGps;
       final tagged = entry.tags.isNotEmpty;
