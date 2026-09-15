@@ -7,32 +7,22 @@ import 'package:aves/widgets/common/thumbnail/notifications.dart';
 import 'package:aves/widgets/common/thumbnail/overlay.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DecoratedThumbnail extends StatelessWidget {
-  final AvesEntry entry;
-  final double tileExtent;
-  final ValueNotifier<bool>? cancellableNotifier;
-  final bool isMosaic, drawOverlay, selectable, highlightable;
-  final Object? Function()? heroTagger;
-  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
-  final TransitionBuilder? imageDecorator;
-
+class const DecoratedThumbnail({
+  super.key,
+  required final AvesEntry entry,
+  required final double tileExtent,
+  final ValueNotifier<bool>? cancellableNotifier,
+  final bool isMosaic = false,
+  final bool drawOverlay = true,
+  final bool selectable = true,
+  final bool highlightable = true,
+  final Object? Function()? heroTagger,
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder,
+  final TransitionBuilder? imageDecorator,
+}) extends StatelessWidget {
   static Color borderColor(BuildContext context) => Theme.of(context).dividerColor;
 
   static double borderWidth(BuildContext context) => AvesBorder.straightBorderWidth(context);
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.tileExtent,
-    this.cancellableNotifier,
-    this.isMosaic = false,
-    this.drawOverlay = true,
-    this.selectable = true,
-    this.highlightable = true,
-    this.heroTagger,
-    this.heroPlaceholderBuilder,
-    this.imageDecorator,
-  });
 
   @override
   Widget build(BuildContext context) {

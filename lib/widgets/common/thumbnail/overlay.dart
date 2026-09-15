@@ -10,14 +10,10 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailEntryOverlay extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const ThumbnailEntryOverlay({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconBuilder = context.select<GridThemeData, GridThemeIconBuilder>((t) => t.iconBuilder);
@@ -34,14 +30,10 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   }
 }
 
-class ThumbnailHighlightOverlay extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const ThumbnailHighlightOverlay({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<ThumbnailHighlightOverlay> createState() => _ThumbnailHighlightOverlayState();
 }
@@ -82,14 +74,10 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
   }
 }
 
-class ThumbnailZoomOverlay extends StatelessWidget {
-  final VoidCallback? onZoom;
-
-  const new({
-    super.key,
-    this.onZoom,
-  });
-
+class const ThumbnailZoomOverlay({
+  super.key,
+  final VoidCallback? onZoom,
+}) extends StatelessWidget {
   static const alignment = AlignmentDirectional.bottomEnd;
 
   @override
