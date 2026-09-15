@@ -12,6 +12,4 @@ class ViewerEntryProvider extends ListenableProvider<ViewerEntryNotifier> {
        );
 }
 
-class ViewerEntryNotifier extends ValueNotifier<AvesEntry?> {
-  new(super.value);
-}
+class ViewerEntryNotifier(super.value) extends ValueNotifier<AvesEntry?>;

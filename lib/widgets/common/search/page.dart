@@ -15,17 +15,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SearchPage extends StatefulWidget {
+class const SearchPage({
+  super.key,
+  required final AvesSearchDelegate delegate,
+  required final Animation<double> animation,
+}) extends StatefulWidget {
   static const routeName = '/search';
-
-  final AvesSearchDelegate delegate;
-  final Animation<double> animation;
-
-  const new({
-    super.key,
-    required this.delegate,
-    required this.animation,
-  });
 
   @override
   State<SearchPage> createState() => _SearchPageState();

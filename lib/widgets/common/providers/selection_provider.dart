@@ -2,16 +2,11 @@ import 'package:aves/model/selection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class SelectionProvider<T> extends StatelessWidget {
-  final Widget child;
-  final Set<T> Function(T item)? toSelectableItems;
-
-  const new({
-    super.key,
-    this.toSelectableItems,
-    required this.child,
-  });
-
+class const SelectionProvider<T>({
+  super.key,
+  final Set<T> Function(T item)? toSelectableItems,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Selection<T>>(
