@@ -982,5 +982,6 @@
     "settingsPermissionsPageTitle": "Õigused",
     "calendarGregorian": "Gregoriuse",
     "calendarPersian": "Pärsia",
-    "settingsCalendarTile": "Kalender"
+    "settingsCalendarTile": "Kalender",
+    "tileLayoutCalendar": "Kalender"
 }

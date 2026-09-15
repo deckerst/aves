@@ -737,5 +737,6 @@
     "settingsPermissionsPageTitle": "Permisos",
     "settingsCalendarTile": "Calendario",
     "mapShowItemTracks": "Mostrar rutas",
-    "mapHideItemTracks": "Ocultar rutas"
+    "mapHideItemTracks": "Ocultar rutas",
+    "tileLayoutCalendar": "Calendario"
 }

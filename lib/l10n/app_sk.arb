@@ -956,5 +956,6 @@
     "settingsNavigationBottomActionsTile": "Navigácia v spodnej časti",
     "settingsNavigationBottomActionEditorPageTitle": "Navigácia v spodnej časti",
     "mapStyleEditorDialogUserAgent": "User-Agent",
-    "settingsAutoExportSettings": "Automatický export nastavení"
+    "settingsAutoExportSettings": "Automatický export nastavení",
+    "tileLayoutCalendar": "Kalendár"
 }
