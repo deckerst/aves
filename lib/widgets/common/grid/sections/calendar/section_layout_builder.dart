@@ -6,13 +6,15 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
-import 'package:aves/widgets/common/grid/sections/calendar/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/row.dart';
-import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
+import 'package:aves/widgets/common/grid/sections/layout/fixed_extent_grid_row.dart';
+import 'package:aves/widgets/common/grid/sections/layout/sparse_variable_extent_section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_sectioned_list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
@@ -54,12 +56,9 @@ class CalendarSectionLayoutBuilder<T>({
         )
         .toList();
 
-    return CalendarSectionedListLayout<T>(
+    return VariableExtentSectionedListLayout<T>(
       sections: sections,
       showHeaders: showHeaders,
-      columnCount: columnCount,
-      tileWidth: tileWidth,
-      tileHeight: tileHeight,
       spacing: spacing,
       horizontalPadding: horizontalPadding,
       sectionLayouts: sectionLayouts,
@@ -89,13 +88,19 @@ class CalendarSectionLayoutBuilder<T>({
     final daysInMonth = calendarDelegate.getDaysInMonth(year, month);
     final dayOffset = calendarDelegate.firstDayOffset(year, month, localizations);
 
-    final itemsByDay = groupBy(section, (v) {
+    final itemByDay = groupBy(section, (v) {
       if (v is! AvesEntry) return null;
       final itemDate = v.bestDate;
       if (itemDate == null) return null;
       final (_, _, day) = calOps.getYearMonthDay(itemDate);
       return day;
-    });
+    }).map((k, v) => MapEntry(k, v.firstOrNull)).whereNotNullValue().whereNotNullKey();
+
+    final widgetIndexOffset = columnCount + dayOffset - 1;
+    final widgetToItemIndexMap = itemByDay.map((k, v) {
+      final itemIndex = section.indexOf(v);
+      return MapEntry(k + widgetIndexOffset, itemIndex > -1 ? itemIndex : null);
+    }).whereNotNullValue();
 
     final dayTileBuilders = <WidgetBuilder>[
       ...List.generate(columnCount, (column) {
@@ -109,7 +114,7 @@ class CalendarSectionLayoutBuilder<T>({
             : _DayTile(
                 dayToBuild: calendarDelegate.getDay(year, month, day),
                 tileWidth: tileWidth,
-                dayItem: itemsByDay[day]?.firstOrNull,
+                dayItem: itemByDay[day],
                 tileBuilder: tileBuilder,
                 numberFormat: numberFormat,
               );
@@ -148,7 +153,7 @@ class CalendarSectionLayoutBuilder<T>({
       minOffset += rowHeight;
     }
 
-    return VariableExtentSectionLayout(
+    return SparseVariableExtentSectionLayout(
       sectionKey: sectionKey,
       firstIndex: sectionFirstIndex,
       lastIndex: sectionLastIndex,
@@ -156,6 +161,7 @@ class CalendarSectionLayoutBuilder<T>({
       maxOffset: sectionMaxOffset,
       headerExtent: headerExtent,
       rows: rowLayouts,
+      widgetToItemIndexMap: widgetToItemIndexMap,
       spacing: spacing,
       builder: (context, listIndex) {
         final textDirection = Directionality.of(context);

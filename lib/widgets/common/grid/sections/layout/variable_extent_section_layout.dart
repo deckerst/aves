@@ -46,6 +46,10 @@ class const VariableExtentSectionLayout({
     final rowIndex = rows.indexWhere((v) => scrollOffset < v.maxOffset);
     return bodyFirstIndex + (rowIndex == -1 ? rows.length - 1 : rowIndex);
   }
+
+  int sectionItemIndexToWidgetIndex(int itemIndex) => itemIndex;
+
+  int sectionWidgetIndexToItemIndex(int widgetIndex) => widgetIndex;
 }
 
 class const VariableExtentRowLayout({

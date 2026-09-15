@@ -1,9 +1,9 @@
-import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class const MosaicGridRow({
+class const VariableExtentGridRow({
   super.key,
   required final VariableExtentRowLayout rowLayout,
   required final double spacing,
@@ -12,7 +12,7 @@ class const MosaicGridRow({
 }) extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderMosaicGridRow(
+    return RenderVariableExtentGridRow(
       rowLayout: rowLayout,
       spacing: spacing,
       textDirection: textDirection,
@@ -20,7 +20,7 @@ class const MosaicGridRow({
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderMosaicGridRow renderObject) {
+  void updateRenderObject(BuildContext context, RenderVariableExtentGridRow renderObject) {
     renderObject.rowLayout = rowLayout;
     renderObject.spacing = spacing;
     renderObject.textDirection = textDirection;
@@ -37,7 +37,7 @@ class const MosaicGridRow({
 
 class _GridRowParentData extends ContainerBoxParentData<RenderBox>;
 
-class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
+class RenderVariableExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   new({
     List<RenderBox>? children,
     required this._rowLayout,

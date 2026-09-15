@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/widgets/common/grid/sections/layouts/variable_extent.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_grid_row.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_sectioned_list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/row.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
@@ -55,7 +55,7 @@ class MosaicSectionLayoutBuilder<T>({
         )
         .toList();
 
-    return MosaicSectionedListLayout<T>(
+    return VariableExtentSectionedListLayout<T>(
       sections: sections,
       showHeaders: showHeaders,
       spacing: spacing,
@@ -119,7 +119,7 @@ class MosaicSectionLayoutBuilder<T>({
           buildGridRow: (children) {
             return isHeader
                 ? const SizedBox()
-                : MosaicGridRow(
+                : VariableExtentGridRow(
                     rowLayout: row,
                     spacing: spacing,
                     textDirection: textDirection,
