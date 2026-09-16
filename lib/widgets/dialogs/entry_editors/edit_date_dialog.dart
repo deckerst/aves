@@ -1,3 +1,4 @@
+import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -6,7 +7,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/time_shift_selector.dart';
@@ -37,8 +37,8 @@ class EditEntryDateDialog extends StatefulWidget {
 }
 
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
-  DateEditAction _action = DateEditAction.setCustom;
-  DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
+  DateEditAction _action = .setCustom;
+  DateFieldSource _copyFieldSource = .fileModifiedDate;
   late AvesEntry _copyItemSource;
   late DateTime _customDateTime;
   late TimeShiftController _timeShiftController;
@@ -115,11 +115,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                     key: ValueKey(_action),
                     mainAxisSize: .min,
                     children: [
-                      if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
-                      if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
-                      if (_action == DateEditAction.copyItem) _buildCopyItemContent(context),
-                      if (_action == DateEditAction.shift) _buildShiftContent(context),
-                      (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
+                      if (_action == .setCustom) _buildSetCustomContent(context),
+                      if (_action == .copyField) _buildCopyFieldContent(context),
+                      if (_action == .copyItem) _buildCopyItemContent(context),
+                      if (_action == .shift) _buildShiftContent(context),
+                      (_action == .shift || _action == .remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
                     ],
                   ),
                 ),

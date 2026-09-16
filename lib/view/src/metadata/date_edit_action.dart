@@ -6,12 +6,12 @@ extension ExtraDateEditActionView on DateEditAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      DateEditAction.setCustom => l10n.editEntryDateDialogSetCustom,
-      DateEditAction.copyField => l10n.editEntryDateDialogCopyField,
-      DateEditAction.copyItem => l10n.editEntryDialogCopyFromItem,
-      DateEditAction.extractFromTitle => l10n.editEntryDateDialogExtractFromTitle,
-      DateEditAction.shift => l10n.editEntryDateDialogShift,
-      DateEditAction.remove => l10n.actionRemove,
+      .setCustom => l10n.editEntryDateDialogSetCustom,
+      .copyField => l10n.editEntryDateDialogCopyField,
+      .copyItem => l10n.editEntryDialogCopyFromItem,
+      .extractFromTitle => l10n.editEntryDateDialogExtractFromTitle,
+      .shift => l10n.editEntryDateDialogShift,
+      .remove => l10n.actionRemove,
     };
   }
 }

@@ -4,12 +4,12 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class DateModifier extends Equatable {
-  static const writableFields = [
-    MetadataField.exifDate,
-    MetadataField.exifDateOriginal,
-    MetadataField.exifDateDigitized,
-    MetadataField.exifGpsDatestamp,
-    MetadataField.xmpXmpCreateDate,
+  static const writableFields = <MetadataField>[
+    .exifDate,
+    .exifDateOriginal,
+    .exifDateDigitized,
+    .exifGpsDatestamp,
+    .xmpXmpCreateDate,
   ];
 
   final DateEditAction action;
@@ -30,22 +30,22 @@ class DateModifier extends Equatable {
   });
 
   factory setCustom(Set<MetadataField> fields, DateTime dateTime) {
-    return DateModifier._private(DateEditAction.setCustom, fields: fields, setDateTime: dateTime);
+    return DateModifier._private(.setCustom, fields: fields, setDateTime: dateTime);
   }
 
   factory copyField(DateFieldSource copyFieldSource) {
-    return DateModifier._private(DateEditAction.copyField, copyFieldSource: copyFieldSource);
+    return DateModifier._private(.copyField, copyFieldSource: copyFieldSource);
   }
 
   factory extractFromTitle() {
-    return const DateModifier._private(DateEditAction.extractFromTitle);
+    return const DateModifier._private(.extractFromTitle);
   }
 
   factory shift(Set<MetadataField> fields, int shiftSeconds) {
-    return DateModifier._private(DateEditAction.shift, fields: fields, shiftSeconds: shiftSeconds);
+    return DateModifier._private(.shift, fields: fields, shiftSeconds: shiftSeconds);
   }
 
   factory remove(Set<MetadataField> fields) {
-    return DateModifier._private(DateEditAction.remove, fields: fields);
+    return DateModifier._private(.remove, fields: fields);
   }
 }
