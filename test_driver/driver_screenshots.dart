@@ -5,7 +5,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:flutter_driver/driver_extension.dart';
 
 void main() {
@@ -17,34 +16,34 @@ void main() {
       ..isInstalledAppAccessAllowed = true
       ..isErrorReportingAllowed = false
       ..setTileExtent(CollectionPage.routeName, 69)
-      ..setTileLayout(CollectionPage.routeName, TileLayout.mosaic)
+      ..setTileLayout(CollectionPage.routeName, .mosaic)
       ..setTileExtent(CountryListPage.routeName, 112)
-      ..setTileLayout(CountryListPage.routeName, TileLayout.grid)
+      ..setTileLayout(CountryListPage.routeName, .grid)
       // display
-      ..themeBrightness = AvesThemeBrightness.dark
-      ..themeColorMode = AvesThemeColorMode.polychrome
+      ..themeBrightness = .dark
+      ..themeColorMode = .polychrome
       ..enableDynamicColor = false
       ..enableBlurEffect = true
       // navigation
-      ..keepScreenOn = KeepScreenOn.always
-      ..setHome(HomePageSetting.collection)
+      ..keepScreenOn = .always
+      ..setHome(.collection)
       ..drawerTypeBookmarks = [null, FavouriteFilter.instance]
       ..drawerAlbumBookmarks = null
       ..bottomNavigationActions = SettingsDefaults.bottomNavigationActions
       // collection
-      ..collectionSectionFactor = EntrySectionFactor.month
-      ..collectionSortFactor = EntrySortFactor.date
+      ..collectionSectionFactor = .month
+      ..collectionSortFactor = .date
       ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
       ..showThumbnailFavourite = false
-      ..thumbnailLocationIcon = ThumbnailOverlayLocationIcon.none
-      ..thumbnailTagIcon = ThumbnailOverlayTagIcon.none
+      ..thumbnailLocationIcon = .none
+      ..thumbnailTagIcon = .none
       ..hiddenFilters = {}
       // viewer
       ..viewerQuickActions = SettingsDefaults.viewerQuickActions
       ..showOverlayOnOpening = true
       ..showOverlayMinimap = false
       ..showOverlayZoomLevel = false
-      ..overlayHistogramStyle = OverlayHistogramStyle.none
+      ..overlayHistogramStyle = .none
       ..showOverlayInfo = true
       ..showOverlayDescription = false
       ..showOverlayRatingTags = false
@@ -53,8 +52,8 @@ void main() {
       ..viewerUseCutout = true
       // info
       ..infoMapZoom = 13
-      ..coordinateFormat = CoordinateFormat.dms
-      ..unitSystem = UnitSystem.metric
+      ..coordinateFormat = .dms
+      ..unitSystem = .metric
       // map
       ..mapStyle = EntryMapStyles.googleNormal
       ..mapShowItemTracks = true

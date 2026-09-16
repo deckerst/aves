@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -14,7 +15,6 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
@@ -50,10 +50,10 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -89,7 +89,16 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.select<Settings, double>((v) => v.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
+    final spacing = context.select<Settings, double>((v) {
+      switch (v.getTileLayout(settingsRouteKey)) {
+        case .mosaic:
+          return CollectionGrid.mosaicLayoutSpacing;
+        case .grid:
+        case .list:
+        case .calendar:
+          return CollectionGrid.fixedExtentLayoutSpacing;
+      }
+    });
     if (_tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
@@ -138,6 +147,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
     final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
     final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
+    // TODO TLAD [calendar] check layout here to override `TileExtentController`?
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(

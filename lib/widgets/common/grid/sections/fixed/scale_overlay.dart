@@ -22,7 +22,7 @@ class const FixedExtentScaleOverlay({
     return MediaQueryDataProvider(
       child: IgnorePointer(
         child: _OverlayBackground(
-          gradientCenter: tileLayout == TileLayout.grid ? tileCenter : Offset(context.isRtl ? xMax : xMin, tileCenter.dy),
+          gradientCenter: tileLayout == .grid ? tileCenter : Offset(context.isRtl ? xMax : xMin, tileCenter.dy),
           child: ValueListenableBuilder<Size>(
             valueListenable: scaledSizeNotifier,
             builder: (context, scaledSize, child) {

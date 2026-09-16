@@ -346,7 +346,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                     final tileHeight = CoveredFilterChip.tileHeight(
                       extent: thumbnailExtent,
                       textScaler: textScaler,
-                      showText: tileLayout != TileLayout.list,
+                      showText: tileLayout != .list,
                     );
                     return GridTheme(
                       extent: thumbnailExtent,
@@ -646,7 +646,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
         extent: tileSize.height,
         child: FilterTile(
           gridItem: item,
-          chipExtent: tileLayout == TileLayout.grid ? tileSize.width : tileSize.height,
+          chipExtent: tileLayout == .grid ? tileSize.width : tileSize.height,
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           tileLayout: tileLayout,
           banner: bannerBuilder(context, item.filter),

@@ -171,7 +171,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
               builder: (scaledTileSize) => SizedBox.fromSize(
                 size: scaledTileSize,
                 child: GridTheme(
-                  extent: tileLayout == TileLayout.grid ? scaledTileSize.width : scaledTileSize.height,
+                  extent: tileLayout == .grid ? scaledTileSize.width : scaledTileSize.height,
                   child: widget.scaledItemBuilder(_metadata!.item, scaledTileSize),
                 ),
               ),

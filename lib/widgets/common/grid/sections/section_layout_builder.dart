@@ -79,7 +79,7 @@ abstract class const SectionLayoutBuilder<T>({
     final durations = context.watch<DurationsData>();
     return AnimationConfiguration.staggeredGrid(
       position: index,
-      columnCount: tileLayout == TileLayout.mosaic ? 1 : columnCount,
+      columnCount: tileLayout == .mosaic ? 1 : columnCount,
       duration: durations.staggeredAnimation,
       delay: tileAnimationDelay,
       child: SlideAnimation(

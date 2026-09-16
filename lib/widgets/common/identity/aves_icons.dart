@@ -17,8 +17,7 @@ class const VideoIcon({
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final gridTheme = context.watch<GridThemeData>();
-    final showDuration = gridTheme.showVideoDuration;
+    final showDuration = context.select<GridThemeData, bool>((t) => t.showVideoDuration);
     Widget child = OverlayIcon(
       icon: entry.is360
           ? AIcons.sphericalVideo
@@ -31,7 +30,7 @@ class const VideoIcon({
     if (showDuration) {
       child = DefaultTextStyle(
         style: TextStyle(
-          fontSize: gridTheme.fontSize,
+          fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
         ),
         child: child,
       );

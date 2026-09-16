@@ -51,6 +51,7 @@ abstract class const SectionedListLayoutProvider<T>({
             ).updateLayouts(context);
           case .grid:
           case .list:
+            final isList = tileLayout == .list;
             return FixedExtentSectionLayoutBuilder<T>(
               sections: sections,
               showHeaders: showHeaders,
@@ -58,17 +59,17 @@ abstract class const SectionedListLayoutProvider<T>({
               buildHeader: buildHeader,
               scrollableWidth: scrollableWidth,
               tileLayout: tileLayout,
-              columnCount: tileLayout == .list ? 1 : columnCount,
+              columnCount: isList ? 1 : columnCount,
               spacing: spacing,
               horizontalPadding: horizontalPadding,
-              tileWidth: tileLayout == .list ? scrollableWidth - (horizontalPadding * 2) : tileWidth,
+              tileWidth: isList ? contentWidth : tileWidth,
               tileHeight: tileHeight,
               tileBuilder: tileBuilder,
               tileAnimationDelay: tileAnimationDelay,
             ).updateLayouts(context);
           case .calendar:
             const columnCount = DateTime.daysPerWeek;
-            final tileWidth = (scrollableWidth - (horizontalPadding * 2) - spacing * (columnCount - 1)) / columnCount;
+            final tileWidth = (contentWidth - spacing * (columnCount - 1)) / columnCount;
             return CalendarSectionLayoutBuilder<T>(
               sections: sections,
               showHeaders: showHeaders,
@@ -90,6 +91,8 @@ abstract class const SectionedListLayoutProvider<T>({
       child: child,
     );
   }
+
+  double get contentWidth => scrollableWidth - (horizontalPadding * 2);
 
   bool get showHeaders;
 
