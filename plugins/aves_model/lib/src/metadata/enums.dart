@@ -2,7 +2,7 @@ enum DateEditAction {
   setCustom,
   copyField,
   copyItem,
-  extractFromTitle,
+  extractFromFileName,
   shift,
   remove,
 }

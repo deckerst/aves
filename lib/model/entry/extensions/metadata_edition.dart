@@ -53,7 +53,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             case .setCustom:
             case .copyField:
             case .copyItem:
-            case .extractFromTitle:
+            case .extractFromFileName:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
             case .shift:
               final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
@@ -462,8 +462,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           }
         }
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
-      case .extractFromTitle:
-        final date = parseUnknownDateFormat(bestTitle);
+      case .extractFromFileName:
+        final date = parseUnknownDateFormat(fileNameWithoutExtension);
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
       case .setCustom:
       case .copyItem:

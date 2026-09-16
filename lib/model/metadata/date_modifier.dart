@@ -37,8 +37,8 @@ class DateModifier extends Equatable {
     return DateModifier._private(.copyField, copyFieldSource: copyFieldSource);
   }
 
-  factory extractFromTitle() {
-    return const DateModifier._private(.extractFromTitle);
+  factory extractFromFileName() {
+    return const DateModifier._private(.extractFromFileName);
   }
 
   factory shift(Set<MetadataField> fields, int shiftSeconds) {

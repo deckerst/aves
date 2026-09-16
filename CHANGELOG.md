@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- extract date from file name instead of title
 - upgraded Flutter to stable v3.47.4
 
 ### Fixed

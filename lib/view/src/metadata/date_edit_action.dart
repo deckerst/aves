@@ -9,7 +9,7 @@ extension ExtraDateEditActionView on DateEditAction {
       .setCustom => l10n.editEntryDateDialogSetCustom,
       .copyField => l10n.editEntryDateDialogCopyField,
       .copyItem => l10n.editEntryDialogCopyFromItem,
-      .extractFromTitle => l10n.editEntryDateDialogExtractFromTitle,
+      .extractFromFileName => l10n.editEntryDateDialogExtractFromTitle,
       .shift => l10n.editEntryDateDialogShift,
       .remove => l10n.actionRemove,
     };

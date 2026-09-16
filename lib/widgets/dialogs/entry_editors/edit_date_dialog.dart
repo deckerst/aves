@@ -324,8 +324,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return DateModifier.copyField(_copyFieldSource);
       case .copyItem:
         return DateModifier.setCustom(const {}, copyItemDate);
-      case .extractFromTitle:
-        return DateModifier.extractFromTitle();
+      case .extractFromFileName:
+        return DateModifier.extractFromFileName();
       case .shift:
         return DateModifier.shift(_fields, _timeShiftController.value.inSeconds);
       case .remove:
@@ -338,7 +338,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case .setCustom:
       case .copyField:
       case .copyItem:
-      case .extractFromTitle:
+      case .extractFromFileName:
         _isValidNotifier.value = true;
       case .shift:
       case .remove:
