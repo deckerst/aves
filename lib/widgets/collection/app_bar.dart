@@ -89,10 +89,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     .calendar,
   ];
 
-  static const _sortOptions = <EntrySortFactor>[
+  static const _sortOptions = <SortFactor>[
     .date,
     .size,
-    .name,
+    .albumItemName,
     .rating,
     .duration,
     .path,
@@ -818,18 +818,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       settings.collectionSortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(TileLayout, EntrySortFactor, EntrySectionFactor, bool)>(
+    final value = await showAvesDialog<(TileLayout, SortFactor, EntrySectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return ChangeLayoutDialog<TileLayout, EntrySortFactor, EntrySectionFactor>(
+        return ChangeLayoutDialog<EntrySectionFactor>(
           initialValue: initialValue,
           layoutOptions: _layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOptions: _sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sectionOptions: _sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
-          canSort: (l, s, g) => l != .calendar,
           canSection: (l, s, g) => l != .calendar && s == .date,
-          canScale: (l, s, g) => l != .calendar,
           tileExtentController: extentController,
         );
       },

@@ -22,10 +22,10 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   String get settingsRouteKey => CountryListPage.routeName;
 
   @override
-  ChipSortFactor get sortFactor => settings.countrySortFactor;
+  SortFactor get sortFactor => settings.countrySortFactor;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.countrySortFactor = factor;
+  set sortFactor(SortFactor factor) => settings.countrySortFactor = factor;
 
   @override
   bool get sortReverse => settings.countrySortReverse;

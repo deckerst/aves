@@ -34,7 +34,7 @@ class CollectionLens with ChangeNotifier {
   List<String> burstPatterns;
   TileLayout tileLayout;
   EntrySectionFactor sectionFactor;
-  EntrySortFactor sortFactor;
+  SortFactor sortFactor;
   bool sortReverse;
   ACalendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
@@ -175,7 +175,7 @@ class CollectionLens with ChangeNotifier {
           case .day:
             return true;
         }
-      case .name:
+      case .albumItemName:
       case .path:
         return showAlbumHeaders();
       case .rating:
@@ -183,6 +183,9 @@ class CollectionLens with ChangeNotifier {
       case .size:
       case .duration:
         return false;
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
   }
 
@@ -301,7 +304,7 @@ class CollectionLens with ChangeNotifier {
     switch (sortFactor) {
       case .date:
         _filteredSortedEntries.sort(AvesEntrySort.compareByDate);
-      case .name:
+      case .albumItemName:
         _filteredSortedEntries.sort(AvesEntrySort.compareByName);
       case .rating:
         _filteredSortedEntries.sort(AvesEntrySort.compareByRating);
@@ -311,6 +314,9 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntrySort.compareByDuration);
       case .path:
         _filteredSortedEntries.sort(AvesEntrySort.compareByPath);
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
     if (sortReverse) {
       _filteredSortedEntries = _filteredSortedEntries.reversed.toList();
@@ -349,7 +355,7 @@ class CollectionLens with ChangeNotifier {
                 MapEntry(const SectionKey(), _filteredSortedEntries),
               ]);
           }
-        case .name:
+        case .albumItemName:
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
           final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByName(b.directory, a.directory) : (a, b) => source.compareAlbumsByName(a.directory, b.directory);
           sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
@@ -364,6 +370,9 @@ class CollectionLens with ChangeNotifier {
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
           final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByPath(b.directory, a.directory) : (a, b) => source.compareAlbumsByPath(a.directory, b.directory);
           sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
+        case .chipName:
+        case .count:
+          throw UnimplementedError();
       }
     }
     sections = Map.unmodifiable(sections);

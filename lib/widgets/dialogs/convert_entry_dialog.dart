@@ -182,8 +182,6 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
   List<Widget> _buildConvertContent(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    final trailingStyle = TextStyle(color: colorScheme.onSurfaceVariant);
-    final trailingChangeShadowColor = colorScheme.onSurface;
 
     // used by the drop down to match input decoration
     final textFieldDecorationBorder = Border(
@@ -306,22 +304,8 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
               titlePadding: contentHorizontalPadding,
               titleTrailing: (context, value) => ChangeHighlightText(
                 '${value.round()}',
-                style: trailingStyle.copyWith(
-                  shadows: [
-                    Shadow(
-                      color: trailingChangeShadowColor.withAlpha(0),
-                      blurRadius: 0,
-                    ),
-                  ],
-                ),
-                changedStyle: trailingStyle.copyWith(
-                  shadows: [
-                    Shadow(
-                      color: trailingChangeShadowColor,
-                      blurRadius: 3,
-                    ),
-                  ],
-                ),
+                textStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                changeBlurRadius: 3,
                 duration: context.read<DurationsData>().formTextStyleTransition,
               ),
             );

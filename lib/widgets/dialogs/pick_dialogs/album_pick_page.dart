@@ -133,7 +133,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
+            return Selector<Settings, (ChipSectionFactor, SortFactor)>(
               selector: (context, s) => (s.albumSectionFactor, s.albumSortFactor),
               builder: (context, _, child) {
                 return StreamBuilder<AlbumsChangedEvent>(

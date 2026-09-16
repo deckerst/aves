@@ -12,9 +12,9 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
 
-  EntrySortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
+  SortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, SortFactor.values);
 
-  set collectionSortFactor(EntrySortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
+  set collectionSortFactor(SortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
 
   bool get collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
 
@@ -70,7 +70,7 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   EntrySectionFactor get effectiveCollectionSectionFactor => effectiveCollectionTileLayout == .calendar ? .month : collectionSectionFactor;
 
-  EntrySortFactor get effectiveCollectionSortFactor => effectiveCollectionTileLayout == .calendar ? .date : collectionSortFactor;
+  SortFactor get effectiveCollectionSortFactor => effectiveCollectionTileLayout == .calendar ? .date : collectionSortFactor;
 
-  bool get effectiveCollectionSortReverse => effectiveCollectionTileLayout == .calendar ? false : collectionSortReverse;
+  bool get effectiveCollectionSortReverse => collectionSortReverse;
 }

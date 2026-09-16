@@ -1,10 +1,8 @@
 enum SourceState { loading, cataloguing, locatingCountries, locatingPlaces, ready }
 
-enum ChipSortFactor { date, name, count, size, path }
+enum SortFactor { date, chipName, albumItemName, count, size, path, rating, duration }
 
 enum ChipSectionFactor { none, importance, mimeType, volume }
-
-enum EntrySortFactor { date, name, rating, size, duration, path }
 
 enum EntrySectionFactor { none, album, month, day }
 

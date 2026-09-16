@@ -44,7 +44,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
                   DraggableThumbLabel.formatDayThumbLabel(context, locale, date),
                 ];
             }
-          case .name:
+          case .albumItemName:
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               ?entry.bestTitle,
@@ -72,6 +72,9 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               ?entryFileName,
             ];
+          case .chipName:
+          case .count:
+            throw UnimplementedError();
         }
       },
     );

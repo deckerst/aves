@@ -17,10 +17,10 @@ class PlaceChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
   String get settingsRouteKey => PlaceListPage.routeName;
 
   @override
-  ChipSortFactor get sortFactor => settings.placeSortFactor;
+  SortFactor get sortFactor => settings.placeSortFactor;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.placeSortFactor = factor;
+  set sortFactor(SortFactor factor) => settings.placeSortFactor = factor;
 
   @override
   bool get sortReverse => settings.placeSortReverse;

@@ -5,58 +5,53 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
-import 'package:aves/widgets/common/basic/text/animated_diff.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
-class const ChangeLayoutDialog<L, S, G>({
+class const ChangeLayoutDialog<G>({
   super.key,
-  required final (L layout, S sort, G section, bool reverse) initialValue,
-  final List<ChangeLayoutDialogOption<L>> layoutOptions = const [],
-  final List<ChangeLayoutDialogOption<S>> sortOptions = const [],
+  required final (TileLayout layout, SortFactor sort, G section, bool reverse) initialValue,
+  final List<ChangeLayoutDialogOption<TileLayout>> layoutOptions = const [],
+  final List<ChangeLayoutDialogOption<SortFactor>> sortOptions = const [],
   final List<ChangeLayoutDialogOption<G>> sectionOptions = const [],
-  required final String Function(S sort, bool reverse) sortOrder,
-  final bool Function(L? layout, S? sort, G? section)? canSort,
-  final bool Function(L? layout, S? sort, G? section)? canSection,
-  final bool Function(L? layout, S? sort, G? section)? canScale,
+  required final String Function(SortFactor sort, bool reverse) sortOrder,
+  final bool Function(TileLayout? layout, SortFactor? sort, G? section)? canSection,
   required final TileExtentController tileExtentController,
 }) extends StatefulWidget {
   static const routeName = '/dialog/change_layout';
 
   @override
-  State<ChangeLayoutDialog> createState() => _ChangeLayoutDialogState<L, S, G>();
+  State<ChangeLayoutDialog> createState() => _ChangeLayoutDialogState<G>();
 }
 
-class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G>> with SingleTickerProviderStateMixin {
-  late L _selectedLayout;
-  late S _selectedSort;
+class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with SingleTickerProviderStateMixin {
+  late TileLayout _selectedLayout;
+  late SortFactor _selectedSort;
   late G _selectedSection;
   late bool _reverseSort;
   late int _columnMin, _columnMax;
   late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
 
-  List<ChangeLayoutDialogOption<L>> get layoutOptions => widget.layoutOptions;
+  List<ChangeLayoutDialogOption<TileLayout>> get layoutOptions => widget.layoutOptions;
 
-  List<ChangeLayoutDialogOption<S>> get sortOptions => widget.sortOptions;
+  List<ChangeLayoutDialogOption<SortFactor>> get sortOptions => widget.sortOptions;
 
   List<ChangeLayoutDialogOption<G>> get sectionOptions => widget.sectionOptions;
 
   TileExtentController get tileExtentController => widget.tileExtentController;
 
-  bool get canSort => (widget.canSort ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
-
   bool get canSection => (widget.canSection ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
-
-  bool get canScale => (widget.canScale ?? (l, s, g) => true).call(_selectedLayout, _selectedSort, _selectedSection);
 
   @override
   void initState() {
@@ -92,7 +87,12 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
           title: l10n.viewDialogLayoutSectionTitle,
           options: layoutOptions,
           value: _selectedLayout,
-          onChanged: (v) => _selectedLayout = v as L,
+          onChanged: (v) {
+            _selectedLayout = v as TileLayout;
+            if (_selectedLayout == .calendar) {
+              _selectedSort = .date;
+            }
+          },
         ),
         AnimatedSwitcher(
           duration: duration,
@@ -100,32 +100,32 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
           switchOutCurve: Curves.easeInOutCubic,
           transitionBuilder: transitionBuilder,
           child: _buildSelector(
-            show: canSort,
+            enabled: _selectedLayout != .calendar,
             icon: AIcons.sort,
             title: l10n.viewDialogSortSectionTitle,
             options: sortOptions,
             value: _selectedSort,
             onChanged: (v) {
-              _selectedSort = v as S;
+              _selectedSort = v as SortFactor;
               _reverseSort = false;
             },
-            bottom: _selectedSort != null
-                ? Row(
-                    children: [
-                      Expanded(
-                        child: AnimatedDiffText(
-                          widget.sortOrder(_selectedSort, _reverseSort),
-                          duration: duration,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(AIcons.sortOrder),
-                        onPressed: () => setState(() => _reverseSort = !_reverseSort),
-                        tooltip: l10n.viewDialogReverseSortOrder,
-                      ),
-                    ],
-                  )
-                : null,
+            bottom: Row(
+              children: [
+                Expanded(
+                  child: ChangeHighlightText(
+                    widget.sortOrder(_selectedSort, _reverseSort),
+                    textStyle: TextDropdownButton.textStyle(context),
+                    changeBlurRadius: 8,
+                    duration: duration,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(AIcons.sortOrder),
+                  onPressed: () => setState(() => _reverseSort = !_reverseSort),
+                  tooltip: l10n.viewDialogReverseSortOrder,
+                ),
+              ],
+            ),
           ),
         ),
         AnimatedSwitcher(
@@ -148,9 +148,7 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
             switchInCurve: Curves.easeInOutCubic,
             switchOutCurve: Curves.easeInOutCubic,
             transitionBuilder: transitionBuilder,
-            child: _buildScaler(
-              show: canScale,
-            ),
+            child: _selectedLayout != .calendar ? _buildScaler() : const SizedBox(),
           ),
       ],
       actions: [
@@ -159,7 +157,7 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
           key: const Key('button-apply'),
           onPressed: () {
             tileExtentController.setUserPreferredColumnCount(_columnCountNotifier.value);
-            Navigator.maybeOf(context)?.pop<(L, S, G, bool)>((_selectedLayout, _selectedSort, _selectedSection, _reverseSort));
+            Navigator.maybeOf(context)?.pop<(TileLayout, SortFactor, G, bool)>((_selectedLayout, _selectedSort, _selectedSection, _reverseSort));
           },
           child: Text(l10n.applyButtonLabel),
         ),
@@ -169,6 +167,7 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
 
   Widget _buildSelector<T>({
     bool show = true,
+    bool enabled = true,
     required IconData icon,
     required String title,
     required List<ChangeLayoutDialogOption<T>> options,
@@ -199,7 +198,7 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
       valueText: (v) => options.firstWhere((option) => option.value == v).title,
       valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
       value: value,
-      onChanged: (v) => setState(() => onChanged(v)),
+      onChanged: enabled ? (v) => setState(() => onChanged(v)) : null,
       isExpanded: true,
       dropdownColor: Themes.thirdLayerColor(context),
     );
@@ -266,9 +265,7 @@ class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G
     return child;
   }
 
-  Widget _buildScaler({bool show = true}) {
-    if (!show) return const SizedBox();
-
+  Widget _buildScaler() {
     return Column(
       children: [
         const ThinDivider(),

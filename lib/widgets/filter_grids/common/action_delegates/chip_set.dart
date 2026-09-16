@@ -41,9 +41,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   String get settingsRouteKey;
 
-  ChipSortFactor get sortFactor;
+  SortFactor get sortFactor;
 
-  set sortFactor(ChipSortFactor factor);
+  set sortFactor(SortFactor factor);
 
   bool get sortReverse;
 
@@ -59,9 +59,9 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     .list,
   ];
 
-  List<ChipSortFactor> get sortOptions => [
+  List<SortFactor> get sortOptions => [
     .date,
-    .name,
+    .chipName,
     .count,
     .size,
   ];
@@ -276,10 +276,10 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(TileLayout, ChipSortFactor, ChipSectionFactor, bool)>(
+    final value = await showAvesDialog<(TileLayout, SortFactor, ChipSectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return ChangeLayoutDialog<TileLayout, ChipSortFactor, ChipSectionFactor>(
+        return ChangeLayoutDialog<ChipSectionFactor>(
           initialValue: initialValue,
           layoutOptions: layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOptions: sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),

@@ -10,17 +10,12 @@ import 'package:aves/widgets/viewer/overlay/bottom/bottom.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SelectionButton extends StatelessWidget {
-  final AvesEntry mainEntry;
-  final Animation<double> scale;
-
+class const SelectionButton({
+  super.key,
+  required final AvesEntry mainEntry,
+  required final Animation<double> scale,
+}) extends StatelessWidget {
   static const double padding = 8;
-
-  const new({
-    super.key,
-    required this.mainEntry,
-    required this.scale,
-  });
 
   @override
   Widget build(BuildContext context) {

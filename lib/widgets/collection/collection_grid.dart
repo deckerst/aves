@@ -756,13 +756,16 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
           case .none:
             break;
         }
-      case .name:
+      case .albumItemName:
       case .path:
         addAlbums(collection, sectionLayouts, crumbs);
       case .rating:
       case .size:
       case .duration:
         break;
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
     return crumbs;
   }

@@ -60,6 +60,7 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     _resolveImage();
 
     _isPaused = !TickerMode.valuesOf(context).enabled || (MediaQuery.maybeDisableAnimationsOf(context) ?? false);
@@ -69,8 +70,6 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
     } else {
       _listenToStream();
     }
-
-    super.didChangeDependencies();
   }
 
   @override

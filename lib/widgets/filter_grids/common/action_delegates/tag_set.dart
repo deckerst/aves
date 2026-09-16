@@ -31,10 +31,10 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
   String get settingsRouteKey => TagListPage.routeName;
 
   @override
-  ChipSortFactor get sortFactor => settings.tagSortFactor;
+  SortFactor get sortFactor => settings.tagSortFactor;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.tagSortFactor = factor;
+  set sortFactor(SortFactor factor) => settings.tagSortFactor = factor;
 
   @override
   bool get sortReverse => settings.tagSortReverse;

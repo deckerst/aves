@@ -39,7 +39,7 @@ class TagListPage extends StatelessWidget {
         // to access filter group provider from subtree context
         builder: (context) {
           final source = context.read<CollectionSource>();
-          return Selector<Settings, (ChipSectionFactor, ChipSortFactor, bool, Set<CollectionFilter>)>(
+          return Selector<Settings, (ChipSectionFactor, SortFactor, bool, Set<CollectionFilter>)>(
             selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor, s.tagSortReverse, s.pinnedFilters),
             shouldRebuild: (t1, t2) {
               // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records

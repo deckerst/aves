@@ -117,7 +117,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
+            return Selector<Settings, (ChipSectionFactor, SortFactor)>(
               selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor),
               builder: (context, _, child) {
                 return StreamBuilder<TagsChangedEvent>(

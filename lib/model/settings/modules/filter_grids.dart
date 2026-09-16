@@ -15,25 +15,25 @@ mixin FilterGridsSettings on SettingsAccess {
 
   set tagSectionFactor(ChipSectionFactor newValue) => set(SettingKeys.tagSectionFactorKey, newValue.name);
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
+  SortFactor get albumSortFactor => getEnumOrDefault(SettingKeys.albumSortFactorKey, SettingsDefaults.chipSortFactor, SortFactor.values);
 
-  set albumSortFactor(ChipSortFactor newValue) => set(SettingKeys.albumSortFactorKey, newValue.name);
+  set albumSortFactor(SortFactor newValue) => set(SettingKeys.albumSortFactorKey, newValue.name);
 
-  ChipSortFactor get countrySortFactor => getEnumOrDefault(SettingKeys.countrySortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
+  SortFactor get countrySortFactor => getEnumOrDefault(SettingKeys.countrySortFactorKey, SettingsDefaults.chipSortFactor, SortFactor.values);
 
-  set countrySortFactor(ChipSortFactor newValue) => set(SettingKeys.countrySortFactorKey, newValue.name);
+  set countrySortFactor(SortFactor newValue) => set(SettingKeys.countrySortFactorKey, newValue.name);
 
-  ChipSortFactor get stateSortFactor => getEnumOrDefault(SettingKeys.stateSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
+  SortFactor get stateSortFactor => getEnumOrDefault(SettingKeys.stateSortFactorKey, SettingsDefaults.chipSortFactor, SortFactor.values);
 
-  set stateSortFactor(ChipSortFactor newValue) => set(SettingKeys.stateSortFactorKey, newValue.name);
+  set stateSortFactor(SortFactor newValue) => set(SettingKeys.stateSortFactorKey, newValue.name);
 
-  ChipSortFactor get placeSortFactor => getEnumOrDefault(SettingKeys.placeSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
+  SortFactor get placeSortFactor => getEnumOrDefault(SettingKeys.placeSortFactorKey, SettingsDefaults.chipSortFactor, SortFactor.values);
 
-  set placeSortFactor(ChipSortFactor newValue) => set(SettingKeys.placeSortFactorKey, newValue.name);
+  set placeSortFactor(SortFactor newValue) => set(SettingKeys.placeSortFactorKey, newValue.name);
 
-  ChipSortFactor get tagSortFactor => getEnumOrDefault(SettingKeys.tagSortFactorKey, SettingsDefaults.chipSortFactor, ChipSortFactor.values);
+  SortFactor get tagSortFactor => getEnumOrDefault(SettingKeys.tagSortFactorKey, SettingsDefaults.chipSortFactor, SortFactor.values);
 
-  set tagSortFactor(ChipSortFactor newValue) => set(SettingKeys.tagSortFactorKey, newValue.name);
+  set tagSortFactor(SortFactor newValue) => set(SettingKeys.tagSortFactorKey, newValue.name);
 
   bool get albumSortReverse => getBool(SettingKeys.albumSortReverseKey) ?? false;
 

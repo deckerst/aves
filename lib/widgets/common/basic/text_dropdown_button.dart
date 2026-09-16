@@ -1,30 +1,22 @@
 import 'package:material_ui/material_ui.dart';
 
-class TextDropdownButton<T> extends StatefulWidget {
-  final List<T> values;
-  final String Function(T value) valueText;
-  final IconData Function(T value)? valueIcon;
-  final T? value;
-  final Widget? underline;
-  final bool isExpanded;
-  final double? itemHeight;
-  final Color? dropdownColor;
-  final EdgeInsetsGeometry? padding;
-  final ValueChanged<T?>? onChanged;
-
-  const new({
-    super.key,
-    required this.values,
-    required this.valueText,
-    this.valueIcon,
-    this.value,
-    this.underline,
-    this.isExpanded = false,
-    this.itemHeight = kMinInteractiveDimension,
-    this.dropdownColor,
-    this.padding,
-    required this.onChanged,
-  });
+class const TextDropdownButton<T>({
+  super.key,
+  required final List<T> values,
+  required final String Function(T value) valueText,
+  final IconData Function(T value)? valueIcon,
+  final T? value,
+  final Widget? underline,
+  final bool isExpanded = false,
+  final double? itemHeight = kMinInteractiveDimension,
+  final Color? dropdownColor,
+  final EdgeInsetsGeometry? padding,
+  required final ValueChanged<T?>? onChanged,
+}) extends StatefulWidget {
+  static TextStyle textStyle(BuildContext context) {
+    final defaultDropdownStyle = Theme.of(context).textTheme.titleMedium!;
+    return defaultDropdownStyle.copyWith(fontWeight: FontWeight.normal);
+  }
 
   @override
   State<TextDropdownButton<T>> createState() => _TextDropdownButtonState<T>();
@@ -51,7 +43,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
           )
           .toList(),
       value: widget.value,
-      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
+      style: TextDropdownButton.textStyle(context),
       underline: widget.underline,
       isExpanded: widget.isExpanded,
       itemHeight: widget.itemHeight,

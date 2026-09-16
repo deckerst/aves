@@ -17,10 +17,10 @@ class StateChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter> {
   String get settingsRouteKey => StateListPage.routeName;
 
   @override
-  ChipSortFactor get sortFactor => settings.stateSortFactor;
+  SortFactor get sortFactor => settings.stateSortFactor;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.stateSortFactor = factor;
+  set sortFactor(SortFactor factor) => settings.stateSortFactor = factor;
 
   @override
   bool get sortReverse => settings.stateSortReverse;

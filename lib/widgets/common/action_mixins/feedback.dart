@@ -399,14 +399,12 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final contentTextStyle =
         theme.snackBarTheme.contentTextStyle ??
         theme.textTheme.bodyMedium!.copyWith(
-          color: colorScheme.onInverseSurface,
+          color: theme.colorScheme.onInverseSurface,
         );
     final contentTextFontSize = contentTextStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
-    final timerChangeShadowColor = colorScheme.primary;
 
     final remainingDurationAnimation = _remainingDurationMillis;
     return Row(
@@ -436,22 +434,8 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                 foreground: widget.progressColor,
                 center: ChangeHighlightText(
                   durationFormatter.format((remainingDurationMillis / 1000).ceil()),
-                  style: contentTextStyle.copyWith(
-                    shadows: [
-                      Shadow(
-                        color: timerChangeShadowColor.withAlpha(0),
-                        blurRadius: 0,
-                      ),
-                    ],
-                  ),
-                  changedStyle: contentTextStyle.copyWith(
-                    shadows: [
-                      Shadow(
-                        color: timerChangeShadowColor,
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
+                  textStyle: contentTextStyle,
+                  changeBlurRadius: 8,
                   duration: context.read<DurationsData>().formTextStyleTransition,
                 ),
               );

@@ -1,21 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ChangeHighlightText extends StatefulWidget {
-  final String data;
-  final TextStyle style, changedStyle;
-  final Curve curve;
-  final Duration duration;
-
-  const new(
-    this.data, {
-    super.key,
-    required this.style,
-    required this.changedStyle,
-    this.curve = Curves.linear,
-    required this.duration,
-  });
-
+class const ChangeHighlightText(
+  final String data, {
+  super.key,
+  required final TextStyle textStyle,
+  required final double changeBlurRadius,
+  final Curve curve = Curves.linear,
+  required final Duration duration,
+}) extends StatefulWidget {
   @override
   State<ChangeHighlightText> createState() => _ChangeHighlightTextState();
 }
@@ -23,7 +16,7 @@ class ChangeHighlightText extends StatefulWidget {
 class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final CurvedAnimation _animation;
-  late final Animation<TextStyle> _style;
+  Animation<TextStyle> _style = const AlwaysStoppedAnimation(TextStyle());
 
   @override
   void initState() {
@@ -39,12 +32,22 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
       parent: _controller,
       curve: widget.curve,
     );
-    _style = ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(_animation);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateStyle();
   }
 
   @override
   void didUpdateWidget(ChangeHighlightText oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.textStyle != widget.textStyle || oldWidget.changeBlurRadius != widget.changeBlurRadius) {
+      _updateStyle();
+    }
+
     if (oldWidget.data != widget.data) {
       _controller
         ..value = 0
@@ -66,11 +69,33 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
       style: _style.value,
     );
   }
+
+  void _updateStyle() {
+    final shadowColor = Theme.of(context).colorScheme.onSurface;
+    final style = widget.textStyle.copyWith(
+      shadows: [
+        Shadow(
+          color: shadowColor.withAlpha(0),
+          blurRadius: 0,
+        ),
+      ],
+    );
+    final changedStyle = widget.textStyle.copyWith(
+      shadows: [
+        Shadow(
+          color: shadowColor,
+          blurRadius: widget.changeBlurRadius,
+        ),
+      ],
+    );
+    _style = ShadowedTextStyleTween(begin: changedStyle, end: style).animate(_animation);
+  }
 }
 
-class ShadowedTextStyleTween extends Tween<TextStyle> {
-  new({super.begin, super.end});
-
+class ShadowedTextStyleTween({
+  super.begin,
+  super.end,
+}) extends Tween<TextStyle> {
   @override
   TextStyle lerp(double t) {
     final textStyle = TextStyle.lerp(begin, end, t)!;

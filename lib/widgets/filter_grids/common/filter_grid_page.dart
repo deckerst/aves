@@ -59,7 +59,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -175,7 +175,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -262,7 +262,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -463,7 +463,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool selectable;
   final Widget Function() emptyBuilder;
   final String? Function(BuildContext context, T filter) bannerBuilder;
@@ -672,7 +672,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   final GlobalKey scrollableKey;
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final Widget Function() emptyBuilder;
   final ScrollController scrollController;
 

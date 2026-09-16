@@ -55,10 +55,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   String get settingsRouteKey => AlbumListPage.routeName;
 
   @override
-  ChipSortFactor get sortFactor => settings.albumSortFactor;
+  SortFactor get sortFactor => settings.albumSortFactor;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
+  set sortFactor(SortFactor factor) => settings.albumSortFactor = factor;
 
   @override
   bool get sortReverse => settings.albumSortReverse;
@@ -73,7 +73,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
   set sectionFactor(ChipSectionFactor factor) => settings.albumSectionFactor = factor;
 
   @override
-  List<ChipSortFactor> get sortOptions => [
+  List<SortFactor> get sortOptions => [
     ...super.sortOptions,
     .path,
   ];
