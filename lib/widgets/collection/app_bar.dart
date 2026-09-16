@@ -37,7 +37,7 @@ import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
+import 'package:aves/widgets/dialogs/change_layout_dialog.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves_model/aves_model.dart';
@@ -821,11 +821,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     final value = await showAvesDialog<(TileLayout, EntrySortFactor, EntrySectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<TileLayout, EntrySortFactor, EntrySectionFactor>(
+        return ChangeLayoutDialog<TileLayout, EntrySortFactor, EntrySectionFactor>(
           initialValue: initialValue,
-          layoutOptions: _layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sortOptions: _sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sectionOptions: _sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: _layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sortOptions: _sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: _sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canSort: (l, s, g) => l != .calendar,
           canSection: (l, s, g) => l != .calendar && s == .date,
@@ -833,7 +833,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
           tileExtentController: extentController,
         );
       },
-      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
+      routeSettings: const RouteSettings(name: ChangeLayoutDialog.routeName),
     );
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);

@@ -563,7 +563,7 @@
 
   "tooManyItemsErrorDialogMessage": "Try again with fewer items.",
 
-  "menuActionConfigureView": "View",
+  "menuActionConfigureView": "Change layout",
   "menuActionSelect": "Select",
   "menuActionSelectAll": "Select all",
   "menuActionSelectNone": "Select none",

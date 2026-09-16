@@ -33,6 +33,7 @@ void main() {
       // collection
       ..collectionSectionFactor = .month
       ..collectionSortFactor = .date
+      ..collectionSortReverse = false
       ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
       ..showThumbnailFavourite = false
       ..thumbnailLocationIcon = .none

@@ -22,6 +22,7 @@ import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -107,10 +108,11 @@ class CollectionLens with ChangeNotifier {
       settings.updateStream
           .where(
             (event) => [
-              SettingKeys.collectionBurstPatternsKey,
-              SettingKeys.collectionSortFactorKey,
+              SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
               SettingKeys.collectionSectionFactorKey,
+              SettingKeys.collectionSortFactorKey,
               SettingKeys.collectionSortReverseKey,
+              SettingKeys.collectionBurstPatternsKey,
               SettingKeys.calendarKey,
             ].contains(event.key),
           )

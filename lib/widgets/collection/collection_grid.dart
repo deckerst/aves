@@ -90,7 +90,7 @@ class _CollectionGridState extends State<CollectionGrid> {
   @override
   Widget build(BuildContext context) {
     final spacing = context.select<Settings, double>((v) {
-      switch (v.getTileLayout(settingsRouteKey)) {
+      switch (v.effectiveCollectionTileLayout) {
         case .mosaic:
           return CollectionGrid.mosaicLayoutSpacing;
         case .grid:
@@ -145,8 +145,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   @override
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
-    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
+    final tileLayout = context.select<Settings, TileLayout>((v) => v.effectiveCollectionTileLayout);
     // TODO TLAD [calendar] check layout here to override `TileExtentController`?
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {

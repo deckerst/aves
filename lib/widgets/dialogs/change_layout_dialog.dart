@@ -5,11 +5,11 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
+import 'package:aves/widgets/common/basic/text/animated_diff.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
-import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:decorated_icon/decorated_icon.dart';
@@ -18,25 +18,25 @@ import 'package:provider/provider.dart';
 
 import 'aves_dialog.dart';
 
-class const TileViewDialog<L, S, G>({
+class const ChangeLayoutDialog<L, S, G>({
   super.key,
   required final (L layout, S sort, G section, bool reverse) initialValue,
-  final List<TileViewDialogOption<L>> layoutOptions = const [],
-  final List<TileViewDialogOption<S>> sortOptions = const [],
-  final List<TileViewDialogOption<G>> sectionOptions = const [],
+  final List<ChangeLayoutDialogOption<L>> layoutOptions = const [],
+  final List<ChangeLayoutDialogOption<S>> sortOptions = const [],
+  final List<ChangeLayoutDialogOption<G>> sectionOptions = const [],
   required final String Function(S sort, bool reverse) sortOrder,
   final bool Function(L? layout, S? sort, G? section)? canSort,
   final bool Function(L? layout, S? sort, G? section)? canSection,
   final bool Function(L? layout, S? sort, G? section)? canScale,
   required final TileExtentController tileExtentController,
 }) extends StatefulWidget {
-  static const routeName = '/dialog/tile_view';
+  static const routeName = '/dialog/change_layout';
 
   @override
-  State<TileViewDialog> createState() => _TileViewDialogState<L, S, G>();
+  State<ChangeLayoutDialog> createState() => _ChangeLayoutDialogState<L, S, G>();
 }
 
-class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with SingleTickerProviderStateMixin {
+class _ChangeLayoutDialogState<L, S, G> extends State<ChangeLayoutDialog<L, S, G>> with SingleTickerProviderStateMixin {
   late L _selectedLayout;
   late S _selectedSort;
   late G _selectedSection;
@@ -44,11 +44,11 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
   late int _columnMin, _columnMax;
   late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
 
-  List<TileViewDialogOption<L>> get layoutOptions => widget.layoutOptions;
+  List<ChangeLayoutDialogOption<L>> get layoutOptions => widget.layoutOptions;
 
-  List<TileViewDialogOption<S>> get sortOptions => widget.sortOptions;
+  List<ChangeLayoutDialogOption<S>> get sortOptions => widget.sortOptions;
 
-  List<TileViewDialogOption<G>> get sectionOptions => widget.sectionOptions;
+  List<ChangeLayoutDialogOption<G>> get sectionOptions => widget.sectionOptions;
 
   TileExtentController get tileExtentController => widget.tileExtentController;
 
@@ -83,6 +83,8 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
+    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
+    const transitionBuilder = AvesTransitions.formTransitionBuilder;
     return AvesDialog(
       scrollableContent: [
         _buildSelector(
@@ -93,10 +95,10 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
           onChanged: (v) => _selectedLayout = v as L,
         ),
         AnimatedSwitcher(
-          duration: context.read<DurationsData>().formTransition,
+          duration: duration,
           switchInCurve: Curves.easeInOutCubic,
           switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: AvesTransitions.formTransitionBuilder,
+          transitionBuilder: transitionBuilder,
           child: _buildSelector(
             show: canSort,
             icon: AIcons.sort,
@@ -110,7 +112,12 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
             bottom: _selectedSort != null
                 ? Row(
                     children: [
-                      Expanded(child: AvesListSubtitle(widget.sortOrder(_selectedSort, _reverseSort))),
+                      Expanded(
+                        child: AnimatedDiffText(
+                          widget.sortOrder(_selectedSort, _reverseSort),
+                          duration: duration,
+                        ),
+                      ),
                       IconButton(
                         icon: const Icon(AIcons.sortOrder),
                         onPressed: () => setState(() => _reverseSort = !_reverseSort),
@@ -122,10 +129,10 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
           ),
         ),
         AnimatedSwitcher(
-          duration: context.read<DurationsData>().formTransition,
+          duration: duration,
           switchInCurve: Curves.easeInOutCubic,
           switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: AvesTransitions.formTransitionBuilder,
+          transitionBuilder: transitionBuilder,
           child: _buildSelector(
             show: canSection,
             icon: AIcons.section,
@@ -137,10 +144,10 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
         ),
         if (settings.showPinchGestureAlternatives)
           AnimatedSwitcher(
-            duration: context.read<DurationsData>().formTransition,
+            duration: duration,
             switchInCurve: Curves.easeInOutCubic,
             switchOutCurve: Curves.easeInOutCubic,
-            transitionBuilder: AvesTransitions.formTransitionBuilder,
+            transitionBuilder: transitionBuilder,
             child: _buildScaler(
               show: canScale,
             ),
@@ -164,7 +171,7 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
     bool show = true,
     required IconData icon,
     required String title,
-    required List<TileViewDialogOption<T>> options,
+    required List<ChangeLayoutDialogOption<T>> options,
     required T value,
     required ValueChanged<T?> onChanged,
     Widget? bottom,
@@ -293,7 +300,7 @@ class _TileViewDialogState<L, S, G> extends State<TileViewDialog<L, S, G>> with 
 }
 
 @immutable
-class const TileViewDialogOption<T>({
+class const ChangeLayoutDialogOption<T>({
   required final T value,
   required final String title,
   required final IconData icon,

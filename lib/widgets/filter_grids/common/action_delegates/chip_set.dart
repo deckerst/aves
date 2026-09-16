@@ -24,8 +24,8 @@ import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/change_layout_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
-import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -279,16 +279,16 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final value = await showAvesDialog<(TileLayout, ChipSortFactor, ChipSectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<TileLayout, ChipSortFactor, ChipSectionFactor>(
+        return ChangeLayoutDialog<TileLayout, ChipSortFactor, ChipSectionFactor>(
           initialValue: initialValue,
-          layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sortOptions: sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sectionOptions: sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sortOptions: sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           tileExtentController: extentController,
         );
       },
-      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
+      routeSettings: const RouteSettings(name: ChangeLayoutDialog.routeName),
     );
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
