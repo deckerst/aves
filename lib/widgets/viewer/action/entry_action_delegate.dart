@@ -488,7 +488,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) => RenameEntryDialog(entry: targetEntry),
       routeSettings: const RouteSettings(name: RenameEntryDialog.routeName),
     );
-    if (newName == null || newName.isEmpty || newName == targetEntry.filenameWithoutExtension) return;
+    if (newName == null || newName.isEmpty || newName == targetEntry.fileNameWithoutExtension) return;
 
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);

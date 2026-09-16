@@ -155,7 +155,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
           if (!formatCount.containsKey(codec)) {
             formatCount[codec] = [];
           }
-          formatCount[codec]!.add(stream[Keys.filename] as String?);
+          formatCount[codec]!.add(stream[Keys.fileName] as String?);
         }
         if (formatCount.isNotEmpty) {
           final rawTags = formatCount.map((key, value) {

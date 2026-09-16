@@ -67,10 +67,10 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               if (entry.durationMillis != null) entry.durationText,
             ];
           case .path:
-            final entryFilename = entry.filenameWithoutExtension;
+            final entryFileName = entry.fileNameWithoutExtension;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
-              ?entryFilename,
+              ?entryFileName,
             ];
         }
       },

@@ -174,7 +174,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   itemBuilder: (context, index) {
                     final entry = entries[index];
-                    final sourceName = entry.filenameWithoutExtension ?? '';
+                    final sourceName = entry.fileNameWithoutExtension ?? '';
                     return Row(
                       children: [
                         DecoratedThumbnail(

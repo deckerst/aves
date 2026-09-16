@@ -277,8 +277,8 @@ class CollectionLens with ChangeNotifier {
       rawEntriesByDir.forEach((dir, dirRawEntries) {
         final dirDevelopedEntries = allDevelopedEntries.where((entry) => entry.directory == dir).toSet();
         for (final rawEntry in dirRawEntries) {
-          final rawFilename = rawEntry.filenameWithoutExtension;
-          final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.filenameWithoutExtension == rawFilename);
+          final rawFileName = rawEntry.fileNameWithoutExtension;
+          final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.fileNameWithoutExtension == rawFileName);
           if (developedEntry != null) {
             final mainEntry = developedEntry;
             final subEntry = rawEntry;

@@ -81,7 +81,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
     final destinationDirectory = Directory(destinationAlbum);
     final destinationExtension = MimeTypes.extensionFor(options.mimeType);
     final names = [
-      ...selection.map((v) => '${v.filenameWithoutExtension}$destinationExtension'),
+      ...selection.map((v) => '${v.fileNameWithoutExtension}$destinationExtension'),
       // do not guard up front based on directory existence,
       // as conflicts could be within moved entries scattered across multiple albums
       if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),
@@ -252,7 +252,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
     if (!toBin && destinationAlbums.length == 1) {
       final destinationDirectory = Directory(destinationAlbums.single);
       final names = [
-        ...entries.map((v) => '${v.filenameWithoutExtension}${v.extension}'),
+        ...entries.map((v) => '${v.fileNameWithoutExtension}${v.extension}'),
         // do not guard up front based on directory existence,
         // as conflicts could be within moved entries scattered across multiple albums
         if (await destinationDirectory.exists()) ...destinationDirectory.listSync().map((v) => pContext.basename(v.path)),

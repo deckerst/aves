@@ -232,7 +232,7 @@ class NameNamingProcessor extends NamingProcessor {
   const new();
 
   @override
-  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) => entry.filenameWithoutExtension;
+  String? process(AvesEntry entry, int index, Map<String, Object?> fieldValues) => entry.fileNameWithoutExtension;
 }
 
 @immutable

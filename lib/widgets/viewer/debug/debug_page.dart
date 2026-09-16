@@ -65,7 +65,7 @@ class ViewerDebugPage extends StatelessWidget {
             'uri': entry.uri,
             'path': entry.path ?? '',
             'directory': entry.directory ?? '',
-            'filenameWithoutExtension': entry.filenameWithoutExtension ?? '',
+            'fileNameWithoutExtension': entry.fileNameWithoutExtension ?? '',
             'extension': entry.extension ?? '',
             'sourceTitle': entry.sourceTitle ?? '',
             'sourceMimeType': entry.sourceMimeType,
