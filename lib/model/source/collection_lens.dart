@@ -31,12 +31,12 @@ import 'package:flutter/foundation.dart';
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
-  List<String> burstPatterns;
-  TileLayout tileLayout;
-  EntrySectionFactor sectionFactor;
-  SortFactor sortFactor;
-  bool sortReverse;
-  ACalendar calendar;
+  late List<String> burstPatterns;
+  late TileLayout tileLayout;
+  late SortFactor sortFactor;
+  late bool sortReverse;
+  late EntrySectionFactor sectionFactor;
+  late ACalendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
   final AChangeNotifier layoutChangeNotifier = .new();
   final Set<StreamSubscription> _subscriptions = {};
@@ -64,14 +64,9 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  }) : filters = (filters ?? {}).nonNulls.toSet(),
-       burstPatterns = settings.collectionBurstPatterns,
-       tileLayout = settings.effectiveCollectionTileLayout,
-       sectionFactor = settings.effectiveCollectionSectionFactor,
-       sortFactor = settings.effectiveCollectionSortFactor,
-       sortReverse = settings.effectiveCollectionSortReverse,
-       calendar = settings.calendar {
+  }) : filters = (filters ?? {}).nonNulls.toSet() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+    _updateLayoutFactors();
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
@@ -104,20 +99,7 @@ class CollectionLens with ChangeNotifier {
       );
       favourites.addListener(_onFavouritesChanged);
     }
-    _subscriptions.add(
-      settings.updateStream
-          .where(
-            (event) => [
-              SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
-              SettingKeys.collectionSortFactorKey,
-              SettingKeys.collectionSortReverseKey,
-              SettingKeys.collectionSectionFactorKey,
-              SettingKeys.collectionBurstPatternsKey,
-              SettingKeys.calendarKey,
-            ].contains(event.key),
-          )
-          .listen((_) => _onSettingsChanged()),
-    );
+    _subscriptions.add(settings.updateStream.where(_isLayoutFactorEvent).listen((_) => _onLayoutFactorChanged()));
     refresh();
   }
 
@@ -400,29 +382,49 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void _onSettingsChanged() {
-    final newBurstPatterns = settings.collectionBurstPatterns;
-    final newSortFactor = settings.effectiveCollectionSortFactor;
-    final newSectionFactor = settings.effectiveCollectionSectionFactor;
-    final newSortReverse = settings.effectiveCollectionSortReverse;
-    final newCalendar = settings.calendar;
+  bool _isLayoutFactorEvent(SettingsChangedEvent event) {
+    return [
+      SettingKeys.collectionBurstPatternsKey,
+      SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
+      SettingKeys.collectionSortFactorKey,
+      SettingKeys.collectionSortReverseKey,
+      SettingKeys.collectionSectionFactorKey,
+      SettingKeys.calendarKey,
+    ].contains(event.key);
+  }
 
-    final needFilter = burstPatterns != newBurstPatterns;
-    final needSort = needFilter || sortFactor != newSortFactor || sortReverse != newSortReverse;
-    final needSection = needSort || sectionFactor != newSectionFactor || calendar != newCalendar;
+  void _updateLayoutFactors() {
+    burstPatterns = settings.collectionBurstPatterns;
+    tileLayout = settings.effectiveCollectionTileLayout;
+    sortFactor = settings.effectiveCollectionSortFactor;
+    sortReverse = settings.effectiveCollectionSortReverse;
+    sectionFactor = settings.effectiveCollectionSectionFactor;
+    calendar = settings.calendar;
+  }
+
+  void _onLayoutFactorChanged() {
+    final oldBurstPatterns = burstPatterns;
+    final oldTileLayout = tileLayout;
+    final oldSortFactor = sortFactor;
+    final oldSortReverse = sortReverse;
+    final oldSectionFactor = sectionFactor;
+    final oldCalendar = calendar;
+
+    _updateLayoutFactors();
+
+    final burstStackChanged = !const DeepCollectionEquality.unordered().equals(oldBurstPatterns, burstPatterns);
+    final dateStackChanged = (oldTileLayout == .calendar) != (tileLayout == .calendar);
+    final needFilter = burstStackChanged || dateStackChanged;
+    final needSort = needFilter || oldSortFactor != sortFactor || oldSortReverse != sortReverse;
+    final needSection = needSort || oldSectionFactor != sectionFactor || oldCalendar != calendar;
 
     if (needFilter) {
-      burstPatterns = newBurstPatterns;
       _applyFilters();
     }
     if (needSort) {
-      sortFactor = newSortFactor;
-      sortReverse = newSortReverse;
       _applySort();
     }
     if (needSection) {
-      sectionFactor = newSectionFactor;
-      calendar = newCalendar;
       _applySection();
     }
 

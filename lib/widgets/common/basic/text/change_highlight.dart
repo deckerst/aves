@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const ChangeHighlightText(
-  final String data, {
+  final TextSpan data, {
   super.key,
   required final TextStyle textStyle,
   required final double changeBlurRadius,
@@ -16,7 +16,7 @@ class const ChangeHighlightText(
 class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final CurvedAnimation _animation;
-  Animation<TextStyle> _style = const AlwaysStoppedAnimation(TextStyle());
+  Animation<TextStyle> _styleAnimation = const AlwaysStoppedAnimation(TextStyle());
 
   @override
   void initState() {
@@ -64,9 +64,15 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      widget.data,
-      style: _style.value,
+    final textStyle = _styleAnimation.value;
+    return IconTheme.merge(
+      data: IconThemeData(
+        shadows: textStyle.shadows,
+      ),
+      child: Text.rich(
+        widget.data,
+        style: textStyle,
+      ),
     );
   }
 
@@ -88,7 +94,7 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
         ),
       ],
     );
-    _style = ShadowedTextStyleTween(begin: changedStyle, end: style).animate(_animation);
+    _styleAnimation = ShadowedTextStyleTween(begin: changedStyle, end: style).animate(_animation);
   }
 }
 

@@ -303,7 +303,7 @@ class _ConvertEntryDialogState extends State<ConvertEntryDialog> {
               title: (_) => l10n.exportEntryDialogQuality,
               titlePadding: contentHorizontalPadding,
               titleTrailing: (context, value) => ChangeHighlightText(
-                '${value.round()}',
+                TextSpan(text: '${value.round()}'),
                 textStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                 changeBlurRadius: 3,
                 duration: context.read<DurationsData>().formTextStyleTransition,

@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/rotator.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -135,12 +137,23 @@ class _LayoutBarState extends State<LayoutBar> {
                       onSelection: onSelection,
                     )
                   : null,
-              child: Row(
-                children: [
-                  Icon(categoryIcon),
-                  const Text(AText.separator),
-                  Icon(getIcon(current)),
-                ],
+              child: ChangeHighlightText(
+                TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Icon(categoryIcon),
+                      alignment: PlaceholderAlignment.middle,
+                    ),
+                    const TextSpan(text: AText.separator),
+                    WidgetSpan(
+                      child: Icon(getIcon(current)),
+                      alignment: PlaceholderAlignment.middle,
+                    ),
+                  ],
+                ),
+                textStyle: DefaultTextStyle.of(context).style,
+                changeBlurRadius: 8,
+                duration: context.read<DurationsData>().formTextStyleTransition,
               ),
             );
           },

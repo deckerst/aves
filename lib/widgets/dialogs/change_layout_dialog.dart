@@ -78,7 +78,6 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
     return AvesDialog(
       scrollableContent: [
         _buildSelector(
@@ -107,10 +106,10 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
             children: [
               Expanded(
                 child: ChangeHighlightText(
-                  widget.sortOrder(_selectedSort, _reverseSort),
+                  TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
                   textStyle: TextDropdownButton.textStyle(context),
                   changeBlurRadius: 8,
-                  duration: duration,
+                  duration: context.read<DurationsData>().formTextStyleTransition,
                 ),
               ),
               IconButton(
@@ -131,7 +130,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
         ),
         if (settings.showPinchGestureAlternatives)
           AnimatedSwitcher(
-            duration: duration,
+            duration: context.select<DurationsData, Duration>((v) => v.formTransition),
             switchInCurve: Curves.easeInOutCubic,
             switchOutCurve: Curves.easeInOutCubic,
             transitionBuilder: AvesTransitions.formTransitionBuilder,

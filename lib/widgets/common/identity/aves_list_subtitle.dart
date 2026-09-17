@@ -22,7 +22,7 @@ class AvesListSubtitle extends StatelessWidget {
     return ChangeHighlightText(
       // provide key to refresh on theme brightness change
       key: ValueKey(theme.colorScheme),
-      data,
+      TextSpan(text: data),
       textStyle: theme.listTileTheme.subtitleTextStyle ?? _defaultTextStyle(theme),
       changeBlurRadius: 8,
       duration: context.read<DurationsData>().formTextStyleTransition,
