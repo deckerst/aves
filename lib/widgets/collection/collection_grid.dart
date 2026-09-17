@@ -57,20 +57,16 @@ import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class CollectionGrid extends StatefulWidget {
-  final String settingsRouteKey;
-
+class const CollectionGrid({
+  super.key,
+  required final String settingsRouteKey,
+}) extends StatefulWidget {
   static const double extentMin = 46;
   static const double extentMax = 300;
   static const double fixedExtentLayoutSpacing = 2;
   static const double mosaicLayoutSpacing = 4;
 
   static int get columnCountDefault => settings.useTvLayout ? 6 : 4;
-
-  const new({
-    super.key,
-    required this.settingsRouteKey,
-  });
 
   @override
   State<CollectionGrid> createState() => _CollectionGridState();
@@ -116,9 +112,7 @@ class _CollectionGridState extends State<CollectionGrid> {
   }
 }
 
-class _CollectionGridContent extends StatefulWidget {
-  const new();
-
+class const _CollectionGridContent() extends StatefulWidget {
   @override
   State<_CollectionGridContent> createState() => _CollectionGridContentState();
 }
@@ -304,21 +298,13 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   }
 }
 
-class _CollectionSectionedContent extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ScrollController scrollController;
-  final TileLayout tileLayout;
-  final bool selectable;
-
-  const new({
-    required this.collection,
-    required this.isScrollingNotifier,
-    required this.scrollController,
-    required this.tileLayout,
-    required this.selectable,
-  });
-
+class const _CollectionSectionedContent({
+  required final CollectionLens collection,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ScrollController scrollController,
+  required final TileLayout tileLayout,
+  required final bool selectable,
+}) extends StatefulWidget {
   @override
   State<_CollectionSectionedContent> createState() => _CollectionSectionedContentState();
 }
@@ -390,19 +376,12 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
   void _onAppBarHeightChanged() => setState(() {});
 }
 
-class _CollectionScaler extends StatelessWidget {
-  final GlobalKey scrollableKey;
-  final ValueNotifier<double> appBarHeightNotifier;
-  final TileLayout tileLayout;
-  final Widget child;
-
-  const new({
-    required this.scrollableKey,
-    required this.appBarHeightNotifier,
-    required this.tileLayout,
-    required this.child,
-  });
-
+class const _CollectionScaler({
+  required final GlobalKey scrollableKey,
+  required final ValueNotifier<double> appBarHeightNotifier,
+  required final TileLayout tileLayout,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
@@ -449,23 +428,14 @@ class _CollectionScaler extends StatelessWidget {
   }
 }
 
-class _CollectionScrollView extends StatefulWidget {
-  final GlobalKey scrollableKey;
-  final CollectionLens collection;
-  final Widget appBar;
-  final ValueNotifier<double> appBarHeightNotifier;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ScrollController scrollController;
-
-  const new({
-    required this.scrollableKey,
-    required this.collection,
-    required this.appBar,
-    required this.appBarHeightNotifier,
-    required this.isScrollingNotifier,
-    required this.scrollController,
-  });
-
+class const _CollectionScrollView({
+  required final GlobalKey scrollableKey,
+  required final CollectionLens collection,
+  required final Widget appBar,
+  required final ValueNotifier<double> appBarHeightNotifier,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ScrollController scrollController,
+}) extends StatefulWidget {
   @override
   State<_CollectionScrollView> createState() => _CollectionScrollViewState();
 }
@@ -755,6 +725,9 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             }
           case .none:
             break;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
       case .albumItemName:
       case .path:

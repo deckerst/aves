@@ -3,24 +3,16 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AvesMultiSelectionDialog<T> extends StatefulWidget {
+class const AvesMultiSelectionDialog<T>({
+  super.key,
+  required final Set<T> initialValue,
+  required final Map<T, String> options,
+  final TextBuilder<T>? optionSubtitleBuilder,
+  final String? title,
+  final String? message,
+  final bool? dense,
+}) extends StatefulWidget {
   static const routeName = '/dialog/multi_selection';
-
-  final Set<T> initialValue;
-  final Map<T, String> options;
-  final TextBuilder<T>? optionSubtitleBuilder;
-  final String? title, message;
-  final bool? dense;
-
-  const new({
-    super.key,
-    required this.initialValue,
-    required this.options,
-    this.optionSubtitleBuilder,
-    this.title,
-    this.message,
-    this.dense,
-  });
 
   @override
   State<AvesMultiSelectionDialog<T>> createState() => _AvesMultiSelectionDialogState<T>();

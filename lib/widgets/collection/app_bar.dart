@@ -21,11 +21,13 @@ import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
+import 'package:aves/widgets/collection/layout_bar.dart';
 import 'package:aves/widgets/collection/query_bar.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/move_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.dart';
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
+import 'package:aves/widgets/common/action_controls/togglers/layout_bar.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
@@ -46,17 +48,34 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class CollectionAppBar extends StatefulWidget {
-  final ValueNotifier<double> appBarHeightNotifier;
-  final ScrollController scrollController;
-  final CollectionLens collection;
+class const CollectionAppBar({
+  super.key,
+  required final ValueNotifier<double> appBarHeightNotifier,
+  required final ScrollController scrollController,
+  required final CollectionLens collection,
+}) extends StatefulWidget {
+  static const layoutOptions = <TileLayout>[
+    .mosaic,
+    .grid,
+    .list,
+    .calendar,
+  ];
 
-  const new({
-    super.key,
-    required this.appBarHeightNotifier,
-    required this.scrollController,
-    required this.collection,
-  });
+  static const sortOptions = <SortFactor>[
+    .date,
+    .size,
+    .albumItemName,
+    .rating,
+    .duration,
+    .path,
+  ];
+
+  static const sectionOptions = <EntrySectionFactor>[
+    .album,
+    .month,
+    .day,
+    .none,
+  ];
 
   @override
   State<CollectionAppBar> createState() => _CollectionAppBarState();
@@ -81,29 +100,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   Set<CollectionFilter> get visibleFilters => collection.filters.where((v) => !(v is QueryFilter && v.live) && v is! TrashFilter).toSet();
 
   bool get showFilterBar => visibleFilters.isNotEmpty;
-
-  static const _layoutOptions = <TileLayout>[
-    .mosaic,
-    .grid,
-    .list,
-    .calendar,
-  ];
-
-  static const _sortOptions = <SortFactor>[
-    .date,
-    .size,
-    .albumItemName,
-    .rating,
-    .duration,
-    .path,
-  ];
-
-  static const _sectionOptions = <EntrySectionFactor>[
-    .album,
-    .month,
-    .day,
-    .none,
-  ];
 
   static const _trashSelectionQuickActions = <EntrySetAction>[
     .delete,
@@ -202,64 +198,70 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
           return Selector<Query, bool>(
             selector: (context, query) => query.enabled,
             builder: (context, queryEnabled, child) {
-              return Selector<Settings, List<EntrySetAction>>(
-                selector: (context, s) => s.collectionBrowsingQuickActions,
-                builder: (context, _, child) {
-                  final useTvLayout = settings.useTvLayout;
-                  final onFilterTap = canRemoveFilters ? collection.removeFilter : null;
-                  return AvesAppBar(
-                    contentHeight: _getAppBarContentHeight(context),
-                    pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
-                    leading: _buildAppBarLeading(
-                      hasDrawer: appMode.canNavigate,
-                      isSelecting: isSelecting,
-                    ),
-                    title: _buildAppBarTitle(isSelecting),
-                    actions: (context, maxWidth) => useTvLayout ? [] : _buildActions(context, selection, maxWidth),
-                    bottom: Column(
-                      children: [
-                        if (useTvLayout)
-                          SizedBox(
-                            height: CaptionedButton.getTelevisionButtonHeight(context),
-                            child: ListView(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              scrollDirection: Axis.horizontal,
-                              children: _buildActions(context, selection, double.infinity),
-                            ),
-                          ),
-                        if (showFilterBar)
-                          NotificationListener(
-                            onNotification: (notification) {
-                              if (notification is SelectFilterNotification) {
-                                collection.addFilters({notification.filter});
-                                return true;
-                              } else if (notification is DecomposeFilterNotification) {
-                                final filter = notification.filter;
-                                if (filter is DynamicAlbumFilter) {
-                                  final innerFilter = filter.filter;
-                                  final newFilters = innerFilter is SetAndFilter ? innerFilter.innerFilters : {innerFilter};
-                                  collection.addFilters(newFilters);
-                                  collection.removeFilter(filter);
-                                  return true;
-                                }
-                              }
-                              return false;
-                            },
-                            child: FilterBar(
-                              filters: visibleFilters,
-                              interactive: true,
-                              onTap: onFilterTap,
-                              onRemove: onFilterTap,
-                            ),
-                          ),
-                        if (queryEnabled)
-                          EntryQueryBar(
-                            queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
-                            focusNode: _queryBarFocusNode,
-                          ),
-                      ],
-                    ),
-                    transitionKey: isSelecting,
+              return Selector<Settings, bool>(
+                selector: (context, s) => s.showCollectionLayoutBar,
+                builder: (context, layoutBarEnabled, child) {
+                  return Selector<Settings, List<EntrySetAction>>(
+                    selector: (context, s) => s.collectionBrowsingQuickActions,
+                    builder: (context, _, child) {
+                      final useTvLayout = settings.useTvLayout;
+                      final onFilterTap = canRemoveFilters ? collection.removeFilter : null;
+                      return AvesAppBar(
+                        contentHeight: _getAppBarContentHeight(context),
+                        pinned: context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting),
+                        leading: _buildAppBarLeading(
+                          hasDrawer: appMode.canNavigate,
+                          isSelecting: isSelecting,
+                        ),
+                        title: _buildAppBarTitle(isSelecting),
+                        actions: (context, maxWidth) => useTvLayout ? [] : _buildActions(context, selection, maxWidth),
+                        bottom: Column(
+                          children: [
+                            if (useTvLayout)
+                              SizedBox(
+                                height: CaptionedButton.getTelevisionButtonHeight(context),
+                                child: ListView(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  scrollDirection: Axis.horizontal,
+                                  children: _buildActions(context, selection, double.infinity),
+                                ),
+                              ),
+                            if (showFilterBar)
+                              NotificationListener(
+                                onNotification: (notification) {
+                                  if (notification is SelectFilterNotification) {
+                                    collection.addFilters({notification.filter});
+                                    return true;
+                                  } else if (notification is DecomposeFilterNotification) {
+                                    final filter = notification.filter;
+                                    if (filter is DynamicAlbumFilter) {
+                                      final innerFilter = filter.filter;
+                                      final newFilters = innerFilter is SetAndFilter ? innerFilter.innerFilters : {innerFilter};
+                                      collection.addFilters(newFilters);
+                                      collection.removeFilter(filter);
+                                      return true;
+                                    }
+                                  }
+                                  return false;
+                                },
+                                child: FilterBar(
+                                  filters: visibleFilters,
+                                  interactive: true,
+                                  onTap: onFilterTap,
+                                  onRemove: onFilterTap,
+                                ),
+                              ),
+                            if (layoutBarEnabled) const LayoutBar(),
+                            if (queryEnabled)
+                              EntryQueryBar(
+                                queryNotifier: context.select<Query, ValueNotifier<String>>((query) => query.queryNotifier),
+                                focusNode: _queryBarFocusNode,
+                              ),
+                          ],
+                        ),
+                        transitionKey: isSelecting,
+                      );
+                    },
                   );
                 },
               );
@@ -270,6 +272,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     );
   }
 
+  // `read` context because it can be called outside of Widget `build`
+  static bool _showLayoutBar(BuildContext context) => context.read<Settings>().showCollectionLayoutBar;
+
+  // `read` context because it can be called outside of Widget `build`
   static bool _showQueryLine(BuildContext context) => context.read<Query?>()?.enabled ?? false;
 
   double _getAppBarContentHeight(BuildContext context) {
@@ -280,6 +286,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     }
     if (showFilterBar) {
       height += FilterBar.preferredHeight;
+    }
+    if (_showLayoutBar(context)) {
+      height += LayoutBar.preferredHeight;
     }
     if (_showQueryLine(context)) {
       height += EntryQueryBar.getPreferredHeight(textScaler);
@@ -570,6 +579,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     final blurred = settings.enableBlurEffect;
     final onPressed = enabled ? () => _onActionSelected(action) : null;
     switch (action) {
+      case .toggleLayoutBar:
+        return LayoutBarToggler(
+          focusNode: focusNode,
+          onPressed: onPressed,
+        );
       case .toggleTitleSearch:
         // `Query` may not be available during hero
         return Selector<Query?, bool>(
@@ -633,6 +647,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     required bool enabled,
   }) {
     switch (action) {
+      case .toggleLayoutBar:
+        return LayoutBarTogglerCaption(
+          enabled: enabled,
+        );
       case .toggleTitleSearch:
         return TitleSearchTogglerCaption(
           enabled: enabled,
@@ -648,6 +666,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   PopupMenuItem<EntrySetAction> _toMenuItem(EntrySetAction action, {required bool enabled, required Selection<AvesEntry> selection}) {
     final Widget child;
     switch (action) {
+      case .toggleLayoutBar:
+        child = const LayoutBarToggler(
+          isMenuItem: true,
+        );
       case .toggleTitleSearch:
         child = TitleSearchToggler(
           queryEnabled: context.read<Query>().enabled,
@@ -763,8 +785,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   Future<void> _onActionSelected(EntrySetAction action) async {
     switch (action) {
       // general
-      case .configureView:
-        await _configureView();
+      case .changeLayout:
+        await _changeLayout();
       case .select:
         context.read<Selection<AvesEntry>>().select();
       case .selectAll:
@@ -773,6 +795,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         context.read<Selection<AvesEntry>>().clearSelection();
       // browsing
       case .searchCollection:
+      case .toggleLayoutBar:
       case .toggleTitleSearch:
       case .addDynamicAlbum:
       case .addShortcut:
@@ -810,7 +833,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     }
   }
 
-  Future<void> _configureView() async {
+  Future<void> _changeLayout() async {
     final initialValue = (
       settings.effectiveCollectionTileLayout,
       settings.collectionSortFactor,
@@ -823,9 +846,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       builder: (context) {
         return ChangeLayoutDialog<EntrySectionFactor>(
           initialValue: initialValue,
-          layoutOptions: _layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sortOptions: _sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sectionOptions: _sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: CollectionAppBar.layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sortOptions: CollectionAppBar.sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: CollectionAppBar.sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           canSection: (l, s, g) => l != .calendar && s == .date,
           tileExtentController: extentController,

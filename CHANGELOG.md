@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Collection: layout bar
 - Countries: show states for Brazil
 - link to app settings from OS settings
 

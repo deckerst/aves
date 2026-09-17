@@ -79,7 +79,6 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
     final l10n = context.l10n;
 
     final duration = context.select<DurationsData, Duration>((v) => v.formTransition);
-    const transitionBuilder = AvesTransitions.formTransitionBuilder;
     return AvesDialog(
       scrollableContent: [
         _buildSelector(
@@ -94,60 +93,48 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
             }
           },
         ),
-        AnimatedSwitcher(
-          duration: duration,
-          switchInCurve: Curves.easeInOutCubic,
-          switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: transitionBuilder,
-          child: _buildSelector(
-            enabled: _selectedLayout != .calendar,
-            icon: AIcons.sort,
-            title: l10n.viewDialogSortSectionTitle,
-            options: sortOptions,
-            value: _selectedSort,
-            onChanged: (v) {
-              _selectedSort = v as SortFactor;
-              _reverseSort = false;
-            },
-            bottom: Row(
-              children: [
-                Expanded(
-                  child: ChangeHighlightText(
-                    widget.sortOrder(_selectedSort, _reverseSort),
-                    textStyle: TextDropdownButton.textStyle(context),
-                    changeBlurRadius: 8,
-                    duration: duration,
-                  ),
+        _buildSelector(
+          enabled: _selectedLayout != .calendar,
+          icon: AIcons.sort,
+          title: l10n.viewDialogSortSectionTitle,
+          options: sortOptions,
+          value: _selectedSort,
+          onChanged: (v) {
+            _selectedSort = v as SortFactor;
+            _reverseSort = false;
+          },
+          bottom: Row(
+            children: [
+              Expanded(
+                child: ChangeHighlightText(
+                  widget.sortOrder(_selectedSort, _reverseSort),
+                  textStyle: TextDropdownButton.textStyle(context),
+                  changeBlurRadius: 8,
+                  duration: duration,
                 ),
-                IconButton(
-                  icon: const Icon(AIcons.sortOrder),
-                  onPressed: () => setState(() => _reverseSort = !_reverseSort),
-                  tooltip: l10n.viewDialogReverseSortOrder,
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                icon: const Icon(AIcons.sortOrder),
+                onPressed: () => setState(() => _reverseSort = !_reverseSort),
+                tooltip: l10n.viewDialogReverseSortOrder,
+              ),
+            ],
           ),
         ),
-        AnimatedSwitcher(
-          duration: duration,
-          switchInCurve: Curves.easeInOutCubic,
-          switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: transitionBuilder,
-          child: _buildSelector(
-            show: canSection,
-            icon: AIcons.section,
-            title: l10n.viewDialogGroupSectionTitle,
-            options: sectionOptions,
-            value: _selectedSection,
-            onChanged: (v) => _selectedSection = v as G,
-          ),
+        _buildSelector(
+          show: canSection,
+          icon: AIcons.section,
+          title: l10n.viewDialogGroupSectionTitle,
+          options: sectionOptions,
+          value: _selectedSection,
+          onChanged: (v) => _selectedSection = v as G,
         ),
         if (settings.showPinchGestureAlternatives)
           AnimatedSwitcher(
             duration: duration,
             switchInCurve: Curves.easeInOutCubic,
             switchOutCurve: Curves.easeInOutCubic,
-            transitionBuilder: transitionBuilder,
+            transitionBuilder: AvesTransitions.formTransitionBuilder,
             child: _selectedLayout != .calendar ? _buildScaler() : const SizedBox(),
           ),
       ],
@@ -175,94 +162,103 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
     required ValueChanged<T?> onChanged,
     Widget? bottom,
   }) {
-    if (options.isEmpty || !show) return const SizedBox();
+    Widget child = const SizedBox();
 
-    final shadows = Theme.of(context).isDark ? AStyles.embossShadows : null;
+    if (options.isNotEmpty && show) {
+      final shadows = Theme.of(context).isDark ? AStyles.embossShadows : null;
 
-    final label = FontSizeIconTheme(
-      child: Row(
-        children: [
-          DecoratedIcon(icon, shadows: shadows),
-          const SizedBox(width: 16),
-          Expanded(
-            child: HighlightTitle(
-              title: title,
-              showHighlight: false,
+      final label = FontSizeIconTheme(
+        child: Row(
+          children: [
+            DecoratedIcon(icon, shadows: shadows),
+            const SizedBox(width: 16),
+            Expanded(
+              child: HighlightTitle(
+                title: title,
+                showHighlight: false,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-    final selector = TextDropdownButton<T>(
-      values: options.map((v) => v.value).toList(),
-      valueText: (v) => options.firstWhere((option) => option.value == v).title,
-      valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
-      value: value,
-      onChanged: enabled ? (v) => setState(() => onChanged(v)) : null,
-      isExpanded: true,
-      dropdownColor: Themes.thirdLayerColor(context),
-    );
+          ],
+        ),
+      );
+      final selector = TextDropdownButton<T>(
+        values: options.map((v) => v.value).toList(),
+        valueText: (v) => options.firstWhere((option) => option.value == v).title,
+        valueIcon: (v) => options.firstWhere((option) => option.value == v).icon,
+        value: value,
+        onChanged: enabled ? (v) => setState(() => onChanged(v)) : null,
+        isExpanded: true,
+        dropdownColor: Themes.thirdLayerColor(context),
+      );
 
-    final textScaler = MediaQuery.textScalerOf(context);
-    final iconSize = textScaler.scale(IconTheme.of(context).size!);
-    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    Widget child = isPortrait
-        ? Column(
-            mainAxisSize: .min,
-            crossAxisAlignment: .start,
-            children: [
-              label,
-              Padding(
-                padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
-                child: selector,
-              ),
-              if (bottom != null)
+      final textScaler = MediaQuery.textScalerOf(context);
+      final iconSize = textScaler.scale(IconTheme.of(context).size!);
+      final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+      child = isPortrait
+          ? Column(
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
+              children: [
+                label,
                 Padding(
-                  padding: EdgeInsetsDirectional.only(start: iconSize + 16),
-                  child: bottom,
+                  padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
+                  child: selector,
                 ),
-            ],
-          )
-        : Row(
-            mainAxisSize: .min,
-            crossAxisAlignment: .start,
-            children: [
-              Expanded(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-                  child: label,
+                if (bottom != null)
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(start: iconSize + 16),
+                    child: bottom,
+                  ),
+              ],
+            )
+          : Row(
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
+              children: [
+                Expanded(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
+                    child: label,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    selector,
-                    ?bottom,
-                  ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      selector,
+                      ?bottom,
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
 
-    child = TooltipTheme(
-      data: TooltipTheme.of(context).copyWith(
-        preferBelow: false,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: child,
-      ),
-    );
+      child = TooltipTheme(
+        data: TooltipTheme.of(context).copyWith(
+          preferBelow: false,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: child,
+        ),
+      );
 
-    child = Column(
-      children: [
-        const ThinDivider(),
-        child,
-      ],
+      child = Column(
+        children: [
+          const ThinDivider(),
+          child,
+        ],
+      );
+    }
+
+    return AnimatedSwitcher(
+      duration: context.select<DurationsData, Duration>((v) => v.formTransition),
+      switchInCurve: Curves.easeInOutCubic,
+      switchOutCurve: Curves.easeInOutCubic,
+      transitionBuilder: AvesTransitions.formTransitionBuilder,
+      child: child,
     );
-    return child;
   }
 
   Widget _buildScaler() {

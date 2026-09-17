@@ -15,20 +15,13 @@ import 'package:provider/provider.dart';
 
 typedef TitleBuilder = String? Function(BuildContext context);
 
-class SettingsSubPageTile extends StatelessWidget {
-  final TitleBuilder title;
-  final WidgetBuilder? subtitle;
-  final String routeName;
-  final WidgetBuilder builder;
-
-  const new({
-    super.key,
-    required this.title,
-    this.subtitle,
-    required this.routeName,
-    required this.builder,
-  });
-
+class const SettingsSubPageTile({
+  super.key,
+  required final TitleBuilder title,
+  final WidgetBuilder? subtitle,
+  required final String routeName,
+  required final WidgetBuilder builder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -46,25 +39,16 @@ class SettingsSubPageTile extends StatelessWidget {
   }
 }
 
-class SettingsSwitchListTile extends StatefulWidget {
-  final bool Function(BuildContext, Settings) selector;
-  final FutureOr<void> Function(bool value)? onChanged;
-  final Widget? leading;
-  final TitleBuilder title;
-  final TitleBuilder? subtitle;
-  final Widget? trailing;
-
+class const SettingsSwitchListTile({
+  super.key,
+  required final bool Function(BuildContext, Settings) selector,
+  required final FutureOr<void> Function(bool value)? onChanged,
+  final Widget? leading,
+  required final TitleBuilder title,
+  final TitleBuilder? subtitle,
+  final Widget? trailing,
+}) extends StatefulWidget {
   static const disabledOpacity = .2;
-
-  const new({
-    super.key,
-    required this.selector,
-    required this.onChanged,
-    this.leading,
-    required this.title,
-    this.subtitle,
-    this.trailing,
-  });
 
   @override
   State<SettingsSwitchListTile> createState() => _SettingsSwitchListTileState();
@@ -121,28 +105,17 @@ class _SettingsSwitchListTileState extends State<SettingsSwitchListTile> {
   }
 }
 
-class SettingsSelectionListTile<T> extends StatelessWidget {
-  final List<T> values;
-  final String Function(BuildContext, T) getName;
-  final T Function(BuildContext, Settings) selector;
-  final ValueChanged<T> onSelection;
-  final TitleBuilder tileTitle;
-  final WidgetBuilder? trailingBuilder;
-  final String? dialogTitle;
-  final TextBuilder<T>? optionSubtitleBuilder;
-
-  const new({
-    super.key,
-    required this.values,
-    required this.getName,
-    required this.selector,
-    required this.onSelection,
-    required this.tileTitle,
-    this.trailingBuilder,
-    this.dialogTitle,
-    this.optionSubtitleBuilder,
-  });
-
+class const SettingsSelectionListTile<T>({
+  super.key,
+  required final List<T> values,
+  required final String Function(BuildContext, T) getName,
+  required final T Function(BuildContext, Settings) selector,
+  required final ValueChanged<T> onSelection,
+  required final TitleBuilder tileTitle,
+  final WidgetBuilder? trailingBuilder,
+  final String? dialogTitle,
+  final TextBuilder<T>? optionSubtitleBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<Settings, T>(
@@ -168,27 +141,17 @@ class SettingsSelectionListTile<T> extends StatelessWidget {
   }
 }
 
-class SettingsMultiSelectionListTile<T> extends StatelessWidget {
-  final List<T> values;
-  final String Function(BuildContext, T) getName;
-  final List<T> Function(BuildContext, Settings) selector;
-  final ValueChanged<List<T>> onSelection;
-  final String tileTitle, noneSubtitle;
-  final String? dialogTitle;
-  final TextBuilder<T>? optionSubtitleBuilder;
-
-  const new({
-    super.key,
-    required this.values,
-    required this.getName,
-    required this.selector,
-    required this.onSelection,
-    required this.tileTitle,
-    required this.noneSubtitle,
-    this.dialogTitle,
-    this.optionSubtitleBuilder,
-  });
-
+class const SettingsMultiSelectionListTile<T>({
+  super.key,
+  required final List<T> values,
+  required final String Function(BuildContext, T) getName,
+  required final List<T> Function(BuildContext, Settings) selector,
+  required final ValueChanged<List<T>> onSelection,
+  required final String tileTitle,
+  required final String noneSubtitle,
+  final String? dialogTitle,
+  final TextBuilder<T>? optionSubtitleBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<Settings, List<T>>(
@@ -213,18 +176,12 @@ class SettingsMultiSelectionListTile<T> extends StatelessWidget {
   }
 }
 
-class SettingsDurationListTile extends StatelessWidget {
-  final int Function(BuildContext, Settings) selector;
-  final ValueChanged<int> onChanged;
-  final TitleBuilder title;
-
-  const new({
-    super.key,
-    required this.selector,
-    required this.onChanged,
-    required this.title,
-  });
-
+class const SettingsDurationListTile({
+  super.key,
+  required final int Function(BuildContext, Settings) selector,
+  required final ValueChanged<int> onChanged,
+  required final TitleBuilder title,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<Settings, int>(

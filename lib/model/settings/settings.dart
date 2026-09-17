@@ -365,6 +365,7 @@ class Settings
           case SettingKeys.confirmMoveToBinKey:
           case SettingKeys.confirmAfterMoveToBinKey:
           case SettingKeys.collectionSortReverseKey:
+          case SettingKeys.showCollectionLayoutBarKey:
           case SettingKeys.showThumbnailFavouriteKey:
           case SettingKeys.showThumbnailHdrKey:
           case SettingKeys.showThumbnailMotionPhotoKey:
@@ -418,8 +419,8 @@ class Settings
           case SettingKeys.keepScreenOnKey:
           case SettingKeys.homePageKey:
           case SettingKeys.homeCustomExplorerPathKey:
-          case SettingKeys.collectionSectionFactorKey:
           case SettingKeys.collectionSortFactorKey:
+          case SettingKeys.collectionSectionFactorKey:
           case SettingKeys.thumbnailLocationIconKey:
           case SettingKeys.thumbnailTagIconKey:
           case SettingKeys.albumSectionFactorKey:

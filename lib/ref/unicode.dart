@@ -47,6 +47,7 @@ class EmojiStateCodes {
   };
 
   // BR
+  // TODO TLAD use flag assets from https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
   static const brAcre = 'brac';
   static const brAlagoas = 'bral';
   static const brAmapa = 'brap';

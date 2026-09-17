@@ -291,19 +291,19 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
 
     final canCreateStoredAlbums = widget.moveType != null;
-    final quickActions = [
-      if (isPickingGroup) ChipSetAction.createGroup,
-      if (canCreateStoredAlbums) ChipSetAction.createAlbum,
+    final quickActions = <ChipSetAction>[
+      if (isPickingGroup) .createGroup,
+      if (canCreateStoredAlbums) .createAlbum,
     ];
 
     // `null` items are converted to dividers
-    final menuActions = [
+    final menuActions = <ChipSetAction?>[
       ...ChipSetActions.general,
       null,
-      ChipSetAction.toggleTitleSearch,
+      .toggleTitleSearch,
       if (canCreateStoredAlbums) ...[
         null,
-        ChipSetAction.createVault,
+        .createVault,
       ],
     ];
 

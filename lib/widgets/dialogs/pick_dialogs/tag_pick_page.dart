@@ -268,15 +268,15 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
   }) {
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
 
-    final quickActions = [
-      if (isPickingGroup) ChipSetAction.createGroup,
+    final quickActions = <ChipSetAction>[
+      if (isPickingGroup) .createGroup,
     ];
 
     // `null` items are converted to dividers
-    final menuActions = [
+    final menuActions = <ChipSetAction?>[
       ...ChipSetActions.general,
       null,
-      ChipSetAction.toggleTitleSearch,
+      .toggleTitleSearch,
     ];
 
     return [

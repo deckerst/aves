@@ -81,7 +81,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
         return true;
       case .select:
         return appMode.canSelectFilter && !isSelecting;
@@ -141,7 +141,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // general
       case .select:
         return hasItems;
-      case .configureView:
+      case .changeLayout:
       case .selectAll:
       case .selectNone:
       // browsing
@@ -179,7 +179,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
         configureView(context);
       case .select:
         context.read<Selection<FilterGridItem<T>>>().select();

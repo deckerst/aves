@@ -5,25 +5,18 @@ import 'package:material_ui/material_ui.dart';
 
 // do not use as `T` a record containing a collection
 // because radio value comparison will fail without deep equality
-class AvesSingleSelectionDialog<T> extends StatefulWidget {
+class const AvesSingleSelectionDialog<T>({
+  super.key,
+  required final T initialValue,
+  required final Map<T, String> options,
+  final IconBuilder<T>? optionIconBuilder,
+  final TextBuilder<T>? optionSubtitleBuilder,
+  final String? title,
+  final String? message,
+  final String? confirmationButtonLabel,
+  final bool? dense,
+}) extends StatefulWidget {
   static const routeName = '/dialog/selection';
-
-  final T initialValue;
-  final Map<T, String> options;
-  final TextBuilder<T>? optionSubtitleBuilder;
-  final String? title, message, confirmationButtonLabel;
-  final bool? dense;
-
-  const new({
-    super.key,
-    required this.initialValue,
-    required this.options,
-    this.optionSubtitleBuilder,
-    this.title,
-    this.message,
-    this.confirmationButtonLabel,
-    this.dense,
-  });
 
   @override
   State<AvesSingleSelectionDialog<T>> createState() => _AvesSingleSelectionDialogState<T>();
@@ -77,6 +70,7 @@ class _AvesSingleSelectionDialogState<T> extends State<AvesSingleSelectionDialog
                 return SelectionRadioListTile(
                   value: radioValue,
                   title: radioTitle,
+                  optionIconBuilder: widget.optionIconBuilder,
                   optionSubtitleBuilder: widget.optionSubtitleBuilder,
                   dense: widget.dense,
                 );

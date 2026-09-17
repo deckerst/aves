@@ -67,7 +67,7 @@ class AIcons {
   static const tag = Symbols.sell;
   static const tagUntagged = MdiIcons.tagOffOutline;
   static const text = Symbols.format_quote;
-  static const thumbnails = Symbols.grid_on;
+  static const thumbnails = Symbols.dashboard_2;
   static const thumbnailBar = Symbols.view_carousel;
   static const volumeMin = Symbols.volume_mute;
   static const volumeMax = Symbols.volume_up;
@@ -91,16 +91,24 @@ class AIcons {
   static const routeOff = Symbols.conversion_path_off;
 
   // view
-  static const section = Symbols.subheader;
   static const layout = Symbols.grid_view;
   static const layoutMosaic = Symbols.view_comfy;
   static const layoutGrid = Symbols.view_compact;
-  static const layoutList = Symbols.list;
+  static const layoutList = Symbols.view_list;
   static const layoutCalendar = Symbols.calendar_today;
   static const sort = Symbols.sort;
   static const sortOrder = Symbols.swap_vert;
+  static const section = Symbols.subheader;
   static const thumbnailLarge = Symbols.photo_size_select_large;
   static const thumbnailSmall = Symbols.photo_size_select_small;
+
+  // toggles
+  static const changeLayout = Symbols.dashboard_2_gear;
+  static const showLayoutBar = Symbols.grid_on;
+  static const hideLayoutBar = Symbols.grid_off;
+  static const titleFilter = Symbols.filter_alt;
+  static const showTitleFilter = Symbols.filter_alt;
+  static const hideTitleFilter = Symbols.filter_alt_off;
 
   // actions
   static const add = Symbols.add_circle;
@@ -121,8 +129,6 @@ class AIcons {
   static const fileImport = MdiIcons.fileImportOutline;
   static const flip = Symbols.flip;
   static const favourite = Symbols.favorite;
-  static const filter = Symbols.filter_alt;
-  static const filterOff = Symbols.filter_alt_off;
   static const goUp = Symbols.arrow_upward;
   static const group = Symbols.stack_group;
   static const hide = Symbols.visibility_off;
@@ -162,7 +168,6 @@ class AIcons {
   static const vaultLock = Symbols.lock;
   static const vaultAdd = Symbols.enhanced_encryption;
   static const vaultConfigure = MdiIcons.shieldLockOutline;
-  static const view = Symbols.grid_view;
   static const viewerLock = Symbols.lock;
   static const viewerUnlock = Symbols.lock_open;
   static const zoomIn = Symbols.add;

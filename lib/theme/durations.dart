@@ -14,6 +14,7 @@ class ADurations {
   // common animations
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
+  static const rotatorAnimation = Duration(milliseconds: 650);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);

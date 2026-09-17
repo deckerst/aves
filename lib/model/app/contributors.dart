@@ -221,9 +221,4 @@ class Contributors {
   };
 }
 
-class Contributor {
-  final String name;
-  final String? weblateEmail;
-
-  const new(this.name, this.weblateEmail);
-}
+class const Contributor(final String name, final String? email);

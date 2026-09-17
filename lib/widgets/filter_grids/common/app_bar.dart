@@ -26,17 +26,16 @@ import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> =
-    List<Widget> Function(
-      BuildContext context,
-      AppMode appMode,
-      Selection<FilterGridItem<T>> selection,
-      CSAD actionDelegate,
-    );
+typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> = List<Widget> Function(
+  BuildContext context,
+  AppMode appMode,
+  Selection<FilterGridItem<T>> selection,
+  CSAD actionDelegate,
+);
 
 class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
@@ -90,13 +89,14 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   CollectionSource get source => widget.source;
 
-  static const browsingQuickActions = [
-    ChipSetAction.search,
+  static const browsingQuickActions = <ChipSetAction>[
+    .search,
   ];
-  static const selectionQuickActions = [
-    ChipSetAction.setCover,
-    ChipSetAction.pin,
-    ChipSetAction.unpin,
+
+  static const selectionQuickActions = <ChipSetAction>[
+    .setCover,
+    .pin,
+    .unpin,
   ];
 
   @override

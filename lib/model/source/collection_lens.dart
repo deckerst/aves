@@ -109,9 +109,9 @@ class CollectionLens with ChangeNotifier {
           .where(
             (event) => [
               SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
-              SettingKeys.collectionSectionFactorKey,
               SettingKeys.collectionSortFactorKey,
               SettingKeys.collectionSortReverseKey,
+              SettingKeys.collectionSectionFactorKey,
               SettingKeys.collectionBurstPatternsKey,
               SettingKeys.calendarKey,
             ].contains(event.key),
@@ -174,6 +174,9 @@ class CollectionLens with ChangeNotifier {
             return true;
           case .day:
             return true;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
       case .albumItemName:
       case .path:
@@ -354,6 +357,9 @@ class CollectionLens with ChangeNotifier {
               sections = Map.fromEntries([
                 MapEntry(const SectionKey(), _filteredSortedEntries),
               ]);
+            case .name:
+            case .rating:
+              throw UnimplementedError();
           }
         case .albumItemName:
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));

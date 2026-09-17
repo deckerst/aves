@@ -11,6 +11,9 @@ extension ExtraEntrySectionFactorView on EntrySectionFactor {
       .month => l10n.collectionGroupMonth,
       .day => l10n.collectionGroupDay,
       .none => l10n.sectionNone,
+      // unselectable
+      .name => throw UnimplementedError(),
+      .rating => throw UnimplementedError(),
     };
   }
 
@@ -20,6 +23,9 @@ extension ExtraEntrySectionFactorView on EntrySectionFactor {
       .month => AIcons.dateByMonth,
       .day => AIcons.dateByDay,
       .none => AIcons.clear,
+      // unselectable
+      .name => AIcons.name,
+      .rating => AIcons.rating,
     };
   }
 }

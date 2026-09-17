@@ -8,10 +8,6 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
 
-  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
-
-  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
-
   SortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, SortFactor.values);
 
   set collectionSortFactor(SortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
@@ -19,6 +15,14 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   bool get collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
 
   set collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
+
+  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
+
+  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
+
+  bool get showCollectionLayoutBar => getBool(SettingKeys.showCollectionLayoutBarKey) ?? false;
+
+  set showCollectionLayoutBar(bool newValue) => set(SettingKeys.showCollectionLayoutBarKey, newValue);
 
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(SettingKeys.collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
@@ -68,9 +72,41 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   TileLayout get effectiveCollectionTileLayout => getTileLayout(CollectionPage.routeName);
 
-  EntrySectionFactor get effectiveCollectionSectionFactor => effectiveCollectionTileLayout == .calendar ? .month : collectionSectionFactor;
-
-  SortFactor get effectiveCollectionSortFactor => effectiveCollectionTileLayout == .calendar ? .date : collectionSortFactor;
+  SortFactor get effectiveCollectionSortFactor {
+    switch (effectiveCollectionTileLayout) {
+      case .mosaic:
+      case .grid:
+      case .list:
+        return collectionSortFactor;
+      case .calendar:
+        return .date;
+    }
+  }
 
   bool get effectiveCollectionSortReverse => collectionSortReverse;
+
+  EntrySectionFactor get effectiveCollectionSectionFactor {
+    switch (effectiveCollectionTileLayout) {
+      case .mosaic:
+      case .grid:
+      case .list:
+        switch (effectiveCollectionSortFactor) {
+          case .date:
+            return collectionSectionFactor;
+          case .albumItemName:
+          case .path:
+            return .name;
+          case .size:
+          case .duration:
+            return .none;
+          case .rating:
+            return .rating;
+          case .chipName:
+          case .count:
+            throw UnimplementedError();
+        }
+      case .calendar:
+        return .month;
+    }
+  }
 }

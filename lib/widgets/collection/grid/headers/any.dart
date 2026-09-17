@@ -11,20 +11,13 @@ import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:material_ui/material_ui.dart';
 
-class CollectionSectionHeader extends StatelessWidget {
-  final CollectionLens collection;
-  final SectionKey sectionKey;
-  final double height;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.sectionKey,
-    required this.height,
-    required this.selectable,
-  });
-
+class const CollectionSectionHeader({
+  super.key,
+  required final CollectionLens collection,
+  required final SectionKey sectionKey,
+  required final double height,
+  required final bool selectable,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final header = _buildHeader(context);
@@ -62,6 +55,9 @@ class CollectionSectionHeader extends StatelessWidget {
             );
           case .none:
             break;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
       case .albumItemName:
       case .path:

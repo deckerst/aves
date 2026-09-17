@@ -1,11 +1,12 @@
 enum EntrySetAction {
   // general
-  configureView,
+  changeLayout,
   select,
   selectAll,
   selectNone,
   // browsing
   searchCollection,
+  toggleLayoutBar,
   toggleTitleSearch,
   addDynamicAlbum,
   addShortcut,
@@ -43,7 +44,7 @@ enum EntrySetAction {
 
 class EntrySetActions {
   static const general = <EntrySetAction>[
-    .configureView,
+    .changeLayout,
     .select,
     .selectAll,
     .selectNone,
@@ -52,6 +53,7 @@ class EntrySetActions {
   // `null` items are converted to dividers
   static const pageBrowsing = <EntrySetAction?>[
     .searchCollection,
+    .toggleLayoutBar,
     .toggleTitleSearch,
     .addDynamicAlbum,
     .addShortcut,
@@ -68,6 +70,7 @@ class EntrySetActions {
   // exclude bin related actions
   static const collectionEditorBrowsing = <EntrySetAction>[
     .searchCollection,
+    .toggleLayoutBar,
     .toggleTitleSearch,
     .map,
     .slideshow,

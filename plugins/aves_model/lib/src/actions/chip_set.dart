@@ -1,6 +1,6 @@
 enum ChipSetAction {
   // general
-  configureView,
+  changeLayout,
   select,
   selectAll,
   selectNone,
@@ -32,7 +32,7 @@ enum ChipSetAction {
 
 class ChipSetActions {
   static const general = <ChipSetAction>[
-    .configureView,
+    .changeLayout,
     .select,
     .selectAll,
     .selectNone,

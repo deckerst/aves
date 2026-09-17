@@ -6,18 +6,12 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
 import 'package:material_ui/material_ui.dart';
 
-class ColorListTile extends StatelessWidget {
-  final TitleBuilder title;
-  final Color value;
-  final ValueSetter<Color> onChanged;
-
-  const new({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.onChanged,
-  });
-
+class const ColorListTile({
+  super.key,
+  required final TitleBuilder title,
+  required final Color value,
+  required final ValueSetter<Color> onChanged,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -42,15 +36,11 @@ class ColorListTile extends StatelessWidget {
   }
 }
 
-class ColorPickerDialog extends StatefulWidget {
+class const ColorPickerDialog({
+  super.key,
+  required final Color initialValue,
+}) extends StatefulWidget {
   static const routeName = '/dialog/pick_color';
-
-  final Color initialValue;
-
-  const new({
-    super.key,
-    required this.initialValue,
-  });
 
   @override
   State<ColorPickerDialog> createState() => _ColorPickerDialogState();
