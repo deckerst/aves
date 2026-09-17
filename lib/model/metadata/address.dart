@@ -14,7 +14,7 @@ class AddressDetails extends Equatable {
 
   String? get stateCode => GeoStates.stateCodeByName[stateName];
 
-  String? get stateName => GeoStates.stateCountryCodes.contains(countryCode) ? adminArea : null;
+  String? get stateName => GeoStates.stateCodesByCountryCode.containsKey(countryCode) ? adminArea : null;
 
   const new({
     required this.id,

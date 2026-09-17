@@ -64,7 +64,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   }) {
     switch (action) {
       case .showCountryStates:
-        return selectedFilters.any((v) => GeoStates.stateCountryCodes.contains(v.code));
+        return selectedFilters.any((v) => GeoStates.stateCodesByCountryCode.containsKey(v.code));
       default:
         return super.canApply(
           action,
@@ -91,7 +91,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
 
   void _showStates(BuildContext context) {
     final filters = getSelectedFilters(context);
-    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCountryCodes.contains).nonNulls.toSet();
+    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCodesByCountryCode.containsKey).nonNulls.toSet();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StateListPage.routeName),
