@@ -309,7 +309,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
+    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey!;
     final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
     return Selector<Query, bool>(
       selector: (context, query) => query.enabled,

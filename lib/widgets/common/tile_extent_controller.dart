@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 class TileExtentController({
-  required final String settingsRouteKey,
+  required final String? settingsRouteKey,
   final int columnCountMin = 2,
   required final int columnCountDefault,
   required final double extentMin,
@@ -16,13 +16,20 @@ class TileExtentController({
   required final double spacing,
   required final double horizontalPadding,
 }) {
-  late final ValueNotifier<double> extentNotifier;
+  static const double _defaultExtent = 0;
 
-  late double userPreferredExtent;
+  final ValueNotifier<double> extentNotifier = ValueNotifier(_defaultExtent);
+  double userPreferredExtent = _defaultExtent;
   Size _viewportSize = Size.zero;
   final Set<StreamSubscription> _subscriptions = {};
 
   Size get viewportSize => _viewportSize;
+
+  double get _settingsTileExtent => settingsRouteKey != null ? settings.getTileExtent(settingsRouteKey!) : _defaultExtent;
+
+  set _settingsTileExtent(double v) {
+    if (settingsRouteKey != null) settings.setTileExtent(settingsRouteKey!, v);
+  }
 
   this {
     if (kFlutterMemoryAllocationsEnabled) {
@@ -33,9 +40,10 @@ class TileExtentController({
       );
     }
     // initialize extent to 0, so that it will be dynamically sized on first launch
-    extentNotifier = ValueNotifier(0);
-    userPreferredExtent = settings.getTileExtent(settingsRouteKey);
-    _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
+    userPreferredExtent = _settingsTileExtent;
+    if (settingsRouteKey != null) {
+      _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
+    }
   }
 
   void dispose() {
@@ -49,7 +57,7 @@ class TileExtentController({
   }
 
   void _onSettingsChanged() {
-    if (userPreferredExtent != settings.getTileExtent(settingsRouteKey)) {
+    if (userPreferredExtent != _settingsTileExtent) {
       _update();
     }
   }
@@ -71,7 +79,7 @@ class TileExtentController({
   double setUserPreferredExtent(double extent) => _update(userPreferredExtent: extent.roundToDouble());
 
   double _update({double? userPreferredExtent}) {
-    final preferredExtent = userPreferredExtent ?? settings.getTileExtent(settingsRouteKey);
+    final preferredExtent = userPreferredExtent ?? _settingsTileExtent;
     final targetExtent = preferredExtent > 0 ? preferredExtent : extentNotifier.value;
 
     final columnCount = _effectiveColumnCountForExtent(targetExtent);
@@ -79,7 +87,7 @@ class TileExtentController({
 
     if (this.userPreferredExtent != preferredExtent) {
       this.userPreferredExtent = preferredExtent;
-      settings.setTileExtent(settingsRouteKey, preferredExtent);
+      _settingsTileExtent = preferredExtent;
     }
     if (extentNotifier.value != newExtent) {
       extentNotifier.value = newExtent;

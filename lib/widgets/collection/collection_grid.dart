@@ -85,6 +85,7 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final isCalendar = context.select<Settings, bool>((v) => v.effectiveCollectionTileLayout == .calendar);
     final spacing = context.select<Settings, double>((v) {
       switch (v.effectiveCollectionTileLayout) {
         case .mosaic:
@@ -95,7 +96,17 @@ class _CollectionGridState extends State<CollectionGrid> {
           return CollectionGrid.fixedExtentLayoutSpacing;
       }
     });
-    if (_tileExtentController?.spacing != spacing) {
+
+    if (isCalendar) {
+      _tileExtentController = TileExtentController(
+        settingsRouteKey: null,
+        columnCountDefault: DateTime.daysPerWeek,
+        extentMin: 0,
+        extentMax: double.infinity,
+        spacing: spacing,
+        horizontalPadding: 2,
+      );
+    } else if (_tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
         columnCountDefault: CollectionGrid.columnCountDefault,
@@ -105,6 +116,7 @@ class _CollectionGridState extends State<CollectionGrid> {
         horizontalPadding: 2,
       );
     }
+
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
       child: const _CollectionGridContent(),
@@ -140,7 +152,6 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
     final tileLayout = context.select<Settings, TileLayout>((v) => v.effectiveCollectionTileLayout);
-    // TODO TLAD [calendar] check layout here to override `TileExtentController`?
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
