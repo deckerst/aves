@@ -19,10 +19,10 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class const LayoutBar({super.key}) extends StatefulWidget {
-  static const EdgeInsets chipPadding = EdgeInsets.symmetric(horizontal: 4);
-  static const EdgeInsets rowPadding = EdgeInsets.symmetric(horizontal: 4);
-  static const EdgeInsets padding = EdgeInsets.only(top: 4, bottom: 8);
-  static final double preferredHeight = AvesFilterChip.minChipHeight + padding.vertical;
+  static const _padding = EdgeInsets.only(top: 4, bottom: 8);
+  static const _chipPadding = EdgeInsets.symmetric(horizontal: 4);
+  static const _rowPadding = EdgeInsets.symmetric(horizontal: 4);
+  static final double preferredHeight = AvesFilterChip.minChipHeight + _padding.vertical;
 
   @override
   State<LayoutBar> createState() => _LayoutBarState();
@@ -50,11 +50,11 @@ class _LayoutBarState extends State<LayoutBar> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Container(
-      padding: LayoutBar.padding,
+      padding: LayoutBar._padding,
       height: LayoutBar.preferredHeight,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: LayoutBar.rowPadding,
+        padding: LayoutBar._rowPadding,
         children: [
           _buildToggler(
             icon: AIcons.sortOrder,
@@ -118,7 +118,7 @@ class _LayoutBarState extends State<LayoutBar> {
     bool enabled = true,
   }) {
     return Padding(
-      padding: LayoutBar.chipPadding,
+      padding: LayoutBar._chipPadding,
       child: Center(
         child: Selector<Settings, T>(
           selector: selector,
@@ -151,8 +151,6 @@ class _LayoutBarState extends State<LayoutBar> {
                     ),
                   ],
                 ),
-                textStyle: DefaultTextStyle.of(context).style,
-                changeBlurRadius: 8,
                 duration: context.read<DurationsData>().formTextStyleTransition,
               ),
             );
@@ -178,7 +176,7 @@ class _LayoutBarState extends State<LayoutBar> {
       );
     }
     return Padding(
-      padding: LayoutBar.chipPadding,
+      padding: LayoutBar._chipPadding,
       child: Center(
         child: OutlinedButton(
           style: _buttonStyle(context),

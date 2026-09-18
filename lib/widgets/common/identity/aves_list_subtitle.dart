@@ -24,7 +24,6 @@ class AvesListSubtitle extends StatelessWidget {
       key: ValueKey(theme.colorScheme),
       TextSpan(text: data),
       textStyle: theme.listTileTheme.subtitleTextStyle ?? _defaultTextStyle(theme),
-      changeBlurRadius: 8,
       duration: context.read<DurationsData>().formTextStyleTransition,
     );
   }

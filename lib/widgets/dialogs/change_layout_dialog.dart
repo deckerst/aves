@@ -108,7 +108,6 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
                 child: ChangeHighlightText(
                   TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
                   textStyle: TextDropdownButton.textStyle(context),
-                  changeBlurRadius: 8,
                   duration: context.read<DurationsData>().formTextStyleTransition,
                 ),
               ),

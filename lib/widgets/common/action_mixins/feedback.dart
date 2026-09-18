@@ -435,7 +435,6 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                 center: ChangeHighlightText(
                   TextSpan(text: durationFormatter.format((remainingDurationMillis / 1000).ceil())),
                   textStyle: contentTextStyle,
-                  changeBlurRadius: 8,
                   duration: context.read<DurationsData>().formTextStyleTransition,
                 ),
               );
