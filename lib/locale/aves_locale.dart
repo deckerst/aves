@@ -14,18 +14,15 @@ import 'package:material_ui/material_ui.dart';
 
 typedef ACalendar = date4x.Calendar;
 
-class AvesLocale {
-  final String languageTag;
-  final ACalendar calendar;
-  final bool forceWesternArabicNumerals;
+class AvesLocale({
+    required final String languageTag,
+    required final ACalendar calendar,
+    required final bool forceWesternArabicNumerals,
+  }) {
   late final DateFormatDelegate _dateFormatDelegate;
   late final num4x.Locale _locale4x;
 
-  new({
-    required this.languageTag,
-    required this.calendar,
-    required this.forceWesternArabicNumerals,
-  }) {
+  this {
     _dateFormatDelegate = _getDateFormatDelegate();
     _locale4x = Intl4x.toLocale4x(languageTag, calendar, forceWesternArabicNumerals);
   }

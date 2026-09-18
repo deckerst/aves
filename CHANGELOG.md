@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 
 - opening transient images from camera apps
 - storage access for automatic settings export
+- global search suggestion provider
 
 ## <a id="v1.15.3"></a>[v1.15.3] - 2026-09-09
 
