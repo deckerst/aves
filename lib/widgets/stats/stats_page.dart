@@ -31,25 +31,19 @@ import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:aves/widgets/stats/top_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class StatsPage extends StatefulWidget {
+class const StatsPage({
+  super.key,
+  required final Set<AvesEntry> entries,
+  required final CollectionSource source,
+  final CollectionLens? parentCollection,
+}) extends StatefulWidget {
   static const routeName = '/collection/stats';
-
-  final Set<AvesEntry> entries;
-  final CollectionSource source;
-  final CollectionLens? parentCollection;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.source,
-    this.parentCollection,
-  });
 
   @override
   State<StatsPage> createState() => _StatsPageState();
@@ -398,11 +392,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   }
 }
 
-class _LocationIndicator extends StatelessWidget {
-  final Set<AvesEntry> entries;
-
-  const new({required this.entries});
-
+class const _LocationIndicator({required final Set<AvesEntry> entries}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

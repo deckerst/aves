@@ -16,29 +16,20 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:csv/csv.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class StatsTopPage<T extends Comparable> extends StatelessWidget with FeedbackMixin {
+class const StatsTopPage<T extends Comparable>({
+  super.key,
+  required final String title,
+  required final int totalEntryCount,
+  required final Map<T, int> entryCountMap,
+  required final CollectionFilter Function(T key) filterBuilder,
+  required final bool sortByCount,
+  required final AFilterCallback onFilterSelection,
+}) extends StatelessWidget with FeedbackMixin {
   static const routeName = '/collection/stats/top';
-
-  final String title;
-  final int totalEntryCount;
-  final Map<T, int> entryCountMap;
-  final CollectionFilter Function(T key) filterBuilder;
-  final bool sortByCount;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.title,
-    required this.totalEntryCount,
-    required this.entryCountMap,
-    required this.filterBuilder,
-    required this.sortByCount,
-    required this.onFilterSelection,
-  });
 
   @override
   Widget build(BuildContext context) {

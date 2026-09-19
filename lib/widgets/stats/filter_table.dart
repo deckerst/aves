@@ -9,24 +9,15 @@ import 'package:material_ui/material_ui.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class FilterTable<T extends Comparable> extends StatelessWidget {
-  final int totalEntryCount;
-  final Map<T, int> entryCountMap;
-  final CollectionFilter Function(T key) filterBuilder;
-  final bool sortByCount;
-  final int? maxRowCount;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.totalEntryCount,
-    required this.entryCountMap,
-    required this.filterBuilder,
-    required this.sortByCount,
-    required this.maxRowCount,
-    required this.onFilterSelection,
-  });
-
+class const FilterTable<T extends Comparable>({
+  super.key,
+  required final int totalEntryCount,
+  required final Map<T, int> entryCountMap,
+  required final CollectionFilter Function(T key) filterBuilder,
+  required final bool sortByCount,
+  required final int? maxRowCount,
+  required final AFilterCallback onFilterSelection,
+}) extends StatelessWidget {
   static const chipWidth = 160.0;
   static const countWidth = 32.0;
   static const percentIndicatorMinWidth = 80.0;

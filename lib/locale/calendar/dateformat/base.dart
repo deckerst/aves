@@ -46,11 +46,7 @@ typedef DateFormatter = String Function(DateTime date);
   yearMonthDay / medium:  Mar 1, 2014
   yearMonthDay / long:    March 1, 2014
  */
-abstract class DateFormatDelegate {
-  final String languageTag;
-
-  const new({required this.languageTag});
-
+abstract class const DateFormatDelegate({required final String languageTag}) {
   DateFormatter get y;
 
   DateFormatter get MMM;
