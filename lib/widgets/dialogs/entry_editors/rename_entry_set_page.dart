@@ -219,8 +219,8 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       ],
                     );
                   },
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: CollectionGrid.fixedExtentLayoutSpacing,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: CollectionGrid.spacingForLayout(TileLayout.list),
                   ),
                   itemCount: min(entryCount, previewMax),
                 ),

@@ -63,13 +63,22 @@ class const CollectionGrid({
 }) extends StatefulWidget {
   static const double extentMin = 46;
   static const double extentMax = 300;
-  static const double fixedExtentLayoutSpacing = 2;
-  static const double mosaicLayoutSpacing = 4;
 
   static int get columnCountDefault => settings.useTvLayout ? 6 : 4;
 
   @override
   State<CollectionGrid> createState() => _CollectionGridState();
+
+  static double spacingForLayout(TileLayout layout) {
+    switch (layout) {
+      case .mosaic:
+        return 4;
+      case .grid:
+      case .list:
+      case .calendar:
+        return 2;
+    }
+  }
 }
 
 class _CollectionGridState extends State<CollectionGrid> {
@@ -85,16 +94,9 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final isCalendar = context.select<Settings, bool>((v) => v.effectiveCollectionTileLayout == .calendar);
-    final spacing = context.select<Settings, double>((v) {
-      switch (v.effectiveCollectionTileLayout) {
-        case .mosaic:
-          return CollectionGrid.mosaicLayoutSpacing;
-        case .grid:
-        case .list:
-        case .calendar:
-          return CollectionGrid.fixedExtentLayoutSpacing;
-      }
+    final (isCalendar, spacing) = context.select<Settings, (bool, double)>((v) {
+      final layout = v.effectiveCollectionTileLayout;
+      return (layout == .calendar, CollectionGrid.spacingForLayout(layout));
     });
 
     if (isCalendar) {
@@ -106,7 +108,7 @@ class _CollectionGridState extends State<CollectionGrid> {
         spacing: spacing,
         horizontalPadding: 2,
       );
-    } else if (_tileExtentController?.spacing != spacing) {
+    } else if (_tileExtentController?.settingsRouteKey != settingsRouteKey || _tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
         columnCountDefault: CollectionGrid.columnCountDefault,
