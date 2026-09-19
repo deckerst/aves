@@ -289,7 +289,7 @@
     "genericFailureFeedback": "Misslyckad",
     "genericDangerWarningDialogMessage": "Är du säker?",
     "tooManyItemsErrorDialogMessage": "Försök ingen med färre objekt.",
-    "menuActionConfigureView": "Visa",
+    "menuActionConfigureView": "Ändra layout",
     "menuActionSelectAll": "Välj alla",
     "menuActionSelect": "Välj",
     "menuActionSelectNone": "Välj ingen",
@@ -327,7 +327,7 @@
     "renameEntryDialogLabel": "Nytt namn",
     "editEntryDialogCopyFromItem": "Kopiera från annat objekt",
     "editEntryDateDialogTitle": "Datum & Tid",
-    "editEntryDateDialogExtractFromTitle": "Extrahera från titel",
+    "editEntryDateDialogExtractFromTitle": "Extrahera från filnamn",
     "editEntryDateDialogShift": "Förskjut",
     "editEntryDateDialogSourceFileModifiedDate": "Datum då filen ändrades",
     "durationDialogHours": "Timmar",
@@ -967,5 +967,8 @@
     "showThumbnailSlowMotionVideoIcon": "Visa slowmotion ikon",
     "settingsCalendarTile": "Kalender",
     "mapShowItemTracks": "Visa sökvägar",
-    "mapHideItemTracks": "Dölj sökvägar"
+    "mapHideItemTracks": "Dölj sökvägar",
+    "tileLayoutCalendar": "Kalender",
+    "collectionActionShowLayoutBar": "Visa layoutfält",
+    "collectionActionHideLayoutBar": "Dölj layoutfält"
 }

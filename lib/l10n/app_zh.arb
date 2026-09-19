@@ -197,7 +197,7 @@
     "editEntryDateDialogSetCustom": "设置自定义日期",
     "editEntryDateDialogCopyField": "复制自其他日期",
     "editEntryDialogCopyFromItem": "复制自其他项目",
-    "editEntryDateDialogExtractFromTitle": "从标题提取",
+    "editEntryDateDialogExtractFromTitle": "从文件名提取",
     "editEntryDateDialogShift": "转移",
     "editEntryDateDialogSourceFileModifiedDate": "文件修改日期",
     "durationDialogHours": "时",
@@ -221,7 +221,7 @@
     "videoStreamSelectionDialogNoSelection": "无其他音轨",
     "genericSuccessFeedback": "完成！",
     "genericFailureFeedback": "失败",
-    "menuActionConfigureView": "查看",
+    "menuActionConfigureView": "更改布局",
     "menuActionSelect": "选择",
     "menuActionSelectAll": "全选",
     "menuActionSelectNone": "全不选",
@@ -737,5 +737,8 @@
     "settingsPermissionsPageTitle": "权限",
     "calendarGregorian": "格里高利历",
     "calendarPersian": "波斯历",
-    "settingsCalendarTile": "日历"
+    "settingsCalendarTile": "日历",
+    "tileLayoutCalendar": "日历",
+    "collectionActionShowLayoutBar": "显示布局栏",
+    "collectionActionHideLayoutBar": "隐藏布局栏"
 }

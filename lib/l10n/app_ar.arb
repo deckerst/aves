@@ -202,7 +202,7 @@
     "settingsViewerShowInformation": "مزيد من المعلومات",
     "placeEmpty": "لا توجد أماكن",
     "settingsCollectionQuickActionsTile": "إجراءات سريعة",
-    "editEntryDateDialogExtractFromTitle": "استخراج من العنوان",
+    "editEntryDateDialogExtractFromTitle": "استخراج من اسم الملف",
     "settingsViewerOverlayTile": "تراكب",
     "albumTierRegular": "آخرون",
     "settingsThumbnailShowFavouriteIcon": "إظهار الأيقونة المفضلة",
@@ -515,7 +515,7 @@
     "settingsAllowInstalledAppAccess": "الوصول إلى مخزون التطبيق",
     "entryActionShowGeoTiffOnMap": "عرض كتراكب على الخريطة",
     "viewDialogReverseSortOrder": "عكس ترتيب الفرز",
-    "menuActionConfigureView": "العرض",
+    "menuActionConfigureView": "تغيير التخطيط",
     "aboutLicensesDartPackagesSectionTitle": "حزم البرمجة",
     "drawerCollectionMotionPhotos": "صور متحركة",
     "settingsDefault": "افتراضي",
@@ -831,7 +831,7 @@
     "entryActionRestore": "استعادة",
     "entryActionCopyToClipboard": "نسخ إلى الحافظة",
     "viewerInfoLabelAddress": "العنوان",
-    "settingsVideoBackgroundModeDialogTitle": "وضع الخلـفية",
+    "settingsVideoBackgroundModeDialogTitle": "وضع الخلفية",
     "binPageTitle": "سلة المحذوفات",
     "tagPlaceholderState": "الولاية",
     "sortByAlbumFileName": "حسب عنوان الألبوم والعنصر",
@@ -956,5 +956,6 @@
     "settingsPermissionsPageTitle": "الأذونات",
     "calendarGregorian": "الميلادي",
     "calendarPersian": "الفارسي",
-    "settingsCalendarTile": "تقويم"
+    "settingsCalendarTile": "تقويم",
+    "tileLayoutCalendar": "تقويم"
 }

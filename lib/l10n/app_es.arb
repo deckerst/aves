@@ -188,7 +188,7 @@
     "editEntryDateDialogSetCustom": "Establecer fecha personalizada",
     "editEntryDateDialogCopyField": "Copiar de otra fecha",
     "editEntryDialogCopyFromItem": "Copiar de otro elemento",
-    "editEntryDateDialogExtractFromTitle": "Extraer del título",
+    "editEntryDateDialogExtractFromTitle": "Extraer del nombre del archivo",
     "editEntryDateDialogShift": "Cambiar",
     "editEntryDateDialogSourceFileModifiedDate": "Fecha de modificación del archivo",
     "durationDialogHours": "Horas",
@@ -212,7 +212,7 @@
     "videoStreamSelectionDialogNoSelection": "No hay otras pistas.",
     "genericSuccessFeedback": "¡Completado!",
     "genericFailureFeedback": "Falló",
-    "menuActionConfigureView": "Ver",
+    "menuActionConfigureView": "Cambiar diseño",
     "menuActionSelect": "Seleccionar",
     "menuActionSelectAll": "Seleccionar todo",
     "menuActionSelectNone": "Deseleccionar",
@@ -737,5 +737,8 @@
     "settingsPermissionsPageTitle": "Permisos",
     "settingsCalendarTile": "Calendario",
     "mapShowItemTracks": "Mostrar rutas",
-    "mapHideItemTracks": "Ocultar rutas"
+    "mapHideItemTracks": "Ocultar rutas",
+    "tileLayoutCalendar": "Calendario",
+    "collectionActionShowLayoutBar": "Mostrar barra de diseño",
+    "collectionActionHideLayoutBar": "Ocultar barra de diseño"
 }

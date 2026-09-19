@@ -492,7 +492,7 @@
     "dateThisMonth": "Sel kuul",
     "entryActionCast": "Peegelda välisseadmesse",
     "hideFilterConfirmationDialogMessage": "Filtrile vastavad fotod ja videod on sinu meediakogust peidetud. Kui soovid neid uuesti kuvada, siis seadistuste alajaotusest „Privaatsus“ saad seda lubada.\n\nKas sa oled kindel, et soovid neid peita?",
-    "editEntryDateDialogExtractFromTitle": "Tuvasta pealkirjast",
+    "editEntryDateDialogExtractFromTitle": "Tuvasta failinimest",
     "editEntryDateDialogShift": "Nihuta ajatemplit",
     "editEntryDateDialogSourceFileModifiedDate": "Faili muutmisaeg",
     "durationDialogHours": "Tunnid",
@@ -501,7 +501,7 @@
     "genericFailureFeedback": "Ei õnnestunud",
     "genericDangerWarningDialogMessage": "Kas sa oled kindel?",
     "tooManyItemsErrorDialogMessage": "Proovi uuesti, aga väiksema arvu objektidega.",
-    "menuActionConfigureView": "Vaata",
+    "menuActionConfigureView": "Muuda paigutust",
     "menuActionSelect": "Vali",
     "menuActionSelectAll": "Vali kõik",
     "menuActionSelectNone": "Ära vali midagi",
@@ -982,5 +982,8 @@
     "settingsPermissionsPageTitle": "Õigused",
     "calendarGregorian": "Gregoriuse",
     "calendarPersian": "Pärsia",
-    "settingsCalendarTile": "Kalender"
+    "settingsCalendarTile": "Kalender",
+    "tileLayoutCalendar": "Kalender",
+    "collectionActionShowLayoutBar": "Näita küljendusriba",
+    "collectionActionHideLayoutBar": "Peida küljendusriba"
 }

@@ -819,7 +819,7 @@
     "settingsSlideshowVideoPlaybackTile": "การเล่นวิดีโอ",
     "settingsSlideshowVideoPlaybackDialogTitle": "การเล่นวิดีโอ",
     "settingsVideoPageTitle": "การตั้งค่าวิดีโอ",
-    "settingsVideoSectionTitle": "วีดีโอ",
+    "settingsVideoSectionTitle": "วิดีโอ",
     "settingsVideoShowVideos": "แสดงวิดีโอ",
     "settingsVideoPlaybackTile": "การเล่น",
     "settingsVideoPlaybackPageTitle": "การเล่น",
@@ -978,5 +978,8 @@
     "overlayHistogramNone": "ไม่มี",
     "overlayHistogramRGB": "RGB",
     "overlayHistogramLuminance": "ความสว่าง",
-    "settingsVideoEnablePip": "Picture-in-picture"
+    "settingsVideoEnablePip": "Picture-in-picture (ภาพซ้อนภาพ)",
+    "tileLayoutCalendar": "ปฏิทิน",
+    "collectionActionShowLayoutBar": "แสดงแถบเลย์เอาต์",
+    "collectionActionHideLayoutBar": "ซ่อนแถบเลย์เอาต์"
 }
