@@ -161,7 +161,7 @@
     "settingsViewerShowInformation": "Birta upplýsingar",
     "placeEmpty": "Engir staðir",
     "settingsCollectionQuickActionsTile": "Flýtiaðgerðir",
-    "editEntryDateDialogExtractFromTitle": "Veiða úr titli",
+    "editEntryDateDialogExtractFromTitle": "Veiða úr skráarheiti",
     "chipActionDelete": "Eyða",
     "settingsViewerOverlayTile": "Yfirlag",
     "albumTierRegular": "Annað",
@@ -443,7 +443,7 @@
     "settingsAllowInstalledAppAccess": "Aðgangur að forritaskrá",
     "entryActionShowGeoTiffOnMap": "Birta sem yfirlag á korti",
     "viewDialogReverseSortOrder": "Öfug röð",
-    "menuActionConfigureView": "Skoða",
+    "menuActionConfigureView": "Breyta framsetningu",
     "aboutLicensesDartPackagesSectionTitle": "Dart-pakkar",
     "drawerCollectionMotionPhotos": "Hreyfiljósmyndir",
     "settingsDefault": "Sjálfgefið",
@@ -956,5 +956,8 @@
     "mapHideItemTracks": "Fela slóðir",
     "calendarGregorian": "Gregoríanskt",
     "calendarPersian": "Persneskt",
-    "settingsCalendarTile": "Dagatal"
+    "settingsCalendarTile": "Dagatal",
+    "tileLayoutCalendar": "Dagatal",
+    "collectionActionShowLayoutBar": "Sýna framsetningarstiku",
+    "collectionActionHideLayoutBar": "Fela framsetningarstiku"
 }

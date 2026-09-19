@@ -737,5 +737,6 @@
     "settingsAutoExportSettings": "자동 설정 내보내기",
     "settingsCalendarTile": "역법",
     "calendarGregorian": "그레고리력",
-    "calendarPersian": "태양 헤지라력"
+    "calendarPersian": "태양 헤지라력",
+    "tileLayoutCalendar": "달력"
 }
