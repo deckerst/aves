@@ -13,7 +13,6 @@ class const DecoratedThumbnail({
   required final double tileExtent,
   final ValueNotifier<bool>? cancellableNotifier,
   final bool isMosaic = false,
-  final bool drawOverlay = true,
   final bool selectable = true,
   final bool highlightable = true,
   final Object? Function()? heroTagger,
@@ -53,7 +52,7 @@ class const DecoratedThumbnail({
       fit: StackFit.passthrough,
       children: [
         imageDecorator?.call(context, child) ?? child,
-        if (drawOverlay) ThumbnailEntryOverlay(entry: entry),
+        ThumbnailEntryOverlay(entry: entry),
         if (selectable) ...[
           GridItemSelectionOverlay<AvesEntry>(
             item: entry,

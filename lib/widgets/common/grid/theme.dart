@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 class const GridTheme({
   super.key,
   required final double extent,
+  final bool isCalendar = false,
   final bool showLocation = true,
   final bool? showTrash,
   required final Widget child,
@@ -33,9 +34,10 @@ class const GridTheme({
           highlightBorderWidth: highlightBorderWidth,
           interactiveDimension: interactiveDimension,
           useTvLayout: settings.useTvLayout,
+          isCalendar: isCalendar,
           showFavourite: settings.showThumbnailFavourite,
           showHdr: settings.showThumbnailHdr,
-          locationIcon: showLocation ? settings.thumbnailLocationIcon : ThumbnailOverlayLocationIcon.none,
+          locationIcon: showLocation ? settings.thumbnailLocationIcon : .none,
           tagIcon: settings.thumbnailTagIcon,
           showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRating: settings.showThumbnailRating,
@@ -57,6 +59,7 @@ class GridThemeData({
   required final double highlightBorderWidth,
   required final double interactiveDimension,
   required final bool useTvLayout,
+  required final bool isCalendar,
   required final bool showFavourite,
   required final bool showHdr,
   required ThumbnailOverlayLocationIcon locationIcon,
@@ -67,38 +70,46 @@ class GridThemeData({
   required final bool showTrash,
   required final bool showVideoDuration,
 }) {
-  final showLocated = locationIcon == ThumbnailOverlayLocationIcon.located;
-  final showUnlocated = locationIcon == ThumbnailOverlayLocationIcon.unlocated;
-  final showTagged = tagIcon == ThumbnailOverlayTagIcon.tagged;
-  final showUntagged = tagIcon == ThumbnailOverlayTagIcon.untagged;
+  final showLocated = locationIcon == .located;
+  final showUnlocated = locationIcon == .unlocated;
+  final showTagged = tagIcon == .tagged;
+  final showUntagged = tagIcon == .untagged;
   late final GridThemeIconBuilder iconBuilder;
 
   this {
-    iconBuilder = (context, entry) {
-      final located = entry.hasGps;
-      final tagged = entry.tags.isNotEmpty;
-      final isMultiPage = entry.isMultiPage;
-      return [
-        if (entry.isFavourite && showFavourite) const FavouriteIcon(),
-        if (tagged && showTagged) TagIcon.tagged(),
-        if (!tagged && showUntagged) TagIcon.untagged(),
-        if (located && showLocated) LocationIcon.located(),
-        if (!located && showUnlocated) LocationIcon.unlocated(),
-        if (entry.rating != 0 && showRating) RatingIcon(entry: entry),
-        if (entry.isHdr && showHdr) const HdrIcon(),
-        if (entry.isPureVideo)
-          VideoIcon(entry: entry)
-        else if (entry.isAnimated)
-          const AnimatedImageIcon()
-        else ...[
-          if ((entry.isRaw || (isMultiPage && entry.stackedEntries?.any((v) => v.isRaw) == true)) && showRaw) const RawIcon(),
-          if (entry.is360) const PanoramaIcon(),
-        ],
-        if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
-        if (isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
-        if (entry.isGeotiff) const GeoTiffIcon(),
-        if (entry.trashed && showTrash) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
-      ];
-    };
+    iconBuilder = isCalendar ? _calendarIconBuilder : _defaultIconBuilder;
+  }
+
+  List<Widget> _calendarIconBuilder(BuildContext context, AvesEntry entry) {
+    return [
+      if (entry.isStack) CalendarStackCount(entry: entry),
+    ];
+  }
+
+  List<Widget> _defaultIconBuilder(BuildContext context, AvesEntry entry) {
+    final located = entry.hasGps;
+    final tagged = entry.tags.isNotEmpty;
+    final isMultiPage = entry.isMultiPage;
+    return [
+      if (entry.isFavourite && showFavourite) const FavouriteIcon(),
+      if (tagged && showTagged) TagIcon.tagged(),
+      if (!tagged && showUntagged) TagIcon.untagged(),
+      if (located && showLocated) LocationIcon.located(),
+      if (!located && showUnlocated) LocationIcon.unlocated(),
+      if (entry.rating != 0 && showRating) RatingIcon(entry: entry),
+      if (entry.isHdr && showHdr) const HdrIcon(),
+      if (entry.isPureVideo)
+        VideoIcon(entry: entry)
+      else if (entry.isAnimated)
+        const AnimatedImageIcon()
+      else ...[
+        if ((entry.isRaw || (isMultiPage && entry.stackedEntries?.any((v) => v.isRaw) == true)) && showRaw) const RawIcon(),
+        if (entry.is360) const PanoramaIcon(),
+      ],
+      if (entry.isMotionPhoto && showMotionPhoto) const MotionPhotoIcon(),
+      if (isMultiPage && !entry.isMotionPhoto) MultiPageIcon(entry: entry),
+      if (entry.isGeotiff) const GeoTiffIcon(),
+      if (entry.trashed && showTrash) TrashIcon(trashDaysLeft: entry.trashDaysLeft),
+    ];
   }
 }

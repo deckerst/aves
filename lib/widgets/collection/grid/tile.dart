@@ -123,7 +123,6 @@ class Tile extends StatelessWidget {
     // the retrieval task queue can pile up for thumbnails that got disposed
     // in this case we pause the image retrieval task to get it out of the queue
     cancellableNotifier: isScrollingNotifier,
-    drawOverlay: tileLayout != .calendar,
     selectable: selectable,
     highlightable: highlightable,
     heroTagger: heroTagger,

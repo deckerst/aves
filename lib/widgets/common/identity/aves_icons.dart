@@ -11,34 +11,6 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class const VideoIcon({
-  super.key,
-  required final AvesEntry entry,
-}) extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final showDuration = context.select<GridThemeData, bool>((t) => t.showVideoDuration);
-    Widget child = OverlayIcon(
-      icon: entry.is360
-          ? AIcons.sphericalVideo
-          : entry.isSlowMotion
-          ? AIcons.slowMotion
-          : AIcons.videoPlay,
-      text: showDuration ? entry.durationText : null,
-      iconScale: entry.is360 && showDuration ? .9 : 1,
-    );
-    if (showDuration) {
-      child = DefaultTextStyle(
-        style: TextStyle(
-          fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
-        ),
-        child: child,
-      );
-    }
-    return child;
-  }
-}
-
 class const AnimatedImageIcon({super.key}) extends StatelessWidget {
   static const scale = .75;
 
@@ -47,6 +19,36 @@ class const AnimatedImageIcon({super.key}) extends StatelessWidget {
     return const OverlayIcon(
       icon: AIcons.animated,
       iconScale: scale,
+    );
+  }
+}
+
+class const CalendarStackCount({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle(
+      style: TextStyle(
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize * 2),
+      ),
+      child: OverlayIcon(
+        text: '${entry.stackedEntries?.length}',
+      ),
+    );
+  }
+}
+
+class const FavouriteIcon({super.key}) extends StatelessWidget {
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.favourite,
+      iconScale: scale,
+      relativeOffset: Offset(0, .05),
     );
   }
 }
@@ -69,52 +71,6 @@ class const HdrIcon({super.key}) extends StatelessWidget {
   }
 }
 
-class const PanoramaIcon({super.key}) extends StatelessWidget {
-  static const scale = .8;
-
-  @override
-  Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.panorama,
-      iconScale: scale,
-    );
-  }
-}
-
-class const FavouriteIcon({super.key}) extends StatelessWidget {
-  static const scale = .9;
-
-  @override
-  Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.favourite,
-      iconScale: scale,
-      relativeOffset: Offset(0, .05),
-    );
-  }
-}
-
-class TagIcon extends StatelessWidget {
-  final IconData icon;
-
-  const new _private({required this.icon});
-
-  factory tagged() => const TagIcon._private(icon: AIcons.tag);
-
-  factory untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
-
-  static const scale = .9;
-
-  @override
-  Widget build(BuildContext context) {
-    return OverlayIcon(
-      icon: icon,
-      iconScale: scale,
-      relativeOffset: const Offset(.05, .05),
-    );
-  }
-}
-
 class LocationIcon extends StatelessWidget {
   final IconData icon;
 
@@ -128,15 +84,6 @@ class LocationIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: icon,
-    );
-  }
-}
-
-class const RawIcon({super.key}) extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.raw,
     );
   }
 }
@@ -179,6 +126,18 @@ class const MultiPageIcon({
   }
 }
 
+class const PanoramaIcon({super.key}) extends StatelessWidget {
+  static const scale = .8;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.panorama,
+      iconScale: scale,
+    );
+  }
+}
+
 class const RatingIcon({
   super.key,
   required final AvesEntry entry,
@@ -193,6 +152,36 @@ class const RatingIcon({
         icon: AIcons.rating,
         text: '${entry.rating}',
       ),
+    );
+  }
+}
+
+class const RawIcon({super.key}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.raw,
+    );
+  }
+}
+
+class TagIcon extends StatelessWidget {
+  final IconData icon;
+
+  const new _private({required this.icon});
+
+  factory tagged() => const TagIcon._private(icon: AIcons.tag);
+
+  factory untagged() => const TagIcon._private(icon: AIcons.tagUntagged);
+
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: icon,
+      iconScale: scale,
+      relativeOffset: const Offset(.05, .05),
     );
   }
 }
@@ -220,9 +209,37 @@ class const TrashIcon({
   }
 }
 
+class const VideoIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final showDuration = context.select<GridThemeData, bool>((t) => t.showVideoDuration);
+    Widget child = OverlayIcon(
+      icon: entry.is360
+          ? AIcons.sphericalVideo
+          : entry.isSlowMotion
+          ? AIcons.slowMotion
+          : AIcons.videoPlay,
+      text: showDuration ? entry.durationText : null,
+      iconScale: entry.is360 && showDuration ? .9 : 1,
+    );
+    if (showDuration) {
+      child = DefaultTextStyle(
+        style: TextStyle(
+          fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
+        ),
+        child: child,
+      );
+    }
+    return child;
+  }
+}
+
 class const OverlayIcon({
   super.key,
-  required final IconData icon,
+  final IconData? icon,
   final double iconScale = 1,
   final String? text,
   // default margin for multiple icons in a `Column`
@@ -234,6 +251,44 @@ class const OverlayIcon({
   @override
   Widget build(BuildContext context) {
     final size = context.select<GridThemeData, double>((t) => t.iconSize);
+
+    Widget? child;
+    EdgeInsetsGeometry? padding;
+
+    if (icon != null) {
+      child = _buildIcon(size);
+
+      if (text != null) {
+        padding = EdgeInsetsDirectional.only(end: size / 4);
+        child = Row(
+          mainAxisSize: .min,
+          crossAxisAlignment: .center,
+          children: [
+            child,
+            const SizedBox(width: 2),
+            Flexible(
+              child: _buildText(context),
+            ),
+          ],
+        );
+      }
+    } else if (text != null) {
+      padding = EdgeInsets.symmetric(horizontal: size / 4);
+      child = _buildText(context);
+    }
+
+    return Container(
+      margin: margin,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
+        borderRadius: BorderRadius.all(Radius.circular(size)),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildIcon(double size) {
     Widget iconChild = Icon(
       icon,
       size: size,
@@ -259,34 +314,17 @@ class const OverlayIcon({
       height: size,
       child: iconChild,
     );
+    return iconChild;
+  }
 
-    return Container(
-      margin: margin,
-      padding: text != null ? EdgeInsetsDirectional.only(end: size / 4) : null,
-      decoration: BoxDecoration(
-        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(size)),
-      ),
-      child: text == null
-          ? iconChild
-          : Row(
-              mainAxisSize: .min,
-              crossAxisAlignment: .center,
-              children: [
-                iconChild,
-                const SizedBox(width: 2),
-                Flexible(
-                  child: Text(
-                    text!,
-                    // consistent with the color used for the icon next to it
-                    style: TextStyle(color: IconTheme.of(context).color),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
+  Text _buildText(BuildContext context) {
+    return Text(
+      text!,
+      // consistent with the color used for the icon next to it
+      style: TextStyle(color: IconTheme.of(context).color),
+      softWrap: false,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
     );
   }
 }

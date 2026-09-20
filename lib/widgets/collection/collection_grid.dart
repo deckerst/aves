@@ -167,6 +167,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                 final source = collection.source;
                 return GridTheme(
                   extent: thumbnailExtent,
+                  isCalendar: tileLayout == .calendar,
                   child: EntryListDetailsTheme(
                     extent: thumbnailExtent,
                     child: ValueListenableBuilder<SourceState>(
