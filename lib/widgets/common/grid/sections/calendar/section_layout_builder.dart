@@ -1,11 +1,9 @@
 import 'package:aves/locale/calendar/calendar_utils.dart';
-import 'package:aves/locale/number.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/theme/themes.dart';
-import 'package:aves/widgets/common/basic/text/outlined.dart';
-import 'package:aves/widgets/common/extensions/theme.dart';
+import 'package:aves/widgets/common/grid/sections/calendar/day_of_week_tile.dart';
+import 'package:aves/widgets/common/grid/sections/calendar/day_tile.dart';
 import 'package:aves/widgets/common/grid/sections/layout/fixed_extent_grid_row.dart';
 import 'package:aves/widgets/common/grid/sections/layout/sparse_variable_extent_section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
@@ -13,10 +11,8 @@ import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
-import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
 class CalendarSectionLayoutBuilder<T>({
@@ -43,7 +39,7 @@ class CalendarSectionLayoutBuilder<T>({
 
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {
-    _weekdayLineHeight = _DayOfWeekTile.computeLineHeight(context);
+    _weekdayLineHeight = DayOfWeekTile.computeLineHeight(context);
 
     final sectionLayouts = sections.keys
         .map(
@@ -105,13 +101,13 @@ class CalendarSectionLayoutBuilder<T>({
     final dayTileBuilders = <WidgetBuilder>[
       ...List.generate(columnCount, (column) {
         final day = (localizations.firstDayOfWeekIndex + column) % columnCount;
-        return (context) => _DayOfWeekTile(day: day);
+        return (context) => DayOfWeekTile(day: day);
       }),
       ...List.generate(dayOffset + daysInMonth, (column) {
         final day = column - dayOffset + 1;
         return (context) => day < 1
             ? const SizedBox()
-            : _DayTile(
+            : DayTile(
                 dayToBuild: calendarDelegate.getDay(year, month, day),
                 tileWidth: tileWidth,
                 dayItem: itemByDay[day],
@@ -202,96 +198,6 @@ class CalendarSectionLayoutBuilder<T>({
           ),
         );
       },
-    );
-  }
-}
-
-class const _DayOfWeekTile({
-  required final int day,
-}) extends StatelessWidget {
-  static const _padding = EdgeInsets.all(4);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: .center,
-      color: Themes.secondLayerColor(context),
-      foregroundDecoration: _DayTile.tileDecoration(context),
-      child: Text(_narrowWeekdays(context)[day]),
-    );
-  }
-
-  static double computeLineHeight(BuildContext context) {
-    final paragraph = RenderParagraph(
-      TextSpan(
-        children: _narrowWeekdays(context).map((v) => TextSpan(text: v)).toList(),
-      ),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout(const BoxConstraints(), parentUsesSize: true);
-    final textHeight = paragraph.getMaxIntrinsicHeight(double.infinity);
-    paragraph.dispose();
-    return textHeight + _padding.vertical;
-  }
-
-  static List<String> _narrowWeekdays(BuildContext context) => MaterialLocalizations.of(context).narrowWeekdays;
-}
-
-class const _DayTile<T>({
-  required final DateTime dayToBuild,
-  required final double tileWidth,
-  required final T? dayItem,
-  required final TileBuilder<T> tileBuilder,
-  required final ANumberFormat numberFormat,
-}) extends StatelessWidget {
-  static List<Shadow> shadows(BuildContext context) => [
-    Shadow(
-      color: Theme.of(context).isDark ? Colors.black : Colors.white,
-      offset: const Offset(0, 1),
-      blurRadius: 2,
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final _item = dayItem;
-    return Stack(
-      children: [
-        _item != null
-            ? tileBuilder(_item, Size.square(tileWidth))
-            : Container(
-                color: Themes.secondLayerColor(context),
-              ),
-        IgnorePointer(
-          child: Container(
-            alignment: .topStart,
-            padding: EdgeInsets.symmetric(horizontal: tileWidth / 25),
-            foregroundDecoration: tileDecoration(context),
-            child: OutlinedText(
-              textSpans: [
-                TextSpan(
-                  text: numberFormat.format(dayToBuild.day),
-                  style: TextStyle(
-                    shadows: shadows(context),
-                  ),
-                ),
-              ],
-              outlineColor: Themes.firstLayerColor(context),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  static Decoration tileDecoration(BuildContext context) {
-    return BoxDecoration(
-      border: Border.fromBorderSide(
-        BorderSide(
-          color: DecoratedThumbnail.borderColor(context),
-          width: DecoratedThumbnail.borderWidth(context),
-        ),
-      ),
     );
   }
 }

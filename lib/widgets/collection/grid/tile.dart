@@ -14,22 +14,14 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class InteractiveTile extends StatelessWidget {
-  final CollectionLens collection;
-  final AvesEntry entry;
-  final double thumbnailExtent;
-  final TileLayout tileLayout;
-  final ValueNotifier<bool>? isScrollingNotifier;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.entry,
-    required this.thumbnailExtent,
-    required this.tileLayout,
-    this.isScrollingNotifier,
-  });
-
+class const InteractiveTile({
+  super.key,
+  required final CollectionLens collection,
+  required final AvesEntry entry,
+  required final double thumbnailExtent,
+  required final TileLayout tileLayout,
+  final ValueNotifier<bool>? isScrollingNotifier,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -71,25 +63,16 @@ class InteractiveTile extends StatelessWidget {
   }
 }
 
-class Tile extends StatelessWidget {
-  final AvesEntry entry;
-  final double thumbnailExtent;
-  final TileLayout tileLayout;
-  final bool selectable, highlightable;
-  final ValueNotifier<bool>? isScrollingNotifier;
-  final Object? Function()? heroTagger;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.thumbnailExtent,
-    required this.tileLayout,
-    this.selectable = false,
-    this.highlightable = false,
-    this.isScrollingNotifier,
-    this.heroTagger,
-  });
-
+class const Tile({
+  super.key,
+  required final AvesEntry entry,
+  required final double thumbnailExtent,
+  required final TileLayout tileLayout,
+  final bool selectable = false,
+  final bool highlightable = false,
+  final ValueNotifier<bool>? isScrollingNotifier,
+  final Object? Function()? heroTagger,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (tileLayout) {
