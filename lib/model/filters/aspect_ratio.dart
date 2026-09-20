@@ -68,7 +68,13 @@ class AspectRatioFilter extends CollectionFilter {
   }
 
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(AIcons.aspectRatio, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
+    final isPortrait = op == QueryFilter.opLower;
+    return RotatedBox(
+      quarterTurns: isPortrait ? 1 : 0,
+      child: Icon(AIcons.aspectRatioLandscape, size: size),
+    );
+  }
 
   @override
   String get category => type;

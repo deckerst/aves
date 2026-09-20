@@ -11,7 +11,7 @@ class AIcons {
   static const accessibility = Symbols.accessibility_new;
   static const app = Symbols.apps;
   static const apply = Symbols.done;
-  static const aspectRatio = Symbols.aspect_ratio;
+  static const aspectRatioLandscape = Symbols.aspect_ratio;
   static const bin = Symbols.delete;
   static const broken = Symbols.broken_image;
   static const brightnessMin = Symbols.brightness_low;
