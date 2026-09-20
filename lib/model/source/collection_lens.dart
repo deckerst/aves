@@ -225,17 +225,26 @@ class CollectionLens with ChangeNotifier {
       final date = entry.bestDate;
       return date != null ? calOps.dateOnly(date) : null;
     }).whereNotNullKey();
-    byDate.forEach((date, stackedEntries) {
-      if (stackedEntries.length > 1) {
-        stackedEntries.sort(AvesEntrySort.compareByDate);
-        final mainEntry = stackedEntries.first;
-        final subEntries = stackedEntries.skip(1).toList();
 
+    // it is more efficient to rebuild the whole list of items,
+    // rather than removing and replacing items from it,
+    // because we process the whole collection
+    _filteredSortedEntries.clear();
+
+    byDate.forEach((date, stackedEntries) {
+      // follow collection sort order to use the oldest or newest item as the main one
+      stackedEntries.sort(AvesEntrySort.compareByDate);
+      if (sortReverse) {
+        stackedEntries = stackedEntries.reversed.toList();
+      }
+
+      final mainEntry = stackedEntries.first;
+      if (stackedEntries.length > 1) {
         final stackEntry = mainEntry.copyWith(stackedEntries: stackedEntries);
         _syntheticEntries.add(stackEntry);
-
-        subEntries.forEach(_filteredSortedEntries.remove);
-        _filteredSortedEntries.replace(mainEntry, stackEntry);
+        _filteredSortedEntries.add(stackEntry);
+      } else {
+        _filteredSortedEntries.add(mainEntry);
       }
     });
   }
@@ -412,11 +421,18 @@ class CollectionLens with ChangeNotifier {
 
     _updateLayoutFactors();
 
+    final sortFactorChanged = oldSortFactor != sortFactor;
+    final sortOrderChanged = oldSortReverse != sortReverse;
+    final sectionFactorChanged = oldSectionFactor != sectionFactor;
+
+    final isCalendarLayout = tileLayout == .calendar;
+    final isCalendarLayoutChanged = (oldTileLayout == .calendar) != (isCalendarLayout);
+    final dateStackChanged = isCalendarLayoutChanged || (isCalendarLayout && sortOrderChanged);
     final burstStackChanged = !const DeepCollectionEquality.unordered().equals(oldBurstPatterns, burstPatterns);
-    final dateStackChanged = (oldTileLayout == .calendar) != (tileLayout == .calendar);
+
     final needFilter = burstStackChanged || dateStackChanged;
-    final needSort = needFilter || oldSortFactor != sortFactor || oldSortReverse != sortReverse;
-    final needSection = needSort || oldSectionFactor != sectionFactor || oldCalendar != calendar;
+    final needSort = needFilter || sortFactorChanged || sortOrderChanged;
+    final needSection = needSort || sectionFactorChanged || oldCalendar != calendar;
 
     if (needFilter) {
       _applyFilters();

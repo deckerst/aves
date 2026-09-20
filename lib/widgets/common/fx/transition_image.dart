@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 
 // adapted from Flutter `_ImageState` in `/widgets/image.dart`
 // and `paintImage` in `/painting/decoration_image.dart`
@@ -10,21 +10,14 @@ import 'package:flutter/scheduler.dart';
 // - BoxFit.cover at t=0
 // - BoxFit.contain at t=1
 
-class TransitionImage extends StatefulWidget {
-  final ImageProvider image;
-  final ValueListenable<double> animation;
-  final BoxFit thumbnailFit, viewerFit;
-  final Color? background;
-
-  const new({
-    super.key,
-    required this.image,
-    required this.animation,
-    required this.thumbnailFit,
-    required this.viewerFit,
-    this.background,
-  });
-
+class const TransitionImage({
+  super.key,
+  required final ImageProvider image,
+  required final ValueListenable<double> animation,
+  required final BoxFit thumbnailFit,
+  required final BoxFit viewerFit,
+  final Color? background,
+}) extends StatefulWidget {
   @override
   State<TransitionImage> createState() => _TransitionImageState();
 }
@@ -238,25 +231,18 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
   }
 }
 
-class _TransitionImagePainter extends CustomPainter {
-  final ui.Image? image;
-  final double scale, t;
-  final Color? background;
-  final BoxFit thumbnailFit, viewerFit;
-
+class const _TransitionImagePainter({
+  required final ui.Image? image,
+  required final double scale,
+  required final double t,
+  required final BoxFit thumbnailFit,
+  required final BoxFit viewerFit,
+  required final Color? background,
+}) extends CustomPainter {
   static final _paint = Paint()
     ..isAntiAlias = false
     ..filterQuality = FilterQuality.medium;
   static const _alignment = Alignment.center;
-
-  const new({
-    required this.image,
-    required this.scale,
-    required this.t,
-    required this.thumbnailFit,
-    required this.viewerFit,
-    required this.background,
-  });
 
   @override
   void paint(Canvas canvas, Size size) {
