@@ -417,8 +417,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _rotateScreen(BuildContext context) async {
-    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    await windowService.requestOrientation(isPortrait ? Orientation.landscape : Orientation.portrait);
+    await windowService.requestOrientation(context.isPortrait ? .landscape : .portrait);
   }
 
   Future<void> _delete(BuildContext context, AvesEntry targetEntry) async {

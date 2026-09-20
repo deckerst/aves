@@ -3,7 +3,7 @@ import 'package:aves/ref/languages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-extension ExtraContext on BuildContext {
+extension ExtraBuildContext on BuildContext {
   String? get currentRouteName => ModalRoute.of(this)?.settings.name;
 
   AppLocalizations get l10n => AppLocalizations.of(this)!;
@@ -14,6 +14,8 @@ extension ExtraContext on BuildContext {
   bool get isArabic => localeName.startsWith(LanguageCodesIso639_1.arabic);
 
   bool get isRtl => Directionality.of(this) == TextDirection.rtl;
+
+  bool get isPortrait => MediaQuery.orientationOf(this) == .portrait;
 
   String applyDirectionality(String text) => '$_directionalityMark$text';
 

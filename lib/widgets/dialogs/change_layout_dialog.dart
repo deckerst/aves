@@ -191,8 +191,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
 
       final textScaler = MediaQuery.textScalerOf(context);
       final iconSize = textScaler.scale(IconTheme.of(context).size!);
-      final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-      child = isPortrait
+      child = context.isPortrait
           ? Column(
               mainAxisSize: .min,
               crossAxisAlignment: .start,

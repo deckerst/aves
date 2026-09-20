@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/date.dart';
@@ -167,8 +168,7 @@ class const ViewerDetailOverlayContent({
     final showShootingDetails = settings.showOverlayShootingDetails;
     final showDescription = settings.showOverlayDescription;
 
-    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final twoColumns = isLandscape && infoMaxWidth / 2 > _subRowMinWidth;
+    final twoColumns = !context.isPortrait && infoMaxWidth / 2 > _subRowMinWidth;
     final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
     final collapsedShooting = twoColumns && showShootingDetails;
     final collapsedLocation = twoColumns && !showShootingDetails;

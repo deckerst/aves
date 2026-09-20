@@ -49,7 +49,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   // grid section metrics before the app is laid out with the new orientation
   late SectionedListLayout<T> _lastSectionedListLayout;
   late Size _lastScrollableSize;
-  Orientation _lastOrientation = Orientation.portrait;
+  Orientation _lastOrientation = .portrait;
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     // w.r.t. the `View` update, and consequentially to this widget update:
     // `WidgetsBindingObserver` is notified mostly before, sometimes after, the widget update
     final size = View.of(context).physicalSize;
-    final orientation = size.width > size.height ? Orientation.landscape : Orientation.portrait;
+    final Orientation orientation = size.width > size.height ? .landscape : .portrait;
     if (_lastOrientation != orientation) {
       _lastOrientation = orientation;
       _onLayoutChanged();

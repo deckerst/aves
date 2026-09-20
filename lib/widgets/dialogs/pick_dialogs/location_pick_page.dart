@@ -15,9 +15,9 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
 import 'package:aves/widgets/common/providers/map_theme_provider.dart';
 import 'package:aves_map/aves_map.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LocationPickPage extends StatelessWidget {
   static const routeName = '/location_pick';
@@ -183,8 +183,7 @@ class _LocationInfo extends StatelessWidget {
     return ValueListenableBuilder<LatLng?>(
       valueListenable: locationNotifier,
       builder: (context, location, child) {
-        final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-        final content = isPortrait
+        final content = context.isPortrait
             ? [
                 Expanded(
                   child: Column(
