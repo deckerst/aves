@@ -255,7 +255,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         lastDate = PersianDateTime.fromGregorian(lastDate);
     }
 
-    final _date = await showDatePicker(
+    var _date = await showDatePicker(
       context: context,
       initialDate: initialDate,
       firstDate: firstDate,
@@ -266,6 +266,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
     if (_date == null) return;
 
+    switch (calendarDelegate) {
+      case PersianCalendarDelegate _:
+        _date = PersianDateTime(_date.year, _date.month, _date.day).toGregorian();
+    }
+
     final _time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_customDateTime),
@@ -275,7 +280,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
     setState(
       () => _customDateTime = DateTime(
-        _date.year,
+        _date!.year,
         _date.month,
         _date.day,
         _time.hour,
