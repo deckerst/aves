@@ -5,15 +5,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RenameStoredAlbumDialog extends StatefulWidget {
+class const RenameStoredAlbumDialog({
+  super.key,
+  required final String album,
+}) extends StatefulWidget {
   static const routeName = '/dialog/rename_stored_album';
-
-  final String album;
-
-  const new({
-    super.key,
-    required this.album,
-  });
 
   @override
   State<RenameStoredAlbumDialog> createState() => _RenameStoredAlbumDialogState();

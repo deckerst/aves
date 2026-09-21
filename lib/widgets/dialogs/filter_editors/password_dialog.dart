@@ -2,15 +2,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class PasswordDialog extends StatefulWidget {
+class const PasswordDialog({
+  super.key,
+  required final bool needConfirmation,
+}) extends StatefulWidget {
   static const routeName = '/dialog/password';
-
-  final bool needConfirmation;
-
-  const new({
-    super.key,
-    required this.needConfirmation,
-  });
 
   @override
   State<PasswordDialog> createState() => _PasswordDialogState();

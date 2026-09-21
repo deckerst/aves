@@ -17,15 +17,11 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EditVaultDialog extends StatefulWidget {
+class const EditVaultDialog({
+  super.key,
+  final VaultDetails? initialDetails,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_vault';
-
-  final VaultDetails? initialDetails;
-
-  const new({
-    super.key,
-    this.initialDetails,
-  });
 
   @override
   State<EditVaultDialog> createState() => _EditVaultDialogState();

@@ -3,15 +3,11 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class PinDialog extends StatefulWidget {
+class const PinDialog({
+  super.key,
+  required final bool needConfirmation,
+}) extends StatefulWidget {
   static const routeName = '/dialog/pin';
-
-  final bool needConfirmation;
-
-  const new({
-    super.key,
-    required this.needConfirmation,
-  });
 
   @override
   State<PinDialog> createState() => _PinDialogState();
