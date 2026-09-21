@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -286,15 +287,12 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   Widget _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
-      final l10n = context.l10n;
       return Selector<Selection<FilterGridItem<T>>?, int>(
         selector: (context, selection) => selection?.selectedItemCount ?? 0,
-        builder: (context, count, child) => Text(
-          count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
-          softWrap: false,
-          overflow: .fade,
-          maxLines: 1,
-        ),
+        builder: (context, count, _) {
+          final l10n = context.l10n;
+          return FadingLine(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count));
+        },
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;

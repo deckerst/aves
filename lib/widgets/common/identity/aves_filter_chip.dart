@@ -15,12 +15,13 @@ import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef AFilterCallback<T extends CollectionFilter> = void Function(T filter);
@@ -276,15 +277,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           if (leading != null && showText) SizedBox(width: padding),
           if (showText)
             Flexible(
-              child: Text(
+              child: FadingLine(
                 filter.getLabel(context),
                 style: TextStyle(
                   fontSize: AvesFilterChip.fontSize,
                   decoration: filter.reversed ? TextDecoration.lineThrough : null,
                   decorationThickness: 2,
                 ),
-                softWrap: false,
-                overflow: .fade,
               ),
             ),
           if (trailing != null) ...[

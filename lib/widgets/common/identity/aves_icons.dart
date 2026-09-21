@@ -5,6 +5,7 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
@@ -317,14 +318,11 @@ class const OverlayIcon({
     return iconChild;
   }
 
-  Text _buildText(BuildContext context) {
-    return Text(
+  Widget _buildText(BuildContext context) {
+    return FadingLine(
       text!,
       // consistent with the color used for the icon next to it
       style: TextStyle(color: IconTheme.of(context).color),
-      softWrap: false,
-      overflow: .fade,
-      maxLines: 1,
     );
   }
 }

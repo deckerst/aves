@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -188,12 +189,9 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                           child: Column(
                             crossAxisAlignment: .start,
                             children: [
-                              Text(
+                              FadingLine(
                                 sourceName,
                                 style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                softWrap: false,
-                                overflow: .fade,
-                                maxLines: 1,
                               ),
                               const SizedBox(height: 4),
                               ValueListenableBuilder<NamingPattern>(
@@ -203,12 +201,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                                     future: pattern.apply(entry, index),
                                     builder: (context, snapshot) {
                                       final info = snapshot.data;
-                                      return Text(
-                                        info ?? '…',
-                                        softWrap: false,
-                                        overflow: .fade,
-                                        maxLines: 1,
-                                      );
+                                      return FadingLine(info ?? '…');
                                     },
                                   );
                                 },

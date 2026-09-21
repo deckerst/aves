@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
@@ -59,13 +60,7 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
               alignment: .centerStart,
               child: Text(title),
             ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle,
-                    softWrap: false,
-                    overflow: .fade,
-                  )
-                : null,
+            subtitle: subtitle != null ? FadingLine(subtitle) : null,
             dense: widget.dense,
           );
         }),

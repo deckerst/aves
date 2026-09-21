@@ -10,6 +10,7 @@ import 'package:aves/theme/text.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/map/geo_map.dart';
@@ -19,17 +20,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
-class LocationPickPage extends StatelessWidget {
+class const LocationPickPage({
+  super.key,
+  required final CollectionLens? collection,
+  required final LatLng? initialLocation,
+}) extends StatelessWidget {
   static const routeName = '/location_pick';
-
-  final CollectionLens? collection;
-  final LatLng? initialLocation;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.initialLocation,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +44,10 @@ class LocationPickPage extends StatelessWidget {
   }
 }
 
-class _Content extends StatefulWidget {
-  final CollectionLens? collection;
-  final LatLng? initialLocation;
-
-  const new({
-    required this.collection,
-    required this.initialLocation,
-  });
-
+class const _Content({
+  required final CollectionLens? collection,
+  required final LatLng? initialLocation,
+}) extends StatefulWidget {
   @override
   State<_Content> createState() => _ContentState();
 }
@@ -168,15 +159,9 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
   }
 }
 
-class _LocationInfo extends StatelessWidget {
-  final ValueNotifier<LatLng?> locationNotifier;
-
+class const _LocationInfo({required final ValueNotifier<LatLng?> locationNotifier}) extends StatelessWidget {
   static const double iconPadding = 8.0;
   static const double _interRowPadding = 2.0;
-
-  const new({
-    required this.locationNotifier,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -225,13 +210,7 @@ class _LocationInfo extends StatelessWidget {
   }
 }
 
-class _AddressRow extends StatefulWidget {
-  final LatLng? location;
-
-  const new({
-    required this.location,
-  });
-
+class const _AddressRow({required final LatLng? location}) extends StatefulWidget {
   @override
   State<_AddressRow> createState() => _AddressRowState();
 }
@@ -277,14 +256,7 @@ class _AddressRowState extends State<_AddressRow> {
             height: textScaler.scale(Theme.of(context).textTheme.bodyMedium!.fontSize!) * 2,
             child: ValueListenableBuilder<String?>(
               valueListenable: _addressLineNotifier,
-              builder: (context, addressLine, child) {
-                return Text(
-                  addressLine ?? AText.valueNotAvailable,
-                  softWrap: false,
-                  overflow: .fade,
-                  maxLines: 1,
-                );
-              },
+              builder: (_, addressLine, _) => FadingLine(addressLine ?? AText.valueNotAvailable),
             ),
           ),
         ),
@@ -313,13 +285,7 @@ class _AddressRowState extends State<_AddressRow> {
   }
 }
 
-class _CoordinateRow extends StatelessWidget {
-  final LatLng? location;
-
-  const new({
-    required this.location,
-  });
-
+class const _CoordinateRow({required final LatLng? location}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -328,12 +294,7 @@ class _CoordinateRow extends StatelessWidget {
         Icon(AIcons.geoBounds, size: _LocationInfo.getIconSize(context)),
         const SizedBox(width: _LocationInfo.iconPadding),
         Expanded(
-          child: Text(
-            location != null ? settings.coordinateFormat.format(context, location!) : AText.valueNotAvailable,
-            softWrap: false,
-            overflow: .fade,
-            maxLines: 1,
-          ),
+          child: FadingLine(location != null ? settings.coordinateFormat.format(context, location!) : AText.valueNotAvailable),
         ),
       ],
     );

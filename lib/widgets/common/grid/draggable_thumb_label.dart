@@ -1,17 +1,14 @@
 import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class DraggableCrumbLabel extends StatelessWidget {
-  final String label;
-
-  const new({
-    super.key,
-    required this.label,
-  });
-
+class const DraggableCrumbLabel({
+  super.key,
+  required final String label,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -24,16 +21,11 @@ class DraggableCrumbLabel extends StatelessWidget {
   }
 }
 
-class DraggableThumbLabel<T> extends StatelessWidget {
-  final double offsetY;
-  final List<String> Function(BuildContext context, T item) lineBuilder;
-
-  const new({
-    super.key,
-    required this.offsetY,
-    required this.lineBuilder,
-  });
-
+class const DraggableThumbLabel<T>({
+  super.key,
+  required final double offsetY,
+  required final List<String> Function(BuildContext context, T item) lineBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sll = context.read<SectionedListLayout<T>>();
@@ -75,13 +67,10 @@ const double _crumbLabelMaxWidth = 96;
 const double _thumbLabelMaxWidth = 144;
 const EdgeInsets _padding = .symmetric(vertical: 4, horizontal: 8);
 
-Widget _buildText(String text, {required bool isCrumb}) => Text(
+Widget _buildText(String text, {required bool isCrumb}) => FadingLine(
   text,
   style: TextStyle(
     color: Colors.black,
     fontSize: isCrumb ? 10 : 14,
   ),
-  softWrap: false,
-  overflow: .fade,
-  maxLines: 1,
 );

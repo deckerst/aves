@@ -4,6 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:collection/collection.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:equatable/equatable.dart';
@@ -144,12 +145,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                           Icon(AIcons.circle, fill: 1, color: colorize(context, d)),
                           const SizedBox(width: 8),
                           Flexible(
-                            child: Text(
-                              formatKey(d),
-                              overflow: .fade,
-                              softWrap: false,
-                              maxLines: 1,
-                            ),
+                            child: FadingLine(formatKey(d)),
                           ),
                           const SizedBox(width: 8),
                           Text(

@@ -1,4 +1,5 @@
 import 'package:aves/widgets/common/basic/list_tiles/reselectable_radio.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -37,13 +38,7 @@ class const SelectionRadioListTile<T>({
           ),
         ],
       ),
-      subtitle: subtitle != null
-          ? Text(
-              subtitle,
-              softWrap: false,
-              overflow: .fade,
-            )
-          : null,
+      subtitle: subtitle != null ? FadingLine(subtitle) : null,
       dense: dense,
       secondary: secondary,
     );

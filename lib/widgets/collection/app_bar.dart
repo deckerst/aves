@@ -34,6 +34,7 @@ import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
@@ -333,12 +334,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       return Selector<Selection<AvesEntry>?, int>(
         selector: (context, selection) => selection?.selectedItemCount ?? 0,
         builder: (context, count, child) {
-          Widget title = Text(
-            count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
-            softWrap: false,
-            overflow: .fade,
-            maxLines: 1,
-          );
+          Widget title = FadingLine(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count));
           if (appMode == .main) {
             title = SourceStateAwareAppBarTitle(
               title: title,
@@ -349,12 +345,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         },
       );
     } else {
-      Widget title = Text(
-        appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle),
-        softWrap: false,
-        overflow: .fade,
-        maxLines: 1,
-      );
+      String titleText;
+      if (appMode.isPickingMedia) {
+        titleText = l10n.collectionPickPageTitle;
+      } else if (isTrash) {
+        titleText = l10n.binPageTitle;
+      } else {
+        titleText = l10n.collectionPageTitle;
+      }
+      Widget title = FadingLine(titleText);
       if (appMode == .main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
