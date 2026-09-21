@@ -29,7 +29,6 @@ import 'package:aves/widgets/viewer/visual/video/swipe_action.dart';
 import 'package:aves/widgets/viewer/visual/video/video_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -224,7 +223,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
 
             if (useTapGesture) {
               void _applyAction(EntryAction action, {IconData? Function()? icon}) {
-                _actionFeedbackChildNotifier.value = DecoratedIcon(
+                _actionFeedbackChildNotifier.value = Icon(
                   icon?.call() ?? action.getIconData(),
                   size: 48,
                   color: Colors.white,

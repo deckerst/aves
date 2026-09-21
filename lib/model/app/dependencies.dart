@@ -188,11 +188,6 @@ class Dependencies {
       sourceUrl: 'https://github.com/lekanbar/custom_rounded_rectangle_border',
     ),
     Dependency(
-      name: 'Decorated Icon',
-      license: mit,
-      sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
-    ),
-    Dependency(
       name: 'Expansion Tile Card (Aves fork)',
       license: bsd3,
       sourceUrl: 'https://github.com/deckerst/expansion_tile_card',

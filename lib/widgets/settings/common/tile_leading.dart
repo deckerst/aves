@@ -3,19 +3,13 @@ import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SettingsTileLeading extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-
-  const new({
-    super.key,
-    required this.icon,
-    required this.color,
-  });
-
+class const SettingsTileLeading({
+  super.key,
+  required final IconData icon,
+  required final Color color,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -31,7 +25,7 @@ class SettingsTileLeading extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       duration: ADurations.themeColorModeAnimation,
-      child: DecoratedIcon(
+      child: Icon(
         icon,
         size: 18,
         color: DefaultTextStyle.of(context).style.color,

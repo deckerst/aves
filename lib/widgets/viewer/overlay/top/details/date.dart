@@ -6,7 +6,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
 class OverlayDateRow extends StatelessWidget {
@@ -34,7 +33,11 @@ class OverlayDateRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.date, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
+        Icon(
+          AIcons.date,
+          size: ViewerDetailOverlayContent.iconSize,
+          shadows: ViewerDetailOverlayContent.shadows(context),
+        ),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
         Expanded(flex: 3, child: Text(dateText)),
         Expanded(flex: 2, child: Text(resolutionText)),

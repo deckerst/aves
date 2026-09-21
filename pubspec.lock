@@ -235,14 +235,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.15"
-  decorated_icon:
-    dependency: "direct main"
-    description:
-      name: decorated_icon
-      sha256: "4e2af1906cd211905ee729960daef162cd9f0bacd1d24de99e84e37e114a3648"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -545,10 +537,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "568d62f0e68666fb5d95519743b3c24a34c7f19d834b0658c46e26d778461f66"
+      sha256: "2b5c6b077aad30bba9782178baff6076a2044141f1d5f2f15b43bca3fbe74874"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.1"
+    version: "9.3.0"
   glob:
     dependency: transitive
     description:
@@ -1391,10 +1383,10 @@ packages:
     dependency: transitive
     description:
       name: sembast
-      sha256: "7a836961af5e1aefd2498bc08501737cbea75b90019d5fd6f705cb28ec9ef526"
+      sha256: a976f04d492b82b06c74b3c654795ca5bbf9b670468081a339f6035f121359a3
       url: "https://pub.dev"
     source: hosted
-    version: "3.8.10"
+    version: "3.8.11"
   shamsi_date:
     dependency: "direct main"
     description:

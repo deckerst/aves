@@ -5,7 +5,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
 class OverlayLocationRow extends AnimatedWidget {
@@ -30,7 +29,11 @@ class OverlayLocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        DecoratedIcon(AIcons.location, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
+        Icon(
+          AIcons.location,
+          size: ViewerDetailOverlayContent.iconSize,
+          shadows: ViewerDetailOverlayContent.shadows(context),
+        ),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
         Expanded(child: Text(location ?? AText.valueNotAvailable)),
       ],

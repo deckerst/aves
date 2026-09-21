@@ -6,32 +6,19 @@ import 'package:flutter/widgets.dart';
 enum QuickActionPlacement { header, action, footer }
 
 // `T extends Object` because of `DragTarget` constraint
-class QuickActionButton<T extends Object> extends StatelessWidget {
-  final QuickActionPlacement placement;
-  final T? action;
-  final ValueNotifier<bool> panelHighlight;
-  final ValueNotifier<T?> draggedQuickAction;
-  final ValueNotifier<T?> draggedAvailableAction;
-  final bool Function(T action, QuickActionPlacement placement, T? overAction) insertAction;
-  final bool Function(T action) removeAction;
-  final VoidCallback onTargetLeave;
-  final Widget Function(T action)? draggableFeedbackBuilder;
-  final Widget? child;
-
-  const new({
-    super.key,
-    required this.placement,
-    this.action,
-    required this.panelHighlight,
-    required this.draggedQuickAction,
-    required this.draggedAvailableAction,
-    required this.insertAction,
-    required this.removeAction,
-    required this.onTargetLeave,
-    this.draggableFeedbackBuilder,
-    this.child,
-  });
-
+class const QuickActionButton<T extends Object>({
+  super.key,
+  required final QuickActionPlacement placement,
+  final T? action,
+  required final ValueNotifier<bool> panelHighlight,
+  required final ValueNotifier<T?> draggedQuickAction,
+  required final ValueNotifier<T?> draggedAvailableAction,
+  required final bool Function(T action, QuickActionPlacement placement, T? overAction) insertAction,
+  required final bool Function(T action) removeAction,
+  required final VoidCallback onTargetLeave,
+  final Widget Function(T action)? draggableFeedbackBuilder,
+  final Widget? child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var child = this.child;

@@ -7,6 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -65,12 +66,9 @@ class EntryListDetails extends StatelessWidget {
   }
 
   WidgetSpan _buildIconSpan(IconData icon, {EdgeInsetsDirectional padding = EdgeInsetsDirectional.zero}) {
-    return WidgetSpan(
-      alignment: .middle,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(end: 8, bottom: 1) + padding,
-        child: Icon(icon),
-      ),
+    return IconSpan(
+      icon: icon,
+      padding: const EdgeInsetsDirectional.only(end: 8, bottom: 1) + padding,
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/rotator.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -140,15 +141,9 @@ class _LayoutBarState extends State<LayoutBar> {
               child: ChangeHighlightText(
                 TextSpan(
                   children: [
-                    WidgetSpan(
-                      child: Icon(categoryIcon),
-                      alignment: .middle,
-                    ),
+                    IconSpan(icon: categoryIcon),
                     const TextSpan(text: AText.separator),
-                    WidgetSpan(
-                      child: Icon(getIcon(current)),
-                      alignment: .middle,
-                    ),
+                    IconSpan(icon: getIcon(current)),
                   ],
                 ),
                 duration: context.read<DurationsData>().formTextStyleTransition,

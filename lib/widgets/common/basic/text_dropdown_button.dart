@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const TextDropdownButton<T>({
@@ -64,12 +65,9 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
         ? Text.rich(
             TextSpan(
               children: [
-                WidgetSpan(
-                  alignment: .middle,
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.only(end: widget.iconTextPadding, bottom: 2),
-                    child: Icon(icon),
-                  ),
+                IconSpan(
+                  icon: icon,
+                  padding: EdgeInsetsDirectional.only(end: widget.iconTextPadding, bottom: 2),
                 ),
                 TextSpan(text: text),
               ],

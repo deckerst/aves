@@ -1,10 +1,10 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:collection/collection.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
 class OverlayRatingTagsRow extends AnimatedWidget {
@@ -41,16 +41,11 @@ class OverlayRatingTagsRow extends AnimatedWidget {
           TextSpan(text: ratingString),
           if (hasTags) ...[
             if (ratingString.isNotEmpty) const TextSpan(text: AText.separator),
-            WidgetSpan(
-              alignment: .middle,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
-                child: DecoratedIcon(
-                  AIcons.tag,
-                  size: iconSize / textScaleFactor,
-                  shadows: ViewerDetailOverlayContent.shadows(context),
-                ),
-              ),
+            IconSpan(
+              icon: AIcons.tag,
+              size: iconSize / textScaleFactor,
+              shadows: ViewerDetailOverlayContent.shadows(context),
+              padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
             ),
             TextSpan(text: tags.join(AText.separator)),
           ],

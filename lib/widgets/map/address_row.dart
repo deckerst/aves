@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'info_row.dart';
@@ -67,12 +68,10 @@ class _MapAddressRowState extends State<MapAddressRow> {
           return Text.rich(
             TextSpan(
               children: [
-                WidgetSpan(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
-                    child: Icon(AIcons.location, size: MapInfoRow.getIconSize(context)),
-                  ),
-                  alignment: .middle,
+                IconSpan(
+                  icon: AIcons.location,
+                  size: MapInfoRow.getIconSize(context),
+                  padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
                 ),
                 TextSpan(text: location),
               ],

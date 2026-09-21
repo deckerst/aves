@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:volume_controller/volume_controller.dart';
 
@@ -103,7 +102,7 @@ class SwipeActionFeedback extends StatelessWidget {
   Widget _buildIcon(IconData icon) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: DecoratedIcon(
+      child: Icon(
         icon,
         size: width,
         color: iconColor,

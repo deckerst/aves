@@ -3,6 +3,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/map/info_row.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -23,12 +24,10 @@ class MapDateRow extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          WidgetSpan(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
-              child: Icon(AIcons.date, size: MapInfoRow.getIconSize(context)),
-            ),
-            alignment: .middle,
+          IconSpan(
+            icon: AIcons.date,
+            size: MapInfoRow.getIconSize(context),
+            padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
           ),
           TextSpan(text: dateText),
         ],

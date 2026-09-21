@@ -15,7 +15,6 @@ import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -197,7 +196,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
       final label = FontSizeIconTheme(
         child: Row(
           children: [
-            DecoratedIcon(icon, shadows: shadows),
+            Icon(icon, shadows: shadows),
             const SizedBox(width: 16),
             Expanded(
               child: HighlightTitle(
