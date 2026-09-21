@@ -11,6 +11,7 @@ class const TextDropdownButton<T>({
   final double? itemHeight = kMinInteractiveDimension,
   final Color? dropdownColor,
   final EdgeInsetsGeometry? padding,
+  final double iconTextPadding = 8,
   required final ValueChanged<T?>? onChanged,
 }) extends StatefulWidget {
   static TextStyle textStyle(BuildContext context) {
@@ -30,7 +31,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
           .map(
             (v) => DropdownMenuItem<T>(
               value: v,
-              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
+              child: _buildItem(v, selected: false),
             ),
           )
           .toList(),
@@ -38,7 +39,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
           .map(
             (v) => DropdownMenuItem<T>(
               value: v,
-              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
+              child: _buildItem(v, selected: true),
             ),
           )
           .toList(),
@@ -53,7 +54,9 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
     );
   }
 
-  static Widget _buildItem<T>(String text, IconData? icon, {required bool selected}) {
+  Widget _buildItem(T value, {required bool selected}) {
+    final text = widget.valueText(value);
+    final icon = widget.valueIcon?.call(value);
     final softWrap = selected ? false : null;
     final overflow = selected ? TextOverflow.fade : null;
 
@@ -64,7 +67,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 8, bottom: 2),
+                    padding: EdgeInsetsDirectional.only(end: widget.iconTextPadding, bottom: 2),
                     child: Icon(icon),
                   ),
                 ),

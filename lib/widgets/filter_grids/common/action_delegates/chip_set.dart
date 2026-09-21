@@ -62,8 +62,8 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   List<SortFactor> get sortOptions => [
     .date,
     .chipName,
-    .count,
     .size,
+    .count,
   ];
 
   List<ChipSectionFactor> get sectionOptions => [];

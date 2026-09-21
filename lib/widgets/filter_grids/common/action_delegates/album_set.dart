@@ -74,8 +74,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
 
   @override
   List<SortFactor> get sortOptions => [
-    ...super.sortOptions,
+    .date,
+    .chipName,
     .path,
+    .size,
+    .count,
   ];
 
   @override

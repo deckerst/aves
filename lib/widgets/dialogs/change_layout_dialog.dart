@@ -9,10 +9,12 @@ import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
+import 'package:aves/widgets/common/fx/rotator.dart';
 import 'package:aves/widgets/common/fx/transitions.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +43,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
   late G _selectedSection;
   late bool _reverseSort;
   late int _columnMin, _columnMax;
+  final AChangeNotifier _sortReversedNotifier = AChangeNotifier();
   late final ValueNotifier<int> _columnCountNotifier = ValueNotifier(tileExtentController.columnCount);
 
   List<ChangeLayoutDialogOption<TileLayout>> get layoutOptions => widget.layoutOptions;
@@ -80,7 +83,9 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
 
     return AvesDialog(
       scrollableContent: [
+        const SizedBox(height: 4),
         _buildSelector(
+          showDivider: false,
           icon: AIcons.layout,
           title: l10n.viewDialogLayoutSectionTitle,
           options: layoutOptions,
@@ -102,22 +107,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
             _selectedSort = v as SortFactor;
             _reverseSort = false;
           },
-          bottom: Row(
-            children: [
-              Expanded(
-                child: ChangeHighlightText(
-                  TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
-                  textStyle: TextDropdownButton.textStyle(context),
-                  duration: context.read<DurationsData>().formTextStyleTransition,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(AIcons.sortOrder),
-                onPressed: () => setState(() => _reverseSort = !_reverseSort),
-                tooltip: l10n.viewDialogReverseSortOrder,
-              ),
-            ],
-          ),
+          bottom: _buildSortOrderToggle(context),
         ),
         _buildSelector(
           show: canSection,
@@ -150,8 +140,47 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
     );
   }
 
+  Widget _buildSortOrderToggle(BuildContext context) {
+    Widget icon = IconButton(
+      icon: const Icon(AIcons.sortOrder),
+      onPressed: _toggleSortOrder,
+      tooltip: context.l10n.viewDialogReverseSortOrder,
+    );
+
+    final animate = context.select<Settings, bool>((v) => v.animate);
+    if (animate) {
+      icon = Rotator(
+        listenable: _sortReversedNotifier,
+        child: icon,
+      );
+    }
+
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: 4),
+          child: icon,
+        ),
+        GestureDetector(
+          onTap: _toggleSortOrder,
+          child: ChangeHighlightText(
+            TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
+            textStyle: TextDropdownButton.textStyle(context),
+            duration: context.read<DurationsData>().formTextStyleTransition,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _toggleSortOrder() {
+    _sortReversedNotifier.notify();
+    setState(() => _reverseSort = !_reverseSort);
+  }
+
   Widget _buildSelector<T>({
     bool show = true,
+    bool showDivider = true,
     bool enabled = true,
     required IconData icon,
     required String title,
@@ -187,6 +216,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
         onChanged: enabled ? (v) => setState(() => onChanged(v)) : null,
         isExpanded: true,
         dropdownColor: Themes.thirdLayerColor(context),
+        iconTextPadding: 12,
       );
 
       final textScaler = MediaQuery.textScalerOf(context);
@@ -198,12 +228,12 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
               children: [
                 label,
                 Padding(
-                  padding: EdgeInsetsDirectional.only(start: iconSize + 16, end: 12),
+                  padding: EdgeInsetsDirectional.only(start: iconSize + 16),
                   child: selector,
                 ),
                 if (bottom != null)
                   Padding(
-                    padding: EdgeInsetsDirectional.only(start: iconSize + 16),
+                    padding: EdgeInsetsDirectional.only(start: iconSize),
                     child: bottom,
                   ),
               ],
@@ -243,7 +273,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
 
       child = Column(
         children: [
-          const ThinDivider(),
+          if (showDivider) const ThinDivider(),
           child,
         ],
       );

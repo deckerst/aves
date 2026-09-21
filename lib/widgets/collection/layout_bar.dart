@@ -56,7 +56,7 @@ class _LayoutBarState extends State<LayoutBar> {
         scrollDirection: Axis.horizontal,
         padding: LayoutBar._rowPadding,
         children: [
-          _buildToggler(
+          _buildSortOrderToggle(
             icon: AIcons.sortOrder,
             name: l10n.viewDialogReverseSortOrder,
             animationTrigger: _sortReversedNotifier,
@@ -160,7 +160,7 @@ class _LayoutBarState extends State<LayoutBar> {
     );
   }
 
-  Widget _buildToggler({
+  Widget _buildSortOrderToggle({
     required IconData icon,
     required String name,
     required Listenable animationTrigger,

@@ -63,11 +63,11 @@ class const CollectionAppBar({
 
   static const sortOptions = <SortFactor>[
     .date,
-    .size,
     .albumItemName,
+    .path,
+    .size,
     .rating,
     .duration,
-    .path,
   ];
 
   static const sectionOptions = <EntrySectionFactor>[
