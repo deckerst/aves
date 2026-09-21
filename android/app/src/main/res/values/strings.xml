@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aves</string>
+    <string name="app_name">Albumic</string>
     <string name="app_widget_label">Photo Frame</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="map_shortcut_short_label">Map</string>
