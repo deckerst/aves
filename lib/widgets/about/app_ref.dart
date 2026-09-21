@@ -56,7 +56,7 @@ class AppReference extends StatelessWidget {
 
   TextStyle _getAppTitleStyle(String localeName) => TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.normal,
+    fontWeight: .normal,
     letterSpacing: canHaveLetterSpacing(localeName) ? 1 : 0,
     fontFeatures: const [FontFeature.enable('smcp')],
   );

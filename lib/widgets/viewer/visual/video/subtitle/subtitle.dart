@@ -128,8 +128,8 @@ class VideoSubtitles extends StatelessWidget {
                             );
                           }).toList();
                           final drawingPaths = extraStyle.drawingPaths;
-                          final textHAlign = extraStyle.hAlign ?? (position != null ? TextAlign.center : baseTextAlign);
-                          final textVAlign = extraStyle.vAlign ?? (position != null ? TextAlignVertical.bottom : baseTextAlignY);
+                          final textHAlign = extraStyle.hAlign ?? (position != null ? .center : baseTextAlign);
+                          final textVAlign = extraStyle.vAlign ?? (position != null ? .bottom : baseTextAlignY);
 
                           Widget child;
                           if (drawingPaths != null) {

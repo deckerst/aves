@@ -228,7 +228,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
             locked ? AText.valueNotAvailable : itemCountFormatter.format(source.count(filter)),
             style: textStyle,
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           ),
         ),

@@ -192,7 +192,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                                 sourceName,
                                 style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 softWrap: false,
-                                overflow: TextOverflow.fade,
+                                overflow: .fade,
                                 maxLines: 1,
                               ),
                               const SizedBox(height: 4),
@@ -206,7 +206,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                                       return Text(
                                         info ?? '…',
                                         softWrap: false,
-                                        overflow: TextOverflow.fade,
+                                        overflow: .fade,
                                         maxLines: 1,
                                       );
                                     },

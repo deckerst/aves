@@ -62,7 +62,7 @@ class EmptyContent extends StatelessWidget {
                     color: color,
                     fontSize: fontSize,
                   ),
-                  textAlign: TextAlign.center,
+                  textAlign: .center,
                 ),
               ?bottom,
             ],

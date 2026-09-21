@@ -170,8 +170,8 @@ class CaptionedButtonText extends StatelessWidget {
     return Text(
       text,
       style: style,
-      textAlign: TextAlign.center,
-      overflow: TextOverflow.ellipsis,
+      textAlign: .center,
+      overflow: .ellipsis,
       maxLines: maxLines,
     );
   }

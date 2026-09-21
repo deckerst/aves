@@ -84,7 +84,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 valueNotifier: _shiftSign,
                 values: const [_positiveSign, _negativeSign],
                 textStyle: textStyle,
-                textAlign: TextAlign.center,
+                textAlign: .center,
                 format: (v) => v,
               ),
               Align(

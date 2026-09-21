@@ -77,7 +77,7 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
                           title: Text(
                             title,
                             softWrap: false,
-                            overflow: TextOverflow.fade,
+                            overflow: .fade,
                             maxLines: 1,
                           ),
                         );

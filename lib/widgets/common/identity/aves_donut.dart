@@ -119,7 +119,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                       widget.title,
                       Text(
                         formatValue(sum),
-                        textAlign: TextAlign.center,
+                        textAlign: .center,
                       ),
                     ],
                   ),
@@ -146,7 +146,7 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
                           Flexible(
                             child: Text(
                               formatKey(d),
-                              overflow: TextOverflow.fade,
+                              overflow: .fade,
                               softWrap: false,
                               maxLines: 1,
                             ),

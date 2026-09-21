@@ -149,7 +149,7 @@ class const ViewerDetailOverlayContent({
         shadows: shadows(context),
       ),
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
       child: Padding(
         padding: padding,

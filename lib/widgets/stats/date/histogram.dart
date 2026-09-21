@@ -344,7 +344,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  textAlign: TextAlign.end,
+                  textAlign: .end,
                 ),
               ],
             ),

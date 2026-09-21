@@ -54,7 +54,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
               children: [
                 if (hasTitleLeading)
                   WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
+                    alignment: .middle,
                     child: Padding(
                       padding: const EdgeInsetsDirectional.only(end: FilterListDetailsTheme.titleIconPadding),
                       child: IconTheme(
@@ -70,7 +70,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
               ],
             ),
             softWrap: false,
-            overflow: detailsTheme.titleMaxLines == 1 ? TextOverflow.fade : TextOverflow.ellipsis,
+            overflow: detailsTheme.titleMaxLines == 1 ? .fade : .ellipsis,
             maxLines: detailsTheme.titleMaxLines,
             // `textScaler` is applied to font size and icon size at the theme level,
             // otherwise the leading icon will be low-res scaled up/down
@@ -109,7 +109,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
               dateText,
               style: detailsTheme.captionStyle,
               softWrap: false,
-              overflow: TextOverflow.fade,
+              overflow: .fade,
             ),
           ),
         ],
@@ -161,7 +161,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
             '${context.l10n.itemCount(source.count(filter))} • ${formatFileSize(settings.avesLocale, source.size(filter))}',
             style: detailsTheme.captionStyle,
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
           ),
         ],
       ),

@@ -70,7 +70,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                           TextSpan(
                             children: [
                               WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
+                                alignment: .middle,
                                 child: Image(
                                   image: AppIconImage(
                                     packageName: package.packageName,
@@ -85,7 +85,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                                 style: InfoRowGroup.keyStyle(context),
                               ),
                               WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
+                                alignment: .middle,
                                 child: FutureBuilder<Color>(
                                   future: colorLoader,
                                   builder: (context, snapshot) {
@@ -104,7 +104,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                                 ),
                               ),
                               WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
+                                alignment: .middle,
                                 child: IconTheme(
                                   data: package.categoryLauncher ? enabledTheme : disabledTheme,
                                   child: const Icon(
@@ -114,7 +114,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
                                 ),
                               ),
                               WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
+                                alignment: .middle,
                                 child: IconTheme(
                                   data: package.isSystem ? enabledTheme : disabledTheme,
                                   child: const Icon(

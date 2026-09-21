@@ -336,7 +336,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
           Widget title = Text(
             count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           );
           if (appMode == .main) {
@@ -352,7 +352,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       Widget title = Text(
         appMode.isPickingMedia ? l10n.collectionPickPageTitle : (isTrash ? l10n.binPageTitle : l10n.collectionPageTitle),
         softWrap: false,
-        overflow: TextOverflow.fade,
+        overflow: .fade,
         maxLines: 1,
       );
       if (appMode == .main) {

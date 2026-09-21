@@ -97,7 +97,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                   title: Text(
                                     context.l10n.appPickDialogNone,
                                     softWrap: false,
-                                    overflow: TextOverflow.fade,
+                                    overflow: .fade,
                                     maxLines: 1,
                                   ),
                                 );
@@ -113,7 +113,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                 TextSpan(
                                   children: [
                                     WidgetSpan(
-                                      alignment: PlaceholderAlignment.middle,
+                                      alignment: .middle,
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional.only(end: 16),
                                         child: Image(
@@ -132,7 +132,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                   ],
                                 ),
                                 softWrap: false,
-                                overflow: TextOverflow.fade,
+                                overflow: .fade,
                                 maxLines: 1,
                               ),
                             );

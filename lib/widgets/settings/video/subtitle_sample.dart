@@ -9,9 +9,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SubtitleSample extends StatelessWidget {
-  const new({super.key});
-
+class const SubtitleSample({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textSpans = [
@@ -82,22 +80,22 @@ class SubtitleSample extends StatelessWidget {
       case .top:
         switch (textAlign) {
           case .left:
-            return Alignment.topLeft;
+            return .topLeft;
           case .right:
-            return Alignment.topRight;
+            return .topRight;
           case .center:
           default:
-            return Alignment.topCenter;
+            return .topCenter;
         }
       case .bottom:
         switch (textAlign) {
           case .left:
-            return Alignment.bottomLeft;
+            return .bottomLeft;
           case .right:
-            return Alignment.bottomRight;
+            return .bottomRight;
           case .center:
           default:
-            return Alignment.bottomCenter;
+            return .bottomCenter;
         }
     }
   }

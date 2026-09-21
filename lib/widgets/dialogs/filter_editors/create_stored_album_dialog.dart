@@ -141,13 +141,13 @@ class _CreateStoredAlbumDialogState extends State<CreateStoredAlbumDialog> {
     title: Text(
       volume.getDescription(context),
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
     ),
     subtitle: Text(
       volume.path,
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
     ),
   );

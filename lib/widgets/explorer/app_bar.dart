@@ -109,7 +109,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
     Widget title = Text(
       context.l10n.explorerPageTitle,
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
     );
     if (appMode == .main) {

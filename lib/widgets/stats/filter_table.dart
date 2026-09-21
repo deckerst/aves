@@ -96,7 +96,7 @@ class const FilterTable<T extends Comparable>({
                     style: TextStyle(
                       color: colorScheme.onSurfaceVariant,
                     ),
-                    textAlign: TextAlign.end,
+                    textAlign: .end,
                   ),
                 ],
               );

@@ -28,13 +28,13 @@ class MapDateRow extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
               child: Icon(AIcons.date, size: MapInfoRow.getIconSize(context)),
             ),
-            alignment: PlaceholderAlignment.middle,
+            alignment: .middle,
           ),
           TextSpan(text: dateText),
         ],
       ),
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
     );
   }

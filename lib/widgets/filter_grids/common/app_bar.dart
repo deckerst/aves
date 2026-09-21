@@ -292,7 +292,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
         builder: (context, count, child) => Text(
           count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
           softWrap: false,
-          overflow: TextOverflow.fade,
+          overflow: .fade,
           maxLines: 1,
         ),
       );
@@ -304,7 +304,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           title: Text(
             widget.title,
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           ),
           source: source,

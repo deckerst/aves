@@ -323,7 +323,7 @@ class const OverlayIcon({
       // consistent with the color used for the icon next to it
       style: TextStyle(color: IconTheme.of(context).color),
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
       maxLines: 1,
     );
   }

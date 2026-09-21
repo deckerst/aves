@@ -48,7 +48,7 @@ class _AppExportItemSelectionDialogState extends State<AppExportItemSelectionDia
           title: Text(
             v.getText(context),
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           ),
         );

@@ -41,7 +41,7 @@ class EntryListDetails extends StatelessWidget {
               entry.bestTitle ?? context.l10n.viewerInfoUnknown,
               style: detailsTheme.titleStyle,
               softWrap: false,
-              overflow: detailsTheme.titleMaxLines == 1 ? TextOverflow.fade : TextOverflow.ellipsis,
+              overflow: detailsTheme.titleMaxLines == 1 ? .fade : .ellipsis,
               maxLines: detailsTheme.titleMaxLines,
             ),
             const SizedBox(height: EntryListDetailsTheme.titleDetailPadding),
@@ -60,13 +60,13 @@ class EntryListDetails extends StatelessWidget {
       ),
       style: style,
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
     );
   }
 
   WidgetSpan _buildIconSpan(IconData icon, {EdgeInsetsDirectional padding = EdgeInsetsDirectional.zero}) {
     return WidgetSpan(
-      alignment: PlaceholderAlignment.middle,
+      alignment: .middle,
       child: Padding(
         padding: const EdgeInsetsDirectional.only(end: 8, bottom: 1) + padding,
         child: Icon(icon),

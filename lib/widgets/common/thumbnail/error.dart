@@ -53,7 +53,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                         color: color,
                         fontSize: fontSize,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                     );
                   },
                 )

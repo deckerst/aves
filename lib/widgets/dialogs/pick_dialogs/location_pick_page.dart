@@ -281,7 +281,7 @@ class _AddressRowState extends State<_AddressRow> {
                 return Text(
                   addressLine ?? AText.valueNotAvailable,
                   softWrap: false,
-                  overflow: TextOverflow.fade,
+                  overflow: .fade,
                   maxLines: 1,
                 );
               },
@@ -331,7 +331,7 @@ class _CoordinateRow extends StatelessWidget {
           child: Text(
             location != null ? settings.coordinateFormat.format(context, location!) : AText.valueNotAvailable,
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           ),
         ),

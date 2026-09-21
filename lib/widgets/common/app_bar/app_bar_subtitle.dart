@@ -83,7 +83,7 @@ class SourceStateSubtitle extends StatelessWidget {
               ],
             ),
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           );
         },

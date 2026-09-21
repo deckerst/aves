@@ -112,7 +112,7 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
                                 opacity: enabled ? 1 : SettingsSwitchListTile.disabledOpacity,
                                 child: Icon(icon),
                               ),
-                              alignment: PlaceholderAlignment.middle,
+                              alignment: .middle,
                             ),
                           ];
                         })

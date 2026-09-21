@@ -16,7 +16,7 @@ class const TextDropdownButton<T>({
 }) extends StatefulWidget {
   static TextStyle textStyle(BuildContext context) {
     final defaultDropdownStyle = Theme.of(context).textTheme.titleMedium!;
-    return defaultDropdownStyle.copyWith(fontWeight: FontWeight.normal);
+    return defaultDropdownStyle.copyWith(fontWeight: .normal);
   }
 
   @override
@@ -65,7 +65,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
             TextSpan(
               children: [
                 WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
+                  alignment: .middle,
                   child: Padding(
                     padding: EdgeInsetsDirectional.only(end: widget.iconTextPadding, bottom: 2),
                     child: Icon(icon),

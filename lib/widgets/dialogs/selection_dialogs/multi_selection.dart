@@ -63,7 +63,7 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
                 ? Text(
                     subtitle,
                     softWrap: false,
-                    overflow: TextOverflow.fade,
+                    overflow: .fade,
                   )
                 : null,
             dense: widget.dense,

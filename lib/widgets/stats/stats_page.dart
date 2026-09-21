@@ -438,7 +438,7 @@ class const _LocationIndicator({required final Set<AvesEntry> entries}) extends 
           const SizedBox(height: 8),
           Text(
             context.l10n.statsWithGps(withGpsCount),
-            textAlign: TextAlign.center,
+            textAlign: .center,
           ),
         ],
       ),

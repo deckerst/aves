@@ -31,7 +31,7 @@ class const SelectionRadioListTile<T>({
           Expanded(
             child: Text(
               title,
-              overflow: TextOverflow.ellipsis,
+              overflow: .ellipsis,
               maxLines: 2,
             ),
           ),
@@ -41,7 +41,7 @@ class const SelectionRadioListTile<T>({
           ? Text(
               subtitle,
               softWrap: false,
-              overflow: TextOverflow.fade,
+              overflow: .fade,
             )
           : null,
       dense: dense,

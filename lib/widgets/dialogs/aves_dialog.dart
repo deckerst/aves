@@ -167,7 +167,7 @@ class DialogTitle extends StatelessWidget {
       decoration: AvesDialog.contentDecoration(context),
       child: Text(
         title,
-        textAlign: TextAlign.center,
+        textAlign: .center,
       ),
     );
   }

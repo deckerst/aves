@@ -197,7 +197,7 @@ class _TransitionImageState extends State<TransitionImage> with WidgetsBindingOb
           child: FittedBox(
             child: Text(
               '$error',
-              textAlign: TextAlign.center,
+              textAlign: .center,
               textDirection: TextDirection.ltr,
               style: const TextStyle(shadows: <Shadow>[Shadow(blurRadius: 1.0)]),
             ),

@@ -6,7 +6,7 @@ import 'package:aves/widgets/settings/video/control_buttons_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class VideoControlsPage extends StatelessWidget {
+class const VideoControlsPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/video/controls';
 
   static const List<String> settingKeys = [
@@ -15,8 +15,6 @@ class VideoControlsPage extends StatelessWidget {
     SettingKeys.videoGestureSideDoubleTapSeekKey,
     SettingKeys.videoGestureVerticalDragBrightnessVolumeKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

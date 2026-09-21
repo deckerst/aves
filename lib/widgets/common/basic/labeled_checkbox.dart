@@ -38,7 +38,7 @@ class _LabeledCheckboxState extends State<LabeledCheckbox> {
       TextSpan(
         children: [
           WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
+            alignment: .middle,
             child: Checkbox(
               value: widget.value,
               onChanged: widget.onChanged,

@@ -284,7 +284,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   decorationThickness: 2,
                 ),
                 softWrap: false,
-                overflow: TextOverflow.fade,
+                overflow: .fade,
               ),
             ),
           if (trailing != null) ...[

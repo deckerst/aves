@@ -142,12 +142,12 @@ class _LayoutBarState extends State<LayoutBar> {
                   children: [
                     WidgetSpan(
                       child: Icon(categoryIcon),
-                      alignment: PlaceholderAlignment.middle,
+                      alignment: .middle,
                     ),
                     const TextSpan(text: AText.separator),
                     WidgetSpan(
                       child: Icon(getIcon(current)),
-                      alignment: PlaceholderAlignment.middle,
+                      alignment: .middle,
                     ),
                   ],
                 ),

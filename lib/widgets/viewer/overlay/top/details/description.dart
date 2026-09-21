@@ -17,7 +17,7 @@ class OverlayDescriptionRow extends StatelessWidget {
       TextSpan(
         children: [
           WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
+            alignment: .middle,
             child: Padding(
               padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
               child: DecoratedIcon(

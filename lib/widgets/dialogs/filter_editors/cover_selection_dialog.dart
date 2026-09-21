@@ -240,7 +240,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         final title = Text(
           isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogLatest,
           softWrap: false,
-          overflow: TextOverflow.fade,
+          overflow: .fade,
           maxLines: 1,
         );
         return ListTileTheme.merge(
@@ -274,7 +274,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         final title = Text(
           isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto,
           softWrap: false,
-          overflow: TextOverflow.fade,
+          overflow: .fade,
           maxLines: 1,
         );
         return RadioListTile<bool>(
@@ -321,7 +321,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
         final title = Text(
           isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto,
           softWrap: false,
-          overflow: TextOverflow.fade,
+          overflow: .fade,
           maxLines: 1,
         );
         return RadioListTile<bool>(
@@ -430,7 +430,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
             text,
             style: TextStyle(color: color),
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
           ),
         ],
       ),

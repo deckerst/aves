@@ -82,6 +82,6 @@ Widget _buildText(String text, {required bool isCrumb}) => Text(
     fontSize: isCrumb ? 10 : 14,
   ),
   softWrap: false,
-  overflow: TextOverflow.fade,
+  overflow: .fade,
   maxLines: 1,
 );

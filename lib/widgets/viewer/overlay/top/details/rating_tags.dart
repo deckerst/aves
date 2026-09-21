@@ -42,7 +42,7 @@ class OverlayRatingTagsRow extends AnimatedWidget {
           if (hasTags) ...[
             if (ratingString.isNotEmpty) const TextSpan(text: AText.separator),
             WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
+              alignment: .middle,
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(end: ViewerDetailOverlayContent.iconPadding),
                 child: DecoratedIcon(

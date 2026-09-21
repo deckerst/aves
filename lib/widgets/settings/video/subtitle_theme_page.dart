@@ -11,7 +11,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SubtitleThemePage extends StatelessWidget {
+class const SubtitleThemePage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/video/subtitle_theme';
 
   static const List<String> settingKeys = [
@@ -22,8 +22,6 @@ class SubtitleThemePage extends StatelessWidget {
     SettingKeys.subtitleBackgroundColorKey,
     SettingKeys.subtitleShowOutlineKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,7 @@ class SubtitleThemePage extends StatelessWidget {
                   child: ListView(
                     children: [
                       SettingsSelectionListTile<TextAlign>(
-                        values: const [TextAlign.left, TextAlign.center, TextAlign.right],
+                        values: const [.left, .center, .right],
                         getName: _getTextAlignName,
                         selector: (context, s) => s.subtitleTextAlignment,
                         onSelection: (v) => settings.subtitleTextAlignment = v,
@@ -110,9 +108,9 @@ class SubtitleThemePage extends StatelessWidget {
   String _getTextAlignName(BuildContext context, TextAlign align) {
     final l10n = context.l10n;
     return switch (align) {
-      TextAlign.left => l10n.settingsSubtitleThemeTextAlignmentLeft,
-      TextAlign.center => l10n.settingsSubtitleThemeTextAlignmentCenter,
-      TextAlign.right => l10n.settingsSubtitleThemeTextAlignmentRight,
+      .left => l10n.settingsSubtitleThemeTextAlignmentLeft,
+      .center => l10n.settingsSubtitleThemeTextAlignmentCenter,
+      .right => l10n.settingsSubtitleThemeTextAlignmentRight,
       _ => '',
     };
   }
