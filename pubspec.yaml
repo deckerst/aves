@@ -8,7 +8,7 @@ publish_to: none
 # - edit GitHub changelog:     /CHANGELOG.md
 # - edit Play Store changelog: /whatsnew/whatsnew-en-US
 # - run `scripts/apply_version_bump.sh`
-version: 1.15.3+177
+version: 1.15.4+178
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
