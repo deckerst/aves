@@ -83,10 +83,11 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "externalFilesDir" to context.getExternalFilesDir(null),
             "codeCacheDir" to context.codeCacheDir,
             "noBackupFilesDir" to context.noBackupFilesDir,
-        ).apply {
-        }.mapValues { it.value?.path }.toMutableMap()
+        ).mapValues { it.value?.path }.toMutableMap()
         dirs["externalCacheDirs"] = context.externalCacheDirs.joinToString { it.path }
         dirs["externalFilesDirs"] = context.getExternalFilesDirs(null).joinToString { it?.path ?: "null" }
+        @Suppress("DEPRECATION")
+        dirs["externalMediaDirs"] = context.externalMediaDirs.joinToString { it?.path ?: "null" }
 
         // used by flutter plugin `path_provider`
         dirs.putAll(

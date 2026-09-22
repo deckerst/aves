@@ -77,17 +77,28 @@ object StorageUtils {
 
     fun isInVault(context: Context, anyPath: String) = anyPath.startsWith(getVaultRoot(context))
 
-    fun getAppDirectories(context: Context): Set<String> {
-        return hashSetOf<String>().apply {
-            // /storage/{volume}/Android/data/{package_name}/files
-            addAll(context.getExternalFilesDirs(null).filterNotNull().map { it.path })
-            // /data/user/0/{package_name}/files
-            add(context.filesDir.path)
-        }
+    fun getAvesAppDirectories(context: Context): Set<String> {
+        return hashSetOf<File>().apply {
+            // /storage/{volume}/Android/data/{aves_application_id}/files
+            addAll(context.getExternalFilesDirs(null))
+            // /data/user/0/{aves_application_id}/files
+            add(context.filesDir)
+        }.map { ensureTrailingSeparator(it.path) }.toSet()
     }
 
-    fun isInAppStorage(context: Context, anyPath: String): Boolean {
-        val dirs = getAppDirectories(context)
+    fun isInAvesAppStorage(context: Context, anyPath: String): Boolean {
+        val dirs = getAvesAppDirectories(context)
+        return dirs.any { anyPath.startsWith(it) }
+    }
+
+    fun getAppMediaRootDirectories(context: Context): Set<String> {
+        // roots to paths like `/storage/{volume}/Android/media/{any_application_id}/`
+        @Suppress("DEPRECATION")
+        return context.externalMediaDirs.mapNotNull { it?.parentFile?.path }.map { ensureTrailingSeparator(it) }.toSet()
+    }
+
+    fun isInAppMediaStorage(context: Context, anyPath: String): Boolean {
+        val dirs = getAppMediaRootDirectories(context)
         return dirs.any { anyPath.startsWith(it) }
     }
 
@@ -162,7 +173,7 @@ object StorageUtils {
             // `Environment.getExternalStorageDirectory()` (deprecated) yields:
             // /storage/emulated/0
             // `context.getExternalFilesDir(null)` yields:
-            // /storage/emulated/0/Android/data/{package_name}/files
+            // /storage/emulated/0/Android/data/{application_id}/files
             return appSpecificVolumePath(context.getExternalFilesDir(null))
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to find primary volume path", e)

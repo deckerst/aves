@@ -115,7 +115,13 @@ object MediaStorePermissions : StoragePermissions {
 
     override fun canEditWithUserInteraction(context: Context, dirPath: String, insertion: Boolean): Boolean {
         if (!canRequestBulkAccess()) return false
-        if (StorageUtils.isInAppStorage(context, dirPath)) return false
+        if (StorageUtils.isInAvesAppStorage(context, dirPath)) return false
+
+        // items in app media storage directories can be edited or deleted via MediaStore,
+        // but moving them out yields an `IllegalArgumentException`:
+        // `Changing ownership from /storage/emulated/0/Android/media/{...} to {target directory} not allowed`
+        if (StorageUtils.isInAppMediaStorage(context, dirPath)) return false
+
         if (insertion) {
             val segments = PathSegments(context, dirPath)
             val volumePath = segments.volumePath

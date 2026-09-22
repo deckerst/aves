@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- moving items out of app media directories
 - editing date with alternate calendar
 - opening transient images from camera apps
 - storage access for automatic settings export
