@@ -22,7 +22,7 @@
     "chipActionGoToCountryPage": "Ölkələrdə Göstər",
     "welcomeOptional": "Zəruri deyil",
     "welcomeTermsToggle": "Mən hökm və şərtlərlə razıyam",
-    "itemCount": "{count, plural, =1{{count} element}\n other{{count} element}}",
+    "itemCount": "{count, plural, =1{{count} element} other{{count} element}}",
     "@itemCount": {
         "placeholders": {
             "count": {
@@ -103,7 +103,6 @@
     "createButtonLabel": "YARAT",
     "chipActionGroup": "Qruplandırmanı dəyişdir",
     "chipActionCreateGroup": "Qrup yarat",
-    "slideshowActionResume": "CV",
     "coordinateDms": "{coordinate} {direction}",
     "@coordinateDms": {
         "placeholders": {
@@ -160,19 +159,6 @@
                 "type": "String",
                 "example": "SD card",
                 "description": "the name of a storage volume"
-            }
-        }
-    },
-    "unsupportedTypeDialogMessage": "{count, plural, =1{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {types}.} other{Bu əməliyyat aşağıdakı tipli elementlər üçün dəstəklənmir: {types}.}}",
-    "@unsupportedTypeDialogMessage": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            },
-            "types": {
-                "type": "String",
-                "example": "GIF, TIFF, MP4",
-                "description": "a list of unsupported types"
             }
         }
     },
@@ -241,15 +227,6 @@
     },
     "collectionEditSuccessFeedback": "{count, plural, =1{1 element redaktə edildi} other{Redaktə edildi {count} element}}",
     "@collectionEditSuccessFeedback": {
-        "placeholders": {
-            "count": {
-                "type": "int",
-                "format": "decimalPattern"
-            }
-        }
-    },
-    "statsWithGps": "{count, plural, =1{1 items with location} other{{count} items with location}}",
-    "@statsWithGps": {
         "placeholders": {
             "count": {
                 "type": "int",

@@ -224,7 +224,7 @@
     "editEntryDateDialogTitle": "Dátum & Čas",
     "editEntryDateDialogSetCustom": "Nastaviť vlastný dátum",
     "editEntryDateDialogCopyField": "Kopírovať z iného dátumu",
-    "editEntryDateDialogExtractFromTitle": "Extrahovať z nadpisu",
+    "editEntryDateDialogExtractFromTitle": "Extrahovať z názvu súboru",
     "editEntryDateDialogShift": "Posun",
     "durationDialogHours": "Hodiny",
     "durationDialogMinutes": "Minúty",
@@ -423,7 +423,7 @@
     },
     "removeEntryMetadataDialogTitle": "Odstránenie metadát",
     "removeEntryMetadataDialogMore": "Viac",
-    "menuActionConfigureView": "Zobrazenie",
+    "menuActionConfigureView": "Zmeniť rozloženie",
     "tileLayoutGrid": "Mriežka",
     "menuActionSelect": "Označiť",
     "menuActionSelectAll": "Označiť všetko",
@@ -956,5 +956,8 @@
     "settingsNavigationBottomActionsTile": "Navigácia v spodnej časti",
     "settingsNavigationBottomActionEditorPageTitle": "Navigácia v spodnej časti",
     "mapStyleEditorDialogUserAgent": "User-Agent",
-    "settingsAutoExportSettings": "Automatický export nastavení"
+    "settingsAutoExportSettings": "Automatický export nastavení",
+    "tileLayoutCalendar": "Kalendár",
+    "collectionActionShowLayoutBar": "Zobraziť panel rozloženia",
+    "collectionActionHideLayoutBar": "Skryť panel rozloženia"
 }
