@@ -1,5 +1,5 @@
 buildscript {
-    extra["aves_useCrashlytics"] = gradle.startParameter.taskNames.any { it.contains("play", ignoreCase = true) }
+    extra["aves_useCrashlytics"] = false
 
     println("Tasks=${gradle.startParameter.taskNames}")
     println("Extra=\n${extra.properties.entries.map { kv -> "  ${kv.key}=${kv.value}" }.sorted().joinToString("\n")}")

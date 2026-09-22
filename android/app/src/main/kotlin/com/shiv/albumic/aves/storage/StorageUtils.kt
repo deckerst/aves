@@ -1,0 +1,787 @@
+package com.shiv.albumic.storage
+
+import android.Manifest
+import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.Context
+import android.content.pm.PackageManager
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.os.ParcelFileDescriptor
+import android.os.storage.StorageManager
+import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.text.TextUtils
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.text.isDigitsOnly
+import com.commonsware.cwac.document.DocumentFileCompat
+import com.shiv.albumic.storage.apis.FilePermissions
+import com.shiv.albumic.storage.apis.MediaStorePermissions
+import com.shiv.albumic.storage.apis.SafPermissions
+import com.shiv.albumic.utils.FileUtils.copyFrom
+import com.shiv.albumic.utils.LogUtils
+import com.shiv.albumic.utils.MimeTypes.isImage
+import com.shiv.albumic.utils.MimeTypes.isVideo
+import com.shiv.albumic.utils.UriUtils.isContentScheme
+import com.shiv.albumic.utils.UriUtils.isFileScheme
+import com.shiv.albumic.utils.UriUtils.tryParseId
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.Locale
+import java.util.regex.Pattern
+
+object StorageUtils {
+    private val LOG_TAG = LogUtils.createTag<StorageUtils>()
+
+    // cf DocumentsContract.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
+    private const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
+
+    // cf DocumentsContract.EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
+    private const val EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID = "primary"
+
+    private const val TREE_URI_ROOT = "${ContentResolver.SCHEME_CONTENT}://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
+
+    private val UUID_PATTERN = Regex("[A-Fa-f\\d-]+")
+    private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
+
+    const val TRASH_PATH_PLACEHOLDER = "#trash"
+
+    private fun appExternalFilesDirFor(context: Context, path: String): File? {
+        val dirs = context.getExternalFilesDirs(null).filterNotNull()
+        val volumePath = getVolumePath(context, path)
+        return volumePath?.let { dirs.firstOrNull { it.startsWith(volumePath) } } ?: dirs.firstOrNull()
+    }
+
+    fun trashDirFor(context: Context, path: String): File? {
+        val externalFilesDir = appExternalFilesDirFor(context, path)
+        if (externalFilesDir == null) {
+            Log.e(LOG_TAG, "failed to find external files dir for path=$path")
+            return null
+        }
+        val trashDir = File(externalFilesDir, "trash")
+        trashDir.mkdirs()
+        if (!trashDir.exists()) {
+            Log.e(LOG_TAG, "failed to create directories at path=$trashDir")
+            return null
+        }
+        return trashDir
+    }
+
+    fun getVaultRoot(context: Context) = ensureTrailingSeparator(File(context.filesDir, "vault").path)
+
+    fun isInVault(context: Context, anyPath: String) = anyPath.startsWith(getVaultRoot(context))
+
+    fun getAppDirectories(context: Context): Set<String> {
+        return hashSetOf<String>().apply {
+            // /storage/{volume}/Android/data/{package_name}/files
+            addAll(context.getExternalFilesDirs(null).filterNotNull().map { it.path })
+            // /data/user/0/{package_name}/files
+            add(context.filesDir.path)
+        }
+    }
+
+    fun isInAppStorage(context: Context, anyPath: String): Boolean {
+        val dirs = getAppDirectories(context)
+        return dirs.any { anyPath.startsWith(it) }
+    }
+
+    /**
+     * Volume paths
+     */
+
+    // volume paths, with trailing "/"
+    private var mStorageVolumePaths: Array<String>? = null
+
+    // primary volume path, with trailing "/"
+    private var mPrimaryVolumePath: String? = null
+
+    fun getPrimaryVolumePath(context: Context): String {
+        if (mPrimaryVolumePath == null) {
+            mPrimaryVolumePath = findPrimaryVolumePath(context)
+        }
+        return mPrimaryVolumePath!!
+    }
+
+    fun getVolumePaths(context: Context): Array<String> {
+        if (mStorageVolumePaths == null || mStorageVolumePaths!!.isEmpty()) {
+            mStorageVolumePaths = findVolumePaths(context)
+        }
+        return mStorageVolumePaths!!
+    }
+
+    fun getVolumePath(context: Context, anyPath: String): String? {
+        return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
+    }
+
+    private fun getPathStepIterator(anyPath: String, root: String): Iterator<String?>? {
+        val rootLength = root.length
+
+        var fileName: String? = null
+        var relativePath: String? = null
+        val lastSeparatorIndex = anyPath.lastIndexOf(File.separator) + 1
+        if (lastSeparatorIndex >= rootLength) {
+            fileName = anyPath.substring(lastSeparatorIndex)
+            relativePath = anyPath.substring(rootLength, lastSeparatorIndex)
+        }
+        relativePath ?: return null
+
+        val pathSteps = relativePath.split(File.separator).filter { it.isNotEmpty() }.toMutableList()
+        if (fileName?.isNotEmpty() == true) {
+            pathSteps.add(fileName)
+        }
+        return pathSteps.iterator()
+    }
+
+    private fun appSpecificVolumePath(file: File?): String? {
+        file ?: return null
+        val appSpecificPath = file.absolutePath
+        val relativePathStartIndex = appSpecificPath.indexOf("Android/data")
+        if (relativePathStartIndex < 0) return null
+        return appSpecificPath.take(relativePathStartIndex)
+    }
+
+    private fun findPrimaryVolumePath(context: Context): String? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val path = storageManager?.primaryStorageVolume?.directory?.path
+            if (path != null) {
+                return ensureTrailingSeparator(path)
+            }
+        }
+
+        // fallback
+        try {
+            // we want:
+            // /storage/emulated/0/
+            // `Environment.getExternalStorageDirectory()` (deprecated) yields:
+            // /storage/emulated/0
+            // `context.getExternalFilesDir(null)` yields:
+            // /storage/emulated/0/Android/data/{package_name}/files
+            return appSpecificVolumePath(context.getExternalFilesDir(null))
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to find primary volume path", e)
+        }
+        return null
+    }
+
+    private fun findVolumePaths(context: Context): Array<String> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            val paths = storageManager?.storageVolumes?.mapNotNull { it.directory?.path }
+            if (paths != null) {
+                return paths.map(::ensureTrailingSeparator).toTypedArray()
+            }
+        }
+
+        // fallback
+        val paths = HashSet<String>()
+        try {
+            // Primary emulated SD-CARD
+            val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET") ?: ""
+            if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
+                // fix of empty raw emulated storage on marshmallow
+                lateinit var files: List<File>
+                var validFiles: Boolean
+                val retryInterval = 100L
+                val maxDelay = 1000L
+                var totalDelay = 0L
+                do {
+                    // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
+                    // (e.g. on API 30 emulator) so we retry until the file system is ready.
+                    // It can also include `null` when there is a faulty SD card.
+                    val externalFilesDirs = context.getExternalFilesDirs(null)
+                    validFiles = !externalFilesDirs.contains(null)
+                    if (validFiles) {
+                        files = externalFilesDirs.filterNotNull()
+                    } else {
+                        Log.d(LOG_TAG, "External files dirs contain `null`. Retrying...")
+                        totalDelay += retryInterval
+                        try {
+                            Thread.sleep(retryInterval)
+                        } catch (e: InterruptedException) {
+                            Log.e(LOG_TAG, "insomnia", e)
+                        }
+                    }
+                } while (!validFiles && totalDelay < maxDelay)
+                paths.addAll(files.mapNotNull(::appSpecificVolumePath))
+            } else {
+                // Device has emulated storage; external storage paths should have userId burned into them.
+                // /storage/emulated/[0,1,2,...]/
+                val path = getPrimaryVolumePath(context)
+                val rawUserId = path.split(File.separator).lastOrNull(String::isNotEmpty)?.takeIf { it.isDigitsOnly() } ?: ""
+                if (rawUserId.isEmpty()) {
+                    paths.add(rawEmulatedStorageTarget)
+                } else {
+                    paths.add(rawEmulatedStorageTarget + File.separator + rawUserId)
+                }
+            }
+
+            // All Secondary SD-CARDs (all exclude primary) separated by ":"
+            System.getenv("SECONDARY_STORAGE")?.let { secondaryStorages ->
+                paths.addAll(secondaryStorages.split(File.pathSeparator).filter { it.isNotEmpty() })
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to find volume paths", e)
+        }
+
+        return paths.map { ensureTrailingSeparator(it) }.toTypedArray()
+    }
+
+    /**
+     * Volume tree URIs
+     */
+
+    // e.g.
+    // /storage/emulated/0/         -> primary
+    // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
+    // /storage/extSdCard/          -> 1234-5678 [Android 5.1.1, Samsung Galaxy Core Prime]
+    private fun getVolumeUuidForDocumentUri(context: Context, anyPath: String): String? {
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        storageManager?.getStorageVolume(File(anyPath))?.let { volume ->
+            if (volume.isPrimary) {
+                return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
+            }
+            volume.uuid?.let { uuid ->
+                return uuid.uppercase(Locale.ROOT)
+            }
+        }
+
+        // fallback for <N
+        getVolumePath(context, anyPath)?.let { volumePath ->
+            if (volumePath == getPrimaryVolumePath(context)) {
+                return EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID
+            }
+            volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
+                if (uuid.matches(UUID_PATTERN)) {
+                    return uuid.uppercase(Locale.ROOT)
+                }
+            }
+
+            // fallback when UUID does not appear in the SD card volume path
+            SafPermissions.getPersistedUriPermissions(context).firstOrNull { uriPermission ->
+                convertTreeDocumentUriToDirPath(context, uriPermission.uri)?.let {
+                    getVolumePath(context, it)?.let { grantedVolumePath ->
+                        grantedVolumePath == volumePath
+                    }
+                } ?: false
+            }?.let { uriPermission ->
+                splitTreeDocumentUri(uriPermission.uri)?.let { (uuid, _) ->
+                    return uuid
+                }
+            }
+        }
+
+        Log.e(LOG_TAG, "failed to find volume UUID for anyPath=$anyPath")
+        return null
+    }
+
+    // e.g.
+    // primary      -> /storage/emulated/0/
+    // 10F9-3F13    -> /storage/10F9-3F13/
+    // 1234-5678    -> /storage/extSdCard/ [Android 5.1.1, Samsung Galaxy Core Prime]
+    private fun getVolumePathFromTreeDocumentUriUuid(context: Context, uuid: String): String? {
+        if (uuid == EXTERNAL_STORAGE_PRIMARY_EMULATED_ROOT_ID) {
+            return getPrimaryVolumePath(context)
+        }
+
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (storageManager != null) {
+            for (volumePath in getVolumePaths(context)) {
+                try {
+                    val volume = storageManager.getStorageVolume(File(volumePath))
+                    if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
+                        return volumePath
+                    }
+                } catch (_: Exception) {
+                    // ignore
+                }
+            }
+        }
+
+        // fallback for <N
+        for (volumePath in getVolumePaths(context)) {
+            val volumeUuid = volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }
+            if (uuid.equals(volumeUuid, ignoreCase = true)) {
+                return volumePath
+            }
+        }
+
+        // fallback when UUID does not appear in the SD card volume path
+        val primaryVolumePath = getPrimaryVolumePath(context)
+        getVolumePaths(context).firstOrNull { volumePath ->
+            if (volumePath == primaryVolumePath) {
+                false
+            } else {
+                // exclude volumes that use regular naming scheme with UUID in them
+                // to prevent returning path with the UUID of a new volume
+                // when the argument is the UUID of an obsolete volume
+                val volumeUuid = volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }
+                !(volumeUuid == null || volumeUuid.matches(UUID_PATTERN))
+            }
+        }?.let { return it }
+
+        Log.e(LOG_TAG, "failed to find volume path for UUID=$uuid")
+        return null
+    }
+
+    // e.g.
+    // /storage/emulated/0/         -> content://com.android.externalstorage.documents/tree/primary%3A
+    // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
+    fun convertDirPathToTreeDocumentUri(context: Context, dirPath: String): Uri? {
+        val uuid = getVolumeUuidForDocumentUri(context, dirPath)
+        if (uuid != null) {
+            val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
+            return DocumentsContract.buildTreeDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, "$uuid:$relativeDir")
+        }
+        Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to tree document URI")
+        return null
+    }
+
+    // e.g.
+    // /storage/emulated/0/         -> content://com.android.externalstorage.documents/document/primary%3A
+    // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/document/10F9-3F13%3APictures
+    fun convertDirPathToDocumentUri(context: Context, dirPath: String): Uri? {
+        val uuid = getVolumeUuidForDocumentUri(context, dirPath)
+        if (uuid != null) {
+            val relativeDir = removeTrailingSeparator(PathSegments(context, dirPath).relativeDir ?: "")
+            return DocumentsContract.buildDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, "$uuid:$relativeDir")
+        }
+        Log.e(LOG_TAG, "failed to convert dirPath=$dirPath to document URI")
+        return null
+    }
+
+    // e.g.
+    // content://com.android.externalstorage.documents/tree/primary%3A              -> ("primary", "")
+    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> ("10F9-3F13", "Pictures")
+    private fun splitTreeDocumentUri(treeDocumentUri: Uri): Pair<String, String>? {
+        val treeDocumentUriString = treeDocumentUri.toString()
+        if (treeDocumentUriString.length <= TREE_URI_ROOT.length) return null
+        val encoded = treeDocumentUriString.substring(TREE_URI_ROOT.length)
+        val matcher = TREE_URI_PATH_PATTERN.matcher(Uri.decode(encoded))
+        with(matcher) {
+            if (find()) {
+                val uuid = group(1)
+                val relativePath = group(2)
+                if (uuid != null && relativePath != null) {
+                    return Pair(uuid, relativePath)
+                }
+            }
+        }
+        Log.e(LOG_TAG, "failed to split treeDocumentUri=$treeDocumentUri to UUID and relative path")
+        return null
+    }
+
+    // e.g.
+    // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
+    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
+    fun convertTreeDocumentUriToDirPath(context: Context, treeDocumentUri: Uri): String? {
+        splitTreeDocumentUri(treeDocumentUri)?.let { (uuid, relativePath) ->
+            val volumePath = getVolumePathFromTreeDocumentUriUuid(context, uuid)
+            if (volumePath != null) {
+                return ensureTrailingSeparator(volumePath + relativePath)
+            }
+        }
+        Log.e(LOG_TAG, "failed to convert treeDocumentUri=$treeDocumentUri to path")
+        return null
+    }
+
+    /**
+     * Document files
+     */
+
+    fun getDocumentFileForExistingFile(context: Context, filePath: String, mediaUri: Uri): DocumentFileCompat? {
+        try {
+            if (!FilePermissions.canEdit(context, filePath)) {
+                // need a document URI (not a media content URI) to open a `DocumentFile` output stream
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
+                    // cleanest API to get it
+                    SafPermissions.sanitizePersistedUriPermissions(context)
+                    try {
+                        val docUri = MediaStore.getDocumentUri(context, mediaUri)
+                        if (docUri != null) {
+                            return DocumentFileCompat.fromSingleUri(context, docUri)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", e)
+                    }
+                }
+
+                val docFile = getDocumentFileByTreeDoc(context, filePath)
+                if (docFile != null) return docFile
+
+                // try to strip user info, if any
+                if (mediaUri.userInfo != null) {
+                    val genericMediaUri = stripMediaUriUserInfo(mediaUri)
+                    Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
+                    return getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = genericMediaUri)
+                }
+            }
+
+            // good old `File`
+            return DocumentFileCompat.fromFile(File(filePath))
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file from mediaUri=$mediaUri", e)
+        }
+        return null
+    }
+
+    fun getDocumentFileForNewFile(context: Context, filePath: String, mimeType: String): DocumentFileCompat? {
+        try {
+            if (!FilePermissions.canEdit(context, filePath)) {
+                val docFile = getOrCreateDocumentFileByTreeDoc(context, anyPath = filePath) { parentFile, displayName ->
+                    parentFile?.createFile(mimeType, displayName)
+                }
+                if (docFile != null) return docFile
+            }
+
+            // good old `File`
+            return DocumentFileCompat.fromFile(File(filePath))
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file for filePath=$filePath", e)
+        }
+        return null
+    }
+
+    // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
+    // returns null if directory does not exist and could not be created
+    fun createDirectoryDocIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
+        try {
+            val targetDirPath = ensureTrailingSeparator(dirPath)
+            return when {
+                FilePermissions.canEdit(context, targetDirPath) -> createDirectoryDocByFile(targetDirPath)
+                else -> getOrCreateDocumentFileByTreeDoc(context, anyPath = targetDirPath) { parentFile, displayName ->
+                    parentFile?.createDirectory(displayName)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "failed to create directory at path=$dirPath", e)
+            return null
+        }
+    }
+
+    private fun createDirectoryDocByFile(dirPath: String): DocumentFileCompat? {
+        val directory = File(dirPath)
+        directory.mkdirs()
+        if (!directory.exists()) {
+            Log.e(LOG_TAG, "failed to create directories at path=$dirPath")
+            return null
+        }
+        return DocumentFileCompat.fromFile(directory)
+    }
+
+    private fun getDocumentFileByTreeDoc(
+        context: Context,
+        anyPath: String,
+    ): DocumentFileCompat? = getOrCreateDocumentFileByTreeDoc(context, anyPath, null)
+
+    private fun getOrCreateDocumentFileByTreeDoc(
+        context: Context,
+        anyPath: String,
+        create: ((parentFile: DocumentFileCompat?, displayName: String?) -> DocumentFileCompat?)?,
+    ): DocumentFileCompat? {
+        val grantedDir = PermissionManager.getAccessibleDirs(context).firstOrNull { anyPath.startsWith(it) } ?: return null
+        val rootTreeDocumentUri = convertDirPathToTreeDocumentUri(context, grantedDir) ?: return null
+
+        var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeDocumentUri) ?: return null
+        var currentPath = ensureTrailingSeparator(grantedDir)
+        val pathIterator = getPathStepIterator(anyPath = anyPath, root = grantedDir)
+
+        while (pathIterator?.hasNext() == true) {
+            val displayName = pathIterator.next()
+            var treeDocFile = findDocumentFileIgnoreCase(parentFile, displayName)
+            currentPath = ensureTrailingSeparator(currentPath + displayName)
+
+            if (treeDocFile == null && File(currentPath).exists()) {
+                // `DocumentsProvider` may be temporarily buggy and fail to list children directories.
+                // Better to fail fast and revoke directory access, so that the user is aware
+                // of the issue when trying again with `ACTION_OPEN_DOCUMENT_TREE`.
+                // Otherwise, we would try to recreate the existing (but unlisted) directory,
+                // and the document provider will create a new one with a "(1)" suffix.
+                Log.e(LOG_TAG, "failed to get document file for existing path=$currentPath from granted dir=$grantedDir. Revoking granted dir...")
+                SafPermissions.revokeDirectoryAccess(context, grantedDir)
+                throw Exception("failed to get document file for existing path=$currentPath from grantedDir=$grantedDir")
+            }
+
+            if (treeDocFile == null || !treeDocFile.exists()) {
+                treeDocFile = create?.invoke(parentFile, displayName)
+                if (treeDocFile == null) {
+                    Log.e(LOG_TAG, "failed to create tree document file with name=$displayName from parent=$parentFile")
+                    return null
+                }
+            }
+            parentFile = treeDocFile
+        }
+        return parentFile
+    }
+
+    // variation on `DocumentFileCompat.findFile()` to allow case insensitive search
+    private fun findDocumentFileIgnoreCase(documentFile: DocumentFileCompat?, displayName: String?): DocumentFileCompat? {
+        documentFile ?: return null
+        for (doc in documentFile.listFiles()) {
+            if (displayName.equals(doc.name, ignoreCase = true)) {
+                return doc
+            }
+        }
+        return null
+    }
+
+    /**
+     * Misc
+     */
+
+    fun isMediaStoreContentUri(uri: Uri?): Boolean {
+        uri ?: return false
+        // a URI's authority is [userinfo@]host[:port]
+        // but we only want the host when comparing to Media Store's "authority"
+        return uri.isContentScheme && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getMediaStoreVolumeName(context: Context, anyPath: String): String? {
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        return storageManager?.getStorageVolume(File(anyPath))?.let { volume ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                volume.mediaStoreVolumeName
+            } else {
+                // normalization logic from Android source
+                if (volume.isPrimary) {
+                    MediaStore.VOLUME_EXTERNAL_PRIMARY
+                } else {
+                    volume.uuid?.lowercase(Locale.US)
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getMediaStoreRootContentUri(context: Context, mimeType: String, anyPath: String): Uri? {
+        val mediaStoreVolumeName = getMediaStoreVolumeName(context, anyPath) ?: MediaStore.VOLUME_EXTERNAL
+
+        return if (isInDownloadPath(context, anyPath)) {
+            MediaStore.Downloads.getContentUri(mediaStoreVolumeName)
+        } else if (isImage(mimeType)) {
+            MediaStore.Images.Media.getContentUri(mediaStoreVolumeName)
+        } else if (isVideo(mimeType)) {
+            MediaStore.Video.Media.getContentUri(mediaStoreVolumeName)
+        } else {
+            Log.w(LOG_TAG, "failed to find MediaStore content URI for mimeType=$mimeType, path=$anyPath")
+            null
+        }
+    }
+
+    fun isInDownloadPath(context: Context, anyPath: String): Boolean {
+        val volumePath = getVolumePath(context, anyPath) ?: return false
+        val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
+        // effective download path may have a different case
+        return anyPath.lowercase().startsWith(downloadDirPath.lowercase())
+    }
+
+    fun getOriginalUri(context: Context, uri: Uri): Uri {
+        // we get a permission denial if we require original from a provider other than the media store
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            val path = uri.path
+            path ?: return uri
+
+            // from Android 11 (API 30), accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
+            val imagesPath = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.path!!
+            val videoPath = MediaStore.Video.Media.EXTERNAL_CONTENT_URI.path!!
+            if (path.startsWith(imagesPath) || path.startsWith(videoPath)) {
+                // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
+                if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    return MediaStore.setRequireOriginal(uri)
+                }
+            }
+        }
+        return uri
+    }
+
+    // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
+    // to work around a bug from Android 10 (API 29) where metadata redaction corrupts HEIC images.
+    // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
+    // for some non image/video content URIs (e.g. `downloads`, `file`)
+    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long? = null): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
+                }
+
+                uriPath?.contains("/file/") == true -> {
+                    // e.g. `content://media/external/file/...`
+                    // create an ad-hoc temporary file for decoding only
+                    createTempFile(context).apply {
+                        try {
+                            copyFrom(openInputStream(context, uri), sizeBytes)
+                            return Uri.fromFile(this)
+                        } catch (e: Exception) {
+                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", e)
+                        }
+                    }
+                }
+
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
+            }
+        }
+        return uri
+    }
+
+    // requesting access or writing to some MediaStore content URIs
+    // yields an exception with `All requested items must be referenced by specific ID`
+    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+            val uriPath = uri.path
+            when {
+                uriPath?.contains("/downloads/") == true -> {
+                    // e.g. `content://media/external_primary/downloads/...`
+                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
+                }
+
+                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
+            }
+        }
+        return uri
+    }
+
+    // Build a typical `images` or `video` content URI from the original content ID.
+    // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
+    // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
+    private fun getMediaUriImageVideoUri(uri: Uri, mimeType: String): Uri? {
+        return uri.tryParseId()?.let { id ->
+            return when {
+                isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                else -> uri
+            }
+        }
+    }
+
+    /*
+        Strip user info, if any
+        e.g. `content://0@media/...`
+          -> `content://media/...`
+
+        `MediaStore` source indicates the following:
+        ------------
+        NOTE: The user-id in URI authority is ONLY required to find the correct MediaProvider
+        process. Once in the correct process, the field is no longer required and may cause
+        breakage in MediaProvider code. This is because per process logic is agnostic of
+        user-id. Hence, strip away the user ids from URI, if present.
+        ------------
+     */
+    private fun stripMediaUriUserInfo(uri: Uri): Uri {
+        if (uri.userInfo == null) return uri
+        return uri.buildUpon().authority(uri.host).build()
+    }
+
+    fun openInputStream(context: Context, uri: Uri): InputStream? {
+        val effectiveUri = getOriginalUri(context, uri)
+        return try {
+            return if (uri.isFileScheme) {
+                FileInputStream(uri.path)
+            } else {
+                context.contentResolver.openInputStream(effectiveUri)
+            }
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open input stream from effectiveUri=$effectiveUri for uri=$uri", e)
+            null
+        }
+    }
+
+    fun openOutputStream(context: Context, mimeType: String, uri: Uri, mode: String): OutputStream? {
+        val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        return try {
+            context.contentResolver.openOutputStream(effectiveUri, mode)
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open output stream from effectiveUri=$effectiveUri for uri=$uri mode=$mode", e)
+            null
+        }
+    }
+
+    fun openInputFileDescriptor(context: Context, uri: Uri): ParcelFileDescriptor? {
+        val effectiveUri = getOriginalUri(context, uri)
+        return try {
+            context.contentResolver.openFileDescriptor(effectiveUri, "r")
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
+            throw FileDescriptorException("failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
+        }
+    }
+
+    fun openOutputFileDescriptor(context: Context, mimeType: String, uri: Uri, filePath: String, mode: String): ParcelFileDescriptor? {
+        val effectiveUri = if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
+            getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        } else {
+            getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for path=$filePath, uri=$uri")
+        }
+        return try {
+            context.contentResolver.openFileDescriptor(effectiveUri, mode)
+        } catch (e: Exception) {
+            // among various other exceptions,
+            // opening a file marked pending and owned by another package throws an `IllegalStateException`
+            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for uri=$uri path=$filePath", e)
+            null
+        }
+    }
+
+    fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
+        val effectiveUri = getOriginalUri(context, uri)
+        return try {
+            MediaMetadataRetriever().apply {
+                // on Android 12 preview, setting the data source works but yields an internal IOException
+                // (`Input file descriptor already original`), whether we provide the original URI or not
+                setDataSource(context, effectiveUri)
+            }
+        } catch (_: Exception) {
+            // unsupported format
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
+            null
+        }
+    }
+
+    private fun getTempDirectory(context: Context): File = File(context.cacheDir, "temp")
+
+    fun createTempFile(context: Context, extension: String? = null): File {
+        val directory = getTempDirectory(context)
+        directory.mkdirs()
+        if (!directory.exists()) {
+            throw IOException("failed to create directories at path=$directory")
+        }
+        val tempFile = File.createTempFile("aves", extension, directory)
+        // `deleteOnExit` is unreliable, but it does not hurt
+        tempFile.deleteOnExit()
+        return tempFile
+    }
+
+    fun deleteTempDirectory(context: Context): Boolean {
+        val directory = getTempDirectory(context)
+        if (!directory.exists()) return false
+        return directory.deleteRecursively()
+    }
+
+    // convenience methods
+
+    fun ensureTrailingSeparator(dirPath: String): String {
+        return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
+    }
+
+    fun removeTrailingSeparator(dirPath: String): String {
+        return if (dirPath.endsWith(File.separator)) dirPath.dropLast(1) else dirPath
+    }
+}
+
+class FileDescriptorException(message: String, cause: Throwable? = null) : IOException(message, cause)
+

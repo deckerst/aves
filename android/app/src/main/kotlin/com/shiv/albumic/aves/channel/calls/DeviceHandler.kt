@@ -1,0 +1,184 @@
+package com.shiv.albumic.channel.calls
+
+import android.annotation.SuppressLint
+import android.app.LocaleConfig
+import android.app.LocaleManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.location.Geocoder
+import android.os.Build
+import android.os.LocaleList
+import android.provider.Settings
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.net.toUri
+import androidx.core.performance.DefaultDevicePerformance
+import androidx.core.text.util.LocalePreferences
+import com.google.android.material.color.DynamicColors
+import com.shiv.albumic.channel.calls.Coresult.Companion.safe
+import com.shiv.albumic.model.FieldMap
+import com.shiv.albumic.storage.apis.MediaStorePermissions
+import com.shiv.albumic.utils.MemoryUtils
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import java.util.Locale
+
+class DeviceHandler(private val context: Context) : MethodCallHandler {
+    private val defaultScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "getCapabilities" -> defaultScope.launch { safe(call, result, ::getCapabilities) }
+            "getLocales" -> safe(call, result, ::getLocales)
+            "setLocaleConfig" -> safe(call, result, ::setLocaleConfig)
+            "getFirstDayOfWeek" -> safe(call, result, ::getFirstDayOfWeek)
+            "getMediaPerformanceClass" -> safe(call, result, ::getMediaPerformanceClass)
+            "getWidgetCornerRadiusPx" -> safe(call, result, ::getWidgetCornerRadiusPx)
+            "isLocked" -> safe(call, result, ::isLocked)
+            "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
+            "isMediaManagementGranted" -> safe(call, result, ::isMediaManagementGranted)
+            "requestMediaManagementPermission" -> safe(call, result, ::requestMediaManagementPermission)
+            "getHeapSizes" -> safe(call, result, ::getHeapSizes)
+            "getRamSizes" -> safe(call, result, ::getRamSizes)
+            "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun getCapabilities(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(
+            hashMapOf(
+                "canPinShortcut" to ShortcutManagerCompat.isRequestPinShortcutSupported(context),
+                "canRenderSubdivisionFlagEmojis" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
+                "canRequestMediaManagementPermission" to MediaStorePermissions.canRequestMediaManagement(),
+                "canRequestNotificationPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
+                "hasGeocoder" to Geocoder.isPresent(),
+                "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
+                "showPinShortcutFeedback" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
+                "supportEdgeToEdgeUIMode" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q),
+                "supportPictureInPicture" to supportPictureInPicture(),
+            )
+        )
+    }
+
+    private fun supportPictureInPicture(): Boolean {
+        // minimum version for `PictureInPictureParams.Builder#setAutoEnterEnabled`
+        val supportPipOnLeave = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+        return supportPipOnLeave && context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    }
+
+    private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        fun toMap(locale: Locale): FieldMap = hashMapOf(
+            "language" to locale.language,
+            "country" to locale.country,
+            "script" to locale.script,
+        )
+
+        // when called from a window-less service, locales from `context.resources`
+        // do not reflect the current system settings, so we use `Resources.getSystem()` instead
+        val list = Resources.getSystem().configuration.locales
+        val locales = ArrayList<FieldMap>()
+        for (i in 0..<list.size()) {
+            locales.add(toMap(list.get(i)))
+        }
+        result.success(locales)
+    }
+
+    private fun setLocaleConfig(call: MethodCall, result: MethodChannel.Result) {
+        val locales = call.argument<List<String>>("locales")
+        if (locales.isNullOrEmpty()) {
+            result.error("setLocaleConfig-args", "missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            @SuppressLint("WrongConstant")
+            val localeManager = context.getSystemService(Context.LOCALE_SERVICE) as? LocaleManager
+            localeManager?.overrideLocaleConfig = LocaleConfig(LocaleList.forLanguageTags(locales.joinToString(",")))
+        }
+
+        result.success(true)
+    }
+
+    private fun getFirstDayOfWeek(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(LocalePreferences.getFirstDayOfWeek())
+    }
+
+    private fun getMediaPerformanceClass(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val performanceClass = DefaultDevicePerformance().mediaPerformanceClass
+        if (performanceClass > 0) {
+            result.success(performanceClass)
+        } else {
+            result.success(Build.VERSION.SDK_INT)
+        }
+    }
+
+    private fun getWidgetCornerRadiusPx(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            result.success(context.resources.getDimension(android.R.dimen.system_app_widget_background_radius))
+        } else {
+            result.success(null)
+        }
+    }
+
+    private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
+        val isLocked = keyguardManager.isKeyguardLocked
+        result.success(isLocked)
+    }
+
+    private fun isSystemFilePickerEnabled(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val enabled = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).resolveActivity(context.packageManager) != null
+        result.success(enabled)
+    }
+
+    private fun isMediaManagementGranted(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(MediaStorePermissions.isMediaManagementGranted(context))
+    }
+
+    private fun requestMediaManagementPermission(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            result.error("requestMediaManagementPermission-unsupported", "media management permission is not available before Android 12", null)
+            return
+        }
+
+        val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, "package:${context.packageName}".toUri())
+        context.startActivity(intent)
+        result.success(true)
+    }
+
+    private fun getHeapSizes(call: MethodCall, result: MethodChannel.Result) {
+        val types = call.argument<List<String>>("types")
+        if (types.isNullOrEmpty()) {
+            result.error("getHeapSizes-args", "missing arguments", null)
+            return
+        }
+
+        result.success(MemoryUtils.getHeapSizes(types))
+    }
+
+    private fun getRamSizes(call: MethodCall, result: MethodChannel.Result) {
+        val types = call.argument<List<String>>("types")
+        if (types.isNullOrEmpty()) {
+            result.error("getRamSizes-args", "missing arguments", null)
+            return
+        }
+
+        result.success(MemoryUtils.getRamSizes(context, types))
+    }
+
+    private fun requestGarbageCollection(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        Runtime.getRuntime().gc()
+        result.success(true)
+    }
+
+    companion object {
+        const val CHANNEL = "deckers.thibault/aves/device"
+    }
+}

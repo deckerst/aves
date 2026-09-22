@@ -1,6 +1,6 @@
 {
   "appName": "Aves",
-  "welcomeMessage": "Welcome to Aves",
+  "welcomeMessage": "Welcome to Albumic",
   "welcomeOptional": "Optional",
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "itemCount": "{count, plural, =1{{count} item} other{{count} items}}",

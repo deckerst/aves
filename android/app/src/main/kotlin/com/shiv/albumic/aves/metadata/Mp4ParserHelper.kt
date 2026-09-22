@@ -1,0 +1,440 @@
+package com.shiv.albumic.metadata
+
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import com.shiv.albumic.metadata.xmp.XMP
+import com.shiv.albumic.storage.FileDescriptorException
+import com.shiv.albumic.storage.StorageUtils
+import com.shiv.albumic.utils.LogUtils
+import com.shiv.albumic.utils.MimeTypes
+import com.shiv.albumic.utils.toByteArray
+import com.shiv.albumic.utils.toHex
+import org.mp4parser.BasicContainer
+import org.mp4parser.Box
+import org.mp4parser.BoxParser
+import org.mp4parser.Container
+import org.mp4parser.IsoFile
+import org.mp4parser.PropertyBoxParserImpl
+import org.mp4parser.boxes.UnknownBox
+import org.mp4parser.boxes.UserBox
+import org.mp4parser.boxes.apple.AppleCoverBox
+import org.mp4parser.boxes.apple.AppleGPSCoordinatesBox
+import org.mp4parser.boxes.apple.AppleItemListBox
+import org.mp4parser.boxes.apple.AppleVariableSignedIntegerBox
+import org.mp4parser.boxes.apple.Utf8AppleDataBox
+import org.mp4parser.boxes.iso14496.part12.FreeBox
+import org.mp4parser.boxes.iso14496.part12.HandlerBox
+import org.mp4parser.boxes.iso14496.part12.MediaDataBox
+import org.mp4parser.boxes.iso14496.part12.MetaBox
+import org.mp4parser.boxes.iso14496.part12.MovieBox
+import org.mp4parser.boxes.iso14496.part12.MovieFragmentBox
+import org.mp4parser.boxes.iso14496.part12.SampleTableBox
+import org.mp4parser.boxes.iso14496.part12.SegmentIndexBox
+import org.mp4parser.boxes.iso14496.part12.TrackHeaderBox
+import org.mp4parser.boxes.iso14496.part12.UserDataBox
+import org.mp4parser.boxes.threegpp.ts26244.AuthorBox
+import org.mp4parser.boxes.threegpp.ts26244.LocationInformationBox
+import org.mp4parser.support.AbstractBox
+import org.mp4parser.support.Matrix
+import org.mp4parser.tools.Path
+import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.nio.channels.Channels
+
+object Mp4ParserHelper {
+    private val LOG_TAG = LogUtils.createTag<Mp4ParserHelper>()
+
+    // arbitrary size to detect boxes that may yield an OOM
+    private const val BOX_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MiB
+
+    const val SAMSUNG_MAKERNOTE_BOX_TYPE = "sefd"
+    const val SEFD_MOTION_PHOTO_NAME = "MotionPhoto_Data"
+
+    private val largerTypeWhitelist = listOf(
+        // HEIC motion photo may contain Samsung maker notes in `sefd` box,
+        // including a video larger than the danger threshold
+        SAMSUNG_MAKERNOTE_BOX_TYPE,
+    )
+
+    fun <R> consumeIso(context: Context, uri: Uri, boxParser: BoxParser, consumer: (IsoFile) -> R): R {
+        // we can skip uninteresting boxes with a seekable data source
+        val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw FileDescriptorException("failed to open file descriptor for uri=$uri")
+        pfd.use {
+            FileInputStream(it.fileDescriptor).use { stream ->
+                stream.channel.use { channel ->
+                    try {
+                        // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
+                        return IsoFile(channel, boxParser).use(consumer)
+                    } catch (e: Exception) {
+                        val message = e.message
+                        if (message != null && message.startsWith("box size of zero")) {
+                            throw Mp4ZeroSizeBoxException(message, e)
+                        }
+                        throw e
+                    }
+                }
+            }
+        }
+    }
+
+    fun computeEdits(context: Context, uri: Uri, modifier: (isoFile: IsoFile) -> Unit): List<Pair<Long, ByteArray>> {
+        val boxParser = PropertyBoxParserImpl().apply {
+            // do not skip anything inside `MovieBox` as it will be parsed and rewritten for editing
+            // do not skip weird boxes (like trailing "0000" box), to fail fast if it is large
+            val skippedTypes = listOf(
+                // parsing `MediaDataBox` can take a long time
+                MediaDataBox.TYPE,
+            )
+            setBoxSkipper { type, size ->
+                if (skippedTypes.contains(type)) return@setBoxSkipper true
+                if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
+                false
+            }
+        }
+
+        return consumeIso(context, uri, boxParser) { isoFile ->
+            val fragmented = isoFile.boxes.any { box -> box is MovieFragmentBox || box is SegmentIndexBox }
+            if (fragmented) throw Mp4FragmentedException("editing fragmented movies is not supported")
+
+            val lastContentBox = isoFile.boxes.reversed().firstOrNull { box ->
+                when {
+                    box == isoFile.movieBox -> false
+                    testXmpBox(box) -> false
+                    box is FreeBox -> false
+                    else -> true
+                }
+            }
+            lastContentBox ?: throw Exception("failed to find last content box")
+            val oldFileSize = isoFile.size
+            var appendOffset = (isoFile.getBoxOffset { box -> box == lastContentBox })!! + lastContentBox.size
+
+            val edits = arrayListOf<Pair<Long, ByteArray>>()
+            fun addFreeBoxEdit(offset: Long, size: Long): Boolean {
+                val boxSize = size.toInt() - 8
+                if (boxSize > BOX_SIZE_DANGER_THRESHOLD) throw Exception("dangerous free box replacement for size=$boxSize")
+                return edits.add(Pair(offset, FreeBox(boxSize).toBytes()))
+            }
+
+            // replace existing movie box by a free box
+            isoFile.getBoxOffset { box -> box.type == MovieBox.TYPE }?.let { offset ->
+                addFreeBoxEdit(offset, isoFile.movieBox.size)
+            }
+
+            // replace existing XMP box by a free box
+            isoFile.getBoxOffset { box -> testXmpBox(box) }?.let { offset ->
+                addFreeBoxEdit(offset, isoFile.xmpBox!!.size)
+            }
+
+            modifier(isoFile)
+
+            // write edited movie box
+            val movieBoxBytes = isoFile.movieBox.toBytes()
+            edits.removeAll { (offset, _) -> offset == appendOffset }
+            edits.add(Pair(appendOffset, movieBoxBytes))
+            appendOffset += movieBoxBytes.size
+
+            // write edited XMP box
+            isoFile.xmpBox?.let { box ->
+                edits.removeAll { (offset, _) -> offset == appendOffset }
+                edits.add(Pair(appendOffset, box.toBytes()))
+                appendOffset += box.size
+            }
+
+            // write trailing free box instead of truncating
+            val trailing = oldFileSize - appendOffset
+            if (trailing > 0) {
+                addFreeBoxEdit(appendOffset, trailing)
+            }
+            return@consumeIso edits
+        }
+    }
+
+    // according to XMP Specification Part 3 - Storage in Files,
+    // XMP is embedded in MPEG-4 files using a top-level UUID box
+    private fun testXmpBox(box: Box): Boolean {
+        if (box is UserBox) {
+            if (!box.isParsed) {
+                box.parseDetails()
+            }
+            return box.userType.contentEquals(XMP.mp4Uuid)
+        }
+        return false
+    }
+
+    // returns the offset and data of the Samsung maker notes box
+    fun getSamsungSefd(context: Context, uri: Uri): Pair<Long, ByteArray>? {
+        try {
+            return consumeIso(context, uri, metadataBoxParser()) { isoFile ->
+                var offset = 0L
+                for (box in isoFile.boxes) {
+                    if (box is UnknownBox && box.type == SAMSUNG_MAKERNOTE_BOX_TYPE) {
+                        if (!box.isParsed) {
+                            box.parseDetails()
+                        }
+                        return@consumeIso Pair(offset + 8, box.data.toByteArray()) // skip 8 bytes for box header
+                    }
+                    offset += box.size
+                }
+                return@consumeIso null
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to read sefd box", e)
+        }
+        return null
+    }
+
+    // extensions
+
+    fun IsoFile.updateLocation(locationIso6709: String?) {
+        // Apple GPS Coordinates Box can be in various locations:
+        // - moov[0]/udta[0]/©xyz
+        // - moov[0]/meta[0]/ilst/©xyz
+        // - others?
+        removeBoxes(AppleGPSCoordinatesBox::class.java, true)
+
+        locationIso6709 ?: return
+
+        var userDataBox = Path.getPath<UserDataBox>(movieBox, UserDataBox.TYPE)
+        if (userDataBox == null) {
+            userDataBox = UserDataBox()
+            movieBox.addBox(userDataBox)
+        }
+
+        userDataBox.addBox(AppleGPSCoordinatesBox().apply {
+            value = locationIso6709
+        })
+    }
+
+    fun IsoFile.updateRotation(degrees: Int): Boolean {
+        val matrix: Matrix = when (degrees) {
+            0 -> Matrix.ROTATE_0
+            90 -> Matrix.ROTATE_90
+            180 -> Matrix.ROTATE_180
+            270 -> Matrix.ROTATE_270
+            else -> throw Exception("failed because of invalid rotation degrees=$degrees")
+        }
+
+        var success = false
+        movieBox.getBoxes(TrackHeaderBox::class.java, true).filter { tkhd ->
+            if (!tkhd.isParsed) {
+                tkhd.parseDetails()
+            }
+            tkhd.width > 0 && tkhd.height > 0
+        }.forEach { tkhd ->
+            if (!setOf(Matrix.ROTATE_0, Matrix.ROTATE_90, Matrix.ROTATE_180, Matrix.ROTATE_270).contains(tkhd.matrix)) {
+                throw Exception("failed because existing matrix is not a simple rotation matrix")
+            }
+            tkhd.matrix = matrix
+            success = true
+        }
+        return success
+    }
+
+    fun IsoFile.updateXmp(xmp: String?) {
+        val xmpBox = xmpBox
+        if (xmp != null) {
+            val xmpData = xmp.toByteArray(Charsets.UTF_8)
+            if (xmpBox == null) {
+                addBox(UserBox(XMP.mp4Uuid).apply {
+                    data = xmpData
+                })
+            } else {
+                xmpBox.data = xmpData
+            }
+        } else if (xmpBox != null) {
+            removeBox(xmpBox)
+        }
+    }
+
+    private fun IsoFile.getBoxOffset(test: (box: Box) -> Boolean): Long? {
+        var offset = 0L
+        for (box in boxes) {
+            if (test(box)) {
+                return offset
+            }
+            offset += box.size
+        }
+        return null
+    }
+
+    private val IsoFile.xmpBox: UserBox?
+        get() = boxes.firstOrNull { testXmpBox(it) } as UserBox?
+
+    fun <T : Box> Container.processBoxes(clazz: Class<T>, recursive: Boolean, apply: (box: T, parent: Container) -> Unit) {
+        // use a copy, in case box processing removes boxes
+        for (box in ArrayList(boxes)) {
+            if (clazz.isInstance(box)) {
+                @Suppress("unchecked_cast")
+                apply(box as T, this)
+            }
+            if (recursive && box is Container) {
+                box.processBoxes(clazz, true, apply)
+            }
+        }
+    }
+
+    private fun <T : Box> Container.removeBoxes(clazz: Class<T>, recursive: Boolean) {
+        processBoxes(clazz, recursive) { box, parent -> parent.removeBox(box) }
+    }
+
+    private fun Container.removeBox(box: Box) {
+        boxes = boxes.apply { remove(box) }
+    }
+
+    fun Container.dumpBoxes(sb: StringBuilder, indent: Int = 0) {
+        for (box in boxes) {
+            val boxType = box.type
+            try {
+                if (box is AbstractBox && !box.isParsed) {
+                    box.parseDetails()
+                }
+                when (box) {
+                    is BasicContainer -> {
+                        sb.appendLine("${"\t".repeat(indent)}[$boxType] ${box.javaClass.simpleName}")
+                        box.dumpBoxes(sb, indent + 1)
+                    }
+
+                    is UserBox -> sb.appendLine("${"\t".repeat(indent)}[$boxType] userType=${box.userType.toHex()} $box")
+                    else -> sb.appendLine("${"\t".repeat(indent)}[$boxType] $box")
+                }
+            } catch (e: Exception) {
+                sb.appendLine("${"\t".repeat(indent)}failed to access box type=$boxType exception=${e.message}")
+            }
+        }
+    }
+
+    fun Box.toBytes(): ByteArray {
+        if (size > BOX_SIZE_DANGER_THRESHOLD) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
+        val stream = ByteArrayOutputStream(size.toInt())
+        Channels.newChannel(stream).use { getBox(it) }
+        return stream.toByteArray()
+    }
+
+    fun metadataBoxParser() = PropertyBoxParserImpl().apply {
+        val skippedTypes = listOf(
+            // parsing `MediaDataBox` can take a long time
+            MediaDataBox.TYPE,
+            // parsing `SampleTableBox` or `FreeBox` may yield OOM
+            SampleTableBox.TYPE, FreeBox.TYPE,
+            // some files are padded with `0` but the parser does not stop, reads type "0000",
+            // then a large size from following "0000", which may yield OOM
+            "0000",
+        )
+        setBoxSkipper { type, size ->
+            if (skippedTypes.contains(type)) return@setBoxSkipper true
+            if (size > BOX_SIZE_DANGER_THRESHOLD && !largerTypeWhitelist.contains(type)) throw Mp4TooLargeException(type, "box (type=$type size=$size) is too large")
+            false
+        }
+    }
+
+    fun getUserDataBox(
+        context: Context,
+        mimeType: String,
+        uri: Uri,
+    ): UserDataBox? {
+        if (mimeType != MimeTypes.MP4) return null
+
+        try {
+            return consumeIso(context, uri, metadataBoxParser()) { isoFile ->
+                return@consumeIso Path.getPath(isoFile.movieBox, UserDataBox.TYPE)
+            }
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get User Data box by MP4 parser for mimeType=$mimeType uri=$uri", e)
+        }
+        return null
+    }
+
+    fun extractBoxFields(container: Container): HashMap<String, String> {
+        val fields = HashMap<String, String>()
+        for (box in container.boxes) {
+            if (box is AbstractBox && !box.isParsed) {
+                box.parseDetails()
+            }
+            val type = box.type
+            val key = boxTypeMetadataKey(type)
+            when (box) {
+                is AuthorBox -> fields[key] = box.author
+                is AppleCoverBox -> fields[key] = "[${box.coverData.size} bytes]"
+                is AppleGPSCoordinatesBox -> fields[key] = box.value
+                is AppleItemListBox -> fields.putAll(extractBoxFields(box))
+                is AppleVariableSignedIntegerBox -> fields[key] = box.value.toString()
+                is HandlerBox -> {}
+                is LocationInformationBox -> {
+                    hashMapOf<String, String>(
+                        "Language" to box.language,
+                        "Name" to box.name,
+                        "Role" to box.role.toString(),
+                        "Longitude" to box.longitude.toString(),
+                        "Latitude" to box.latitude.toString(),
+                        "Altitude" to box.altitude.toString(),
+                        "Astronomical Body" to box.astronomicalBody,
+                        "Additional Notes" to box.additionalNotes,
+                    ).forEach { (k, v) -> fields["$key/$k"] = v }
+                }
+
+                is MetaBox -> {
+                    val handlerBox = Path.getPath<HandlerBox>(box, HandlerBox.TYPE).apply { parseDetails() }
+                    when (val handlerType = handlerBox?.handlerType ?: MetaBox.TYPE) {
+                        "mdir" -> fields.putAll(extractBoxFields(box))
+                        else -> fields.putAll(extractBoxFields(box).map { Pair("$handlerType/${it.key}", it.value) }.toMap())
+                    }
+                }
+
+                is UnknownBox -> {
+                    val byteBuffer = box.data
+                    val remaining = byteBuffer.remaining()
+                    if (remaining > 512) {
+                        fields[key] = "[$remaining bytes]"
+                    } else {
+                        val bytes = byteBuffer.toByteArray()
+                        when (type) {
+                            "SDLN",
+                            "smrd" -> fields[key] = String(bytes)
+
+                            else -> fields[key] = "0x${bytes.toHex()}"
+                        }
+                    }
+                }
+
+                is Utf8AppleDataBox -> fields[key] = box.value
+
+                else -> fields[key] = box.toString()
+            }
+        }
+        return fields
+    }
+
+    // cf https://exiftool.org/TagNames/QuickTime.html
+    private fun boxTypeMetadataKey(type: String) = when (type) {
+        "auth" -> "Author"
+        "catg" -> "Category"
+        "covr" -> "Cover Art"
+        "keyw" -> "Keyword"
+        "loci" -> "Location"
+        "mcvr" -> "Preview Image"
+        "pcst" -> "Podcast"
+        "SDLN" -> "Play Mode"
+        "stik" -> "Media Type"
+        "©alb" -> "Album"
+        "©ART" -> "Artist"
+        "©aut" -> "Author"
+        "©cmt" -> "Comment"
+        "©day" -> "Year"
+        "©des" -> "Description"
+        "©gen" -> "Genre"
+        "©nam" -> "Title"
+        "©too" -> "Encoder"
+        "©xyz" -> "GPS Coordinates"
+        else -> type
+    }
+}
+
+class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)
+
+class Mp4FragmentedException(message: String) : RuntimeException(message)
+
+class Mp4ZeroSizeBoxException(message: String, cause: Throwable) : RuntimeException(message, cause)
+

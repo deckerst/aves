@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:configure="deckers.thibault.aves.HomeWidgetSettingsActivity"
+    android:configure="com.shiv.albumic.HomeWidgetSettingsActivity"
     android:initialLayout="@layout/app_widget"
     android:minWidth="40dp"
     android:minHeight="40dp"

@@ -8,7 +8,7 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val packageName = "deckers.thibault.aves"
+val packageName = "com.shiv.albumic"
 
 // Keys
 
@@ -37,7 +37,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "deckers.thibault.aves"
+    namespace = "com.shiv.albumic"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 

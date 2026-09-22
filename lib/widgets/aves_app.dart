@@ -319,7 +319,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                                   source: _mediaStoreSource,
                                   child: child,
                                 ),
-                                onGenerateTitle: (context) => context.l10n.appName,
+                                onGenerateTitle: (context) => device.appName,
                                 theme: lightTheme,
                                 darkTheme: darkTheme,
                                 themeMode: themeBrightness.appThemeMode,

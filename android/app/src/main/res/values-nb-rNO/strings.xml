@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aves</string>
     <string name="videos_shortcut_short_label">Videoer</string>
     <string name="analysis_channel_name">Mediaskanning</string>
     <string name="analysis_notification_default_title">Skanning av media</string>

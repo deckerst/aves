@@ -1,0 +1,211 @@
+package com.shiv.albumic.channel.calls
+
+import android.content.Context
+import android.os.Build
+import android.os.storage.StorageManager
+import com.shiv.albumic.channel.calls.Coresult.Companion.safe
+import com.shiv.albumic.storage.PermissionManager
+import com.shiv.albumic.storage.StorageUtils
+import com.shiv.albumic.storage.StorageUtils.getVolumePaths
+import com.shiv.albumic.utils.FileUtils.getFolderSize
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.util.PathUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import java.io.File
+
+class StorageHandler(private val context: Context) : MethodCallHandler {
+    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        when (call.method) {
+            "getDataUsage" -> ioScope.launch { safe(call, result, ::getDataUsage) }
+            "getStorageVolumes" -> ioScope.launch { safe(call, result, ::getStorageVolumes) }
+            "getCacheDirectory" -> ioScope.launch { safe(call, result, ::getCacheDirectory) }
+            "getUntrackedTrashPaths" -> ioScope.launch { safe(call, result, ::getUntrackedTrashPaths) }
+            "getUntrackedVaultPaths" -> ioScope.launch { safe(call, result, ::getUntrackedVaultPaths) }
+            "getVaultRoot" -> ioScope.launch { safe(call, result, ::getVaultRoot) }
+            "getFreeSpace" -> ioScope.launch { safe(call, result, ::getFreeSpace) }
+            "deleteEmptyDirectories" -> ioScope.launch { safe(call, result, ::deleteEmptyDirectories) }
+            "deleteTempDirectory" -> ioScope.launch { safe(call, result, ::deleteTempDirectory) }
+            "deleteExternalCache" -> ioScope.launch { safe(call, result, ::deleteExternalCache) }
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        var internalCache = getFolderSize(context.cacheDir)
+        internalCache += getFolderSize(context.codeCacheDir)
+        val externalCache = context.externalCacheDirs.sumOf(::getFolderSize)
+        val externalFilesDirs = context.getExternalFilesDirs(null)
+        val dataDir = context.dataDir
+
+        val database = getFolderSize(File(dataDir, "databases"))
+        val flutter = getFolderSize(File(PathUtils.getDataDirectory(context)))
+        val vaults = getFolderSize(File(StorageUtils.getVaultRoot(context)))
+        val trash = externalFilesDirs.mapNotNull { StorageUtils.trashDirFor(context, it.path) }.sumOf(::getFolderSize)
+
+        val internalData = getFolderSize(dataDir) - internalCache
+        val externalData = externalFilesDirs.sumOf(::getFolderSize)
+        val miscData = internalData + externalData - (database + flutter + vaults + trash)
+
+        result.success(
+            hashMapOf(
+                "database" to database,
+                "flutter" to flutter,
+                "vaults" to vaults,
+                "trash" to trash,
+                "miscData" to miscData,
+                "internalCache" to internalCache,
+                "externalCache" to externalCache,
+            )
+        )
+    }
+
+    private fun getStorageVolumes(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        val volumes = ArrayList<Map<String, Any?>>()
+        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+        if (storageManager != null) {
+            for (volumePath in getVolumePaths(context)) {
+                try {
+                    storageManager.getStorageVolume(File(volumePath))?.let { volume ->
+                        val primary = volume.isPrimary
+
+                        var description = volume.getDescription(context)
+                        if (primary) {
+                            val userId = PermissionManager.getVolumeUserId(volumePath)
+                            if (userId == PermissionManager.USER_ID_DUAL_MESSENGER) {
+                                description += " (Dual Messenger)"
+                            } else if (userId != PermissionManager.getAppUserId(context)) {
+                                description += " (user $userId)"
+                            }
+                        }
+
+                        val mediaStoreVolumeName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            StorageUtils.getMediaStoreVolumeName(context, volumePath)
+                        } else null
+
+                        volumes.add(
+                            hashMapOf(
+                                "mediaStoreVolumeName" to mediaStoreVolumeName,
+                                "path" to volumePath,
+                                "description" to description,
+                                "isPrimary" to primary,
+                                "isRemovable" to volume.isRemovable,
+                                "state" to volume.state,
+                            )
+                        )
+                    }
+                } catch (_: Exception) {
+                    // ignore
+                }
+            }
+        }
+        result.success(volumes)
+    }
+
+    private fun getCacheDirectory(call: MethodCall, result: MethodChannel.Result) {
+        val external = call.argument<Boolean>("external")
+        if (external == null) {
+            result.error("getCacheDirectory-args", "missing arguments", null)
+            return
+        }
+
+        val dir = (if (external) context.externalCacheDir else context.cacheDir)
+        if (dir == null) {
+            result.error("getCacheDirectory-null", "context cache dir is null", null)
+            return
+        }
+
+        result.success(dir.path)
+    }
+
+
+    private fun getUntrackedTrashPaths(call: MethodCall, result: MethodChannel.Result) {
+        val knownPaths = call.argument<List<String>>("knownPaths")
+        if (knownPaths == null) {
+            result.error("getUntrackedTrashPaths-args", "missing arguments", null)
+            return
+        }
+
+        val trashDirs = context.getExternalFilesDirs(null).filterNotNull().mapNotNull { StorageUtils.trashDirFor(context, it.path) }
+        val trashItemPaths = trashDirs.flatMap { dir -> dir.listFiles()?.filterNotNull()?.mapNotNull { file -> file.path } ?: listOf() }
+        val untrackedPaths = trashItemPaths.filterNot(knownPaths::contains).toList()
+
+        result.success(untrackedPaths)
+    }
+
+    private fun getUntrackedVaultPaths(call: MethodCall, result: MethodChannel.Result) {
+        val vault = call.argument<String>("vault")
+        val knownPaths = call.argument<List<String>>("knownPaths")
+        if (vault == null || knownPaths == null) {
+            result.error("getUntrackedVaultPaths-args", "missing arguments", null)
+            return
+        }
+
+        val vaultDir = File(StorageUtils.getVaultRoot(context), vault)
+        val vaultItemPaths = vaultDir.listFiles()?.mapNotNull { file -> file?.path } ?: listOf()
+        val untrackedPaths = vaultItemPaths.filterNot(knownPaths::contains).toList()
+
+        result.success(untrackedPaths)
+    }
+
+    private fun getVaultRoot(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(StorageUtils.getVaultRoot(context))
+    }
+
+    private fun getFreeSpace(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String>("path")
+        if (path == null) {
+            result.error("getFreeSpace-args", "missing arguments", null)
+            return
+        }
+
+        // `StorageStatsManager` `getFreeBytes()` is only available from API 26,
+        // and non-primary volume UUIDs cannot be used with it
+        val file = File(path)
+        try {
+            result.success(file.freeSpace)
+        } catch (e: SecurityException) {
+            result.error("getFreeSpace-security", "failed because of missing access", e.message)
+        }
+    }
+
+    private fun deleteEmptyDirectories(call: MethodCall, result: MethodChannel.Result) {
+        val dirPaths = call.argument<List<String>>("dirPaths")
+        if (dirPaths == null) {
+            result.error("deleteEmptyDirectories-args", "missing arguments", null)
+            return
+        }
+
+        var deleted = 0
+        dirPaths.forEach {
+            try {
+                val dir = File(it)
+                if (dir.isDirectory && dir.listFiles()?.isEmpty() == true && dir.delete()) {
+                    deleted++
+                }
+            } catch (_: SecurityException) {
+                // ignore
+            }
+        }
+        result.success(deleted)
+    }
+
+    private fun deleteTempDirectory(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(StorageUtils.deleteTempDirectory(context))
+    }
+
+    private fun deleteExternalCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        context.externalCacheDirs.filter { it.exists() }.forEach { it.deleteRecursively() }
+        result.success(true)
+    }
+
+    companion object {
+        const val CHANNEL = "deckers.thibault/aves/storage"
+    }
+}

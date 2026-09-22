@@ -1,6 +1,6 @@
 ## Terms of Service
 
-“Aves Gallery” is an open-source gallery and metadata explorer app allowing you to access and manage your local photos and videos.
+“Albumic Gallery” is an open-source gallery and metadata explorer app allowing you to access and manage your local photos and videos.
 
 The app is designed for legal, authorized and acceptable purposes.
 
@@ -18,8 +18,8 @@ __Optionally, with your consent, the app collects anonymous error and diagnostic
 
 ## Contact
 
-Developer: Thibault Deckers
+Developer: Shiv
 
-Email: [gallery.aves@gmail.com](mailto:gallery.aves@gmail.com)
+Email: [shivwarp@gmail.com](mailto:shivwarp@gmail.com)
 
-Website: [https://github.com/deckerst/aves](https://github.com/deckerst/aves)
+Website: [https://github.com/ceiletoiles/albumic](https://github.com/ceiletoiles/albumic)

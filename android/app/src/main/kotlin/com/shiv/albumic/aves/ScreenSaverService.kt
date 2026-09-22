@@ -1,0 +1,154 @@
+package com.shiv.albumic
+
+import android.service.dreams.DreamService
+import android.util.Log
+import android.view.View
+import app.loup.streams_channel.StreamsChannel
+import com.shiv.albumic.channel.calls.AccessibilityHandler
+import com.shiv.albumic.channel.calls.DeviceHandler
+import com.shiv.albumic.channel.calls.EmbeddedDataHandler
+import com.shiv.albumic.channel.calls.MediaFetchObjectHandler
+import com.shiv.albumic.channel.calls.MediaSessionHandler
+import com.shiv.albumic.channel.calls.MediaStoreHandler
+import com.shiv.albumic.channel.calls.MetadataFetchHandler
+import com.shiv.albumic.channel.calls.StorageHandler
+import com.shiv.albumic.channel.calls.window.ServiceWindowHandler
+import com.shiv.albumic.channel.calls.window.WindowHandler
+import com.shiv.albumic.channel.streams.darttoplatform.ImageByteStreamHandler
+import com.shiv.albumic.channel.streams.darttoplatform.MediaStoreStreamHandler
+import com.shiv.albumic.channel.streams.platformtodart.MediaCommandStreamHandler
+import com.shiv.albumic.utils.LogUtils
+import io.flutter.FlutterInjector
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterSurfaceView
+import io.flutter.embedding.android.FlutterView
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
+import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
+import io.flutter.plugin.common.EventChannel
+import io.flutter.plugin.common.MethodChannel
+
+// for FlutterView-level integration, cf https://docs.flutter.dev/development/add-to-app/android/add-flutter-view
+class ScreenSaverService : DreamService() {
+    private var flutterEngine: FlutterEngine? = null
+    private var flutterView: FlutterView? = null
+    private lateinit var mediaSessionHandler: MediaSessionHandler
+
+    override fun onAttachedToWindow() {
+        Log.i(LOG_TAG, "onAttachedToWindow")
+        super.onAttachedToWindow()
+        initDream()
+        createEngine()
+        setContentView(createView())
+    }
+
+    override fun onDreamingStarted() {
+        Log.i(LOG_TAG, "onDreamingStarted")
+        super.onDreamingStarted()
+        onStart()
+    }
+
+    override fun onDreamingStopped() {
+        Log.i(LOG_TAG, "onDreamingStopped")
+        release()
+        super.onDreamingStopped()
+    }
+
+    override fun onDetachedFromWindow() {
+        Log.i(LOG_TAG, "onDetachedFromWindow")
+        destroyView()
+        super.onDetachedFromWindow()
+    }
+
+    private fun initDream() {
+        isInteractive = false
+        isFullscreen = true
+    }
+
+    private fun createEngine() {
+        flutterEngine = flutterEngine ?: FlutterEngine(this, null, false)
+        GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine!!)
+        initChannels()
+    }
+
+    private fun createView(): View {
+        flutterView = FlutterView(this, FlutterSurfaceView(this)).apply {
+            id = FlutterActivity.FLUTTER_VIEW_ID
+            attachToFlutterEngine(flutterEngine!!)
+        }
+        return flutterView!!
+    }
+
+    private fun destroyView() {
+        flutterEngine?.lifecycleChannel?.appIsDetached()
+        flutterView?.detachFromFlutterEngine()
+    }
+
+    private fun release() {
+        destroyView()
+        mediaSessionHandler.dispose()
+        flutterEngine = null
+        flutterView = null
+    }
+
+    private fun onStart() {
+        flutterEngine!!.apply {
+            if (!dartExecutor.isExecutingDart) {
+                navigationChannel.setInitialRoute(DEFAULT_INITIAL_ROUTE)
+                val appBundlePathOverride = FlutterInjector.instance().flutterLoader().findAppBundlePath()
+                val entrypoint = DartEntrypoint(appBundlePathOverride, DEFAULT_DART_ENTRYPOINT)
+                dartExecutor.executeDartEntrypoint(entrypoint)
+            }
+            lifecycleChannel.appIsResumed()
+        }
+    }
+
+    private fun initChannels() {
+        val messenger = flutterEngine!!.dartExecutor
+
+        // notification: platform -> dart
+        val mediaCommandStreamHandler = MediaCommandStreamHandler().apply {
+            EventChannel(messenger, MediaCommandStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+
+        // dart -> platform -> dart
+        // - need Context
+        mediaSessionHandler = MediaSessionHandler(this, mediaCommandStreamHandler)
+        MethodChannel(messenger, AccessibilityHandler.CHANNEL).setMethodCallHandler(AccessibilityHandler(this))
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(this))
+        MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
+        MethodChannel(messenger, MediaFetchObjectHandler.CHANNEL).setMethodCallHandler(MediaFetchObjectHandler(this))
+        MethodChannel(messenger, MediaSessionHandler.CHANNEL).setMethodCallHandler(mediaSessionHandler)
+        MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
+        MethodChannel(messenger, MetadataFetchHandler.CHANNEL).setMethodCallHandler(MetadataFetchHandler(this))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
+        // - need Service
+        MethodChannel(messenger, WindowHandler.CHANNEL).setMethodCallHandler(ServiceWindowHandler(this))
+
+        // result streaming: dart -> platform ->->-> dart
+        // - need Context
+        StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory { args -> ImageByteStreamHandler(this, args) }
+        StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory { args -> MediaStoreStreamHandler(this, args) }
+
+        // intent handling
+        // detail fetch: dart -> platform
+        MethodChannel(messenger, MainActivity.INTENT_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getIntentData" -> {
+                    result.success(intentDataMap)
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val LOG_TAG = LogUtils.createTag<ScreenSaverService>()
+        private val intentDataMap: Map<String, Any?> = hashMapOf(
+            MainActivity.INTENT_DATA_KEY_ACTION to MainActivity.INTENT_ACTION_SCREEN_SAVER,
+        )
+
+        // from `FlutterActivityLaunchConfigs`
+        const val DEFAULT_DART_ENTRYPOINT = "main"
+        const val DEFAULT_INITIAL_ROUTE = "/"
+    }
+}

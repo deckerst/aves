@@ -6,13 +6,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 final Device device = Device._private();
 
 class Device {
-  late final String _packageName, _packageVersion, _userAgent;
+  late final String _appName, _packageName, _packageVersion, _userAgent;
   late final bool _canAuthenticateUser, _canPinShortcut, _showPinShortcutFeedback;
   late final bool _canRenderSubdivisionFlagEmojis, _canRequestMediaManagementPermission, _canRequestNotificationPermission;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
   late final bool _isPhysicalDevice, _isTelevision;
 
   String get packageName => _packageName;
+
+  String get appName => _appName;
 
   String get packageVersion => _packageVersion;
 
@@ -46,6 +48,7 @@ class Device {
 
   Future<void> init() async {
     final packageInfo = await PackageInfo.fromPlatform();
+    _appName = packageInfo.appName;
     _packageName = packageInfo.packageName;
     _packageVersion = packageInfo.version;
     _userAgent = '$_packageName/$_packageVersion';

@@ -145,8 +145,8 @@ process handle SIGSEGV --pass true --stop false --notify true
 ## Certificate Fingerprint
 
 ```
-Owner: CN=Thibault Deckers
-Issuer: CN=Thibault Deckers
+Owner: CN=Shiv
+Issuer: CN=Shiv
 Serial number: 12957861
 Valid from: Wed Dec 07 08:07:30 CET 2016 until: Sun Dec 01 08:07:30 CET 2041
 Certificate fingerprints:
