@@ -45,7 +45,7 @@ class Keys {
   static const durationTs = 'duration_ts';
   static const encoder = 'encoder';
   static const extraDataSize = 'extradata_size';
-  static const filename = 'filename';
+  static const fileName = 'filename';
   static const filmGrain = 'film_grain';
   static const fpsDen = 'fps_den';
   static const fpsNum = 'fps_num';

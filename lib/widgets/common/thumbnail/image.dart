@@ -17,30 +17,19 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailImage extends StatefulWidget {
-  final AvesEntry entry;
-  final double extent, devicePixelRatio;
-  final bool isMosaic, progressive;
-  final BoxFit? fit;
-  final bool showLoadingBackground;
-  final ValueNotifier<bool>? cancellableNotifier;
-  final Object? heroTag;
-  final HeroPlaceholderBuilder? heroPlaceholderBuilder;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.extent,
-    required this.devicePixelRatio,
-    this.progressive = true,
-    this.isMosaic = false,
-    this.fit,
-    this.showLoadingBackground = true,
-    this.cancellableNotifier,
-    this.heroTag,
-    this.heroPlaceholderBuilder,
-  });
-
+class const ThumbnailImage({
+  super.key,
+  required final AvesEntry entry,
+  required final double extent,
+  required final double devicePixelRatio,
+  final bool progressive = true,
+  final bool isMosaic = false,
+  final BoxFit? fit,
+  final bool showLoadingBackground = true,
+  final ValueNotifier<bool>? cancellableNotifier,
+  final Object? heroTag,
+  final HeroPlaceholderBuilder? heroPlaceholderBuilder,
+}) extends StatefulWidget {
   @override
   State<ThumbnailImage> createState() => _ThumbnailImageState();
 
@@ -335,19 +324,16 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
   }
 }
 
-class _ConditionalImageProvider {
-  final ImageProvider provider;
-  final bool Function(ImageInfo?)? predicate;
+class const _ConditionalImageProvider(
+  final ImageProvider provider, [
+  final bool Function(ImageInfo?)? predicate,
+]);
 
-  const new(this.provider, [this.predicate]);
-}
-
-class _ProviderStream {
-  final _ConditionalImageProvider provider;
-  final ImageStream _stream;
-  final ImageStreamListener listener;
-
-  new(this.provider, this.listener) : _stream = provider.provider.resolve(ImageConfiguration.empty);
+class _ProviderStream(
+  final _ConditionalImageProvider provider,
+  final ImageStreamListener listener,
+) {
+  final ImageStream _stream = provider.provider.resolve(ImageConfiguration.empty);
 
   void startListening() => _stream.addListener(listener);
 

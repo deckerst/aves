@@ -3,17 +3,12 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class CreateGroupDialog extends StatefulWidget {
+class const CreateGroupDialog({
+  super.key,
+  required final FilterGrouping grouping,
+  required final Uri? parentGroupUri,
+}) extends StatefulWidget {
   static const routeName = '/dialog/create_group';
-
-  final FilterGrouping grouping;
-  final Uri? parentGroupUri;
-
-  const new({
-    super.key,
-    required this.grouping,
-    required this.parentGroupUri,
-  });
 
   @override
   State<CreateGroupDialog> createState() => _CreateGroupDialogState();

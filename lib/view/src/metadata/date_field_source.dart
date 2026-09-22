@@ -5,11 +5,11 @@ import 'package:flutter/widgets.dart';
 extension ExtraDateFieldSourceView on DateFieldSource {
   String getText(BuildContext context) {
     return switch (this) {
-      DateFieldSource.fileModifiedDate => context.l10n.editEntryDateDialogSourceFileModifiedDate,
-      DateFieldSource.exifDate => 'Exif date',
-      DateFieldSource.exifDateOriginal => 'Exif original date',
-      DateFieldSource.exifDateDigitized => 'Exif digitized date',
-      DateFieldSource.exifGpsDate => 'Exif GPS date',
+      .fileModifiedDate => context.l10n.editEntryDateDialogSourceFileModifiedDate,
+      .exifDate => 'Exif date',
+      .exifDateOriginal => 'Exif original date',
+      .exifDateDigitized => 'Exif digitized date',
+      .exifGpsDate => 'Exif GPS date',
     };
   }
 }

@@ -44,7 +44,7 @@ class EditorControlPanel extends StatelessWidget {
             builder: (context, action, child) {
               return MultiCrossFader(
                 duration: context.select<DurationsData, Duration>((v) => v.formTransition),
-                alignment: Alignment.bottomCenter,
+                alignment: .bottomCenter,
                 layoutBuilder: (topChild, topChildKey, bottomChild, bottomChildKey) {
                   return Stack(
                     clipBehavior: Clip.none,

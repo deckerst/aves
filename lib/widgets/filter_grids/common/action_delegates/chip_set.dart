@@ -24,8 +24,8 @@ import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/change_layout_dialog.dart';
 import 'package:aves/widgets/dialogs/filter_editors/cover_selection_dialog.dart';
-import 'package:aves/widgets/dialogs/tile_view_dialog.dart';
 import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
@@ -39,9 +39,11 @@ import 'package:provider/provider.dart';
 abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, VaultAwareMixin {
   Iterable<FilterGridItem<T>> get allItems;
 
-  ChipSortFactor get sortFactor;
+  String get settingsRouteKey;
 
-  set sortFactor(ChipSortFactor factor);
+  SortFactor get sortFactor;
+
+  set sortFactor(SortFactor factor);
 
   bool get sortReverse;
 
@@ -51,24 +53,20 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   set sectionFactor(ChipSectionFactor factor) {}
 
-  TileLayout get tileLayout;
-
-  set tileLayout(TileLayout tileLayout);
-
-  List<ChipSortFactor> get sortOptions => [
-    .date,
-    .name,
-    .count,
-    .size,
-  ];
-
-  List<ChipSectionFactor> get sectionOptions => [];
-
   List<TileLayout> get layoutOptions => [
     .mosaic,
     .grid,
     .list,
   ];
+
+  List<SortFactor> get sortOptions => [
+    .date,
+    .chipName,
+    .size,
+    .count,
+  ];
+
+  List<ChipSectionFactor> get sectionOptions => [];
 
   bool isVisible(
     ChipSetAction action, {
@@ -83,7 +81,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
         return true;
       case .select:
         return appMode.canSelectFilter && !isSelecting;
@@ -143,7 +141,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       // general
       case .select:
         return hasItems;
-      case .configureView:
+      case .changeLayout:
       case .selectAll:
       case .selectNone:
       // browsing
@@ -181,7 +179,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
         configureView(context);
       case .select:
         context.read<Selection<FilterGridItem<T>>>().select();
@@ -272,32 +270,32 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
 
   Future<void> configureView(BuildContext context) async {
     final initialValue = (
+      settings.getTileLayout(settingsRouteKey),
       sortFactor,
       sectionFactor,
-      tileLayout,
       sortReverse,
     );
     final extentController = context.read<TileExtentController>();
-    final value = await showAvesDialog<(ChipSortFactor, ChipSectionFactor, TileLayout, bool)>(
+    final value = await showAvesDialog<(TileLayout, SortFactor, ChipSectionFactor, bool)>(
       context: context,
       builder: (context) {
-        return TileViewDialog<ChipSortFactor, ChipSectionFactor, TileLayout>(
+        return ChangeLayoutDialog<ChipSectionFactor>(
           initialValue: initialValue,
-          sortOptions: sortOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          sectionOptions: sectionOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
-          layoutOptions: layoutOptions.map((v) => TileViewDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          layoutOptions: layoutOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sortOptions: sortOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
+          sectionOptions: sectionOptions.map((v) => ChangeLayoutDialogOption(value: v, title: v.getName(context), icon: v.icon)).toList(),
           sortOrder: (factor, reverse) => factor.getOrderName(context, reverse),
           tileExtentController: extentController,
         );
       },
-      routeSettings: const RouteSettings(name: TileViewDialog.routeName),
+      routeSettings: const RouteSettings(name: ChangeLayoutDialog.routeName),
     );
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      sortFactor = value.$1;
-      sectionFactor = value.$2;
-      tileLayout = value.$3;
+      settings.setTileLayout(settingsRouteKey, value.$1);
+      sortFactor = value.$2;
+      sectionFactor = value.$3;
       sortReverse = value.$4;
     }
   }

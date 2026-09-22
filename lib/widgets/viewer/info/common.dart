@@ -91,7 +91,7 @@ class InfoRowGroup extends StatefulWidget {
             // open link on tap
             onTap: () => onTap(context),
           ),
-          alignment: PlaceholderAlignment.middle,
+          alignment: .middle,
         ),
       ];
     };

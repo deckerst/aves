@@ -162,24 +162,17 @@ mixin FeedbackMixin {
   }
 }
 
-class ReportOverlay<T> extends StatefulWidget {
+class const ReportOverlay<T>({
+  super.key,
+  required final Stream<T> opStream,
+  required final int? itemCount,
+  required final VoidCallback? onCancel,
+  required final void Function(Set<T> processed) onDone,
+}) extends StatefulWidget {
   static const routeName = '/dialog/report_overlay';
-
-  final Stream<T> opStream;
-  final int? itemCount;
-  final VoidCallback? onCancel;
-  final void Function(Set<T> processed) onDone;
 
   static const double diameter = 160.0;
   static const double strokeWidth = 8.0;
-
-  const new({
-    super.key,
-    required this.opStream,
-    required this.itemCount,
-    required this.onCancel,
-    required this.onDone,
-  });
 
   @override
   State<ReportOverlay<T>> createState() => _ReportOverlayState<T>();
@@ -258,7 +251,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
           return FadeTransition(
             opacity: _animation,
             child: Stack(
-              alignment: Alignment.center,
+              alignment: .center,
               children: [
                 Container(
                   width: diameter + 2,
@@ -311,14 +304,10 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
   }
 }
 
-class ReportProgressIndicator extends StatelessWidget {
-  final double opacity;
-
-  const new({
-    super.key,
-    this.opacity = 1,
-  });
-
+class const ReportProgressIndicator({
+  super.key,
+  final double opacity = 1,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const diameter = ReportOverlay.diameter;
@@ -337,20 +326,13 @@ class ReportProgressIndicator extends StatelessWidget {
   }
 }
 
-class _FeedbackMessage extends StatefulWidget {
-  final FeedbackType type;
-  final String message;
-  final DateTime? start, stop;
-  final Color progressColor;
-
-  const new({
-    required this.type,
-    required this.message,
-    required this.progressColor,
-    this.start,
-    this.stop,
-  });
-
+class const _FeedbackMessage({
+  required final FeedbackType type,
+  required final String message,
+  required final Color progressColor,
+  final DateTime? start,
+  final DateTime? stop,
+}) extends StatefulWidget {
   @override
   State<_FeedbackMessage> createState() => _FeedbackMessageState();
 }
@@ -399,14 +381,12 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
 
     final textScaler = MediaQuery.textScalerOf(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final contentTextStyle =
         theme.snackBarTheme.contentTextStyle ??
         theme.textTheme.bodyMedium!.copyWith(
-          color: colorScheme.onInverseSurface,
+          color: theme.colorScheme.onInverseSurface,
         );
     final contentTextFontSize = contentTextStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!;
-    final timerChangeShadowColor = colorScheme.primary;
 
     final remainingDurationAnimation = _remainingDurationMillis;
     return Row(
@@ -435,23 +415,8 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
                 // because we cannot use the app context theme here
                 foreground: widget.progressColor,
                 center: ChangeHighlightText(
-                  durationFormatter.format((remainingDurationMillis / 1000).ceil()),
-                  style: contentTextStyle.copyWith(
-                    shadows: [
-                      Shadow(
-                        color: timerChangeShadowColor.withAlpha(0),
-                        blurRadius: 0,
-                      ),
-                    ],
-                  ),
-                  changedStyle: contentTextStyle.copyWith(
-                    shadows: [
-                      Shadow(
-                        color: timerChangeShadowColor,
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
+                  TextSpan(text: durationFormatter.format((remainingDurationMillis / 1000).ceil())),
+                  textStyle: contentTextStyle,
                   duration: context.read<DurationsData>().formTextStyleTransition,
                 ),
               );
@@ -463,11 +428,7 @@ class _FeedbackMessageState extends State<_FeedbackMessage> with SingleTickerPro
   }
 }
 
-class _WarnIndicator extends CustomPainter {
-  final Color color;
-
-  const new(this.color);
-
+class const _WarnIndicator(final Color color) extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRRect(
@@ -482,14 +443,10 @@ class _WarnIndicator extends CustomPainter {
   bool shouldRepaint(_WarnIndicator oldDelegate) => false;
 }
 
-class ActionFeedback extends StatefulWidget {
-  final Widget? child;
-
-  const new({
-    super.key,
-    required this.child,
-  });
-
+class const ActionFeedback({
+  super.key,
+  required final Widget? child,
+}) extends StatefulWidget {
   @override
   State<ActionFeedback> createState() => _ActionFeedbackState();
 }

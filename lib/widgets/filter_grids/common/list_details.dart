@@ -10,6 +10,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/filter_grids/common/list_details_theme.dart';
@@ -17,20 +18,15 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
-  final FilterGridItem<T> gridItem;
-  final bool pinned, locked;
-
+class const FilterListDetails<T extends CollectionFilter>({
+  super.key,
+  required final FilterGridItem<T> gridItem,
+  required final bool pinned,
+  required final bool locked,
+}) extends StatelessWidget {
   T get filter => gridItem.filter;
 
   AvesEntry? get entry => gridItem.entry;
-
-  const new({
-    super.key,
-    required this.gridItem,
-    required this.pinned,
-    required this.locked,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
               children: [
                 if (hasTitleLeading)
                   WidgetSpan(
-                    alignment: PlaceholderAlignment.middle,
+                    alignment: .middle,
                     child: Padding(
                       padding: const EdgeInsetsDirectional.only(end: FilterListDetailsTheme.titleIconPadding),
                       child: IconTheme(
@@ -70,7 +66,7 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
               ],
             ),
             softWrap: false,
-            overflow: detailsTheme.titleMaxLines == 1 ? TextOverflow.fade : TextOverflow.ellipsis,
+            overflow: detailsTheme.titleMaxLines == 1 ? .fade : .ellipsis,
             maxLines: detailsTheme.titleMaxLines,
             // `textScaler` is applied to font size and icon size at the theme level,
             // otherwise the leading icon will be low-res scaled up/down
@@ -105,11 +101,9 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
           leading,
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
+            child: FadingLine(
               dateText,
               style: detailsTheme.captionStyle,
-              softWrap: false,
-              overflow: TextOverflow.fade,
             ),
           ),
         ],
@@ -157,11 +151,9 @@ class FilterListDetails<T extends CollectionFilter> extends StatelessWidget {
         children: [
           leading,
           const SizedBox(width: 8),
-          Text(
+          FadingLine(
             '${context.l10n.itemCount(source.count(filter))} • ${formatFileSize(settings.avesLocale, source.size(filter))}',
             style: detailsTheme.captionStyle,
-            softWrap: false,
-            overflow: TextOverflow.fade,
           ),
         ],
       ),

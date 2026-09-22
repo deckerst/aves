@@ -55,7 +55,7 @@ class _EntryQueryBarState extends State<EntryQueryBar> {
     final textScaler = MediaQuery.textScalerOf(context);
     return Container(
       height: EntryQueryBar.getPreferredHeight(textScaler),
-      alignment: Alignment.topCenter,
+      alignment: .topCenter,
       child: Selector<Selection<AvesEntry>, bool>(
         selector: (context, selection) => !selection.isSelecting,
         builder: (context, editable, child) => QueryBar(

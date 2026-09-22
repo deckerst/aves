@@ -19,28 +19,11 @@ class AvesListSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final subtitleStyle = theme.listTileTheme.subtitleTextStyle ?? _defaultTextStyle(theme);
-    final subtitleChangeShadowColor = theme.colorScheme.onSurface;
     return ChangeHighlightText(
       // provide key to refresh on theme brightness change
-      key: ValueKey(subtitleChangeShadowColor),
-      data,
-      style: subtitleStyle.copyWith(
-        shadows: [
-          Shadow(
-            color: subtitleChangeShadowColor.withAlpha(0),
-            blurRadius: 0,
-          ),
-        ],
-      ),
-      changedStyle: subtitleStyle.copyWith(
-        shadows: [
-          Shadow(
-            color: subtitleChangeShadowColor,
-            blurRadius: 3,
-          ),
-        ],
-      ),
+      key: ValueKey(theme.colorScheme),
+      TextSpan(text: data),
+      textStyle: theme.listTileTheme.subtitleTextStyle ?? _defaultTextStyle(theme),
       duration: context.read<DurationsData>().formTextStyleTransition,
     );
   }

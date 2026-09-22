@@ -163,7 +163,7 @@ mixin EntryEditorMixin {
         await EntrySetActionDelegate().editDate(
           context,
           entries: entriesToDate,
-          modifier: DateModifier.copyField(DateFieldSource.fileModifiedDate),
+          modifier: DateModifier.copyField(.fileModifiedDate),
           showResult: false,
         );
         // recatalog so that the metadata dates are not ignored when best dates are evaluated

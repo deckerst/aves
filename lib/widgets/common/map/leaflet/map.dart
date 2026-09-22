@@ -152,7 +152,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         ),
         width: markerSize.width,
         height: markerSize.height,
-        alignment: Alignment.topCenter,
+        alignment: .topCenter,
       );
     }).toList();
 
@@ -181,7 +181,7 @@ class _EntryLeafletMapState<T> extends State<EntryLeafletMap<T>> with TickerProv
         MarkerLayer(
           markers: markers,
           rotate: true,
-          alignment: Alignment.bottomCenter,
+          alignment: .bottomCenter,
         ),
         NullableValueListenableBuilder<LatLng?>(
           valueListenable: widget.dotLocationNotifier,

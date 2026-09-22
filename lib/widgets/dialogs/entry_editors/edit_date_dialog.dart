@@ -1,3 +1,4 @@
+import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -6,7 +7,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
 import 'package:aves/widgets/common/basic/time_shift_selector.dart';
@@ -37,8 +37,8 @@ class EditEntryDateDialog extends StatefulWidget {
 }
 
 class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
-  DateEditAction _action = DateEditAction.setCustom;
-  DateFieldSource _copyFieldSource = DateFieldSource.fileModifiedDate;
+  DateEditAction _action = .setCustom;
+  DateFieldSource _copyFieldSource = .fileModifiedDate;
   late AvesEntry _copyItemSource;
   late DateTime _customDateTime;
   late TimeShiftController _timeShiftController;
@@ -115,11 +115,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
                     key: ValueKey(_action),
                     mainAxisSize: .min,
                     children: [
-                      if (_action == DateEditAction.setCustom) _buildSetCustomContent(context),
-                      if (_action == DateEditAction.copyField) _buildCopyFieldContent(context),
-                      if (_action == DateEditAction.copyItem) _buildCopyItemContent(context),
-                      if (_action == DateEditAction.shift) _buildShiftContent(context),
-                      (_action == DateEditAction.shift || _action == DateEditAction.remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
+                      if (_action == .setCustom) _buildSetCustomContent(context),
+                      if (_action == .copyField) _buildCopyFieldContent(context),
+                      if (_action == .copyItem) _buildCopyItemContent(context),
+                      if (_action == .shift) _buildShiftContent(context),
+                      (_action == .shift || _action == .remove) ? _buildDestinationFields(context) : const SizedBox(height: 8),
                     ],
                   ),
                 ),
@@ -255,7 +255,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         lastDate = PersianDateTime.fromGregorian(lastDate);
     }
 
-    final _date = await showDatePicker(
+    var _date = await showDatePicker(
       context: context,
       initialDate: initialDate,
       firstDate: firstDate,
@@ -266,6 +266,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
     if (_date == null) return;
 
+    switch (calendarDelegate) {
+      case PersianCalendarDelegate _:
+        _date = PersianDateTime(_date.year, _date.month, _date.day).toGregorian();
+    }
+
     final _time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_customDateTime),
@@ -275,7 +280,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
 
     setState(
       () => _customDateTime = DateTime(
-        _date.year,
+        _date!.year,
         _date.month,
         _date.day,
         _time.hour,
@@ -324,8 +329,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return DateModifier.copyField(_copyFieldSource);
       case .copyItem:
         return DateModifier.setCustom(const {}, copyItemDate);
-      case .extractFromTitle:
-        return DateModifier.extractFromTitle();
+      case .extractFromFileName:
+        return DateModifier.extractFromFileName();
       case .shift:
         return DateModifier.shift(_fields, _timeShiftController.value.inSeconds);
       case .remove:
@@ -338,7 +343,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
       case .setCustom:
       case .copyField:
       case .copyItem:
-      case .extractFromTitle:
+      case .extractFromFileName:
         _isValidNotifier.value = true;
       case .shift:
       case .remove:

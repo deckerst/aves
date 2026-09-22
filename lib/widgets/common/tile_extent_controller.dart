@@ -7,27 +7,31 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-class TileExtentController {
-  final String settingsRouteKey;
-  final int columnCountMin, columnCountDefault;
-  final double extentMin, extentMax, spacing, horizontalPadding;
-  late final ValueNotifier<double> extentNotifier;
+class TileExtentController({
+  required final String? settingsRouteKey,
+  final int columnCountMin = 2,
+  required final int columnCountDefault,
+  required final double extentMin,
+  required final double extentMax,
+  required final double spacing,
+  required final double horizontalPadding,
+}) {
+  static const double _defaultExtent = 0;
 
-  late double userPreferredExtent;
+  final ValueNotifier<double> extentNotifier = ValueNotifier(_defaultExtent);
+  double userPreferredExtent = _defaultExtent;
   Size _viewportSize = Size.zero;
   final Set<StreamSubscription> _subscriptions = {};
 
   Size get viewportSize => _viewportSize;
 
-  new({
-    required this.settingsRouteKey,
-    this.columnCountMin = 2,
-    required this.columnCountDefault,
-    required this.extentMin,
-    required this.extentMax,
-    required this.spacing,
-    required this.horizontalPadding,
-  }) {
+  double get _settingsTileExtent => settingsRouteKey != null ? settings.getTileExtent(settingsRouteKey!) : _defaultExtent;
+
+  set _settingsTileExtent(double v) {
+    if (settingsRouteKey != null) settings.setTileExtent(settingsRouteKey!, v);
+  }
+
+  this {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',
@@ -36,9 +40,10 @@ class TileExtentController {
       );
     }
     // initialize extent to 0, so that it will be dynamically sized on first launch
-    extentNotifier = ValueNotifier(0);
-    userPreferredExtent = settings.getTileExtent(settingsRouteKey);
-    _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
+    userPreferredExtent = _settingsTileExtent;
+    if (settingsRouteKey != null) {
+      _subscriptions.add(settings.updateTileExtentStream.listen((_) => _onSettingsChanged()));
+    }
   }
 
   void dispose() {
@@ -52,7 +57,7 @@ class TileExtentController {
   }
 
   void _onSettingsChanged() {
-    if (userPreferredExtent != settings.getTileExtent(settingsRouteKey)) {
+    if (userPreferredExtent != _settingsTileExtent) {
       _update();
     }
   }
@@ -74,7 +79,7 @@ class TileExtentController {
   double setUserPreferredExtent(double extent) => _update(userPreferredExtent: extent.roundToDouble());
 
   double _update({double? userPreferredExtent}) {
-    final preferredExtent = userPreferredExtent ?? settings.getTileExtent(settingsRouteKey);
+    final preferredExtent = userPreferredExtent ?? _settingsTileExtent;
     final targetExtent = preferredExtent > 0 ? preferredExtent : extentNotifier.value;
 
     final columnCount = _effectiveColumnCountForExtent(targetExtent);
@@ -82,7 +87,7 @@ class TileExtentController {
 
     if (this.userPreferredExtent != preferredExtent) {
       this.userPreferredExtent = preferredExtent;
-      settings.setTileExtent(settingsRouteKey, preferredExtent);
+      _settingsTileExtent = preferredExtent;
     }
     if (extentNotifier.value != newExtent) {
       extentNotifier.value = newExtent;

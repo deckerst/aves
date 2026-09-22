@@ -7,16 +7,16 @@ extension ExtraThumbnailOverlayLocationIconView on ThumbnailOverlayLocationIcon 
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ThumbnailOverlayLocationIcon.located => l10n.filterLocatedLabel,
-      ThumbnailOverlayLocationIcon.unlocated => l10n.filterNoLocationLabel,
-      ThumbnailOverlayLocationIcon.none => l10n.settingsDisabled,
+      .located => l10n.filterLocatedLabel,
+      .unlocated => l10n.filterNoLocationLabel,
+      .none => l10n.settingsDisabled,
     };
   }
 
   IconData getIcon(BuildContext context) {
     return switch (this) {
-      ThumbnailOverlayLocationIcon.unlocated => AIcons.locationUnlocated,
-      ThumbnailOverlayLocationIcon.located || ThumbnailOverlayLocationIcon.none => AIcons.location,
+      .unlocated => AIcons.locationUnlocated,
+      .located || .none => AIcons.location,
     };
   }
 }

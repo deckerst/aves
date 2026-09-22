@@ -493,7 +493,7 @@
     "editEntryDialogCopyFromItem": "Kopiuj z innego elementu",
     "editEntryDialogTargetFieldsHeader": "Pola do modyfikacji",
     "editEntryDateDialogTitle": "Data i godzina",
-    "editEntryDateDialogExtractFromTitle": "Wydobądź z tytułu",
+    "editEntryDateDialogExtractFromTitle": "Rozpakuj z pliku",
     "menuActionSelectAll": "Zaznacz wszystkie",
     "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "XMP jest wymagane do odtworzenia wideo wewnątrz zdjęcia.\n\nCzy na pewno chcesz go usunąć?",
     "tileLayoutGrid": "Siatka",
@@ -522,7 +522,7 @@
     "menuActionSelect": "Zaznacz",
     "videoSpeedDialogLabel": "Szybkość odtwarzania",
     "aboutPageTitle": "O aplikacji",
-    "menuActionConfigureView": "Widok",
+    "menuActionConfigureView": "Zmień układ",
     "menuActionSelectNone": "Odznacz",
     "tileLayoutList": "Lista",
     "coverDialogTabCover": "Okładka",
@@ -956,5 +956,8 @@
     "settingsPermissionsPageTitle": "Uprawnienia",
     "calendarGregorian": "Gregoriański",
     "calendarPersian": "Perski",
-    "settingsCalendarTile": "Kalendarz"
+    "settingsCalendarTile": "Kalendarz",
+    "tileLayoutCalendar": "Kalendarz",
+    "collectionActionShowLayoutBar": "Pokaż pasek układu",
+    "collectionActionHideLayoutBar": "Ukryj pasek układu"
 }

@@ -7,28 +7,18 @@ import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ThumbnailScroller extends StatefulWidget {
-  final double availableWidth;
-  final int entryCount;
-  final AvesEntry? Function(int index) entryBuilder;
-  final ValueNotifier<int?> indexNotifier;
-  final void Function(int index)? onTap;
-  final Object? Function(AvesEntry entry)? heroTagger;
-  final bool scrollable, highlightable, showLocation;
-
-  const new({
-    super.key,
-    required this.availableWidth,
-    required this.entryCount,
-    required this.entryBuilder,
-    required this.indexNotifier,
-    this.onTap,
-    this.heroTagger,
-    this.highlightable = false,
-    this.showLocation = true,
-    this.scrollable = true,
-  });
-
+class const ThumbnailScroller({
+  super.key,
+  required final double availableWidth,
+  required final int entryCount,
+  required final AvesEntry? Function(int index) entryBuilder,
+  required final ValueNotifier<int?> indexNotifier,
+  final void Function(int index)? onTap,
+  final Object? Function(AvesEntry entry)? heroTagger,
+  final bool highlightable = false,
+  final bool showLocation = true,
+  final bool scrollable = true,
+}) extends StatefulWidget {
   @override
   State<ThumbnailScroller> createState() => _ThumbnailScrollerState();
 

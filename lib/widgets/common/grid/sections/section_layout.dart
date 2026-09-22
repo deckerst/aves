@@ -3,27 +3,21 @@ import 'package:equatable/equatable.dart';
 import 'package:material_ui/material_ui.dart';
 
 @immutable
-abstract class SectionLayout extends Equatable {
-  final SectionKey sectionKey;
-  final int firstIndex, lastIndex, bodyFirstIndex;
-  final double minOffset, maxOffset, bodyMinOffset;
-  final double headerExtent, spacing;
-  final IndexedWidgetBuilder builder;
+abstract class const SectionLayout({
+  required final SectionKey sectionKey,
+  required final int firstIndex,
+  required final int lastIndex,
+  required final double minOffset,
+  required final double maxOffset,
+  required final double headerExtent,
+  required final double spacing,
+  required final IndexedWidgetBuilder builder,
+}) extends Equatable {
+  final int bodyFirstIndex = firstIndex + 1;
+  final double bodyMinOffset = minOffset + headerExtent;
 
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, spacing];
-
-  const new({
-    required this.sectionKey,
-    required this.firstIndex,
-    required this.lastIndex,
-    required this.minOffset,
-    required this.maxOffset,
-    required this.headerExtent,
-    required this.spacing,
-    required this.builder,
-  }) : bodyFirstIndex = firstIndex + 1,
-       bodyMinOffset = minOffset + headerExtent;
 
   bool hasChild(int index) => firstIndex <= index && index <= lastIndex;
 

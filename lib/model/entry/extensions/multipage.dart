@@ -14,7 +14,7 @@ extension ExtraAvesEntryMultipage on AvesEntry {
   bool get isMotionPhoto => catalogMetadata?.isMotionPhoto ?? false;
 
   String? getBurstKey(List<String> patterns) {
-    final key = BurstPatterns.getKeyForName(filenameWithoutExtension, patterns);
+    final key = BurstPatterns.getKeyForName(fileNameWithoutExtension, patterns);
     return key != null ? '$directory/$key' : null;
   }
 

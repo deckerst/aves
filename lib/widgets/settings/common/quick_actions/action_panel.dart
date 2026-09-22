@@ -2,16 +2,11 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ActionPanel extends StatelessWidget {
-  final bool highlight;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.highlight = false,
-    required this.child,
-  });
-
+class const ActionPanel({
+  super.key,
+  final bool highlight = false,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

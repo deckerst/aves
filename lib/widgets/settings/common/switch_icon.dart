@@ -4,16 +4,11 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SettingSwitchTrailingIcon extends StatelessWidget {
-  final IconData icon;
-  final bool disabled;
-
-  const new({
-    super.key,
-    required this.icon,
-    required this.disabled,
-  });
-
+class const SettingSwitchTrailingIcon({
+  super.key,
+  required final IconData icon,
+  required final bool disabled,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

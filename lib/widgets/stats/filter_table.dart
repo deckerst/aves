@@ -9,24 +9,15 @@ import 'package:material_ui/material_ui.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class FilterTable<T extends Comparable> extends StatelessWidget {
-  final int totalEntryCount;
-  final Map<T, int> entryCountMap;
-  final CollectionFilter Function(T key) filterBuilder;
-  final bool sortByCount;
-  final int? maxRowCount;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.totalEntryCount,
-    required this.entryCountMap,
-    required this.filterBuilder,
-    required this.sortByCount,
-    required this.maxRowCount,
-    required this.onFilterSelection,
-  });
-
+class const FilterTable<T extends Comparable>({
+  super.key,
+  required final int totalEntryCount,
+  required final Map<T, int> entryCountMap,
+  required final CollectionFilter Function(T key) filterBuilder,
+  required final bool sortByCount,
+  required final int? maxRowCount,
+  required final AFilterCallback onFilterSelection,
+}) extends StatelessWidget {
   static const chipWidth = 160.0;
   static const countWidth = 32.0;
   static const percentIndicatorMinWidth = 80.0;
@@ -69,7 +60,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     // so we define margins here instead, but they should be symmetric
                     // to keep all cells vertically aligned on the center/middle
                     margin: const EdgeInsets.symmetric(vertical: 4),
-                    alignment: AlignmentDirectional.centerStart,
+                    alignment: .centerStart,
                     child: AvesFilterChip(
                       filter: filter,
                       onTap: onFilterSelection,
@@ -83,7 +74,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                         return Stack(
                           // use a stack instead of `center` field, so that the widgets
                           // are centered even when the center child has larger height
-                          alignment: Alignment.center,
+                          alignment: .center,
                           children: [
                             LinearPercentIndicator(
                               percent: percent,
@@ -105,7 +96,7 @@ class FilterTable<T extends Comparable> extends StatelessWidget {
                     style: TextStyle(
                       color: colorScheme.onSurfaceVariant,
                     ),
-                    textAlign: TextAlign.end,
+                    textAlign: .end,
                   ),
                 ],
               );

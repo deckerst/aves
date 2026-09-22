@@ -1,30 +1,24 @@
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:material_ui/material_ui.dart';
 
-class TextDropdownButton<T> extends StatefulWidget {
-  final List<T> values;
-  final String Function(T value) valueText;
-  final IconData Function(T value)? valueIcon;
-  final T? value;
-  final Widget? underline;
-  final bool isExpanded;
-  final double? itemHeight;
-  final Color? dropdownColor;
-  final EdgeInsetsGeometry? padding;
-  final ValueChanged<T?>? onChanged;
-
-  const new({
-    super.key,
-    required this.values,
-    required this.valueText,
-    this.valueIcon,
-    this.value,
-    this.underline,
-    this.isExpanded = false,
-    this.itemHeight = kMinInteractiveDimension,
-    this.dropdownColor,
-    this.padding,
-    required this.onChanged,
-  });
+class const TextDropdownButton<T>({
+  super.key,
+  required final List<T> values,
+  required final String Function(T value) valueText,
+  final IconData Function(T value)? valueIcon,
+  final T? value,
+  final Widget? underline,
+  final bool isExpanded = false,
+  final double? itemHeight = kMinInteractiveDimension,
+  final Color? dropdownColor,
+  final EdgeInsetsGeometry? padding,
+  final double iconTextPadding = 8,
+  required final ValueChanged<T?>? onChanged,
+}) extends StatefulWidget {
+  static TextStyle textStyle(BuildContext context) {
+    final defaultDropdownStyle = Theme.of(context).textTheme.titleMedium!;
+    return defaultDropdownStyle.copyWith(fontWeight: .normal);
+  }
 
   @override
   State<TextDropdownButton<T>> createState() => _TextDropdownButtonState<T>();
@@ -38,7 +32,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
           .map(
             (v) => DropdownMenuItem<T>(
               value: v,
-              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: false),
+              child: _buildItem(v, selected: false),
             ),
           )
           .toList(),
@@ -46,12 +40,12 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
           .map(
             (v) => DropdownMenuItem<T>(
               value: v,
-              child: _buildItem(widget.valueText(v), widget.valueIcon?.call(v), selected: true),
+              child: _buildItem(v, selected: true),
             ),
           )
           .toList(),
       value: widget.value,
-      style: Theme.of(context).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.normal),
+      style: TextDropdownButton.textStyle(context),
       underline: widget.underline,
       isExpanded: widget.isExpanded,
       itemHeight: widget.itemHeight,
@@ -61,7 +55,9 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
     );
   }
 
-  static Widget _buildItem<T>(String text, IconData? icon, {required bool selected}) {
+  Widget _buildItem(T value, {required bool selected}) {
+    final text = widget.valueText(value);
+    final icon = widget.valueIcon?.call(value);
     final softWrap = selected ? false : null;
     final overflow = selected ? TextOverflow.fade : null;
 
@@ -69,12 +65,9 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
         ? Text.rich(
             TextSpan(
               children: [
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 8, bottom: 2),
-                    child: Icon(icon),
-                  ),
+                IconSpan(
+                  icon: icon,
+                  padding: EdgeInsetsDirectional.only(end: widget.iconTextPadding, bottom: 2),
                 ),
                 TextSpan(text: text),
               ],
@@ -90,7 +83,7 @@ class _TextDropdownButtonState<T> extends State<TextDropdownButton<T>> {
 
     if (selected) {
       child = Align(
-        alignment: AlignmentDirectional.centerStart,
+        alignment: .centerStart,
         child: child,
       );
     }

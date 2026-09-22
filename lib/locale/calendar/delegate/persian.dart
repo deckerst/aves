@@ -3,11 +3,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 // placeholder to use as `DateTime` in the picker
-class PersianDateTime extends DateTime {
-  final int jMonth;
-  final int jDay;
-
-  new(super.year, [super.month = 1, super.day = 1]) : jMonth = month, jDay = day;
+class PersianDateTime(
+  super.year, [
+  super.month = 1,
+  super.day = 1,
+]) extends DateTime {
+  final int jMonth = month;
+  final int jDay = day;
 
   factory now() {
     final j = Jalali.now();
@@ -34,11 +36,9 @@ class PersianDateTime extends DateTime {
   int get day => jDay;
 }
 
-class PersianCalendarDelegate extends AvesCalendarDelegate<PersianDateTime> {
+class const PersianCalendarDelegate(super.locale) extends AvesCalendarDelegate<PersianDateTime> {
   static const int daysPerWeek = DateTime.daysPerWeek;
   static const int monthsPerYear = DateTime.monthsPerYear;
-
-  const new(super.locale);
 
   @override
   DateTime toDateForIntl4xFormat(PersianDateTime date) {

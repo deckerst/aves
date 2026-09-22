@@ -8,12 +8,15 @@ extension ExtraEntrySetActionView on EntrySetAction {
     final l10n = context.l10n;
     return switch (this) {
       // general
-      .configureView => l10n.menuActionConfigureView,
+      .changeLayout => l10n.menuActionConfigureView,
       .select => l10n.menuActionSelect,
       .selectAll => l10n.menuActionSelectAll,
       .selectNone => l10n.menuActionSelectNone,
       // browsing
       .searchCollection => MaterialLocalizations.of(context).searchFieldLabel,
+      .toggleLayoutBar =>
+        // different data depending on toggle state
+        l10n.collectionActionShowLayoutBar,
       .toggleTitleSearch =>
         // different data depending on toggle state
         l10n.collectionActionShowTitleSearch,
@@ -59,15 +62,18 @@ extension ExtraEntrySetActionView on EntrySetAction {
   IconData _getIconData() {
     return switch (this) {
       // general
-      .configureView => AIcons.view,
+      .changeLayout => AIcons.changeLayout,
       .select => AIcons.select,
       .selectAll => AIcons.selected,
       .selectNone => AIcons.unselected,
       // browsing
       .searchCollection => AIcons.search,
+      .toggleLayoutBar =>
+        // different data depending on toggle state
+        AIcons.showLayoutBar,
       .toggleTitleSearch =>
         // different data depending on toggle state
-        AIcons.filter,
+        AIcons.showTitleFilter,
       .addDynamicAlbum => AIcons.dynamicAlbum,
       .addShortcut => AIcons.addShortcut,
       .setHome => AIcons.home,

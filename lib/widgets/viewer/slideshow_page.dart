@@ -67,7 +67,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
             ? EmptyContent(
                 icon: AIcons.image,
                 text: context.l10n.collectionEmptyImages,
-                alignment: Alignment.center,
+                alignment: .center,
               )
             : MultiProvider(
                 providers: [

@@ -17,37 +17,27 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/wallpaper_buttons.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerBottomOverlay extends StatelessWidget {
-  final List<AvesEntry> entries;
-  final int index;
-  final CollectionLens? collection;
-  final AnimationController animationController;
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-  final MultiPageController? multiPageController;
-
+class const ViewerBottomOverlay({
+  super.key,
+  required final List<AvesEntry> entries,
+  required final int index,
+  required final CollectionLens? collection,
+  required final AnimationController animationController,
+  required final Size availableSize,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+  required final MultiPageController? multiPageController,
+}) extends StatelessWidget {
   // always keep action buttons in the lower right corner, even with RTL locales
   static const actionsDirection = TextDirection.ltr;
 
   AvesEntry? get entry {
     return index < entries.length ? entries[index] : null;
   }
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.index,
-    required this.collection,
-    required this.animationController,
-    required this.availableSize,
-    this.viewInsets,
-    this.viewPadding,
-    required this.multiPageController,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,29 +84,18 @@ class ViewerBottomOverlay extends StatelessWidget {
   }
 }
 
-class _BottomOverlayContent extends StatefulWidget {
-  final List<AvesEntry> entries;
-  final int index;
-  final AvesEntry mainEntry, pageEntry;
-  final CollectionLens? collection;
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-  final MultiPageController? multiPageController;
-  final AnimationController animationController;
-
-  const new({
-    required this.entries,
-    required this.index,
-    required this.mainEntry,
-    required this.pageEntry,
-    required this.collection,
-    required this.availableSize,
-    required this.viewInsets,
-    required this.viewPadding,
-    required this.multiPageController,
-    required this.animationController,
-  });
-
+class const _BottomOverlayContent({
+  required final List<AvesEntry> entries,
+  required final int index,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+  required final CollectionLens? collection,
+  required final Size availableSize,
+  required final EdgeInsets? viewInsets,
+  required final EdgeInsets? viewPadding,
+  required final MultiPageController? multiPageController,
+  required final AnimationController animationController,
+}) extends StatefulWidget {
   @override
   State<_BottomOverlayContent> createState() => _BottomOverlayContentState();
 }

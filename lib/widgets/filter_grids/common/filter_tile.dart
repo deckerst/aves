@@ -108,6 +108,7 @@ class FilterTile<T extends CollectionFilter> extends StatelessWidget {
     switch (tileLayout) {
       case .mosaic:
       case .grid:
+      case .calendar:
         return FilterChipGridDecorator<T, FilterGridItem<T>>(
           gridItem: gridItem,
           extent: chipExtent,

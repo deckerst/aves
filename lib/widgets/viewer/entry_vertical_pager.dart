@@ -380,25 +380,27 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
   Future<void> _onEntryChanged() async {
-    _oldEntry?.visualChangeNotifier.removeListener(_onVisualChanged);
+    final oldEntry = _oldEntry;
+    final newEntry = entry;
     _oldEntry = entry;
 
-    final _entry = entry;
-    if (_entry != null) {
-      final visualChangeNotifier = _entry.visualChangeNotifier;
+    oldEntry?.visualChangeNotifier.removeListener(_onVisualChanged);
+
+    if (newEntry != null) {
+      final visualChangeNotifier = newEntry.visualChangeNotifier;
       if (!visualChangeNotifier.isDisposed) {
         visualChangeNotifier.addListener(_onVisualChanged);
       } else {
         await reportService.recordError(
           'Failed to register visual change listener on new entry because its notifier is already disposed'
-          ', changing from old entry=$_oldEntry to new entry=$_entry',
+          ', changing from old entry=$oldEntry to new entry=$newEntry',
         );
       }
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      await _entry.catalog(background: false, force: false, persist: true);
-      await _entry.locate(
+      await newEntry.catalog(background: false, force: false, persist: true);
+      await newEntry.locate(
         background: false,
         force: false,
         geocoderLocale: settings.avesLocale,
@@ -406,6 +408,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     } else {
       Navigator.maybeOf(context)?.pop();
     }
+
     if (!mounted) return;
     // needed to refresh when entry changes but the page does not (e.g. on page deletion)
     setState(() {});

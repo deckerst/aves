@@ -1,22 +1,28 @@
 import 'package:aves/model/settings/defaults.dart';
+import 'package:aves/model/settings/modules/common_layout.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves_model/aves_model.dart';
 
-mixin CollectionSettings on SettingsAccess {
+mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   List<String> get collectionBurstPatterns => getStringList(SettingKeys.collectionBurstPatternsKey) ?? [];
 
   set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
 
-  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionGroupFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
+  SortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, SortFactor.values);
 
-  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionGroupFactorKey, newValue.name);
-
-  EntrySortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, EntrySortFactor.values);
-
-  set collectionSortFactor(EntrySortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
+  set collectionSortFactor(SortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
 
   bool get collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
 
   set collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
+
+  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
+
+  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
+
+  bool get showCollectionLayoutBar => getBool(SettingKeys.showCollectionLayoutBarKey) ?? false;
+
+  set showCollectionLayoutBar(bool newValue) => set(SettingKeys.showCollectionLayoutBarKey, newValue);
 
   List<EntrySetAction> get collectionBrowsingQuickActions => getEnumListOrDefault(SettingKeys.collectionBrowsingQuickActionsKey, SettingsDefaults.collectionBrowsingQuickActions, EntrySetAction.values);
 
@@ -61,4 +67,46 @@ mixin CollectionSettings on SettingsAccess {
   bool get showThumbnailVideoDuration => getBool(SettingKeys.showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 
   set showThumbnailVideoDuration(bool newValue) => set(SettingKeys.showThumbnailVideoDurationKey, newValue);
+
+  // composite
+
+  TileLayout get effectiveCollectionTileLayout => getTileLayout(CollectionPage.routeName);
+
+  SortFactor get effectiveCollectionSortFactor {
+    switch (effectiveCollectionTileLayout) {
+      case .mosaic:
+      case .grid:
+      case .list:
+        return collectionSortFactor;
+      case .calendar:
+        return .date;
+    }
+  }
+
+  bool get effectiveCollectionSortReverse => collectionSortReverse;
+
+  EntrySectionFactor get effectiveCollectionSectionFactor {
+    switch (effectiveCollectionTileLayout) {
+      case .mosaic:
+      case .grid:
+      case .list:
+        switch (effectiveCollectionSortFactor) {
+          case .date:
+            return collectionSectionFactor;
+          case .albumItemName:
+          case .path:
+            return .name;
+          case .size:
+          case .duration:
+            return .none;
+          case .rating:
+            return .rating;
+          case .chipName:
+          case .count:
+            throw UnimplementedError();
+        }
+      case .calendar:
+        return .month;
+    }
+  }
 }

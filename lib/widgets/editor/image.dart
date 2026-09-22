@@ -99,7 +99,7 @@ class _EditorImageState extends State<EditorImage> {
             valueListenable: widget.marginNotifier,
             builder: (context, margin, child) {
               return Transform(
-                alignment: Alignment.center,
+                alignment: .center,
                 transform: imageToUserMatrix,
                 child: ValueListenableBuilder<EditorAction?>(
                   valueListenable: widget.actionNotifier,

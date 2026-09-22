@@ -1,16 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class MediaQueryDataProvider extends StatelessWidget {
-  final MediaQueryData? value;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.value,
-    required this.child,
-  });
-
+class const MediaQueryDataProvider({
+  super.key,
+  final MediaQueryData? value,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<MediaQueryData>.value(

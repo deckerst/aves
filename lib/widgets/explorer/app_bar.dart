@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -106,12 +107,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
 
   InteractiveAppBarTitle _buildAppBarTitle(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
-    Widget title = Text(
-      context.l10n.explorerPageTitle,
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-    );
+    Widget title = FadingLine(context.l10n.explorerPageTitle);
     if (appMode == .main) {
       title = SourceStateAwareAppBarTitle(
         title: title,

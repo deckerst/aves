@@ -18,6 +18,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -256,7 +257,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           mainAxisSize: .min,
           children: [
             const SizedBox(height: 8),
-            const Divider(height: 0),
+            const ThinDivider(),
             _buildOverlayControls(),
             MapEntryScroller(
               regionCollectionNotifier: _regionCollectionNotifier,

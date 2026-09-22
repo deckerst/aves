@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_banner.dart';
@@ -35,7 +36,7 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
       children: [
         if (!settings.useTvLayout) ...[
           const DrawerEditorBanner(),
-          const Divider(height: 0),
+          const ThinDivider(),
         ],
         Flexible(
           child: Selector<MediaQueryData, double>(

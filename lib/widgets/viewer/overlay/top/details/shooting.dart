@@ -4,7 +4,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
 class OverlayShootingRow extends StatelessWidget {
@@ -30,7 +29,11 @@ class OverlayShootingRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.shooting, size: ViewerDetailOverlayContent.iconSize, shadows: ViewerDetailOverlayContent.shadows(context)),
+        Icon(
+          AIcons.shooting,
+          size: ViewerDetailOverlayContent.iconSize,
+          shadows: ViewerDetailOverlayContent.shadows(context),
+        ),
         const SizedBox(width: ViewerDetailOverlayContent.iconPadding),
         Expanded(child: Text(apertureText)),
         Expanded(child: Text(details.exposureTime ?? AText.valueNotAvailable)),

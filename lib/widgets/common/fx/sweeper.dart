@@ -2,29 +2,18 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 
-class Sweeper extends StatefulWidget {
-  final WidgetBuilder builder;
-  final double startAngle;
-  final double sweepAngle;
-  final Curve curve;
-  final ValueNotifier<bool> toggledNotifier;
-  final bool centerSweep;
-  final VoidCallback? onSweepEnd;
-
-  const new({
-    super.key,
-    required this.builder,
-    this.startAngle = -pi / 2,
-    this.sweepAngle = pi / 4,
-    this.curve = Curves.easeInOutCubic,
-    required this.toggledNotifier,
-    this.centerSweep = true,
-    this.onSweepEnd,
-  });
-
+class const Sweeper({
+  super.key,
+  required final WidgetBuilder builder,
+  final double startAngle = -pi / 2,
+  final double sweepAngle = pi / 4,
+  required final ValueNotifier<bool> toggledNotifier,
+  final bool centerSweep = true,
+  final VoidCallback? onSweepEnd,
+}) extends StatefulWidget {
   @override
   State<Sweeper> createState() => _SweeperState();
 }
@@ -49,7 +38,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     final centerSweep = widget.centerSweep;
     _angleAnimation = CurvedAnimation(
       parent: _angleAnimationController,
-      curve: widget.curve,
+      curve: Curves.easeInOutCubic,
     );
     _angle = Tween(
       begin: startAngle - sweepAngle * (centerSweep ? .5 : 0),
@@ -126,12 +115,10 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
   }
 }
 
-class _SweepClipPath extends CustomClipper<Path> {
-  final double startAngle;
-  final double sweepAngle;
-
-  const new({required this.startAngle, required this.sweepAngle});
-
+class const _SweepClipPath({
+  required final double startAngle,
+  required final double sweepAngle,
+}) extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final width = size.width;

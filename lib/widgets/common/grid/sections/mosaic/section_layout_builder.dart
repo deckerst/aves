@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_grid_row.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_sectioned_list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/row.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
@@ -12,33 +12,31 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
+class MosaicSectionLayoutBuilder<T>({
+  required super.sections,
+  required super.showHeaders,
+  required super.getHeaderExtent,
+  required super.buildHeader,
+  required super.scrollableWidth,
+  required super.tileLayout,
+  required super.columnCount,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.tileWidth,
+  required super.tileHeight,
+  required super.tileBuilder,
+  required Duration tileAnimationDelay,
+  required final CoverRatioResolver<T> coverRatioResolver,
+}) extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
   late double Function(int itemCount) rowAvailableWidth;
   late double rowHeightMax;
-  final CoverRatioResolver<T> coverRatioResolver;
-
   static const double heightMaxFactor = 2.4;
   static const double minThumbnailAspectRatio = 9 / 32;
   static const double maxThumbnailAspectRatio = 32 / 9;
 
-  new({
-    required super.sections,
-    required super.showHeaders,
-    required super.getHeaderExtent,
-    required super.buildHeader,
-    required super.scrollableWidth,
-    required super.tileLayout,
-    required super.columnCount,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.tileWidth,
-    required super.tileHeight,
-    required super.tileBuilder,
-    required Duration tileAnimationDelay,
-    required this.coverRatioResolver,
-  }) : super(tileAnimationDelay: Duration(milliseconds: (tileAnimationDelay.inMilliseconds / columnCount).ceil())) {
+  this : super(tileAnimationDelay: Duration(milliseconds: (tileAnimationDelay.inMilliseconds / columnCount).ceil())) {
     final rowWidth = scrollableWidth - horizontalPadding * 2;
     rowAvailableWidth = (itemCount) => rowWidth - (itemCount - 1) * spacing;
     rowHeightMax = tileWidth * heightMaxFactor;
@@ -57,7 +55,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
         )
         .toList();
 
-    return MosaicSectionedListLayout<T>(
+    return VariableExtentSectionedListLayout<T>(
       sections: sections,
       showHeaders: showHeaders,
       spacing: spacing,
@@ -93,7 +91,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     _currentOffset += headerExtent + rows.map((v) => v.height).sum - spacing;
     final sectionMaxOffset = _currentOffset;
 
-    return MosaicSectionLayout(
+    return VariableExtentSectionLayout(
       sectionKey: sectionKey,
       firstIndex: sectionFirstIndex,
       lastIndex: sectionLastIndex,
@@ -121,7 +119,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
           buildGridRow: (children) {
             return isHeader
                 ? const SizedBox()
-                : MosaicGridRow(
+                : VariableExtentGridRow(
                     rowLayout: row,
                     spacing: spacing,
                     textDirection: textDirection,
@@ -133,7 +131,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     );
   }
 
-  static List<MosaicRowLayout> computeMosaicRows<T>({
+  static List<VariableExtentRowLayout> computeMosaicRows<T>({
     required List<T> section,
     required double Function(int itemCount) availableWidthFor,
     required double heightMax,
@@ -142,7 +140,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
     required double bottom,
     required CoverRatioResolver<T> coverRatioResolver,
   }) {
-    final rows = <MosaicRowLayout>[];
+    final rows = <VariableExtentRowLayout>[];
     final items = <T>[];
     double ratioSum = 0, ratioMin = double.infinity;
     int firstIndex = 0;
@@ -163,7 +161,7 @@ class MosaicSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
 
       height += bottom;
       rows.add(
-        MosaicRowLayout(
+        VariableExtentRowLayout(
           firstIndex: firstIndex,
           lastIndex: i - 1,
           minOffset: minOffset,

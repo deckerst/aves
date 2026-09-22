@@ -206,7 +206,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
             children: [
               const SizedBox(height: 6),
               Align(
-                alignment: AlignmentDirectional.centerStart,
+                alignment: .centerStart,
                 child: Wrap(
                   spacing: 16,
                   crossAxisAlignment: .center,
@@ -219,7 +219,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 38,
-                            fontWeight: FontWeight.w300,
+                            fontWeight: .w300,
                             letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
                             fontFeatures: const [FontFeature.enable('smcp')],
                           ),

@@ -1,5 +1,6 @@
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:material_ui/material_ui.dart';
 
 class LinkChip extends StatelessWidget {
@@ -39,12 +40,7 @@ class LinkChip extends StatelessWidget {
                 const SizedBox(width: 8),
               ],
               Flexible(
-                child: Text(
-                  text,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                ),
+                child: FadingLine(text),
               ),
               const SizedBox(width: 8),
               Builder(

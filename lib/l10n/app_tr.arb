@@ -175,7 +175,7 @@
     "editEntryDateDialogSetCustom": "Özel tarih ayarla",
     "editEntryDateDialogCopyField": "Başka bir tarihten kopyala",
     "editEntryDialogCopyFromItem": "Başka bir ögeden kopyala",
-    "editEntryDateDialogExtractFromTitle": "Başlıktan ayıkla",
+    "editEntryDateDialogExtractFromTitle": "Dosya adından ayıkla",
     "editEntryDateDialogShift": "Değiştir",
     "editEntryDateDialogSourceFileModifiedDate": "Dosya değiştirilme tarihi",
     "durationDialogHours": "Saat",
@@ -199,7 +199,7 @@
     "videoStreamSelectionDialogNoSelection": "Başka parça yok.",
     "genericSuccessFeedback": "Başarılı!",
     "genericFailureFeedback": "Başarısız",
-    "menuActionConfigureView": "Görünüm",
+    "menuActionConfigureView": "Düzeni değiştir",
     "menuActionSelect": "Seç",
     "menuActionSelectAll": "Hepsini seç",
     "menuActionSelectNone": "Hiçbirini seçme",
@@ -737,5 +737,8 @@
     "settingsPermissionsPageTitle": "İzinler",
     "calendarGregorian": "Gregoryan",
     "calendarPersian": "İran",
-    "settingsCalendarTile": "Takvim"
+    "settingsCalendarTile": "Takvim",
+    "tileLayoutCalendar": "Takvim",
+    "collectionActionShowLayoutBar": "Düzen çubuğunu göster",
+    "collectionActionHideLayoutBar": "Düzen çubuğunu gizle"
 }

@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 class Themes {
   static const _titleTextStyle = TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.normal,
+    fontWeight: .normal,
     fontFeatures: [FontFeature.enable('smcp')],
   );
 

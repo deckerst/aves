@@ -29,8 +29,8 @@ class PanoramaInfo {
 
     // handle inconsistent sizing (e.g. rotated image taken with OnePlus EB2103)
     if (cWidth != null && cHeight != null && fWidth != null && fHeight != null) {
-      final croppedOrientation = cWidth > cHeight ? Orientation.landscape : Orientation.portrait;
-      final fullOrientation = fWidth > fHeight ? Orientation.landscape : Orientation.portrait;
+      final Orientation croppedOrientation = cWidth > cHeight ? .landscape : .portrait;
+      final Orientation fullOrientation = fWidth > fHeight ? .landscape : .portrait;
       var inconsistent = false;
       if (croppedOrientation != fullOrientation) {
         // inconsistent orientation

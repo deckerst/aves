@@ -8,10 +8,12 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_grid.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -173,7 +175,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   itemBuilder: (context, index) {
                     final entry = entries[index];
-                    final sourceName = entry.filenameWithoutExtension ?? '';
+                    final sourceName = entry.fileNameWithoutExtension ?? '';
                     return Row(
                       children: [
                         DecoratedThumbnail(
@@ -187,12 +189,9 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                           child: Column(
                             crossAxisAlignment: .start,
                             children: [
-                              Text(
+                              FadingLine(
                                 sourceName,
                                 style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
                               ),
                               const SizedBox(height: 4),
                               ValueListenableBuilder<NamingPattern>(
@@ -202,12 +201,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                                     future: pattern.apply(entry, index),
                                     builder: (context, snapshot) {
                                       final info = snapshot.data;
-                                      return Text(
-                                        info ?? '…',
-                                        softWrap: false,
-                                        overflow: TextOverflow.fade,
-                                        maxLines: 1,
-                                      );
+                                      return FadingLine(info ?? '…');
                                     },
                                   );
                                 },
@@ -218,14 +212,14 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       ],
                     );
                   },
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: CollectionGrid.fixedExtentLayoutSpacing,
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: CollectionGrid.spacingForLayout(TileLayout.list),
                   ),
                   itemCount: min(entryCount, previewMax),
                 ),
               ),
             ),
-            const Divider(height: 0),
+            const ThinDivider(),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8),

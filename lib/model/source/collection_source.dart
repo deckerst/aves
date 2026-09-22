@@ -466,6 +466,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     bool loadTopEntriesFirst = false,
   });
 
+  Future<void> checkForChanges();
+
   Future<Set<String>> refreshUris(Set<String> changedUris, {AnalysisController? analysisController});
 
   Future<void> refreshEntries(Set<AvesEntry> entries, Set<EntryDataType> dataTypes) async {

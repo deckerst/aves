@@ -75,7 +75,7 @@ class _QueryBarState extends State<QueryBar> {
                     padding: widget.leadingPadding ?? const EdgeInsetsDirectional.only(start: 16),
                     // set theme at this level because `InputDecoration` defines its own `IconTheme` with a fixed size
                     child: FontSizeIconTheme(
-                      child: Icon(widget.icon ?? AIcons.filter),
+                      child: Icon(widget.icon ?? AIcons.titleFilter),
                     ),
                   ),
                   hintText: widget.hintText ?? MaterialLocalizations.of(context).searchFieldLabel,

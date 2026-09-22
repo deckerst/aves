@@ -122,7 +122,7 @@ class _XmpCardState extends State<XmpCard> {
               MultiCrossFader(
                 duration: ADurations.xmpStructArrayCardTransition,
                 sizeCurve: Curves.easeOutBack,
-                alignment: AlignmentDirectional.topStart,
+                alignment: .topStart,
                 child: Padding(
                   // add padding at this level (instead of the column level)
                   // so that the crossfader can animate the content size

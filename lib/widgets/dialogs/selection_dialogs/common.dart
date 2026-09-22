@@ -21,4 +21,5 @@ Future<void> showSelectionDialog<T>({
   }
 }
 
+typedef IconBuilder<T> = IconData? Function(T value);
 typedef TextBuilder<T> = String? Function(T value);

@@ -10,6 +10,7 @@ extension ExtraTileLayoutView on TileLayout {
       .mosaic => l10n.tileLayoutMosaic,
       .grid => l10n.tileLayoutGrid,
       .list => l10n.tileLayoutList,
+      .calendar => l10n.tileLayoutCalendar,
     };
   }
 
@@ -18,6 +19,7 @@ extension ExtraTileLayoutView on TileLayout {
       .mosaic => AIcons.layoutMosaic,
       .grid => AIcons.layoutGrid,
       .list => AIcons.layoutList,
+      .calendar => AIcons.layoutCalendar,
     };
   }
 }

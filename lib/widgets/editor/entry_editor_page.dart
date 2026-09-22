@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/viewer/view_state.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/editor/control_panel.dart';
 import 'package:aves/widgets/editor/image.dart';
 import 'package:aves/widgets/editor/transform/controller.dart';
@@ -104,7 +105,7 @@ class _ImageEditorPageState extends State<ImageEditorPage> {
                   ],
                 ),
               ),
-              const Divider(height: 0),
+              const ThinDivider(),
               EditorControlPanel(
                 entry: widget.entry,
                 actionNotifier: _actionNotifier,

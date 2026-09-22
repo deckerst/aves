@@ -1,32 +1,30 @@
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/row.dart';
-import 'package:aves/widgets/common/grid/sections/fixed/section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/fixed_extent_grid_row.dart';
+import 'package:aves/widgets/common/grid/sections/layout/fixed_extent_section_layout.dart';
+import 'package:aves/widgets/common/grid/sections/layout/fixed_extent_sectioned_list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/section_layout_builder.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentSectionLayoutBuilder<T> extends SectionLayoutBuilder<T> {
+class FixedExtentSectionLayoutBuilder<T>({
+  required super.sections,
+  required super.showHeaders,
+  required super.getHeaderExtent,
+  required super.buildHeader,
+  required super.scrollableWidth,
+  required super.tileLayout,
+  required super.columnCount,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.tileWidth,
+  required super.tileHeight,
+  required super.tileBuilder,
+  required super.tileAnimationDelay,
+}) extends SectionLayoutBuilder<T> {
   int _currentIndex = 0;
   double _currentOffset = 0;
-  final List<Size> _itemSizes;
-
-  new({
-    required super.sections,
-    required super.showHeaders,
-    required super.getHeaderExtent,
-    required super.buildHeader,
-    required super.scrollableWidth,
-    required super.tileLayout,
-    required super.columnCount,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.tileWidth,
-    required super.tileHeight,
-    required super.tileBuilder,
-    required super.tileAnimationDelay,
-  }) : _itemSizes = List.generate(columnCount, (index) => Size(tileWidth, tileHeight));
+  final List<Size> _itemSizes = List.generate(columnCount, (index) => Size(tileWidth, tileHeight));
 
   @override
   SectionedListLayout<T> updateLayouts(BuildContext context) {

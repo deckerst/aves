@@ -38,6 +38,7 @@ import 'package:aves/widgets/map/map_page.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves/widgets/settings/home_widget_settings_page.dart';
 import 'package:aves/widgets/settings/screen_saver_settings_page.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/screen_saver_page.dart';
 import 'package:aves/widgets/wallpaper_page.dart';
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     ExplorerPage.routeName,
     MapPage.routeName,
     SearchPage.routeName,
+    SettingsPage.routeName,
   ];
 
   @override
@@ -160,6 +162,8 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         final intentMimeType = intentData[IntentDataKeys.mimeType] as String?;
 
         switch (intentAction) {
+          case IntentActions.appSettings:
+            _initialRouteName = SettingsPage.routeName;
           case IntentActions.view:
             appMode = .view;
             _secureUris = (intentData[IntentDataKeys.secureUris] as List?)?.cast<String>();
@@ -234,6 +238,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           case .view:
           case .edit:
           case .setWallpaper:
+            await _initViewerEssentials();
             if (intentUri != null) {
               _viewerEntry = await _initViewerEntry(
                 uri: intentUri,
@@ -284,12 +289,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
               source.canAnalyze = true;
               await source.init(scope: {StoredAlbumFilter(directory, null)});
             }
-          } else {
-            await _initViewerEssentials();
           }
-        case .edit:
-        case .setWallpaper:
-          await _initViewerEssentials();
         default:
           break;
       }
@@ -311,7 +311,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
   }
 
   Future<void> _initViewerEssentials() async {
-    // for video playback storage
+    // for video playback storage, debug log
     await localMediaDb.init();
   }
 
@@ -369,15 +369,21 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           collection = CollectionLens(
             source: source,
             filters: {StoredAlbumFilter(album, source.getStoredAlbumDisplayName(context, album))},
-            listenToSource: false,
+            listenToSource: true,
             // if we group bursts/RAWs, opening a sub-entry should:
             // - identify and select the containing main entry,
             // - select the sub-entry in the Viewer page.
             stackBursts: false,
             stackDevelopedRaws: false,
           );
+          // useful when opening transient images from camera apps
+          await source.checkForChanges();
+
+          final viewerEntryUri = viewerEntry.uri;
           final viewerEntryPath = viewerEntry.path;
-          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) => entry.path == viewerEntryPath);
+          final collectionEntry = collection.sortedEntries.firstWhereOrNull((entry) {
+            return entry.uri == viewerEntryUri || entry.path == viewerEntryPath;
+          });
           if (collectionEntry != null) {
             viewerEntry = collectionEntry;
           } else {
@@ -459,6 +465,8 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           canPop: false,
           initialQuery: _initialSearchQuery,
         );
+      case SettingsPage.routeName:
+        return buildRoute((context) => const SettingsPage());
       case CollectionPage.routeName:
       default:
         return buildRoute((context) => CollectionPage(source: source, filters: filters));

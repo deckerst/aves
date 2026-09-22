@@ -43,7 +43,7 @@ class EntryPrinter with FeedbackMixin {
     final displaySize = entry.displaySize;
     final pageTheme = pdf.PageTheme(
       pageFormat: pageFormat,
-      orientation: displaySize.aspectRatio < 1 ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
+      orientation: displaySize.aspectRatio < 1 ? .portrait : .landscape,
       margin: pdf.EdgeInsets.zero,
       theme: null,
       clip: false,

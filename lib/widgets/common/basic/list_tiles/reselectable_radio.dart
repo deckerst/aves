@@ -1,35 +1,22 @@
 import 'package:material_ui/material_ui.dart';
 
 // `RadioListTile` that can trigger `onChanged` on tap when already selected, if `reselectable` is true
-class ReselectableRadioListTile<T> extends StatelessWidget {
-  final T value;
-  final bool toggleable;
-  final bool reselectable;
-  final Color? activeColor;
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget? secondary;
-  final bool isThreeLine;
-  final bool? dense;
-  final bool selected;
-  final ListTileControlAffinity controlAffinity;
-  final bool autofocus;
-
-  const new({
-    super.key,
-    required this.value,
-    this.toggleable = false,
-    this.reselectable = false,
-    this.activeColor,
-    this.title,
-    this.subtitle,
-    this.isThreeLine = false,
-    this.dense,
-    this.secondary,
-    this.selected = false,
-    this.controlAffinity = ListTileControlAffinity.platform,
-    this.autofocus = false,
-  }) : assert(!isThreeLine || subtitle != null);
+class const ReselectableRadioListTile<T>({
+  super.key,
+  required final T value,
+  final bool toggleable = false,
+  final bool reselectable = false,
+  final Color? activeColor,
+  final Widget? title,
+  final Widget? subtitle,
+  final bool isThreeLine = false,
+  final bool? dense,
+  final Widget? secondary,
+  final bool selected = false,
+  final ListTileControlAffinity controlAffinity = ListTileControlAffinity.platform,
+  final bool autofocus = false,
+}) extends StatelessWidget {
+  this : assert(!isThreeLine || subtitle != null);
 
   @override
   Widget build(BuildContext context) {

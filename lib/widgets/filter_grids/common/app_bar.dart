@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
 import 'package:aves/widgets/common/app_bar/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -26,17 +27,16 @@ import 'package:aves/widgets/filter_grids/common/group_crumb_line.dart';
 import 'package:aves/widgets/filter_grids/common/query_bar.dart';
 import 'package:aves/widgets/search/collection_search_page_route.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> =
-    List<Widget> Function(
-      BuildContext context,
-      AppMode appMode,
-      Selection<FilterGridItem<T>> selection,
-      CSAD actionDelegate,
-    );
+typedef ActionsBuilder<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> = List<Widget> Function(
+  BuildContext context,
+  AppMode appMode,
+  Selection<FilterGridItem<T>> selection,
+  CSAD actionDelegate,
+);
 
 class FilterGridAppBar<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
@@ -90,13 +90,14 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   CollectionSource get source => widget.source;
 
-  static const browsingQuickActions = [
-    ChipSetAction.search,
+  static const browsingQuickActions = <ChipSetAction>[
+    .search,
   ];
-  static const selectionQuickActions = [
-    ChipSetAction.setCover,
-    ChipSetAction.pin,
-    ChipSetAction.unpin,
+
+  static const selectionQuickActions = <ChipSetAction>[
+    .setCover,
+    .pin,
+    .unpin,
   ];
 
   @override
@@ -286,15 +287,12 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
 
   Widget _buildAppBarTitle(bool isSelecting) {
     if (isSelecting) {
-      final l10n = context.l10n;
       return Selector<Selection<FilterGridItem<T>>?, int>(
         selector: (context, selection) => selection?.selectedItemCount ?? 0,
-        builder: (context, count, child) => Text(
-          count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
+        builder: (context, count, _) {
+          final l10n = context.l10n;
+          return FadingLine(count == 0 ? l10n.collectionSelectPageTitle : l10n.itemCount(count));
+        },
       );
     } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
@@ -304,7 +302,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           title: Text(
             widget.title,
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           ),
           source: source,

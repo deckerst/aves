@@ -19,8 +19,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 typedef AFilterCallback<T extends CollectionFilter> = void Function(T filter);
@@ -276,6 +276,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           if (leading != null && showText) SizedBox(width: padding),
           if (showText)
             Flexible(
+              // label can be multiline (e.g. coordinates)
               child: Text(
                 filter.getLabel(context),
                 style: TextStyle(
@@ -284,7 +285,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   decorationThickness: 2,
                 ),
                 softWrap: false,
-                overflow: TextOverflow.fade,
+                overflow: .fade,
               ),
             ),
           if (trailing != null) ...[
@@ -307,7 +308,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
       if (decoration != null) {
         content = Align(
-          alignment: Alignment.bottomCenter,
+          alignment: .bottomCenter,
           child: ClipRRect(
             borderRadius: decoration.textBorderRadius,
             child: Container(
@@ -396,12 +397,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   borderRadius: borderRadius,
                   child: Align(
                     // align to corner the scaled down banner in RTL
-                    alignment: AlignmentDirectional.topStart,
+                    alignment: .topStart,
                     child: Transform(
                       transform: Matrix4.identity().scaledByDouble(scale, scale, scale, 1),
                       child: Banner(
                         message: banner.toUpperCase(),
-                        location: BannerLocation.topStart,
+                        location: .topStart,
                         color: Theme.of(context).colorScheme.primary,
                         child: const SizedBox(),
                       ),

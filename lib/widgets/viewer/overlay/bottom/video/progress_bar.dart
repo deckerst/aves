@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
-import 'package:decorated_icon/decorated_icon.dart';
 import 'package:material_ui/material_ui.dart';
 
 class VideoProgressBar extends StatefulWidget {
@@ -97,7 +96,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                         ],
                         Container(
                           key: _progressBarKey,
-                          alignment: Alignment.center,
+                          alignment: .center,
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
                             mainAxisSize: .min,
@@ -205,7 +204,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
       return isMuted
           ? Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
-              child: DecoratedIcon(
+              child: Icon(
                 AIcons.mute,
                 size: textScaler.scale(16),
                 shadows: Theme.of(context).isDark ? AStyles.embossShadows : null,

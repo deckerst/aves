@@ -1,33 +1,28 @@
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MosaicGridRow extends MultiChildRenderObjectWidget {
-  final MosaicRowLayout rowLayout;
-  final double spacing;
-  final TextDirection textDirection;
-
-  const new({
-    super.key,
-    required this.rowLayout,
-    required this.spacing,
-    required this.textDirection,
-    required super.children,
-  });
-
+class const FixedExtentGridRow({
+  super.key,
+  required final double width,
+  required final double height,
+  required final double spacing,
+  required final TextDirection textDirection,
+  required super.children,
+}) extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderMosaicGridRow(
-      rowLayout: rowLayout,
+    return RenderFixedExtentGridRow(
+      width: width,
+      height: height,
       spacing: spacing,
       textDirection: textDirection,
     );
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderMosaicGridRow renderObject) {
-    renderObject.rowLayout = rowLayout;
+  void updateRenderObject(BuildContext context, RenderFixedExtentGridRow renderObject) {
+    renderObject.width = width;
+    renderObject.height = height;
     renderObject.spacing = spacing;
     renderObject.textDirection = textDirection;
   }
@@ -35,7 +30,8 @@ class MosaicGridRow extends MultiChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MosaicRowLayout>('rowLayout', rowLayout));
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }
@@ -43,22 +39,32 @@ class MosaicGridRow extends MultiChildRenderObjectWidget {
 
 class _GridRowParentData extends ContainerBoxParentData<RenderBox>;
 
-class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
+class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   new({
     List<RenderBox>? children,
-    required this._rowLayout,
+    required this._width,
+    required this._height,
     required this._spacing,
     required this._textDirection,
   }) {
     addAll(children);
   }
 
-  MosaicRowLayout get rowLayout => _rowLayout;
-  MosaicRowLayout _rowLayout;
+  double get width => _width;
+  double _width;
 
-  set rowLayout(MosaicRowLayout value) {
-    if (_rowLayout == value) return;
-    _rowLayout = value;
+  set width(double value) {
+    if (_width == value) return;
+    _width = value;
+    markNeedsLayout();
+  }
+
+  double get height => _height;
+  double _height;
+
+  set height(double value) {
+    if (_height == value) return;
+    _height = value;
     markNeedsLayout();
   }
 
@@ -87,7 +93,7 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
     }
   }
 
-  double get intrinsicWidth => rowLayout.itemWidths.sum + spacing * (childCount - 1);
+  double get intrinsicWidth => width * childCount + spacing * (childCount - 1);
 
   @override
   double computeMinIntrinsicWidth(double height) => intrinsicWidth;
@@ -96,10 +102,10 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
   double computeMaxIntrinsicWidth(double height) => intrinsicWidth;
 
   @override
-  double computeMinIntrinsicHeight(double width) => rowLayout.height;
+  double computeMinIntrinsicHeight(double width) => height;
 
   @override
-  double computeMaxIntrinsicHeight(double width) => rowLayout.height;
+  double computeMaxIntrinsicHeight(double width) => height;
 
   @override
   void performLayout() {
@@ -108,27 +114,17 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
       size = constraints.smallest;
       return;
     }
-    final thumbnailHeight = rowLayout.height - spacing;
     size = Size(constraints.maxWidth, constraints.maxHeight);
+    final childConstraints = BoxConstraints.tight(Size(width, height));
     final flipMainAxis = textDirection == TextDirection.rtl;
-    var i = 0;
-    double offsetX = flipMainAxis ? size.width : 0;
+    var offset = Offset(flipMainAxis ? size.width - width : 0, 0);
+    final dx = (flipMainAxis ? -1 : 1) * (width + spacing);
     while (child != null) {
-      final thumbnailWidth = rowLayout.itemWidths[i];
-      final childConstraints = BoxConstraints.tight(Size(thumbnailWidth, thumbnailHeight));
       child.layout(childConstraints, parentUsesSize: false);
       final childParentData = child.parentData! as _GridRowParentData;
-      if (flipMainAxis) {
-        offsetX -= thumbnailWidth;
-      }
-      childParentData.offset = Offset(offsetX, 0);
-      if (flipMainAxis) {
-        offsetX -= spacing;
-      } else {
-        offsetX += thumbnailWidth + spacing;
-      }
+      childParentData.offset = offset;
+      offset += Offset(dx, 0);
       child = childParentData.nextSibling;
-      i++;
     }
   }
 
@@ -150,7 +146,8 @@ class RenderMosaicGridRow extends RenderBox with ContainerRenderObjectMixin<Rend
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<MosaicRowLayout>('rowLayout', rowLayout));
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }

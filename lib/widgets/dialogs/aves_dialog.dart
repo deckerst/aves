@@ -162,12 +162,12 @@ class DialogTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
+      alignment: .center,
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       decoration: AvesDialog.contentDecoration(context),
       child: Text(
         title,
-        textAlign: TextAlign.center,
+        textAlign: .center,
       ),
     );
   }

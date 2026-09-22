@@ -42,7 +42,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
 
   static int get dateMillis => DateTime.now().millisecondsSinceEpoch;
 
-  static AvesEntry newImage(String album, String filenameWithoutExtension, {int? id, int? contentId}) {
+  static AvesEntry newImage(String album, String fileNameWithoutExtension, {int? id, int? contentId}) {
     id ??= nextId;
     contentId ??= id;
     final _dateMillis = dateMillis;
@@ -51,7 +51,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       origin: EntryOrigins.mediaStoreContent,
       id: id,
       uri: 'content://media/external/images/media/$contentId',
-      path: '$album/$filenameWithoutExtension.jpg',
+      path: '$album/$fileNameWithoutExtension.jpg',
       contentId: contentId,
       pageId: null,
       sourceMimeType: MimeTypes.jpeg,
@@ -59,7 +59,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
       height: 720,
       sourceRotationDegrees: 0,
       sizeBytes: 42,
-      sourceTitle: filenameWithoutExtension,
+      sourceTitle: fileNameWithoutExtension,
       dateAddedSecs: _dateSecs,
       dateModifiedMillis: _dateMillis,
       sourceDateTakenMillis: _dateMillis,
@@ -86,7 +86,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
 
   static MoveOpEvent moveOpEventForRename(AvesEntry entry, String newName) {
     final newContentId = nextId;
-    final oldName = entry.filenameWithoutExtension!;
+    final oldName = entry.fileNameWithoutExtension!;
     return MoveOpEvent(
       success: true,
       skipped: false,

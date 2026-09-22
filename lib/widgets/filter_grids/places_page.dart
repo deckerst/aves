@@ -22,7 +22,7 @@ class PlaceListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    return Selector<Settings, (ChipSortFactor, bool, Set<CollectionFilter>)>(
+    return Selector<Settings, (SortFactor, bool, Set<CollectionFilter>)>(
       selector: (context, s) => (s.placeSortFactor, s.placeSortReverse, s.pinnedFilters),
       shouldRebuild: (t1, t2) {
         // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within records

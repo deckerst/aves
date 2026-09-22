@@ -9,16 +9,11 @@ import 'package:aves/widgets/common/grid/sections/list_layout.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class CollectionDraggableThumbLabel extends StatelessWidget {
-  final CollectionLens collection;
-  final double offsetY;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.offsetY,
-  });
-
+class const CollectionDraggableThumbLabel({
+  super.key,
+  required final CollectionLens collection,
+  required final double offsetY,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableThumbLabel<AvesEntry>(
@@ -43,8 +38,11 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
                 return [
                   DraggableThumbLabel.formatDayThumbLabel(context, locale, date),
                 ];
+              case .name:
+              case .rating:
+                throw UnimplementedError();
             }
-          case .name:
+          case .albumItemName:
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               ?entry.bestTitle,
@@ -67,11 +65,14 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               if (entry.durationMillis != null) entry.durationText,
             ];
           case .path:
-            final entryFilename = entry.filenameWithoutExtension;
+            final entryFileName = entry.fileNameWithoutExtension;
             return [
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
-              ?entryFilename,
+              ?entryFileName,
             ];
+          case .chipName:
+          case .count:
+            throw UnimplementedError();
         }
       },
     );

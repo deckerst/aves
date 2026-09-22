@@ -9,35 +9,23 @@ import 'package:provider/provider.dart';
 
 typedef TileBuilder<T> = Widget Function(T item, Size tileSize);
 
-abstract class SectionLayoutBuilder<T> {
-  final Map<SectionKey, List<T>> sections;
-  final bool showHeaders;
-  final double Function(BuildContext context, SectionKey sectionKey) getHeaderExtent;
-  final Widget Function(BuildContext context, SectionKey sectionKey, double headerExtent) buildHeader;
-  final double scrollableWidth;
-  final TileLayout tileLayout;
-  final int columnCount;
-  final double spacing, horizontalPadding, tileWidth, tileHeight, bottom;
-  final TileBuilder<T> tileBuilder;
-  final Duration tileAnimationDelay;
-  final bool animate;
-
-  const new({
-    required this.sections,
-    required this.showHeaders,
-    required this.getHeaderExtent,
-    required this.buildHeader,
-    required this.scrollableWidth,
-    required this.tileLayout,
-    required this.columnCount,
-    required this.spacing,
-    required this.horizontalPadding,
-    required this.tileWidth,
-    required this.tileHeight,
-    required this.tileBuilder,
-    required this.tileAnimationDelay,
-  }) : animate = tileAnimationDelay > Duration.zero,
-       bottom = tileHeight - tileWidth;
+abstract class const SectionLayoutBuilder<T>({
+  required final Map<SectionKey, List<T>> sections,
+  required final bool showHeaders,
+  required final double Function(BuildContext context, SectionKey sectionKey) getHeaderExtent,
+  required final Widget Function(BuildContext context, SectionKey sectionKey, double headerExtent) buildHeader,
+  required final double scrollableWidth,
+  required final TileLayout tileLayout,
+  required final int columnCount,
+  required final double spacing,
+  required final double horizontalPadding,
+  required final double tileWidth,
+  required final double tileHeight,
+  required final TileBuilder<T> tileBuilder,
+  required final Duration tileAnimationDelay,
+}) {
+  final double bottom = tileHeight - tileWidth;
+  final bool animate = tileAnimationDelay > Duration.zero;
 
   SectionedListLayout<T> updateLayouts(BuildContext context);
 
@@ -62,7 +50,7 @@ abstract class SectionLayoutBuilder<T> {
   }) {
     if (sectionChildIndex == 0) {
       final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : const SizedBox();
-      return animate ? _buildAnimation(context, sectionGridIndex, header) : header;
+      return animate ? buildAnimation(context, sectionGridIndex, header) : header;
     }
 
     final sectionItemCount = section.length;
@@ -76,7 +64,7 @@ abstract class SectionLayoutBuilder<T> {
         child: tileBuilder(section[minItemIndex + i], itemSizes[i]),
       );
       if (animate) {
-        children.add(_buildAnimation(context, sectionGridIndex + i, item));
+        children.add(buildAnimation(context, sectionGridIndex + i, item));
       } else {
         children.add(item);
       }
@@ -87,11 +75,11 @@ abstract class SectionLayoutBuilder<T> {
     );
   }
 
-  Widget _buildAnimation(BuildContext context, int index, Widget child) {
+  Widget buildAnimation(BuildContext context, int index, Widget child) {
     final durations = context.watch<DurationsData>();
     return AnimationConfiguration.staggeredGrid(
       position: index,
-      columnCount: tileLayout == TileLayout.mosaic ? 1 : columnCount,
+      columnCount: tileLayout == .mosaic ? 1 : columnCount,
       duration: durations.staggeredAnimation,
       delay: tileAnimationDelay,
       child: SlideAnimation(

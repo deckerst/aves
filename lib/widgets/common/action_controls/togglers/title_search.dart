@@ -6,22 +6,16 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class TitleSearchToggler extends StatelessWidget {
-  final bool queryEnabled, isMenuItem;
-  final FocusNode? focusNode;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.queryEnabled,
-    this.isMenuItem = false,
-    this.focusNode,
-    this.onPressed,
-  });
-
+class const TitleSearchToggler({
+  super.key,
+  required final bool queryEnabled,
+  final bool isMenuItem = false,
+  final FocusNode? focusNode,
+  final VoidCallback? onPressed,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final icon = Icon(queryEnabled ? AIcons.filterOff : AIcons.filter);
+    final icon = Icon(queryEnabled ? AIcons.hideTitleFilter : AIcons.showTitleFilter);
     final text = queryEnabled ? context.l10n.collectionActionHideTitleSearch : context.l10n.collectionActionShowTitleSearch;
     return isMenuItem
         ? MenuRow(
@@ -37,14 +31,10 @@ class TitleSearchToggler extends StatelessWidget {
   }
 }
 
-class TitleSearchTogglerCaption extends StatelessWidget {
-  final bool enabled;
-
-  const new({
-    super.key,
-    required this.enabled,
-  });
-
+class const TitleSearchTogglerCaption({
+  super.key,
+  required final bool enabled,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // `Query` may not be available during hero

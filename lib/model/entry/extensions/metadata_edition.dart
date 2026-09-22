@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aves/convert/convert.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -12,7 +13,6 @@ import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/xmp.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves_model/aves_model.dart';
@@ -29,7 +29,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
     if (appliedModifier == null) {
-      if (isValid && userModifier.action != DateEditAction.copyField) {
+      if (isValid && userModifier.action != .copyField) {
         // do not report
         debugPrint('$runtimeType failed to get date for modifier=$userModifier, entry=$this');
       }
@@ -53,7 +53,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             case .setCustom:
             case .copyField:
             case .copyItem:
-            case .extractFromTitle:
+            case .extractFromFileName:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
             case .shift:
               final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
@@ -99,10 +99,10 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
         final latitude = latLng.latitude;
         final longitude = latLng.longitude;
         exifFields.addAll({
-          MetadataField.exifGpsLatitude: latitude.abs(),
-          MetadataField.exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
-          MetadataField.exifGpsLongitude: longitude.abs(),
-          MetadataField.exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
+          .exifGpsLatitude: latitude.abs(),
+          .exifGpsLatitudeRef: latitude >= 0 ? Exif.latitudeNorth : Exif.latitudeSouth,
+          .exifGpsLongitude: longitude.abs(),
+          .exifGpsLongitudeRef: longitude >= 0 ? Exif.longitudeEast : Exif.longitudeWest,
         });
       }
       metadata[MetadataType.exif] = Map<String, dynamic>.fromEntries(exifFields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value)));
@@ -119,7 +119,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
         final isoLon = '${longitude >= 0 ? '+' : '-'}${_iso6709LongitudeFormatter.format(longitude.abs())}';
         iso6709String = '$isoLat$isoLon/';
       }
-      mp4Fields[MetadataField.mp4GpsCoordinates] = iso6709String;
+      mp4Fields[.mp4GpsCoordinates] = iso6709String;
 
       metadata[MetadataType.mp4] = Map<String, String?>.fromEntries(mp4Fields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value)));
     }
@@ -155,7 +155,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     final dataTypes = <EntryDataType>{};
 
     final mp4Fields = <MetadataField, String?>{
-      MetadataField.mp4RotationDegrees: rotationDegrees.toString(),
+      .mp4RotationDegrees: rotationDegrees.toString(),
     };
 
     final metadata = <MetadataType, dynamic>{
@@ -462,8 +462,8 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
           }
         }
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
-      case .extractFromTitle:
-        final date = parseUnknownDateFormat(bestTitle);
+      case .extractFromFileName:
+        final date = parseUnknownDateFormat(fileNameWithoutExtension);
         return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
       case .setCustom:
       case .copyItem:

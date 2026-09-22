@@ -108,7 +108,7 @@ class _TaskQueueOverlay extends StatelessWidget {
       child: DefaultTextStyle(
         style: const TextStyle(),
         child: Align(
-          alignment: AlignmentDirectional.bottomStart,
+          alignment: .bottomStart,
           child: SafeArea(
             child: Container(
               color: Colors.indigo.shade900.withAlpha(0xCC),

@@ -36,10 +36,10 @@ class BurstPatterns {
     _Manufacturers.sony: sony,
   };
 
-  static String? getKeyForName(String? filename, List<String> patterns) {
-    if (filename != null) {
+  static String? getKeyForName(String? fileName, List<String> patterns) {
+    if (fileName != null) {
       for (final pattern in patterns) {
-        final match = RegExp(pattern).firstMatch(filename);
+        final match = RegExp(pattern).firstMatch(fileName);
         if (match != null) {
           if (match.groupNames.contains(_keyGroupName)) {
             return match.namedGroup(_keyGroupName);

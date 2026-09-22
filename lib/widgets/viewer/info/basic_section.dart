@@ -370,7 +370,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     final appName = appInventory.getCurrentAppName(ownerPackage) ?? ownerPackage;
     return (context, key, value) => [
       WidgetSpan(
-        alignment: PlaceholderAlignment.middle,
+        alignment: .middle,
         child: Padding(
           padding: const EdgeInsetsDirectional.only(start: 2, end: 4),
           child: ConstrainedBox(

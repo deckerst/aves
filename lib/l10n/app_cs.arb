@@ -353,7 +353,7 @@
     "genericSuccessFeedback": "Hotovo!",
     "genericFailureFeedback": "Selhání",
     "genericDangerWarningDialogMessage": "Jste si jisti?",
-    "menuActionConfigureView": "Zobrazení",
+    "menuActionConfigureView": "Změna rozvržení",
     "menuActionSelect": "Výběr",
     "menuActionSelectAll": "Vybrat vše",
     "menuActionSelectNone": "Zrušit výběr",
@@ -956,5 +956,6 @@
     "settingsPermissionsPageTitle": "Oprávnění",
     "settingsCalendarTile": "Kalendář",
     "mapShowItemTracks": "Zobrazit cesty",
-    "mapHideItemTracks": "Skrýt cesty"
+    "mapHideItemTracks": "Skrýt cesty",
+    "tileLayoutCalendar": "Kalendář"
 }

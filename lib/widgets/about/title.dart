@@ -13,7 +13,7 @@ class AboutSectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = Container(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: .centerStart,
       constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
       child: Text(text, style: AStyles.knownTitleText),
     );

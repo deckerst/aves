@@ -5,48 +5,14 @@ import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/vaults/vaults.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoIcon extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final gridTheme = context.watch<GridThemeData>();
-    final showDuration = gridTheme.showVideoDuration;
-    Widget child = OverlayIcon(
-      icon: entry.is360
-          ? AIcons.sphericalVideo
-          : entry.isSlowMotion
-          ? AIcons.slowMotion
-          : AIcons.videoPlay,
-      text: showDuration ? entry.durationText : null,
-      iconScale: entry.is360 && showDuration ? .9 : 1,
-    );
-    if (showDuration) {
-      child = DefaultTextStyle(
-        style: TextStyle(
-          fontSize: gridTheme.fontSize,
-        ),
-        child: child,
-      );
-    }
-    return child;
-  }
-}
-
-class AnimatedImageIcon extends StatelessWidget {
-  const new({super.key});
-
+class const AnimatedImageIcon({super.key}) extends StatelessWidget {
   static const scale = .75;
 
   @override
@@ -58,9 +24,37 @@ class AnimatedImageIcon extends StatelessWidget {
   }
 }
 
-class GeoTiffIcon extends StatelessWidget {
-  const new({super.key});
+class const CalendarStackCount({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle(
+      style: TextStyle(
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize * 2),
+      ),
+      child: OverlayIcon(
+        text: '${entry.stackedEntries?.length}',
+      ),
+    );
+  }
+}
 
+class const FavouriteIcon({super.key}) extends StatelessWidget {
+  static const scale = .9;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.favourite,
+      iconScale: scale,
+      relativeOffset: Offset(0, .05),
+    );
+  }
+}
+
+class const GeoTiffIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
@@ -69,9 +63,7 @@ class GeoTiffIcon extends StatelessWidget {
   }
 }
 
-class HdrIcon extends StatelessWidget {
-  const new({super.key});
-
+class const HdrIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
@@ -80,9 +72,62 @@ class HdrIcon extends StatelessWidget {
   }
 }
 
-class PanoramaIcon extends StatelessWidget {
-  const new({super.key});
+class LocationIcon extends StatelessWidget {
+  final IconData icon;
 
+  const new _private({required this.icon});
+
+  factory located() => const LocationIcon._private(icon: AIcons.location);
+
+  factory unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: icon,
+    );
+  }
+}
+
+class const MotionPhotoIcon({super.key}) extends StatelessWidget {
+  static const scale = .85;
+
+  @override
+  Widget build(BuildContext context) {
+    return const OverlayIcon(
+      icon: AIcons.motionPhoto,
+      iconScale: scale,
+    );
+  }
+}
+
+class const MultiPageIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  static const scale = .8;
+
+  @override
+  Widget build(BuildContext context) {
+    String? text;
+    if (entry.isStack) {
+      text = '${entry.stackedEntries?.length}';
+    }
+    final child = OverlayIcon(
+      icon: AIcons.multiPage,
+      iconScale: scale,
+      text: text,
+    );
+    return DefaultTextStyle(
+      style: TextStyle(
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
+      ),
+      child: child,
+    );
+  }
+}
+
+class const PanoramaIcon({super.key}) extends StatelessWidget {
   static const scale = .8;
 
   @override
@@ -94,17 +139,29 @@ class PanoramaIcon extends StatelessWidget {
   }
 }
 
-class FavouriteIcon extends StatelessWidget {
-  const new({super.key});
+class const RatingIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle(
+      style: TextStyle(
+        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
+      ),
+      child: OverlayIcon(
+        icon: AIcons.rating,
+        text: '${entry.rating}',
+      ),
+    );
+  }
+}
 
-  static const scale = .9;
-
+class const RawIcon({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const OverlayIcon(
-      icon: AIcons.favourite,
-      iconScale: scale,
-      relativeOffset: Offset(0, .05),
+      icon: AIcons.raw,
     );
   }
 }
@@ -130,109 +187,11 @@ class TagIcon extends StatelessWidget {
   }
 }
 
-class LocationIcon extends StatelessWidget {
-  final IconData icon;
-
-  const new _private({required this.icon});
-
-  factory located() => const LocationIcon._private(icon: AIcons.location);
-
-  factory unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
-
-  @override
-  Widget build(BuildContext context) {
-    return OverlayIcon(
-      icon: icon,
-    );
-  }
-}
-
-class RawIcon extends StatelessWidget {
-  const new({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.raw,
-    );
-  }
-}
-
-class MotionPhotoIcon extends StatelessWidget {
-  const new({super.key});
-
+class const TrashIcon({
+  super.key,
+  required final int? trashDaysLeft,
+}) extends StatelessWidget {
   static const scale = .85;
-
-  @override
-  Widget build(BuildContext context) {
-    return const OverlayIcon(
-      icon: AIcons.motionPhoto,
-      iconScale: scale,
-    );
-  }
-}
-
-class MultiPageIcon extends StatelessWidget {
-  final AvesEntry entry;
-
-  static const scale = .8;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String? text;
-    if (entry.isStack) {
-      text = '${entry.stackedEntries?.length}';
-    }
-    final child = OverlayIcon(
-      icon: AIcons.multiPage,
-      iconScale: scale,
-      text: text,
-    );
-    return DefaultTextStyle(
-      style: TextStyle(
-        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
-      ),
-      child: child,
-    );
-  }
-}
-
-class RatingIcon extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: TextStyle(
-        fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
-      ),
-      child: OverlayIcon(
-        icon: AIcons.rating,
-        text: '${entry.rating}',
-      ),
-    );
-  }
-}
-
-class TrashIcon extends StatelessWidget {
-  final int? trashDaysLeft;
-
-  static const scale = .85;
-
-  const new({
-    super.key,
-    required this.trashDaysLeft,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,28 +210,86 @@ class TrashIcon extends StatelessWidget {
   }
 }
 
-class OverlayIcon extends StatelessWidget {
-  final IconData icon;
-  final String? text;
-  final double iconScale;
-  final EdgeInsetsGeometry margin;
-  final Offset? relativeOffset;
+class const VideoIcon({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final showDuration = context.select<GridThemeData, bool>((t) => t.showVideoDuration);
+    Widget child = OverlayIcon(
+      icon: entry.is360
+          ? AIcons.sphericalVideo
+          : entry.isSlowMotion
+          ? AIcons.slowMotion
+          : AIcons.videoPlay,
+      text: showDuration ? entry.durationText : null,
+      iconScale: entry.is360 && showDuration ? .9 : 1,
+    );
+    if (showDuration) {
+      child = DefaultTextStyle(
+        style: TextStyle(
+          fontSize: context.select<GridThemeData, double>((t) => t.fontSize),
+        ),
+        child: child,
+      );
+    }
+    return child;
+  }
+}
 
+class const OverlayIcon({
+  super.key,
+  final IconData? icon,
+  final double iconScale = 1,
+  final String? text,
+  // default margin for multiple icons in a `Column`
+  final EdgeInsetsGeometry margin = defaultMargin,
+  final Offset? relativeOffset,
+}) extends StatelessWidget {
   static const defaultMargin = EdgeInsets.only(left: 1, right: 1, bottom: 1);
-
-  const new({
-    super.key,
-    required this.icon,
-    this.iconScale = 1,
-    this.text,
-    // default margin for multiple icons in a `Column`
-    this.margin = defaultMargin,
-    this.relativeOffset,
-  });
 
   @override
   Widget build(BuildContext context) {
     final size = context.select<GridThemeData, double>((t) => t.iconSize);
+
+    Widget? child;
+    EdgeInsetsGeometry? padding;
+
+    if (icon != null) {
+      child = _buildIcon(size);
+
+      if (text != null) {
+        padding = EdgeInsetsDirectional.only(end: size / 4);
+        child = Row(
+          mainAxisSize: .min,
+          crossAxisAlignment: .center,
+          children: [
+            child,
+            const SizedBox(width: 2),
+            Flexible(
+              child: _buildText(context),
+            ),
+          ],
+        );
+      }
+    } else if (text != null) {
+      padding = EdgeInsets.symmetric(horizontal: size / 4);
+      child = _buildText(context);
+    }
+
+    return Container(
+      margin: margin,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
+        borderRadius: BorderRadius.all(Radius.circular(size)),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildIcon(double size) {
     Widget iconChild = Icon(
       icon,
       size: size,
@@ -298,34 +315,14 @@ class OverlayIcon extends StatelessWidget {
       height: size,
       child: iconChild,
     );
+    return iconChild;
+  }
 
-    return Container(
-      margin: margin,
-      padding: text != null ? EdgeInsetsDirectional.only(end: size / 4) : null,
-      decoration: BoxDecoration(
-        color: Theme.of(context).isDark ? const Color(0xAA000000) : const Color(0xCCFFFFFF),
-        borderRadius: BorderRadius.all(Radius.circular(size)),
-      ),
-      child: text == null
-          ? iconChild
-          : Row(
-              mainAxisSize: .min,
-              crossAxisAlignment: .center,
-              children: [
-                iconChild,
-                const SizedBox(width: 2),
-                Flexible(
-                  child: Text(
-                    text!,
-                    // consistent with the color used for the icon next to it
-                    style: TextStyle(color: IconTheme.of(context).color),
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
+  Widget _buildText(BuildContext context) {
+    return FadingLine(
+      text!,
+      // consistent with the color used for the icon next to it
+      style: TextStyle(color: IconTheme.of(context).color),
     );
   }
 }

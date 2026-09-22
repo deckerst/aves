@@ -416,6 +416,7 @@ class MediaStoreSource extends CollectionSource {
     }
   }
 
+  @override
   Future<void> checkForChanges() async {
     final sinceGeneration = _lastGenerationByVolume;
     await updateGeneration();

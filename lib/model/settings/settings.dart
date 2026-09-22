@@ -11,6 +11,7 @@ import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/modules/app.dart';
 import 'package:aves/model/settings/modules/collection.dart';
+import 'package:aves/model/settings/modules/common_layout.dart';
 import 'package:aves/model/settings/modules/debug.dart';
 import 'package:aves/model/settings/modules/display.dart';
 import 'package:aves/model/settings/modules/filter_grids.dart';
@@ -48,6 +49,7 @@ class Settings
         ChangeNotifier,
         SettingsAccess,
         AppSettings,
+        CommonLayoutSettings,
         CollectionSettings,
         DebugSettings,
         DisplaySettings,
@@ -363,6 +365,7 @@ class Settings
           case SettingKeys.confirmMoveToBinKey:
           case SettingKeys.confirmAfterMoveToBinKey:
           case SettingKeys.collectionSortReverseKey:
+          case SettingKeys.showCollectionLayoutBarKey:
           case SettingKeys.showThumbnailFavouriteKey:
           case SettingKeys.showThumbnailHdrKey:
           case SettingKeys.showThumbnailMotionPhotoKey:
@@ -416,8 +419,8 @@ class Settings
           case SettingKeys.keepScreenOnKey:
           case SettingKeys.homePageKey:
           case SettingKeys.homeCustomExplorerPathKey:
-          case SettingKeys.collectionGroupFactorKey:
           case SettingKeys.collectionSortFactorKey:
+          case SettingKeys.collectionSectionFactorKey:
           case SettingKeys.thumbnailLocationIconKey:
           case SettingKeys.thumbnailTagIconKey:
           case SettingKeys.albumSectionFactorKey:

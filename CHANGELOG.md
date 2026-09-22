@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.4"></a>[v1.15.4] - 2026-09-22
+
+### Added
+
+- Collection: calendar layout
+- Collection: layout bar
+- Countries: show states for Brazil
+- link to app settings from OS settings
+
+### Changed
+
+- extract date from file name instead of title
+- upgraded Flutter to stable v3.47.5
+
+### Fixed
+
+- moving items out of app media directories
+- editing date with alternate calendar
+- opening transient images from camera apps
+- storage access for automatic settings export
+- global search suggestion provider
+
 ## <a id="v1.15.3"></a>[v1.15.3] - 2026-09-09
 
 ### Changed

@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 class AStyles {
   static const knownTitleText = TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.w300,
+    fontWeight: .w300,
     fontFeatures: [FontFeature.enable('smcp')],
   );
 

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -20,8 +22,7 @@ import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
-import 'package:aves/locale/aves_locale.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
@@ -30,11 +31,12 @@ import 'package:flutter/foundation.dart';
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
-  List<String> burstPatterns;
-  EntrySectionFactor sectionFactor;
-  EntrySortFactor sortFactor;
-  bool sortReverse;
-  ACalendar calendar;
+  late List<String> burstPatterns;
+  late TileLayout tileLayout;
+  late SortFactor sortFactor;
+  late bool sortReverse;
+  late EntrySectionFactor sectionFactor;
+  late ACalendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
   final AChangeNotifier layoutChangeNotifier = .new();
   final Set<StreamSubscription> _subscriptions = {};
@@ -62,13 +64,9 @@ class CollectionLens with ChangeNotifier {
     this.stackDevelopedRaws = true,
     this.fixedSort = false,
     this.fixedSelection,
-  }) : filters = (filters ?? {}).nonNulls.toSet(),
-       burstPatterns = settings.collectionBurstPatterns,
-       sectionFactor = settings.collectionSectionFactor,
-       sortFactor = settings.collectionSortFactor,
-       sortReverse = settings.collectionSortReverse,
-       calendar = settings.calendar {
+  }) : filters = (filters ?? {}).nonNulls.toSet() {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
+    _updateLayoutFactors();
     id ??= hashCode;
     if (listenToSource) {
       final sourceEvents = source.eventBus;
@@ -101,19 +99,7 @@ class CollectionLens with ChangeNotifier {
       );
       favourites.addListener(_onFavouritesChanged);
     }
-    _subscriptions.add(
-      settings.updateStream
-          .where(
-            (event) => [
-              SettingKeys.collectionBurstPatternsKey,
-              SettingKeys.collectionSortFactorKey,
-              SettingKeys.collectionGroupFactorKey,
-              SettingKeys.collectionSortReverseKey,
-              SettingKeys.calendarKey,
-            ].contains(event.key),
-          )
-          .listen((_) => _onSettingsChanged()),
-    );
+    _subscriptions.add(settings.updateStream.where(_isLayoutFactorEvent).listen((_) => _onLayoutFactorChanged()));
     refresh();
   }
 
@@ -170,8 +156,11 @@ class CollectionLens with ChangeNotifier {
             return true;
           case .day:
             return true;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
-      case .name:
+      case .albumItemName:
       case .path:
         return showAlbumHeaders();
       case .rating:
@@ -179,6 +168,9 @@ class CollectionLens with ChangeNotifier {
       case .size:
       case .duration:
         return false;
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
   }
 
@@ -215,12 +207,46 @@ class CollectionLens with ChangeNotifier {
     _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
-    if (stackBursts) {
-      _stackBursts();
+    if (tileLayout == .calendar) {
+      _stackByDate();
+    } else {
+      if (stackBursts) {
+        _stackBursts();
+      }
+      if (stackDevelopedRaws) {
+        _stackDevelopedRaws();
+      }
     }
-    if (stackDevelopedRaws) {
-      _stackDevelopedRaws();
-    }
+  }
+
+  void _stackByDate() {
+    final calOps = calendar.ops;
+    final byDate = groupBy<AvesEntry, DateTime?>(_filteredSortedEntries, (entry) {
+      final date = entry.bestDate;
+      return date != null ? calOps.dateOnly(date) : null;
+    }).whereNotNullKey();
+
+    // it is more efficient to rebuild the whole list of items,
+    // rather than removing and replacing items from it,
+    // because we process the whole collection
+    _filteredSortedEntries.clear();
+
+    byDate.forEach((date, stackedEntries) {
+      // follow collection sort order to use the oldest or newest item as the main one
+      stackedEntries.sort(AvesEntrySort.compareByDate);
+      if (sortReverse) {
+        stackedEntries = stackedEntries.reversed.toList();
+      }
+
+      final mainEntry = stackedEntries.first;
+      if (stackedEntries.length > 1) {
+        final stackEntry = mainEntry.copyWith(stackedEntries: stackedEntries);
+        _syntheticEntries.add(stackEntry);
+        _filteredSortedEntries.add(stackEntry);
+      } else {
+        _filteredSortedEntries.add(mainEntry);
+      }
+    });
   }
 
   void _stackBursts() {
@@ -248,8 +274,8 @@ class CollectionLens with ChangeNotifier {
       rawEntriesByDir.forEach((dir, dirRawEntries) {
         final dirDevelopedEntries = allDevelopedEntries.where((entry) => entry.directory == dir).toSet();
         for (final rawEntry in dirRawEntries) {
-          final rawFilename = rawEntry.filenameWithoutExtension;
-          final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.filenameWithoutExtension == rawFilename);
+          final rawFileName = rawEntry.fileNameWithoutExtension;
+          final developedEntry = dirDevelopedEntries.firstWhereOrNull((entry) => entry.fileNameWithoutExtension == rawFileName);
           if (developedEntry != null) {
             final mainEntry = developedEntry;
             final subEntry = rawEntry;
@@ -272,7 +298,7 @@ class CollectionLens with ChangeNotifier {
     switch (sortFactor) {
       case .date:
         _filteredSortedEntries.sort(AvesEntrySort.compareByDate);
-      case .name:
+      case .albumItemName:
         _filteredSortedEntries.sort(AvesEntrySort.compareByName);
       case .rating:
         _filteredSortedEntries.sort(AvesEntrySort.compareByRating);
@@ -282,6 +308,9 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntrySort.compareByDuration);
       case .path:
         _filteredSortedEntries.sort(AvesEntrySort.compareByPath);
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
     if (sortReverse) {
       _filteredSortedEntries = _filteredSortedEntries.reversed.toList();
@@ -319,8 +348,11 @@ class CollectionLens with ChangeNotifier {
               sections = Map.fromEntries([
                 MapEntry(const SectionKey(), _filteredSortedEntries),
               ]);
+            case .name:
+            case .rating:
+              throw UnimplementedError();
           }
-        case .name:
+        case .albumItemName:
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
           final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByName(b.directory, a.directory) : (a, b) => source.compareAlbumsByName(a.directory, b.directory);
           sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
@@ -335,6 +367,9 @@ class CollectionLens with ChangeNotifier {
           final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
           final int Function(EntryAlbumSectionKey, EntryAlbumSectionKey) compare = sortReverse ? (a, b) => source.compareAlbumsByPath(b.directory, a.directory) : (a, b) => source.compareAlbumsByPath(a.directory, b.directory);
           sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, compare);
+        case .chipName:
+        case .count:
+          throw UnimplementedError();
       }
     }
     sections = Map.unmodifiable(sections);
@@ -356,29 +391,56 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void _onSettingsChanged() {
-    final newBurstPatterns = settings.collectionBurstPatterns;
-    final newSortFactor = settings.collectionSortFactor;
-    final newSectionFactor = settings.collectionSectionFactor;
-    final newSortReverse = settings.collectionSortReverse;
-    final newCalendar = settings.calendar;
+  bool _isLayoutFactorEvent(SettingsChangedEvent event) {
+    return [
+      SettingKeys.collectionBurstPatternsKey,
+      SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
+      SettingKeys.collectionSortFactorKey,
+      SettingKeys.collectionSortReverseKey,
+      SettingKeys.collectionSectionFactorKey,
+      SettingKeys.calendarKey,
+    ].contains(event.key);
+  }
 
-    final needFilter = burstPatterns != newBurstPatterns;
-    final needSort = needFilter || sortFactor != newSortFactor || sortReverse != newSortReverse;
-    final needSection = needSort || sectionFactor != newSectionFactor || calendar != newCalendar;
+  void _updateLayoutFactors() {
+    burstPatterns = settings.collectionBurstPatterns;
+    tileLayout = settings.effectiveCollectionTileLayout;
+    sortFactor = settings.effectiveCollectionSortFactor;
+    sortReverse = settings.effectiveCollectionSortReverse;
+    sectionFactor = settings.effectiveCollectionSectionFactor;
+    calendar = settings.calendar;
+  }
+
+  void _onLayoutFactorChanged() {
+    final oldBurstPatterns = burstPatterns;
+    final oldTileLayout = tileLayout;
+    final oldSortFactor = sortFactor;
+    final oldSortReverse = sortReverse;
+    final oldSectionFactor = sectionFactor;
+    final oldCalendar = calendar;
+
+    _updateLayoutFactors();
+
+    final sortFactorChanged = oldSortFactor != sortFactor;
+    final sortOrderChanged = oldSortReverse != sortReverse;
+    final sectionFactorChanged = oldSectionFactor != sectionFactor;
+
+    final isCalendarLayout = tileLayout == .calendar;
+    final isCalendarLayoutChanged = (oldTileLayout == .calendar) != (isCalendarLayout);
+    final dateStackChanged = isCalendarLayoutChanged || (isCalendarLayout && sortOrderChanged);
+    final burstStackChanged = !const DeepCollectionEquality.unordered().equals(oldBurstPatterns, burstPatterns);
+
+    final needFilter = burstStackChanged || dateStackChanged;
+    final needSort = needFilter || sortFactorChanged || sortOrderChanged;
+    final needSection = needSort || sectionFactorChanged || oldCalendar != calendar;
 
     if (needFilter) {
-      burstPatterns = newBurstPatterns;
       _applyFilters();
     }
     if (needSort) {
-      sortFactor = newSortFactor;
-      sortReverse = newSortReverse;
       _applySort();
     }
     if (needSection) {
-      sectionFactor = newSectionFactor;
-      calendar = newCalendar;
       _applySection();
     }
 

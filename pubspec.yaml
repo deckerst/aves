@@ -4,19 +4,17 @@ repository: https://github.com/deckerst/aves
 publish_to: none
 
 # version bump checklist:
-# - pubspec version
-# - GitHub changelog:     /CHANGELOG.md
-# - Play Store changelog: /whatsnew/whatsnew-en-US
-# - izzy changelog:       /fastlane/metadata/android/en-US/changelogs/XXX01.txt
-# - libre changelog:      /fastlane/metadata/android/en-US/changelogs/XXX.txt
-# - run `scripts/gen_flavors.sh`
-version: 1.15.3+177
+# - increase app version       /pubspec.yaml
+# - edit GitHub changelog:     /CHANGELOG.md
+# - edit Play Store changelog: /whatsnew/whatsnew-en-US
+# - run `scripts/apply_version_bump.sh`
+version: 1.15.4+178
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.47.2
-  sdk: ">=3.13.2 <4.0.0"
+  flutter: 3.47.5
+  sdk: ">=3.13.3 <4.0.0"
 
 platforms:
   android:
@@ -77,7 +75,6 @@ dependencies:
   connectivity_plus:
   country_code:
   csv:
-  decorated_icon:
   device_info_plus:
   dlna_dart:
   dynamic_color:
@@ -108,7 +105,7 @@ dependencies:
   highlight:
   http:
   intl:
-  intl4x: 1.0.0-alpha.2
+  intl4x:
   latlong2:
   leak_tracker:
   local_auth:

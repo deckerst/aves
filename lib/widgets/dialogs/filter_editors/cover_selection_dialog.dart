@@ -10,6 +10,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/list_tiles/color.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -21,21 +22,14 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class CoverSelectionDialog extends StatefulWidget {
+class const CoverSelectionDialog({
+  super.key,
+  required final CollectionFilter filter,
+  required final AvesEntry? customEntry,
+  required final String? customPackage,
+  required final Color? customColor,
+}) extends StatefulWidget {
   static const routeName = '/dialog/select_cover';
-
-  final CollectionFilter filter;
-  final AvesEntry? customEntry;
-  final String? customPackage;
-  final Color? customColor;
-
-  const new({
-    super.key,
-    required this.filter,
-    required this.customEntry,
-    required this.customPackage,
-    required this.customColor,
-  });
 
   @override
   State<CoverSelectionDialog> createState() => _CoverSelectionDialogState();
@@ -237,12 +231,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final l10n = context.l10n;
     return [false, true].map(
       (isCustom) {
-        final title = Text(
-          isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogLatest,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        );
+        final title = FadingLine(isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogLatest);
         return ListTileTheme.merge(
           minVerticalPadding: isCustom && _customEntry != null ? 0 : null,
           child: RadioListTile<bool>(
@@ -271,12 +260,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final l10n = context.l10n;
     return [false, true].map(
       (isCustom) {
-        final title = Text(
-          isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        );
+        final title = FadingLine(isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto);
         return RadioListTile<bool>(
           value: isCustom,
           title: isCustom
@@ -318,12 +302,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final l10n = context.l10n;
     return [false, true].map(
       (isCustom) {
-        final title = Text(
-          isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        );
+        final title = FadingLine(isCustom ? l10n.setCoverDialogCustom : l10n.setCoverDialogAuto);
         return RadioListTile<bool>(
           value: isCustom,
           title: isCustom
@@ -426,11 +405,9 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
             color: color,
           ),
           const SizedBox(height: 4),
-          Text(
+          FadingLine(
             text,
             style: TextStyle(color: color),
-            softWrap: false,
-            overflow: TextOverflow.fade,
           ),
         ],
       ),

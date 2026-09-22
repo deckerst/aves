@@ -1,28 +1,17 @@
 import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SliderListTile extends StatelessWidget {
-  final TitleBuilder title;
-  final double value;
-  final ValueChanged<double>? onChanged;
-  final double min;
-  final double max;
-  final int? divisions;
-  final EdgeInsetsGeometry titlePadding;
-  final Widget Function(BuildContext context, double value)? titleTrailing;
-
-  const new({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.onChanged,
-    this.min = 0.0,
-    this.max = 1.0,
-    this.divisions,
-    this.titlePadding = const EdgeInsetsDirectional.only(start: 16),
-    this.titleTrailing,
-  });
-
+class const SliderListTile({
+  super.key,
+  required final TitleBuilder title,
+  required final double value,
+  required final ValueChanged<double>? onChanged,
+  final double min = 0.0,
+  final double max = 1.0,
+  final int? divisions,
+  final EdgeInsetsGeometry titlePadding = const EdgeInsetsDirectional.only(start: 16),
+  final Widget Function(BuildContext context, double value)? titleTrailing,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

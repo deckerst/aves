@@ -1,10 +1,12 @@
 import 'dart:ui';
 
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/sort.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -28,10 +30,16 @@ class GlobalSearch {
 @pragma('vm:entry-point')
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // service initialization for path context, database
   initPlatformServices();
+  await androidFileUtils.init();
   await localMediaDb.init();
+  await androidFileUtils.init();
+  await localMediaDb.init();
+  await device.init();
+  await mobileServices.init();
+  await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
+  await reportService.init();
+  videoMetadataFetcher.init();
 
   // `intl` initialization for date formatting
   await initializeDateFormatting();
@@ -45,7 +53,11 @@ Future<void> _init() async {
         throw PlatformException(code: 'not-implemented', message: 'failed to handle method=${call.method}');
     }
   });
-  await _channel.invokeMethod('initialized');
+  try {
+    await _channel.invokeMethod('initialized');
+  } on PlatformException catch (e, stack) {
+    await reportService.recordError(e, stack);
+  }
 }
 
 Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
@@ -56,19 +68,11 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
     final use24hour = args['use24hour'];
     debugPrint('getSuggestions query=$query, localeName=$localeName use24hour=$use24hour');
 
-    if (query is String && localeName is String) {
+    if (query is String) {
       final entries = (await localMediaDb.searchLiveEntries(query, limit: 9)).toList();
       final catalogMetadata = await localMediaDb.loadCatalogMetadataById(entries.map((entry) => entry.id).toSet());
       catalogMetadata.forEach((metadata) => entries.firstWhereOrNull((entry) => entry.id == metadata.id)?.catalogMetadata = metadata);
       entries.sort(AvesEntrySort.compareByDate);
-
-      // TODO TLAD [calendar] try whether `settings.avesLocale` is accessible, after:
-      //   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
-      final locale = AvesLocale(
-        languageTag: localeName,
-        calendar: ACalendar.gregorian,
-        forceWesternArabicNumerals: false,
-      );
 
       suggestions.addAll(
         entries.map((entry) {
@@ -77,7 +81,7 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
             'data': entry.uri,
             'mimeType': entry.mimeType,
             'title': entry.bestTitle,
-            'subtitle': date != null ? formatDateTime(date, locale, use24hour) : null,
+            'subtitle': date != null ? formatDateTime(date, settings.avesLocale, use24hour) : null,
             'iconUri': entry.uri,
           };
         }),

@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
@@ -45,12 +46,7 @@ class _AppExportItemSelectionDialogState extends State<AppExportItemSelectionDia
                   setState(() {});
                 }
               : null,
-          title: Text(
-            v.getText(context),
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            maxLines: 1,
-          ),
+          title: FadingLine(v.getText(context)),
         );
       }).toList(),
       actions: [

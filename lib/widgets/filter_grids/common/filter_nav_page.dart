@@ -26,7 +26,7 @@ import 'package:provider/provider.dart';
 class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>> extends StatefulWidget {
   final CollectionSource source;
   final String title;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders;
   final CSAD actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
@@ -81,7 +81,7 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
   }
 
   static List<FilterGridItem<T>> sort<T extends CollectionFilter, CSAD extends ChipSetActionDelegate<T>>(
-    ChipSortFactor sortFactor,
+    SortFactor sortFactor,
     bool reverse,
     CollectionSource source,
     Set<T> filters,
@@ -99,7 +99,7 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
 
     List<FilterGridItem<T>> allMapEntries = [];
     switch (sortFactor) {
-      case .name:
+      case .chipName:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByName);
       case .date:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByDate);
@@ -115,6 +115,10 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
         allMapEntries = toGridItem(source, filters);
       case .path:
         allMapEntries = toGridItem(source, filters)..sort(compareFiltersByPath);
+      case .albumItemName:
+      case .rating:
+      case .duration:
+        throw UnimplementedError();
     }
     if (reverse) {
       allMapEntries = allMapEntries.reversed.toList();

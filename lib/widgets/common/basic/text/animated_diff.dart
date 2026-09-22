@@ -4,22 +4,15 @@ import 'package:aves/utils/diff_match.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-class AnimatedDiffText extends StatefulWidget {
-  final String text;
-  final TextStyle? textStyle;
-  final StrutStyle? strutStyle;
-  final Curve curve;
-  final Duration duration;
-
-  const new(
-    this.text, {
-    super.key,
-    this.textStyle,
-    this.strutStyle,
-    this.curve = Curves.easeInOutCubic,
-    required this.duration,
-  });
-
+// TODO TLAD fix character segmentation for scripts like Arabic, Kannada, Tamil
+class const AnimatedDiffText(
+  final String text, {
+  super.key,
+  final TextStyle? textStyle,
+  final StrutStyle? strutStyle,
+  final Curve curve = Curves.easeInOutCubic,
+  required final Duration duration,
+}) extends StatefulWidget {
   @override
   State<AnimatedDiffText> createState() => _AnimatedDiffTextState();
 }
@@ -92,7 +85,7 @@ class _AnimatedDiffTextState extends State<AnimatedDiffText> with SingleTickerPr
                     switchOutCurve: widget.curve,
                     layoutBuilder: (currentChild, previousChildren) {
                       return Stack(
-                        alignment: Alignment.center,
+                        alignment: .center,
                         children: [
                           ...previousChildren.map(
                             (child) => ConstrainedBox(

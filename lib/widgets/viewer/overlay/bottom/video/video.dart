@@ -55,7 +55,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
         if (status == VideoStatus.error) {
           const action = EntryAction.openVideoPlayer;
           return Align(
-            alignment: Alignment.centerRight,
+            alignment: .centerRight,
             child: OverlayButton(
               scale: scale,
               child: IconButton(

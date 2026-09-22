@@ -81,7 +81,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final useTvLayout = settings.useTvLayout;
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
         return true;
       case .select:
         return appMode.canSelectMedia && !isSelecting;
@@ -92,6 +92,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       // browsing
       case .searchCollection:
         return appMode.canNavigate && !isSelecting && !useTvLayout;
+      case .toggleLayoutBar:
+        return !useTvLayout;
       case .toggleTitleSearch:
         return !isSelecting && !useTvLayout;
       case .addShortcut:
@@ -152,7 +154,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final hasSelection = selectedItemCount > 0;
 
     switch (action) {
-      case .configureView:
+      case .changeLayout:
         return true;
       case .select:
         return hasItems;
@@ -161,6 +163,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .selectNone:
         return hasSelection;
       case .searchCollection:
+      case .toggleLayoutBar:
       case .toggleTitleSearch:
       case .addShortcut:
       case .setHome:
@@ -207,7 +210,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     reportService.log('$runtimeType handles $action');
     switch (action) {
       // general
-      case .configureView:
+      case .changeLayout:
       case .select:
       case .selectAll:
       case .selectNone:
@@ -215,6 +218,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       // browsing
       case .searchCollection:
         _goToSearch(context);
+      case .toggleLayoutBar:
+        settings.showCollectionLayoutBar = !settings.showCollectionLayoutBar;
       case .toggleTitleSearch:
         final routeName = context.currentRouteName!;
         settings.setShowTitleQuery(routeName, !settings.getShowTitleQuery(routeName));

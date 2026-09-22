@@ -20,6 +20,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/thumbnail/image.dart';
 import 'package:material_ui/material_ui.dart';
@@ -168,8 +169,8 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
                         return Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                              begin: .topLeft,
+                              end: .bottomRight,
                               colors: [neutral, color],
                             ),
                           ),
@@ -224,12 +225,9 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
           ),
         ],
         Flexible(
-          child: Text(
+          child: FadingLine(
             locked ? AText.valueNotAvailable : itemCountFormatter.format(source.count(filter)),
             style: textStyle,
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            maxLines: 1,
           ),
         ),
       ],

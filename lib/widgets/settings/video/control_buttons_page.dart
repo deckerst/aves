@@ -9,14 +9,12 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoControlButtonsPage extends StatelessWidget {
+class const VideoControlButtonsPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/video/control_buttons';
 
   static const List<String> settingKeys = [SettingKeys.videoControlActionsKey];
 
   static const _availableActions = [...EntryActions.videoPlayback, EntryAction.openVideoPlayer];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class VideoControlButtonsPage extends StatelessWidget {
               children: [
                 ActionPanel(
                   child: Container(
-                    alignment: AlignmentDirectional.center,
+                    alignment: .center,
                     height: OverlayButton.getSize(context) + 48,
                     child: selectedActionList.isNotEmpty
                         ? VideoControlRow(onActionSelected: (_) {})

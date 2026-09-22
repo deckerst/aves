@@ -175,7 +175,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
                         padding: EdgeInsets.zero,
                         itemBuilder: (context, index) {
                           final child = Container(
-                            alignment: AlignmentDirectional.centerStart,
+                            alignment: .centerStart,
                             constraints: BoxConstraints.tightFor(height: itemHeight),
                             child: widget.itemBuilder(context, options[index]),
                           );
@@ -236,7 +236,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
 
   Widget _buildScrollerArea(IconData icon) {
     return Container(
-      alignment: Alignment.center,
+      alignment: .center,
       height: _scrollerAreaHeight,
       margin: const EdgeInsetsDirectional.only(end: _selectorMargin),
       child: Icon(icon),

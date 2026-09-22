@@ -32,9 +32,9 @@ class AboutCredits extends StatelessWidget {
             child: LinkChip(
               text: 'World Atlas',
               urlString: 'https://github.com/topojson/world-atlas',
-              textStyle: TextStyle(fontWeight: FontWeight.bold),
+              textStyle: TextStyle(fontWeight: .bold),
             ),
-            alignment: PlaceholderAlignment.middle,
+            alignment: .middle,
           ),
           TextSpan(text: l10n.aboutCreditsWorldAtlas2),
         ],

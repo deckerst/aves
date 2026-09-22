@@ -1,33 +1,27 @@
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FixedExtentGridRow extends MultiChildRenderObjectWidget {
-  final double width, height, spacing;
-  final TextDirection textDirection;
-
-  const new({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.spacing,
-    required this.textDirection,
-    required super.children,
-  });
-
+class const VariableExtentGridRow({
+  super.key,
+  required final VariableExtentRowLayout rowLayout,
+  required final double spacing,
+  required final TextDirection textDirection,
+  required super.children,
+}) extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderFixedExtentGridRow(
-      width: width,
-      height: height,
+    return RenderVariableExtentGridRow(
+      rowLayout: rowLayout,
       spacing: spacing,
       textDirection: textDirection,
     );
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderFixedExtentGridRow renderObject) {
-    renderObject.width = width;
-    renderObject.height = height;
+  void updateRenderObject(BuildContext context, RenderVariableExtentGridRow renderObject) {
+    renderObject.rowLayout = rowLayout;
     renderObject.spacing = spacing;
     renderObject.textDirection = textDirection;
   }
@@ -35,8 +29,7 @@ class FixedExtentGridRow extends MultiChildRenderObjectWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DoubleProperty('width', width));
-    properties.add(DoubleProperty('height', height));
+    properties.add(DiagnosticsProperty<VariableExtentRowLayout>('rowLayout', rowLayout));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }
@@ -44,32 +37,22 @@ class FixedExtentGridRow extends MultiChildRenderObjectWidget {
 
 class _GridRowParentData extends ContainerBoxParentData<RenderBox>;
 
-class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
+class RenderVariableExtentGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
   new({
     List<RenderBox>? children,
-    required this._width,
-    required this._height,
+    required this._rowLayout,
     required this._spacing,
     required this._textDirection,
   }) {
     addAll(children);
   }
 
-  double get width => _width;
-  double _width;
+  VariableExtentRowLayout get rowLayout => _rowLayout;
+  VariableExtentRowLayout _rowLayout;
 
-  set width(double value) {
-    if (_width == value) return;
-    _width = value;
-    markNeedsLayout();
-  }
-
-  double get height => _height;
-  double _height;
-
-  set height(double value) {
-    if (_height == value) return;
-    _height = value;
+  set rowLayout(VariableExtentRowLayout value) {
+    if (_rowLayout == value) return;
+    _rowLayout = value;
     markNeedsLayout();
   }
 
@@ -98,7 +81,7 @@ class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin
     }
   }
 
-  double get intrinsicWidth => width * childCount + spacing * (childCount - 1);
+  double get intrinsicWidth => rowLayout.itemWidths.sum + spacing * (childCount - 1);
 
   @override
   double computeMinIntrinsicWidth(double height) => intrinsicWidth;
@@ -107,10 +90,10 @@ class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin
   double computeMaxIntrinsicWidth(double height) => intrinsicWidth;
 
   @override
-  double computeMinIntrinsicHeight(double width) => height;
+  double computeMinIntrinsicHeight(double width) => rowLayout.height;
 
   @override
-  double computeMaxIntrinsicHeight(double width) => height;
+  double computeMaxIntrinsicHeight(double width) => rowLayout.height;
 
   @override
   void performLayout() {
@@ -119,17 +102,27 @@ class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin
       size = constraints.smallest;
       return;
     }
+    final thumbnailHeight = rowLayout.height - spacing;
     size = Size(constraints.maxWidth, constraints.maxHeight);
-    final childConstraints = BoxConstraints.tight(Size(width, height));
     final flipMainAxis = textDirection == TextDirection.rtl;
-    var offset = Offset(flipMainAxis ? size.width - width : 0, 0);
-    final dx = (flipMainAxis ? -1 : 1) * (width + spacing);
+    var i = 0;
+    double offsetX = flipMainAxis ? size.width : 0;
     while (child != null) {
+      final thumbnailWidth = rowLayout.itemWidths[i];
+      final childConstraints = BoxConstraints.tight(Size(thumbnailWidth, thumbnailHeight));
       child.layout(childConstraints, parentUsesSize: false);
       final childParentData = child.parentData! as _GridRowParentData;
-      childParentData.offset = offset;
-      offset += Offset(dx, 0);
+      if (flipMainAxis) {
+        offsetX -= thumbnailWidth;
+      }
+      childParentData.offset = Offset(offsetX, 0);
+      if (flipMainAxis) {
+        offsetX -= spacing;
+      } else {
+        offsetX += thumbnailWidth + spacing;
+      }
       child = childParentData.nextSibling;
+      i++;
     }
   }
 
@@ -151,8 +144,7 @@ class RenderFixedExtentGridRow extends RenderBox with ContainerRenderObjectMixin
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DoubleProperty('width', width));
-    properties.add(DoubleProperty('height', height));
+    properties.add(DiagnosticsProperty<VariableExtentRowLayout>('rowLayout', rowLayout));
     properties.add(DoubleProperty('spacing', spacing));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection));
   }

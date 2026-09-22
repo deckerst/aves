@@ -69,6 +69,13 @@ android {
         multiDexEnabled = true
     }
 
+    // remove dependency metadata from build artifacts
+    // cf https://izzyondroid.org/about/security/ApkScans/#signingblock-checks
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     signingConfigs {
         val storeFilePath = keystoreProperties["storeFile"] as String?
         if (storeFilePath != null) {

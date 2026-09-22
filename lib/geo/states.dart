@@ -2,30 +2,18 @@ import 'package:aves/ref/unicode.dart';
 import 'package:country_code/country_code.dart';
 
 class GeoStates {
-  static final aus = CountryCode.AU.alpha2;
-  static final gbr = CountryCode.GB.alpha2;
-  static final ind = CountryCode.IN.alpha2;
-  static final mex = CountryCode.MX.alpha2;
-  static final usa = CountryCode.US.alpha2;
-
-  static final Set<String> stateCountryCodes = {
-    aus,
-    gbr,
-    ind,
-    mex,
-    usa,
+  static final stateCodesByCountryCode = <String, Set<String>>{
+    CountryCode.AU.alpha2: EmojiStateCodes.australia,
+    CountryCode.BR.alpha2: EmojiStateCodes.brazil,
+    CountryCode.GB.alpha2: EmojiStateCodes.unitedKingdom,
+    CountryCode.IN.alpha2: EmojiStateCodes.india,
+    CountryCode.MX.alpha2: EmojiStateCodes.mexico,
+    CountryCode.US.alpha2: EmojiStateCodes.unitedStates,
   };
 
-  static final stateCodesByCountryCode = {
-    aus: EmojiStateCodes.aus,
-    gbr: EmojiStateCodes.gbr,
-    ind: EmojiStateCodes.ind,
-    mex: EmojiStateCodes.mex,
-    usa: EmojiStateCodes.usa,
-  };
-
-  static const stateCodeByName = {
+  static const stateCodeByName = <String, String>{
     ..._australiaEnglish,
+    ..._brazilPortuguese,
     ..._indiaEnglish,
     ..._mexicoSpanish,
     ..._unitedKingdomEnglish,
@@ -76,6 +64,36 @@ class GeoStates {
     'Tasmania': EmojiStateCodes.auTasmania,
     'Victoria': EmojiStateCodes.auVictoria,
     'Western Australia': EmojiStateCodes.auWesternAustralia,
+  };
+
+  static const _brazilPortuguese = {
+    'Acre': EmojiStateCodes.brAcre,
+    'Alagoas': EmojiStateCodes.brAlagoas,
+    'Amapá': EmojiStateCodes.brAmapa,
+    'Amazonas': EmojiStateCodes.brAmazonas,
+    'Bahia': EmojiStateCodes.brBahia,
+    'Ceará': EmojiStateCodes.brCeara,
+    'Distrito Federal': EmojiStateCodes.brDistritoFederal,
+    'Espírito Santo': EmojiStateCodes.brEspiritoSanto,
+    'Goiás': EmojiStateCodes.brGoias,
+    'Maranhão': EmojiStateCodes.brMaranhao,
+    'Mato Grosso': EmojiStateCodes.brMatoGrosso,
+    'Mato Grosso do Sul': EmojiStateCodes.brMatoGrossoDoSul,
+    'Minas Gerais': EmojiStateCodes.brMinasGerais,
+    'Pará': EmojiStateCodes.brPara,
+    'Paraíba': EmojiStateCodes.brParaiba,
+    'Paraná': EmojiStateCodes.brParana,
+    'Pernambuco': EmojiStateCodes.brPernambuco,
+    'Piauí': EmojiStateCodes.brPiaui,
+    'Rio de Janeiro': EmojiStateCodes.brRioDeJaneiro,
+    'Rio Grande do Norte': EmojiStateCodes.brRioGrandeDoNorte,
+    'Rio Grande do Sul': EmojiStateCodes.brRioGrandeDoSul,
+    'Rondônia': EmojiStateCodes.brRondonia,
+    'Roraima': EmojiStateCodes.brRoraima,
+    'Santa Catarina': EmojiStateCodes.brSantaCatarina,
+    'São Paulo': EmojiStateCodes.brSaoPaulo,
+    'Sergipe': EmojiStateCodes.brSergipe,
+    'Tocantins': EmojiStateCodes.brTocantins,
   };
 
   static const _indiaEnglish = {

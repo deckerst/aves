@@ -3,27 +3,17 @@ import 'package:aves_map/aves_map.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MapTheme extends StatelessWidget {
-  final bool interactive, showCoordinateFilter;
-  final MapNavigationButton navigationButton;
-  final Animation<double> scale;
-  final VisualDensity visualDensity;
-  final double? mapHeight;
-  final EdgeInsets attributionPadding;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.interactive,
-    required this.showCoordinateFilter,
-    required this.navigationButton,
-    this.scale = kAlwaysCompleteAnimation,
-    this.visualDensity = VisualDensity.standard,
-    this.mapHeight,
-    this.attributionPadding = EdgeInsets.zero,
-    required this.child,
-  });
-
+class const MapTheme({
+  super.key,
+  required final bool interactive,
+  required final bool showCoordinateFilter,
+  required final MapNavigationButton navigationButton,
+  final Animation<double> scale = kAlwaysCompleteAnimation,
+  final VisualDensity visualDensity = VisualDensity.standard,
+  final double? mapHeight,
+  final EdgeInsets attributionPadding = EdgeInsets.zero,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider<Settings, MapThemeData>(
@@ -74,7 +64,7 @@ class MapTheme extends StatelessWidget {
                 viewPadding: EdgeInsets.lerp(fromMediaQuery.viewPadding, toMediaQuery.viewPadding, t),
               ),
               child: Align(
-                alignment: Alignment.topCenter,
+                alignment: .topCenter,
                 child: SizedBox.fromSize(
                   size: Size.lerp(fromRenderBox.size, toRenderBox.size, t),
                   child: child,

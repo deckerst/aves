@@ -23,6 +23,7 @@ class UniCodes {
   static const cancelTag = 0xE007F;
 }
 
+// cf ISO 3166-2 for state codes
 class EmojiStateCodes {
   // AU
   static const auAustralianCapitalTerritory = 'auact';
@@ -34,7 +35,7 @@ class EmojiStateCodes {
   static const auVictoria = 'auvic';
   static const auWesternAustralia = 'auwa';
 
-  static const aus = {
+  static const australia = {
     auAustralianCapitalTerritory,
     auNewSouthWales,
     auNorthernTerritory,
@@ -45,13 +46,73 @@ class EmojiStateCodes {
     auWesternAustralia,
   };
 
+  // BR
+  // TODO TLAD use flag assets from https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
+  static const brAcre = 'brac';
+  static const brAlagoas = 'bral';
+  static const brAmapa = 'brap';
+  static const brAmazonas = 'bram';
+  static const brBahia = 'brba';
+  static const brCeara = 'brce';
+  static const brDistritoFederal = 'brdf';
+  static const brEspiritoSanto = 'bres';
+  static const brGoias = 'brgo';
+  static const brMaranhao = 'brma';
+  static const brMatoGrosso = 'brmt';
+  static const brMatoGrossoDoSul = 'brms';
+  static const brMinasGerais = 'brmg';
+  static const brPara = 'brpa';
+  static const brParaiba = 'brpb';
+  static const brParana = 'brpr';
+  static const brPernambuco = 'brpe';
+  static const brPiaui = 'brpi';
+  static const brRioDeJaneiro = 'brrj';
+  static const brRioGrandeDoNorte = 'brrn';
+  static const brRioGrandeDoSul = 'brrs';
+  static const brRondonia = 'brro';
+  static const brRoraima = 'brrr';
+  static const brSantaCatarina = 'brsc';
+  static const brSaoPaulo = 'brsp';
+  static const brSergipe = 'brse';
+  static const brTocantins = 'brto';
+
+  static const brazil = {
+    brAcre,
+    brAlagoas,
+    brAmapa,
+    brAmazonas,
+    brBahia,
+    brCeara,
+    brDistritoFederal,
+    brEspiritoSanto,
+    brGoias,
+    brMaranhao,
+    brMatoGrosso,
+    brMatoGrossoDoSul,
+    brMinasGerais,
+    brPara,
+    brParaiba,
+    brParana,
+    brPernambuco,
+    brPiaui,
+    brRioDeJaneiro,
+    brRioGrandeDoNorte,
+    brRioGrandeDoSul,
+    brRondonia,
+    brRoraima,
+    brSantaCatarina,
+    brSaoPaulo,
+    brSergipe,
+    brTocantins,
+  };
+
   // GB
   static const gbEngland = 'gbeng';
   static const gbNorthernIreland = 'gbnir';
   static const gbScotland = 'gbsct';
   static const gbWales = 'gbwls';
 
-  static const gbr = {
+  static const unitedKingdom = {
     gbEngland,
     gbNorthernIreland,
     gbScotland,
@@ -96,7 +157,7 @@ class EmojiStateCodes {
   static const inUttarakhand = 'inut';
   static const inWestBengal = 'inwb';
 
-  static const ind = {
+  static const india = {
     inAndamanAndNicobarIslands,
     inAndhraPradesh,
     inArunachalPradesh,
@@ -169,7 +230,7 @@ class EmojiStateCodes {
   static const mxYucatan = 'mxyuc';
   static const mxZacatecas = 'mxzac';
 
-  static const mex = {
+  static const mexico = {
     mxAguascalientes,
     mxBajaCalifornia,
     mxBajaCaliforniaSur,
@@ -256,7 +317,7 @@ class EmojiStateCodes {
   static const usWisconsin = 'uswi';
   static const usWyoming = 'uswy';
 
-  static const usa = {
+  static const unitedStates = {
     usAlabama,
     usAlaska,
     usArizona,

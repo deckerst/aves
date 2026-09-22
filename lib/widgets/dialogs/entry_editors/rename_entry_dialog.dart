@@ -30,7 +30,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = entry.filenameWithoutExtension ?? entry.sourceTitle ?? '';
+    _nameController.text = entry.fileNameWithoutExtension ?? entry.sourceTitle ?? '';
     _validate();
   }
 

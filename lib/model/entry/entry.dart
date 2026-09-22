@@ -31,7 +31,7 @@ class AvesEntry with AvesEntryBase {
   @override
   int? sizeBytes;
 
-  String? _path, _filename, _extension, _sourceTitle;
+  String? _path, _fileName, _extension, _sourceTitle;
   EntryDir? _directory;
   int? contentId;
   final String sourceMimeType;
@@ -210,7 +210,7 @@ class AvesEntry with AvesEntryBase {
   set path(String? path) {
     _path = path;
     _directory = null;
-    _filename = null;
+    _fileName = null;
     _extension = null;
     _bestTitle = null;
   }
@@ -224,9 +224,9 @@ class AvesEntry with AvesEntryBase {
     return _directory!.resolved;
   }
 
-  String? get filenameWithoutExtension {
-    _filename ??= path != null ? pContext.basenameWithoutExtension(path!) : null;
-    return _filename;
+  String? get fileNameWithoutExtension {
+    _fileName ??= path != null ? pContext.basenameWithoutExtension(path!) : null;
+    return _fileName;
   }
 
   // file extension, including the `.`
@@ -341,7 +341,7 @@ class AvesEntry with AvesEntryBase {
 
   @override
   String? get bestTitle {
-    _bestTitle ??= _catalogMetadata?.xmpTitle?.isNotEmpty == true ? _catalogMetadata!.xmpTitle : (filenameWithoutExtension ?? sourceTitle);
+    _bestTitle ??= _catalogMetadata?.xmpTitle?.isNotEmpty == true ? _catalogMetadata!.xmpTitle : (fileNameWithoutExtension ?? sourceTitle);
     return _bestTitle;
   }
 

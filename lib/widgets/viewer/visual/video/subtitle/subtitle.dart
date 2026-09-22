@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/widgets/common/basic/text/background_painter.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/ass_parser.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/video/subtitle/style.dart';
@@ -58,8 +59,7 @@ class VideoSubtitles extends StatelessWidget {
               );
 
               final viewportSize = MediaQuery.sizeOf(context);
-              final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-              final bottom = isPortrait ? .5 : .8;
+              final bottom = context.isPortrait ? .5 : .8;
               return ValueListenableBuilder<ViewState>(
                 valueListenable: viewStateNotifier,
                 builder: (context, viewState, child) {
@@ -81,7 +81,7 @@ class VideoSubtitles extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(top: 100.0),
                           child: Align(
-                            alignment: Alignment.topLeft,
+                            alignment: .topLeft,
                             child: OutlinedText(
                               textSpans: [
                                 TextSpan(
@@ -128,8 +128,8 @@ class VideoSubtitles extends StatelessWidget {
                             );
                           }).toList();
                           final drawingPaths = extraStyle.drawingPaths;
-                          final textHAlign = extraStyle.hAlign ?? (position != null ? TextAlign.center : baseTextAlign);
-                          final textVAlign = extraStyle.vAlign ?? (position != null ? TextAlignVertical.bottom : baseTextAlignY);
+                          final textHAlign = extraStyle.hAlign ?? (position != null ? .center : baseTextAlign);
+                          final textVAlign = extraStyle.vAlign ?? (position != null ? .bottom : baseTextAlignY);
 
                           Widget child;
                           if (drawingPaths != null) {
@@ -212,7 +212,7 @@ class VideoSubtitles extends StatelessWidget {
                           if (!transform.isIdentity()) {
                             child = Transform(
                               transform: transform,
-                              alignment: Alignment.center,
+                              alignment: .center,
                               child: child,
                             );
                           }

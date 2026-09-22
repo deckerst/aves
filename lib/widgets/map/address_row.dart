@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'info_row.dart';
@@ -48,7 +49,7 @@ class _MapAddressRowState extends State<MapAddressRow> {
   Widget build(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
     return Container(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: .centerStart,
       // addresses can include non-latin scripts with inconsistent line height,
       // which is especially an issue for relayout/painting of heavy Google map,
       // so we give extra height to give breathing room to the text and stabilize layout
@@ -67,18 +68,16 @@ class _MapAddressRowState extends State<MapAddressRow> {
           return Text.rich(
             TextSpan(
               children: [
-                WidgetSpan(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
-                    child: Icon(AIcons.location, size: MapInfoRow.getIconSize(context)),
-                  ),
-                  alignment: PlaceholderAlignment.middle,
+                IconSpan(
+                  icon: AIcons.location,
+                  size: MapInfoRow.getIconSize(context),
+                  padding: const EdgeInsets.symmetric(horizontal: MapInfoRow.iconPadding),
                 ),
                 TextSpan(text: location),
               ],
             ),
             softWrap: false,
-            overflow: TextOverflow.fade,
+            overflow: .fade,
             maxLines: 1,
           );
         },

@@ -220,7 +220,7 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     final customContent = lines.join('\n');
 
     final success = await storageService.createFile(
-      basename: '${targetEntry.filenameWithoutExtension}-metadata',
+      basename: '${targetEntry.fileNameWithoutExtension}-metadata',
       mimeType: MimeTypes.plainText,
       bytes: utf8.encode(customContent),
     );

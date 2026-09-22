@@ -6,13 +6,13 @@ extension ExtraDateFieldSourceConvert on DateFieldSource {
       case .fileModifiedDate:
         return null;
       case .exifDate:
-        return MetadataField.exifDate;
+        return .exifDate;
       case .exifDateOriginal:
-        return MetadataField.exifDateOriginal;
+        return .exifDateOriginal;
       case .exifDateDigitized:
-        return MetadataField.exifDateDigitized;
+        return .exifDateDigitized;
       case .exifGpsDate:
-        return MetadataField.exifGpsDatestamp;
+        return .exifGpsDatestamp;
     }
   }
 }

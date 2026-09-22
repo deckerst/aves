@@ -56,8 +56,8 @@ class SettingsDefaults {
   ];
 
   // collection
+  static const collectionSortFactor = SortFactor.date;
   static const collectionSectionFactor = EntrySectionFactor.month;
-  static const collectionSortFactor = EntrySortFactor.date;
   static const collectionBrowsingQuickActions = <EntrySetAction>[
     .searchCollection,
   ];
@@ -75,8 +75,8 @@ class SettingsDefaults {
   static const showThumbnailVideoDuration = true;
 
   // filter grids
+  static const chipSortFactor = SortFactor.chipName;
   static const chipSectionFactor = ChipSectionFactor.importance;
-  static const chipSortFactor = ChipSortFactor.name;
 
   // viewer
   static const viewerQuickActions = <EntryAction>[

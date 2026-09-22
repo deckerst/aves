@@ -6,16 +6,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SettingsCollectionTile extends StatelessWidget {
-  final Set<CollectionFilter> filters;
-  final void Function(Set<CollectionFilter>) onSelection;
-
-  const new({
-    super.key,
-    required this.filters,
-    required this.onSelection,
-  });
-
+class const SettingsCollectionTile({
+  super.key,
+  required final Set<CollectionFilter> filters,
+  required final void Function(Set<CollectionFilter>) onSelection,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;

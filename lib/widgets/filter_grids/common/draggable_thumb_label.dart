@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWidget {
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final double offsetY;
 
   const new({
@@ -28,7 +28,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
             return [
               DraggableThumbLabel.formatMonthThumbLabel(context, settings.avesLocale, filterGridItem.entry?.bestDate),
             ];
-          case .name:
+          case .chipName:
           case .path:
             return [
               filterGridItem.filter.getLabel(context),
@@ -41,6 +41,10 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
             return [
               formatFileSize(settings.avesLocale, context.read<CollectionSource>().size(filterGridItem.filter)),
             ];
+          case .albumItemName:
+          case .rating:
+          case .duration:
+            throw UnimplementedError();
         }
       },
     );

@@ -5,6 +5,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/basic/list_tiles/reselectable_radio.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
@@ -94,12 +95,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                 return ReselectableRadioListTile<String?>(
                                   value: '',
                                   reselectable: true,
-                                  title: Text(
-                                    context.l10n.appPickDialogNone,
-                                    softWrap: false,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                  ),
+                                  title: FadingLine(context.l10n.appPickDialogNone),
                                 );
                               }
                               index--;
@@ -113,7 +109,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                 TextSpan(
                                   children: [
                                     WidgetSpan(
-                                      alignment: PlaceholderAlignment.middle,
+                                      alignment: .middle,
                                       child: Padding(
                                         padding: const EdgeInsetsDirectional.only(end: 16),
                                         child: Image(
@@ -132,7 +128,7 @@ class _AppPickPageState extends State<AppPickPage> {
                                   ],
                                 ),
                                 softWrap: false,
-                                overflow: TextOverflow.fade,
+                                overflow: .fade,
                                 maxLines: 1,
                               ),
                             );

@@ -31,25 +31,19 @@ import 'package:aves/widgets/stats/percent_text.dart';
 import 'package:aves/widgets/stats/top_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class StatsPage extends StatefulWidget {
+class const StatsPage({
+  super.key,
+  required final Set<AvesEntry> entries,
+  required final CollectionSource source,
+  final CollectionLens? parentCollection,
+}) extends StatefulWidget {
   static const routeName = '/collection/stats';
-
-  final Set<AvesEntry> entries;
-  final CollectionSource source;
-  final CollectionLens? parentCollection;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.source,
-    this.parentCollection,
-  });
 
   @override
   State<StatsPage> createState() => _StatsPageState();
@@ -314,7 +308,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
       );
       header = Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        alignment: AlignmentDirectional.centerStart,
+        alignment: .centerStart,
         // prevent ink response when tapping the header does nothing,
         // because otherwise Play Store reviewers think it is broken navigation
         child: onHeaderPressed != null
@@ -398,11 +392,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
   }
 }
 
-class _LocationIndicator extends StatelessWidget {
-  final Set<AvesEntry> entries;
-
-  const new({required this.entries});
-
+class const _LocationIndicator({required final Set<AvesEntry> entries}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -425,7 +415,7 @@ class _LocationIndicator extends StatelessWidget {
                 child: Stack(
                   // use a stack instead of `center` field, so that the widgets
                   // are centered even when the center child has larger height
-                  alignment: Alignment.center,
+                  alignment: .center,
                   children: [
                     LinearPercentIndicator(
                       percent: withGpsPercent,
@@ -448,7 +438,7 @@ class _LocationIndicator extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             context.l10n.statsWithGps(withGpsCount),
-            textAlign: TextAlign.center,
+            textAlign: .center,
           ),
         ],
       ),

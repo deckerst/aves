@@ -7,6 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/collection/grid/list_details_theme.dart';
+import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -41,7 +42,7 @@ class EntryListDetails extends StatelessWidget {
               entry.bestTitle ?? context.l10n.viewerInfoUnknown,
               style: detailsTheme.titleStyle,
               softWrap: false,
-              overflow: detailsTheme.titleMaxLines == 1 ? TextOverflow.fade : TextOverflow.ellipsis,
+              overflow: detailsTheme.titleMaxLines == 1 ? .fade : .ellipsis,
               maxLines: detailsTheme.titleMaxLines,
             ),
             const SizedBox(height: EntryListDetailsTheme.titleDetailPadding),
@@ -60,17 +61,14 @@ class EntryListDetails extends StatelessWidget {
       ),
       style: style,
       softWrap: false,
-      overflow: TextOverflow.fade,
+      overflow: .fade,
     );
   }
 
   WidgetSpan _buildIconSpan(IconData icon, {EdgeInsetsDirectional padding = EdgeInsetsDirectional.zero}) {
-    return WidgetSpan(
-      alignment: PlaceholderAlignment.middle,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(end: 8, bottom: 1) + padding,
-        child: Icon(icon),
-      ),
+    return IconSpan(
+      icon: icon,
+      padding: const EdgeInsetsDirectional.only(end: 8, bottom: 1) + padding,
     );
   }
 

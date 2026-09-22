@@ -2,23 +2,18 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryListDetailsTheme extends StatelessWidget {
-  final double extent;
-  final Widget child;
-
+class const EntryListDetailsTheme({
+  super.key,
+  required final double extent,
+  required final Widget child,
+}) extends StatelessWidget {
   static const EdgeInsets contentMargin = EdgeInsets.symmetric(horizontal: 8);
   static const EdgeInsets contentPadding = EdgeInsets.symmetric(vertical: 4);
   static const double titleDetailPadding = 6;
-
-  const new({
-    super.key,
-    required this.extent,
-    required this.child,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,21 +89,13 @@ class EntryListDetailsTheme extends StatelessWidget {
   }
 }
 
-class EntryListDetailsThemeData {
-  final double extent;
-  final int titleMaxLines;
-  final bool isMinExtent, showDate, showLocation;
-  final TextStyle titleStyle, captionStyle;
-  final IconThemeData iconTheme;
-
-  const new({
-    required this.extent,
-    required this.titleMaxLines,
-    required this.isMinExtent,
-    required this.showDate,
-    required this.showLocation,
-    required this.titleStyle,
-    required this.captionStyle,
-    required this.iconTheme,
-  });
-}
+class const EntryListDetailsThemeData({
+  required final double extent,
+  required final int titleMaxLines,
+  required final bool isMinExtent,
+  required final bool showDate,
+  required final bool showLocation,
+  required final TextStyle titleStyle,
+  required final TextStyle captionStyle,
+  required final IconThemeData iconTheme,
+});

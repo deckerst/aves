@@ -1,29 +1,22 @@
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ChangeHighlightText extends StatefulWidget {
-  final String data;
-  final TextStyle style, changedStyle;
-  final Curve curve;
-  final Duration duration;
-
-  const new(
-    this.data, {
-    super.key,
-    required this.style,
-    required this.changedStyle,
-    this.curve = Curves.linear,
-    required this.duration,
-  });
-
+class const ChangeHighlightText(
+  final TextSpan data, {
+  super.key,
+  final TextStyle? textStyle,
+  final double changeBlurRadius = 8,
+  final Curve curve = Curves.linear,
+  required final Duration duration,
+}) extends StatefulWidget {
   @override
   State<ChangeHighlightText> createState() => _ChangeHighlightTextState();
 }
 
 class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-  late final CurvedAnimation _animation;
-  late final Animation<TextStyle> _style;
+  late CurvedAnimation _animation;
+  late Animation<TextStyle> _styleAnimation;
 
   @override
   void initState() {
@@ -35,17 +28,23 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
           )
           ..value = 1
           ..addListener(() => setState(() {}));
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    );
-    _style = ShadowedTextStyleTween(begin: widget.changedStyle, end: widget.style).animate(_animation);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateStyle(context);
   }
 
   @override
   void didUpdateWidget(ChangeHighlightText oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.data != widget.data) {
+
+    if (oldWidget.textStyle != widget.textStyle || oldWidget.changeBlurRadius != widget.changeBlurRadius || oldWidget.curve != widget.curve) {
+      _updateStyle(context);
+    }
+
+    if (!_sameSpanContent(oldWidget.data, widget.data)) {
       _controller
         ..value = 0
         ..forward();
@@ -61,16 +60,83 @@ class _ChangeHighlightTextState extends State<ChangeHighlightText> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      widget.data,
-      style: _style.value,
+    final textStyle = _styleAnimation.value;
+    return IconTheme.merge(
+      data: IconThemeData(
+        shadows: textStyle.shadows,
+      ),
+      child: Text.rich(
+        widget.data,
+        style: textStyle,
+      ),
     );
+  }
+
+  void _updateStyle(BuildContext context) {
+    final shadowColor = Theme.of(context).colorScheme.onSurface;
+    final textStyle = widget.textStyle ?? DefaultTextStyle.of(context).style;
+    final style = textStyle.copyWith(
+      shadows: [
+        Shadow(
+          color: shadowColor.withAlpha(0),
+          blurRadius: 0,
+        ),
+      ],
+    );
+    final changedStyle = textStyle.copyWith(
+      shadows: [
+        Shadow(
+          color: shadowColor,
+          blurRadius: widget.changeBlurRadius,
+        ),
+      ],
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: widget.curve,
+    );
+    _styleAnimation = ShadowedTextStyleTween(begin: changedStyle, end: style).animate(_animation);
+  }
+
+  // `TextSpan.compareTo()` does not compare deep in `WidgetSpan`s
+  static bool _sameSpanContent(InlineSpan a, InlineSpan b) {
+    if (identical(a, b)) return true;
+    if (a.runtimeType != b.runtimeType) return false;
+    if (a is TextSpan && b is TextSpan) return _isSameTextSpanContent(a, b);
+    if (a is WidgetSpan && b is WidgetSpan) return _isSameWidgetSpanContent(a, b);
+    return false;
+  }
+
+  static bool _isSameTextSpanContent(TextSpan a, TextSpan b) {
+    if (a.text != b.text) return false;
+    final aChildren = a.children;
+    final bChildren = b.children;
+    if (aChildren?.length != bChildren?.length) return false;
+    if (aChildren != null && bChildren != null) {
+      final length = aChildren.length;
+      for (var i = 0; i < length; i++) {
+        if (!_sameSpanContent(aChildren[i], bChildren[i])) return false;
+      }
+    }
+    return true;
+  }
+
+  static bool _isSameWidgetSpanContent(WidgetSpan a, WidgetSpan b) {
+    final aChild = a.child;
+    final bChild = b.child;
+    if (identical(aChild, bChild)) return true;
+    if (aChild.runtimeType != bChild.runtimeType) return false;
+    if (aChild is Icon && bChild is Icon) {
+      if (aChild.icon != bChild.icon) return false;
+    }
+    return true;
   }
 }
 
-class ShadowedTextStyleTween extends Tween<TextStyle> {
-  new({super.begin, super.end});
-
+class ShadowedTextStyleTween({
+  super.begin,
+  super.end,
+}) extends Tween<TextStyle> {
   @override
   TextStyle lerp(double t) {
     final textStyle = TextStyle.lerp(begin, end, t)!;

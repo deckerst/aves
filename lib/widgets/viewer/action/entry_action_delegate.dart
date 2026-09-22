@@ -417,8 +417,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _rotateScreen(BuildContext context) async {
-    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    await windowService.requestOrientation(isPortrait ? Orientation.landscape : Orientation.portrait);
+    await windowService.requestOrientation(context.isPortrait ? .landscape : .portrait);
   }
 
   Future<void> _delete(BuildContext context, AvesEntry targetEntry) async {
@@ -488,7 +487,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) => RenameEntryDialog(entry: targetEntry),
       routeSettings: const RouteSettings(name: RenameEntryDialog.routeName),
     );
-    if (newName == null || newName.isEmpty || newName == targetEntry.filenameWithoutExtension) return;
+    if (newName == null || newName.isEmpty || newName == targetEntry.fileNameWithoutExtension) return;
 
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);

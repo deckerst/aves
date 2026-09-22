@@ -489,7 +489,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
         child: ValueListenableBuilder<double>(
           valueListenable: _heightM3Animation!,
           builder: (context, value, child) {
-            return Align(alignment: Alignment.bottomLeft, heightFactor: value, child: child);
+            return Align(alignment: .bottomLeft, heightFactor: value, child: child);
           },
           child: snackBar,
         ),
@@ -498,7 +498,7 @@ class _OverlaySnackBarState extends State<OverlaySnackBar> {
       snackBarTransition = ValueListenableBuilder<double>(
         valueListenable: _heightAnimation!,
         builder: (context, value, child) {
-          return Align(alignment: AlignmentDirectional.topStart, heightFactor: value, child: child);
+          return Align(alignment: .topStart, heightFactor: value, child: child);
         },
         child: snackBar,
       );

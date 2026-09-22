@@ -146,8 +146,8 @@ abstract class AvesColorsData {
 
   // debug
   static const debugGradient = LinearGradient(
-    begin: Alignment.bottomCenter,
-    end: Alignment.topCenter,
+    begin: .bottomCenter,
+    end: .topCenter,
     colors: [
       Colors.red,
       Colors.amber,

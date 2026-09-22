@@ -1,22 +1,17 @@
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/widgets/common/grid/sections/layout/variable_extent_section_layout.dart';
 import 'package:aves/widgets/common/grid/sections/list_layout.dart';
-import 'package:aves/widgets/common/grid/sections/mosaic/section_layout.dart';
-import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
-class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
-  const new({
-    required super.sections,
-    required super.showHeaders,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.sectionLayouts,
-  });
-
-  List<MosaicRowLayout> _rowsFor(SectionLayout sectionLayout) => (sectionLayout as MosaicSectionLayout).rows;
-
+class const VariableExtentSectionedListLayout<T>({
+  required super.sections,
+  required super.showHeaders,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.sectionLayouts,
+}) extends SectionedListLayout<T> {
   @override
   Rect? getTileRect(T item) {
     final MapEntry<SectionKey?, List<T>>? section = sections.entries.firstWhereOrNull((kv) => kv.value.contains(item));
@@ -24,24 +19,29 @@ class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
 
     final sectionKey = section.key;
     final sectionLayout = sectionLayouts.firstWhereOrNull((sl) => sl.sectionKey == sectionKey);
-    if (sectionLayout == null) return null;
+    if (sectionLayout is! VariableExtentSectionLayout) return null;
 
     final sectionItemIndex = section.value.indexOf(item);
-    final row = _rowsFor(sectionLayout).firstWhereOrNull((row) => sectionItemIndex <= row.lastIndex);
-    if (row == null) return null;
+    final sectionWidgetIndex = sectionLayout.sectionItemIndexToWidgetIndex(sectionItemIndex);
 
-    final rowItemIndex = sectionItemIndex - row.firstIndex;
-    final tileWidth = row.itemWidths[rowItemIndex];
+    final rows = sectionLayout.rows;
+    final rowIndex = rows.indexWhere((row) => sectionWidgetIndex <= row.lastIndex);
+    if (rowIndex == -1) return null;
+
+    final row = rows[rowIndex];
+    final rowItemIndex = sectionWidgetIndex - row.firstIndex;
+    final rowItemWidths = row.itemWidths;
+    final tileWidth = rowItemWidths[rowItemIndex];
     final tileHeight = row.height - spacing;
 
     var left = horizontalPadding;
-    row.itemWidths.forEachIndexedWhile((i, width) {
+    rowItemWidths.forEachIndexedWhile((i, width) {
       if (i == rowItemIndex) return true;
 
       left += width + spacing;
       return false;
     });
-    final listIndex = sectionLayout.firstIndex + 1 + _rowsFor(sectionLayout).indexOf(row);
+    final listIndex = sectionLayout.firstIndex + 1 + rowIndex;
 
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileWidth, tileHeight);
@@ -51,7 +51,7 @@ class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
   T? getItemAt(Offset position) {
     var dy = position.dy;
     final sectionLayout = getSectionAt(dy);
-    if (sectionLayout == null) return null;
+    if (sectionLayout is! VariableExtentSectionLayout) return null;
 
     final section = sections[sectionLayout.sectionKey];
     if (section == null) return null;
@@ -59,20 +59,21 @@ class MosaicSectionedListLayout<T> extends SectionedListLayout<T> {
     dy -= sectionLayout.minOffset + sectionLayout.headerExtent;
     if (dy < 0) return null;
 
-    final row = _rowsFor(sectionLayout).firstWhereOrNull((v) => dy < v.maxOffset);
+    final row = sectionLayout.rows.firstWhereOrNull((v) => dy < v.maxOffset);
     if (row == null) return null;
 
     var dx = position.dx - horizontalPadding;
-    var index = -1;
+    var widgetIndex = -1;
     row.itemWidths.forEachIndexedWhile((i, width) {
       dx -= width + spacing;
       if (dx > 0) return true;
 
-      index = row.firstIndex + i;
+      widgetIndex = row.firstIndex + i;
       return false;
     });
 
-    if (index < 0 || index >= section.length) return null;
-    return section[index];
+    final itemIndex = sectionLayout.sectionWidgetIndexToItemIndex(widgetIndex);
+    if (itemIndex < 0 || itemIndex >= section.length) return null;
+    return section[itemIndex];
   }
 }

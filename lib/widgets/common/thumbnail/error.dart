@@ -9,16 +9,11 @@ import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ErrorThumbnail extends StatefulWidget {
-  final AvesEntry entry;
-  final double extent;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.extent,
-  });
-
+class const ErrorThumbnail({
+  super.key,
+  required final AvesEntry entry,
+  required final double extent,
+}) extends StatefulWidget {
   @override
   State<ErrorThumbnail> createState() => _ErrorThumbnailState();
 }
@@ -58,7 +53,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                         color: color,
                         fontSize: fontSize,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                     );
                   },
                 )
@@ -69,7 +64,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                 );
         }
         return Container(
-          alignment: Alignment.center,
+          alignment: .center,
           color: Themes.firstLayerColor(context),
           width: extent,
           height: extent,

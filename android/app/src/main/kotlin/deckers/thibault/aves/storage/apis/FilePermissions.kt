@@ -7,7 +7,7 @@ import deckers.thibault.aves.storage.StorageUtils
 object FilePermissions : StoragePermissions {
     fun getAccessibleDirectories(context: Context): Set<String> {
         return hashSetOf<String>().apply {
-            addAll(StorageUtils.getAppDirectories(context))
+            addAll(StorageUtils.getAvesAppDirectories(context))
 
             // from API 21 / Android 5.0 / Lollipop, removable storage requires access permission, but directory access grant is possible
             // from API 30 / Android 11 / R, any storage requires access permission

@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
+import deckers.thibault.aves.channel.calls.DeviceHandler
+import deckers.thibault.aves.channel.calls.StorageHandler
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.ContextUtils.resourceUri
 import deckers.thibault.aves.utils.FlutterUtils
@@ -80,6 +82,15 @@ class SearchSuggestionsProvider : ContentProvider() {
         engine ?: throw Exception("Flutter engine is not initialized")
 
         val messenger = engine.dartExecutor
+
+        // channels for search suggestions
+
+        // dart -> platform -> dart
+        // - need Context
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler(context))
+        MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(context))
+
+        // channel for service management
         val backgroundChannel = MethodChannel(messenger, BACKGROUND_CHANNEL).apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {

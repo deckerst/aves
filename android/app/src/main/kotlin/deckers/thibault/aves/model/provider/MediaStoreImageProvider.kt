@@ -349,21 +349,21 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun renameSingleByTreeDoc(
         context: Context,
         oldMediaUri: Uri,
-        oldPath: String,
+        oldFilePath: String,
         newFile: File
     ): String {
-        Log.d(LOG_TAG, "rename document at uri=$oldMediaUri path=$oldPath")
-        val df = StorageUtils.getDocumentFile(context, oldPath, oldMediaUri)
-        df ?: throw Exception("failed to get document at path=$oldPath")
+        Log.d(LOG_TAG, "rename document at uri=$oldMediaUri path=$oldFilePath")
+        val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = oldFilePath, mediaUri = oldMediaUri)
+        df ?: throw Exception("failed to get document at path=$oldFilePath")
 
         val requestedName = newFile.name
         val renamed = df.renameTo(newFile.name)
         if (!renamed) {
-            throw Exception("failed to rename document at path=$oldPath")
+            throw Exception("failed to rename document at path=$oldFilePath")
         }
         val effectiveName = df.name
         if (requestedName != effectiveName) {
-            Log.w(LOG_TAG, "requested renaming document at uri=$oldMediaUri path=$oldPath with name=${requestedName} but got name=$effectiveName")
+            Log.w(LOG_TAG, "requested renaming document at uri=$oldMediaUri path=$oldFilePath with name=${requestedName} but got name=$effectiveName")
         }
         val newPath = File(newFile.parentFile, df.name).path
         return newPath

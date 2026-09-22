@@ -3,15 +3,11 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pattern_lock/pattern_lock.dart';
 
-class PatternDialog extends StatefulWidget {
+class const PatternDialog({
+  super.key,
+  required final bool needConfirmation,
+}) extends StatefulWidget {
   static const routeName = '/dialog/pattern';
-
-  final bool needConfirmation;
-
-  const new({
-    super.key,
-    required this.needConfirmation,
-  });
 
   @override
   State<PatternDialog> createState() => _PatternDialogState();

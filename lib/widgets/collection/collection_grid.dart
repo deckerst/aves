@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -14,7 +15,6 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
@@ -50,30 +50,35 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class CollectionGrid extends StatefulWidget {
-  final String settingsRouteKey;
-
+class const CollectionGrid({
+  super.key,
+  required final String settingsRouteKey,
+}) extends StatefulWidget {
   static const double extentMin = 46;
   static const double extentMax = 300;
-  static const double fixedExtentLayoutSpacing = 2;
-  static const double mosaicLayoutSpacing = 4;
 
   static int get columnCountDefault => settings.useTvLayout ? 6 : 4;
 
-  const new({
-    super.key,
-    required this.settingsRouteKey,
-  });
-
   @override
   State<CollectionGrid> createState() => _CollectionGridState();
+
+  static double spacingForLayout(TileLayout layout) {
+    switch (layout) {
+      case .mosaic:
+        return 4;
+      case .grid:
+      case .list:
+      case .calendar:
+        return 2;
+    }
+  }
 }
 
 class _CollectionGridState extends State<CollectionGrid> {
@@ -89,8 +94,21 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = context.select<Settings, double>((v) => v.getTileLayout(settingsRouteKey) == TileLayout.mosaic ? CollectionGrid.mosaicLayoutSpacing : CollectionGrid.fixedExtentLayoutSpacing);
-    if (_tileExtentController?.spacing != spacing) {
+    final (isCalendar, spacing) = context.select<Settings, (bool, double)>((v) {
+      final layout = v.effectiveCollectionTileLayout;
+      return (layout == .calendar, CollectionGrid.spacingForLayout(layout));
+    });
+
+    if (isCalendar) {
+      _tileExtentController = TileExtentController(
+        settingsRouteKey: null,
+        columnCountDefault: DateTime.daysPerWeek,
+        extentMin: 0,
+        extentMax: double.infinity,
+        spacing: spacing,
+        horizontalPadding: 2,
+      );
+    } else if (_tileExtentController?.settingsRouteKey != settingsRouteKey || _tileExtentController?.spacing != spacing) {
       _tileExtentController = TileExtentController(
         settingsRouteKey: settingsRouteKey,
         columnCountDefault: CollectionGrid.columnCountDefault,
@@ -100,6 +118,7 @@ class _CollectionGridState extends State<CollectionGrid> {
         horizontalPadding: 2,
       );
     }
+
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
       child: const _CollectionGridContent(),
@@ -107,9 +126,7 @@ class _CollectionGridState extends State<CollectionGrid> {
   }
 }
 
-class _CollectionGridContent extends StatefulWidget {
-  const new();
-
+class const _CollectionGridContent() extends StatefulWidget {
   @override
   State<_CollectionGridContent> createState() => _CollectionGridContentState();
 }
@@ -136,8 +153,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   @override
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
-    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
-    final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
+    final tileLayout = context.select<Settings, TileLayout>((v) => v.effectiveCollectionTileLayout);
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
@@ -151,6 +167,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
                 final source = collection.source;
                 return GridTheme(
                   extent: thumbnailExtent,
+                  isCalendar: tileLayout == .calendar,
                   child: EntryListDetailsTheme(
                     extent: thumbnailExtent,
                     child: ValueListenableBuilder<SourceState>(
@@ -295,21 +312,13 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   }
 }
 
-class _CollectionSectionedContent extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ScrollController scrollController;
-  final TileLayout tileLayout;
-  final bool selectable;
-
-  const new({
-    required this.collection,
-    required this.isScrollingNotifier,
-    required this.scrollController,
-    required this.tileLayout,
-    required this.selectable,
-  });
-
+class const _CollectionSectionedContent({
+  required final CollectionLens collection,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ScrollController scrollController,
+  required final TileLayout tileLayout,
+  required final bool selectable,
+}) extends StatefulWidget {
   @override
   State<_CollectionSectionedContent> createState() => _CollectionSectionedContentState();
 }
@@ -381,19 +390,12 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
   void _onAppBarHeightChanged() => setState(() {});
 }
 
-class _CollectionScaler extends StatelessWidget {
-  final GlobalKey scrollableKey;
-  final ValueNotifier<double> appBarHeightNotifier;
-  final TileLayout tileLayout;
-  final Widget child;
-
-  const new({
-    required this.scrollableKey,
-    required this.appBarHeightNotifier,
-    required this.tileLayout,
-    required this.child,
-  });
-
+class const _CollectionScaler({
+  required final GlobalKey scrollableKey,
+  required final ValueNotifier<double> appBarHeightNotifier,
+  required final TileLayout tileLayout,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (tileSpacing, horizontalPadding) = context.select<TileExtentController, (double, double)>((v) => (v.spacing, v.horizontalPadding));
@@ -440,23 +442,14 @@ class _CollectionScaler extends StatelessWidget {
   }
 }
 
-class _CollectionScrollView extends StatefulWidget {
-  final GlobalKey scrollableKey;
-  final CollectionLens collection;
-  final Widget appBar;
-  final ValueNotifier<double> appBarHeightNotifier;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ScrollController scrollController;
-
-  const new({
-    required this.scrollableKey,
-    required this.collection,
-    required this.appBar,
-    required this.appBarHeightNotifier,
-    required this.isScrollingNotifier,
-    required this.scrollController,
-  });
-
+class const _CollectionScrollView({
+  required final GlobalKey scrollableKey,
+  required final CollectionLens collection,
+  required final Widget appBar,
+  required final ValueNotifier<double> appBarHeightNotifier,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ScrollController scrollController,
+}) extends StatefulWidget {
   @override
   State<_CollectionScrollView> createState() => _CollectionScrollViewState();
 }
@@ -746,14 +739,20 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
             }
           case .none:
             break;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
-      case .name:
+      case .albumItemName:
       case .path:
         addAlbums(collection, sectionLayouts, crumbs);
       case .rating:
       case .size:
       case .duration:
         break;
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
     return crumbs;
   }

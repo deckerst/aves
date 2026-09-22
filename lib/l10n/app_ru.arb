@@ -197,7 +197,7 @@
     "editEntryDateDialogSetCustom": "Установить дату",
     "editEntryDateDialogCopyField": "Копировать с другой даты",
     "editEntryDialogCopyFromItem": "Скопировать из другого объекта",
-    "editEntryDateDialogExtractFromTitle": "Извлечь из названия",
+    "editEntryDateDialogExtractFromTitle": "Извлечь из имени файла",
     "editEntryDateDialogShift": "Сдвиг",
     "editEntryDateDialogSourceFileModifiedDate": "Дата изменения файла",
     "durationDialogHours": "Часов",
@@ -221,7 +221,7 @@
     "videoStreamSelectionDialogNoSelection": "Других дорожек нет.",
     "genericSuccessFeedback": "Выполнено!",
     "genericFailureFeedback": "Не удалось",
-    "menuActionConfigureView": "Вид",
+    "menuActionConfigureView": "Сменить вид",
     "menuActionSelect": "Выбрать",
     "menuActionSelectAll": "Выбрать все",
     "menuActionSelectNone": "Снять выделение",
@@ -737,5 +737,6 @@
     "showThumbnailSlowMotionVideoIcon": "Показать значок слоу-мо",
     "calendarGregorian": "Григорианский",
     "calendarPersian": "Персидский",
-    "settingsCalendarTile": "Календарь"
+    "settingsCalendarTile": "Календарь",
+    "tileLayoutCalendar": "Календарь"
 }

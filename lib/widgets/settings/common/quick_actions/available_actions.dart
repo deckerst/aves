@@ -4,36 +4,25 @@ import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 
 // `T extends Object` because of `DragTarget` constraint
-class AvailableActionPanel<T extends Object> extends StatelessWidget {
-  final List<T> allActions, quickActions;
-  final Listenable quickActionsChangeNotifier;
-  final ValueNotifier<bool> panelHighlight;
-  final ValueNotifier<T?> draggedQuickAction;
-  final ValueNotifier<T?> draggedAvailableAction;
-  final bool Function(T? action) removeQuickAction;
-  final Widget Function(BuildContext context, T action) actionIcon;
-  final String Function(BuildContext context, T action) actionText;
-
+class const AvailableActionPanel<T extends Object>({
+  super.key,
+  required final List<T> allActions,
+  required final List<T> quickActions,
+  required final Listenable quickActionsChangeNotifier,
+  required final ValueNotifier<bool> panelHighlight,
+  required final ValueNotifier<T?> draggedQuickAction,
+  required final ValueNotifier<T?> draggedAvailableAction,
+  required final bool Function(T? action) removeQuickAction,
+  required final Widget Function(BuildContext context, T action) actionIcon,
+  required final String Function(BuildContext context, T action) actionText,
+}) extends StatelessWidget {
   static const double spacing = 8;
   static const double runSpacing = 20;
   static const padding = EdgeInsets.symmetric(vertical: 16, horizontal: 8);
-
-  const new({
-    super.key,
-    required this.allActions,
-    required this.quickActions,
-    required this.quickActionsChangeNotifier,
-    required this.panelHighlight,
-    required this.draggedQuickAction,
-    required this.draggedAvailableAction,
-    required this.removeQuickAction,
-    required this.actionIcon,
-    required this.actionText,
-  });
 
   @override
   Widget build(BuildContext context) {

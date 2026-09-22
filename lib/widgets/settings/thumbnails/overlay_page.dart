@@ -145,7 +145,7 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
     return SettingSwitchTrailingIcon(
       key: ValueKey(iconType),
       icon: iconType.getIcon(context),
-      disabled: iconType == ThumbnailOverlayLocationIcon.none,
+      disabled: iconType == .none,
     );
   }
 }
@@ -172,7 +172,7 @@ class SettingsTileThumbnailTagIcon extends SettingsTile {
     return SettingSwitchTrailingIcon(
       key: ValueKey(iconType),
       icon: iconType.getIcon(context),
-      disabled: iconType == ThumbnailOverlayTagIcon.none,
+      disabled: iconType == .none,
     );
   }
 }

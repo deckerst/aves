@@ -8,7 +8,7 @@ extension ExtraChipSetActionView on ChipSetAction {
     final l10n = context.l10n;
     return switch (this) {
       // general
-      .configureView => l10n.menuActionConfigureView,
+      .changeLayout => l10n.menuActionConfigureView,
       .select => l10n.menuActionSelect,
       .selectAll => l10n.menuActionSelectAll,
       .selectNone => l10n.menuActionSelectNone,
@@ -46,7 +46,7 @@ extension ExtraChipSetActionView on ChipSetAction {
   IconData _getIconData() {
     return switch (this) {
       // general
-      .configureView => AIcons.view,
+      .changeLayout => AIcons.changeLayout,
       .select => AIcons.select,
       .selectAll => AIcons.selected,
       .selectNone => AIcons.unselected,
@@ -54,7 +54,7 @@ extension ExtraChipSetActionView on ChipSetAction {
       .search => AIcons.search,
       .toggleTitleSearch =>
         // different data depending on toggle state
-        AIcons.filter,
+        AIcons.showTitleFilter,
       .createGroup => AIcons.add,
       .createAlbum => AIcons.add,
       .createVault => AIcons.vaultAdd,

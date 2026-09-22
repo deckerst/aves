@@ -7,17 +7,17 @@ extension ExtraThumbnailOverlayTagIconView on ThumbnailOverlayTagIcon {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ThumbnailOverlayTagIcon.tagged => l10n.filterTaggedLabel,
-      ThumbnailOverlayTagIcon.untagged => l10n.filterNoTagLabel,
-      ThumbnailOverlayTagIcon.none => l10n.settingsDisabled,
+      .tagged => l10n.filterTaggedLabel,
+      .untagged => l10n.filterNoTagLabel,
+      .none => l10n.settingsDisabled,
     };
   }
 
   IconData getIcon(BuildContext context) {
     return switch (this) {
-      ThumbnailOverlayTagIcon.tagged => AIcons.tag,
-      ThumbnailOverlayTagIcon.untagged => AIcons.tagUntagged,
-      ThumbnailOverlayTagIcon.none => AIcons.tag,
+      .tagged => AIcons.tag,
+      .untagged => AIcons.tagUntagged,
+      .none => AIcons.tag,
     };
   }
 }

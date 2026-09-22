@@ -19,22 +19,19 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   Iterable<FilterGridItem<LocationFilter>> get allItems => _items;
 
   @override
-  ChipSortFactor get sortFactor => settings.countrySortFactor;
+  String get settingsRouteKey => CountryListPage.routeName;
 
   @override
-  set sortFactor(ChipSortFactor factor) => settings.countrySortFactor = factor;
+  SortFactor get sortFactor => settings.countrySortFactor;
+
+  @override
+  set sortFactor(SortFactor factor) => settings.countrySortFactor = factor;
 
   @override
   bool get sortReverse => settings.countrySortReverse;
 
   @override
   set sortReverse(bool value) => settings.countrySortReverse = value;
-
-  @override
-  TileLayout get tileLayout => settings.getTileLayout(CountryListPage.routeName);
-
-  @override
-  set tileLayout(TileLayout tileLayout) => settings.setTileLayout(CountryListPage.routeName, tileLayout);
 
   @override
   bool isVisible(
@@ -67,7 +64,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
   }) {
     switch (action) {
       case .showCountryStates:
-        return selectedFilters.any((v) => GeoStates.stateCountryCodes.contains(v.code));
+        return selectedFilters.any((v) => GeoStates.stateCodesByCountryCode.containsKey(v.code));
       default:
         return super.canApply(
           action,
@@ -94,7 +91,7 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate<LocationFilter>
 
   void _showStates(BuildContext context) {
     final filters = getSelectedFilters(context);
-    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCountryCodes.contains).nonNulls.toSet();
+    final countryCodes = filters.map((v) => v.code).where(GeoStates.stateCodesByCountryCode.containsKey).nonNulls.toSet();
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: StateListPage.routeName),

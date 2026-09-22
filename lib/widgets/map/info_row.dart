@@ -1,4 +1,5 @@
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/map/address_row.dart';
 import 'package:aves/widgets/map/date_row.dart';
 import 'package:aves_map/aves_map.dart';
@@ -20,8 +21,7 @@ class MapInfoRow extends StatelessWidget {
     return ValueListenableBuilder<AvesEntry?>(
       valueListenable: entryNotifier,
       builder: (context, entry, child) {
-        final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-        final content = isPortrait
+        final content = context.isPortrait
             ? [
                 Expanded(
                   child: Column(

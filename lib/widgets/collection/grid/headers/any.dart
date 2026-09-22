@@ -1,30 +1,23 @@
 import 'dart:math';
 
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/collection/grid/headers/album.dart';
 import 'package:aves/widgets/collection/grid/headers/date.dart';
 import 'package:aves/widgets/collection/grid/headers/rating.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:material_ui/material_ui.dart';
 
-class CollectionSectionHeader extends StatelessWidget {
-  final CollectionLens collection;
-  final SectionKey sectionKey;
-  final double height;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.sectionKey,
-    required this.height,
-    required this.selectable,
-  });
-
+class const CollectionSectionHeader({
+  super.key,
+  required final CollectionLens collection,
+  required final SectionKey sectionKey,
+  required final double height,
+  required final bool selectable,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final header = _buildHeader(context);
@@ -62,8 +55,11 @@ class CollectionSectionHeader extends StatelessWidget {
             );
           case .none:
             break;
+          case .name:
+          case .rating:
+            throw UnimplementedError();
         }
-      case .name:
+      case .albumItemName:
       case .path:
         return _buildAlbumHeader(context);
       case .rating:
@@ -75,6 +71,9 @@ class CollectionSectionHeader extends StatelessWidget {
       case .size:
       case .duration:
         break;
+      case .chipName:
+      case .count:
+        throw UnimplementedError();
     }
     return null;
   }

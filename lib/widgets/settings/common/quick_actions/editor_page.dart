@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -16,19 +17,14 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class QuickActionEditorController<T extends Object> with ChangeNotifier {
-  final List<T> Function() load;
-  final void Function(List<T> actions) save;
-
+class QuickActionEditorController<T extends Object>({
+  required final List<T> Function() load,
+  required final void Function(List<T> actions) save,
+}) with ChangeNotifier {
   List<T> _currentItems = [];
   final StreamController<EditorControllerEvent<T>> _eventsController = StreamController.broadcast();
 
   Stream<EditorControllerEvent<T>> get events => _eventsController.stream;
-
-  new({
-    required this.load,
-    required this.save,
-  });
 
   void notify() {
     notifyListeners();
@@ -56,42 +52,23 @@ class QuickActionEditorController<T extends Object> with ChangeNotifier {
   }
 }
 
-class EditorControllerEvent<T> {
-  final int index;
-  final T item;
+class EditorControllerEvent<T>(final int index, final T item);
 
-  new(this.index, this.item);
-}
+class _ItemAddedEvent<T>(super.index, super.item) extends EditorControllerEvent<T>;
 
-class _ItemAddedEvent<T> extends EditorControllerEvent<T> {
-  new(super.index, super.item);
-}
+class _ItemRemovedEvent<T>(super.index, super.item) extends EditorControllerEvent<T>;
 
-class _ItemRemovedEvent<T> extends EditorControllerEvent<T> {
-  new(super.index, super.item);
-}
-
-class QuickActionEditorPage<T extends Object> extends StatelessWidget {
-  final String title, bannerText;
-  final List<Widget>? appBarActions;
-  final TextDirection? displayedButtonsDirection;
-  final List<List<T>> allAvailableActions;
-  final Widget Function(BuildContext context, T action) actionIcon;
-  final String Function(BuildContext context, T action) actionText;
-  final QuickActionEditorController<T> controller;
-
-  const new({
-    super.key,
-    required this.title,
-    this.appBarActions,
-    required this.bannerText,
-    this.displayedButtonsDirection,
-    required this.allAvailableActions,
-    required this.actionIcon,
-    required this.actionText,
-    required this.controller,
-  });
-
+class const QuickActionEditorPage<T extends Object>({
+  super.key,
+  required final String title,
+  final List<Widget>? appBarActions,
+  required final String bannerText,
+  final TextDirection? displayedButtonsDirection,
+  required final List<List<T>> allAvailableActions,
+  required final Widget Function(BuildContext context, T action) actionIcon,
+  required final String Function(BuildContext context, T action) actionText,
+  required final QuickActionEditorController<T> controller,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AvesScaffold(
@@ -116,24 +93,15 @@ class QuickActionEditorPage<T extends Object> extends StatelessWidget {
   }
 }
 
-class QuickActionEditorBody<T extends Object> extends StatefulWidget {
-  final String bannerText;
-  final TextDirection? displayedButtonsDirection;
-  final List<List<T>> allAvailableActions;
-  final Widget Function(BuildContext context, T action) actionIcon;
-  final String Function(BuildContext context, T action) actionText;
-  final QuickActionEditorController<T> controller;
-
-  const new({
-    super.key,
-    required this.bannerText,
-    this.displayedButtonsDirection,
-    required this.allAvailableActions,
-    required this.actionIcon,
-    required this.actionText,
-    required this.controller,
-  });
-
+class const QuickActionEditorBody<T extends Object>({
+  super.key,
+  required final String bannerText,
+  final TextDirection? displayedButtonsDirection,
+  required final List<List<T>> allAvailableActions,
+  required final Widget Function(BuildContext context, T action) actionIcon,
+  required final String Function(BuildContext context, T action) actionText,
+  required final QuickActionEditorController<T> controller,
+}) extends StatefulWidget {
   @override
   State<QuickActionEditorBody<T>> createState() => _QuickActionEditorBodyState<T>();
 }
@@ -241,7 +209,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
               ],
             ),
           ),
-          const Divider(height: 0),
+          const ThinDivider(),
           Padding(
             padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(
@@ -263,20 +231,20 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
                   children: [
                     Positioned.fill(
                       child: FractionallySizedBox(
-                        alignment: AlignmentDirectional.centerStart,
+                        alignment: .centerStart,
                         widthFactor: .5,
                         child: header,
                       ),
                     ),
                     Positioned.fill(
                       child: FractionallySizedBox(
-                        alignment: AlignmentDirectional.centerEnd,
+                        alignment: .centerEnd,
                         widthFactor: .5,
                         child: footer,
                       ),
                     ),
                     Container(
-                      alignment: Alignment.center,
+                      alignment: .center,
                       child: AnimatedList(
                         key: _animatedListKey,
                         initialItemCount: _quickActions.length,

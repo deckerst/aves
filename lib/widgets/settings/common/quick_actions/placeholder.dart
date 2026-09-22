@@ -1,13 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-class DraggedPlaceholder extends StatelessWidget {
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.child,
-  });
-
+class const DraggedPlaceholder({
+  super.key,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(

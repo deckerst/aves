@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:material_ui/material_ui.dart';
 
 class DebugLeakingSection extends StatefulWidget {
   const new({super.key});
@@ -133,7 +133,7 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
   final ValueNotifier<String> _rssNotifier = ValueNotifier('');
   final ValueNotifier<String> _imageCacheNotifier = ValueNotifier('');
 
-  AlignmentGeometry _alignment = AlignmentDirectional.bottomStart;
+  AlignmentGeometry _alignment = .bottomStart;
 
   @override
   void initState() {
@@ -193,8 +193,8 @@ class _CollectorOverlayState extends State<_CollectorOverlay> {
                   crossAxisAlignment: .center,
                   children: [
                     IconButton(
-                      onPressed: () => setState(() => _alignment = _alignment == AlignmentDirectional.bottomStart ? AlignmentDirectional.topStart : AlignmentDirectional.bottomStart),
-                      icon: Icon(_alignment == AlignmentDirectional.bottomStart ? Icons.vertical_align_top_outlined : Icons.vertical_align_bottom_outlined),
+                      onPressed: () => setState(() => _alignment = _alignment == .bottomStart ? .topStart : .bottomStart),
+                      icon: Icon(_alignment == .bottomStart ? Icons.vertical_align_top_outlined : Icons.vertical_align_bottom_outlined),
                     ),
                     ...LeakType.values.map((v) {
                       return OutlinedButton(

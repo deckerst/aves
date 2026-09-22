@@ -59,7 +59,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -175,7 +175,7 @@ class _FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -262,7 +262,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatefulWidget {
   final ScrollController scrollController;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
   final Set<T> newFilters;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool showHeaders, selectable;
   final Widget Function() emptyBuilder;
   final HeroType heroType;
@@ -309,7 +309,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey;
+    final settingsRouteKey = context.read<TileExtentController>().settingsRouteKey!;
     final tileLayout = context.select<Settings, TileLayout>((v) => v.getTileLayout(settingsRouteKey));
     return Selector<Query, bool>(
       selector: (context, query) => query.enabled,
@@ -346,7 +346,7 @@ class _FilterGridContentState<T extends CollectionFilter> extends State<_FilterG
                     final tileHeight = CoveredFilterChip.tileHeight(
                       extent: thumbnailExtent,
                       textScaler: textScaler,
-                      showText: tileLayout != TileLayout.list,
+                      showText: tileLayout != .list,
                     );
                     return GridTheme(
                       extent: thumbnailExtent,
@@ -463,7 +463,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> visibleSections;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final bool selectable;
   final Widget Function() emptyBuilder;
   final String? Function(BuildContext context, T filter) bannerBuilder;
@@ -646,7 +646,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
         extent: tileSize.height,
         child: FilterTile(
           gridItem: item,
-          chipExtent: tileLayout == TileLayout.grid ? tileSize.width : tileSize.height,
+          chipExtent: tileLayout == .grid ? tileSize.width : tileSize.height,
           thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           tileLayout: tileLayout,
           banner: bannerBuilder(context, item.filter),
@@ -672,7 +672,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   final GlobalKey scrollableKey;
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
-  final ChipSortFactor sortFactor;
+  final SortFactor sortFactor;
   final Widget Function() emptyBuilder;
   final ScrollController scrollController;
 

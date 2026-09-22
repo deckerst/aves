@@ -1,5 +1,6 @@
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
+import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
@@ -66,17 +67,7 @@ class _SelectStorageDialogState extends State<SelectStorageDialog> {
 
   Widget _buildVolumeTile(BuildContext context, StorageVolume volume) => RadioListTile<StorageVolume>(
     value: volume,
-    title: Text(
-      volume.getDescription(context),
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-    ),
-    subtitle: Text(
-      volume.path,
-      softWrap: false,
-      overflow: TextOverflow.fade,
-      maxLines: 1,
-    ),
+    title: FadingLine(volume.getDescription(context)),
+    subtitle: FadingLine(volume.path),
   );
 }

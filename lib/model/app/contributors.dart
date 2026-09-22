@@ -186,6 +186,9 @@ class Contributors {
     Contributor('PONYATIN', 'nikolay-delete@yandex.ru'),
     Contributor('agguser', 'agguser@gmail.com'),
     Contributor('Ikko Eltociear Ashimine', 'eltociear@gmail.com'),
+    Contributor('Stysusss', '158248053+stysus@users.noreply.github.com'),
+    Contributor('chriz', 'chriz_dev@proton.me'),
+    Contributor('카츠', 'chae0218@gmail.com'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
@@ -221,9 +224,4 @@ class Contributors {
   };
 }
 
-class Contributor {
-  final String name;
-  final String? weblateEmail;
-
-  const new(this.name, this.weblateEmail);
-}
+class const Contributor(final String name, final String? email);

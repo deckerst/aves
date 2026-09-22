@@ -84,11 +84,11 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 valueNotifier: _shiftSign,
                 values: const [_positiveSign, _negativeSign],
                 textStyle: textStyle,
-                textAlign: TextAlign.center,
+                textAlign: .center,
                 format: (v) => v,
               ),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: .centerRight,
                 child: WheelSelector(
                   valueNotifier: _shiftHour,
                   values: List.generate(Duration.hoursPerDay, (i) => i),
@@ -102,7 +102,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 style: textStyle,
               ),
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: .centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftMinute,
                   values: List.generate(Duration.minutesPerHour, (i) => i),
@@ -116,7 +116,7 @@ class _TimeShiftSelectorState extends State<TimeShiftSelector> {
                 style: textStyle,
               ),
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: .centerLeft,
                 child: WheelSelector(
                   valueNotifier: _shiftSecond,
                   values: List.generate(Duration.secondsPerMinute, (i) => i),

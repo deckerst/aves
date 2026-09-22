@@ -5,9 +5,9 @@ extension ExtraSubtitlePosition on SubtitlePosition {
   TextAlignVertical toTextAlignVertical() {
     switch (this) {
       case .top:
-        return TextAlignVertical.top;
+        return .top;
       case .bottom:
-        return TextAlignVertical.bottom;
+        return .bottom;
     }
   }
 }

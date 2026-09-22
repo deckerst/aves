@@ -10,7 +10,7 @@ import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class VideoPlaybackPage extends StatelessWidget {
+class const VideoPlaybackPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/video/playback';
 
   static const List<String> settingKeys = [
@@ -20,8 +20,6 @@ class VideoPlaybackPage extends StatelessWidget {
     SettingKeys.videoBackgroundModeKey,
     SettingKeys.videoHardwareAccelerationKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

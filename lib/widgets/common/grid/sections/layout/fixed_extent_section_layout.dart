@@ -1,22 +1,20 @@
 import 'package:aves/widgets/common/grid/sections/section_layout.dart';
 
-class FixedExtentSectionLayout extends SectionLayout {
-  final double tileHeight, mainAxisStride;
+class const FixedExtentSectionLayout({
+  required super.sectionKey,
+  required super.firstIndex,
+  required super.lastIndex,
+  required super.minOffset,
+  required super.maxOffset,
+  required super.headerExtent,
+  required final double tileHeight,
+  required super.spacing,
+  required super.builder,
+}) extends SectionLayout {
+  final double mainAxisStride = tileHeight + spacing;
 
   @override
   List<Object?> get props => [sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileHeight, spacing];
-
-  const new({
-    required super.sectionKey,
-    required super.firstIndex,
-    required super.lastIndex,
-    required super.minOffset,
-    required super.maxOffset,
-    required super.headerExtent,
-    required this.tileHeight,
-    required super.spacing,
-    required super.builder,
-  }) : mainAxisStride = tileHeight + spacing;
 
   @override
   double indexToLayoutOffset(int index) {

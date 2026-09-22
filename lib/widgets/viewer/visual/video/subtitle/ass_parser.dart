@@ -357,14 +357,14 @@ class AssParser {
     var hAlign = TextAlign.center;
     var vAlign = TextAlignVertical.bottom;
     if (alignment.x < 0) {
-      hAlign = TextAlign.left;
+      hAlign = .left;
     } else if (alignment.x > 0) {
-      hAlign = TextAlign.right;
+      hAlign = .right;
     }
     if (alignment.y < 0) {
-      vAlign = TextAlignVertical.top;
+      vAlign = .top;
     } else if (alignment.y == 0) {
-      vAlign = TextAlignVertical.center;
+      vAlign = .center;
     }
     return extraStyle.copyWith(
       hAlign: hAlign,
@@ -403,27 +403,27 @@ class AssParser {
   static FontWeight? _parseFontWeight(String param) {
     switch (int.tryParse(param)) {
       case 0:
-        return FontWeight.normal;
+        return .normal;
       case 1:
-        return FontWeight.bold;
+        return .bold;
       case 100:
-        return FontWeight.w100;
+        return .w100;
       case 200:
-        return FontWeight.w200;
+        return .w200;
       case 300:
-        return FontWeight.w300;
+        return .w300;
       case 400:
-        return FontWeight.w400;
+        return .w400;
       case 500:
-        return FontWeight.w500;
+        return .w500;
       case 600:
-        return FontWeight.w600;
+        return .w600;
       case 700:
-        return FontWeight.w700;
+        return .w700;
       case 800:
-        return FontWeight.w800;
+        return .w800;
       case 900:
-        return FontWeight.w900;
+        return .w900;
       default:
         return null;
     }

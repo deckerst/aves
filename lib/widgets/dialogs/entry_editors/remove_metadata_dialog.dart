@@ -67,7 +67,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
             setState(_validate);
           },
           title: Align(
-            alignment: Alignment.centerLeft,
+            alignment: .centerLeft,
             child: Text(l10n.removeEntryMetadataDialogAll),
           ),
         ),
@@ -146,7 +146,7 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
         setState(_validate);
       },
       title: Align(
-        alignment: Alignment.centerLeft,
+        alignment: .centerLeft,
         child: child,
       ),
     );

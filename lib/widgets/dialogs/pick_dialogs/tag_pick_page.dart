@@ -117,7 +117,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
         child: Builder(
           // to access filter group provider from subtree context
           builder: (context) {
-            return Selector<Settings, (ChipSectionFactor, ChipSortFactor)>(
+            return Selector<Settings, (ChipSectionFactor, SortFactor)>(
               selector: (context, s) => (s.tagSectionFactor, s.tagSortFactor),
               builder: (context, _, child) {
                 return StreamBuilder<TagsChangedEvent>(
@@ -268,15 +268,15 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
   }) {
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
 
-    final quickActions = [
-      if (isPickingGroup) ChipSetAction.createGroup,
+    final quickActions = <ChipSetAction>[
+      if (isPickingGroup) .createGroup,
     ];
 
     // `null` items are converted to dividers
-    final menuActions = [
+    final menuActions = <ChipSetAction?>[
       ...ChipSetActions.general,
       null,
-      ChipSetAction.toggleTitleSearch,
+      .toggleTitleSearch,
     ];
 
     return [

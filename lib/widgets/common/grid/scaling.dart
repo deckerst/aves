@@ -9,8 +9,8 @@ import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // metadata to identify entry from RenderObject hit test during collection scaling
@@ -120,14 +120,21 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     if (metadata is! ScalerMetadata<T>) return;
     _metadata = metadata;
 
+    Size? startSize;
     switch (tileLayout) {
       case .mosaic:
-        _startSize = Size.square(tileExtentController.extentNotifier.value);
+        startSize = Size.square(tileExtentController.extentNotifier.value);
       case .grid:
       case .list:
-        _startSize = renderMetaData.size;
+        startSize = renderMetaData.size;
+      case .calendar:
+        // no scaling
+        break;
     }
-    _scaledSizeNotifier = ValueNotifier(_startSize!);
+    _startSize = startSize;
+    if (startSize == null) return;
+
+    _scaledSizeNotifier = ValueNotifier(startSize);
 
     // not the same as `MediaQuery` metrics, because of screen insets/padding
     final scrollViewRect = scrollableBox.localToGlobal(Offset.zero) & scrollableBox.size;
@@ -136,10 +143,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     _extentMin = tileExtentController.effectiveExtentMin;
     _extentMax = tileExtentController.effectiveExtentMax;
 
-    final halfSize = _startSize! / 2;
+    final halfSize = startSize / 2;
+    OverlayEntry? overlayEntry;
     switch (tileLayout) {
       case .mosaic:
-        _overlayEntry = OverlayEntry(
+        overlayEntry = OverlayEntry(
           builder: (context) => MosaicScaleOverlay(
             contentRect: contentRect,
             spacing: tileExtentController.spacing,
@@ -151,7 +159,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       case .grid:
       case .list:
         final tileCenter = renderMetaData.localToGlobal(Offset(halfSize.width, halfSize.height));
-        _overlayEntry = OverlayEntry(
+        overlayEntry = OverlayEntry(
           builder: (context) => TileExtentControllerProvider(
             controller: tileExtentController,
             child: FixedExtentScaleOverlay(
@@ -163,37 +171,49 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
               builder: (scaledTileSize) => SizedBox.fromSize(
                 size: scaledTileSize,
                 child: GridTheme(
-                  extent: tileLayout == TileLayout.grid ? scaledTileSize.width : scaledTileSize.height,
+                  extent: tileLayout == .grid ? scaledTileSize.width : scaledTileSize.height,
                   child: widget.scaledItemBuilder(_metadata!.item, scaledTileSize),
                 ),
               ),
             ),
           ),
         );
+      case .calendar:
+        // no scaling
+        break;
     }
-    Overlay.of(scrollableContext).insert(_overlayEntry!);
+    _overlayEntry = overlayEntry;
+    if (overlayEntry != null) {
+      Overlay.of(scrollableContext).insert(overlayEntry);
+    }
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
-    if (_scaledSizeNotifier == null) return;
+    final startSize = _startSize;
+    final scaledSizeNotifier = _scaledSizeNotifier;
+    if (startSize == null || scaledSizeNotifier == null) return;
 
     final s = details.scale;
     switch (tileLayout) {
       case .mosaic:
       case .grid:
-        final scaledWidth = (_startSize!.width * s).clamp(_extentMin!, _extentMax!);
-        _scaledSizeNotifier!.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
+        final scaledWidth = (startSize.width * s).clamp(_extentMin!, _extentMax!);
+        scaledSizeNotifier.value = Size(scaledWidth, widget.heightForWidth(scaledWidth));
       case .list:
-        final scaledHeight = (_startSize!.height * s).clamp(_extentMin!, _extentMax!);
-        _scaledSizeNotifier!.value = Size(_startSize!.width, scaledHeight);
+        final scaledHeight = (startSize.height * s).clamp(_extentMin!, _extentMax!);
+        scaledSizeNotifier.value = Size(startSize.width, scaledHeight);
+      case .calendar:
+        // no scaling
+        break;
     }
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
-    if (_scaledSizeNotifier == null) return;
+    final scaledSizeNotifier = _scaledSizeNotifier;
+    if (scaledSizeNotifier == null) return;
 
-    final scaledSize = _scaledSizeNotifier!.value;
-    _scaledSizeNotifier!.dispose();
+    final scaledSize = scaledSizeNotifier.value;
+    scaledSizeNotifier.dispose();
     _scaledSizeNotifier = null;
 
     _overlayEntry
@@ -212,6 +232,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         preferredExtent = scaledSize.width;
       case .list:
         preferredExtent = scaledSize.height;
+      case .calendar:
+        // no scaling
+        break;
     }
     final newExtent = tileExtentController.setUserPreferredExtent(preferredExtent);
     if (newExtent == oldExtent) {

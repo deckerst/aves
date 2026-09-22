@@ -69,9 +69,10 @@ class SettingKeys {
 
   // collection
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
-  static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
+  static const collectionSectionFactorKey = 'collection_group_factor';
+  static const showCollectionLayoutBarKey = 'show_collection_layout_bar';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
   static const collectionSelectionQuickActionsKey = 'collection_selection_quick_actions';
   static const showThumbnailFavouriteKey = 'show_thumbnail_favourite';

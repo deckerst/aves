@@ -1,18 +1,11 @@
 import 'package:flutter/services.dart';
 
-class CustomPlatformException {
-  final String code;
-  final String? message;
-  final Object? details;
-  final String? stacktrace;
-
-  new({
-    required this.code,
-    this.message,
-    this.details,
-    this.stacktrace,
-  });
-
+class CustomPlatformException({
+  required final String code,
+  final String? message,
+  final Object? details,
+  final String? stacktrace,
+}) {
   factory fromStandard(PlatformException e) {
     return CustomPlatformException(
       code: e.code,

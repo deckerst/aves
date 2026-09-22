@@ -3,17 +3,12 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RenameGroupDialog extends StatefulWidget {
+class const RenameGroupDialog({
+  super.key,
+  required final FilterGrouping grouping,
+  required final Uri groupUri,
+}) extends StatefulWidget {
   static const routeName = '/dialog/rename_group';
-
-  final FilterGrouping grouping;
-  final Uri groupUri;
-
-  const new({
-    super.key,
-    required this.grouping,
-    required this.groupUri,
-  });
 
   @override
   State<RenameGroupDialog> createState() => _RenameGroupDialogState();
