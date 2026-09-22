@@ -198,7 +198,7 @@
     "editEntryDateDialogSetCustom": "지정 날짜로 편집",
     "editEntryDateDialogCopyField": "다른 날짜에서 지정",
     "editEntryDialogCopyFromItem": "다른 항목에서 지정",
-    "editEntryDateDialogExtractFromTitle": "제목에서 추출",
+    "editEntryDateDialogExtractFromTitle": "파일 이름에서 추출",
     "editEntryDateDialogShift": "시간 이동",
     "editEntryDateDialogSourceFileModifiedDate": "파일 수정한 날짜",
     "durationDialogHours": "시간",
@@ -223,7 +223,7 @@
     "videoStreamSelectionDialogNoSelection": "다른 트랙이 없습니다.",
     "genericSuccessFeedback": "정상 처리됐습니다",
     "genericFailureFeedback": "오류가 발생했습니다",
-    "menuActionConfigureView": "보기 설정",
+    "menuActionConfigureView": "배치 변경",
     "menuActionSelect": "선택",
     "menuActionSelectAll": "모두 선택",
     "menuActionSelectNone": "모두 해제",
@@ -737,5 +737,8 @@
     "settingsAutoExportSettings": "자동 설정 내보내기",
     "settingsCalendarTile": "역법",
     "calendarGregorian": "그레고리력",
-    "calendarPersian": "태양 헤지라력"
+    "calendarPersian": "태양 헤지라력",
+    "tileLayoutCalendar": "달력",
+    "collectionActionShowLayoutBar": "배치 바 보기",
+    "collectionActionHideLayoutBar": "배치 바 숨기기"
 }

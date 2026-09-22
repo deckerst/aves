@@ -956,5 +956,8 @@
     "settingsPermissionsPageTitle": "權限",
     "settingsCalendarTile": "日曆",
     "mapShowItemTracks": "顯示路徑",
-    "mapHideItemTracks": "隱藏路徑"
+    "mapHideItemTracks": "隱藏路徑",
+    "tileLayoutCalendar": "日曆",
+    "collectionActionShowLayoutBar": "顯示版面列",
+    "collectionActionHideLayoutBar": "隱藏版面列"
 }

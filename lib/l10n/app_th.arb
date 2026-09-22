@@ -766,7 +766,7 @@
     "settingsNavigationBottomActionEditorPageTitle": "การนำทางด้านล่าง",
     "settingsNavigationBottomActionEditorBanner": "แตะค้างเพื่อย้ายปุ่มและเลือกการกระทำที่จะแสดงในแถบนำทางด้านล่าง",
     "settingsThumbnailSectionTitle": "ภาพขนาดย่อ",
-    "settingsThumbnailOverlayTile": "ารซ้อน",
+    "settingsThumbnailOverlayTile": "การซ้อน",
     "settingsThumbnailOverlayPageTitle": "การซ้อน",
     "settingsThumbnailShowHdrIcon": "แสดงไอคอน HDR",
     "settingsThumbnailShowFavouriteIcon": "แสดงไอคอนรายการโปรด",
@@ -819,7 +819,7 @@
     "settingsSlideshowVideoPlaybackTile": "การเล่นวิดีโอ",
     "settingsSlideshowVideoPlaybackDialogTitle": "การเล่นวิดีโอ",
     "settingsVideoPageTitle": "การตั้งค่าวิดีโอ",
-    "settingsVideoSectionTitle": "วีดีโอ",
+    "settingsVideoSectionTitle": "วิดีโอ",
     "settingsVideoShowVideos": "แสดงวิดีโอ",
     "settingsVideoPlaybackTile": "การเล่น",
     "settingsVideoPlaybackPageTitle": "การเล่น",
@@ -868,7 +868,7 @@
     "settingsHiddenFiltersBanner": "รูปภาพและวิดีโอที่แมตซ์กับตัวกรองสำหรับซ่อนจะไม่ปรากฏในคอลเลกชันของคุณ",
     "settingsHiddenFiltersEmpty": "ไม่มีตัวกรองสำหรับซ่อน",
     "settingsStorageAccessTile": "การเข้าถึงพื้นที่จัดเก็บ",
-    "settingsStorageAccessPageTitle": "การเข้าถึงที่พื้นที่จัดเก็บ",
+    "settingsStorageAccessPageTitle": "การเข้าถึงพื้นที่จัดเก็บ",
     "settingsStorageAccessBanner": "บางไดเร็กทอรีต้องการสิทธิ์การเข้าถึงที่ชัดเจนเพื่อแก้ไขไฟล์ในไดเร็กทอรีเหล่านั้น คุณสามารถตรวจสอบไดเร็กทอรีที่คุณให้สิทธิ์การเข้าถึงก่อนหน้านี้ได้ที่นี่",
     "settingsStorageAccessEmpty": "ไม่มีสิทธิ์การเข้าถึง",
     "settingsStorageAccessRevokeTooltip": "ถอนสิทธิ์",
@@ -978,5 +978,8 @@
     "overlayHistogramNone": "ไม่มี",
     "overlayHistogramRGB": "RGB",
     "overlayHistogramLuminance": "ความสว่าง",
-    "settingsVideoEnablePip": "Picture-in-picture"
+    "settingsVideoEnablePip": "Picture-in-picture (ภาพซ้อนภาพ)",
+    "tileLayoutCalendar": "ปฏิทิน",
+    "collectionActionShowLayoutBar": "แสดงแถบเลย์เอาต์",
+    "collectionActionHideLayoutBar": "ซ่อนแถบเลย์เอาต์"
 }

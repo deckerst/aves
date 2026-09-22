@@ -197,7 +197,7 @@
     "editEntryDateDialogSetCustom": "Datum einstellen",
     "editEntryDateDialogCopyField": "Von anderem Datum kopieren",
     "editEntryDialogCopyFromItem": "Von einem anderen Element kopieren",
-    "editEntryDateDialogExtractFromTitle": "Auszug aus dem Titel",
+    "editEntryDateDialogExtractFromTitle": "Auszug aus dem Dateinamen",
     "editEntryDateDialogShift": "Verschieben",
     "editEntryDateDialogSourceFileModifiedDate": "Änderungsdatum der Datei",
     "durationDialogHours": "Stunden",
@@ -221,7 +221,7 @@
     "videoStreamSelectionDialogNoSelection": "Es gibt keine anderen Spuren.",
     "genericSuccessFeedback": "Erledigt!",
     "genericFailureFeedback": "Gescheitert",
-    "menuActionConfigureView": "Sortierung",
+    "menuActionConfigureView": "Layout wechseln",
     "menuActionSelect": "Auswahl",
     "menuActionSelectAll": "Alle auswählen",
     "menuActionSelectNone": "Keine auswählen",
@@ -737,5 +737,6 @@
     "settingsPermissionsPageTitle": "Berechtigungen",
     "calendarGregorian": "Gregorianisch",
     "calendarPersian": "Persisch",
-    "settingsCalendarTile": "Kalender"
+    "settingsCalendarTile": "Kalender",
+    "tileLayoutCalendar": "Kalender"
 }
