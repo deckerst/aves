@@ -117,7 +117,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
           final liveFilters = pickFilters.whereType<QueryFilter>().where((v) => v.live).toSet();
           liveFilters.forEach((filter) {
             pickFilters.remove(filter);
-            pickFilters.add(QueryFilter(filter.query));
+            pickFilters.add(QueryFilter(filter.query, _collection.calendar));
           });
           return ItemPickPage(
             collection: CollectionLens(

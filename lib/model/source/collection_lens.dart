@@ -192,7 +192,7 @@ class CollectionLens with ChangeNotifier {
   void setLiveQuery(String query) {
     filters.removeWhere((v) => v is QueryFilter && v.live);
     if (query.isNotEmpty) {
-      filters.add(QueryFilter(query, live: true));
+      filters.add(QueryFilter(query, calendar, live: true));
     }
     _onFilterChanged();
   }
