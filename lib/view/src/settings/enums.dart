@@ -44,9 +44,10 @@ extension ExtraAvesThemeBrightnessView on AvesThemeBrightness {
 extension ExtraCalendarView on ACalendar {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    // TODO TLAD [hijri]
     return switch (this) {
       .gregorian => l10n.calendarGregorian,
+      .hijriTbla => l10n.calendarHijriTabular,
+      .hijriUmalqura => l10n.calendarHijriUmalqura,
       .persian => l10n.calendarPersian,
       _ => name,
     };

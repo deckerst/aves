@@ -220,6 +220,8 @@
   "albumTierRegular": "Others",
 
   "calendarGregorian": "Gregorian",
+  "calendarHijriTabular": "Hijri (Tabular)",
+  "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
   "calendarPersian": "Persian",
 
   "coordinateFormatDms": "DMS",

@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/poi.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
@@ -59,8 +59,7 @@ class SettingsTileLanguageCalendar extends SettingsTile {
 
   @override
   Widget build(BuildContext context) => SettingsSelectionListTile<ACalendar>(
-    // TODO TLAD [hijri]
-    values: const [.gregorian, .persian],
+    values: const [.gregorian, .hijriTbla, .hijriUmalqura, .persian],
     getName: (context, v) => v.getName(context),
     selector: (context, s) => s.calendar,
     onSelection: (v) => settings.calendar = v,

@@ -199,10 +199,10 @@ packages:
     dependency: transitive
     description:
       name: cupertino_ui
-      sha256: c6747018d37d32feeeb858a1d7043831cb541460ebe1a890a995cdb8df8ea5a5
+      sha256: c23816577a1280cff409e989541767887011f8f1d8c1863a794ed308af46f2a9
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   custom_rounded_rectangle_border:
     dependency: transitive
     description:
@@ -447,6 +447,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  flutter_hijri_rrule:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: aves
+      resolved-ref: "3f1fb063f9e96de3f049e24ab3f78ecb64413d1b"
+      url: "https://github.com/deckerst/flutter_hijri_rrule"
+    source: git
+    version: "1.0.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -593,10 +602,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_android
-      sha256: "50bf2abde65d1abbb4505c709b20a6d5e36436b1c4830d1f36bfc20fbef091bd"
+      sha256: edeab2e4011507c9b9682cb8f6242a6dec97ea3dad387d4f78f5e2cff3095076
       url: "https://pub.dev"
     source: hosted
-    version: "2.19.13"
+    version: "2.20.0"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -617,10 +626,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_web
-      sha256: "903db0e985e831d3883cf0971dd5b4dbee83468b748c3753dc94da0e9a269b93"
+      sha256: ec802303734d907dea71adfe8037233966837acb10c5282ebdbc65fe33787750
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.3+1"
+    version: "0.6.4"
   gpx:
     dependency: "direct main"
     description:
@@ -713,10 +722,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl4x
-      sha256: "7e51ed39999c5b3928efc61f11a50efa3363e8c7aebb9208efe46a9845b92aa1"
+      sha256: "8d6c5c5cda94d23ffade4fa716551512e46c79a3c92dd1983a94309749574bdd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   io:
     dependency: transitive
     description:
@@ -882,10 +891,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_ui
-      sha256: "6d056d60ce745335fcf1c726a4fc46a481a62229f202b65dbc2db5edbbabc7e2"
+      sha256: "134ab2f0843545c4e661e4ba2753fe1bcf0753cb690d5a9ee4870638a40411e9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.4.0"
   media_kit:
     dependency: transitive
     description:
@@ -1199,10 +1208,10 @@ packages:
     dependency: "direct main"
     description:
       name: pin_code_fields
-      sha256: e35f8c2e14e8c2ffda66abe4a42bb5273f08bb326993923d6cb928655a0679c8
+      sha256: "3625242c90dc12d42d7cc1e29f49bd04ce97c353c2c325de65a07269ad5ff9b1"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.0"
+    version: "10.0.1"
   platform:
     dependency: transitive
     description:

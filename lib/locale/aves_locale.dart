@@ -2,6 +2,7 @@
 import 'package:aves/locale/calendar/dateformat/base.dart';
 import 'package:aves/locale/calendar/dateformat/intl.dart';
 import 'package:aves/locale/calendar/dateformat/intl4x.dart';
+import 'package:aves/locale/calendar/delegate/hijri.dart';
 import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/locale/intl4x.dart';
 import 'package:aves/locale/number.dart';
@@ -68,17 +69,25 @@ class AvesLocale({
   // as delegates may rely on custom `DateTime` subclasses
   CalendarDelegate getDatePickerDelegate() {
     switch (calendar) {
-      // TODO TLAD [hijri]
+      case .gregorian:
+        return const GregorianCalendarDelegate();
+      case .hijriTbla:
+        return HijriCalendarDelegate(this, .islamicTbla);
+      case .hijriUmalqura:
+        return HijriCalendarDelegate(this, .islamicUmalqura);
       case .persian:
         return PersianCalendarDelegate(this);
       default:
-        return const GregorianCalendarDelegate();
+        throw UnimplementedError();
     }
   }
 
   DateFormatDelegate _getDateFormatDelegate() {
     switch (calendar) {
-      // TODO TLAD [hijri]
+      case .gregorian:
+        return IntlDateFormatDelegate(languageTag: languageTag);
+      case .hijriTbla:
+      case .hijriUmalqura:
       case .persian:
         return Intl4xDateFormatDelegate(
           languageTag: languageTag,
@@ -86,7 +95,7 @@ class AvesLocale({
           forceWesternArabicNumerals: forceWesternArabicNumerals,
         );
       default:
-        return IntlDateFormatDelegate(languageTag: languageTag);
+        throw UnimplementedError();
     }
   }
 

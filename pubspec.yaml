@@ -91,6 +91,10 @@ dependencies:
   fluster:
   flutter_displaymode:
   flutter_highlight:
+  flutter_hijri_rrule:
+    git:
+      url: https://github.com/deckerst/flutter_hijri_rrule
+      ref: aves
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git

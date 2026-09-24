@@ -1,58 +1,61 @@
 import 'package:aves/locale/calendar/ops/base.dart';
-import 'package:shamsi_date/shamsi_date.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_hijri_rrule/flutter_hijri_rrule.dart';
 
-class PersianCalendarOps extends CalendarOps {
-  static final instance = PersianCalendarOps._private();
+class HijriCalendarOps extends CalendarOps {
+  static final tabular = HijriCalendarOps._private(.islamicTbla);
+  static final umalqura = HijriCalendarOps._private(.islamicUmalqura);
 
-  new _private();
+  final IslamicCalendarType _calendarType;
 
-  Jalali? toNative(DateTime? date) => date?.toJalali();
+  new _private(this._calendarType);
+
+  HijriDate? toNative(DateTime? date) => date != null ? HijriDate.fromGregorian(date, _calendarType) : null;
 
   @override
-  DateTime asNative(DateTime date) => Jalali(
+  DateTime asNative(DateTime date) => HijriDate(
     date.year,
     date.month,
     date.day,
     date.hour,
     date.minute,
     date.second,
-    date.millisecond,
-  ).toDateTime();
+  ).toGregorian(_calendarType).copyWith(millisecond: date.millisecond);
 
   @override
   DateTime dateOnly(DateTime date) {
-    final native = toNative(date)!.copy(hour: 0, minute: 0, second: 0, millisecond: 0);
-    return native.toDateTime();
+    final native = toNative(date)!.copyWith(hour: 0, minute: 0, second: 0, calendar: _calendarType);
+    return native.toGregorian(_calendarType);
   }
 
   @override
   DateTime monthDateOnly(DateTime date) {
-    final native = toNative(date)!.copy(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
-    return native.toDateTime();
+    final native = toNative(date)!.copyWith(day: 1, hour: 0, minute: 0, second: 0, calendar: _calendarType);
+    return native.toGregorian(_calendarType);
   }
 
   @override
   DateTime yearDateOnly(DateTime date) {
-    final native = toNative(date)!.copy(month: 1, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
-    return native.toDateTime();
+    final native = toNative(date)!.copyWith(month: 1, day: 1, hour: 0, minute: 0, second: 0, calendar: _calendarType);
+    return native.toGregorian(_calendarType);
   }
 
   @override
   DateTime addDaysToDate(DateTime date, int days) {
-    final native = toNative(date)!.addDays(days);
-    return native.toDateTime();
+    final native = addDays(toNative(date)!, days, calendar: _calendarType);
+    return native.toGregorian(_calendarType);
   }
 
   @override
   DateTime addMonthsToMonthDate(DateTime monthDate, int months) {
-    final native = toNative(monthDate)!.addMonths(months);
-    return native.toDateTime();
+    final native = addMonths(toNative(monthDate)!, months, calendar: _calendarType);
+    return native!.toGregorian(_calendarType);
   }
 
   @override
   DateTime addYearsToYearDate(DateTime yearDate, int years) {
-    final native = toNative(yearDate)!.addYears(years);
-    return native.toDateTime();
+    final native = addYears(toNative(yearDate)!, years, calendar: _calendarType);
+    return native!.toGregorian(_calendarType);
   }
 
   @override
@@ -102,8 +105,13 @@ class PersianCalendarOps extends CalendarOps {
 
   @override
   (int year, int month) getYearMonth(DateTime date) {
-    final native = toNative(date)!;
-    return (native.year, native.month);
+    try {
+      final native = toNative(date)!;
+      return (native.year, native.month);
+    } catch(ex) {
+      debugPrint('TLAD getYearMonth fail for date=$date');
+      rethrow;
+    }
   }
 
   @override
@@ -114,7 +122,7 @@ class PersianCalendarOps extends CalendarOps {
 
   @override
   DateTime fromYearMonthDay(int? year, int? month, int? day) {
-    return Jalali(year ?? 1, month ?? 1, day ?? 1).toDateTime();
+    return HijriDate(year ?? 1, month ?? 1, day ?? 1).toGregorian(_calendarType);
   }
 
   @override
