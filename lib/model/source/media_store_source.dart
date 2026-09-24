@@ -98,10 +98,19 @@ class MediaStoreSource extends CollectionSource {
     final Set<AvesEntry> topEntries = {};
     if (loadTopEntriesFirst) {
       final topIds = settings.topEntryIds?.toSet();
-      if (topIds != null) {
+      if (topIds != null && topIds.isNotEmpty) {
         debugPrint('$runtimeType load ${stopwatch.elapsed} load ${topIds.length} top entries');
         topEntries.addAll(await localMediaDb.loadEntriesById(topIds));
+      } else {
+        final recentEntries = await localMediaDb.searchLiveEntries('', limit: 100);
+        if (recentEntries.isNotEmpty) {
+          debugPrint('$runtimeType load ${stopwatch.elapsed} fast-loaded ${recentEntries.length} initial entries');
+          topEntries.addAll(recentEntries);
+        }
+      }
+      if (topEntries.isNotEmpty) {
         addEntries(topEntries);
+        notifyAlbumsChanged();
       }
     }
 
@@ -218,6 +227,30 @@ class MediaStoreSource extends CollectionSource {
     // fetch new & modified entries
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch new entries');
     final knownContentIds = knownDateByContentId.keys.toSet();
+    final knownLiveEntryByContentId = {for (final e in knownLiveEntries) e.contentId: e};
+
+    final pendingBatch = <AvesEntry>{};
+    var initialBatchPushed = false;
+    const initialBatchThreshold = 100;
+    const periodicBatchThreshold = 2000;
+    Future<void> flushChain = Future.value();
+
+    void enqueueBatchFlush({bool isFinal = false}) {
+      if (pendingBatch.isEmpty) return;
+      final toFlush = Set<AvesEntry>.from(pendingBatch);
+      pendingBatch.clear();
+
+      flushChain = flushChain.then((_) async {
+        await localMediaDb.insertEntries(toFlush);
+        addEntries(toFlush, notify: !initialBatchPushed || isFinal);
+        if (!initialBatchPushed) {
+          initialBatchPushed = true;
+          notifyAlbumsChanged();
+        }
+        await Future.delayed(Duration.zero);
+      });
+    }
+
     mediaStoreService
         .getEntries(knownDateByContentId, directory: directory)
         .listen(
@@ -225,16 +258,25 @@ class MediaStoreSource extends CollectionSource {
             // when discovering modified entry with known content ID,
             // reuse known entry ID to overwrite it while preserving favourites, etc.
             final contentId = entry.contentId;
-            final existingEntry = knownContentIds.contains(contentId) ? knownLiveEntries.firstWhereOrNull((entry) => entry.contentId == contentId) : null;
+            final existingEntry = knownContentIds.contains(contentId) ? knownLiveEntryByContentId[contentId] : null;
             entry.id = existingEntry?.id ?? localMediaDb.nextId;
 
             newEntries.add(entry);
+            pendingBatch.add(entry);
             setProgress(done: newEntries.length, total: 0);
+
+            if (!initialBatchPushed && pendingBatch.length >= initialBatchThreshold) {
+              enqueueBatchFlush();
+            } else if (pendingBatch.length >= periodicBatchThreshold) {
+              enqueueBatchFlush();
+            }
           },
           onDone: () async {
+            enqueueBatchFlush(isFinal: true);
+            await flushChain;
+
             if (newEntries.isNotEmpty) {
               debugPrint('$runtimeType load ${stopwatch.elapsed} save ${newEntries.length} new entries');
-              await localMediaDb.insertEntries(newEntries);
 
               // TODO TLAD find duplication cause
               final duplicates = await localMediaDb.searchLiveDuplicates(EntryOrigins.mediaStoreContent, newEntries);
@@ -258,7 +300,7 @@ class MediaStoreSource extends CollectionSource {
                 }
               });
 
-              addEntries(newEntries);
+              addEntries(newEntries, notify: true);
 
               // new entries include existing entries with obsolete paths
               // so directories may be added, but also removed or simply have their content summary changed

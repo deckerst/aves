@@ -87,20 +87,21 @@ mixin AlbumMixin on SourceBase {
   }
 
   void cleanEmptyAlbums([Set<String>? albums]) {
-    final removableAlbums = (albums ?? _directories).where(_isRemovable).toSet();
+    final presentDirectories = visibleEntries.map((entry) => entry.directory).toSet();
+    bool isRemovable(String album) {
+      if (presentDirectories.contains(album)) return false;
+      if (_newAlbums.contains(album)) return false;
+      if (vaults.isVault(album)) return false;
+      if (settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).contains(album)) return false;
+      return true;
+    }
+
+    final removableAlbums = (albums ?? _directories).where(isRemovable).toSet();
     if (removableAlbums.isNotEmpty) {
       _directories.removeAll(removableAlbums);
       _onAlbumChanged();
       invalidateAlbumFilterSummary(directories: removableAlbums);
     }
-  }
-
-  bool _isRemovable(String album) {
-    if (visibleEntries.any((entry) => entry.directory == album)) return false;
-    if (_newAlbums.contains(album)) return false;
-    if (vaults.isVault(album)) return false;
-    if (settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).contains(album)) return false;
-    return true;
   }
 
   // filter summary
@@ -167,15 +168,44 @@ mixin AlbumMixin on SourceBase {
 
   bool _isAlbumGroupKey(String key, _) => key.startsWith('${AlbumGroupFilter.type}-');
 
+  void _precomputeStoredAlbumSummaries() {
+    final countMap = <String, int>{};
+    final sizeMap = <String, int>{};
+    for (final entry in visibleEntries) {
+      final dir = entry.directory;
+      if (dir != null) {
+        countMap[dir] = (countMap[dir] ?? 0) + 1;
+        sizeMap[dir] = (sizeMap[dir] ?? 0) + (entry.sizeBytes ?? 0);
+      }
+    }
+    countMap.forEach((dir, count) {
+      _filterEntryCountMap[StoredAlbumFilter(dir, null).key] = count;
+    });
+    sizeMap.forEach((dir, size) {
+      _filterSizeMap[StoredAlbumFilter(dir, null).key] = size;
+    });
+
+    for (final entry in sortedEntriesByDate) {
+      final dir = entry.directory;
+      if (dir != null) {
+        final key = StoredAlbumFilter(dir, null).key;
+        _filterRecentEntryMap.putIfAbsent(key, () => entry);
+      }
+    }
+  }
+
   int albumEntryCount(AlbumBaseFilter filter) {
+    if (_filterEntryCountMap.isEmpty) _precomputeStoredAlbumSummaries();
     return _filterEntryCountMap.putIfAbsent(filter.key, () => visibleEntries.where(filter.test).length);
   }
 
   int albumSize(AlbumBaseFilter filter) {
+    if (_filterSizeMap.isEmpty) _precomputeStoredAlbumSummaries();
     return _filterSizeMap.putIfAbsent(filter.key, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
   }
 
   AvesEntry? albumRecentEntry(AlbumBaseFilter filter) {
+    if (_filterRecentEntryMap.isEmpty) _precomputeStoredAlbumSummaries();
     return _filterRecentEntryMap.putIfAbsent(filter.key, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 

@@ -51,7 +51,11 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
         createNotificationChannel()
         val foregroundInfo = createForegroundInfo()
         if (!isStopped) {
-            setForeground(foregroundInfo)
+            try {
+                setForeground(foregroundInfo)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "Failed to setForeground, continuing in background: $e")
+            }
             suspendCancellableCoroutine { cont ->
                 workCont = cont
                 cont.invokeOnCancellation {
@@ -211,7 +215,11 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     private suspend fun updateNotification(call: MethodCall, result: MethodChannel.Result) {
         val title = call.argument<String>("title")
         val message = call.argument<String>("message")
-        setForeground(createForegroundInfo(title, message))
+        try {
+            setForeground(createForegroundInfo(title, message))
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Failed to update notification: $e")
+        }
         result.success(null)
     }
 

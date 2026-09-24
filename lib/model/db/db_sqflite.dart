@@ -219,7 +219,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   @override
   Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries) async {
     String where = 'origin = ? AND trashed = ?';
-    if (entries != null) {
+    if (entries != null && entries.length <= 500) {
       where += ' AND contentId IN (${entries.map((v) => v.contentId).join(',')})';
     }
     final rows = await _db.rawQuery(

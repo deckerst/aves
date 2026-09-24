@@ -67,10 +67,6 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
-    if (!kReleaseMode) {
-      await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata ${entry.path ?? entry.uri}');
-    }
-
     Future<CatalogMetadata?> call() async {
       try {
         // returns map with:

@@ -12,8 +12,8 @@ class ServicePolicy {
   final SplayTreeMap<int, LinkedHashMap<Object, _Task>> _queues = SplayTreeMap();
   final LinkedHashMap<Object, _Task> _runningQueue = LinkedHashMap();
 
-  // magic number
-  static const concurrentTaskMax = 4;
+  // concurrency tuned for multi-core devices (e.g. Snapdragon 8+ Gen 1)
+  static const concurrentTaskMax = 8;
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
 

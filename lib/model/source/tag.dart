@@ -13,9 +13,21 @@ import 'package:flutter/foundation.dart';
 
 mixin TagMixin on SourceBase {
   static const commitCountThreshold = 400;
-  static const _stopCheckCountThreshold = 100;
 
-  List<String> sortedTags = List.unmodifiable([]);
+  bool _tagsDirty = true;
+  List<String> _sortedTags = List.unmodifiable([]);
+
+  List<String> get sortedTags {
+    if (_tagsDirty) {
+      _computeTags();
+    }
+    return _sortedTags;
+  }
+
+  set sortedTags(List<String> tags) {
+    _sortedTags = tags;
+    _tagsDirty = false;
+  }
 
   Future<void> loadCatalogMetadata({Set<int>? ids}) async {
     final saved = await (ids != null ? localMediaDb.loadCatalogMetadataById(ids) : localMediaDb.loadCatalogMetadata());
@@ -41,40 +53,65 @@ mixin TagMixin on SourceBase {
     }
     setProgress(done: progressDone, total: progressTotal);
 
-    var stopCheckCount = 0;
     final newMetadata = <CatalogMetadata>{};
-    for (final entry in todo) {
-      await entry.catalog(background: true, force: force, persist: true);
-      if (entry.isCatalogued) {
-        newMetadata.add(entry.catalogMetadata!);
-        if (newMetadata.length >= commitCountThreshold) {
-          await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
-          onCatalogMetadataChanged();
-          newMetadata.clear();
+    final todoList = todo.toList();
+    const concurrency = 8;
+    var currentIndex = 0;
+    var isSaving = false;
+
+    Future<void> worker() async {
+      while (!controller.isStopping) {
+        final index = currentIndex++;
+        if (index >= todoList.length) break;
+        final entry = todoList[index];
+        await entry.catalog(background: true, force: force, persist: true);
+        if (entry.isCatalogued) {
+          newMetadata.add(entry.catalogMetadata!);
+          if (newMetadata.length >= commitCountThreshold && !isSaving) {
+            isSaving = true;
+            final toSave = Set<CatalogMetadata>.of(newMetadata);
+            newMetadata.clear();
+            await localMediaDb.saveCatalogMetadata(toSave);
+            onCatalogMetadataChanged();
+            isSaving = false;
+          }
         }
-        if (++stopCheckCount >= _stopCheckCountThreshold) {
-          stopCheckCount = 0;
-          if (controller.isStopping) return;
+        progressDone++;
+        if (progressDone % 50 == 0 || progressDone >= progressTotal) {
+          setProgress(done: progressDone, total: progressTotal);
         }
       }
-      setProgress(done: ++progressDone, total: progressTotal);
     }
-    await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
-    onCatalogMetadataChanged();
+
+    final workers = List.generate(concurrency, (_) => worker());
+    await Future.wait(workers);
+
+    if (newMetadata.isNotEmpty) {
+      await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
+      onCatalogMetadataChanged();
+      newMetadata.clear();
+    }
+    setProgress(done: progressDone, total: progressTotal);
   }
 
   void onCatalogMetadataChanged() {
-    updateTags();
+    _tagsDirty = true;
+    invalidateTagFilterSummary();
     eventBus.fire(CatalogMetadataChangedEvent());
   }
 
   void updateTags() {
+    _tagsDirty = true;
+    invalidateTagFilterSummary();
+  }
+
+  void _computeTags() {
     final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCaseNatural);
-    if (!listEquals(updatedTags, sortedTags)) {
-      sortedTags = List.unmodifiable(updatedTags);
-      invalidateTagFilterSummary();
+    if (!listEquals(updatedTags, _sortedTags)) {
+      _sortedTags = List.unmodifiable(updatedTags);
       eventBus.fire(TagsChangedEvent());
     }
+    _tagsDirty = false;
   }
 
   // filter summary

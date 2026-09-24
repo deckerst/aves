@@ -1,9 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:aves/services/common/services.dart';
-import 'package:aves/utils/android_file_utils.dart';
-import 'package:collection/collection.dart';
 
 final entryDirRepo = EntryDirRepo._private();
 
@@ -12,25 +7,35 @@ class EntryDirRepo {
 
   // mapping between the raw entry directory path to a resolvable directory
   final Map<String?, EntryDir> _dirs = {};
+  final Map<String, EntryDir> _dirsByLower = {};
   final StreamController<EntryDir> _ambiguousDirStreamController = StreamController.broadcast();
 
   Stream<EntryDir> get ambiguousDirStream => _ambiguousDirStreamController.stream;
 
   // get a resolvable directory for a raw entry directory path
   EntryDir getOrCreate(String? asIs) {
+    if (asIs == null) return EntryDir(null);
     var entryDir = _dirs[asIs];
     if (entryDir != null) return entryDir;
 
-    final asIsLower = asIs?.toLowerCase();
-    entryDir = _dirs.values.firstWhereOrNull((dir) => dir.asIsLower == asIsLower);
-    if (entryDir != null && !entryDir.ambiguous) {
-      entryDir.ambiguous = true;
-      _ambiguousDirStreamController.add(entryDir);
+    final asIsLower = asIs.toLowerCase();
+    entryDir = _dirsByLower[asIsLower];
+    if (entryDir != null) {
+      if (!entryDir.ambiguous) {
+        entryDir.ambiguous = true;
+        _ambiguousDirStreamController.add(entryDir);
+      }
+      _dirs[asIs] = entryDir;
+      return entryDir;
     }
 
-    return _dirs.putIfAbsent(asIs, () => entryDir ?? EntryDir(asIs));
+    final newDir = EntryDir(asIs);
+    _dirs[asIs] = newDir;
+    _dirsByLower[asIsLower] = newDir;
+    return newDir;
   }
 }
+
 
 // Some directories are ambiguous because they use different cases,
 // but the OS merge and present them as one directory.
@@ -39,38 +44,8 @@ class EntryDirRepo {
 class EntryDir {
   final String? asIs, asIsLower;
   bool ambiguous = false;
-  String? _resolved;
 
   new(this.asIs) : asIsLower = asIs?.toLowerCase();
 
-  String? get resolved {
-    if (!ambiguous) return asIs;
-    if (asIs == null) return null;
-
-    _resolved ??= _resolve();
-    return _resolved;
-  }
-
-  String? _resolve() {
-    final vrl = androidFileUtils.relativeDirectoryFromPath(asIs!);
-    if (vrl == null || vrl.relativeDir.isEmpty) return asIs;
-
-    var resolved = vrl.volumePath;
-    final parts = pContext.split(vrl.relativeDir);
-    for (final part in parts) {
-      FileSystemEntity? found;
-      final dir = Directory(resolved);
-      if (dir.existsSync()) {
-        final partLower = part.toLowerCase();
-        try {
-          final childrenDirs = dir.listSync().where((v) => v.absolute is Directory).toSet();
-          found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
-        } catch (error) {
-          // ignore, could be IO issue when listing directory
-        }
-      }
-      resolved = found?.path ?? '$resolved${pContext.separator}$part';
-    }
-    return resolved;
-  }
+  String? get resolved => asIs;
 }

@@ -9,13 +9,10 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
-import 'package:flutter/foundation.dart';
 
 extension ExtraAvesEntryCatalog on AvesEntry {
   Future<void> catalog({required bool background, required bool force, required bool persist}) async {
     if (isCatalogued && !force) return;
-
-    final beforeAvailableHeapSize = await deviceService.getAvailableHeapSize();
 
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
@@ -81,15 +78,6 @@ extension ExtraAvesEntryCatalog on AvesEntry {
           }
         }
       }
-    }
-
-    final afterAvailableHeapSize = await deviceService.getAvailableHeapSize();
-    final diff = beforeAvailableHeapSize - afterAvailableHeapSize;
-    const largeHeapUsageThreshold = 15 * (1 << 20); // MiB
-
-    if (diff > largeHeapUsageThreshold) {
-      debugPrint('Large heap usage (${diff}B) from cataloguing entry=$this size=$sizeBytes');
-      await deviceService.requestGarbageCollection();
     }
   }
 }
