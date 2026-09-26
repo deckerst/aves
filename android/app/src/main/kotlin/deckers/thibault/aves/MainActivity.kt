@@ -110,10 +110,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, windowInsets ->
             val insets = ViewCompat.onApplyWindowInsets(view, windowInsets)
-            notifySystemBarVisibilityChange(
-                statusBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.statusBars()),
-                navBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars()),
-            )
+            onWindowInsetsChanged(windowInsets)
             insets
         }
     }
@@ -285,6 +282,23 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
+    private var lastStatusBarVisible = false
+    private var lastNavBarVisible = false
+
+    private fun onWindowInsetsChanged(windowInsets: WindowInsetsCompat) {
+        val statusBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.statusBars())
+        val navBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars())
+        if (lastStatusBarVisible != statusBarVisible || lastNavBarVisible != navBarVisible) {
+            lastStatusBarVisible = statusBarVisible
+            lastNavBarVisible = navBarVisible
+            notifySystemBarVisibilityChange(
+                statusBarVisible = statusBarVisible,
+                navBarVisible = navBarVisible,
+            )
+        }
+    }
+
+    // window mode monitoring: PiP, multi-window
     private fun notifyWindowModeChange() = windowChangeStreamHandler.notifyWindowModeChange()
 
     private fun notifyCutoutInsetsChange() = windowChangeStreamHandler.notifyCutoutInsetsChange()

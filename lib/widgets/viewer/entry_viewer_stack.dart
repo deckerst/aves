@@ -902,6 +902,23 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   Future<void> _onLeave() async {
+    final systemUIReadyCompleter = Completer<bool>();
+    final isStatusBarVisibleNotifier = AvesApp.isAndroidStatusBarVisibleNotifier;
+    void onStatusBarVisibleChanged() async {
+      // cf below for explanation on transition delay
+      await Future.delayed(const Duration(milliseconds: 50));
+      systemUIReadyCompleter.complete(isStatusBarVisibleNotifier.value);
+    }
+
+    final bool requestSystemUIChange;
+    if (isStatusBarVisibleNotifier.value) {
+      requestSystemUIChange = false;
+      systemUIReadyCompleter.complete(true);
+    } else {
+      requestSystemUIChange = true;
+      isStatusBarVisibleNotifier.addListener(onStatusBarVisibleChanged);
+    }
+
     await viewerController.stopCast();
 
     try {
@@ -920,17 +937,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       await windowService.keepScreenOn(false);
     }
     await mediaSessionService.release();
-    await AvesApp.showSystemUI(true);
+    if (requestSystemUIChange) {
+      await AvesApp.showSystemUI(true);
+    }
     if (!settings.useTvLayout) {
       await windowService.requestOrientation();
     }
     unawaited(mediaFetchService.clearDecoders());
     unawaited(deviceService.requestGarbageCollection());
 
-    // delay to prevent white/black flash on page transition
+    // as of Flutter v3.47.5, a white/black flash appears on page transition
     // from a viewer with a transparent background and no system UI
-    // to a regular page with system UI
-    await Future.delayed(const Duration(milliseconds: 150));
+    // to a regular page with system UI (tested on Android 15)
+    // so we wait until the system UI is ready
+    await systemUIReadyCompleter.future;
+    isStatusBarVisibleNotifier.removeListener(onStatusBarVisibleChanged);
   }
 
   // overlay
