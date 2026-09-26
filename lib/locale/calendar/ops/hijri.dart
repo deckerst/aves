@@ -1,5 +1,4 @@
 import 'package:aves/locale/calendar/ops/base.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_hijri_rrule/flutter_hijri_rrule.dart';
 
 class HijriCalendarOps extends CalendarOps {
@@ -105,13 +104,8 @@ class HijriCalendarOps extends CalendarOps {
 
   @override
   (int year, int month) getYearMonth(DateTime date) {
-    try {
-      final native = toNative(date)!;
-      return (native.year, native.month);
-    } catch(ex) {
-      debugPrint('TLAD getYearMonth fail for date=$date');
-      rethrow;
-    }
+    final native = toNative(date)!;
+    return (native.year, native.month);
   }
 
   @override
