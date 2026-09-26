@@ -959,5 +959,7 @@
     "settingsCalendarTile": "تقويم",
     "tileLayoutCalendar": "تقويم",
     "collectionActionShowLayoutBar": "إظهار شريط التخطيط",
-    "collectionActionHideLayoutBar": "إخفاء شريط التخطيط"
+    "collectionActionHideLayoutBar": "إخفاء شريط التخطيط",
+    "calendarHijriTabular": "هجري (حسابي)",
+    "calendarHijriUmalqura": "هجري (أم القرى)"
 }

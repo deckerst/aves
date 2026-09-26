@@ -738,5 +738,7 @@
     "calendarGregorian": "Gregorianisch",
     "calendarPersian": "Persisch",
     "settingsCalendarTile": "Kalender",
-    "tileLayoutCalendar": "Kalender"
+    "tileLayoutCalendar": "Kalender",
+    "collectionActionShowLayoutBar": "Layoutleiste anzeigen",
+    "collectionActionHideLayoutBar": "Layoutleiste verbergen"
 }
