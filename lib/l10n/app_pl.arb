@@ -959,5 +959,7 @@
     "settingsCalendarTile": "Kalendarz",
     "tileLayoutCalendar": "Kalendarz",
     "collectionActionShowLayoutBar": "Pokaż pasek układu",
-    "collectionActionHideLayoutBar": "Ukryj pasek układu"
+    "collectionActionHideLayoutBar": "Ukryj pasek układu",
+    "calendarHijriTabular": "Hijri (w formie tabelarycznej)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)"
 }

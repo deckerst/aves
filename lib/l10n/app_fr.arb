@@ -740,5 +740,7 @@
     "calendarPersian": "Persan",
     "tileLayoutCalendar": "Calendrier",
     "collectionActionShowLayoutBar": "Afficher la barre de vue",
-    "collectionActionHideLayoutBar": "Masquer la barre de vue"
+    "collectionActionHideLayoutBar": "Masquer la barre de vue",
+    "calendarHijriTabular": "Hégirien (tabulaire)",
+    "calendarHijriUmalqura": "Hégirien (Umm Al Qura)"
 }

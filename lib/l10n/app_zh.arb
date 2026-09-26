@@ -740,5 +740,7 @@
     "settingsCalendarTile": "日历",
     "tileLayoutCalendar": "日历",
     "collectionActionShowLayoutBar": "显示布局栏",
-    "collectionActionHideLayoutBar": "隐藏布局栏"
+    "collectionActionHideLayoutBar": "隐藏布局栏",
+    "calendarHijriTabular": "伊斯兰历 (表格)",
+    "calendarHijriUmalqura": "伊斯兰历（乌姆库拉）"
 }

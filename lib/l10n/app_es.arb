@@ -740,5 +740,7 @@
     "mapHideItemTracks": "Ocultar rutas",
     "tileLayoutCalendar": "Calendario",
     "collectionActionShowLayoutBar": "Mostrar barra de diseño",
-    "collectionActionHideLayoutBar": "Ocultar barra de diseño"
+    "collectionActionHideLayoutBar": "Ocultar barra de diseño",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)"
 }
