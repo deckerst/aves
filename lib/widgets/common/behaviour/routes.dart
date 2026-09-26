@@ -1,7 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
-class DirectPageTransitionsTheme extends PageTransitionsTheme {
-  const new();
+class DirectPageTransitionsBuilder extends PageTransitionsBuilder {
+  @override
+  Duration get transitionDuration => Duration.zero;
+
+  @override
+  Duration get reverseTransitionDuration => Duration.zero;
 
   @override
   Widget buildTransitions<T>(
@@ -13,27 +17,34 @@ class DirectPageTransitionsTheme extends PageTransitionsTheme {
   ) => child;
 }
 
-class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
-  new({
-    super.settings,
-    required WidgetBuilder builder,
-  }) : super(
-         transitionDuration: Duration.zero,
-         pageBuilder: (context, a, sa) => builder(context),
-       );
-
+class const DirectPageTransitionsTheme() extends PageTransitionsTheme {
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-    return child;
-  }
+  Map<TargetPlatform, PageTransitionsBuilder> get builders => {
+    TargetPlatform.android: DirectPageTransitionsBuilder(),
+  };
 }
 
-class TransparentMaterialPageRoute<T> extends PageRouteBuilder<T> {
-  new({
-    super.settings,
-    required super.pageBuilder,
-  });
+class DirectMaterialPageRoute<T>({
+  super.settings,
+  required WidgetBuilder builder,
+}) extends PageRouteBuilder<T> {
+  this : super(pageBuilder: (context, _, _) => builder(context));
 
+  @override
+  Duration get transitionDuration => Duration.zero;
+
+  @override
+  Duration get reverseTransitionDuration => Duration.zero;
+
+  @override
+  RouteTransitionsBuilder get transitionsBuilder =>
+      (_, _, _, child) => child;
+}
+
+class TransparentMaterialPageRoute<T>({
+  super.settings,
+  required super.pageBuilder,
+}) extends PageRouteBuilder<T> {
   @override
   bool get opaque => false;
 

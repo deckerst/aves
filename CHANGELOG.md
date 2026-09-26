@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Hijri calendars (tabular scheme IIa, Umm al-Qura)
 
+### Fixed
+
+- back navigation delay when animations are disabled
+
 ## <a id="v1.15.4"></a>[v1.15.4] - 2026-09-22
 
 ### Added
