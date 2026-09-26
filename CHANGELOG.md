@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - back navigation delay when animations are disabled
+- back navigation delay when toggling system UI
 
 ## <a id="v1.15.4"></a>[v1.15.4] - 2026-09-22
 

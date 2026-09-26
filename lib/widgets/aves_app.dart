@@ -90,6 +90,8 @@ class AvesApp extends StatefulWidget {
   static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
   static final ValueNotifier<bool> isInPictureInPictureMode = ValueNotifier(false);
   static final ValueNotifier<EdgeInsets> cutoutInsetsNotifier = ValueNotifier(EdgeInsets.zero);
+  static final ValueNotifier<bool> isAndroidStatusBarVisibleNotifier = ValueNotifier(true);
+  static final ValueNotifier<bool> isAndroidNavBarVisibleNotifier = ValueNotifier(true);
 
   // children widgets registering as `WidgetsBinding` observers and implementing `didChangeAppLifecycleState`
   // do not receive events fast enough for time sensitive actions (like PiP when leaving by gesture to home)
@@ -782,11 +784,13 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
       case 'system_bar_visibility':
         // on older devices, setting system UI style right after UI mode is not effective
         // and the required delay is unknown, so we monitor the change on the platform side
-        final statusBarVisible = fields['status_bar'];
-        final navBarVisible = fields['nav_bar'];
+        final statusBarVisible = fields['status_bar'] as bool;
+        final navBarVisible = fields['nav_bar'] as bool;
         if (statusBarVisible == true && navBarVisible == true && context.mounted) {
           AvesApp.setSystemUIStyle(Theme.of(context));
         }
+        AvesApp.isAndroidStatusBarVisibleNotifier.value = statusBarVisible;
+        AvesApp.isAndroidNavBarVisibleNotifier.value = navBarVisible;
     }
   }
 
