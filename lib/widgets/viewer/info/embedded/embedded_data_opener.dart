@@ -4,6 +4,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -11,6 +12,7 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
 
 class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
   final bool enabled;
@@ -82,7 +84,8 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
     Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (context, a, sa) => EntryViewerPage(
+        transitionDuration: context.read<DurationsData>().viewerRouteTransitionDuration,
+        pageBuilder: (context, _, _) => EntryViewerPage(
           initialEntry: tempEntry,
         ),
       ),

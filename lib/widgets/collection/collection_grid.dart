@@ -281,7 +281,8 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     await Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (context, a, sa) {
+        transitionDuration: context.read<DurationsData>().viewerRouteTransitionDuration,
+        pageBuilder: (context, _, _) {
           Widget child = EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,
