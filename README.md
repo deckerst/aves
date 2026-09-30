@@ -4,6 +4,8 @@
 
 ## Aves
 
+[ˈaː.ves]
+
 ![Version badge][Version badge]
 ![RB badge][RB badge]
 ![Build badge][Build badge]
