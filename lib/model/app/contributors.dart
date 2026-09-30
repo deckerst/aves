@@ -189,6 +189,8 @@ class Contributors {
     Contributor('Stysusss', '158248053+stysus@users.noreply.github.com'),
     Contributor('chriz', 'chriz_dev@proton.me'),
     Contributor('카츠', 'chae0218@gmail.com'),
+    Contributor('Adrien Cordonnier', 'adrien.cordonnier@gmail.com'),
+    Contributor('Bouzid Zeroug', 'bouzidzeroug98@gmail.com'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
