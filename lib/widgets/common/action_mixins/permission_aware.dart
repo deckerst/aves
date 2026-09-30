@@ -94,16 +94,17 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> _requestSafPermission(BuildContext context, Set<String> dirPaths) async {
-    final todoDirectories = await Future.wait(dirPaths.map(storagePermissionService.getSafDirectoryToRequest));
     var needGrant = true;
     while (needGrant) {
       final grantedDirectories = await storagePermissionService.getSafGrantedDirectories();
-      final directoryToRequest = todoDirectories.firstWhereOrNull((v) => !grantedDirectories.contains(v?.dirPath));
-      if (directoryToRequest == null) {
+      final ungrantedDirPaths = dirPaths.where((v) => grantedDirectories.none((grantedDir) => v.startsWith(grantedDir))).toSet();
+      final requestDirs = await Future.wait(ungrantedDirPaths.map(storagePermissionService.getSafDirectoryToRequest));
+      final requestDir = requestDirs.firstOrNull;
+      if (requestDir == null) {
         needGrant = false;
       } else {
-        final volume = directoryToRequest.getVolumeDescription(context);
-        final relativeDir = directoryToRequest.relativeDir;
+        final volume = requestDir.getVolumeDescription(context);
+        final relativeDir = androidFileUtils.removeTrailingSeparator(requestDir.relativeDir)!;
 
         final l10n = context.l10n;
         final directoryName = relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(relativeDir);
@@ -117,7 +118,7 @@ mixin PermissionAwareMixin {
 
         if (!await checkSystemFilePickerEnabled(context)) return false;
 
-        final granted = await storagePermissionService.requestSafMediaDirectoryAccess(directoryToRequest.dirPath);
+        final granted = await storagePermissionService.requestSafMediaDirectoryAccess(requestDir.dirPath);
         if (!granted) {
           // abort if the user denies access from the native dialog
           return false;
