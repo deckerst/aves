@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/modules/common_layout.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -7,18 +8,6 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   List<String> get collectionBurstPatterns => getStringList(SettingKeys.collectionBurstPatternsKey) ?? [];
 
   set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
-
-  SortFactor get collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, SortFactor.values);
-
-  set collectionSortFactor(SortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
-
-  bool get collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
-
-  set collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
-
-  EntrySectionFactor get collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
-
-  set collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
 
   bool get showCollectionLayoutBar => getBool(SettingKeys.showCollectionLayoutBarKey) ?? false;
 
@@ -68,31 +57,91 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   set showThumbnailVideoDuration(bool newValue) => set(SettingKeys.showThumbnailVideoDurationKey, newValue);
 
-  // composite
+  // direct
 
-  TileLayout get effectiveCollectionTileLayout => getTileLayout(CollectionPage.routeName);
+  SortFactor get _collectionSortFactor => getEnumOrDefault(SettingKeys.collectionSortFactorKey, SettingsDefaults.collectionSortFactor, SortFactor.values);
 
-  SortFactor get effectiveCollectionSortFactor {
-    switch (effectiveCollectionTileLayout) {
+  set _collectionSortFactor(SortFactor newValue) => set(SettingKeys.collectionSortFactorKey, newValue.name);
+
+  bool get _collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
+
+  set _collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
+
+  EntrySectionFactor get _collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
+
+  set _collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
+
+  // composite (stored)
+
+  void setStoredCollectionTileLayout(Set<CollectionFilter> filters, TileLayout newValue) {
+    // TODO TLAD [layout per album]
+    setTileLayout(CollectionPage.routeName, newValue);
+  }
+
+  void setStoredCollectionSortFactor(Set<CollectionFilter> filters, SortFactor newValue) {
+    // TODO TLAD [layout per album]
+    _collectionSortFactor = newValue;
+  }
+
+  void setStoredCollectionSortReverse(Set<CollectionFilter> filters, bool newValue) {
+    // TODO TLAD [layout per album]
+    _collectionSortReverse = newValue;
+  }
+
+  void setStoredCollectionSectionFactor(Set<CollectionFilter> filters, EntrySectionFactor newValue) {
+    // TODO TLAD [layout per album]
+    _collectionSectionFactor = newValue;
+  }
+
+  TileLayout getStoredCollectionTileLayout(Set<CollectionFilter> filters) {
+    // TODO TLAD [layout per album]
+    return getTileLayout(CollectionPage.routeName);
+  }
+
+  SortFactor getStoredCollectionSortFactor(Set<CollectionFilter> filters) {
+    // TODO TLAD [layout per album]
+    return _collectionSortFactor;
+  }
+
+  bool getStoredCollectionSortReverse(Set<CollectionFilter> filters) {
+    // TODO TLAD [layout per album]
+    return _collectionSortReverse;
+  }
+
+  EntrySectionFactor getStoredCollectionSectionFactor(Set<CollectionFilter> filters) {
+    // TODO TLAD [layout per album]
+    return _collectionSectionFactor;
+  }
+
+  // composite (effective)
+
+  TileLayout getEffectiveCollectionTileLayout(Set<CollectionFilter> filters) {
+    return getStoredCollectionTileLayout(filters);
+  }
+
+  SortFactor getEffectiveCollectionSortFactor(Set<CollectionFilter> filters) {
+    switch (getEffectiveCollectionTileLayout(filters)) {
       case .mosaic:
       case .grid:
       case .list:
-        return collectionSortFactor;
+        return getStoredCollectionSortFactor(filters);
       case .calendar:
         return .date;
     }
   }
 
-  bool get effectiveCollectionSortReverse => collectionSortReverse;
+  bool getEffectiveCollectionSortReverse(Set<CollectionFilter> filters) {
+    return getStoredCollectionSortReverse(filters);
+  }
 
-  EntrySectionFactor get effectiveCollectionSectionFactor {
-    switch (effectiveCollectionTileLayout) {
+  EntrySectionFactor getEffectiveCollectionSectionFactor(Set<CollectionFilter> filters) {
+    switch (getEffectiveCollectionTileLayout(filters)) {
       case .mosaic:
       case .grid:
       case .list:
-        switch (effectiveCollectionSortFactor) {
+        switch (getEffectiveCollectionSortFactor(filters)) {
           case .date:
-            return collectionSectionFactor;
+            return getStoredCollectionSectionFactor(filters);
           case .albumItemName:
           case .path:
             return .name;

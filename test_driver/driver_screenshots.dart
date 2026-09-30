@@ -16,7 +16,7 @@ void main() {
       ..isInstalledAppAccessAllowed = true
       ..isErrorReportingAllowed = false
       ..setTileExtent(CollectionPage.routeName, 69)
-      ..setTileLayout(CollectionPage.routeName, .mosaic)
+      ..setStoredCollectionTileLayout({}, .mosaic)
       ..setTileExtent(CountryListPage.routeName, 112)
       ..setTileLayout(CountryListPage.routeName, .grid)
       // display
@@ -31,9 +31,9 @@ void main() {
       ..drawerAlbumBookmarks = null
       ..bottomNavigationActions = SettingsDefaults.bottomNavigationActions
       // collection
-      ..collectionSectionFactor = .month
-      ..collectionSortFactor = .date
-      ..collectionSortReverse = false
+      ..setStoredCollectionSectionFactor({}, .month)
+      ..setStoredCollectionSortFactor({}, .date)
+      ..setStoredCollectionSortReverse({}, false)
       ..collectionBrowsingQuickActions = SettingsDefaults.collectionBrowsingQuickActions
       ..showThumbnailFavourite = false
       ..thumbnailLocationIcon = .none
