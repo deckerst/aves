@@ -985,5 +985,7 @@
     "settingsCalendarTile": "Kalender",
     "tileLayoutCalendar": "Kalender",
     "collectionActionShowLayoutBar": "Näita küljendusriba",
-    "collectionActionHideLayoutBar": "Peida küljendusriba"
+    "collectionActionHideLayoutBar": "Peida küljendusriba",
+    "calendarHijriTabular": "Tabulaarne islamikalender",
+    "calendarHijriUmalqura": "Umm al-Qura islamikalender"
 }

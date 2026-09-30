@@ -959,5 +959,7 @@
     "settingsAutoExportSettings": "Automatický export nastavení",
     "tileLayoutCalendar": "Kalendár",
     "collectionActionShowLayoutBar": "Zobraziť panel rozloženia",
-    "collectionActionHideLayoutBar": "Skryť panel rozloženia"
+    "collectionActionHideLayoutBar": "Skryť panel rozloženia",
+    "calendarHijriUmalqura": "Hidžra (lunárny)",
+    "calendarHijriTabular": "Hidžra (tabuľkový)"
 }

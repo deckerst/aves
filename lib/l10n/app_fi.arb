@@ -959,5 +959,6 @@
     "settingsViewerShowZoomLevel": "Näytä suurennuksen taso",
     "settingsEnabled": "Käytössä",
     "settingsForced": "Pakotettu",
-    "collectionActionExportGpx": "Vie GPX"
+    "collectionActionExportGpx": "Vie GPX",
+    "tileLayoutCalendar": "Kalenteri"
 }
