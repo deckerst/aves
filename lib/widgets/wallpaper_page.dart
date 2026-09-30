@@ -90,7 +90,7 @@ class _EntryEditorState extends State<EntryEditor> with EntryViewControllerMixin
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
     }
-    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+    if (settings.keepScreenOn == .viewerOnly) {
       windowService.keepScreenOn(true);
     }
 

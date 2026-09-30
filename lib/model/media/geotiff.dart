@@ -13,20 +13,15 @@ import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
 
 @immutable
-class GeoTiffInfo extends Equatable {
-  final List<double>? modelPixelScale, modelTiePoints, modelTransformation;
-  final int? projCSType, projLinearUnits;
-
+class const GeoTiffInfo({
+  final List<double>? modelPixelScale,
+  final List<double>? modelTiePoints,
+  final List<double>? modelTransformation,
+  final int? projCSType,
+  final int? projLinearUnits,
+}) extends Equatable {
   @override
   List<Object?> get props => [modelPixelScale, modelTiePoints, modelTransformation, projCSType, projLinearUnits];
-
-  const new({
-    this.modelPixelScale,
-    this.modelTiePoints,
-    this.modelTransformation,
-    this.projCSType,
-    this.projLinearUnits,
-  });
 
   factory fromMap(Map map) {
     return GeoTiffInfo(
@@ -39,9 +34,11 @@ class GeoTiffInfo extends Equatable {
   }
 }
 
-class MappedGeoTiff with MapOverlay {
-  final AvesEntry entry;
-
+class MappedGeoTiff({
+  required GeoTiffInfo info,
+  required final AvesEntry entry,
+  required double devicePixelRatio,
+}) with MapOverlay {
   late final GeoTiffCoordinateConverter _converter;
   late final int _mapServiceTileSize;
   late final MapServiceHelper _mapServiceHelper;
@@ -51,11 +48,7 @@ class MappedGeoTiff with MapOverlay {
     ..style = PaintingStyle.fill
     ..color = const Color(0xFF000000);
 
-  new({
-    required GeoTiffInfo info,
-    required this.entry,
-    required double devicePixelRatio,
-  }) {
+  this {
     _converter = GeoTiffCoordinateConverter(info: info, entry: entry);
     _mapServiceTileSize = (256 * devicePixelRatio).round();
     _mapServiceHelper = MapServiceHelper(_mapServiceTileSize);
@@ -174,16 +167,14 @@ class MappedGeoTiff with MapOverlay {
   LatLng? get bottomRight => _converter.bottomRight;
 }
 
-class GeoTiffCoordinateConverter {
-  final AvesEntry entry;
-
+class GeoTiffCoordinateConverter({
+  required GeoTiffInfo info,
+  required final AvesEntry entry,
+}) {
   late LatLng? Function(Point<int> pixel) pointToLatLng;
   late Point<int>? Function(Point<double> smPoint) epsg3857ToPoint;
 
-  new({
-    required GeoTiffInfo info,
-    required this.entry,
-  }) {
+  this {
     pointToLatLng = (_) => null;
     epsg3857ToPoint = (_) => null;
 

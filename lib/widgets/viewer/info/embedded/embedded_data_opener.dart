@@ -52,7 +52,7 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
       case .videoCover:
         fields = await embeddedDataService.extractVideoEmbeddedPicture(entry);
       case .xmp:
-        fields = await embeddedDataService.extractXmpDataProp(entry, notification.props, notification.mimeType);
+        fields = await embeddedDataService.extractXmpDataProp(entry, notification.propPath, notification.mimeType);
     }
     AvesEntry.normalizeMimeTypeFields(fields);
     final mimeType = fields[EntryFields.mimeType] as String?;

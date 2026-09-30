@@ -2,8 +2,11 @@ import 'dart:math';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
+import 'package:aves/model/entry/origins.dart';
 import 'package:aves/model/media/panorama.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -11,30 +14,27 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
+import 'package:aves_video/aves_video.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 
-class PanoramaPage extends StatefulWidget {
+class const PanoramaPage({
+  super.key,
+  required final AvesEntry entry,
+  required final PanoramaInfo info,
+}) extends StatefulWidget {
   static const routeName = '/viewer/panorama';
-
-  final AvesEntry entry;
-  final PanoramaInfo info;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.info,
-  });
 
   @override
   State<PanoramaPage> createState() => _PanoramaPageState();
 }
 
 class _PanoramaPageState extends State<PanoramaPage> {
-  final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
-  final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(.none);
+  final ValueNotifier<bool> _overlayVisibleNotifier = ValueNotifier(true);
+  final ValueNotifier<SensorControl> _sensorControlNotifier = ValueNotifier(.none);
+  Future<AvesAudioController>? _audioControllerLoader;
 
   AvesEntry get entry => widget.entry;
 
@@ -46,15 +46,52 @@ class _PanoramaPageState extends State<PanoramaPage> {
   @override
   void initState() {
     super.initState();
-    _overlayVisible.addListener(_onOverlayVisibleChanged);
+    _overlayVisibleNotifier.addListener(_onOverlayVisibleChanged);
+    AvesApp.lifecycleStateNotifier.addListener(_onAppLifecycleStateChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
+
+    final propPath = info.audioPropPath?.cast<Object>();
+    final propMimeType = info.audioPropMimeType;
+    if (propPath != null && propMimeType != null) {
+      _audioControllerLoader = _initAudioPlayback(propPath: propPath, propMimeType: propMimeType);
+    }
+  }
+
+  Future<AvesAudioController>? _initAudioPlayback({
+    required List<Object> propPath,
+    required String propMimeType,
+  }) async {
+    final fields = await embeddedDataService.extractXmpDataProp(entry, propPath, propMimeType);
+    fields[EntryFields.sourceMimeType] ??= fields[EntryFields.mimeType];
+    fields[EntryFields.origin] ??= EntryOrigins.unknownContent;
+    final audioEntry = AvesEntry.fromMap(fields);
+
+    final audioController = audioControllerFactory.buildController(audioEntry);
+    await audioController.enableLoop(true);
+    await audioController.play();
+    return audioController;
   }
 
   @override
   void dispose() {
-    _overlayVisible.dispose();
-    _sensorControl.dispose();
+    _overlayVisibleNotifier.dispose();
+    _sensorControlNotifier.dispose();
+    _audioControllerLoader?.then((v) => v.dispose());
+    AvesApp.lifecycleStateNotifier.removeListener(_onAppLifecycleStateChanged);
     super.dispose();
+  }
+
+  void _onAppLifecycleStateChanged() {
+    switch (AvesApp.lifecycleStateNotifier.value) {
+      case .inactive:
+        break;
+      case .hidden:
+      case .paused:
+      case .detached:
+        _pauseAudioController();
+      case .resumed:
+        break;
+    }
   }
 
   @override
@@ -65,9 +102,9 @@ class _PanoramaPageState extends State<PanoramaPage> {
         body: Stack(
           children: [
             ValueListenableBuilder<SensorControl>(
-              valueListenable: _sensorControl,
+              valueListenable: _sensorControlNotifier,
               builder: (context, sensorControl, child) {
-                void onTap(longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value;
+                void onTap(longitude, latitude, tilt) => _overlayVisibleNotifier.value = !_overlayVisibleNotifier.value;
                 final imageChild = child as Image;
 
                 if (info.hasCroppedArea) {
@@ -117,12 +154,13 @@ class _PanoramaPageState extends State<PanoramaPage> {
   Widget _buildOverlay(BuildContext context) {
     if (settings.useTvLayout) return const SizedBox();
 
+    final l10n = context.l10n;
     return TooltipTheme(
       data: TooltipTheme.of(context).copyWith(
         preferBelow: false,
       ),
       child: ValueListenableBuilder<bool>(
-        valueListenable: _overlayVisible,
+        valueListenable: _overlayVisibleNotifier,
         builder: (context, overlayVisible, child) {
           return Visibility(
             visible: overlayVisible,
@@ -137,17 +175,45 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   ),
                 );
               },
-              child: OverlayButton(
-                child: ValueListenableBuilder<SensorControl>(
-                  valueListenable: _sensorControl,
-                  builder: (context, sensorControl, child) {
-                    return IconButton(
-                      icon: Icon(sensorControl == SensorControl.none ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
-                      onPressed: _toggleSensor,
-                      tooltip: sensorControl == SensorControl.none ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
-                    );
-                  },
-                ),
+              child: Row(
+                children: [
+                  FutureBuilder<AvesAudioController>(
+                    future: _audioControllerLoader,
+                    builder: (context, snapshot) {
+                      final audioController = snapshot.data;
+                      if (audioController == null) return const SizedBox();
+
+                      return Padding(
+                        padding: const EdgeInsetsDirectional.only(end: 8),
+                        child: OverlayButton(
+                          child: StreamBuilder<PlaybackStatus>(
+                            stream: audioController.statusStream,
+                            builder: (context, _) {
+                              final isPlaying = audioController.isPlaying;
+                              return IconButton(
+                                icon: Icon(isPlaying ? AIcons.mute : AIcons.unmute),
+                                onPressed: () => isPlaying ? audioController.pause() : audioController.play(),
+                                tooltip: isPlaying ? l10n.videoActionMute : l10n.videoActionUnmute,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  OverlayButton(
+                    child: ValueListenableBuilder<SensorControl>(
+                      valueListenable: _sensorControlNotifier,
+                      builder: (context, sensorControl, child) {
+                        return IconButton(
+                          icon: Icon(sensorControl == .none ? AIcons.sensorControlEnabled : AIcons.sensorControlDisabled),
+                          onPressed: _toggleSensor,
+                          tooltip: sensorControl == .none ? l10n.panoramaEnableSensorControl : l10n.panoramaDisableSensorControl,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -157,13 +223,17 @@ class _PanoramaPageState extends State<PanoramaPage> {
   }
 
   void _toggleSensor() {
-    switch (_sensorControl.value) {
+    switch (_sensorControlNotifier.value) {
       case .none:
-        _sensorControl.value = .absoluteOrientation;
+        _sensorControlNotifier.value = .absoluteOrientation;
       case .absoluteOrientation:
       case .orientation:
-        _sensorControl.value = .none;
+        _sensorControlNotifier.value = .none;
     }
+  }
+
+  void _pauseAudioController() {
+    _audioControllerLoader?.then((v) => v.pause());
   }
 
   Future<void> _onLeave() async {
@@ -182,7 +252,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   }
 
   Future<void> _onOverlayVisibleChanged() async {
-    if (_overlayVisible.value) {
+    if (_overlayVisibleNotifier.value) {
       await AvesApp.showSystemUI(true);
     } else {
       await AvesApp.showSystemUI(false);

@@ -18,7 +18,7 @@ class XmpBasicNamespace extends XmpNamespace {
             'Image': InfoRowGroup.linkSpanBuilder(
               linkText: (context) => context.l10n.viewerInfoOpenLinkText,
               onTap: (context) => OpenEmbeddedDataNotification.xmp(
-                props: [
+                propPath: [
                   const [XmpNamespaces.xmp, 'Thumbnails'],
                   index,
                   const [XmpNamespaces.xmpGImg, 'image'],

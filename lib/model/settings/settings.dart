@@ -172,7 +172,7 @@ class Settings
     maxBrightness = MaxBrightness.never;
     mustBackTwiceToExit = false;
     // address `TV-BU` / `TV-BY` requirements from https://developer.android.com/docs/quality-guidelines/tv-app-quality
-    keepScreenOn = KeepScreenOn.videoPlayback;
+    keepScreenOn = .videoPlayback;
     drawerTypeBookmarks = [
       null,
       MimeFilter.video,

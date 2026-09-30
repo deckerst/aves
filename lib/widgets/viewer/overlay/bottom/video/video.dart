@@ -39,20 +39,20 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   AvesVideoController? get controller => widget.controller;
 
-  Stream<VideoStatus> get statusStream => controller?.statusStream ?? Stream.value(VideoStatus.idle);
+  Stream<PlaybackStatus> get statusStream => controller?.statusStream ?? Stream.value(.idle);
 
   static const double _padding = 8;
   static const double _progressOverControlsWidthThreshold = 160;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<VideoStatus>(
+    return StreamBuilder<PlaybackStatus>(
       stream: statusStream,
       builder: (context, _) {
         // do not use stream snapshot because it is obsolete when switching between videos
-        final status = controller?.status ?? VideoStatus.idle;
+        final status = controller?.status ?? .idle;
 
-        if (status == VideoStatus.error) {
+        if (status == .error) {
           const action = EntryAction.openVideoPlayer;
           return Align(
             alignment: .centerRight,

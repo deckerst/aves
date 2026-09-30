@@ -93,7 +93,7 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
           );
   }
 
-  void _onStatusChanged(VideoStatus status) {
+  void _onStatusChanged(PlaybackStatus status) {
     final status = _playPauseAnimation.status;
     if (isPlaying && !status.isForwardOrCompleted) {
       _playPauseAnimation.forward();
@@ -117,8 +117,8 @@ class PlayTogglerCaption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<VideoStatus>(
-      stream: controller?.statusStream ?? Stream.value(VideoStatus.idle),
+    return StreamBuilder<PlaybackStatus>(
+      stream: controller?.statusStream ?? Stream.value(.idle),
       builder: (context, _) {
         return CaptionedButtonText(
           text: isPlaying ? context.l10n.videoActionPause : context.l10n.videoActionPlay,

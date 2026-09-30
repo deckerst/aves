@@ -25,7 +25,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   Future<Player?> _openBackgroundPlayer({required String uri, required String mimeType}) async {
     final player = Player(
       configuration: PlayerConfiguration(
-        logLevel: MPVLogLevel.warn,
+        logLevel: .warn,
         protocolWhitelist: MpvVideoController.protocolWhitelist,
       ),
     );

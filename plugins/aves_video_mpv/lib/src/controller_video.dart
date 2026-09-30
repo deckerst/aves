@@ -13,13 +13,17 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:path/path.dart' as p;
 
-class MpvVideoController extends AvesVideoController {
+class MpvVideoController(
+  super.entry, {
+  required super.playbackStateHandler,
+  required super.settings,
+}) extends AvesVideoController {
   late Player _mkPlayer;
-  late VideoStatus _status;
+  late PlaybackStatus _status;
   bool _firstFrameRendered = false, _abRepeatSeeking = false;
   final ValueNotifier<VideoController?> _mkControllerNotifier = ValueNotifier(null);
   final List<StreamSubscription> _subscriptions = [];
-  final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<PlaybackStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
@@ -55,19 +59,15 @@ class MpvVideoController extends AvesVideoController {
   @override
   final ValueNotifier<double?> sarNotifier = ValueNotifier(null);
 
-  new(
-    super.entry, {
-    required super.playbackStateHandler,
-    required super.settings,
-  }) {
-    _status = VideoStatus.idle;
+  this {
+    _status = .idle;
     _statusStreamController.add(_status);
 
     _mkPlayer = Player(
       configuration: PlayerConfiguration(
         title: entry.bestTitle ?? entry.uri,
         libass: false,
-        logLevel: MPVLogLevel.warn,
+        logLevel: .warn,
         protocolWhitelist: protocolWhitelist,
       ),
     );
@@ -106,13 +106,13 @@ class MpvVideoController extends AvesVideoController {
     _subscriptions.add(
       playerStream.completed.listen((completed) {
         if (completed) {
-          _statusStreamController.add(VideoStatus.completed);
+          _statusStreamController.add(.completed);
           _completedNotifier.notify();
 
           // the player incorrectly loop for some videos
           // even when the playlist mode is configured not to loop
           // so we explicitly stop on completion
-          final shouldStop = _mkPlayer.platform?.state.playlistMode == PlaylistMode.none;
+          final shouldStop = _mkPlayer.platform?.state.playlistMode == .none;
           if (shouldStop) {
             pause();
           }
@@ -121,14 +121,14 @@ class MpvVideoController extends AvesVideoController {
     );
     _subscriptions.add(
       playerStream.playing.listen((playing) {
-        if (status == VideoStatus.idle) return;
-        _statusStreamController.add(playing ? VideoStatus.playing : VideoStatus.paused);
+        if (status == .idle) return;
+        _statusStreamController.add(playing ? .playing : .paused);
       }),
     );
     _subscriptions.add(
       playerStream.position.listen((v) {
         final abRepeat = abRepeatNotifier.value;
-        if (abRepeat != null && status == VideoStatus.playing) {
+        if (abRepeat != null && status == .playing) {
           final start = abRepeat.start;
           final end = abRepeat.end;
           if (start != null && end != null) {
@@ -195,10 +195,7 @@ class MpvVideoController extends AvesVideoController {
     canSetSpeedNotifier.value = !isSlowMotion;
   }
 
-  Future<void> _applyLoop() async {
-    final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
-    await _mkPlayer.setPlaylistMode(loopEnabled ? PlaylistMode.single : PlaylistMode.none);
-  }
+  Future<void> _applyLoop() => enableLoop(settings.videoLoopMode.shouldLoop(entry));
 
   Future<void> _init({int startMillis = 0}) async {
     final playing = _mkPlayer.state.playing;
@@ -217,7 +214,7 @@ class MpvVideoController extends AvesVideoController {
     }
 
     _fetchTracks();
-    _statusStreamController.add(_mkPlayer.state.playing ? VideoStatus.playing : VideoStatus.paused);
+    _statusStreamController.add(_mkPlayer.state.playing ? .playing : .paused);
   }
 
   void _initController() {
@@ -258,7 +255,7 @@ class MpvVideoController extends AvesVideoController {
     return VideoControllerConfiguration(
       vo: 'gpu', // 'gpu-next' / 'mediacodec_embed' are not usable as of `media_kit_video` v2.0.1, `media_kit_libs_android_video` v1.3.8
       hwdec: hwdec, // default: 'auto-safe'
-      enableHardwareAcceleration: hardwareAcceleration != VideoHardwareAcceleration.disabled,
+      enableHardwareAcceleration: hardwareAcceleration != .disabled,
       androidAttachSurfaceAfterVideoParameters: true,
     );
   }
@@ -276,6 +273,9 @@ class MpvVideoController extends AvesVideoController {
   void _onPlayerError(String error) {
     debugPrint('libmpv error: $error');
   }
+
+  @override
+  Future<void> enableLoop(bool enabled) => _mkPlayer.setPlaylistMode(enabled ? .single : .none);
 
   @override
   Future<void> play() async {
@@ -318,10 +318,10 @@ class MpvVideoController extends AvesVideoController {
   Listenable get playCompletedListenable => _completedNotifier;
 
   @override
-  VideoStatus get status => _status;
+  PlaybackStatus get status => _status;
 
   @override
-  Stream<VideoStatus> get statusStream => _statusStreamController.stream;
+  Stream<PlaybackStatus> get statusStream => _statusStreamController.stream;
 
   @override
   Stream<VideoEvent> get eventStream => _eventStreamController.stream;
@@ -452,7 +452,7 @@ class MpvVideoController extends AvesVideoController {
   void _fetchTracks() {
     _stopTrackFetchTimer();
     _trackFetchTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-      if (status != VideoStatus.error) {
+      if (status != .error) {
         if (_videoTracks.isEmpty && _audioTracks.isEmpty) return;
 
         final videoTrackCount = _videoTracks.length;

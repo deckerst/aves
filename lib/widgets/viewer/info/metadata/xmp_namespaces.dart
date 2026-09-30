@@ -150,11 +150,11 @@ class XmpNamespace extends Equatable {
   static String prefixForUri(Map<String, String> schemaRegistryPrefixes, String nsUri) => schemaRegistryPrefixes.entries.firstWhereOrNull((kv) => kv.value == nsUri)?.key ?? '';
 }
 
-class XmpProp implements Comparable<XmpProp> {
-  final String path, value;
-  final String displayKey;
-
-  new(this.path, this.value) : displayKey = formatKey(path);
+class XmpProp(
+  final String path,
+  final String value,
+) implements Comparable<XmpProp> {
+  final String displayKey = formatKey(path);
 
   static String formatKey(String propPath) {
     return propPath.splitMapJoin(
@@ -176,25 +176,19 @@ class XmpProp implements Comparable<XmpProp> {
   String toString() => '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
 }
 
-class XmpCardData {
-  final String title;
-  final RegExp pattern;
-  final bool indexed;
-  final Map<String, InfoValueSpanBuilder> Function(int?, Map<String, XmpProp> data)? spanBuilders;
-  final List<XmpCardData>? cards;
+class XmpCardData(
+  final RegExp pattern, {
+  String? title,
+  final Map<String, InfoValueSpanBuilder> Function(int? index, Map<String, XmpProp> data)? spanBuilders,
+  final List<XmpCardData>? cards,
+}) {
+  final String title = title ?? XmpProp.formatKey(titlePattern.firstMatch(pattern.pattern)!.group(1)!);
+  final bool indexed = pattern.pattern.contains(r'\[(\d+)\]');
   final Map<int?, XmpExtractedCard> data = {};
 
   bool get isEmpty => data.isEmpty && (cards?.every((card) => card.isEmpty) ?? true);
 
   static final titlePattern = RegExp(r'(.*?)[\\/]');
-
-  new(
-    this.pattern, {
-    String? title,
-    this.spanBuilders,
-    this.cards,
-  }) : indexed = pattern.pattern.contains(r'\[(\d+)\]'),
-       title = title ?? XmpProp.formatKey(titlePattern.firstMatch(pattern.pattern)!.group(1)!);
 
   XmpCardData cloneEmpty() {
     return XmpCardData(

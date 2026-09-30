@@ -105,7 +105,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     if (settings.maxBrightness == MaxBrightness.viewerOnly) {
       AvesApp.screenBrightness?.setApplicationScreenBrightness(1);
     }
-    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+    if (settings.keepScreenOn == .viewerOnly) {
       windowService.keepScreenOn(true);
     }
 
@@ -933,7 +933,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       // `screen_brightness` plugin may fail
       unawaited(reportService.recordError(e, stack));
     }
-    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+    if (settings.keepScreenOn == .viewerOnly) {
       await windowService.keepScreenOn(false);
     }
     await mediaSessionService.release();

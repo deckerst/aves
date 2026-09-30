@@ -9,9 +9,9 @@ import 'package:video_player/video_player.dart';
 
 class ExoVideoController extends AvesVideoController {
   late VideoPlayerController _controller;
-  late VideoStatus _status;
+  late PlaybackStatus _status;
   final List<StreamSubscription> _subscriptions = [];
-  final StreamController<VideoStatus> _statusStreamController = StreamController.broadcast();
+  final StreamController<PlaybackStatus> _statusStreamController = StreamController.broadcast();
   final StreamController<VideoEvent> _eventStreamController = StreamController.broadcast();
   final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
@@ -43,7 +43,7 @@ class ExoVideoController extends AvesVideoController {
     required super.playbackStateHandler,
     required super.settings,
   }) {
-    _status = VideoStatus.idle;
+    _status = .idle;
     _statusStreamController.add(_status);
     _initController();
 
@@ -73,7 +73,7 @@ class ExoVideoController extends AvesVideoController {
     _subscriptions.add(
       statusStream.distinct().listen((v) {
         _status = v;
-        if (_status == VideoStatus.completed) {
+        if (_status == .completed) {
           _completedNotifier.notify();
         }
       }),
@@ -92,10 +92,7 @@ class ExoVideoController extends AvesVideoController {
       ..clear();
   }
 
-  Future<void> _applyLoop() async {
-    final loopEnabled = settings.videoLoopMode.shouldLoop(entry);
-    await _controller.setLooping(loopEnabled);
-  }
+  Future<void> _applyLoop() => enableLoop(settings.videoLoopMode.shouldLoop(entry));
 
   Future<void> _init() async {
     _onControllerStateChanged();
@@ -115,17 +112,17 @@ class ExoVideoController extends AvesVideoController {
     _statusStreamController.add(status);
   }
 
-  static VideoStatus _getStatusFromPlayerValue(VideoPlayerValue value) {
+  static PlaybackStatus _getStatusFromPlayerValue(VideoPlayerValue value) {
     if (value.hasError) {
-      return VideoStatus.error;
+      return .error;
     } else if (!value.isInitialized) {
-      return VideoStatus.idle;
+      return .idle;
     } else if (value.isCompleted) {
-      return VideoStatus.completed;
+      return .completed;
     } else if (value.isPlaying) {
-      return VideoStatus.playing;
+      return .playing;
     } else {
-      return VideoStatus.paused;
+      return .paused;
     }
   }
 
@@ -133,6 +130,9 @@ class ExoVideoController extends AvesVideoController {
   void onVisualChanged() {
     // TODO TLAD
   }
+
+  @override
+  Future<void> enableLoop(bool enabled) => _controller.setLooping(enabled);
 
   @override
   Future<void> play() async {
@@ -159,10 +159,10 @@ class ExoVideoController extends AvesVideoController {
   Listenable get playCompletedListenable => _completedNotifier;
 
   @override
-  VideoStatus get status => _status;
+  PlaybackStatus get status => _status;
 
   @override
-  Stream<VideoStatus> get statusStream => _statusStreamController.stream;
+  Stream<PlaybackStatus> get statusStream => _statusStreamController.stream;
 
   @override
   Stream<VideoEvent> get eventStream => _eventStreamController.stream;

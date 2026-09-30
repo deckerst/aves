@@ -41,7 +41,7 @@ class VideoConductor {
     await _disposeAll();
     playingVideoControllerNotifier.dispose();
     _controllers.clear();
-    if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
+    if (settings.keepScreenOn == .videoPlayback) {
       await windowService.keepScreenOn(false);
     }
   }
@@ -74,7 +74,7 @@ class VideoConductor {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> _onControllerStatusChanged(AvesEntry entry, AvesVideoController controller, VideoStatus status) async {
+  Future<void> _onControllerStatusChanged(AvesEntry entry, AvesVideoController controller, PlaybackStatus status) async {
     bool canSkipToNext = false, canSkipToPrevious = false;
     final entries = _collection?.sortedEntries;
     if (entries != null) {
@@ -92,8 +92,8 @@ class VideoConductor {
       canSkipToNext: canSkipToNext,
       canSkipToPrevious: canSkipToPrevious,
     );
-    if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
-      await windowService.keepScreenOn(status == VideoStatus.playing);
+    if (settings.keepScreenOn == .videoPlayback) {
+      await windowService.keepScreenOn(status == .playing);
     }
 
     playingVideoControllerNotifier.value = getPlayingController();

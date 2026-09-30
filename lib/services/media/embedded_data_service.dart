@@ -20,7 +20,7 @@ abstract class EmbeddedDataService {
 
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry);
 
-  Future<Map> extractXmpDataProp(AvesEntry entry, List<Object?>? props, String? propMimeType);
+  Future<Map> extractXmpDataProp(AvesEntry entry, List<Object?>? propPath, String? propMimeType);
 }
 
 class PlatformEmbeddedDataService implements EmbeddedDataService {
@@ -127,15 +127,18 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
     return {};
   }
 
+  // `propPath` is a list of path segments, each segment can be:
+  // - a pair of strings: for a namespace and property name
+  // - an integer: for an array index
   @override
-  Future<Map> extractXmpDataProp(AvesEntry entry, List<Object?>? props, String? propMimeType) async {
+  Future<Map> extractXmpDataProp(AvesEntry entry, List<Object?>? propPath, String? propMimeType) async {
     try {
       final result = await _platform.invokeMethod('extractXmpDataProp', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-        'displayName': ['${entry.bestTitle}', '$props'].join(AText.separator),
-        'propPath': props,
+        'displayName': ['${entry.bestTitle}', '$propPath'].join(AText.separator),
+        'propPath': propPath,
         'propMimeType': propMimeType,
       });
       if (result != null) return result as Map;
