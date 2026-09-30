@@ -740,5 +740,7 @@
     "settingsCalendarTile": "Takvim",
     "tileLayoutCalendar": "Takvim",
     "collectionActionShowLayoutBar": "Düzen çubuğunu göster",
-    "collectionActionHideLayoutBar": "Düzen çubuğunu gizle"
+    "collectionActionHideLayoutBar": "Düzen çubuğunu gizle",
+    "calendarHijriTabular": "Hicri (Tablo)",
+    "calendarHijriUmalqura": "Hicri (Ümmü'l-Kura)"
 }

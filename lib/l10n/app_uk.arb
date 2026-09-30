@@ -957,5 +957,9 @@
     "settingsCalendarTile": "Календар",
     "mapShowItemTracks": "Показувати шляхи",
     "mapHideItemTracks": "Сховати шляхи",
-    "tileLayoutCalendar": "Календар"
+    "tileLayoutCalendar": "Календар",
+    "collectionActionShowLayoutBar": "Показати панель макета",
+    "collectionActionHideLayoutBar": "Сховати панель макета",
+    "calendarHijriUmalqura": "Хіджра (Умм-аль-Кура)",
+    "calendarHijriTabular": "Хіджра (табличний)"
 }
