@@ -18,15 +18,4 @@ enum class StorageApi {
             SAF -> "saf"
         }
     }
-
-    companion object {
-        fun fromKey(key: String?): StorageApi? {
-            return when (key) {
-                "file" -> FILE
-                "mediaStore" -> MEDIA_STORE
-                "saf" -> SAF
-                else -> null
-            }
-        }
-    }
 }

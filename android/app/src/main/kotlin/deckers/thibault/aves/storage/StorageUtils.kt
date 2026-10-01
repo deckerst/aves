@@ -80,7 +80,7 @@ object StorageUtils {
     fun getAvesAppDirectories(context: Context): Set<String> {
         return hashSetOf<File>().apply {
             // /storage/{volume}/Android/data/{aves_application_id}/files
-            addAll(context.getExternalFilesDirs(null))
+            addAll(context.getExternalFilesDirs(null).filterNotNull())
             // /data/user/0/{aves_application_id}/files
             add(context.filesDir)
         }.map { ensureTrailingSeparator(it.path) }.toSet()
@@ -107,7 +107,7 @@ object StorageUtils {
      */
 
     // volume paths, with trailing "/"
-    private var mStorageVolumePaths: Array<String>? = null
+    private var mStorageVolumePaths = listOf<String>()
 
     // primary volume path, with trailing "/"
     private var mPrimaryVolumePath: String? = null
@@ -119,11 +119,11 @@ object StorageUtils {
         return mPrimaryVolumePath!!
     }
 
-    fun getVolumePaths(context: Context): Array<String> {
-        if (mStorageVolumePaths == null || mStorageVolumePaths!!.isEmpty()) {
+    fun getVolumePaths(context: Context): List<String> {
+        if (mStorageVolumePaths.isEmpty()) {
             mStorageVolumePaths = findVolumePaths(context)
         }
-        return mStorageVolumePaths!!
+        return mStorageVolumePaths
     }
 
     fun getVolumePath(context: Context, anyPath: String): String? {
@@ -181,12 +181,12 @@ object StorageUtils {
         return null
     }
 
-    private fun findVolumePaths(context: Context): Array<String> {
+    private fun findVolumePaths(context: Context): List<String> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
             val paths = storageManager?.storageVolumes?.mapNotNull { it.directory?.path }
             if (paths != null) {
-                return paths.map(::ensureTrailingSeparator).toTypedArray()
+                return paths.map(::ensureTrailingSeparator).toList()
             }
         }
 
@@ -241,7 +241,7 @@ object StorageUtils {
             Log.e(LOG_TAG, "failed to find volume paths", e)
         }
 
-        return paths.map { ensureTrailingSeparator(it) }.toTypedArray()
+        return paths.map { ensureTrailingSeparator(it) }.toList()
     }
 
     /**

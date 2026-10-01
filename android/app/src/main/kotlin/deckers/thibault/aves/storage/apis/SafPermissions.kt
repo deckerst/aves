@@ -105,7 +105,7 @@ object SafPermissions : StoragePermissions {
     }
 
     // returns volume root directories that cannot be selected via SAF picker
-    fun getRestrictedPrimaryDirectories(): List<String> {
+    private fun getRestrictedPrimaryDirectories(): List<String> {
         val dirs = ArrayList<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
@@ -117,7 +117,7 @@ object SafPermissions : StoragePermissions {
     }
 
     // returns volumes that cannot be selected via SAF picker
-    fun getRestrictedVolumes(context: Context): Set<String> {
+    private fun getRestrictedVolumes(context: Context): Set<String> {
         val appUserId = PermissionManager.getAppUserId(context)
         return StorageUtils.getVolumePaths(context).filter { volumePath ->
             val volumeUserId = PermissionManager.getVolumeUserId(volumePath)
@@ -126,7 +126,7 @@ object SafPermissions : StoragePermissions {
         }.toSet()
     }
 
-    fun isPathOnRestrictedVolume(context: Context, dirPath: String): Boolean {
+    private fun isPathOnRestrictedVolume(context: Context, dirPath: String): Boolean {
         return getRestrictedVolumes(context).any(dirPath::startsWith)
     }
 
