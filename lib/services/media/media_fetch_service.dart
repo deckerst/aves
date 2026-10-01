@@ -71,13 +71,11 @@ class PlatformMediaFetchService implements MediaFetchService {
   @override
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
-      final result =
-          await _platformObject.invokeMethod('getEntry', <String, Object?>{
-                'uri': uri,
-                'mimeType': mimeType,
-                'allowUnsized': allowUnsized,
-              })
-              as Map;
+      final result = await _platformObject.invokeMethod('getEntry', <String, Object?>{
+        'uri': uri,
+        'mimeType': mimeType,
+        'allowUnsized': allowUnsized,
+      }) as Map;
       AvesEntry.normalizeMimeTypeFields(result);
       return AvesEntry.fromMap(result);
     } on PlatformException catch (e, stack) {
@@ -282,6 +280,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'isFlipped': request.isFlipped,
       'widthDip': extentDip,
       'heightDip': extentDip,
+      'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
     };
     return servicePolicy.call(
       () async {
@@ -295,6 +294,7 @@ class PlatformMediaFetchService implements MediaFetchService {
             uri: uri,
             mimeType: mimeType,
             targetExtentDip: extentDip,
+            methods: request.videoThumbnailMethods ?? [],
           );
           final codec = await descriptor?.instantiateCodec(
             targetWidth: descriptor.width,

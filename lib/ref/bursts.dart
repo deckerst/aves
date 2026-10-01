@@ -6,9 +6,9 @@ class BurstPatterns {
   static const sony = r'^DSC(PDC)?_\d+_BURST(?<key>\d{17})(_COVER)?$';
 
   static final options = [
-    BurstPatterns.fairphoneMotorola,
-    BurstPatterns.samsung,
-    BurstPatterns.sony,
+    fairphoneMotorola,
+    samsung,
+    sony,
   ];
 
   static String getName(String pattern) {

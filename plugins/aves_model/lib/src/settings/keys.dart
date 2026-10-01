@@ -127,6 +127,7 @@ class SettingKeys {
   static const videoHardwareAccelerationKey = 'video_hardware_acceleration';
   static const videoLoopModeKey = 'video_loop';
   static const videoResumptionModeKey = 'video_resumption_mode';
+  static const videoThumbnailMethodsKey = 'video_thumbnail_methods';
   static const videoControlActionsKey = 'video_control_actions';
   static const videoGestureDoubleTapTogglePlayKey = 'video_gesture_double_tap_toggle_play';
   static const videoGestureSideDoubleTapSeekKey = 'video_gesture_side_double_tap_skip';

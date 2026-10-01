@@ -1,4 +1,4 @@
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const SliderListTile({

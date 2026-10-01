@@ -2,7 +2,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:material_ui/material_ui.dart';
 
 class ManageMediaTile extends StatefulWidget {

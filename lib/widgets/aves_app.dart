@@ -64,10 +64,11 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 
-class AvesApp extends StatefulWidget {
-  final AppFlavor flavor;
-  final Map<String, Object?>? debugIntentData;
-
+class const AvesApp({
+  super.key,
+  required final AppFlavor flavor,
+  final Map<String, Object?>? debugIntentData,
+}) extends StatefulWidget {
   // temporary exclude locales not ready yet for prime time
   // `ckb`: add `flutter_ckb_localization` and necessary app localization delegates when ready
   static final _unsupportedLocales = {
@@ -105,12 +106,6 @@ class AvesApp extends StatefulWidget {
   static ScreenBrightness? get screenBrightness => _AvesAppState._screenBrightness;
 
   static EventBus get intentEventBus => _AvesAppState._intentEventBus;
-
-  const new({
-    super.key,
-    required this.flavor,
-    this.debugIntentData,
-  });
 
   @override
   State<AvesApp> createState() => _AvesAppState();
@@ -506,6 +501,8 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settingStream.where((event) => event.key == SettingKeys.maxBrightnessKey).listen((_) => _applyMaxBrightness());
     // navigation
     settingStream.where((event) => event.key == SettingKeys.keepScreenOnKey).listen((_) => _applyKeepScreenOn());
+    // cache
+    settingStream.where((event) => event.key == SettingKeys.videoThumbnailMethodsKey).listen((_) => _clearThumbnailCache());
     // platform settings
     settingStream.where((event) => event.key == SettingKeys.platformAccelerometerRotationKey).listen((_) => _applyIsRotationLocked());
 
@@ -626,6 +623,12 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       default:
         _screenBrightness = ScreenBrightness();
     }
+  }
+
+  void _clearThumbnailCache() async {
+    unawaited(mediaFetchService.clearImageDiskCache());
+    unawaited(mediaFetchService.clearImageMemoryCache());
+    imageCache.clear();
   }
 }
 

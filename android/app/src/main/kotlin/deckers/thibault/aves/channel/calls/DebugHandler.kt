@@ -27,6 +27,7 @@ import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
@@ -465,6 +466,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         val isFlipped = call.argument<Boolean>(EntryFields.IS_FLIPPED)
         val widthDip = call.argument<Number>("widthDip")?.toDouble()
         val heightDip = call.argument<Number>("heightDip")?.toDouble()
+        val videoMethods = call.argument<List<String>>("videoMethods")?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
         if (method == null || uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
             result.error("getThumbnail-args", "missing arguments", null)
@@ -485,6 +487,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             isFlipped = isFlipped,
             widthDip = widthDip,
             heightDip = heightDip,
+            videoMethods = videoMethods,
             result = object : ByteSink {
                 override fun streamBytes(inputStream: InputStream): Boolean {
                     Log.w(LOG_TAG, "this fetcher should not return bytes via stream")

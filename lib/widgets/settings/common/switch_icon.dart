@@ -1,6 +1,6 @@
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 

@@ -4,7 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/settings/privacy/permissions/manage_media.dart';
 import 'package:aves/widgets/settings/privacy/permissions/notification.dart';
 import 'package:aves_model/aves_model.dart';

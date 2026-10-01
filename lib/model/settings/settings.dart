@@ -472,6 +472,7 @@ class Settings
           case SettingKeys.collectionBrowsingQuickActionsKey:
           case SettingKeys.collectionSelectionQuickActionsKey:
           case SettingKeys.viewerQuickActionsKey:
+          case SettingKeys.videoThumbnailMethodsKey:
           case SettingKeys.videoControlActionsKey:
           case SettingKeys.screenSaverCollectionFiltersKey:
             if (newValue is List) {

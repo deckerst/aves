@@ -8,6 +8,7 @@ import 'package:aves/model/app_inventory.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/app_dirs.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
@@ -240,6 +241,7 @@ class PlatformAppService implements AppService {
             isFlipped: coverEntry.isFlipped,
             dateModifiedMillis: coverEntry.dateModifiedMillis ?? -1,
             extent: size,
+            videoThumbnailMethods: coverEntry.isVideo ? settings.videoThumbnailMethods : null,
           ),
           decode: PaintingBinding.instance.instantiateImageCodecWithSize,
         );

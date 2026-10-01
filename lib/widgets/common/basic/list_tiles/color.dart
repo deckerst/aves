@@ -1,8 +1,8 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
+import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
 import 'package:material_ui/material_ui.dart';
 

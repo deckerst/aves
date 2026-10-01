@@ -21,6 +21,7 @@ import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.resource.bitmap.ExifInterfaceImageHeaderParser
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -86,7 +87,14 @@ class AvesAppGlideModule : AppGlideModule() {
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
 
-        fun getModel(context: Context, uri: Uri, mimeType: String, pageId: Int?, sizeBytes: Long? = null): Any {
+        fun getModel(
+            context: Context,
+            uri: Uri,
+            mimeType: String,
+            pageId: Int?,
+            sizeBytes: Long? = null,
+            videoMethods: List<VideoThumbnailMethod>? = null,
+        ): Any {
             return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
                 MultiPageImage(context, uri, mimeType, pageId)
             } else if (mimeType == MimeTypes.TIFF) {
@@ -94,7 +102,7 @@ class AvesAppGlideModule : AppGlideModule() {
             } else if (mimeType == MimeTypes.SVG) {
                 SvgImage(context, uri)
             } else if (isVideo(mimeType)) {
-                VideoThumbnail(context, uri)
+                VideoThumbnail(context, uri, videoMethods ?: listOf())
             } else {
                 StorageUtils.getGlideSafeUri(context, uri, mimeType, sizeBytes)
             }

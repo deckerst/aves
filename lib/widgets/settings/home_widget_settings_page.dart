@@ -15,7 +15,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves/widgets/settings/common/collection_tile.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/common/tiles/single_selection.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';

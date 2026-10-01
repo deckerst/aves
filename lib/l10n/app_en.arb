@@ -304,6 +304,10 @@
   "videoResumptionModeNever": "Never",
   "videoResumptionModeAlways": "Always",
 
+  "videoThumbnailMethodEmbeddedImage": "Embedded image",
+  "videoThumbnailMethodPreviewFrame": "Preview frame",
+  "videoThumbnailMethodFirstFrame": "First frame",
+
   "viewerTransitionSlide": "Slide",
   "viewerTransitionParallax": "Parallax",
   "viewerTransitionFade": "Fade",
@@ -968,6 +972,7 @@
   "settingsVideoResumptionModeDialogTitle": "Resume Playback",
   "settingsVideoBackgroundMode": "Background mode",
   "settingsVideoBackgroundModeDialogTitle": "Background Mode",
+  "settingsVideoThumbnailMethods": "Preferred thumbnail",
 
   "settingsVideoControlsTile": "Controls",
   "settingsVideoControlsPageTitle": "Controls",

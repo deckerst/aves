@@ -223,6 +223,17 @@ extension ExtraVideoResumptionModeView on VideoResumptionMode {
   }
 }
 
+extension ExtraVideoThumbnailMethodView on VideoThumbnailMethod {
+  String getName(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      .embedded => l10n.videoThumbnailMethodEmbeddedImage,
+      .preview => l10n.videoThumbnailMethodPreviewFrame,
+      .first => l10n.videoThumbnailMethodFirstFrame,
+    };
+  }
+}
+
 extension ExtraViewerTransitionView on ViewerTransition {
   String getName(BuildContext context) {
     final l10n = context.l10n;

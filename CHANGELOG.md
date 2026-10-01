@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - panorama audio playback
 - Hijri calendars (tabular scheme IIa, Umm al-Qura)
+- Collection: added options for video thumbnail strategy
 
 ### Fixed
 
