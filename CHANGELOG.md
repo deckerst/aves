@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Hijri calendars (tabular scheme IIa, Umm al-Qura)
 - Collection: added options for video thumbnail strategy
 
+### Changed
+
+- upgraded Flutter to stable v3.47.6
+
 ### Fixed
 
 - back navigation delay when animations are disabled

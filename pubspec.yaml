@@ -13,7 +13,7 @@ version: 1.15.4+178
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.47.5
+  flutter: 3.47.6
   sdk: ">=3.13.3 <4.0.0"
 
 platforms:
