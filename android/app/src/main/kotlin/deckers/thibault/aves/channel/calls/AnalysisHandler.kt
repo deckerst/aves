@@ -57,8 +57,8 @@ class AnalysisHandler<T>(private val activity: T, private val onAnalysisComplete
             return
         }
 
-        val activityManager: ActivityManager = activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningAppProcesses = activityManager.runningAppProcesses
+        val activityManager = activity.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val runningAppProcesses = activityManager?.runningAppProcesses
         if (runningAppProcesses != null) {
             val importance = runningAppProcesses[0].importance
             if (importance < ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {

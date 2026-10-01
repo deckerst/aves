@@ -396,8 +396,11 @@ open class MainActivity : FlutterFragmentActivity() {
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
 
-                    val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-                    val isLocked = keyguardManager.isKeyguardLocked
+                    val keyguardManager = getSystemService(KEYGUARD_SERVICE) as? KeyguardManager
+                    if (keyguardManager == null) {
+                        Log.w(LOG_TAG, "keyguard service unavailable")
+                    }
+                    val isLocked = keyguardManager?.isKeyguardLocked ?: true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         setShowWhenLocked(isLocked)
                     }
