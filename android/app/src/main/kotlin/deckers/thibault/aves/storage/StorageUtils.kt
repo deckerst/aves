@@ -94,7 +94,7 @@ object StorageUtils {
     fun getAppMediaRootDirectories(context: Context): Set<String> {
         // roots to paths like `/storage/{volume}/Android/media/{any_application_id}/`
         @Suppress("DEPRECATION")
-        return context.externalMediaDirs.mapNotNull { it?.parentFile?.path }.map { ensureTrailingSeparator(it) }.toSet()
+        return context.externalMediaDirs.filterNotNull().mapNotNull { it.parentFile?.path }.map { ensureTrailingSeparator(it) }.toSet()
     }
 
     fun isInAppMediaStorage(context: Context, anyPath: String): Boolean {

@@ -39,7 +39,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var internalCache = getFolderSize(context.cacheDir)
         internalCache += getFolderSize(context.codeCacheDir)
-        val externalCache = context.externalCacheDirs.sumOf(::getFolderSize)
+        val externalCache = context.externalCacheDirs.filterNotNull().sumOf(::getFolderSize)
         val externalFilesDirs = context.getExternalFilesDirs(null).filterNotNull()
         val dataDir = context.dataDir
 
@@ -200,7 +200,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun deleteExternalCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        context.externalCacheDirs.filter { it.exists() }.forEach { it.deleteRecursively() }
+        context.externalCacheDirs.filterNotNull().filter { it.exists() }.forEach { it.deleteRecursively() }
         result.success(true)
     }
 
