@@ -554,25 +554,30 @@ object StorageUtils {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun getMediaStoreVolumeName(context: Context, anyPath: String): String? {
+    fun getMediaStoreVolumeName(context: Context, anyPath: String): String {
         val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-        return storageManager?.getStorageVolume(File(anyPath))?.let { volume ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                volume.mediaStoreVolumeName
-            } else {
-                // normalization logic from Android source
-                if (volume.isPrimary) {
-                    MediaStore.VOLUME_EXTERNAL_PRIMARY
-                } else {
-                    volume.uuid?.lowercase(Locale.US)
-                }
-            }
+        val volume = storageManager?.getStorageVolume(File(anyPath))
+        volume ?: throw Exception("failed to get volume name because storage manager could not find volume for path=$anyPath")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val volumeName = volume.mediaStoreVolumeName
+            volumeName ?: throw Exception("failed to get Media Store volume name because field is null")
+            return volumeName
+        }
+
+        // normalization logic from Android source
+        return if (volume.isPrimary) {
+            MediaStore.VOLUME_EXTERNAL_PRIMARY
+        } else {
+            val uuid = volume.uuid
+            uuid ?: throw Exception("failed to get Media Store volume name because volume UUID is null")
+            uuid.lowercase(Locale.US)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getMediaStoreRootContentUri(context: Context, mimeType: String, anyPath: String): Uri? {
-        val mediaStoreVolumeName = getMediaStoreVolumeName(context, anyPath) ?: MediaStore.VOLUME_EXTERNAL
+        val mediaStoreVolumeName = getMediaStoreVolumeName(context, anyPath)
 
         return if (isInDownloadPath(context, anyPath)) {
             MediaStore.Downloads.getContentUri(mediaStoreVolumeName)

@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 - back navigation delay when animations are disabled
 - back navigation delay when toggling system UI
+- failing to rename or move files on SD card
 
 ## <a id="v1.15.4"></a>[v1.15.4] - 2026-09-22
 

@@ -321,8 +321,7 @@ open class MainActivity : FlutterFragmentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
-            DELETE_SINGLE_PERMISSION_REQUEST,
-            MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
+            SCOPED_STORAGE_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
 
             CREATE_FILE_REQUEST,
             OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
@@ -359,7 +358,7 @@ open class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun onScopedStoragePermissionResult(resultCode: Int) {
-        pendingScopedStoragePermissionCompleter?.complete(resultCode == RESULT_OK)
+        pendingPermissionCompleter?.complete(resultCode == RESULT_OK)
     }
 
     open fun extractIntentData(intent: Intent?): FieldMap {
@@ -661,10 +660,9 @@ open class MainActivity : FlutterFragmentActivity() {
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
-        const val DELETE_SINGLE_PERMISSION_REQUEST = 5
-        const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
-        const val PICK_COLLECTION_FILTERS_REQUEST = 7
-        const val EDIT_REQUEST = 8
+        const val SCOPED_STORAGE_PERMISSION_REQUEST = 5
+        const val PICK_COLLECTION_FILTERS_REQUEST = 6
+        const val EDIT_REQUEST = 7
 
         const val INTENT_ACTION_APP_SETTINGS = "app_settings"
         const val INTENT_ACTION_EDIT = "edit"
@@ -705,7 +703,7 @@ open class MainActivity : FlutterFragmentActivity() {
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
 
-        var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
+        var pendingPermissionCompleter: CompletableFuture<Boolean>? = null
 
         var pendingCollectionFilterPickHandler: ((filters: List<String>?) -> Unit)? = null
 

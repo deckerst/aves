@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
+import deckers.thibault.aves.MainActivity.Companion.SCOPED_STORAGE_PERMISSION_REQUEST
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -235,30 +235,29 @@ abstract class ImageProvider {
                     if (!rowDeleted && contentExists(context, uri)) {
                         throw Exception("failed to delete row from content resolver")
                     }
-                } catch (securityException: SecurityException) {
+                } catch (ex: SecurityException) {
+                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at uri=$uri ex=${ex.message}")
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
+                        throw ex
+                    }
+
                     // even if the app has access permission granted on the containing directory,
                     // the delete request may yield a `RecoverableSecurityException` on API >=29
                     // when the underlying file no longer exists and this is an orphaned entry in the Media Store
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && context is Activity) {
-                        Log.w(LOG_TAG, "caught a security exception when attempting to delete content at uri=$uri", securityException)
-                        val rse = securityException as? RecoverableSecurityException ?: throw securityException
-                        val intentSender = rse.userAction.actionIntent.intentSender
+                    val rse = ex as? RecoverableSecurityException ?: throw ex
+                    val intentSender = rse.userAction.actionIntent.intentSender
 
-                        // request user permission for this item
-                        MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
-                        context.startIntentSenderForResult(intentSender, DELETE_SINGLE_PERMISSION_REQUEST, null, 0, 0, 0, null)
-                        val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
+                    // request user permission for this item
+                    MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
+                    context.startIntentSenderForResult(intentSender, SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
+                    val granted = MainActivity.pendingPermissionCompleter!!.join()
 
-                        MainActivity.pendingScopedStoragePermissionCompleter = null
-                        if (granted) {
-                            deleteSingle(context, uri, filePath, mimeType)
-                            return
-                        } else {
-                            throw Exception("failed to get delete permission")
-                        }
-                    } else {
-                        throw securityException
+                    MainActivity.pendingPermissionCompleter = null
+                    if (!granted) {
+                        throw Exception("failed to get permission from recoverable security exception", ex)
                     }
+
+                    return deleteSingle(context, uri, filePath, mimeType)
                 }
             }
         }

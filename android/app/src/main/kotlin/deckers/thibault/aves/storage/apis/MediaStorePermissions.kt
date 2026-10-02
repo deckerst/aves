@@ -74,8 +74,8 @@ object MediaStorePermissions : StoragePermissions {
         Log.i(LOG_TAG, "request user to select and grant access permission to uris=$todoUris")
         try {
             val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
-            MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
-            activity.startIntentSenderForResult(intentSender, MainActivity.MEDIA_WRITE_BULK_PERMISSION_REQUEST, null, 0, 0, 0, null)
+            MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
+            activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
         } catch (e: IllegalArgumentException) {
             if (e.message == "URI list restricted to 2000 per request") {
                 throw TransactionTooLargeException(e.message)
@@ -83,8 +83,8 @@ object MediaStorePermissions : StoragePermissions {
             throw e
         }
 
-        val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
-        MainActivity.pendingScopedStoragePermissionCompleter = null
+        val granted = MainActivity.pendingPermissionCompleter!!.join()
+        MainActivity.pendingPermissionCompleter = null
 
         return granted
     }
