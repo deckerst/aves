@@ -1061,17 +1061,20 @@ abstract class ImageProvider {
     // making them undecodable by some decoders (including Android's and Chrome's)
     // even though `BitmapFactory` successfully decodes their bounds,
     // so we check whether decoding it with `ImageDecoder` throws an exception
-    private fun ensureDecodable(mimeType: String, editableFile: File) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val isMimeTypeSupported = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ImageDecoder.isMimeTypeSupported(mimeType)
-            } else {
-                true
-            }
-            if (isMimeTypeSupported) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
-            }
+    private fun ensureDecodable(mimeType: String, file: File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
         }
+    }
+
+    private fun ensureDecodable(mimeType: String, context: Context, uri: Uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+        }
+    }
+
+    private fun isMimeTypeSupported(mimeType: String): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || ImageDecoder.isMimeTypeSupported(mimeType)
     }
 
     private fun editExif(
@@ -1087,6 +1090,14 @@ abstract class ImageProvider {
     ): Boolean {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
+            return false
+        }
+
+        try {
+            // ensure content is decodable before editing
+            ensureDecodable(mimeType, context, uri)
+        } catch (e: IOException) {
+            callback.onFailure(Exception("failed to decode content before editing", e))
             return false
         }
 
@@ -1128,7 +1139,7 @@ abstract class ImageProvider {
             // ensure file is decodable before editing
             ensureDecodable(mimeType, editableFile)
         } catch (e: IOException) {
-            callback.onFailure(Exception("failed to decode editable file before editing", e))
+            callback.onFailure(Exception("failed to decode editable file before editing, with trailerVideoBytes=${trailerVideoBytes?.size}B", e))
             return false
         }
 
