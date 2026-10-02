@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.model.provider.ImageProvider.Companion.contentExists
 import deckers.thibault.aves.storage.PathSegments
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
@@ -69,14 +70,23 @@ object MediaStorePermissions : StoragePermissions {
                 todoUris.add(safeUris[index])
             }
         }
+
+        // if a URI refers to nothing in the Media Store, the whole request will fail,
+        // so we trim these beforehands, make the request with the valid URIs only,
+        // and let file operation handle the broken URIs later
+        val invalidUris = todoUris.filterNot { contentExists(activity, it) }.toSet()
+        Log.w(LOG_TAG, "rejected ${invalidUris.size} invalid URIs=${invalidUris}")
+        todoUris.removeAll(invalidUris)
+
         if (todoUris.isEmpty()) return true
 
-        Log.i(LOG_TAG, "request user to select and grant access permission to uris=$todoUris")
+        Log.i(LOG_TAG, "request write access to ${todoUris.size} uris=$todoUris")
         try {
             val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
             MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
             activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
         } catch (e: IllegalArgumentException) {
+            // hard-coded limit in Android source code
             if (e.message == "URI list restricted to 2000 per request") {
                 throw TransactionTooLargeException(e.message)
             }
