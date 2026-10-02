@@ -8,12 +8,12 @@ publish_to: none
 # - edit GitHub changelog:     /CHANGELOG.md
 # - edit Play Store changelog: /whatsnew/whatsnew-en-US
 # - run `scripts/apply_version_bump.sh`
-version: 1.15.4+178
+version: 1.15.5+179
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.47.5
+  flutter: 3.47.6
   sdk: ">=3.13.3 <4.0.0"
 
 platforms:
@@ -91,6 +91,10 @@ dependencies:
   fluster:
   flutter_displaymode:
   flutter_highlight:
+  flutter_hijri_rrule:
+    git:
+      url: https://github.com/deckerst/flutter_hijri_rrule
+      ref: aves
   flutter_localizations_plus:
     git:
       url: https://github.com/deckerst/flutter_localizations_plus.git

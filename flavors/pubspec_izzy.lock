@@ -127,10 +127,10 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "762c99f890ca8bf87f7337236f99edd42793843bc6c3631da294a76653a54bd0"
+      sha256: d7749fd36d8b404a4935612b94eca7c3ce3705377ab678e24ff2a4301436f741
       url: "https://pub.dev"
     source: hosted
-    version: "7.3.1"
+    version: "7.3.2"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -191,10 +191,10 @@ packages:
     dependency: transitive
     description:
       name: cupertino_ui
-      sha256: c6747018d37d32feeeb858a1d7043831cb541460ebe1a890a995cdb8df8ea5a5
+      sha256: c23816577a1280cff409e989541767887011f8f1d8c1863a794ed308af46f2a9
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   custom_rounded_rectangle_border:
     dependency: transitive
     description:
@@ -223,18 +223,18 @@ packages:
     dependency: transitive
     description:
       name: dbus
-      sha256: a48d5da28e89bd02196e80d81ed8d7954923d00a0f4a68cc20b575038f023383
+      sha256: f7db8504e715b835f5ebe5fe74604ccd961d504c73389a5d8e81bafc2e2f3612
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.15"
+    version: "0.8.0"
   device_info_plus:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "0891702f96b2e465fe567b7ec448380e6b1c14f60af552a8536d9f583b6b8442"
+      sha256: ade1c36f8355d6284c98e4a47992ea263887ed3d1acb281e37635dd45f04c4aa
       url: "https://pub.dev"
     source: hosted
-    version: "13.2.0"
+    version: "13.3.0"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -399,6 +399,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  flutter_hijri_rrule:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: aves
+      resolved-ref: "3f1fb063f9e96de3f049e24ab3f78ecb64413d1b"
+      url: "https://github.com/deckerst/flutter_hijri_rrule"
+    source: git
+    version: "1.0.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -537,18 +546,18 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter
-      sha256: "392492775b6928b7419bd1d04c7562dab73a543e71078088a40ae7324acd3641"
+      sha256: "92b73931215d03057bb76c2207373851081c41bd1562f909a8bb14a98f9d7baa"
       url: "https://pub.dev"
     source: hosted
-    version: "2.18.1"
+    version: "2.18.2"
   google_maps_flutter_android:
     dependency: transitive
     description:
       name: google_maps_flutter_android
-      sha256: "50bf2abde65d1abbb4505c709b20a6d5e36436b1c4830d1f36bfc20fbef091bd"
+      sha256: "9247f703b646e85c72213007853908ad473eb85dac73747f5dc9d370b8250b5c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.19.13"
+    version: "2.21.0"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -569,10 +578,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_web
-      sha256: "903db0e985e831d3883cf0971dd5b4dbee83468b748c3753dc94da0e9a269b93"
+      sha256: e9a78255ea50db294f9a6949d8b144313ed5555497dcab21b198022aaaa56641
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.3+1"
+    version: "0.6.4+1"
   gpx:
     dependency: "direct main"
     description:
@@ -665,10 +674,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl4x
-      sha256: "7e51ed39999c5b3928efc61f11a50efa3363e8c7aebb9208efe46a9845b92aa1"
+      sha256: "8d6c5c5cda94d23ffade4fa716551512e46c79a3c92dd1983a94309749574bdd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   io:
     dependency: transitive
     description:
@@ -681,10 +690,10 @@ packages:
     dependency: transitive
     description:
       name: jni
-      sha256: f038e58b4dc2c9037f50e233175086337e0b305e356d28211bf55f21c504cbd3
+      sha256: "6b9ca0602fef0230e83149afbe3f9f8227e94f2bbe84a1da4f14d699742f402d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0"
   jni_flutter:
     dependency: transitive
     description:
@@ -834,10 +843,10 @@ packages:
     dependency: "direct main"
     description:
       name: material_ui
-      sha256: "6d056d60ce745335fcf1c726a4fc46a481a62229f202b65dbc2db5edbbabc7e2"
+      sha256: "32d98f11cf5942a095a8c3e01b03e4de3b17941437713dcf36b1088fb62e23d2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.5.0"
   media_kit:
     dependency: transitive
     description:
@@ -916,10 +925,10 @@ packages:
     dependency: "direct main"
     description:
       name: network_info_plus
-      sha256: "096a700e2321507e2e587487a442b9baa7ba6cd4e70e3cc1ebbb8327d2632c2d"
+      sha256: "1092fa12c72e72578ae1e43eea1ffc0883f82ee0e0e24e725531168a564c52e7"
       url: "https://pub.dev"
     source: hosted
-    version: "8.2.1"
+    version: "8.2.2"
   network_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -932,10 +941,10 @@ packages:
     dependency: transitive
     description:
       name: nm
-      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      sha256: "2ae480aa3379716b8bb58dfebb168e2919394c92b629efaaa0baaa5d140786e6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.0"
   node_preamble:
     dependency: transitive
     description:
@@ -948,10 +957,10 @@ packages:
     dependency: transitive
     description:
       name: objective_c
-      sha256: ad56fd53a78ff6b1472fa59ff2a4e8b8ccabafc586fc263a1dfad0b99b5553e3
+      sha256: "5c80c2ad6e2c0397de5db38c6d653e69616a3397e13aa7633bf39eb668f2041b"
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.0"
+    version: "9.6.2"
   overlay_support:
     dependency: "direct main"
     description:
@@ -973,10 +982,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "127e1751e37ffb2ff4658beeaca77bad0c27bf5f932bd3a501c2296926d4b481"
+      sha256: "73ef2cd5c11a7548f9b7f6fc2a4f6113de2e64aa2a70de63feede95548822908"
       url: "https://pub.dev"
     source: hosted
-    version: "10.2.1"
+    version: "10.2.2"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -1111,10 +1120,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_apple
-      sha256: f49cb15a064ea9d974fc7fbb302099353b7b170d07284e86e264561579e5bcf8
+      sha256: "066bbbc60031b63b916a3871e7bb4b6a8c5e7cec8146dafec53d1da304eff0a5"
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.1"
+    version: "9.6.2"
   permission_handler_html:
     dependency: transitive
     description:
@@ -1143,18 +1152,18 @@ packages:
     dependency: transitive
     description:
       name: petitparser
-      sha256: "91bd59303e9f769f108f8df05e371341b15d59e995e6806aefab827b58336675"
+      sha256: "2f1564aadb14215e478563b5406cb80729d022158c01dc50c96013c2f7eb4790"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.2"
+    version: "7.1.0"
   pin_code_fields:
     dependency: "direct main"
     description:
       name: pin_code_fields
-      sha256: e35f8c2e14e8c2ffda66abe4a42bb5273f08bb326993923d6cb928655a0679c8
+      sha256: a85d02073e8f1f97dc3ff2303f81405e40bddb00129291dad922901d9003e691
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.0"
+    version: "10.1.1"
   platform:
     dependency: transitive
     description:
@@ -1813,10 +1822,10 @@ packages:
     dependency: transitive
     description:
       name: wakelock_plus
-      sha256: "22b3e7e937721de70e63c85e7139f4ac781dc22863b9262431a53ac030eb074b"
+      sha256: "9a91139ee876c24a9ebe1484e4b9b7923b07d368566a5e0b2301870b0f5029c8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   wakelock_plus_platform_interface:
     dependency: transitive
     description:
@@ -1923,4 +1932,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.13.3 <4.0.0"
-  flutter: "3.47.5"
+  flutter: "3.47.6"

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
+
 ### Added
 
 - panorama audio playback
