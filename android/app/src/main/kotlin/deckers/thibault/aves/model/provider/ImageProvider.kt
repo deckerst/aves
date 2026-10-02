@@ -1933,6 +1933,8 @@ abstract class ImageProvider {
 
         private const val LENGTH_UNIT_PERCENT = "percent"
 
+        private val VALIDITY_CHECK_PROJECTION = arrayOf(BaseColumns._ID)
+
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 
         // used when skipping a move/creation op because the target file already exists
@@ -1945,15 +1947,11 @@ abstract class ImageProvider {
             if (!uri.isContentScheme) return false
 
             var found = false
-            val projection = arrayOf(BaseColumns._ID)
             try {
-                val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        found = true
-                    }
-                    cursor.close()
-                }
+                val cursor = context.contentResolver.query(uri, VALIDITY_CHECK_PROJECTION, null, null, null)
+                // make sure there is a single row and that it is readable
+                found = cursor != null && cursor.count == 1 && cursor.moveToFirst()
+                cursor?.close()
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "failed to query content at uri=$uri", e)
             }
