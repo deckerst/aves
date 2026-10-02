@@ -5,8 +5,10 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -48,7 +50,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getChangedUris(call: MethodCall, result: MethodChannel.Result) {
-        val sinceGenerationByVolume: Map<String, Long>? = call.argument<Map<String, Number>>("sinceGenerationByVolume")?.mapValues { kv -> kv.value.toLong() }
+        val sinceGenerationByVolume: Map<String, Long?>? = call.argument<Map<String, Number?>>("sinceGenerationByVolume")?.mapValues { kv -> kv.value?.toLong() }
         if (sinceGenerationByVolume == null) {
             result.error("getChangedUris-args", "missing arguments", null)
             return
@@ -58,9 +60,14 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getGenerationByVolume(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val generationByVolume: Map<String, Long>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val generationByVolume: Map<String, Long?>? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             MediaStore.getExternalVolumeNames(context).associateWith { volumeName ->
-                MediaStore.getGeneration(context, volumeName)
+                try {
+                    MediaStore.getGeneration(context, volumeName)
+                } catch (ex: IllegalArgumentException) {
+                    Log.w(LOG_TAG, "failed to get generation for volume=$volumeName", ex)
+                    null
+                }
             }
         } else {
             null
@@ -75,6 +82,7 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<MediaStoreHandler>()
         const val CHANNEL = "deckers.thibault/aves/media_store"
     }
 }
