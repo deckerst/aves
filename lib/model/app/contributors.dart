@@ -217,6 +217,7 @@ class Contributors {
     // Contributor('Prasanta-Hembram', 'Prasantahembram720@gmail.com'), // Santali
     // Contributor('Enenra', 'nnra2210@gmail.com'), // Serbian
     // Contributor('Nikola Perović', 'nikolaperovicccc@gmail.com'), // Serbian
+    // Contributor('Nevena', 'kontakt.nc@outlook.com'), // Serbian
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('jakobkreft', 'jk6684@student.uni-lj.si'), // Slovenian
     // Contributor('Feliks-WR', 'aq.1428@tuta.io'), // Urdu
