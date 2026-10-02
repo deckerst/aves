@@ -168,12 +168,12 @@ class MediaStoreImageProvider : ImageProvider() {
         return obsoleteIds
     }
 
-    fun getChangedUris(context: Context, sinceGenerationByVolume: Map<String, Long>): List<String> {
+    fun getChangedUris(context: Context, sinceGenerationByVolume: Map<String, Long?>): List<String> {
         val changedUris = ArrayList<String>()
-        fun check(context: Context, sinceGeneration: Long, contentUri: Uri) {
+        fun check(context: Context, sinceGeneration: Long?, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             val selection = "${MediaStore.MediaColumns.GENERATION_MODIFIED} > ?"
-            val selectionArgs = arrayOf(sinceGeneration.toString())
+            val selectionArgs = arrayOf((sinceGeneration ?: 0L).toString())
             try {
                 val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, null)
                 if (cursor != null) {

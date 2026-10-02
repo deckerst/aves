@@ -10,7 +10,7 @@ abstract class MediaStoreService {
 
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById);
 
-  Future<List<String>> getChangedUris(Map<String, int> sinceGenerationByVolume);
+  Future<List<String>> getChangedUris(Map<String, int?> sinceGenerationByVolume);
 
   Future<Map<String, int>?> getGenerationByVolume();
 
@@ -52,7 +52,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Future<List<String>> getChangedUris(Map<String, int> sinceGenerationByVolume) async {
+  Future<List<String>> getChangedUris(Map<String, int?> sinceGenerationByVolume) async {
     try {
       final result = await _platform.invokeMethod('getChangedUris', <String, Object?>{
         'sinceGenerationByVolume': sinceGenerationByVolume,
