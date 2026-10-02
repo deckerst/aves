@@ -203,6 +203,11 @@ class Dependencies {
       sourceUrl: 'https://github.com/pd4d10/highlight',
     ),
     Dependency(
+      name: 'Flutter Hijri Rrule (Aves fork)',
+      license: mit,
+      sourceUrl: 'https://github.com/hb12devtn/flutter_hijri_rrule',
+    ),
+    Dependency(
       name: 'Flutter Map',
       license: bsd3,
       sourceUrl: 'https://github.com/fleaflet/flutter_map',

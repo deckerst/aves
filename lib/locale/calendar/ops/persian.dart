@@ -2,9 +2,6 @@ import 'package:aves/locale/calendar/ops/base.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
 class PersianCalendarOps extends CalendarOps {
-  @override
-  int get monthsPerYear => DateTime.monthsPerYear;
-
   static final instance = PersianCalendarOps._private();
 
   new _private();
@@ -24,95 +21,95 @@ class PersianCalendarOps extends CalendarOps {
 
   @override
   DateTime dateOnly(DateTime date) {
-    final j = toNative(date)!.copy(hour: 0, minute: 0, second: 0, millisecond: 0);
-    return j.toDateTime();
+    final native = toNative(date)!.copy(hour: 0, minute: 0, second: 0, millisecond: 0);
+    return native.toDateTime();
   }
 
   @override
   DateTime monthDateOnly(DateTime date) {
-    final j = toNative(date)!.copy(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
-    return j.toDateTime();
+    final native = toNative(date)!.copy(day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
+    return native.toDateTime();
   }
 
   @override
   DateTime yearDateOnly(DateTime date) {
-    final j = toNative(date)!.copy(month: 1, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
-    return j.toDateTime();
+    final native = toNative(date)!.copy(month: 1, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0);
+    return native.toDateTime();
   }
 
   @override
   DateTime addDaysToDate(DateTime date, int days) {
-    final j = toNative(date)!.addDays(days);
-    return j.toDateTime();
+    final native = toNative(date)!.addDays(days);
+    return native.toDateTime();
   }
 
   @override
   DateTime addMonthsToMonthDate(DateTime monthDate, int months) {
-    final j = toNative(monthDate)!.addMonths(months);
-    return j.toDateTime();
+    final native = toNative(monthDate)!.addMonths(months);
+    return native.toDateTime();
   }
 
   @override
   DateTime addYearsToYearDate(DateTime yearDate, int years) {
-    final j = toNative(yearDate)!.addYears(years);
-    return j.toDateTime();
+    final native = toNative(yearDate)!.addYears(years);
+    return native.toDateTime();
   }
 
   @override
   bool isSameYear(DateTime? dateA, DateTime? dateB) {
-    final jA = toNative(dateA);
-    final jB = toNative(dateB);
-    return jA?.year == jB?.year;
+    final nativeA = toNative(dateA);
+    final nativeB = toNative(dateB);
+    return nativeA?.year == nativeB?.year;
   }
 
   @override
   bool isSameYearMonth(DateTime? dateA, DateTime? dateB) {
-    final jA = toNative(dateA);
-    final jB = toNative(dateB);
-    return jA?.year == jB?.year && jA?.month == jB?.month;
+    final nativeA = toNative(dateA);
+    final nativeB = toNative(dateB);
+    return nativeA?.year == nativeB?.year && nativeA?.month == nativeB?.month;
   }
 
   @override
   bool isSameYearMonthDay(DateTime? dateA, DateTime? dateB) {
-    final jA = toNative(dateA);
-    final jB = toNative(dateB);
-    return jA?.year == jB?.year && jA?.month == jB?.month && jA?.day == jB?.day;
+    final nativeA = toNative(dateA);
+    final nativeB = toNative(dateB);
+    return nativeA?.year == nativeB?.year && nativeA?.month == nativeB?.month && nativeA?.day == nativeB?.day;
   }
 
   @override
   bool isOnMonthDay(DateTime? date, int month, int day) {
-    final jA = toNative(date);
-    return jA?.month == month && jA?.day == day;
+    final nativeA = toNative(date);
+    return nativeA?.month == month && nativeA?.day == day;
   }
 
   @override
   bool isOnMonth(DateTime? date, int month) {
-    final jA = toNative(date);
-    return jA?.month == month;
+    final nativeA = toNative(date);
+    return nativeA?.month == month;
   }
 
   @override
   bool isOnDay(DateTime? date, int day) {
-    final jA = toNative(date);
-    return jA?.day == day;
+    final nativeA = toNative(date);
+    return nativeA?.day == day;
   }
 
   @override
   int getYear(DateTime date) {
-    final j = toNative(date)!;
-    return j.year;
+    final native = toNative(date)!;
+    return native.year;
   }
 
   @override
   (int year, int month) getYearMonth(DateTime date) {
-    final j = toNative(date)!;
-    return (j.year, j.month);
+    final native = toNative(date)!;
+    return (native.year, native.month);
   }
 
   @override
   (int year, int month, int day) getYearMonthDay(DateTime date) {
-    final j = toNative(date)!;
-    return (j.year, j.month, j.day);
+    final native = toNative(date)!;
+    return (native.year, native.month, native.day);
   }
 
   @override
@@ -122,15 +119,15 @@ class PersianCalendarOps extends CalendarOps {
 
   @override
   int yearDelta(DateTime startDate, DateTime endDate) {
-    final jStart = toNative(startDate)!;
-    final jEnd = toNative(endDate)!;
-    return jEnd.year - jStart.year;
+    final nativeStart = toNative(startDate)!;
+    final nativeEnd = toNative(endDate)!;
+    return nativeEnd.year - nativeStart.year;
   }
 
   @override
   int monthDelta(DateTime startDate, DateTime endDate) {
-    final jStart = toNative(startDate)!;
-    final jEnd = toNative(endDate)!;
-    return (jEnd.year - jStart.year) * monthsPerYear + jEnd.month - jStart.month;
+    final nativeStart = toNative(startDate)!;
+    final nativeEnd = toNative(endDate)!;
+    return (nativeEnd.year - nativeStart.year) * monthsPerYear + nativeEnd.month - nativeStart.month;
   }
 }

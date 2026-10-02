@@ -7,17 +7,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class AppIconImage extends ImageProvider<AppIconImageKey> {
-  const new({
-    required this.packageName,
-    required this.size,
-    this.scale = 1.0,
-  });
-
-  final String packageName;
-  final double size;
-  final double scale;
-
+class const AppIconImage({
+  required final String packageName,
+  required final double size,
+  final double scale = 1.0,
+}) extends ImageProvider<AppIconImageKey> {
   @override
   Future<AppIconImageKey> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<AppIconImageKey>(
@@ -55,17 +49,11 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 }
 
 @immutable
-class AppIconImageKey extends Equatable {
-  final String packageName;
-  final double size;
-  final double scale;
-
+class const AppIconImageKey({
+  required final String packageName,
+  required final double size,
+  final double scale = 1.0,
+}) extends Equatable {
   @override
   List<Object?> get props => [packageName, size, scale];
-
-  const new({
-    required this.packageName,
-    required this.size,
-    this.scale = 1.0,
-  });
 }

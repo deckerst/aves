@@ -106,16 +106,16 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             val granted = MediaStorePermissions.requestFileAccess(activity, uris, mimeTypes)
             success(granted)
             endOfStream()
-        } catch (e: Exception) {
-            if (e.anyCauseIs<TransactionTooLargeException>()) {
-                error("requestMediaStoreFileAccess-large", "transaction too large with ${uris.size} uris", e)
+        } catch (ex: Exception) {
+            if (ex.anyCauseIs<TransactionTooLargeException>()) {
+                error("requestMediaStoreFileAccess-large", "transaction too large with ${uris.size} uris", ex)
             } else {
                 val byFromMediaStore = uris.groupBy(StorageUtils::isMediaStoreContentUri)
                 error(
                     "requestMediaStoreFileAccess-request", "failed to request access to ${uris.size} uris" +
                             " (${byFromMediaStore[true]?.size ?: 0} from media store" +
                             ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
-                            ")", e.message
+                            ")", ex
                 )
             }
         }
@@ -153,8 +153,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                     }
                     success(true)
                     endOfStream()
-                } catch (e: Exception) {
-                    error("createFile-write", "failed to write file at uri=$uri", e.message)
+                } catch (ex: Exception) {
+                    error("createFile-write", "failed to write file at uri=$uri", ex.message)
                 }
             }
         }
@@ -192,8 +192,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                 try {
                     activity.contentResolver.openInputStream(uri)?.use(::streamBytes)
                     endOfStream()
-                } catch (e: Exception) {
-                    error("openFile-read", "failed to read file at uri=$uri", e.message)
+                } catch (ex: Exception) {
+                    error("openFile-read", "failed to read file at uri=$uri", ex.message)
                 }
             }
         }
@@ -230,8 +230,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
                     }
                     success(true)
                     endOfStream()
-                } catch (e: Exception) {
-                    error("copyFile-write", "failed to copy file from sourceUri=$sourceUri to uri=$uri", e.message)
+                } catch (ex: Exception) {
+                    error("copyFile-write", "failed to copy file from sourceUri=$sourceUri to uri=$uri", ex.message)
                 }
             }
         }

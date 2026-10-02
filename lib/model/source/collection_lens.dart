@@ -55,6 +55,8 @@ class CollectionLens with ChangeNotifier {
 
   Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
 
+  Set<CollectionFilter> get visibleFilters => filters.where((v) => !(v is QueryFilter && v.live) && v is! TrashFilter).toSet();
+
   new({
     required this.source,
     Set<CollectionFilter?>? filters,
@@ -192,7 +194,7 @@ class CollectionLens with ChangeNotifier {
   void setLiveQuery(String query) {
     filters.removeWhere((v) => v is QueryFilter && v.live);
     if (query.isNotEmpty) {
-      filters.add(QueryFilter(query, live: true));
+      filters.add(QueryFilter(query, calendar, live: true));
     }
     _onFilterChanged();
   }
@@ -404,10 +406,11 @@ class CollectionLens with ChangeNotifier {
 
   void _updateLayoutFactors() {
     burstPatterns = settings.collectionBurstPatterns;
-    tileLayout = settings.effectiveCollectionTileLayout;
-    sortFactor = settings.effectiveCollectionSortFactor;
-    sortReverse = settings.effectiveCollectionSortReverse;
-    sectionFactor = settings.effectiveCollectionSectionFactor;
+    final _filters = visibleFilters;
+    tileLayout = settings.getEffectiveCollectionTileLayout(_filters);
+    sortFactor = settings.getEffectiveCollectionSortFactor(_filters);
+    sortReverse = settings.getEffectiveCollectionSortReverse(_filters);
+    sectionFactor = settings.getEffectiveCollectionSectionFactor(_filters);
     calendar = settings.calendar;
   }
 

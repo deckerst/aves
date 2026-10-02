@@ -33,14 +33,17 @@ object GoogleXMP {
     // embedded media data properties
     // cf https://developers.google.com/depthmap-metadata
     // cf https://developers.google.com/vr/reference/cardboard-camera-vr-photo-format
+
+    private val GAUDIO_DATA_PROP_NAME = XMPPropName(GAUDIO_NS_URI, "Data")
+    private val GAUDIO_MIME_PROP_NAME = XMPPropName(GAUDIO_NS_URI, "Mime")
+
     private val knownDataProps = listOf(
-        XMPPropName(GAUDIO_NS_URI, "Data"),
+        GAUDIO_DATA_PROP_NAME,
         XMPPropName(GCAMERA_NS_URI, "RelitInputImageData"),
         XMPPropName(GIMAGE_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Data"),
         XMPPropName(GDEPTH_NS_URI, "Confidence"),
     )
-
 
     fun isDataPath(path: String) = knownDataProps.map { it.toString() }.any { path == it }
 
@@ -75,8 +78,8 @@ object GoogleXMP {
     private val GPANO_PROJECTION_TYPE_PROP_NAME = XMPPropName(GPANO_NS_URI, "ProjectionType")
     const val GPANO_PROJECTION_TYPE_DEFAULT = "equirectangular"
 
-    // `GPano:ProjectionType` is required by spec but it is sometimes missing, assuming default
-    // `GPano:FullPanoHeightPixels` is required by spec but it is sometimes missing (e.g. Samsung Camera app panorama mode)
+    // `GPano:ProjectionType` is required by spec, but it is sometimes missing, assuming default
+    // `GPano:FullPanoHeightPixels` is required by spec, but it is sometimes missing (e.g. Samsung Camera app panorama mode)
     private val gpanoRequiredProps = listOf(
         GPANO_CROPPED_AREA_HEIGHT_PROP_NAME,
         GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
@@ -159,6 +162,15 @@ object GoogleXMP {
             meta.getSafeInt(GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
             meta.getSafeInt(GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
             meta.getSafeString(GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
+
+            // do not condition reading audio mime type on data field presence,
+            // as the two fields can be in different XMP directories
+            meta.getSafeString(GAUDIO_MIME_PROP_NAME) { fields["audioPropMimeType"] = it }
+            if (meta.doesPropExist(GAUDIO_DATA_PROP_NAME)) {
+                val pathSegment = arrayListOf(GAUDIO_DATA_PROP_NAME.nsUri, GAUDIO_DATA_PROP_NAME.prop)
+                val path = arrayListOf(pathSegment)
+                fields["audioPropPath"] = path
+            }
         } catch (e: XMPException) {
             Log.w(LOG_TAG, "failed to read XMP directory", e)
         }

@@ -176,7 +176,8 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
     required List<CollectionFilter> filters,
     HeroType Function(CollectionFilter filter)? heroTypeBuilder,
   }) {
-    void onTap(filter) => _select(context, {filter is QueryFilter ? QueryFilter(filter.query) : filter});
+    final calendar = settings.avesLocale.calendar;
+    void onTap(filter) => _select(context, {filter is QueryFilter ? QueryFilter(filter.query, calendar) : filter});
     const onLongPress = AvesFilterChip.showDefaultLongPressMenu;
     return title != null
         ? TitledExpandableFilterRow(
@@ -197,8 +198,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   Widget _buildDateFilters(BuildContext context, CollectionFilterPredicate containQuery) {
-    final locale = settings.avesLocale;
-    final calendar = locale.calendar;
+    final calendar = settings.avesLocale.calendar;
     final calOps = calendar.ops;
 
     final firstDayOfWeekIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
@@ -352,8 +352,9 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
   }
 
   QueryFilter? _buildQueryFilter(bool colorful) {
+    final calendar = settings.avesLocale.calendar;
     final cleanQuery = query.trim();
-    return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
+    return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, calendar, colorful: colorful) : null;
   }
 
   Future<void> _select(BuildContext context, Set<CollectionFilter?> filters) async {

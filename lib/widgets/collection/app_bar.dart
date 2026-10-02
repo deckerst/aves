@@ -5,8 +5,6 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
 import 'package:aves/model/filters/container/set_and.dart';
-import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/query.dart';
 import 'package:aves/model/selection.dart';
@@ -18,7 +16,6 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/aves_app.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/layout_bar.dart';
@@ -98,9 +95,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
 
   CollectionSource get source => collection.source;
 
-  Set<CollectionFilter> get visibleFilters => collection.filters.where((v) => !(v is QueryFilter && v.live) && v is! TrashFilter).toSet();
-
-  bool get showFilterBar => visibleFilters.isNotEmpty;
+  bool get showFilterBar => collection.visibleFilters.isNotEmpty;
 
   static const _trashSelectionQuickActions = <EntrySetAction>[
     .delete,
@@ -246,7 +241,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
                                   return false;
                                 },
                                 child: FilterBar(
-                                  filters: visibleFilters,
+                                  filters: collection.visibleFilters,
                                   interactive: true,
                                   onTap: onFilterTap,
                                   onRemove: onFilterTap,
@@ -833,11 +828,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
   }
 
   Future<void> _changeLayout() async {
+    final filters = collection.visibleFilters;
     final initialValue = (
-      settings.effectiveCollectionTileLayout,
-      settings.collectionSortFactor,
-      settings.collectionSectionFactor,
-      settings.collectionSortReverse,
+      settings.getStoredCollectionTileLayout(filters),
+      settings.getStoredCollectionSortFactor(filters),
+      settings.getStoredCollectionSectionFactor(filters),
+      settings.getStoredCollectionSortReverse(filters),
     );
     final extentController = context.read<TileExtentController>();
     final value = await showAvesDialog<(TileLayout, SortFactor, EntrySectionFactor, bool)>(
@@ -858,10 +854,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
     // wait for the dialog to hide
     await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
-      settings.setTileLayout(CollectionPage.routeName, value.$1);
-      settings.collectionSortFactor = value.$2;
-      settings.collectionSectionFactor = value.$3;
-      settings.collectionSortReverse = value.$4;
+      settings.setStoredCollectionTileLayout(filters, value.$1);
+      settings.setStoredCollectionSortFactor(filters, value.$2);
+      settings.setStoredCollectionSectionFactor(filters, value.$3);
+      settings.setStoredCollectionSortReverse(filters, value.$4);
     }
   }
 

@@ -17,21 +17,16 @@ abstract class AvesVideoControllerFactory {
   });
 }
 
-abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMotionMixin {
-  final AvesEntryBase _entry;
-  final PlaybackStateHandler playbackStateHandler;
-  final VideoSettings settings;
+abstract class AvesVideoController(
+  final AvesEntryBase entry, {
+  required final PlaybackStateHandler playbackStateHandler,
+  required final VideoSettings settings,
+}) extends Disposer with ABRepeatMixin, SlowMotionMixin {
   bool _disposed = false;
-
-  AvesEntryBase get entry => _entry;
 
   static const resumeTimeSaveMinDuration = Duration(minutes: 2);
 
-  new(
-    AvesEntryBase entry, {
-    required this.playbackStateHandler,
-    required this.settings,
-  }) : _entry = entry {
+  this {
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectCreated(
         library: 'aves',
@@ -49,19 +44,21 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
-    _entry.visualChangeNotifier.removeListener(onVisualChanged);
+    entry.visualChangeNotifier.removeListener(onVisualChanged);
     await _savePlaybackState();
     super.dispose();
   }
 
   Future<void> _savePlaybackState() async {
     if (!isReady || duration < resumeTimeSaveMinDuration.inMilliseconds) return;
-    await playbackStateHandler.saveResumeTime(entryId: _entry.id, position: currentPosition, progress: progress);
+    await playbackStateHandler.saveResumeTime(entryId: entry.id, position: currentPosition, progress: progress);
   }
 
-  Future<int?> getResumeTime(BuildContext context) => playbackStateHandler.getResumeTime(entryId: _entry.id, context: context);
+  Future<int?> getResumeTime(BuildContext context) => playbackStateHandler.getResumeTime(entryId: entry.id, context: context);
 
   void onVisualChanged();
+
+  Future<void> enableLoop(bool enabled);
 
   Future<void> play();
 
@@ -75,9 +72,9 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
 
   Listenable get playCompletedListenable;
 
-  VideoStatus get status;
+  PlaybackStatus get status;
 
-  Stream<VideoStatus> get statusStream;
+  Stream<PlaybackStatus> get statusStream;
 
   Stream<VideoEvent> get eventStream;
 
@@ -91,7 +88,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
     if (isReady) return Future.value();
 
     final completer = Completer();
-    late StreamSubscription<VideoStatus> sub;
+    late StreamSubscription<PlaybackStatus> sub;
     sub = statusStream.where((_) => isReady).listen((_) {
       sub.cancel();
       completer.complete();
@@ -99,7 +96,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
     return completer.future;
   }
 
-  bool get isPlaying => status == VideoStatus.playing;
+  bool get isPlaying => status == .playing;
 
   int get duration;
 
@@ -148,7 +145,7 @@ abstract class AvesVideoController extends Disposer with ABRepeatMixin, SlowMoti
   Widget buildPlayerWidget(BuildContext context);
 }
 
-enum VideoStatus {
+enum PlaybackStatus {
   idle,
   initialized,
   paused,

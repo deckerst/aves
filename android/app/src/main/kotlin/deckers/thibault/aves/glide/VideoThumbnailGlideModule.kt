@@ -25,6 +25,7 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeFloat
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
+import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils.openMetadataRetriever
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
@@ -44,7 +45,7 @@ class VideoThumbnailGlideModule : LibraryGlideModule() {
     }
 }
 
-class VideoThumbnail(val context: Context, val uri: Uri)
+class VideoThumbnail(val context: Context, val uri: Uri, val methods: List<VideoThumbnailMethod>)
 
 internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, Bitmap> {
     override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
@@ -69,8 +70,12 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
             if (retriever == null) {
                 callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for uri=${model.uri}"))
             } else {
+                val methods = arrayListOf<VideoThumbnailMethod>().apply {
+                    addAll(model.methods)
+                    addAll(DEFAULT_METHODS)
+                }
                 try {
-                    val bitmap = getEmbeddedPicture(retriever) ?: getFrame(retriever)
+                    val bitmap = getPreferredThumbnail(retriever, methods)
                     if (bitmap == null) {
                         callback.onLoadFailed(Exception("failed to get embedded picture or any frame for uri=${model.uri}"))
                     } else {
@@ -86,6 +91,18 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
         }
     }
 
+    private fun getPreferredThumbnail(retriever: MediaMetadataRetriever, methods: List<VideoThumbnailMethod>): Bitmap? {
+        for (method in methods) {
+            val bitmap: Bitmap? = when (method) {
+                VideoThumbnailMethod.EMBEDDED -> getEmbeddedPicture(retriever)
+                VideoThumbnailMethod.PREVIEW -> getFrame(retriever, timeMicros = getPreviewTimeMicrosFromRetriever(retriever))
+                VideoThumbnailMethod.FIRST -> getFrame(retriever, timeMicros = TIME_FRAME_FIRST)
+            }
+            if (bitmap != null) return bitmap
+        }
+        return null
+    }
+
     // ignore all `MediaMetadataRetriever` exceptions as we will fall back to more reliable methods
     private fun getEmbeddedPicture(retriever: MediaMetadataRetriever): Bitmap? {
         try {
@@ -98,15 +115,11 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
         return null
     }
 
-    private fun getFrame(retriever: MediaMetadataRetriever): Bitmap? {
+    private fun getFrame(retriever: MediaMetadataRetriever, timeMicros: Long): Bitmap? {
         val videoSize = getVideoSize(retriever)
         val targetSize = getTargetSize(videoSize)
 
-        var durationMillis: Long? = null
-        retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
-        val timeMicros = getBestThumbnailTimeMicros(durationMillis)
-
-        // fall back from preferred frame, to first frame, to any frame
+        // fall back from preview frame, to first frame, to any frame
         var bitmap = getFrameAtTime(retriever, videoSize, targetSize, timeMicros)
         if (bitmap == null && timeMicros > TIME_FRAME_FIRST) {
             bitmap = getFrameAtTime(retriever, videoSize, targetSize, TIME_FRAME_FIRST)
@@ -161,12 +174,18 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
         return Size(dstWidth, dstHeight)
     }
 
+    private fun getPreviewTimeMicrosFromRetriever(retriever: MediaMetadataRetriever): Long {
+        var durationMillis: Long? = null
+        retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
+        return getPreviewTimeMicrosFromDuration(durationMillis)
+    }
+
     // there is no consistent strategy across devices to match
     // the thumbnails returned by the content resolver / Media Store
     // so we derive one in an arbitrary way
     //
     // use same strategy on flutter and platform sides
-    private fun getBestThumbnailTimeMicros(durationMillis: Long?): Long {
+    private fun getPreviewTimeMicrosFromDuration(durationMillis: Long?): Long {
         if (durationMillis == null || durationMillis < SHORT_DURATION_MILLIS) {
             return TIME_FRAME_FIRST
         }
@@ -232,9 +251,10 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<VideoThumbnailFetcher>()
-        const val SHORT_DURATION_MILLIS: Long = 15000
-        const val TIME_FRAME_ANY: Long = -1
-        const val TIME_FRAME_FIRST: Long = 0
-        const val FRAME_OPTION = MediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        private val DEFAULT_METHODS = listOf(VideoThumbnailMethod.EMBEDDED, VideoThumbnailMethod.PREVIEW)
+        private const val SHORT_DURATION_MILLIS: Long = 15000
+        private const val TIME_FRAME_ANY: Long = -1
+        private const val TIME_FRAME_FIRST: Long = 0
+        private const val FRAME_OPTION = MediaMetadataRetriever.OPTION_CLOSEST_SYNC
     }
 }

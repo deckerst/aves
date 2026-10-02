@@ -72,42 +72,26 @@ class ADurations {
 }
 
 @immutable
-class DurationsData {
+class const DurationsData({
   // common animations
-  final Duration expansionTileAnimation;
-  final Duration formTransition;
-  final Duration formTextStyleTransition;
-  final Duration textDiffAnimation;
-  final Duration chartTransition;
-  final Duration iconAnimation;
-  final Duration staggeredAnimation;
-  final Duration staggeredAnimationPageTarget;
-  final Duration quickChooserAnimation;
-  final Duration tvImageFocusAnimation;
-
+  final Duration expansionTileAnimation = const Duration(milliseconds: 200),
+  final Duration formTransition = const Duration(milliseconds: 200),
+  final Duration formTextStyleTransition = const Duration(milliseconds: 800),
+  final Duration textDiffAnimation = const Duration(milliseconds: 150),
+  final Duration chartTransition = const Duration(milliseconds: 400),
+  final Duration iconAnimation = const Duration(milliseconds: 300),
+  final Duration staggeredAnimation = const Duration(milliseconds: 375),
+  final Duration staggeredAnimationPageTarget = const Duration(milliseconds: 800),
+  final Duration quickChooserAnimation = const Duration(milliseconds: 100),
+  final Duration tvImageFocusAnimation = const Duration(milliseconds: 150),
   // viewer animations
-  final Duration viewerHorizontalPageScrollAnimation;
-  final Duration viewerOverlayAnimation;
-  final Duration viewerOverlayChangeAnimation;
-
+  final Duration viewerRouteTransitionDuration = ADurations.pageTransitionExact,
+  final Duration viewerHorizontalPageScrollAnimation = const Duration(milliseconds: 400),
+  final Duration viewerOverlayAnimation = const Duration(milliseconds: 200),
+  final Duration viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
+}) {
   // delays & refresh intervals
-  final Duration staggeredAnimationDelay;
-
-  const new({
-    this.expansionTileAnimation = const Duration(milliseconds: 200),
-    this.formTransition = const Duration(milliseconds: 200),
-    this.formTextStyleTransition = const Duration(milliseconds: 800),
-    this.textDiffAnimation = const Duration(milliseconds: 150),
-    this.chartTransition = const Duration(milliseconds: 400),
-    this.iconAnimation = const Duration(milliseconds: 300),
-    this.staggeredAnimation = const Duration(milliseconds: 375),
-    this.staggeredAnimationPageTarget = const Duration(milliseconds: 800),
-    this.quickChooserAnimation = const Duration(milliseconds: 100),
-    this.tvImageFocusAnimation = const Duration(milliseconds: 150),
-    this.viewerHorizontalPageScrollAnimation = const Duration(milliseconds: 400),
-    this.viewerOverlayAnimation = const Duration(milliseconds: 200),
-    this.viewerOverlayChangeAnimation = const Duration(milliseconds: 150),
-  }) : staggeredAnimationDelay = staggeredAnimation ~/ 6;
+  final Duration staggeredAnimationDelay = staggeredAnimation ~/ 6;
 
   factory noAnimation() {
     return DurationsData(
@@ -122,6 +106,7 @@ class DurationsData {
       staggeredAnimationPageTarget: Duration.zero,
       quickChooserAnimation: Duration.zero,
       tvImageFocusAnimation: Duration.zero,
+      viewerRouteTransitionDuration: Duration.zero,
       viewerHorizontalPageScrollAnimation: Duration.zero,
       viewerOverlayAnimation: Duration.zero,
       viewerOverlayChangeAnimation: Duration.zero,

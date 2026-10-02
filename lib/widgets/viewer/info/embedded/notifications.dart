@@ -4,49 +4,42 @@ import 'package:material_ui/material_ui.dart';
 enum EmbeddedDataSource { googleDevice, motionPhotoVideo, mpf, videoCover, xmp }
 
 @immutable
-class OpenEmbeddedDataNotification extends Notification {
-  final EmbeddedDataSource source;
-  final List<Object?>? props;
-  final String? mimeType, dataUri;
-  final int? mpfId;
-
-  const new _private({
-    required this.source,
-    this.props,
-    this.mimeType,
-    this.dataUri,
-    this.mpfId,
-  });
-
+class const OpenEmbeddedDataNotification._private({
+  required final EmbeddedDataSource source,
+  final List<Object?>? propPath,
+  final String? mimeType,
+  final String? dataUri,
+  final int? mpfId,
+}) extends Notification {
   factory googleDevice({
     required String dataUri,
   }) => OpenEmbeddedDataNotification._private(
-    source: EmbeddedDataSource.googleDevice,
+    source: .googleDevice,
     dataUri: dataUri,
   );
 
   factory motionPhotoVideo() => const OpenEmbeddedDataNotification._private(
-    source: EmbeddedDataSource.motionPhotoVideo,
+    source: .motionPhotoVideo,
   );
 
   factory mpf(int id) => OpenEmbeddedDataNotification._private(
-    source: EmbeddedDataSource.mpf,
+    source: .mpf,
     mpfId: id,
   );
 
   factory videoCover() => const OpenEmbeddedDataNotification._private(
-    source: EmbeddedDataSource.videoCover,
+    source: .videoCover,
   );
 
   factory xmp({
-    required List<Object?> props,
+    required List<Object?> propPath,
     required String mimeType,
   }) => OpenEmbeddedDataNotification._private(
-    source: EmbeddedDataSource.xmp,
-    props: props,
+    source: .xmp,
+    propPath: propPath,
     mimeType: mimeType,
   );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{source=$source, props=$props, mimeType=$mimeType, dataUri=$dataUri, index=$mpfId}';
+  String toString() => '$runtimeType#${shortHash(this)}{source=$source, propPath=$propPath, mimeType=$mimeType, dataUri=$dataUri, index=$mpfId}';
 }

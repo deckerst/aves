@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.MainActivity
-import deckers.thibault.aves.MainActivity.Companion.DELETE_SINGLE_PERMISSION_REQUEST
+import deckers.thibault.aves.MainActivity.Companion.SCOPED_STORAGE_PERMISSION_REQUEST
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -235,30 +235,29 @@ abstract class ImageProvider {
                     if (!rowDeleted && contentExists(context, uri)) {
                         throw Exception("failed to delete row from content resolver")
                     }
-                } catch (securityException: SecurityException) {
+                } catch (ex: SecurityException) {
+                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at uri=$uri ex=${ex.message}")
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
+                        throw ex
+                    }
+
                     // even if the app has access permission granted on the containing directory,
                     // the delete request may yield a `RecoverableSecurityException` on API >=29
                     // when the underlying file no longer exists and this is an orphaned entry in the Media Store
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && context is Activity) {
-                        Log.w(LOG_TAG, "caught a security exception when attempting to delete content at uri=$uri", securityException)
-                        val rse = securityException as? RecoverableSecurityException ?: throw securityException
-                        val intentSender = rse.userAction.actionIntent.intentSender
+                    val rse = ex as? RecoverableSecurityException ?: throw ex
+                    val intentSender = rse.userAction.actionIntent.intentSender
 
-                        // request user permission for this item
-                        MainActivity.pendingScopedStoragePermissionCompleter = CompletableFuture<Boolean>()
-                        context.startIntentSenderForResult(intentSender, DELETE_SINGLE_PERMISSION_REQUEST, null, 0, 0, 0, null)
-                        val granted = MainActivity.pendingScopedStoragePermissionCompleter!!.join()
+                    // request user permission for this item
+                    MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
+                    context.startIntentSenderForResult(intentSender, SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
+                    val granted = MainActivity.pendingPermissionCompleter!!.join()
 
-                        MainActivity.pendingScopedStoragePermissionCompleter = null
-                        if (granted) {
-                            deleteSingle(context, uri, filePath, mimeType)
-                            return
-                        } else {
-                            throw Exception("failed to get delete permission")
-                        }
-                    } else {
-                        throw securityException
+                    MainActivity.pendingPermissionCompleter = null
+                    if (!granted) {
+                        throw Exception("failed to get permission from recoverable security exception", ex)
                     }
+
+                    return deleteSingle(context, uri, filePath, mimeType)
                 }
             }
         }
@@ -1062,17 +1061,20 @@ abstract class ImageProvider {
     // making them undecodable by some decoders (including Android's and Chrome's)
     // even though `BitmapFactory` successfully decodes their bounds,
     // so we check whether decoding it with `ImageDecoder` throws an exception
-    private fun ensureDecodable(mimeType: String, editableFile: File) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val isMimeTypeSupported = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ImageDecoder.isMimeTypeSupported(mimeType)
-            } else {
-                true
-            }
-            if (isMimeTypeSupported) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(editableFile))
-            }
+    private fun ensureDecodable(mimeType: String, file: File) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
         }
+    }
+
+    private fun ensureDecodable(mimeType: String, context: Context, uri: Uri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
+        }
+    }
+
+    private fun isMimeTypeSupported(mimeType: String): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || ImageDecoder.isMimeTypeSupported(mimeType)
     }
 
     private fun editExif(
@@ -1088,6 +1090,14 @@ abstract class ImageProvider {
     ): Boolean {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
+            return false
+        }
+
+        try {
+            // ensure content is decodable before editing
+            ensureDecodable(mimeType, context, uri)
+        } catch (e: IOException) {
+            callback.onFailure(Exception("failed to decode content before editing", e))
             return false
         }
 
@@ -1129,7 +1139,7 @@ abstract class ImageProvider {
             // ensure file is decodable before editing
             ensureDecodable(mimeType, editableFile)
         } catch (e: IOException) {
-            callback.onFailure(Exception("failed to decode editable file before editing", e))
+            callback.onFailure(Exception("failed to decode editable file before editing, with trailerVideoBytes=${trailerVideoBytes?.size}B", e))
             return false
         }
 
@@ -1923,6 +1933,8 @@ abstract class ImageProvider {
 
         private const val LENGTH_UNIT_PERCENT = "percent"
 
+        private val VALIDITY_CHECK_PROJECTION = arrayOf(BaseColumns._ID)
+
         val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
 
         // used when skipping a move/creation op because the target file already exists
@@ -1935,15 +1947,11 @@ abstract class ImageProvider {
             if (!uri.isContentScheme) return false
 
             var found = false
-            val projection = arrayOf(BaseColumns._ID)
             try {
-                val cursor = context.contentResolver.query(uri, projection, null, null, null)
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        found = true
-                    }
-                    cursor.close()
-                }
+                val cursor = context.contentResolver.query(uri, VALIDITY_CHECK_PROJECTION, null, null, null)
+                // make sure there is a single row and that it is readable
+                found = cursor != null && cursor.count == 1 && cursor.moveToFirst()
+                cursor?.close()
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "failed to query content at uri=$uri", e)
             }

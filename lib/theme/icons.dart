@@ -24,6 +24,7 @@ class AIcons {
   static const description = Symbols.description;
   static const descriptionUntitled = Symbols.comments_disabled;
   static const display = Symbols.light_mode;
+  static const dragHandle = Symbols.drag_handle;
   static const duration = Symbols.timelapse;
   static const error = Symbols.error;
   static const explorer = Symbols.account_tree;

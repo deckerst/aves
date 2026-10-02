@@ -25,7 +25,7 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   Future<Player?> _openBackgroundPlayer({required String uri, required String mimeType}) async {
     final player = Player(
       configuration: PlayerConfiguration(
-        logLevel: MPVLogLevel.warn,
+        logLevel: .warn,
         protocolWhitelist: MpvVideoController.protocolWhitelist,
       ),
     );
@@ -350,18 +350,18 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
   }
 
   @override
-  Future<ui.ImageDescriptor?> getThumbnailDescriptor({required String uri, required String mimeType, required double targetExtentDip}) async {
+  Future<ui.ImageDescriptor?> getThumbnailDescriptor({
+    required String uri,
+    required String mimeType,
+    required double targetExtentDip,
+    required List<VideoThumbnailMethod> methods,
+  }) async {
     if (targetExtentDip == 0) return null;
 
     final player = await _openBackgroundPlayer(uri: uri, mimeType: mimeType);
     if (player == null) return null;
 
-    final thumbnailTime = getBestThumbnailTime(player.state.duration);
-    if (thumbnailTime > Duration.zero) {
-      await player.seek(thumbnailTime);
-    }
-
-    final bgra = await player.screenshot(format: null);
+    final bgra = await _getPreferredThumbnail(player, methods);
     final videoParams = player.state.videoParams;
     await player.dispose();
 
@@ -391,6 +391,33 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
       height: output.height,
       pixelFormat: ui.PixelFormat.rgba8888,
     );
+  }
+
+  // return bytes in BGRA
+  Future<Uint8List?> _getPreferredThumbnail(Player player, List<VideoThumbnailMethod> methods) async {
+    for (final method in methods) {
+      Uint8List? bytes;
+      switch (method) {
+        case VideoThumbnailMethod.embedded:
+          // skip
+          bytes = null;
+        case VideoThumbnailMethod.preview:
+          bytes = await _getFrameAtTime(player, getPreviewThumbnailTime(player.state.duration));
+        case VideoThumbnailMethod.first:
+          bytes = await _getFrameAtTime(player, Duration.zero);
+      }
+      if (bytes != null) return bytes;
+    }
+    return null;
+  }
+
+  // return bytes in BGRA
+  Future<Uint8List?> _getFrameAtTime(Player player, Duration thumbnailTime) async {
+    debugPrint('TLAD current video=${player.state.track.video}');
+    if (thumbnailTime != player.state.position) {
+      await player.seek(thumbnailTime);
+    }
+    return await player.screenshot(format: null);
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/locale/calendar/ops/base.dart';
 import 'package:aves/locale/calendar/ops/gregorian.dart';
+import 'package:aves/locale/calendar/ops/hijri.dart';
 import 'package:aves/locale/calendar/ops/persian.dart';
 
 extension ExtraIntl4xCalendar on ACalendar {
@@ -10,9 +11,12 @@ extension ExtraIntl4xCalendar on ACalendar {
 
   CalendarOps get ops {
     switch (this) {
-      // TODO TLAD [hijri]
       case .gregorian:
         return GregorianCalendarOps.instance;
+      case .hijriTbla:
+        return HijriCalendarOps.tabular;
+      case .hijriUmalqura:
+        return HijriCalendarOps.umalqura;
       case .persian:
         return PersianCalendarOps.instance;
       default:

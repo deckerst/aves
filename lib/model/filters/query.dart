@@ -1,8 +1,11 @@
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +17,12 @@ class QueryFilter extends CollectionFilter {
   static final _regexRegex = RegExp('^/(.*)/\$');
 
   final String query;
+  final ACalendar calendar;
   final bool colorful, live;
   late final EntryPredicate _test;
 
   @override
-  List<Object?> get props => [query, live, reversed];
+  List<Object?> get props => [query, calendar, live, reversed];
 
   static final _fieldPattern = RegExp(r'(.+)([=<>])(.+)');
   static final _fileSizePattern = RegExp(r'(\d+)([KMG])?');
@@ -34,7 +38,7 @@ class QueryFilter extends CollectionFilter {
   static const opLower = '<';
   static const opGreater = '>';
 
-  new(this.query, {this.colorful = true, this.live = false, super.reversed = false}) {
+  new(this.query, this.calendar, {this.colorful = true, this.live = false, super.reversed = false}) {
     // allow regex queries wrapped with `/.../`
     var matches = _regexRegex.allMatches(query);
     if (matches.length == 1) {
@@ -79,6 +83,7 @@ class QueryFilter extends CollectionFilter {
   factory fromMap(Map<String, Object?> json) {
     return QueryFilter(
       json['query'] as String,
+      ACalendar.values.safeByName(json['calendar'] as String?) ?? .gregorian,
       reversed: json['reversed'] as bool? ?? false,
     );
   }
@@ -87,6 +92,7 @@ class QueryFilter extends CollectionFilter {
   Map<String, Object?> toJsonMap() => {
     'type': type,
     'query': query,
+    if (calendar != .gregorian) 'calendar': calendar.name,
     if (reversed) 'reversed': reversed,
   };
 
@@ -116,7 +122,7 @@ class QueryFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$query';
+  String get key => '$type-$reversed-$calendar-$query';
 
   EntryPredicate? fieldTest(String upQuery) {
     var match = _fieldPattern.firstMatch(upQuery);
@@ -142,33 +148,48 @@ class QueryFilter extends CollectionFilter {
         }
       case keyContentYear:
         if (valueInt == null) return null;
+        final calOps = calendar.ops;
+        int getYear(AvesEntry entry) {
+          final date = entry.bestDate;
+          return date != null ? calOps.getYearMonthDay(date).$1 : 0;
+        }
         switch (op) {
           case opEqual:
-            return (entry) => (entry.bestDate?.year ?? 0) == valueInt;
+            return (entry) => getYear(entry) == valueInt;
           case opLower:
-            return (entry) => (entry.bestDate?.year ?? 0) < valueInt;
+            return (entry) => getYear(entry) < valueInt;
           case opGreater:
-            return (entry) => (entry.bestDate?.year ?? 0) > valueInt;
+            return (entry) => getYear(entry) > valueInt;
         }
       case keyContentMonth:
         if (valueInt == null) return null;
+        final calOps = calendar.ops;
+        int getMonth(AvesEntry entry) {
+          final date = entry.bestDate;
+          return date != null ? calOps.getYearMonthDay(date).$2 : 0;
+        }
         switch (op) {
           case opEqual:
-            return (entry) => (entry.bestDate?.month ?? 0) == valueInt;
+            return (entry) => getMonth(entry) == valueInt;
           case opLower:
-            return (entry) => (entry.bestDate?.month ?? 0) < valueInt;
+            return (entry) => getMonth(entry) < valueInt;
           case opGreater:
-            return (entry) => (entry.bestDate?.month ?? 0) > valueInt;
+            return (entry) => getMonth(entry) > valueInt;
         }
       case keyContentDay:
         if (valueInt == null) return null;
+        final calOps = calendar.ops;
+        int getDay(AvesEntry entry) {
+          final date = entry.bestDate;
+          return date != null ? calOps.getYearMonthDay(date).$3 : 0;
+        }
         switch (op) {
           case opEqual:
-            return (entry) => (entry.bestDate?.day ?? 0) == valueInt;
+            return (entry) => getDay(entry) == valueInt;
           case opLower:
-            return (entry) => (entry.bestDate?.day ?? 0) < valueInt;
+            return (entry) => getDay(entry) < valueInt;
           case opGreater:
-            return (entry) => (entry.bestDate?.day ?? 0) > valueInt;
+            return (entry) => getDay(entry) > valueInt;
         }
       case keyContentWidth:
         if (valueInt == null) return null;

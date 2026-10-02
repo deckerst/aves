@@ -2,10 +2,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/src/settings/defaults.dart';
 
 mixin VideoSettings on SettingsAccess {
-  VideoHardwareAcceleration get videoHardwareAcceleration => getEnumOrDefault(SettingKeys.videoHardwareAccelerationKey, SettingsDefaults.videoHardwareAcceleration, VideoHardwareAcceleration.values);
-
-  set videoHardwareAcceleration(VideoHardwareAcceleration newValue) => set(SettingKeys.videoHardwareAccelerationKey, newValue.name);
-
   VideoAutoPlayMode get videoAutoPlayMode => getEnumOrDefault(SettingKeys.videoAutoPlayModeKey, SettingsDefaults.videoAutoPlayMode, VideoAutoPlayMode.values);
 
   set videoAutoPlayMode(VideoAutoPlayMode newValue) => set(SettingKeys.videoAutoPlayModeKey, newValue.name);
@@ -14,6 +10,10 @@ mixin VideoSettings on SettingsAccess {
 
   set videoBackgroundMode(VideoBackgroundMode newValue) => set(SettingKeys.videoBackgroundModeKey, newValue.name);
 
+  VideoHardwareAcceleration get videoHardwareAcceleration => getEnumOrDefault(SettingKeys.videoHardwareAccelerationKey, SettingsDefaults.videoHardwareAcceleration, VideoHardwareAcceleration.values);
+
+  set videoHardwareAcceleration(VideoHardwareAcceleration newValue) => set(SettingKeys.videoHardwareAccelerationKey, newValue.name);
+
   VideoLoopMode get videoLoopMode => getEnumOrDefault(SettingKeys.videoLoopModeKey, SettingsDefaults.videoLoopMode, VideoLoopMode.values);
 
   set videoLoopMode(VideoLoopMode newValue) => set(SettingKeys.videoLoopModeKey, newValue.name);
@@ -21,6 +21,12 @@ mixin VideoSettings on SettingsAccess {
   VideoResumptionMode get videoResumptionMode => getEnumOrDefault(SettingKeys.videoResumptionModeKey, SettingsDefaults.videoResumptionMode, VideoResumptionMode.values);
 
   set videoResumptionMode(VideoResumptionMode newValue) => set(SettingKeys.videoResumptionModeKey, newValue.name);
+
+  List<VideoThumbnailMethod> get videoThumbnailMethods => getEnumListOrDefault(SettingKeys.videoThumbnailMethodsKey, SettingsDefaults.videoThumbnailMethods, VideoThumbnailMethod.values);
+
+  set videoThumbnailMethods(List<VideoThumbnailMethod> newValue) => set(SettingKeys.videoThumbnailMethodsKey, newValue.map((v) => v.name).toList());
+
+  // controls
 
   List<EntryAction> get videoControlActions => getEnumListOrDefault(SettingKeys.videoControlActionsKey, SettingsDefaults.videoControlActions, EntryAction.values);
 

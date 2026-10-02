@@ -100,7 +100,7 @@ class _VideoCoverState extends State<VideoCover> {
   @override
   Widget build(BuildContext context) {
     // fade out image to ease transition with the player
-    return StreamBuilder<VideoStatus>(
+    return StreamBuilder<PlaybackStatus>(
       stream: videoController.statusStream,
       builder: (context, _) {
         final showCover = !videoController.isReady;

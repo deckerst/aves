@@ -1,6 +1,8 @@
 package deckers.thibault.aves.model.provider
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -10,6 +12,8 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.MainActivity.Companion.SCOPED_STORAGE_PERMISSION_REQUEST
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
@@ -31,6 +35,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
+import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -163,12 +168,12 @@ class MediaStoreImageProvider : ImageProvider() {
         return obsoleteIds
     }
 
-    fun getChangedUris(context: Context, sinceGenerationByVolume: Map<String, Long>): List<String> {
+    fun getChangedUris(context: Context, sinceGenerationByVolume: Map<String, Long?>): List<String> {
         val changedUris = ArrayList<String>()
-        fun check(context: Context, sinceGeneration: Long, contentUri: Uri) {
+        fun check(context: Context, sinceGeneration: Long?, contentUri: Uri) {
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             val selection = "${MediaStore.MediaColumns.GENERATION_MODIFIED} > ?"
-            val selectionArgs = arrayOf(sinceGeneration.toString())
+            val selectionArgs = arrayOf((sinceGeneration ?: 0L).toString())
             try {
                 val cursor = context.contentResolver.query(contentUri, projection, selection, selectionArgs, null)
                 if (cursor != null) {
@@ -595,7 +600,7 @@ class MediaStoreImageProvider : ImageProvider() {
             val volumePath = StorageUtils.getVolumePath(context, anyPath = targetDir)
             val relativePath = targetDir.substring(volumePath?.length ?: 0)
 
-            val contentUri = StorageUtils.getMediaStoreRootContentUri(context, mimeType = mimeType, anyPath = targetDir)
+            val rootContentUri = StorageUtils.getMediaStoreRootContentUri(context, mimeType = mimeType, anyPath = targetDir)
                 ?: throw Exception("failed to get MediaStore root content URI for mimeType=$mimeType targetDir=$targetDir")
 
             val values = ContentValues().apply {
@@ -604,7 +609,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
             val resolver = context.contentResolver
-            val uri = resolver.insert(contentUri, values)
+            val uri = resolver.insert(rootContentUri, values)
                 ?: throw Exception("MediaStore failed to insert for an unknown reason")
 
             resolver.openOutputStream(uri)?.use(write)
@@ -624,12 +629,15 @@ class MediaStoreImageProvider : ImageProvider() {
             Log.d(LOG_TAG, "rename content at uri=$mediaUri")
             val uri = StorageUtils.getMediaStoreScopedStorageSafeUri(mediaUri, mimeType)
 
+            val targetVolume = PathSegments(context, newFile.path).volumePath
+            val queryUri = getMediaUriOnVolume(context, uri, mimeType, targetVolume) ?: uri
+
             // `IS_PENDING` is necessary for `TITLE`, not for `DISPLAY_NAME`
             val tempValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
-            if (context.contentResolver.update(uri, tempValues, null, null) == 0) {
-                throw Exception("failed to update fields for uri=$uri")
+            if (tryContentUpdate(context, queryUri, tempValues)) {
+                return rename(context, mimeType, mediaUri, newFile)
             }
 
             val finalValues = ContentValues().apply {
@@ -638,8 +646,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 put(MediaStore.MediaColumns.TITLE, newFile.nameWithoutExtension)
                 put(MediaStore.MediaColumns.IS_PENDING, 0)
             }
-            if (context.contentResolver.update(uri, finalValues, null, null) == 0) {
-                throw Exception("failed to update fields for uri=$uri")
+            if (tryContentUpdate(context, queryUri, finalValues)) {
+                return rename(context, mimeType, mediaUri, newFile)
             }
 
             // URI should not change
@@ -666,15 +674,80 @@ class MediaStoreImageProvider : ImageProvider() {
                 throw Exception("moving from volume $sourceVolume to $targetVolume is not possible via Media Store API")
             }
 
-            val finalValues = ContentValues().apply {
+            val queryUri = getMediaUriOnVolume(context, uri, mimeType, targetVolume) ?: uri
+
+            val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, targetFile.name)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, targetSegments.relativeDir)
             }
-            if (context.contentResolver.update(uri, finalValues, null, null) == 0) {
-                throw Exception("failed to update fields for uri=$uri")
+            if (tryContentUpdate(context, queryUri, values)) {
+                return move(context, mimeType, mediaUri, sourceFile, targetFile)
             }
 
             return targetFile.path
+        }
+
+        /*
+            Renaming (field `DISPLAY_NAME`) or moving (field `RELATIVE_PATH`) a file on the SD card is trickier than on the primary storage:
+
+            * Using query URI = `content://media/external/images/media/6083`
+            throws (on most devices, but not on Sony Xperia 5 V with Android 15):
+            "IllegalArgumentException: Changing volume from /storage/0AEA-A1A6/DCIM/Camera/20261002_110703.jpg to /storage/emulated/0/DCIM/belege/20261002_110703.jpg not allowed"
+            because `MediaProvider.resolveVolumeName(uri)` yields `VOLUME_EXTERNAL_PRIMARY` for a URI with "external" as the first path segment
+
+            * Using query URI = `content://media/0aea-a1a6/images/media`, where `ID = 6083`
+            throws:
+            "IllegalArgumentException: Movement of content://media/0aea-a1a6/images/media which isn't part of well-defined collection not allowed"
+            because `MediaProvider.updateInternal(...)` checks that provided URI includes the media ID to target a single item
+
+            * Using query URI = `content://media/0aea-a1a6/images/media/6083`
+            throws:
+            "RecoverableSecurityException: deckers.thibault.aves.debug has no access to content://media/0aea-a1a6/images/media/6083"
+            which can be handled without additional user interaction when the media management permission is granted
+
+            returns whether to retry following recovery from a security exception
+         */
+        private fun tryContentUpdate(context: Context, uri: Uri, values: ContentValues): Boolean {
+            try {
+                if (context.contentResolver.update(uri, values, null, null) == 0) {
+                    throw Exception("failed to update any row for uri=$uri values=[$values]")
+                }
+            } catch (ex: IllegalArgumentException) {
+                throw Exception("failed to update fields for uri=$uri values=$values]", ex)
+            } catch (ex: SecurityException) {
+                Log.w(LOG_TAG, "caught a security exception when attempting to update content for uri=$uri values=$values] ex=${ex.message}")
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
+                    throw ex
+                }
+
+                val rse = ex as? RecoverableSecurityException ?: throw ex
+                val intentSender = rse.userAction.actionIntent.intentSender
+
+                // request user permission for this item
+                MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
+                context.startIntentSenderForResult(intentSender, SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
+                val granted = MainActivity.pendingPermissionCompleter!!.join()
+
+                MainActivity.pendingPermissionCompleter = null
+                if (!granted) {
+                    throw Exception("failed to get permission from recoverable security exception", ex)
+                }
+
+                return true
+            }
+            return false
+        }
+
+        private fun getMediaUriOnVolume(context: Context, uri: Uri, mimeType: String, volumePath: String?): Uri? {
+            var uriOnVolume: Uri? = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && volumePath != null) {
+                val rootContentUri = StorageUtils.getMediaStoreRootContentUri(context, mimeType, volumePath)
+                val contentId = uri.tryParseId()
+                if (rootContentUri != null && contentId != null) {
+                    uriOnVolume = ContentUris.withAppendedId(rootContentUri, contentId)
+                }
+            }
+            return uriOnVolume
         }
     }
 }

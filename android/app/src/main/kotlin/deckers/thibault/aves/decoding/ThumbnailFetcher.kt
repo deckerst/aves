@@ -17,6 +17,7 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
+import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
@@ -43,23 +44,29 @@ class ThumbnailFetcher internal constructor(
     private val isFlipped: Boolean,
     widthDip: Double?,
     heightDip: Double?,
+    private val videoMethods: List<VideoThumbnailMethod>?,
     private val result: ByteSink,
 ) {
     private val density = context.devicePixelRatio()
     private val defaultSize = (DEFAULT_SIZE_DIP * density).roundToInt()
     private val width: Int = if (widthDip?.takeIf { it > 0 } != null) (widthDip * density).roundToInt() else defaultSize
     private val height: Int = if (heightDip?.takeIf { it > 0 } != null) (heightDip * density).roundToInt() else defaultSize
-    private val svgFetch = mimeType == SVG
-    private val tiffFetch = mimeType == MimeTypes.TIFF
-    private val multiPageFetch = pageId != null && MultiPageImage.isSupported(mimeType)
-    private val customFetch = svgFetch || tiffFetch || multiPageFetch
+
+    private fun isLowQualityFetch() = width == defaultSize || height == defaultSize
+
+    private fun isCustomFetch(): Boolean {
+        // use custom Glide models for videos / SVG / TIFF / multi-page images
+        if (isVideo(mimeType) || mimeType == SVG || mimeType == MimeTypes.TIFF) return true
+        if (pageId != null && MultiPageImage.isSupported(mimeType)) return true
+        return false
+    }
 
     suspend fun fetch() {
         var bitmap: Bitmap? = null
         var exception: Exception? = null
 
         try {
-            if (!customFetch && (width == defaultSize || height == defaultSize) && !isFlipped) {
+            if (isLowQualityFetch() && !isCustomFetch() && !isFlipped) {
                 // Fetch low quality thumbnails when size is not specified.
                 // As of Android 11, the Media Store content resolver may return a thumbnail
                 // that is automatically rotated according to EXIF orientation, but not flipped,
@@ -163,7 +170,7 @@ class ThumbnailFetcher internal constructor(
         val target = Glide.with(context)
             .asBitmap()
             .apply(options)
-            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId))
+            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId, videoMethods = videoMethods))
             .submit(width, height)
 
         return try {

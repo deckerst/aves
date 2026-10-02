@@ -4,12 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class DescriptorImageProvider extends ImageProvider<DescriptorImageProvider> {
-  const new(this.descriptor, {this.scale = 1.0});
-
-  final ui.ImageDescriptor descriptor;
-  final double scale;
-
+class const DescriptorImageProvider(
+  final ui.ImageDescriptor descriptor, {
+  final double scale = 1.0,
+}) extends ImageProvider<DescriptorImageProvider> {
   @override
   Future<DescriptorImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<DescriptorImageProvider>(this);

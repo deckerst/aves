@@ -161,6 +161,7 @@ class AndroidDebugService {
         'widthDip': request.extent,
         'heightDip': request.extent,
         'method': method.name,
+        'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
       });
       if (result != null) return result as Uint8List;
     } on PlatformException catch (e, stack) {

@@ -116,8 +116,8 @@
     "videoLoopModeAlways": "始终",
     "videoControlsPlayOutside": "用其他播放器打开",
     "mapStyleGoogleNormal": "Google 地图",
-    "mapStyleGoogleHybrid": "Google 地图 (卫星图像)",
-    "mapStyleGoogleTerrain": "Google 地图 (地形)",
+    "mapStyleGoogleHybrid": "Google 地图（卫星图像）",
+    "mapStyleGoogleTerrain": "Google 地图（地形）",
     "mapStyleOsmHot": "Humanitarian OSM",
     "mapStyleStamenWatercolor": "Stamen Watercolor",
     "nameConflictStrategyRename": "重命名",
@@ -740,5 +740,11 @@
     "settingsCalendarTile": "日历",
     "tileLayoutCalendar": "日历",
     "collectionActionShowLayoutBar": "显示布局栏",
-    "collectionActionHideLayoutBar": "隐藏布局栏"
+    "collectionActionHideLayoutBar": "隐藏布局栏",
+    "calendarHijriTabular": "伊斯兰历（表格）",
+    "calendarHijriUmalqura": "伊斯兰历（乌姆库拉）",
+    "videoThumbnailMethodEmbeddedImage": "嵌入的图片",
+    "videoThumbnailMethodPreviewFrame": "预览帧",
+    "videoThumbnailMethodFirstFrame": "首帧",
+    "settingsVideoThumbnailMethods": "首选的缩略图"
 }

@@ -1,2 +1,2 @@
-export 'src/controller.dart';
+export 'src/controller_video.dart';
 export 'src/factory.dart';

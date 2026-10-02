@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
@@ -11,6 +12,7 @@ import android.location.Geocoder
 import android.os.Build
 import android.os.LocaleList
 import android.provider.Settings
+import android.util.Log
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.performance.DefaultDevicePerformance
@@ -19,6 +21,7 @@ import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -128,8 +131,11 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun isLocked(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as android.app.KeyguardManager
-        val isLocked = keyguardManager.isKeyguardLocked
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as? KeyguardManager
+        if (keyguardManager == null) {
+            Log.w(LOG_TAG, "keyguard service unavailable")
+        }
+        val isLocked = keyguardManager?.isKeyguardLocked ?: true
         result.success(isLocked)
     }
 
@@ -179,6 +185,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag<DeviceHandler>()
         const val CHANNEL = "deckers.thibault/aves/device"
     }
 }

@@ -110,10 +110,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, windowInsets ->
             val insets = ViewCompat.onApplyWindowInsets(view, windowInsets)
-            notifySystemBarVisibilityChange(
-                statusBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.statusBars()),
-                navBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars()),
-            )
+            onWindowInsetsChanged(windowInsets)
             insets
         }
     }
@@ -285,6 +282,23 @@ open class MainActivity : FlutterFragmentActivity() {
         }
     }
 
+    private var lastStatusBarVisible = false
+    private var lastNavBarVisible = false
+
+    private fun onWindowInsetsChanged(windowInsets: WindowInsetsCompat) {
+        val statusBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.statusBars())
+        val navBarVisible = windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars())
+        if (lastStatusBarVisible != statusBarVisible || lastNavBarVisible != navBarVisible) {
+            lastStatusBarVisible = statusBarVisible
+            lastNavBarVisible = navBarVisible
+            notifySystemBarVisibilityChange(
+                statusBarVisible = statusBarVisible,
+                navBarVisible = navBarVisible,
+            )
+        }
+    }
+
+    // window mode monitoring: PiP, multi-window
     private fun notifyWindowModeChange() = windowChangeStreamHandler.notifyWindowModeChange()
 
     private fun notifyCutoutInsetsChange() = windowChangeStreamHandler.notifyCutoutInsetsChange()
@@ -307,8 +321,7 @@ open class MainActivity : FlutterFragmentActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(requestCode, resultCode, data)
-            DELETE_SINGLE_PERMISSION_REQUEST,
-            MEDIA_WRITE_BULK_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
+            SCOPED_STORAGE_PERMISSION_REQUEST -> onScopedStoragePermissionResult(resultCode)
 
             CREATE_FILE_REQUEST,
             OPEN_FILE_REQUEST -> onStorageAccessResult(requestCode, data?.data)
@@ -345,7 +358,7 @@ open class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun onScopedStoragePermissionResult(resultCode: Int) {
-        pendingScopedStoragePermissionCompleter?.complete(resultCode == RESULT_OK)
+        pendingPermissionCompleter?.complete(resultCode == RESULT_OK)
     }
 
     open fun extractIntentData(intent: Intent?): FieldMap {
@@ -382,8 +395,11 @@ open class MainActivity : FlutterFragmentActivity() {
                         INTENT_DATA_KEY_URI to uri.toString(),
                     )
 
-                    val keyguardManager = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-                    val isLocked = keyguardManager.isKeyguardLocked
+                    val keyguardManager = getSystemService(KEYGUARD_SERVICE) as? KeyguardManager
+                    if (keyguardManager == null) {
+                        Log.w(LOG_TAG, "keyguard service unavailable")
+                    }
+                    val isLocked = keyguardManager?.isKeyguardLocked ?: true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                         setShowWhenLocked(isLocked)
                     }
@@ -644,10 +660,9 @@ open class MainActivity : FlutterFragmentActivity() {
         const val OPEN_FROM_ANALYSIS_SERVICE = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
-        const val DELETE_SINGLE_PERMISSION_REQUEST = 5
-        const val MEDIA_WRITE_BULK_PERMISSION_REQUEST = 6
-        const val PICK_COLLECTION_FILTERS_REQUEST = 7
-        const val EDIT_REQUEST = 8
+        const val SCOPED_STORAGE_PERMISSION_REQUEST = 5
+        const val PICK_COLLECTION_FILTERS_REQUEST = 6
+        const val EDIT_REQUEST = 7
 
         const val INTENT_ACTION_APP_SETTINGS = "app_settings"
         const val INTENT_ACTION_EDIT = "edit"
@@ -688,7 +703,7 @@ open class MainActivity : FlutterFragmentActivity() {
         // request code to pending runnable
         val pendingStorageAccessResultHandlers = ConcurrentHashMap<Int, PendingStorageAccessResultHandler>()
 
-        var pendingScopedStoragePermissionCompleter: CompletableFuture<Boolean>? = null
+        var pendingPermissionCompleter: CompletableFuture<Boolean>? = null
 
         var pendingCollectionFilterPickHandler: ((filters: List<String>?) -> Unit)? = null
 

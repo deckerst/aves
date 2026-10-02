@@ -4,7 +4,7 @@ import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/settings/common/tiles.dart';
+import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';

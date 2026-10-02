@@ -63,11 +63,13 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
 
     override fun isCrossWindowBlurEnabled(call: MethodCall, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            result.success(windowManager.isCrossWindowBlurEnabled)
-        } else {
-            result.success(false)
+            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            if (windowManager != null) {
+                result.success(windowManager.isCrossWindowBlurEnabled)
+                return
+            }
         }
+        result.success(false)
     }
 
     override fun isInPictureInPictureMode(call: MethodCall, result: MethodChannel.Result) {
@@ -79,9 +81,9 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
         val displayRotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             activity.display.rotation
         } else {
-            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
             @Suppress("DEPRECATION")
-            windowManager.defaultDisplay.rotation
+            windowManager?.defaultDisplay?.rotation ?: 0
         }
         result.success(displayRotation * 90)
     }

@@ -6,6 +6,7 @@ import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -94,8 +95,9 @@ class _CollectionGridState extends State<CollectionGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final filters = context.select<CollectionLens, Set<CollectionFilter>>((v) => v.visibleFilters);
     final (isCalendar, spacing) = context.select<Settings, (bool, double)>((v) {
-      final layout = v.effectiveCollectionTileLayout;
+      final layout = v.getEffectiveCollectionTileLayout(filters);
       return (layout == .calendar, CollectionGrid.spacingForLayout(layout));
     });
 
@@ -153,9 +155,9 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
   @override
   Widget build(BuildContext context) {
     final selectable = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canSelectMedia);
-    final tileLayout = context.select<Settings, TileLayout>((v) => v.effectiveCollectionTileLayout);
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
+        final tileLayout = context.select<Settings, TileLayout>((v) => v.getEffectiveCollectionTileLayout(collection.visibleFilters));
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, thumbnailExtent, child) {
@@ -281,7 +283,8 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     await Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (context, a, sa) {
+        transitionDuration: context.read<DurationsData>().viewerRouteTransitionDuration,
+        pageBuilder: (context, _, _) {
           Widget child = EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

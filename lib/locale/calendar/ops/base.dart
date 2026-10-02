@@ -1,5 +1,5 @@
 abstract class CalendarOps {
-  int get monthsPerYear;
+  int get monthsPerYear => DateTime.monthsPerYear;
 
   // when `DateTime` components are to be interpreted within the calendar
   // e.g. when `DateTime` month `7` is to be interpreted as Persian 7th month `Mehr`

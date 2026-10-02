@@ -1,3 +1,4 @@
+import 'package:aves/locale/calendar/delegate/hijri.dart';
 import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/date_modifier.dart';
@@ -249,6 +250,11 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     DateTime lastDate = DateTime(2100);
 
     switch (calendarDelegate) {
+      case HijriCalendarDelegate d:
+        final calendarType = d.calendarType;
+        initialDate = HijriDateTime.fromGregorian(calendarType, _customDateTime);
+        firstDate = HijriDateTime.fromGregorian(calendarType, firstDate);
+        lastDate = HijriDateTime.fromGregorian(calendarType, lastDate);
       case PersianCalendarDelegate _:
         initialDate = PersianDateTime.fromGregorian(_customDateTime);
         firstDate = PersianDateTime.fromGregorian(firstDate);
@@ -267,6 +273,8 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     if (_date == null) return;
 
     switch (calendarDelegate) {
+      case HijriCalendarDelegate d:
+        _date = HijriDateTime(d.calendarType, _date.year, _date.month, _date.day).toGregorian();
       case PersianCalendarDelegate _:
         _date = PersianDateTime(_date.year, _date.month, _date.day).toGregorian();
     }

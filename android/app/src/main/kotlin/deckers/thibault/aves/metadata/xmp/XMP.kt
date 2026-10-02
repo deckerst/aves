@@ -192,7 +192,7 @@ object XMP {
         try {
             if (doesPropertyExist(schema, propName)) {
                 val item = getPropertyInteger(schema, propName)
-                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
                     save(item)
                 }
@@ -208,7 +208,7 @@ object XMP {
         try {
             if (doesPropertyExist(schema, propName)) {
                 val item = getPropertyLong(schema, propName)
-                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
                     save(item)
                 }
@@ -224,7 +224,7 @@ object XMP {
         try {
             if (doesPropertyExist(schema, propName)) {
                 val item = getPropertyString(schema, propName)
-                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
                     save(item)
                 }
@@ -240,7 +240,7 @@ object XMP {
         try {
             if (doesPropertyExist(schema, propName)) {
                 val item = getLocalizedText(schema, propName, GENERIC_LANG, SPECIFIC_LANG)
-                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null && (acceptBlank || item.value.isNotBlank())) {
                     save(item.value)
                 }
@@ -256,7 +256,7 @@ object XMP {
         try {
             if (doesPropertyExist(schema, propName)) {
                 val item = getPropertyDate(schema, propName)
-                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
                     // strip time zone from XMP dates so that we show date/times as local ones
                     // this aligns with Exif date/times, which are specified without time zones
@@ -299,7 +299,7 @@ object XMP {
     }
 }
 
-class XMPPropName(val nsUri: String, private val prop: String) {
+class XMPPropName(val nsUri: String, val prop: String) {
     private fun resolve(): String = "${XMPMetaFactory.getSchemaRegistry().getNamespacePrefix(nsUri)}$prop"
 
     override fun toString(): String = resolve()

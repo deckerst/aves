@@ -7,7 +7,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/viewer/video/db_playback_state_handler.dart';
-import 'package:aves_model/aves_model.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -41,7 +40,7 @@ class VideoConductor {
     await _disposeAll();
     playingVideoControllerNotifier.dispose();
     _controllers.clear();
-    if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
+    if (settings.keepScreenOn == .videoPlayback) {
       await windowService.keepScreenOn(false);
     }
   }
@@ -74,7 +73,7 @@ class VideoConductor {
     return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> _onControllerStatusChanged(AvesEntry entry, AvesVideoController controller, VideoStatus status) async {
+  Future<void> _onControllerStatusChanged(AvesEntry entry, AvesVideoController controller, PlaybackStatus status) async {
     bool canSkipToNext = false, canSkipToPrevious = false;
     final entries = _collection?.sortedEntries;
     if (entries != null) {
@@ -92,8 +91,8 @@ class VideoConductor {
       canSkipToNext: canSkipToNext,
       canSkipToPrevious: canSkipToPrevious,
     );
-    if (settings.keepScreenOn == KeepScreenOn.videoPlayback) {
-      await windowService.keepScreenOn(status == VideoStatus.playing);
+    if (settings.keepScreenOn == .videoPlayback) {
+      await windowService.keepScreenOn(status == .playing);
     }
 
     playingVideoControllerNotifier.value = getPlayingController();

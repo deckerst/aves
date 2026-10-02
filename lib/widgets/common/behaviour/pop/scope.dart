@@ -2,16 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 // this widget combines multiple pop handlers with a guaranteed order
-class AvesPopScope extends StatelessWidget {
-  final List<PopHandler> handlers;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.handlers,
-    required this.child,
-  });
-
+class const AvesPopScope({
+  super.key,
+  required final List<PopHandler> handlers,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blocker = handlers.firstWhereOrNull((v) => !v.canPop(context));
@@ -33,15 +28,10 @@ abstract class PopHandler {
   void onPopBlocked(BuildContext context);
 }
 
-class APopHandler implements PopHandler {
-  final bool Function(BuildContext context) _canPop;
-  final void Function(BuildContext context) _onPopBlocked;
-
-  new({
-    required this._canPop,
-    required this._onPopBlocked,
-  });
-
+class APopHandler({
+  required final bool Function(BuildContext context) _canPop,
+  required final void Function(BuildContext context) _onPopBlocked,
+}) implements PopHandler {
   @override
   bool canPop(BuildContext context) => _canPop(context);
 

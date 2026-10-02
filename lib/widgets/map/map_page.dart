@@ -443,7 +443,8 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     Navigator.maybeOf(context)?.push(
       TransparentMaterialPageRoute(
         settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (context, a, sa) {
+        transitionDuration: context.read<DurationsData>().viewerRouteTransitionDuration,
+        pageBuilder: (context, _, _) {
           // propagate app mode from the map page, as it could be locally overridden
           // and differ from the real app mode above the `Navigator`
           return ListenableProvider<ValueNotifier<AppMode>>.value(

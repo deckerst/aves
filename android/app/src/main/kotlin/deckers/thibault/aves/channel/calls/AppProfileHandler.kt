@@ -28,8 +28,9 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
-        result.success(crossProfileApps.canInteractAcrossProfiles())
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        val canInteract = crossProfileApps?.canInteractAcrossProfiles() ?: false
+        result.success(canInteract)
     }
 
     private fun canRequestInteractAcrossProfiles(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -38,8 +39,9 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
-        result.success(crossProfileApps.canRequestInteractAcrossProfiles())
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        val canRequest = crossProfileApps?.canRequestInteractAcrossProfiles() ?: false
+        result.success(canRequest)
     }
 
     private fun requestInteractAcrossProfiles(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
@@ -48,7 +50,12 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        if (crossProfileApps == null) {
+            result.error("requestInteractAcrossProfiles-service", "cross profile apps service unavailable", null)
+            return
+        }
+
         val intent = crossProfileApps.createRequestInteractAcrossProfilesIntent()
         val started = activity.startActivity(intent)
 
@@ -61,7 +68,12 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        if (crossProfileApps == null) {
+            result.error("switchProfile-service", "cross profile apps service unavailable", null)
+            return
+        }
+
         val userHandles = crossProfileApps.targetUserProfiles
         crossProfileApps.startMainActivity(activity.componentName, userHandles.first())
         result.success(null)
@@ -73,7 +85,12 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        if (crossProfileApps == null) {
+            result.error("getProfileSwitchingLabel-service", "cross profile apps service unavailable", null)
+            return
+        }
+
         val userHandles = crossProfileApps.targetUserProfiles
         val label = if (userHandles.isEmpty()) "" else crossProfileApps.getProfileSwitchingLabel(userHandles.first())
 
@@ -86,7 +103,12 @@ class AppProfileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as CrossProfileApps
+        val crossProfileApps = activity.getSystemService(Context.CROSS_PROFILE_APPS_SERVICE) as? CrossProfileApps
+        if (crossProfileApps == null) {
+            result.error("getTargetUserProfiles-service", "cross profile apps service unavailable", null)
+            return
+        }
+
         val userProfiles = crossProfileApps.targetUserProfiles.map { it.toString() }.toList()
         result.success(userProfiles)
     }

@@ -5,13 +5,11 @@ import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
 
-abstract class XmpGoogleNamespace extends XmpNamespace {
-  new({
-    required super.nsUri,
-    required super.schemaRegistryPrefixes,
-    required super.rawProps,
-  });
-
+abstract class XmpGoogleNamespace({
+  required super.nsUri,
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpNamespace {
   List<(String, String)> get dataProps;
 
   @override
@@ -47,7 +45,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
                       return expandedPart;
                     }).toList();
                     return OpenEmbeddedDataNotification.xmp(
-                      props: props,
+                      propPath: props,
                       mimeType: mimeProp.value,
                     ).dispatch(context);
                   },
@@ -59,8 +57,11 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
   }
 }
 
-class XmpGAudioNamespace extends XmpGoogleNamespace {
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gAudio);
+class XmpGAudioNamespace({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpGoogleNamespace {
+  this : super(nsUri: XmpNamespaces.gAudio);
 
   @override
   List<(String, String)> get dataProps => [
@@ -68,8 +69,11 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
   ];
 }
 
-class XmpGCameraNamespace extends XmpGoogleNamespace {
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gCamera);
+class XmpGCameraNamespace({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpGoogleNamespace {
+  this : super(nsUri: XmpNamespaces.gCamera);
 
   @override
   List<(String, String)> get dataProps => [
@@ -77,11 +81,14 @@ class XmpGCameraNamespace extends XmpGoogleNamespace {
   ];
 }
 
-class XmpGContainer extends XmpNamespace {
+class XmpGContainer({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpNamespace {
   late final String _gContainerItemNsPrefix;
   late final String _rdfNsPrefix;
 
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gContainer) {
+  this : super(nsUri: XmpNamespaces.gContainer) {
     _gContainerItemNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.gContainerItem);
     _rdfNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.rdf);
   }
@@ -101,8 +108,11 @@ class XmpGContainer extends XmpNamespace {
   ];
 }
 
-class XmpGDepthNamespace extends XmpGoogleNamespace {
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gDepth);
+class XmpGDepthNamespace({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpGoogleNamespace {
+  this : super(nsUri: XmpNamespaces.gDepth);
 
   @override
   List<(String, String)> get dataProps => [
@@ -111,12 +121,15 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
   ];
 }
 
-class XmpGDeviceNamespace extends XmpNamespace {
+class XmpGDeviceNamespace({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpNamespace {
   late final String _cameraNsPrefix;
   late final String _containerNsPrefix;
   late final String _itemNsPrefix;
 
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gDevice) {
+  this : super(nsUri: XmpNamespaces.gDevice) {
     _cameraNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.gDeviceCamera);
     _containerNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.gDeviceContainer);
     _itemNsPrefix = XmpNamespace.prefixForUri(schemaRegistryPrefixes, XmpNamespaces.gDeviceItem);
@@ -170,8 +183,11 @@ class XmpGDeviceNamespace extends XmpNamespace {
   ];
 }
 
-class XmpGImageNamespace extends XmpGoogleNamespace {
-  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.gImage);
+class XmpGImageNamespace({
+  required super.schemaRegistryPrefixes,
+  required super.rawProps,
+}) extends XmpGoogleNamespace {
+  this : super(nsUri: XmpNamespaces.gImage);
 
   @override
   List<(String, String)> get dataProps => [

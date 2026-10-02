@@ -6,7 +6,6 @@ import android.os.storage.StorageManager
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
-import deckers.thibault.aves.storage.StorageUtils.getVolumePaths
 import deckers.thibault.aves.utils.FileUtils.getFolderSize
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -40,8 +39,8 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getDataUsage(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
         var internalCache = getFolderSize(context.cacheDir)
         internalCache += getFolderSize(context.codeCacheDir)
-        val externalCache = context.externalCacheDirs.sumOf(::getFolderSize)
-        val externalFilesDirs = context.getExternalFilesDirs(null)
+        val externalCache = context.externalCacheDirs.filterNotNull().sumOf(::getFolderSize)
+        val externalFilesDirs = context.getExternalFilesDirs(null).filterNotNull()
         val dataDir = context.dataDir
 
         val database = getFolderSize(File(dataDir, "databases"))
@@ -70,7 +69,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         val volumes = ArrayList<Map<String, Any?>>()
         val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
         if (storageManager != null) {
-            for (volumePath in getVolumePaths(context)) {
+            for (volumePath in StorageUtils.getVolumePaths(context)) {
                 try {
                     storageManager.getStorageVolume(File(volumePath))?.let { volume ->
                         val primary = volume.isPrimary
@@ -201,7 +200,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun deleteExternalCache(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        context.externalCacheDirs.filter { it.exists() }.forEach { it.deleteRecursively() }
+        context.externalCacheDirs.filterNotNull().filter { it.exists() }.forEach { it.deleteRecursively() }
         result.success(true)
     }
 

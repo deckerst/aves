@@ -82,7 +82,7 @@ void main() {
     expect(placeholder, jsonMapRoundTrip(placeholder));
     expect(placeholder, jsonStringRoundTrip(placeholder));
 
-    final query = QueryFilter('some query');
+    final query = QueryFilter('some query', calendar);
     expect(query, jsonMapRoundTrip(query));
     expect(query, jsonStringRoundTrip(query));
 

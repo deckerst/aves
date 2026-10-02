@@ -9,25 +9,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class FullImage extends ImageProvider<FullImage> with Equatable {
-  final String uri, mimeType;
-  final int? pageId, rotationDegrees, sizeBytes;
-  final bool isFlipped, isAnimated;
-  final double scale;
-
+class const FullImage({
+  required final String uri,
+  required final String mimeType,
+  required final int? pageId,
+  required final int? rotationDegrees,
+  required final bool isFlipped,
+  required final bool isAnimated,
+  final int? sizeBytes,
+  final double scale = 1.0,
+}) extends ImageProvider<FullImage> with Equatable {
   @override
   List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, isAnimated, sizeBytes, scale];
-
-  const new({
-    required this.uri,
-    required this.mimeType,
-    required this.pageId,
-    required this.rotationDegrees,
-    required this.isFlipped,
-    required this.isAnimated,
-    this.sizeBytes,
-    this.scale = 1.0,
-  });
 
   @override
   Future<FullImage> obtainKey(ImageConfiguration configuration) {

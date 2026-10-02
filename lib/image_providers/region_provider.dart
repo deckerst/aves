@@ -10,11 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class RegionProvider extends ImageProvider<RegionProviderKey> {
-  final RegionProviderKey key;
-
-  const new(this.key);
-
+class const RegionProvider(final RegionProviderKey key) extends ImageProvider<RegionProviderKey> {
   @override
   Future<RegionProviderKey> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<RegionProviderKey>(key);
@@ -58,28 +54,19 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
 }
 
 @immutable
-class RegionProviderKey extends Equatable {
+class const RegionProviderKey({
+  required final String uri,
+  required final String mimeType,
+  required final int? pageId,
+  required final int? sizeBytes,
+  required final int rotationDegrees,
+  required final bool isFlipped,
+  required final int sampleSize,
+  required final Rectangle<int> regionRect,
+  required final Size imageSize,
+}) extends Equatable {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
-  final String uri, mimeType;
-  final int? pageId, sizeBytes;
-  final int rotationDegrees, sampleSize;
-  final bool isFlipped;
-  final Rectangle<int> regionRect;
-  final Size imageSize;
-
   @override
   List<Object?> get props => [uri, mimeType, pageId, sizeBytes, rotationDegrees, isFlipped, sampleSize, regionRect, imageSize];
-
-  const new({
-    required this.uri,
-    required this.mimeType,
-    required this.pageId,
-    required this.sizeBytes,
-    required this.rotationDegrees,
-    required this.isFlipped,
-    required this.sampleSize,
-    required this.regionRect,
-    required this.imageSize,
-  });
 }

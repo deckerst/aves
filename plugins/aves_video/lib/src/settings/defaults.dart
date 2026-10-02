@@ -10,8 +10,10 @@ class SettingsDefaults {
   static const videoHardwareAcceleration = VideoHardwareAcceleration.forced;
   static const videoLoopMode = VideoLoopMode.shortOnly;
   static const videoResumptionMode = VideoResumptionMode.ask;
-  static const videoShowRawTimedText = false;
-  static const videoControlActions = [EntryAction.videoTogglePlay];
+  static const videoThumbnailMethods = <VideoThumbnailMethod>[.embedded, .preview];
+
+  // controls
+  static const videoControlActions = <EntryAction>[.videoTogglePlay];
   static const videoGestureDoubleTapTogglePlay = false;
   static const videoGestureSideDoubleTapSeek = true;
   static const videoGestureVerticalDragBrightnessVolume = false;

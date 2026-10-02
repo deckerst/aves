@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 class MediaStoreSource extends CollectionSource {
   final Debouncer _changeDebouncer = Debouncer(delay: ADurations.mediaContentChangeDebounceDelay);
   final Set<String> _changedUris = {};
-  Map<String, int>? _lastGenerationByVolume;
+  Map<String, int?>? _lastGenerationByVolume;
   SourceScope _loadedScope, _targetScope;
   bool _canAnalyze = true;
   Future<void>? _essentialLoader;

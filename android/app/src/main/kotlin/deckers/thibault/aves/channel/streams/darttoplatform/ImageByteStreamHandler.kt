@@ -12,6 +12,7 @@ import deckers.thibault.aves.decoding.ThumbnailFetcher
 import deckers.thibault.aves.decoding.TiffRegionFetcher
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.model.EntryFields
+import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
@@ -241,6 +242,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val isFlipped = arguments[EntryFields.IS_FLIPPED] as Boolean?
         val widthDip = (arguments["widthDip"] as Number?)?.toDouble()
         val heightDip = (arguments["heightDip"] as Number?)?.toDouble()
+        val videoMethods = (arguments["videoMethods"] as List<*>?)?.filterIsInstance<String>()?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
         if (uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
             error("getThumbnail-args", "missing arguments", null)
@@ -259,6 +261,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             isFlipped = isFlipped,
             widthDip = widthDip,
             heightDip = heightDip,
+            videoMethods = videoMethods,
             result = this,
         ).fetch()
     }

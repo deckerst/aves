@@ -1,16 +1,18 @@
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-class PanoramaInfo {
-  final Rect? croppedAreaRect;
-  final Size? fullPanoSize;
-  final String? projectionType;
+@immutable
+class const PanoramaInfo({
+  final Rect? croppedAreaRect,
+  final Size? fullPanoSize,
+  final String? projectionType,
+  final String? audioPropMimeType,
+  final List? audioPropPath,
+}) extends Equatable {
+  @override
+  List<Object?> get props => [croppedAreaRect, fullPanoSize, projectionType, audioPropMimeType, audioPropPath];
 
-  new({
-    this.croppedAreaRect,
-    this.fullPanoSize,
-    this.projectionType,
-  });
+  bool get hasCroppedArea => croppedAreaRect != null && fullPanoSize != null;
 
   factory fromMap(Map map) {
     var cLeft = map['croppedAreaLeft'] as int?;
@@ -20,6 +22,8 @@ class PanoramaInfo {
     var fWidth = map['fullPanoWidth'] as int?;
     var fHeight = map['fullPanoHeight'] as int?;
     final projectionType = map['projectionType'] as String?;
+    final audioPropMimeType = map['audioPropMimeType'] as String?;
+    final audioPropPath = map['audioPropPath'] as List?;
 
     // handle missing `fullPanoHeight` (e.g. Samsung camera app panorama mode)
     if (fHeight == null && fWidth != null && cHeight != null) {
@@ -76,11 +80,8 @@ class PanoramaInfo {
       croppedAreaRect: croppedAreaRect,
       fullPanoSize: fullPanoSize,
       projectionType: projectionType,
+      audioPropMimeType: audioPropMimeType,
+      audioPropPath: audioPropPath,
     );
   }
-
-  bool get hasCroppedArea => croppedAreaRect != null && fullPanoSize != null;
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{croppedAreaRect=$croppedAreaRect, fullPanoSize=$fullPanoSize, projectionType=$projectionType}';
 }

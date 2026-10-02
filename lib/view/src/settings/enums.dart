@@ -44,9 +44,10 @@ extension ExtraAvesThemeBrightnessView on AvesThemeBrightness {
 extension ExtraCalendarView on ACalendar {
   String getName(BuildContext context) {
     final l10n = context.l10n;
-    // TODO TLAD [hijri]
     return switch (this) {
       .gregorian => l10n.calendarGregorian,
+      .hijriTbla => l10n.calendarHijriTabular,
+      .hijriUmalqura => l10n.calendarHijriUmalqura,
       .persian => l10n.calendarPersian,
       _ => name,
     };
@@ -218,6 +219,17 @@ extension ExtraVideoResumptionModeView on VideoResumptionMode {
       .never => l10n.videoResumptionModeNever,
       .ask => l10n.settingsAskEverytime,
       .always => l10n.videoResumptionModeAlways,
+    };
+  }
+}
+
+extension ExtraVideoThumbnailMethodView on VideoThumbnailMethod {
+  String getName(BuildContext context) {
+    final l10n = context.l10n;
+    return switch (this) {
+      .embedded => l10n.videoThumbnailMethodEmbeddedImage,
+      .preview => l10n.videoThumbnailMethodPreviewFrame,
+      .first => l10n.videoThumbnailMethodFirstFrame,
     };
   }
 }

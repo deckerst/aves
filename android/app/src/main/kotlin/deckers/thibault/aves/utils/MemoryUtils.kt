@@ -50,8 +50,8 @@ object MemoryUtils {
         val result = HashMap<String, Long?>()
 
         val memoryInfo = ActivityManager.MemoryInfo()
-        val activityManager: ActivityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        activityManager.getMemoryInfo(memoryInfo)
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        activityManager?.getMemoryInfo(memoryInfo)
 
         val available = memoryInfo.availMem
         val total = memoryInfo.totalMem

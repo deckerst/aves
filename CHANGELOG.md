@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
+
+### Added
+
+- panorama audio playback
+- Hijri calendars (tabular scheme IIa, Umm al-Qura)
+- Collection: added options for video thumbnail strategy
+
+### Changed
+
+- upgraded Flutter to stable v3.47.6
+
+### Fixed
+
+- back navigation delay when animations are disabled
+- back navigation delay when toggling system UI
+- failing to rename or move files on SD card
+
 ## <a id="v1.15.4"></a>[v1.15.4] - 2026-09-22
 
 ### Added

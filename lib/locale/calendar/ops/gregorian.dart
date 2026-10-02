@@ -1,9 +1,6 @@
 import 'package:aves/locale/calendar/ops/base.dart';
 
 class GregorianCalendarOps extends CalendarOps {
-  @override
-  int get monthsPerYear => DateTime.monthsPerYear;
-
   static final instance = GregorianCalendarOps._private();
 
   new _private();

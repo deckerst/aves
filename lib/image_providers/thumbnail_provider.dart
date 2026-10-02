@@ -1,17 +1,14 @@
 import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
-  final ThumbnailProviderKey key;
-
-  const new(this.key);
-
+class const ThumbnailProvider(final ThumbnailProviderKey key) extends ImageProvider<ThumbnailProviderKey> {
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {
     // configuration can be empty (e.g. when obtaining key for eviction)
@@ -57,31 +54,24 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 }
 
 @immutable
-class ThumbnailProviderKey extends Equatable {
+class const ThumbnailProviderKey({
+  required final String uri,
+  required final String mimeType,
+  required final int? pageId,
+  required final int rotationDegrees,
+  required final bool isFlipped,
+  required final int dateModifiedMillis,
+  final double extent = 0,
+  required final List<VideoThumbnailMethod>? videoThumbnailMethods,
+}) extends Equatable {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
-  final String uri, mimeType;
-  final int? pageId;
-  final int rotationDegrees;
-  final bool isFlipped;
-  final int dateModifiedMillis;
-  final double extent;
-
   @override
-  List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, dateModifiedMillis, extent];
-
-  const new({
-    required this.uri,
-    required this.mimeType,
-    required this.pageId,
-    required this.rotationDegrees,
-    required this.isFlipped,
-    required this.dateModifiedMillis,
-    this.extent = 0,
-  });
+  List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, dateModifiedMillis, extent, videoThumbnailMethods];
 
   @override
   String toString() =>
       '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId'
-      ', rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis, extent=$extent}';
+      ', rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedMillis=$dateModifiedMillis'
+      ', extent=$extent, videoThumbnailMethods=$videoThumbnailMethods}';
 }

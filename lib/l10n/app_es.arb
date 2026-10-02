@@ -740,5 +740,11 @@
     "mapHideItemTracks": "Ocultar rutas",
     "tileLayoutCalendar": "Calendario",
     "collectionActionShowLayoutBar": "Mostrar barra de diseño",
-    "collectionActionHideLayoutBar": "Ocultar barra de diseño"
+    "collectionActionHideLayoutBar": "Ocultar barra de diseño",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "videoThumbnailMethodEmbeddedImage": "Imagen incrustada",
+    "videoThumbnailMethodPreviewFrame": "Marco de vista previa",
+    "videoThumbnailMethodFirstFrame": "Primer fotograma",
+    "settingsVideoThumbnailMethods": "Miniatura preferida"
 }

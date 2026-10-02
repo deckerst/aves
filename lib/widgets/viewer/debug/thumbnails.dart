@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
+import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:material_ui/material_ui.dart';
@@ -34,6 +36,7 @@ class _ThumbnailsTabState extends State<ThumbnailsTab> {
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
       dateModifiedMillis: entry.dateModifiedMillis ?? -1,
+      videoThumbnailMethods: entry.isVideo ? settings.videoThumbnailMethods : null,
     );
     _byMethodLoader = Future.wait(
       ThumbnailMethod.values.map((method) async {

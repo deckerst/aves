@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/text/change_highlight.dart';
 import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -50,6 +51,7 @@ class _LayoutBarState extends State<LayoutBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final filters = context.select<CollectionLens, Set<CollectionFilter>>((v) => v.visibleFilters);
     return Container(
       padding: LayoutBar._padding,
       height: LayoutBar.preferredHeight,
@@ -61,7 +63,7 @@ class _LayoutBarState extends State<LayoutBar> {
             icon: AIcons.sortOrder,
             name: l10n.viewDialogReverseSortOrder,
             animationTrigger: _sortReversedNotifier,
-            onPressed: () => settings.collectionSortReverse = !settings.collectionSortReverse,
+            onPressed: () => settings.setStoredCollectionSortReverse(filters, !settings.getStoredCollectionSortReverse(filters)),
           ),
           _buildSelector<TileLayout>(
             categoryIcon: AIcons.layout,
@@ -69,43 +71,43 @@ class _LayoutBarState extends State<LayoutBar> {
             values: CollectionAppBar.layoutOptions,
             getIcon: (v) => v.icon,
             getName: (context, v) => v.getName(context),
-            selector: (context, v) => v.effectiveCollectionTileLayout,
+            selector: (context, v) => v.getEffectiveCollectionTileLayout(filters),
             onSelection: (v) {
-              settings.setTileLayout(CollectionPage.routeName, v);
-              if (settings.effectiveCollectionSortFactor != settings.collectionSortFactor) {
-                _onSortFactorChange();
+              settings.setStoredCollectionTileLayout(filters, v);
+              if (settings.getEffectiveCollectionSortFactor(filters) != settings.getStoredCollectionSortFactor(filters)) {
+                _onSortFactorChange(filters);
               }
             },
           ),
           _buildSelector<SortFactor>(
-            enabled: context.select<Settings, bool>((v) => v.effectiveCollectionTileLayout != .calendar),
+            enabled: context.select<Settings, bool>((v) => v.getEffectiveCollectionTileLayout(filters) != .calendar),
             categoryIcon: AIcons.sort,
             dialogTitle: l10n.viewDialogSortSectionTitle,
             values: CollectionAppBar.sortOptions,
             getIcon: (v) => v.icon,
             getName: (context, v) => v.getName(context),
-            selector: (context, v) => v.effectiveCollectionSortFactor,
+            selector: (context, v) => v.getEffectiveCollectionSortFactor(filters),
             onSelection: (v) {
-              settings.collectionSortFactor = v;
-              _onSortFactorChange();
+              settings.setStoredCollectionSortFactor(filters, v);
+              _onSortFactorChange(filters);
             },
           ),
           _buildSelector<EntrySectionFactor>(
-            enabled: context.select<Settings, bool>((v) => v.effectiveCollectionTileLayout != .calendar && v.effectiveCollectionSortFactor == .date),
+            enabled: context.select<Settings, bool>((v) => v.getEffectiveCollectionTileLayout(filters) != .calendar && v.getEffectiveCollectionSortFactor(filters) == .date),
             categoryIcon: AIcons.section,
             dialogTitle: l10n.viewDialogGroupSectionTitle,
             values: CollectionAppBar.sectionOptions,
             getIcon: (v) => v.icon,
             getName: (context, v) => v.getName(context),
-            selector: (context, v) => v.effectiveCollectionSectionFactor,
-            onSelection: (v) => settings.collectionSectionFactor = v,
+            selector: (context, v) => v.getEffectiveCollectionSectionFactor(filters),
+            onSelection: (v) => settings.setStoredCollectionSectionFactor(filters, v),
           ),
         ],
       ),
     );
   }
 
-  void _onSortFactorChange() => settings.collectionSortReverse = false;
+  void _onSortFactorChange(Set<CollectionFilter> filters) => settings.setStoredCollectionSortReverse(filters, false);
 
   Widget _buildSelector<T>({
     required IconData categoryIcon,
