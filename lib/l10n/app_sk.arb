@@ -961,5 +961,9 @@
     "collectionActionShowLayoutBar": "Zobraziť panel rozloženia",
     "collectionActionHideLayoutBar": "Skryť panel rozloženia",
     "calendarHijriUmalqura": "Hidžra (lunárny)",
-    "calendarHijriTabular": "Hidžra (tabuľkový)"
+    "calendarHijriTabular": "Hidžra (tabuľkový)",
+    "videoThumbnailMethodEmbeddedImage": "Vložený obrázok",
+    "videoThumbnailMethodPreviewFrame": "Náhľadová snímka",
+    "videoThumbnailMethodFirstFrame": "Prvá snímka",
+    "settingsVideoThumbnailMethods": "Predvolená miniatúra"
 }

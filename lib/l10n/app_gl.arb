@@ -973,5 +973,13 @@
     "settingsPermissionsPageTitle": "Permisos",
     "settingsCalendarTile": "Calendario",
     "mapShowItemTracks": "Amosar rutas",
-    "mapHideItemTracks": "Agochar rutas"
+    "mapHideItemTracks": "Agochar rutas",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "videoThumbnailMethodEmbeddedImage": "Imaxe incrustada",
+    "videoThumbnailMethodPreviewFrame": "Marco de vista previa",
+    "videoThumbnailMethodFirstFrame": "Primeiro fotograma",
+    "collectionActionShowLayoutBar": "Amosar barra de deseño",
+    "collectionActionHideLayoutBar": "Agochar barra de deseño",
+    "settingsVideoThumbnailMethods": "Miniatura preferida"
 }

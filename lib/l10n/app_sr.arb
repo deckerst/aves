@@ -1,8 +1,5 @@
 {
     "appName": "Aves",
-    "@appName": {},
-    "welcomeMessage": "Добродошли у Aves",
-    "@welcomeMessage": {},
-    "welcomeOptional": "Izborno",
-    "@welcomeOptional": {}
+    "welcomeMessage": "Dobrodošli u Aves",
+    "welcomeOptional": "Izborno"
 }
