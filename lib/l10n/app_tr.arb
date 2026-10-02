@@ -742,5 +742,9 @@
     "collectionActionShowLayoutBar": "Düzen çubuğunu göster",
     "collectionActionHideLayoutBar": "Düzen çubuğunu gizle",
     "calendarHijriTabular": "Hicri (Tablo)",
-    "calendarHijriUmalqura": "Hicri (Ümmü'l-Kura)"
+    "calendarHijriUmalqura": "Hicri (Ümmü'l-Kura)",
+    "videoThumbnailMethodEmbeddedImage": "Gömülü resim",
+    "videoThumbnailMethodPreviewFrame": "Ön İzleme Karesi",
+    "videoThumbnailMethodFirstFrame": "İlk kare",
+    "settingsVideoThumbnailMethods": "Tercih edilen küçük resim"
 }

@@ -742,5 +742,9 @@
     "collectionActionShowLayoutBar": "显示布局栏",
     "collectionActionHideLayoutBar": "隐藏布局栏",
     "calendarHijriTabular": "伊斯兰历（表格）",
-    "calendarHijriUmalqura": "伊斯兰历（乌姆库拉）"
+    "calendarHijriUmalqura": "伊斯兰历（乌姆库拉）",
+    "videoThumbnailMethodEmbeddedImage": "嵌入的图片",
+    "videoThumbnailMethodPreviewFrame": "预览帧",
+    "videoThumbnailMethodFirstFrame": "首帧",
+    "settingsVideoThumbnailMethods": "首选的缩略图"
 }

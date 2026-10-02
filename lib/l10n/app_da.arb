@@ -967,5 +967,8 @@
     "tagPickPageTitle": "Vælg tag",
     "settingsNavigationBottomActionsTile": "Nederste navigation",
     "settingsNavigationBottomActionEditorPageTitle": "Nederste navigation",
-    "settingsNavigationBottomActionEditorBanner": "Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises i den nederste navigationslinje."
+    "settingsNavigationBottomActionEditorBanner": "Tryk og hold for at flytte knapper og vælge, hvilke handlinger der vises i den nederste navigationslinje.",
+    "calendarGregorian": "Gregoriansk",
+    "filterTypeSlowMotionVideoLabel": "Slowmotion",
+    "calendarPersian": "Persisk"
 }
