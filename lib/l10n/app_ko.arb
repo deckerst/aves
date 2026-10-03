@@ -740,5 +740,11 @@
     "calendarPersian": "태양 헤지라력",
     "tileLayoutCalendar": "달력",
     "collectionActionShowLayoutBar": "배치 바 보기",
-    "collectionActionHideLayoutBar": "배치 바 숨기기"
+    "collectionActionHideLayoutBar": "배치 바 숨기기",
+    "calendarHijriUmalqura": "이슬람력 (움 알쿠라)",
+    "calendarHijriTabular": "이슬람력 (표형)",
+    "videoThumbnailMethodFirstFrame": "첫 프레임",
+    "videoThumbnailMethodPreviewFrame": "미리보기 프레임",
+    "videoThumbnailMethodEmbeddedImage": "첨부 사진",
+    "settingsVideoThumbnailMethods": "우선 섬네일"
 }
