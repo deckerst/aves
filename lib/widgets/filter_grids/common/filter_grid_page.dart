@@ -696,14 +696,13 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
       valueListenable: appBarHeightNotifier,
       builder: (context, appBarHeight, child) {
         return Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.effectiveBottomPadding,
-          builder: (context, mqPaddingBottom, child) {
+          selector: (context, mq) => mq.safeBottomPadding,
+          builder: (context, safeBottomPadding, child) {
             return Selector<Settings, bool>(
               selector: (context, s) => s.enableBottomNavigationBar,
-              builder: (context, enableBottomNavigationBar, child) {
+              builder: (context, enableBottomNavBar, child) {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
-                final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
-                final navBarHeight = showBottomNavigationBar ? AppBottomNavBar.height : 0;
+                final showBottomNavBar = canNavigate && enableBottomNavBar;
                 return DraggableScrollbar(
                   backgroundColor: Colors.white,
                   scrollThumbSize: AvesScrollThumb.thumbSize,
@@ -715,7 +714,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                   padding: EdgeInsets.only(
                     // padding to keep scroll thumb between app bar above and nav bar below
                     top: appBarHeight,
-                    bottom: navBarHeight + mqPaddingBottom,
+                    bottom: showBottomNavBar ? AppBottomNavBar.getHeightWithMargin(safeBottomPadding) : safeBottomPadding,
                   ),
                   labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
                     sortFactor: sortFactor,
@@ -759,7 +758,6 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                   : SectionedListSliver<FilterGridItem<T>>(),
             ),
             const NavBarPaddingSliver(),
-            const BottomPaddingSliver(),
             const TvTileGridBottomPaddingSliver(),
           ],
         );

@@ -1,27 +1,16 @@
 import 'package:material_ui/material_ui.dart';
 
-class AvesScaffold extends StatelessWidget {
-  final PreferredSizeWidget? appBar;
-  final Widget? body;
-  final Widget? floatingActionButton;
-  final Widget? drawer;
-  final Widget? bottomNavigationBar;
-  final Color? backgroundColor;
-  final bool? resizeToAvoidBottomInset;
-  final bool extendBody;
-
-  const new({
-    super.key,
-    this.appBar,
-    this.body,
-    this.floatingActionButton,
-    this.drawer,
-    this.bottomNavigationBar,
-    this.backgroundColor,
-    this.resizeToAvoidBottomInset,
-    this.extendBody = false,
-  });
-
+class const AvesScaffold({
+  super.key,
+  final PreferredSizeWidget? appBar,
+  final Widget? body,
+  final Widget? floatingActionButton,
+  final Widget? drawer,
+  final Widget? bottomNavigationBar,
+  final Color? backgroundColor,
+  final bool? resizeToAvoidBottomInset,
+  final bool extendBody = false,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // prevent conflict between drawer drag gesture and Android navigation gestures

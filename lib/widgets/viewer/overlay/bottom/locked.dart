@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -61,12 +59,12 @@ class _ViewerLockedOverlayState extends State<ViewerLockedOverlay> {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-      builder: (context, mqPaddingBottom, child) {
+      selector: (context, mq) => mq.safeBottomPadding,
+      builder: (context, safeBottomPadding, child) {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
         return Container(
           alignment: .bottomRight,
-          padding: EdgeInsets.only(bottom: mqPaddingBottom) + const EdgeInsets.all(ViewerButtonRowContent.padding),
+          padding: EdgeInsets.only(bottom: safeBottomPadding) + const EdgeInsets.all(ViewerButtonRowContent.padding),
           child: SafeArea(
             top: false,
             bottom: false,

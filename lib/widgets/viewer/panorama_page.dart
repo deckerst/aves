@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
@@ -165,12 +163,12 @@ class _PanoramaPageState extends State<PanoramaPage> {
           return Visibility(
             visible: overlayVisible,
             child: Selector<MediaQueryData, double>(
-              selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-              builder: (context, mqPaddingBottom, child) {
+              selector: (context, mq) => mq.safeBottomPadding,
+              builder: (context, safeBottomPadding, child) {
                 return SafeArea(
                   bottom: false,
                   child: Padding(
-                    padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                    padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: safeBottomPadding),
                     child: child,
                   ),
                 );

@@ -143,15 +143,15 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
         horizontalTitleGap: 20,
         visualDensity: VisualDensity.comfortable,
         child: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.effectiveBottomPadding,
-          builder: (context, mqPaddingBottom, child) {
+          selector: (context, mq) => mq.safeBottomPadding,
+          builder: (context, safeBottomPadding, child) {
             final textScaler = MediaQuery.textScalerOf(context);
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               controller: _scrollController,
               // key is expected by test driver
               key: const Key('drawer-scrollview'),
-              padding: EdgeInsets.only(bottom: mqPaddingBottom),
+              padding: EdgeInsets.only(bottom: safeBottomPadding),
               child: IconTheme(
                 data: iconTheme.copyWith(
                   size: textScaler.scale(iconTheme.size!),

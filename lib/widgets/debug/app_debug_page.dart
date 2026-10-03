@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/location.dart';
@@ -78,10 +77,10 @@ class AppDebugPage extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: Selector<MediaQueryData, double>(
-              selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-              builder: (context, mqPaddingBottom, child) {
+              selector: (context, mq) => mq.safeBottomPadding,
+              builder: (context, safeBottomPadding, child) {
                 return ListView(
-                  padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                  padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: safeBottomPadding),
                   children: const [
                     DebugGeneralSection(),
                     DebugAppDatabaseSection(),

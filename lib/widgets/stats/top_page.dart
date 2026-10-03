@@ -59,7 +59,7 @@ class const StatsTopPage<T extends Comparable>({
                   padding:
                       const EdgeInsets.symmetric(vertical: 8) +
                       EdgeInsets.only(
-                        bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+                        bottom: context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding),
                       ),
                   child: FilterTable(
                     totalEntryCount: totalEntryCount,

@@ -318,7 +318,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
                     : const SliverToBoxAdapter(child: SizedBox());
               },
             ),
-          const BottomPaddingSliver(),
+          const SafeBottomPaddingSliver(),
         ],
       ),
     );

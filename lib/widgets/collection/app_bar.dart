@@ -26,14 +26,14 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/layout_bar.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/bars/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';

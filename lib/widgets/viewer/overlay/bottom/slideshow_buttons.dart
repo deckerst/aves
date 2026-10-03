@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -12,8 +10,8 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class SlideshowBottomOverlay extends StatelessWidget {
@@ -32,10 +30,10 @@ class SlideshowBottomOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-      builder: (context, mqPaddingBottom, child) {
+      selector: (context, mq) => mq.safeBottomPadding,
+      builder: (context, safeBottomPadding, child) {
         return Padding(
-          padding: EdgeInsets.only(bottom: mqPaddingBottom),
+          padding: EdgeInsets.only(bottom: safeBottomPadding),
           child: child,
         );
       },

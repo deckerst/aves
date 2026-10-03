@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -64,11 +62,11 @@ class SettingsListView extends StatelessWidget {
         ),
       ),
       child: Selector<MediaQueryData, double>(
-        selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-        builder: (context, mqPaddingBottom, child) {
+        selector: (context, mq) => mq.safeBottomPadding,
+        builder: (context, safeBottomPadding, child) {
           final durations = context.watch<DurationsData>();
           return ListView(
-            padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+            padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: safeBottomPadding),
             children: AnimationConfiguration.toStaggeredList(
               duration: durations.staggeredAnimation,
               delay: durations.staggeredAnimationDelay * timeDilation,

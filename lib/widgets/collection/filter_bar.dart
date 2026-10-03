@@ -1,8 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class FilterBar extends StatefulWidget {
     required this.interactive,
     this.onTap,
     this.onRemove,
-  }) : filters = List<CollectionFilter>.from(filters)..sort();
+  }) : filters = List<CollectionFilter>.of(filters)..sort();
 
   @override
   State<FilterBar> createState() => _FilterBarState();
@@ -123,19 +123,13 @@ class _FilterBarState extends State<FilterBar> {
   }
 }
 
-class _Chip extends StatelessWidget {
-  final CollectionFilter filter;
-  final bool single, interactive;
-  final AFilterCallback? onTap, onRemove;
-
-  const new({
-    required this.filter,
-    required this.single,
-    required this.interactive,
-    required this.onTap,
-    required this.onRemove,
-  });
-
+class const _Chip({
+  required final CollectionFilter filter,
+  required final bool single,
+  required final bool interactive,
+  required final AFilterCallback? onTap,
+  required final AFilterCallback? onRemove,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -149,7 +143,7 @@ class _Chip extends StatelessWidget {
                   context,
                   minChipPerRow: 1,
                   chipPadding: FilterBar.chipPadding.horizontal,
-                  rowPadding: FilterBar.rowPadding.horizontal + AvesFloatingBar.margin.horizontal,
+                  rowPadding: FilterBar.rowPadding.horizontal + AvesAppBar.margin.horizontal,
                 )
               : null,
           heroType: HeroType.always,

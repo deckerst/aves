@@ -8,8 +8,8 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/sliver_app_bar_title.dart';
+import 'package:aves/widgets/common/bars/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/sliver_app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -22,22 +22,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class InfoAppBar extends StatelessWidget {
-  final AvesEntry entry;
-  final CollectionLens? collection;
-  final EntryInfoActionDelegate actionDelegate;
-  final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
-  final VoidCallback onBackPressed;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.collection,
-    required this.actionDelegate,
-    required this.metadataNotifier,
-    required this.onBackPressed,
-  });
-
+class const InfoAppBar({
+  super.key,
+  required final AvesEntry entry,
+  required final CollectionLens? collection,
+  required final EntryInfoActionDelegate actionDelegate,
+  required final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier,
+  required final VoidCallback onBackPressed,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;

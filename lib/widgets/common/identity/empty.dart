@@ -30,7 +30,7 @@ class EmptyContent extends StatelessWidget {
     return Padding(
       padding: safeBottom
           ? EdgeInsets.only(
-              bottom: context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+              bottom: context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding),
             )
           : EdgeInsets.zero,
       child: Align(

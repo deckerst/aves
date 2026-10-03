@@ -32,19 +32,13 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class CollectionPage extends StatefulWidget {
+class const CollectionPage({
+  super.key,
+  required final CollectionSource source,
+  required final Set<CollectionFilter?>? filters,
+  final bool Function(AvesEntry element)? highlightTest,
+}) extends StatefulWidget {
   static const routeName = '/collection';
-
-  final CollectionSource source;
-  final Set<CollectionFilter?>? filters;
-  final bool Function(AvesEntry element)? highlightTest;
-
-  const new({
-    super.key,
-    required this.source,
-    required this.filters,
-    this.highlightTest,
-  });
 
   @override
   State<CollectionPage> createState() => _CollectionPageState();

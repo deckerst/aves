@@ -1,30 +1,32 @@
+import 'dart:math';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/bars/floating_bar.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar/notifications.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/navigation/nav_bar/floating.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AppBottomNavBar extends StatefulWidget {
-  final Stream<DraggableScrollbarEvent> events;
-
+class const AppBottomNavBar({
+  super.key,
+  required final Stream<DraggableScrollbarEvent> events,
   // collection loaded in the `CollectionPage`, if any
-  final CollectionLens? currentCollection;
+  final CollectionLens? currentCollection,
+}) extends StatefulWidget {
+  static EdgeInsets getMargin(double safeBottomPadding) {
+    return EdgeInsets.only(left: 8, top: 8, right: 8, bottom: max(8, safeBottomPadding + 4));
+  }
 
-  static double get height => kBottomNavigationBarHeight + AvesFloatingBar.margin.vertical;
-
-  const new({
-    super.key,
-    required this.events,
-    this.currentCollection,
-  });
+  static double getHeightWithMargin(double safeBottomPadding) {
+    return kBottomNavigationBarHeight + getMargin(safeBottomPadding).vertical;
+  }
 
   @override
   State<AppBottomNavBar> createState() => _AppBottomNavBarState();
@@ -65,27 +67,36 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
     final items = context.select<Settings, List<AvesNavItem>>((v) => v.bottomNavigationActions);
     if (items.length < 2) return const SizedBox();
 
+    final safeBottomPadding = context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding);
     Widget child = FloatingNavBar(
       scrollController: PrimaryScrollController.of(context),
       events: widget.events,
-      childHeight: AppBottomNavBar.height + context.select<MediaQueryData, double>((mq) => mq.effectiveBottomPadding),
+      childHeight: AppBottomNavBar.getHeightWithMargin(safeBottomPadding),
       child: SafeArea(
-        child: AvesFloatingBar(
-          builder: (context, backgroundColor, child) => BottomNavigationBar(
-            items: items.map((item) {
-              final label = item.getText(context);
-              return BottomNavigationBarItem(
-                icon: item.getIcon(context),
-                label: label,
-                tooltip: label,
-              );
-            }).toList(),
-            onTap: (index) => _goTo(context, items, index),
-            currentIndex: _getCurrentIndex(context, items),
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: backgroundColor,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
+        bottom: false,
+        child: MediaQuery.removePadding(
+          context: context,
+          // `bottom` is computed beforehand and used in multiple places,
+          // so we remove it from context to prevent additional padding
+          removeBottom: true,
+          child: AvesFloatingBar(
+            margin: AppBottomNavBar.getMargin(safeBottomPadding),
+            builder: (context, backgroundColor, child) => BottomNavigationBar(
+              items: items.map((item) {
+                final label = item.getText(context);
+                return BottomNavigationBarItem(
+                  icon: item.getIcon(context),
+                  label: label,
+                  tooltip: label,
+                );
+              }).toList(),
+              onTap: (index) => _goTo(context, items, index),
+              currentIndex: _getCurrentIndex(context, items),
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: backgroundColor,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+            ),
           ),
         ),
       ),
@@ -138,16 +149,16 @@ class _AppBottomNavBarState extends State<AppBottomNavBar> {
   }
 }
 
-class NavBarPaddingSliver extends StatelessWidget {
-  const new({super.key});
-
+class const NavBarPaddingSliver({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
     final enableBottomNavigationBar = context.select<Settings, bool>((v) => v.enableBottomNavigationBar);
+    final safeBottomPadding = context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding);
     final showBottomNavigationBar = canNavigate && enableBottomNavigationBar;
+    final height = showBottomNavigationBar ? AppBottomNavBar.getHeightWithMargin(safeBottomPadding) : safeBottomPadding;
     return SliverToBoxAdapter(
-      child: SizedBox(height: showBottomNavigationBar ? AppBottomNavBar.height : 0),
+      child: SizedBox(height: height),
     );
   }
 }

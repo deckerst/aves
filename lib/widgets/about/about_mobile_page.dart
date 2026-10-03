@@ -43,7 +43,7 @@ class AboutMobilePage extends StatelessWidget {
                 ),
               ),
               const Licenses(),
-              const BottomPaddingSliver(),
+              const SafeBottomPaddingSliver(),
             ],
           ),
         ),

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
@@ -65,10 +63,10 @@ class const ViewerBottomOverlay({
         : _buildContent();
 
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-      builder: (context, mqPaddingBottom, child) {
+      selector: (context, mq) => mq.safeBottomPadding,
+      builder: (context, safeBottomPadding, child) {
         return Padding(
-          padding: EdgeInsets.only(bottom: mqPaddingBottom),
+          padding: EdgeInsets.only(bottom: safeBottomPadding),
           child: child,
         );
       },
@@ -77,10 +75,10 @@ class const ViewerBottomOverlay({
   }
 
   static double actionSafeHeight(BuildContext context) {
-    final mqPaddingBottom = context.select<MediaQueryData, double>((mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom));
+    final safeBottomPadding = context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding);
     final buttonHeight = ViewerButtons.preferredHeight(context);
     final thumbnailHeight = (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
-    return mqPaddingBottom + buttonHeight + thumbnailHeight;
+    return safeBottomPadding + buttonHeight + thumbnailHeight;
   }
 }
 

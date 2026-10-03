@@ -870,7 +870,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (filters.isNotEmpty) {
       // we compute the default name beforehand
       // because some filter labels need localization
-      final sortedFilters = List<CollectionFilter>.from(filters)..sort();
+      final sortedFilters = List<CollectionFilter>.of(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
     return defaultName;
