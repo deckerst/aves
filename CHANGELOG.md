@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: support for Realme burst pattern
+- Tags: direct renaming of tags and tag groups
 
 ## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
 

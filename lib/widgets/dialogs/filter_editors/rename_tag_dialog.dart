@@ -1,28 +1,24 @@
-import 'dart:io';
-
-import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class const RenameStoredAlbumDialog({
+class const RenameTagDialog({
   super.key,
-  required final String album,
+  required final String tag,
+  required final Set<String> collectionTags,
 }) extends StatefulWidget {
-  static const routeName = '/dialog/rename_stored_album';
+  static const routeName = '/dialog/rename_tag';
 
   @override
-  State<RenameStoredAlbumDialog> createState() => _RenameStoredAlbumDialogState();
+  State<RenameTagDialog> createState() => _RenameTagDialogState();
 }
 
-class _RenameStoredAlbumDialogState extends State<RenameStoredAlbumDialog> {
+class _RenameTagDialogState extends State<RenameTagDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  String get album => widget.album;
-
-  String get initialValue => pContext.basename(album);
+  String get initialValue => widget.tag;
 
   @override
   void initState() {
@@ -49,7 +45,7 @@ class _RenameStoredAlbumDialogState extends State<RenameStoredAlbumDialog> {
             controller: _nameController,
             decoration: InputDecoration(
               labelText: context.l10n.renameAlbumDialogLabel,
-              helperText: exists ? context.l10n.renameAlbumDialogLabelAlreadyExistsHelper : '',
+              helperText: exists ? context.l10n.renameTagDialogLabelAlreadyExistsHelper : '',
             ),
             autofocus: true,
             onChanged: (_) => _validate(),
@@ -72,18 +68,12 @@ class _RenameStoredAlbumDialogState extends State<RenameStoredAlbumDialog> {
     );
   }
 
-  String _buildAlbumPath(String name) {
-    if (name.isEmpty) return '';
-    return pContext.join(pContext.dirname(album), name);
-  }
-
   Future<void> _validate() async {
     final newName = _nameController.text.trim();
-    final path = _buildAlbumPath(newName);
-    final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
+    final exists = newName.isNotEmpty && widget.collectionTags.contains(newName);
     _existsNotifier.value = exists && newName != initialValue;
-    // allow existing target
-    _isValidNotifier.value = newName.isNotEmpty;
+    // do not allow existing target
+    _isValidNotifier.value = (!exists || newName == initialValue) && newName.isNotEmpty;
   }
 
   void _submit(BuildContext context) {

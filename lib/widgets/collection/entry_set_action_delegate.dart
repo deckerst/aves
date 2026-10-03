@@ -755,7 +755,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       };
     });
 
-    await _doEditTags(context, newTagsByEntry);
+    await doEditTags(context, newTagsByEntry);
   }
 
   Future<void> _editTags(BuildContext context) async {
@@ -765,10 +765,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final newTagsByEntry = await selectTags(context, entries);
     if (newTagsByEntry == null) return;
 
-    await _doEditTags(context, newTagsByEntry);
+    await doEditTags(context, newTagsByEntry);
   }
 
-  Future<void> _doEditTags(BuildContext context, Map<AvesEntry, Set<String>> newTagsByEntry) async {
+  Future<void> doEditTags(BuildContext context, Map<AvesEntry, Set<String>> newTagsByEntry) async {
     final entries = newTagsByEntry.keys.toSet();
 
     // only process modified items

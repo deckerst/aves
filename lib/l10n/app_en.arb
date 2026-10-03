@@ -485,6 +485,7 @@
 
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
+  "renameTagDialogLabelAlreadyExistsHelper": "Tag already exists",
 
   "renameEntrySetPageTitle": "Rename",
   "renameEntrySetPagePatternFieldLabel": "Naming pattern",
