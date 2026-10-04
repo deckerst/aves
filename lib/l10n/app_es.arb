@@ -746,5 +746,6 @@
     "videoThumbnailMethodEmbeddedImage": "Imagen incrustada",
     "videoThumbnailMethodPreviewFrame": "Marco de vista previa",
     "videoThumbnailMethodFirstFrame": "Primer fotograma",
-    "settingsVideoThumbnailMethods": "Miniatura preferida"
+    "settingsVideoThumbnailMethods": "Miniatura preferida",
+    "renameTagDialogLabelAlreadyExistsHelper": "La etiqueta ya existe"
 }

@@ -921,7 +921,7 @@
     "sortByPath": "حسب المسار",
     "searchFormatSectionTitle": "التنسيقات",
     "chipActionGroup": "تغيير التجميع",
-    "createButtonLabel": "خلق",
+    "createButtonLabel": "إنشاء",
     "sectionNone": "لا يوجد أقسام",
     "chipActionCreateGroup": "إنشاء مجموعة",
     "albumTierGroups": "المجموعات",
@@ -961,5 +961,10 @@
     "collectionActionShowLayoutBar": "إظهار شريط التخطيط",
     "collectionActionHideLayoutBar": "إخفاء شريط التخطيط",
     "calendarHijriTabular": "هجري (حسابي)",
-    "calendarHijriUmalqura": "هجري (أم القرى)"
+    "calendarHijriUmalqura": "هجري (أم القرى)",
+    "videoThumbnailMethodEmbeddedImage": "صورة مضمنة",
+    "videoThumbnailMethodPreviewFrame": "إطار المعاينة",
+    "videoThumbnailMethodFirstFrame": "الإطار الأول",
+    "settingsVideoThumbnailMethods": "الصورة المصغرة المفضلة",
+    "renameTagDialogLabelAlreadyExistsHelper": "الوسم موجود بالفعل"
 }
