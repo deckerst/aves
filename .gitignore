@@ -45,7 +45,7 @@ app.*.map.json
 /android/app/release
 
 # screenshot generation
-/test_driver/assets/screenshots/
+/test_driver/assets/screenshots/*
 /screenshots/
 
 # generated files

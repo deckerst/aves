@@ -1,8 +1,8 @@
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/locale/aves_locale.dart';
-import 'package:aves/locale/calendar/calendar_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
@@ -128,7 +128,7 @@ class DateFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$calendar-$level-$date';
+  String get key => '$type-$reversed-${calendar.name}-${level.name}-${date?.toIso8601String()}';
 }
 
 enum DateLevel { y, ym, ymd, md, m, d }

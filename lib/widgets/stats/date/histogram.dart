@@ -17,22 +17,16 @@ import 'package:collection/collection.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class Histogram extends StatefulWidget {
-  final Set<AvesEntry> entries;
-  final Duration animationDuration;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.animationDuration,
-    required this.onFilterSelection,
-  });
-
+class const Histogram({
+  super.key,
+  required final Set<AvesEntry> entries,
+  required final Duration animationDuration,
+  required final AFilterCallback onFilterSelection,
+}) extends StatefulWidget {
   @override
   State<Histogram> createState() => _HistogramState();
 }
@@ -367,37 +361,23 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
 }
 
 @immutable
-class _EntryByDate extends Equatable {
-  final DateTime date;
-  final num entryCount;
-
+class const _EntryByDate({
+  required final DateTime date,
+  required final num entryCount,
+}) extends Equatable {
   @override
   List<Object?> get props => [date, entryCount];
-
-  const new({
-    required this.date,
-    required this.entryCount,
-  });
 }
 
-class _CircleSymbolRenderer extends charts.CircleSymbolRenderer {
-  new({super.isSolid = true});
-
+class _CircleSymbolRenderer({super.isSolid = true}) extends charts.CircleSymbolRenderer {
   @override
   charts.Color? getSolidFillColor(charts.Color? fillColor) => fillColor;
 }
 
-class _DataInterpolationArg {
-  final ACalendar calendar;
-  final DateLevel level;
-  final DateTime? firstDate, lastDate;
-  final Map<DateTime, int> entryCountPerDate;
-
-  const new({
-    required this.calendar,
-    required this.level,
-    required this.firstDate,
-    required this.lastDate,
-    required this.entryCountPerDate,
-  });
-}
+class const _DataInterpolationArg({
+  required final ACalendar calendar,
+  required final DateLevel level,
+  required final DateTime? firstDate,
+  required final DateTime? lastDate,
+  required final Map<DateTime, int> entryCountPerDate,
+});

@@ -198,8 +198,8 @@ void stats() {
     final maxYear = DateTime.now().year + 1;
     final maxQuery = 'year<$maxYear';
     const minQuery = 'year>2005';
-    await _search(maxQuery, 'query-false-$maxQuery');
-    await _search(minQuery, 'query-false-$minQuery');
+    await _search(maxQuery, 'query-false-gregorian-$maxQuery');
+    await _search(minQuery, 'query-false-gregorian-$minQuery');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
@@ -225,7 +225,7 @@ void map() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
-    await _search('Riomaggiore', 'location-false-LocationLevel.place-null-Riomaggiore');
+    await _search('Riomaggiore', 'location-false-place-null-Riomaggiore');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-map');

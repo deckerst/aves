@@ -8,11 +8,7 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 // cf charts.DateTimeTickFormatter factory internals for default formats
-class TimeAxisSpec {
-  final List<charts.TickSpec<DateTime>> tickSpecs;
-
-  new(this.tickSpecs);
-
+class TimeAxisSpec(final List<charts.TickSpec<DateTime>> tickSpecs) {
   factory forLevel({
     required AvesLocale locale,
     required DateLevel level,
