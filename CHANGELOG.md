@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Collection: support for Realme burst pattern
 - Tags: direct renaming of tags and tag groups
+- Urdu translation (thanks Bouzid Zeroug, Feliks-WR)
 
 ## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
 

@@ -43,6 +43,7 @@ class SupportedLocales {
     'th': 'ไทย',
     'tr': 'Türkçe',
     'uk': 'Українська',
+    'ur': 'اُردُو',
     'vi': 'Tiếng Việt',
     'zh': '简体中文',
     'zh_Hant': '繁體中文',

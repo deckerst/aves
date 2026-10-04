@@ -85,7 +85,6 @@ class const AvesApp({
     'sat', // Santali
     'sl', // Slovenian
     'sr', // Serbian
-    'ur', // Urdu
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
