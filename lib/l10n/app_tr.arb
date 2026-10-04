@@ -746,5 +746,6 @@
     "videoThumbnailMethodEmbeddedImage": "Gömülü resim",
     "videoThumbnailMethodPreviewFrame": "Ön İzleme Karesi",
     "videoThumbnailMethodFirstFrame": "İlk kare",
-    "settingsVideoThumbnailMethods": "Tercih edilen küçük resim"
+    "settingsVideoThumbnailMethods": "Tercih edilen küçük resim",
+    "renameTagDialogLabelAlreadyExistsHelper": "Etiket zaten var"
 }

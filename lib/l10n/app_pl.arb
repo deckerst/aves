@@ -965,5 +965,6 @@
     "videoThumbnailMethodEmbeddedImage": "Obraz osadzony",
     "videoThumbnailMethodPreviewFrame": "Podgląd klatki",
     "videoThumbnailMethodFirstFrame": "Pierwsza klatka",
-    "settingsVideoThumbnailMethods": "Preferowana miniatura"
+    "settingsVideoThumbnailMethods": "Preferowana miniatura",
+    "renameTagDialogLabelAlreadyExistsHelper": "Tag już istnieje"
 }

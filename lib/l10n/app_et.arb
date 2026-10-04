@@ -991,5 +991,6 @@
     "videoThumbnailMethodEmbeddedImage": "Lõimitud pilt",
     "videoThumbnailMethodPreviewFrame": "Kaadri eelvaade",
     "videoThumbnailMethodFirstFrame": "Esimene kaader",
-    "settingsVideoThumbnailMethods": "Eelista pisipilti"
+    "settingsVideoThumbnailMethods": "Eelista pisipilti",
+    "renameTagDialogLabelAlreadyExistsHelper": "Selline silt juba on olemas"
 }

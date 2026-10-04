@@ -742,5 +742,9 @@
     "collectionActionShowLayoutBar": "Afficher la barre de vue",
     "collectionActionHideLayoutBar": "Masquer la barre de vue",
     "calendarHijriTabular": "Hégirien (tabulaire)",
-    "calendarHijriUmalqura": "Hégirien (Umm al-Qura)"
+    "calendarHijriUmalqura": "Hégirien (Umm al-Qura)",
+    "videoThumbnailMethodEmbeddedImage": "Couverture incluse",
+    "videoThumbnailMethodPreviewFrame": "Image d’aperçu",
+    "videoThumbnailMethodFirstFrame": "Première image",
+    "settingsVideoThumbnailMethods": "Vignette préférée"
 }
