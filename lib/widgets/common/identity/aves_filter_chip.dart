@@ -29,33 +29,34 @@ typedef OffsetFilterCallback<T extends CollectionFilter> = void Function(BuildCo
 enum HeroType { always, onTap, never }
 
 @immutable
-class AvesFilterDecoration {
-  final Radius radius;
-  final Widget widget;
-
-  const new({
-    required this.radius,
-    required this.widget,
-  });
-
+class const AvesFilterDecoration({
+  required final Radius radius,
+  required final Widget widget,
+}) {
   BorderRadius get textBorderRadius => BorderRadius.vertical(bottom: radius);
 
   BorderRadius get chipBorderRadius => BorderRadius.all(radius);
 }
 
-class AvesFilterChip extends StatefulWidget {
-  final CollectionFilter filter;
-  final bool showLeading, showText, allowGenericIcon, useFilterColor;
-  final AvesFilterDecoration? decoration;
-  final Color? background;
-  final String? banner;
-  final Widget? leadingOverride, details;
-  final double padding;
-  final double? maxWidth;
-  final HeroType heroType;
-  final AFilterCallback? onTap, onRemove;
-  final OffsetFilterCallback? onLongPress;
-
+class const AvesFilterChip({
+  super.key,
+  required final CollectionFilter filter,
+  final bool showLeading = true,
+  final bool showText = true,
+  final bool allowGenericIcon = true,
+  final bool useFilterColor = true,
+  final AvesFilterDecoration? decoration,
+  final Color? background,
+  final String? banner,
+  final Widget? leadingOverride,
+  final Widget? details,
+  final double padding = defaultPadding,
+  final double? maxWidth,
+  final HeroType heroType = HeroType.onTap,
+  final AFilterCallback? onTap,
+  final AFilterCallback? onRemove,
+  final OffsetFilterCallback? onLongPress = showDefaultLongPressMenu,
+}) extends StatefulWidget {
   static const double defaultPadding = 6.0;
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
@@ -64,26 +65,6 @@ class AvesFilterChip extends StatefulWidget {
   static const double iconSize = 18;
   static const double fontSize = 14;
   static const double decoratedContentVerticalPadding = 5;
-
-  const new({
-    super.key,
-    required this.filter,
-    this.showLeading = true,
-    this.showText = true,
-    this.allowGenericIcon = true,
-    this.useFilterColor = true,
-    this.decoration,
-    this.background,
-    this.banner,
-    this.leadingOverride,
-    this.details,
-    this.padding = defaultPadding,
-    this.maxWidth,
-    this.heroType = HeroType.onTap,
-    this.onTap,
-    this.onRemove,
-    this.onLongPress = showDefaultLongPressMenu,
-  });
 
   static double computeMaxWidthForRow(
     BuildContext context, {

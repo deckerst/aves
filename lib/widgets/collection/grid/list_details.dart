@@ -14,14 +14,10 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryListDetails extends StatelessWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const EntryListDetails({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final detailsTheme = context.watch<EntryListDetailsThemeData>();

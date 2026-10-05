@@ -6,16 +6,11 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryQueryBar extends StatefulWidget {
-  final ValueNotifier<String> queryNotifier;
-  final FocusNode focusNode;
-
-  const new({
-    super.key,
-    required this.queryNotifier,
-    required this.focusNode,
-  });
-
+class const EntryQueryBar({
+  super.key,
+  required final ValueNotifier<String> queryNotifier,
+  required final FocusNode focusNode,
+}) extends StatefulWidget {
   @override
   State<EntryQueryBar> createState() => _EntryQueryBarState();
 

@@ -10,17 +10,12 @@ import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AlbumSectionHeader extends StatelessWidget {
-  final String? directory, albumName;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.directory,
-    required this.albumName,
-    required this.selectable,
-  });
-
+class const AlbumSectionHeader({
+  super.key,
+  required final String? directory,
+  required final String? albumName,
+  required final bool selectable,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget? albumIcon;

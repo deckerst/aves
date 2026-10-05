@@ -6,18 +6,12 @@ import 'package:aves/widgets/common/grid/header.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DaySectionHeader<T> extends StatelessWidget {
-  final SectionKey sectionKey;
-  final DateTime? date;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.sectionKey,
-    required this.date,
-    required this.selectable,
-  });
-
+class const DaySectionHeader<T>({
+  super.key,
+  required final SectionKey sectionKey,
+  required final DateTime? date,
+  required final bool selectable,
+}) extends StatelessWidget {
   static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
@@ -43,18 +37,12 @@ class DaySectionHeader<T> extends StatelessWidget {
   }
 }
 
-class MonthSectionHeader<T> extends StatelessWidget {
-  final SectionKey sectionKey;
-  final DateTime? date;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.sectionKey,
-    required this.date,
-    required this.selectable,
-  });
-
+class const MonthSectionHeader<T>({
+  super.key,
+  required final SectionKey sectionKey,
+  required final DateTime? date,
+  required final bool selectable,
+}) extends StatelessWidget {
   static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;

@@ -28,25 +28,26 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class GeoMap extends StatefulWidget {
-  final AvesMapController controller;
-  final CollectionLens? collection;
-  final List<AvesEntry>? entries;
-  final Size availableSize;
-  final LatLng? initialCenter;
-  final double? initialZoom;
-  final ValueNotifier<bool> isAnimatingNotifier;
-  final ValueNotifier<LatLng?>? dotLocationNotifier;
-  final ValueNotifier<double>? overlayOpacityNotifier;
-  final MapOverlay? overlayEntry;
-  final List<GeoTrack>? tracks;
-  final UserZoomChangeCallback? onUserZoomChange;
-  final MapTapCallback? onMapTap;
+class const GeoMap({
+  super.key,
+  required final AvesMapController controller,
+  final CollectionLens? collection,
+  final List<AvesEntry>? entries,
+  required final Size availableSize,
+  final LatLng? initialCenter,
+  final double? initialZoom,
+  required final ValueNotifier<bool> isAnimatingNotifier,
+  final ValueNotifier<LatLng?>? dotLocationNotifier,
+  final ValueNotifier<double>? overlayOpacityNotifier,
+  final MapOverlay? overlayEntry,
+  final List<GeoTrack>? tracks,
+  final UserZoomChangeCallback? onUserZoomChange,
+  final MapTapCallback? onMapTap,
   final void Function(
     LatLng markerLocation,
     AvesEntry markerEntry,
   )?
-  onMarkerTap;
+  onMarkerTap,
   final void Function(
     LatLng markerLocation,
     AvesEntry markerEntry,
@@ -54,28 +55,10 @@ class GeoMap extends StatefulWidget {
     Offset tapLocalPosition,
     WidgetBuilder markerBuilder,
   )?
-  onMarkerLongPress;
-  final void Function(BuildContext context)? openMapPage;
-
-  const new({
-    super.key,
-    required this.controller,
-    this.collection,
-    this.entries,
-    required this.availableSize,
-    this.initialCenter,
-    this.initialZoom,
-    required this.isAnimatingNotifier,
-    this.dotLocationNotifier,
-    this.overlayOpacityNotifier,
-    this.overlayEntry,
-    this.tracks,
-    this.onUserZoomChange,
-    this.onMapTap,
-    this.onMarkerTap,
-    this.onMarkerLongPress,
-    this.openMapPage,
-  }) : assert(collection != null || entries != null);
+  onMarkerLongPress,
+  final void Function(BuildContext context)? openMapPage,
+}) extends StatefulWidget {
+  this : assert(collection != null || entries != null);
 
   @override
   State<GeoMap> createState() => _GeoMapState();
