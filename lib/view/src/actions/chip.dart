@@ -16,6 +16,7 @@ extension ExtraChipActionView on ChipAction {
       .ratingOrGreater || .ratingOrLower =>
         // different data depending on state
         toString(),
+      .copyCenterCoordinates => l10n.chipActionCopyCenterCoordinates,
       .decompose => l10n.chipActionDecompose,
       .reverse =>
         // different data depending on state
@@ -46,6 +47,7 @@ extension ExtraChipActionView on ChipAction {
     .goToTagPage => AIcons.tag,
     .goToExplorerPage => AIcons.explorer,
     .ratingOrGreater || .ratingOrLower => AIcons.rating,
+    .copyCenterCoordinates => AIcons.clipboard,
     .decompose => AIcons.split,
     .reverse => AIcons.reverse,
     .hide => AIcons.hide,

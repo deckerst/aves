@@ -98,6 +98,7 @@
   "chipActionGoToPlacePage": "Show in Places",
   "chipActionGoToTagPage": "Show in Tags",
   "chipActionGoToExplorerPage": "Show in Explorer",
+  "chipActionCopyCenterCoordinates": "Copy center coordinates",
   "chipActionDecompose": "Split",
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
