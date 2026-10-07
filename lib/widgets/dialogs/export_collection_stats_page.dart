@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/entry/extensions/props.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/themes.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -24,8 +24,8 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:csv/csv.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ExportCollectionStatsPage extends StatefulWidget {
   static const routeName = '/collection/stats/export';
@@ -184,7 +184,7 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
           return;
         }
       case .file:
-        final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
+        final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
         success = await storageService.createFile(
           basename: 'aves-stats-$date',
           mimeType: mimeType,

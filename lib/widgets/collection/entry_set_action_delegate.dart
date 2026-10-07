@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -26,7 +27,6 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -502,7 +502,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final gpxContent = GpxWriter().asString(gpx);
     const mimeType = MimeTypes.gpx;
-    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(gpxDate);
+    final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(gpxDate);
     final success = await storageService.createFile(
       basename: 'aves-gpx-$date',
       mimeType: mimeType,

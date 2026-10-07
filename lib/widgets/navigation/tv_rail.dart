@@ -6,7 +6,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -104,13 +103,7 @@ class _TvRailState extends State<TvRail> {
                     const SizedBox(width: 16),
                     Text(
                       context.l10n.appName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: .w300,
-                        letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
-                        fontFeatures: const [FontFeature.enable('smcp')],
-                      ),
+                      style: _getAppTitleStyle(context),
                     ),
                   ],
                 )
@@ -166,6 +159,16 @@ class _TvRailState extends State<TvRail> {
           );
         },
       ),
+    );
+  }
+
+  TextStyle _getAppTitleStyle(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 32,
+      fontWeight: .w300,
+      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
+      fontFeatures: const [FontFeature.enable('smcp')],
     );
   }
 

@@ -1,5 +1,4 @@
 import 'package:aves/model/device.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
@@ -32,32 +31,31 @@ class AppReference extends StatelessWidget {
   }
 
   Widget _buildAvesLine(BuildContext context) {
-    final localeName = context.localeName;
     final textScaler = MediaQuery.textScalerOf(context);
     return Row(
       mainAxisSize: .min,
       children: [
         AvesLogo(
-          size: textScaler.scale(_getAppTitleStyle(localeName).fontSize!) * 1.3,
+          size: textScaler.scale(_getAppTitleStyle(context).fontSize!) * 1.3,
         ),
         const SizedBox(width: 8),
         Text(
           context.l10n.appName,
-          style: _getAppTitleStyle(localeName),
+          style: _getAppTitleStyle(context),
         ),
         const SizedBox(width: 8),
         Text(
           device.packageVersion,
-          style: _getAppTitleStyle(localeName),
+          style: _getAppTitleStyle(context),
         ),
       ],
     );
   }
 
-  TextStyle _getAppTitleStyle(String localeName) => TextStyle(
+  TextStyle _getAppTitleStyle(BuildContext context) => TextStyle(
     fontSize: 20,
     fontWeight: .normal,
-    letterSpacing: canHaveLetterSpacing(localeName) ? 1 : 0,
+    letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
     fontFeatures: const [FontFeature.enable('smcp')],
   );
 

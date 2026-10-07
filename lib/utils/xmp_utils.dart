@@ -1,4 +1,4 @@
-import 'package:aves/ref/locales.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/ref/metadata/xmp.dart';
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
@@ -61,7 +61,7 @@ class XMP {
     return '${offsetMinutes.isNegative ? '-' : '+'}${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
   }
 
-  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', kAsciiLocale).format(date)}${_xmpTimeZoneDesignator(date)}';
+  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', IntlUtils.rootLocaleName).format(date)}${_xmpTimeZoneDesignator(date)}';
 
   static String? getString(
     List<XmlNode> nodes,

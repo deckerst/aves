@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -12,18 +13,18 @@ import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
-String _languageCode = '';
+String _localeBcp47 = '';
 
-final languageCodes = <String>[
-  'en', // always start with English, as preferred language for country names from reverse geocoding
-  ...SupportedLocales.languagesByLanguageCode.keys,
+final localesBcp47 = <String>[
+  KnownLocale.english.bcp47, // always start with English, as preferred language for country names from reverse geocoding
+  ...KnownLocale.all.map((v) => v.bcp47).whereNot((v) => v == KnownLocale.english.bcp47),
 ];
 const outputDirectory = 'screenshots/raw';
 
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await Future.forEach(languageCodes, (languageCode) => Directory('$outputDirectory/$languageCode').create(recursive: true));
+      await Future.forEach(localesBcp47, (localeBcp47) => Directory('$outputDirectory/$localeBcp47').create(recursive: true));
 
       await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
@@ -51,8 +52,8 @@ void main() {
       await Future.delayed(const Duration(seconds: 40));
     }, timeout: const Timeout(Duration(minutes: 1)));
 
-    languageCodes.forEach((languageCode) {
-      setLanguage(languageCode);
+    localesBcp47.forEach((localeBcp47) {
+      setLanguage(localeBcp47);
       configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
       collection();
       configureCollectionVisibility(AppDebugAction.prepScreenshotStats);
@@ -83,24 +84,24 @@ Future<void> _selectMapStyle(String styleKey) async {
 
 Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
   final pixels = await driver.screenshot();
-  final file = File('$outputDirectory/$_languageCode/$name.png');
+  final file = File('$outputDirectory/$_localeBcp47/$name.png');
   await file.writeAsBytes(pixels);
   print('* saved screenshot to ${file.path}');
 }
 
-void setLanguage(String languageCode) {
+void setLanguage(String localeBcp47) {
   test('set language', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-settings-button');
     await driver.tapKeyAndWait('section-language');
     await driver.tapKeyAndWait('tile-language');
 
-    final name = SupportedLocales.languagesByLanguageCode[languageCode] ?? languageCode;
+    final name = KnownLocale.all.firstWhereOrNull((v) => v.bcp47 == localeBcp47)?.endonym ?? localeBcp47;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(name);
 
-    await driver.tapKeyAndWait(languageCode);
-    _languageCode = languageCode;
+    await driver.tapKeyAndWait(localeBcp47);
+    _localeBcp47 = localeBcp47;
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();

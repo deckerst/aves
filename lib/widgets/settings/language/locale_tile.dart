@@ -6,16 +6,15 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/settings/language/locale_selection_page.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class LocaleTile extends StatelessWidget {
+class const LocaleTile({super.key}) extends StatelessWidget {
   static const systemLocaleOption = ui.Locale('system');
 
   static const List<String> settingKeys = [SettingKeys.localeKey];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class LocaleTile extends StatelessWidget {
   static String getLocaleName(ui.Locale locale) {
     // the package `flutter_localized_locales` has the answer for all locales
     // but it comes with 3 MB of assets
-    final localeString = locale.toString();
-    return SupportedLocales.languagesByLanguageCode[localeString] ?? localeString;
+    final bcp47 = locale.toLanguageTag();
+    return KnownLocale.all.firstWhereOrNull((v) => v.bcp47 == bcp47)?.endonym ?? bcp47;
   }
 }

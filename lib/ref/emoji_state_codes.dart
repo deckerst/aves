@@ -1,0 +1,347 @@
+// cf ISO 3166-2 for state codes
+class EmojiStateCodes {
+  // AU
+  static const auAustralianCapitalTerritory = 'auact';
+  static const auNewSouthWales = 'aunsw';
+  static const auNorthernTerritory = 'aunt';
+  static const auQueensland = 'auqld';
+  static const auSouthAustralia = 'ausa';
+  static const auTasmania = 'autas';
+  static const auVictoria = 'auvic';
+  static const auWesternAustralia = 'auwa';
+
+  static const australia = {
+    auAustralianCapitalTerritory,
+    auNewSouthWales,
+    auNorthernTerritory,
+    auQueensland,
+    auSouthAustralia,
+    auTasmania,
+    auVictoria,
+    auWesternAustralia,
+  };
+
+  // BR
+  // TODO TLAD use flag assets from https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
+  static const brAcre = 'brac';
+  static const brAlagoas = 'bral';
+  static const brAmapa = 'brap';
+  static const brAmazonas = 'bram';
+  static const brBahia = 'brba';
+  static const brCeara = 'brce';
+  static const brDistritoFederal = 'brdf';
+  static const brEspiritoSanto = 'bres';
+  static const brGoias = 'brgo';
+  static const brMaranhao = 'brma';
+  static const brMatoGrosso = 'brmt';
+  static const brMatoGrossoDoSul = 'brms';
+  static const brMinasGerais = 'brmg';
+  static const brPara = 'brpa';
+  static const brParaiba = 'brpb';
+  static const brParana = 'brpr';
+  static const brPernambuco = 'brpe';
+  static const brPiaui = 'brpi';
+  static const brRioDeJaneiro = 'brrj';
+  static const brRioGrandeDoNorte = 'brrn';
+  static const brRioGrandeDoSul = 'brrs';
+  static const brRondonia = 'brro';
+  static const brRoraima = 'brrr';
+  static const brSantaCatarina = 'brsc';
+  static const brSaoPaulo = 'brsp';
+  static const brSergipe = 'brse';
+  static const brTocantins = 'brto';
+
+  static const brazil = {
+    brAcre,
+    brAlagoas,
+    brAmapa,
+    brAmazonas,
+    brBahia,
+    brCeara,
+    brDistritoFederal,
+    brEspiritoSanto,
+    brGoias,
+    brMaranhao,
+    brMatoGrosso,
+    brMatoGrossoDoSul,
+    brMinasGerais,
+    brPara,
+    brParaiba,
+    brParana,
+    brPernambuco,
+    brPiaui,
+    brRioDeJaneiro,
+    brRioGrandeDoNorte,
+    brRioGrandeDoSul,
+    brRondonia,
+    brRoraima,
+    brSantaCatarina,
+    brSaoPaulo,
+    brSergipe,
+    brTocantins,
+  };
+
+  // GB
+  static const gbEngland = 'gbeng';
+  static const gbNorthernIreland = 'gbnir';
+  static const gbScotland = 'gbsct';
+  static const gbWales = 'gbwls';
+
+  static const unitedKingdom = {
+    gbEngland,
+    gbNorthernIreland,
+    gbScotland,
+    gbWales,
+  };
+
+  // IN
+  static const inAndamanAndNicobarIslands = 'inan';
+  static const inAndhraPradesh = 'inap';
+  static const inArunachalPradesh = 'inar';
+  static const inAssam = 'inas';
+  static const inBihar = 'inbr';
+  static const inChandigarh = 'inch';
+  static const inChhattisgarh = 'inct';
+  static const inDamanAndDiu = 'indd';
+  static const inDelhi = 'indl';
+  static const inDadraAndNagarHaveli = 'indn';
+  static const inGoa = 'inga';
+  static const inGujarat = 'ingj';
+  static const inHimachalPradesh = 'inhp';
+  static const inHaryana = 'inhr';
+  static const inJharkhand = 'injh';
+  static const inJammuAndKashmir = 'injk';
+  static const inKarnataka = 'inka';
+  static const inKerala = 'inkl';
+  static const inLakshadweep = 'inld';
+  static const inMaharashtra = 'inmh';
+  static const inMeghalaya = 'inml';
+  static const inManipur = 'inmn';
+  static const inMadhyaPradesh = 'inmp';
+  static const inMizoram = 'inmz';
+  static const inNagaland = 'innl';
+  static const inOdisha = 'inor';
+  static const inPunjab = 'inpb';
+  static const inPuducherry = 'inpy';
+  static const inRajasthan = 'inrj';
+  static const inSikkim = 'insk';
+  static const inTelangana = 'intg';
+  static const inTamilNadu = 'intn';
+  static const inTripura = 'intr';
+  static const inUttarPradesh = 'inup';
+  static const inUttarakhand = 'inut';
+  static const inWestBengal = 'inwb';
+
+  static const india = {
+    inAndamanAndNicobarIslands,
+    inAndhraPradesh,
+    inArunachalPradesh,
+    inAssam,
+    inBihar,
+    inChandigarh,
+    inChhattisgarh,
+    inDamanAndDiu,
+    inDelhi,
+    inDadraAndNagarHaveli,
+    inGoa,
+    inGujarat,
+    inHimachalPradesh,
+    inHaryana,
+    inJharkhand,
+    inJammuAndKashmir,
+    inKarnataka,
+    inKerala,
+    inLakshadweep,
+    inMaharashtra,
+    inMeghalaya,
+    inManipur,
+    inMadhyaPradesh,
+    inMizoram,
+    inNagaland,
+    inOdisha,
+    inPunjab,
+    inPuducherry,
+    inRajasthan,
+    inSikkim,
+    inTelangana,
+    inTamilNadu,
+    inTripura,
+    inUttarPradesh,
+    inUttarakhand,
+    inWestBengal,
+  };
+
+  // MX
+  static const mxAguascalientes = 'mxagu';
+  static const mxBajaCalifornia = 'mxbcn';
+  static const mxBajaCaliforniaSur = 'mxbcs';
+  static const mxCampeche = 'mxcam';
+  static const mxChiapas = 'mxchp';
+  static const mxChihuahua = 'mxchh';
+  static const mxCiudadDeMexico = 'mxcmx';
+  static const mxCoahuila = 'mxcoa';
+  static const mxColima = 'mxcol';
+  static const mxDurango = 'mxdur';
+  static const mxGuanajuato = 'mxgua';
+  static const mxGuerrero = 'mxgro';
+  static const mxHidalgo = 'mxhid';
+  static const mxJalisco = 'mxjal';
+  static const mxMexicoState = 'mxmex';
+  static const mxMichoacan = 'mxmic';
+  static const mxMorelos = 'mxmor';
+  static const mxNayarit = 'mxnay';
+  static const mxNuevoLeon = 'mxnle';
+  static const mxOaxaca = 'mxoax';
+  static const mxPuebla = 'mxpue';
+  static const mxQueretaro = 'mxque';
+  static const mxQuintanaRoo = 'mxroo';
+  static const mxSanLuisPotosi = 'mxslp';
+  static const mxSinaloa = 'mxsin';
+  static const mxSonora = 'mxson';
+  static const mxTabasco = 'mxtab';
+  static const mxTamaulipas = 'mxtam';
+  static const mxTlaxcala = 'mxtla';
+  static const mxVeracruz = 'mxver';
+  static const mxYucatan = 'mxyuc';
+  static const mxZacatecas = 'mxzac';
+
+  static const mexico = {
+    mxAguascalientes,
+    mxBajaCalifornia,
+    mxBajaCaliforniaSur,
+    mxCampeche,
+    mxChiapas,
+    mxChihuahua,
+    mxCiudadDeMexico,
+    mxCoahuila,
+    mxColima,
+    mxDurango,
+    mxGuanajuato,
+    mxGuerrero,
+    mxHidalgo,
+    mxJalisco,
+    mxMexicoState,
+    mxMichoacan,
+    mxMorelos,
+    mxNayarit,
+    mxNuevoLeon,
+    mxOaxaca,
+    mxPuebla,
+    mxQueretaro,
+    mxQuintanaRoo,
+    mxSanLuisPotosi,
+    mxSinaloa,
+    mxSonora,
+    mxTabasco,
+    mxTamaulipas,
+    mxTlaxcala,
+    mxVeracruz,
+    mxYucatan,
+    mxZacatecas,
+  };
+
+  // US
+  static const usAlabama = 'usal';
+  static const usAlaska = 'usak';
+  static const usArizona = 'usaz';
+  static const usArkansas = 'usar';
+  static const usCalifornia = 'usca';
+  static const usColorado = 'usco';
+  static const usConnecticut = 'usct';
+  static const usDelaware = 'usde';
+  static const usFlorida = 'usfl';
+  static const usGeorgia = 'usga';
+  static const usHawaii = 'ushi';
+  static const usIdaho = 'usid';
+  static const usIllinois = 'usil';
+  static const usIndiana = 'usin';
+  static const usIowa = 'usia';
+  static const usKansas = 'usks';
+  static const usKentucky = 'usky';
+  static const usLouisiana = 'usla';
+  static const usMaine = 'usme';
+  static const usMaryland = 'usmd';
+  static const usMassachusetts = 'usma';
+  static const usMichigan = 'usmi';
+  static const usMinnesota = 'usmn';
+  static const usMississippi = 'usms';
+  static const usMissouri = 'usmo';
+  static const usMontana = 'usmt';
+  static const usNebraska = 'usne';
+  static const usNevada = 'usnv';
+  static const usNewHampshire = 'usnh';
+  static const usNewJersey = 'usnj';
+  static const usNewMexico = 'usnm';
+  static const usNewYork = 'usny';
+  static const usNorthCarolina = 'usnc';
+  static const usNorthDakota = 'usnd';
+  static const usOhio = 'usoh';
+  static const usOklahoma = 'usok';
+  static const usOregon = 'usor';
+  static const usPennsylvania = 'uspa';
+  static const usRhodeIsland = 'usri';
+  static const usSouthCarolina = 'ussc';
+  static const usSouthDakota = 'ussd';
+  static const usTennessee = 'ustn';
+  static const usUtah = 'usut';
+  static const usVermont = 'usvt';
+  static const usVirginia = 'usva';
+  static const usWashington = 'uswa';
+  static const usWashingtonDC = 'usdc';
+  static const usWestVirginia = 'uswv';
+  static const usWisconsin = 'uswi';
+  static const usWyoming = 'uswy';
+
+  static const unitedStates = {
+    usAlabama,
+    usAlaska,
+    usArizona,
+    usArkansas,
+    usCalifornia,
+    usColorado,
+    usConnecticut,
+    usDelaware,
+    usFlorida,
+    usGeorgia,
+    usHawaii,
+    usIdaho,
+    usIllinois,
+    usIndiana,
+    usIowa,
+    usKansas,
+    usKentucky,
+    usLouisiana,
+    usMaine,
+    usMaryland,
+    usMassachusetts,
+    usMichigan,
+    usMinnesota,
+    usMississippi,
+    usMissouri,
+    usMontana,
+    usNebraska,
+    usNevada,
+    usNewHampshire,
+    usNewJersey,
+    usNewMexico,
+    usNewYork,
+    usNorthCarolina,
+    usNorthDakota,
+    usOhio,
+    usOklahoma,
+    usOregon,
+    usPennsylvania,
+    usRhodeIsland,
+    usSouthCarolina,
+    usSouthDakota,
+    usTennessee,
+    usUtah,
+    usVermont,
+    usVirginia,
+    usWashington,
+    usWashingtonDC,
+    usWestVirginia,
+    usWisconsin,
+    usWyoming,
+  };
+}

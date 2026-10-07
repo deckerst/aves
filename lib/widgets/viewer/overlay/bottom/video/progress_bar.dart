@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/locale/ui.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/styles.dart';
