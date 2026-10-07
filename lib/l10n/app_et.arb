@@ -992,5 +992,6 @@
     "videoThumbnailMethodPreviewFrame": "Kaadri eelvaade",
     "videoThumbnailMethodFirstFrame": "Esimene kaader",
     "settingsVideoThumbnailMethods": "Eelista pisipilti",
-    "renameTagDialogLabelAlreadyExistsHelper": "Selline silt juba on olemas"
+    "renameTagDialogLabelAlreadyExistsHelper": "Selline silt juba on olemas",
+    "chipActionCopyCenterCoordinates": "Kopeeri keskpunkti koordinaadid"
 }

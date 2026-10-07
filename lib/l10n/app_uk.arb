@@ -961,5 +961,11 @@
     "collectionActionShowLayoutBar": "Показати панель макета",
     "collectionActionHideLayoutBar": "Сховати панель макета",
     "calendarHijriUmalqura": "Хіджра (Умм-аль-Кура)",
-    "calendarHijriTabular": "Хіджра (табличний)"
+    "calendarHijriTabular": "Хіджра (табличний)",
+    "renameTagDialogLabelAlreadyExistsHelper": "Мітка вже існує",
+    "chipActionCopyCenterCoordinates": "Копіювати координати середини",
+    "videoThumbnailMethodEmbeddedImage": "Вбудоване зображення",
+    "videoThumbnailMethodPreviewFrame": "Кадр попереднього перегляду",
+    "videoThumbnailMethodFirstFrame": "Перший кадр",
+    "settingsVideoThumbnailMethods": "Бажана мініатюра"
 }

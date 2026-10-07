@@ -966,5 +966,6 @@
     "videoThumbnailMethodPreviewFrame": "Náhľadová snímka",
     "videoThumbnailMethodFirstFrame": "Prvá snímka",
     "settingsVideoThumbnailMethods": "Predvolená miniatúra",
-    "renameTagDialogLabelAlreadyExistsHelper": "Štítok už existuje"
+    "renameTagDialogLabelAlreadyExistsHelper": "Štítok už existuje",
+    "chipActionCopyCenterCoordinates": "Skopírovať súradnice stredu"
 }

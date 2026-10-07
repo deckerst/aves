@@ -747,5 +747,6 @@
     "videoThumbnailMethodPreviewFrame": "预览帧",
     "videoThumbnailMethodFirstFrame": "首帧",
     "settingsVideoThumbnailMethods": "首选的缩略图",
-    "renameTagDialogLabelAlreadyExistsHelper": "标签已存在"
+    "renameTagDialogLabelAlreadyExistsHelper": "标签已存在",
+    "chipActionCopyCenterCoordinates": "复制中心坐标"
 }

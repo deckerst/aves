@@ -992,5 +992,6 @@
     "tagPlaceholderPlace": "جگہ",
     "panoramaEnableSensorControl": "سینسر کنٹرول فعال کریں",
     "panoramaDisableSensorControl": "سینسر کنٹرول غیر فعال کریں",
-    "sourceViewerPageTitle": "ماخذ"
+    "sourceViewerPageTitle": "ماخذ",
+    "chipActionCopyCenterCoordinates": "مرکزی متناسقات کاپی کریں"
 }

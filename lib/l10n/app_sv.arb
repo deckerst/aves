@@ -972,5 +972,11 @@
     "collectionActionShowLayoutBar": "Visa layoutfält",
     "collectionActionHideLayoutBar": "Dölj layoutfält",
     "calendarHijriTabular": "Hijri (tabellbaserad)",
-    "calendarHijriUmalqura": "Hijri (Umm al-Qura)"
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "chipActionCopyCenterCoordinates": "Kopiera mittkoordinater",
+    "videoThumbnailMethodEmbeddedImage": "Inbäddad bild",
+    "videoThumbnailMethodPreviewFrame": "Förhandsgranskningsruta",
+    "videoThumbnailMethodFirstFrame": "Första bildrutan",
+    "renameTagDialogLabelAlreadyExistsHelper": "Tagg existerar redan",
+    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild"
 }
