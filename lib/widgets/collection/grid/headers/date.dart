@@ -22,7 +22,7 @@ class const DaySectionHeader<T>({
     if (calOps.isToday(date)) return l10n.dateToday;
     if (calOps.isYesterday(date)) return l10n.dateYesterday;
 
-    final weekday = DateFormat.E(locale.languageTag).format(date);
+    final weekday = DateFormat.E(locale.languageBcp47).format(date);
     if (calOps.isThisYear(date)) return '${locale.MMMMd(date)} ($weekday)';
     return '${locale.yMMMMd(date)} ($weekday)';
   }

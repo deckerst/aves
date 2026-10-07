@@ -1,3 +1,4 @@
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/naming_pattern.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:test/test.dart';
@@ -9,12 +10,12 @@ void main() {
 
   test('mixed processors', () {
     const entryCount = 42;
-    const localeName = 'en';
+    final dateFormatLocale = IntlUtils.rootLocaleName;
     expect(
       NamingPattern.from(
         userPattern: 'pure literal',
         entryCount: entryCount,
-        localeName: localeName,
+        localeBcp47: dateFormatLocale,
       ).processors,
       [
         const LiteralNamingProcessor('pure literal'),
@@ -24,11 +25,11 @@ void main() {
       NamingPattern.from(
         userPattern: 'prefix<date,yyyy-MM-ddTHH:mm:ss>suffix',
         entryCount: entryCount,
-        localeName: localeName,
+        localeBcp47: dateFormatLocale,
       ).processors,
       [
         const LiteralNamingProcessor('prefix'),
-        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', localeName),
+        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', dateFormatLocale),
         const LiteralNamingProcessor('suffix'),
       ],
     );
@@ -36,10 +37,10 @@ void main() {
       NamingPattern.from(
         userPattern: '<date,yyyy-MM-ddTHH:mm:ss> <name>',
         entryCount: entryCount,
-        localeName: localeName,
+        localeBcp47: dateFormatLocale,
       ).processors,
       [
-        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', localeName),
+        DateNamingProcessor('yyyy-MM-ddTHH:mm:ss', dateFormatLocale),
         const LiteralNamingProcessor(' '),
         const NameNamingProcessor(),
       ],

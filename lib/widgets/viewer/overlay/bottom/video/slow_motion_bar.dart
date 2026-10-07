@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/locale/ui.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';

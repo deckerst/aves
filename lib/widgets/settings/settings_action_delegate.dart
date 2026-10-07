@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
@@ -53,7 +53,7 @@ class SettingsActionDelegate with FeedbackMixin {
     );
     if (toExport == null || toExport.isEmpty) return;
 
-    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
+    final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
     final content = getExportContent(
       source: context.read<CollectionSource>(),
       toExport: toExport,

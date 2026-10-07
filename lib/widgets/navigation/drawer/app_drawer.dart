@@ -8,7 +8,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -216,13 +215,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                       textSpans: [
                         TextSpan(
                           text: l10n.appName,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 38,
-                            fontWeight: .w300,
-                            letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
-                            fontFeatures: const [FontFeature.enable('smcp')],
-                          ),
+                          style: _getAppTitleStyle(context),
                         ),
                       ],
                     ),
@@ -279,6 +272,16 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           ),
         ),
       ),
+    );
+  }
+
+  TextStyle _getAppTitleStyle(BuildContext context) {
+    return TextStyle(
+      color: Colors.white,
+      fontSize: 38,
+      fontWeight: .w300,
+      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
+      fontFeatures: const [FontFeature.enable('smcp')],
     );
   }
 

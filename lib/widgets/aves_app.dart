@@ -17,7 +17,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
-import 'package:aves/ref/locales.dart';
+import 'package:aves/ref/locale/usage.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
@@ -391,17 +391,19 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.resetResolvedLocale();
 
     final resolvedLocale = settings.resolvedLocale;
-    final languageCode = resolvedLocale.languageCode;
-    AStyles.updateStylesForLocale(languageCode);
+    final languageSubtag = resolvedLocale.languageCode;
+    AStyles.updateStylesForLocale(languageSubtag);
 
     Locale? countrifiedLocale;
     if (resolvedLocale.countryCode == null) {
-      countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
+      countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageSubtag);
     }
+
+    final countrySubtag = countrifiedLocale?.countryCode;
 
     // `intl` setup here, for date formatters
     // `intl4x` setup is done when building the locale, in the `Settings` getter
-    final useNativeDigits = !settings.forceWesternArabicNumerals && shouldUseNativeDigits(countrifiedLocale);
+    final useNativeDigits = !settings.forceWesternArabicNumerals && LocaleUsage.shouldUseNativeDigits(languageSubtag, countrySubtag);
     DateFormat.useNativeDigitsByDefaultFor(resolvedLocale.toLanguageTag(), useNativeDigits);
     if (countrifiedLocale != null) {
       DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toLanguageTag(), useNativeDigits);

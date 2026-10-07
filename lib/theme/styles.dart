@@ -1,3 +1,4 @@
+import 'package:aves/ref/locale/iso639_1.dart';
 import 'package:flutter/painting.dart';
 
 class AStyles {
@@ -9,8 +10,8 @@ class AStyles {
 
   static TextStyle unknownTitleText = knownTitleText;
 
-  static void updateStylesForLocale(String languageCode) {
-    final smcp = languageCode != 'el';
+  static void updateStylesForLocale(String languageSubtag) {
+    final smcp = languageSubtag != LanguageCodesIso639_1.greek;
     unknownTitleText = smcp ? knownTitleText : knownTitleText.copyWith(fontFeatures: []);
   }
 

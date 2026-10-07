@@ -6,7 +6,7 @@ import 'package:aves/locale/calendar/delegate/hijri.dart';
 import 'package:aves/locale/calendar/delegate/persian.dart';
 import 'package:aves/locale/intl4x.dart';
 import 'package:aves/locale/number.dart';
-import 'package:aves/ref/locales.dart';
+import 'package:aves/ref/locale/iso639_1.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/calendar.dart' as date4x;
@@ -16,7 +16,7 @@ import 'package:material_ui/material_ui.dart';
 typedef ACalendar = date4x.Calendar;
 
 class AvesLocale({
-  required final String languageTag,
+  required final String languageBcp47,
   required final ACalendar calendar,
   required final bool forceWesternArabicNumerals,
 }) {
@@ -25,30 +25,30 @@ class AvesLocale({
 
   this {
     _dateFormatDelegate = _getDateFormatDelegate();
-    _locale4x = Intl4x.toLocale4x(languageTag, calendar, forceWesternArabicNumerals);
+    _locale4x = Intl4x.toLocale4x(languageBcp47, calendar, forceWesternArabicNumerals);
   }
 
   static final AvesLocale ascii = AvesLocale(
-    languageTag: kAsciiLocale,
+    languageBcp47: LanguageCodesIso639_1.english,
     calendar: ACalendar.gregorian,
     forceWesternArabicNumerals: false,
   );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{languageTag=$languageTag, calendar=$calendar, forceWesternArabicNumerals=$forceWesternArabicNumerals}';
+  String toString() => '$runtimeType#${shortHash(this)}{languageBcp47=$languageBcp47, calendar=$calendar, forceWesternArabicNumerals=$forceWesternArabicNumerals}';
 
   AvesLocale copyWith({
     ACalendar? calendar,
   }) {
     return AvesLocale(
-      languageTag: languageTag,
+      languageBcp47: languageBcp47,
       calendar: calendar ?? this.calendar,
       forceWesternArabicNumerals: forceWesternArabicNumerals,
     );
   }
 
   ANumberFormat numberFormat(String pattern) {
-    return ANumberFormat.fromIntl(intl.NumberFormat(pattern, languageTag));
+    return ANumberFormat.fromIntl(intl.NumberFormat(pattern, languageBcp47));
   }
 
   ANumberFormat decimalNumberFormat() {
@@ -56,13 +56,13 @@ class AvesLocale({
   }
 
   ANumberFormat percentNumberFormat() {
-    return ANumberFormat.fromIntl(intl.NumberFormat.percentPattern(languageTag));
+    return ANumberFormat.fromIntl(intl.NumberFormat.percentPattern(languageBcp47));
     // as of intl4x v1.0.0 `NumberFormat.percent` is not implemented for native
     // return ANumberFormat.fromIntl4x(num4x.NumberFormat.percent(locale: _locale4x));
   }
 
   ANumberParser numberParser(String pattern) {
-    return ANumberParser.fromIntl(intl.NumberFormat(pattern, languageTag));
+    return ANumberParser.fromIntl(intl.NumberFormat(pattern, languageBcp47));
   }
 
   // only use with `showDatePicker` / `DatePickerDialog`,
@@ -85,12 +85,12 @@ class AvesLocale({
   DateFormatDelegate _getDateFormatDelegate() {
     switch (calendar) {
       case .gregorian:
-        return IntlDateFormatDelegate(languageTag: languageTag);
+        return IntlDateFormatDelegate(languageTag: languageBcp47);
       case .hijriTbla:
       case .hijriUmalqura:
       case .persian:
         return Intl4xDateFormatDelegate(
-          languageTag: languageTag,
+          languageTag: languageBcp47,
           calendar: calendar,
           forceWesternArabicNumerals: forceWesternArabicNumerals,
         );

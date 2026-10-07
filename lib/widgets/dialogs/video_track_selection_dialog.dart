@@ -1,4 +1,4 @@
-import 'package:aves/ref/languages.dart';
+import 'package:aves/ref/locale/iso639_2.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
@@ -92,9 +92,8 @@ class _VideoTrackSelectionDialogState extends State<VideoTrackSelectionDialog> {
     );
   }
 
-  static String _formatLanguage(String value) {
-    final language = Language.living639_2.firstWhereOrNull((language) => language.iso639_2 == value);
-    return language?.native ?? value;
+  static String _formatLanguage(String iso639_2) {
+    return LanguageCodesIso639_2.endonymOf(iso639_2) ?? iso639_2;
   }
 
   String _commonTrackName(MediaTrackSummary? track) {

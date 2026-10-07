@@ -21,7 +21,7 @@ class PlatformGeocodingService implements GeocodingService {
       final result = await _channel.invokeMethod('getAddress', <String, Object?>{
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
-        'localeLanguageTag': locale.languageTag,
+        'localeLanguageTag': locale.languageBcp47,
         // we only really need one address, but sometimes the native geocoder
         // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
         'maxResults': 2,

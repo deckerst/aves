@@ -1,5 +1,4 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
@@ -41,7 +40,7 @@ class HighlightTitle extends StatelessWidget {
     final style = TextStyle(
       shadows: shadows(context),
       fontSize: fontSize,
-      letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
+      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
       fontFeatures: const [FontFeature.enable('smcp')],
     );
 
