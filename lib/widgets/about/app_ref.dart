@@ -1,5 +1,6 @@
 import 'package:aves/model/device.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/about/policy_page.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -32,32 +33,31 @@ class AppReference extends StatelessWidget {
 
   Widget _buildAvesLine(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
+    final appName = context.l10n.appName;
+    const fontSize = 20.0;
+    final appTitleStyle = AStyles.appNameStyle(context, appName).copyWith(
+      fontSize: fontSize,
+      fontWeight: .normal,
+    );
+
     return Row(
       mainAxisSize: .min,
+      spacing: 8,
       children: [
         AvesLogo(
-          size: textScaler.scale(_getAppTitleStyle(context).fontSize!) * 1.3,
+          size: textScaler.scale(fontSize) * 1.3,
         ),
-        const SizedBox(width: 8),
         Text(
-          context.l10n.appName,
-          style: _getAppTitleStyle(context),
+          appName,
+          style: appTitleStyle,
         ),
-        const SizedBox(width: 8),
         Text(
           device.packageVersion,
-          style: _getAppTitleStyle(context),
+          style: appTitleStyle,
         ),
       ],
     );
   }
-
-  TextStyle _getAppTitleStyle(BuildContext context) => TextStyle(
-    fontSize: 20,
-    fontWeight: .normal,
-    letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
-    fontFeatures: const [FontFeature.enable('smcp')],
-  );
 
   static List<Widget> buildLinks(BuildContext context) {
     final l10n = context.l10n;

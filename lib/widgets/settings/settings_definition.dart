@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/widgets.dart';
 
@@ -27,6 +28,7 @@ abstract class SettingsSection {
           value: key,
           leading: icon(tileContext),
           title: title(tileContext),
+          locale: tileContext.knownLocale,
           expandedNotifier: expandedNotifier,
           showHighlight: false,
           // reuse section context so that dialogs opened from tiles have the right text theme

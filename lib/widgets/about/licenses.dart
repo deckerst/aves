@@ -50,6 +50,7 @@ class _LicensesState extends State<Licenses> {
   @override
   Widget build(BuildContext context) {
     final colors = context.watch<AvesColorsData>();
+    final knownLocale = context.knownLocale;
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
@@ -59,24 +60,28 @@ class _LicensesState extends State<Licenses> {
             const SizedBox(height: 16),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.android),
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPlugins.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPackages.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesDartPackagesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _dartPackages.map((package) => _LicenseRow(package: package)).toList(),

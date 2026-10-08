@@ -18,6 +18,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
@@ -40,7 +41,7 @@ class RenameEntrySetPage extends StatefulWidget {
 class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
   final TextEditingController _patternTextController = TextEditingController();
   final ValueNotifier<NamingPattern> _namingPatternNotifier = ValueNotifier<NamingPattern>(const NamingPattern([]));
-  late final String localeBcp47;
+  late final KnownLocale locale;
 
   static const int previewMax = 10;
   static const double thumbnailExtent = 48;
@@ -56,7 +57,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _patternTextController.addListener(_onUserPatternChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      localeBcp47 = context.localeBcp47;
+      locale = context.knownLocale ?? KnownLocale.english;
       _onUserPatternChanged();
     });
   }
@@ -164,7 +165,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 l10n.renameEntrySetPagePreviewSectionTitle,
-                style: AStyles.knownTitleText,
+                style: AStyles.sectionTitleStyle(context.knownLocale),
               ),
             ),
             Expanded(
@@ -242,7 +243,7 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
     _namingPatternNotifier.value = NamingPattern.from(
       userPattern: _patternTextController.text,
       entryCount: entryCount,
-      localeBcp47: localeBcp47,
+      localeBcp47: locale.bcp47,
     );
   }
 

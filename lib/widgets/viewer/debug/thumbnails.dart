@@ -7,6 +7,7 @@ import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:material_ui/material_ui.dart';
 
 class ThumbnailsTab extends StatefulWidget {
@@ -53,6 +54,7 @@ class _ThumbnailsTabState extends State<ThumbnailsTab> {
       children: [
         AvesExpansionTile(
           title: 'Cached',
+          locale: KnownLocale.english,
           children: entry.cachedThumbnails
               .expand(
                 (provider) => [
@@ -90,6 +92,7 @@ class _ThumbnailsTabState extends State<ThumbnailsTab> {
 
             return AvesExpansionTile(
               title: 'By method',
+              locale: KnownLocale.english,
               children: result.expand((kv) {
                 final method = kv.key;
                 final bytes = kv.value;

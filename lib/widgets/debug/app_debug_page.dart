@@ -34,10 +34,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AppDebugPage extends StatelessWidget {
+class const AppDebugPage({super.key}) extends StatelessWidget {
   static const routeName = '/debug';
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

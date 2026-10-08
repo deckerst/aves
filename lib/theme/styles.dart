@@ -1,18 +1,37 @@
-import 'package:aves/ref/locale/iso639_1.dart';
-import 'package:flutter/painting.dart';
+import 'package:aves/l10ngen/app_localizations_en.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
+import 'package:flutter/widgets.dart';
 
 class AStyles {
-  static const knownTitleText = TextStyle(
-    fontSize: 20,
-    fontWeight: .w300,
-    fontFeatures: [FontFeature.enable('smcp')],
-  );
+  static TextStyle _baseTitleStyle(KnownLocale? locale) {
+    final supportSmallCaps = locale?.supportSmallCaps ?? true;
+    final supportLetterSpacing = locale?.supportLetterSpacing ?? true;
+    return TextStyle(
+      fontWeight: supportSmallCaps ? .w300 : .normal,
+      letterSpacing: supportSmallCaps && supportLetterSpacing ? 1 : 0,
+      fontFeatures: supportSmallCaps ? const [FontFeature.enable('smcp')] : [],
+    );
+  }
 
-  static TextStyle unknownTitleText = knownTitleText;
+  static final String _originalAppName = AppLocalizationsEn().appName;
 
-  static void updateStylesForLocale(String languageSubtag) {
-    final smcp = languageSubtag != LanguageCodesIso639_1.greek;
-    unknownTitleText = smcp ? knownTitleText : knownTitleText.copyWith(fontFeatures: []);
+  static TextStyle appNameStyle(BuildContext context, String appName) {
+    final locale = appName != _originalAppName ? context.knownLocale : KnownLocale.english;
+    return _baseTitleStyle(locale);
+  }
+
+  static TextStyle pageTitleTextStyle(KnownLocale locale) {
+    return _baseTitleStyle(locale).copyWith(
+      fontSize: 20,
+      fontWeight: .normal,
+    );
+  }
+
+  static TextStyle sectionTitleStyle(KnownLocale? locale) {
+    return _baseTitleStyle(locale).copyWith(
+      fontSize: 20,
+    );
   }
 
   static const embossShadows = [

@@ -9,13 +9,11 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_donut.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AboutDataUsage extends StatefulWidget {
-  const new({super.key});
-
+class const AboutDataUsage({super.key}) extends StatefulWidget {
   @override
   State<AboutDataUsage> createState() => _AboutDataUsageState();
 }
@@ -48,7 +46,10 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: .centerStart,
-              child: Text(l10n.aboutDataUsageSectionTitle, style: AStyles.knownTitleText),
+              child: Text(
+                l10n.aboutDataUsageSectionTitle,
+                style: AStyles.sectionTitleStyle(context.knownLocale),
+              ),
             ),
           ),
           body: FutureBuilder<Map<String, int>>(
@@ -117,11 +118,12 @@ class _AboutDataUsageState extends State<AboutDataUsage> with FeedbackMixin {
   }
 }
 
-class DataUsageDonut extends StatelessWidget {
-  final String title;
-  final Map<String, int> byTypes;
-  final Duration animationDuration;
-
+class const DataUsageDonut({
+  super.key,
+  required final String title,
+  required final Map<String, int> byTypes,
+  required final Duration animationDuration,
+}) extends StatelessWidget {
   // data
   static const String bin = 'bin';
   static const String database = 'database';
@@ -132,13 +134,6 @@ class DataUsageDonut extends StatelessWidget {
   // cache
   static const String internal = 'internal';
   static const String external = 'external';
-
-  const new({
-    super.key,
-    required this.title,
-    required this.byTypes,
-    required this.animationDuration,
-  });
 
   @override
   Widget build(BuildContext context) {

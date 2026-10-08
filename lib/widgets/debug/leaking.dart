@@ -6,13 +6,12 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:collection/collection.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugLeakingSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugLeakingSection({super.key}) extends StatefulWidget {
   @override
   State<DebugLeakingSection> createState() => _DebugLeakingSectionState();
 
@@ -55,6 +54,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
 
     return AvesExpansionTile(
       title: 'Leaking',
+      locale: KnownLocale.english,
       children: [
         SwitchListTile(
           value: _collectorOverlayEntry != null,
@@ -119,9 +119,7 @@ class _DebugLeakingSectionState extends State<DebugLeakingSection> with Automati
   bool get wantKeepAlive => true;
 }
 
-class _CollectorOverlay extends StatefulWidget {
-  const new();
-
+class const _CollectorOverlay() extends StatefulWidget {
   @override
   State<_CollectorOverlay> createState() => _CollectorOverlayState();
 }

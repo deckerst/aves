@@ -214,7 +214,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
             padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
             child: Text(
               context.l10n.settingsViewerQuickActionEditorDisplayedButtonsSectionTitle,
-              style: AStyles.knownTitleText,
+              style: AStyles.sectionTitleStyle(context.knownLocale),
             ),
           ),
           ValueListenableBuilder<bool>(
@@ -297,7 +297,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               context.l10n.settingsViewerQuickActionEditorAvailableButtonsSectionTitle,
-              style: AStyles.knownTitleText,
+              style: AStyles.sectionTitleStyle(context.knownLocale),
             ),
           ),
           ValueListenableBuilder<bool>(

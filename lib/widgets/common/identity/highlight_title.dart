@@ -1,30 +1,24 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/text/outlined.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class HighlightTitle extends StatelessWidget {
-  final String title;
-  final Color? color;
-  final double fontSize;
-  final bool enabled;
-  final bool showHighlight;
-
-  const new({
-    super.key,
-    required this.title,
-    this.color,
-    this.fontSize = 18,
-    this.enabled = true,
-    this.showHighlight = true,
-  });
-
+class const HighlightTitle({
+  super.key,
+  required final String title,
+  required final KnownLocale? locale,
+  final Color? color,
+  final double fontSize = 18,
+  final bool enabled = true,
+  final bool showHighlight = true,
+}) extends StatelessWidget {
   static const disabledColor = Colors.grey;
 
   static List<Shadow> shadows(BuildContext context) => [
@@ -37,11 +31,9 @@ class HighlightTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyle(
-      shadows: shadows(context),
+    final style = AStyles.sectionTitleStyle(locale).copyWith(
       fontSize: fontSize,
-      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
-      fontFeatures: const [FontFeature.enable('smcp')],
+      shadows: shadows(context),
     );
 
     final colors = context.watch<AvesColorsData>();

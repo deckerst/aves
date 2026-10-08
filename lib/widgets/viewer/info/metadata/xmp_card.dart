@@ -5,6 +5,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:material_ui/material_ui.dart';
@@ -95,6 +96,7 @@ class _XmpCardState extends State<XmpCard> {
                     Expanded(
                       child: HighlightTitle(
                         title: widget.title,
+                        locale: KnownLocale.english,
                         showHighlight: false,
                       ),
                     ),
@@ -107,6 +109,7 @@ class _XmpCardState extends State<XmpCard> {
                       ),
                       HighlightTitle(
                         title: '${index + 1}',
+                        locale: KnownLocale.english,
                         showHighlight: false,
                       ),
                       IconButton(

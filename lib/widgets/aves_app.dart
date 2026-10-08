@@ -23,7 +23,6 @@ import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/app_ref.dart';
@@ -45,6 +44,7 @@ import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -271,8 +271,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         lightAccent = lightScheme?.primary ?? lightAccent;
                         darkAccent = darkScheme?.primary ?? darkAccent;
                       }
-                      final lightTheme = Themes.lightTheme(lightAccent, initialized);
-                      final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
+                      final knownLocale = KnownLocale.fromBcp47(settingsLocale?.toLanguageTag()) ?? KnownLocale.english;
+                      final lightTheme = Themes.lightTheme(lightAccent, initialized, knownLocale);
+                      final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized, knownLocale) : Themes.darkTheme(darkAccent, initialized, knownLocale);
                       return Shortcuts(
                         shortcuts: {
                           // handle Android TV remote `select` button (KEYCODE_DPAD_CENTER)
@@ -392,7 +393,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
 
     final resolvedLocale = settings.resolvedLocale;
     final languageSubtag = resolvedLocale.languageCode;
-    AStyles.updateStylesForLocale(languageSubtag);
 
     Locale? countrifiedLocale;
     if (resolvedLocale.countryCode == null) {

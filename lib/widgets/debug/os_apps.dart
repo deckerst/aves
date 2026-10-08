@@ -4,13 +4,12 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugOSAppSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugOSAppSection({super.key}) extends StatefulWidget {
   @override
   State<DebugOSAppSection> createState() => _DebugOSAppSectionState();
 }
@@ -40,6 +39,7 @@ class _DebugOSAppSectionState extends State<DebugOSAppSection> with AutomaticKee
 
     return AvesExpansionTile(
       title: 'OS Apps',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

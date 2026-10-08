@@ -2,11 +2,10 @@ import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugCacheSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugCacheSection({super.key}) extends StatefulWidget {
   @override
   State<DebugCacheSection> createState() => _DebugCacheSectionState();
 }
@@ -37,6 +36,7 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
     final maxSizeBytes = formatFileSize(AvesLocale.ascii, imageCache.maximumSizeBytes);
     return AvesExpansionTile(
       title: 'Cache',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
