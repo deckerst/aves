@@ -3,14 +3,15 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.Mp4FragmentedException
-import deckers.thibault.aves.metadata.Mp4TooLargeException
-import deckers.thibault.aves.metadata.Mp4ZeroSizeBoxException
+import deckers.thibault.aves.model.ExifInterfaceException
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.FileDescriptorException
+import deckers.thibault.aves.model.Mp4FragmentedException
+import deckers.thibault.aves.model.Mp4TooLargeException
+import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.storage.FileDescriptorException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -240,7 +241,9 @@ private class MetadataOpCallback(
 ) : ImageOpCallback {
     override fun onSuccess(fields: FieldMap) = result.success(fields)
     override fun onFailure(throwable: Throwable) {
-        val errorCode = if (throwable is Mp4TooLargeException) {
+        val errorCode = if (throwable is ExifInterfaceException) {
+            "$errorCodeBase-exifinterface"
+        } else if (throwable is Mp4TooLargeException) {
             if (throwable.type == "moov") {
                 "$errorCodeBase-mp4largemoov"
             } else {

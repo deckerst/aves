@@ -123,7 +123,9 @@ class PlatformMetadataEditService implements MetadataEditService {
     if (entry.isValid) {
       final code = e.code;
       final customException = CustomPlatformException.fromStandard(e);
-      if (code.endsWith('mp4fragmented')) {
+      if (code.endsWith('exifinterface')) {
+        await exifInterface(customException);
+      } else if (code.endsWith('mp4fragmented')) {
         await mp4Fragmented(customException);
       } else if (code.endsWith('mp4zerosizebox')) {
         await mp4ZeroSizeBox(customException);
@@ -141,6 +143,11 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   // distinct exceptions to convince Crashlytics to split reports into distinct issues
   // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
+
+  Future<void> exifInterface(CustomPlatformException e) {
+    debugPrint('exifInterface $e');
+    return reportService.recordError(e);
+  }
 
   Future<void> mp4Fragmented(CustomPlatformException e) {
     debugPrint('mp4Fragmented $e');
