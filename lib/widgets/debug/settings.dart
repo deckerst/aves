@@ -6,13 +6,12 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class DebugSettingsSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugSettingsSection({super.key}) extends StatefulWidget {
   @override
   State<DebugSettingsSection> createState() => _DebugSettingsSectionState();
 }
@@ -27,6 +26,7 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
         String toMultiline(Iterable? l) => l != null && l.isNotEmpty ? '\n${l.join('\n')}' : '$l';
         return AvesExpansionTile(
           title: 'Settings',
+          locale: KnownLocale.english,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -69,7 +69,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'Drawer'),
+              child: HighlightTitle(
+                title: 'Drawer',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
@@ -83,7 +86,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'Groups'),
+              child: HighlightTitle(
+                title: 'Groups',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
@@ -96,7 +102,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'History'),
+              child: HighlightTitle(
+                title: 'History',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
@@ -111,7 +120,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'Locale'),
+              child: HighlightTitle(
+                title: 'Locale',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
@@ -126,7 +138,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'Map'),
+              child: HighlightTitle(
+                title: 'Map',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
@@ -140,7 +155,10 @@ class _DebugSettingsSectionState extends State<DebugSettingsSection> with Automa
             ),
             const Padding(
               padding: EdgeInsets.all(8),
-              child: HighlightTitle(title: 'Tile Extent'),
+              child: HighlightTitle(
+                title: 'Tile Extent',
+                locale: KnownLocale.english,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),

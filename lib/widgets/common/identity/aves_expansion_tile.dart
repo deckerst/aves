@@ -2,36 +2,31 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/divider.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AvesExpansionTile extends StatelessWidget {
-  final String value;
-  final Widget? leading;
-  final String title;
-  final Color? highlightColor;
-  final ValueNotifier<String?>? expandedNotifier;
-  final bool initiallyExpanded, showHighlight;
-  final List<Widget> children;
-
-  const new({
-    super.key,
-    String? value,
-    this.leading,
-    required this.title,
-    this.highlightColor,
-    this.expandedNotifier,
-    this.initiallyExpanded = false,
-    this.showHighlight = true,
-    required this.children,
-  }) : value = value ?? title;
+class const AvesExpansionTile({
+  super.key,
+  String? value,
+  final Widget? leading,
+  required final String title,
+  required final KnownLocale? locale,
+  final Color? highlightColor,
+  final ValueNotifier<String?>? expandedNotifier,
+  final bool initiallyExpanded = false,
+  final bool showHighlight = true,
+  required final List<Widget> children,
+}) extends StatelessWidget {
+  final String value = value ?? title;
 
   @override
   Widget build(BuildContext context) {
     final enabled = children.isNotEmpty == true;
     Widget titleChild = HighlightTitle(
       title: title,
+      locale: locale,
       color: highlightColor,
       enabled: enabled,
       showHighlight: showHighlight,

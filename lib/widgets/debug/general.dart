@@ -5,14 +5,13 @@ import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class DebugGeneralSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugGeneralSection({super.key}) extends StatefulWidget {
   @override
   State<DebugGeneralSection> createState() => _DebugGeneralSectionState();
 }
@@ -33,6 +32,7 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
 
     return AvesExpansionTile(
       title: 'General',
+      locale: KnownLocale.english,
       children: [
         const Padding(
           padding: EdgeInsets.all(8),
@@ -99,9 +99,7 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
   bool get wantKeepAlive => true;
 }
 
-class _TaskQueueOverlay extends StatelessWidget {
-  const new();
-
+class const _TaskQueueOverlay() extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(

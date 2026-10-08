@@ -11,6 +11,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
@@ -168,6 +169,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = context.l10n;
+    final appName = l10n.appName;
 
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
@@ -214,8 +216,12 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                     OutlinedText(
                       textSpans: [
                         TextSpan(
-                          text: l10n.appName,
-                          style: _getAppTitleStyle(context),
+                          text: appName,
+                          style: AStyles.appNameStyle(context, appName).copyWith(
+                            color: Colors.white,
+                            fontSize: 38,
+                            fontWeight: .w300,
+                          ),
                         ),
                       ],
                     ),
@@ -272,16 +278,6 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           ),
         ),
       ),
-    );
-  }
-
-  TextStyle _getAppTitleStyle(BuildContext context) {
-    return TextStyle(
-      color: Colors.white,
-      fontSize: 38,
-      fontWeight: .w300,
-      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
-      fontFeatures: const [FontFeature.enable('smcp')],
     );
   }
 

@@ -11,21 +11,14 @@ import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SectionHeader<T> extends StatelessWidget {
-  final SectionKey sectionKey;
-  final Widget? leading, trailing;
-  final String title;
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.sectionKey,
-    this.leading,
-    required this.title,
-    this.trailing,
-    this.selectable = true,
-  });
-
+class const SectionHeader<T>({
+  super.key,
+  required final SectionKey sectionKey,
+  final Widget? leading,
+  required final String title,
+  final Widget? trailing,
+  final bool selectable = true,
+}) extends StatelessWidget {
   static const leadingSize = Size.square(32);
   static const widgetSpanAlignmentMargin = EdgeInsetsDirectional.only(bottom: 4);
   static final leadingMargin = const EdgeInsetsDirectional.only(end: 8) + widgetSpanAlignmentMargin;
@@ -174,24 +167,17 @@ class SectionHeader<T> extends StatelessWidget {
   static TextStyle _headerTextStyle(BuildContext context) {
     // specify `height` for accurate paragraph height measurement
     final defaultTextHeight = DefaultTextStyle.of(context).style.height;
-    return AStyles.unknownTitleText.copyWith(height: defaultTextHeight);
+    return AStyles.sectionTitleStyle(context.knownLocale).copyWith(height: defaultTextHeight);
   }
 }
 
-class _SectionSelectableLeading<T> extends StatelessWidget {
-  final bool selectable;
-  final SectionKey sectionKey;
-  final WidgetBuilder? browsingBuilder;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    this.selectable = true,
-    required this.sectionKey,
-    required this.browsingBuilder,
-    required this.onPressed,
-  });
-
+class const _SectionSelectableLeading<T>({
+  super.key,
+  final bool selectable = true,
+  required final SectionKey sectionKey,
+  required final WidgetBuilder? browsingBuilder,
+  required final VoidCallback? onPressed,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
@@ -236,16 +222,11 @@ class _SectionSelectableLeading<T> extends StatelessWidget {
   Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: SectionHeader.leadingSize.height + SectionHeader.widgetSpanAlignmentMargin.vertical);
 }
 
-class _SectionSelectingLeading<T> extends StatelessWidget {
-  final SectionKey sectionKey;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.sectionKey,
-    required this.onPressed,
-  });
-
+class const _SectionSelectingLeading<T>({
+  super.key,
+  required final SectionKey sectionKey,
+  required final VoidCallback? onPressed,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final duration = context.select<DurationsData, Duration>((v) => v.formTransition);

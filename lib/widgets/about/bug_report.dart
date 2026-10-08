@@ -30,9 +30,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-class BugReport extends StatefulWidget {
-  const new({super.key});
-
+class const BugReport({super.key}) extends StatefulWidget {
   @override
   State<BugReport> createState() => _BugReportState();
 }
@@ -57,7 +55,10 @@ class _BugReportState extends State<BugReport> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: .centerStart,
-              child: Text(context.l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
+              child: Text(
+                context.l10n.aboutBugSectionTitle,
+                style: AStyles.sectionTitleStyle(context.knownLocale),
+              ),
             ),
           ),
           body: const BugReportContent(),

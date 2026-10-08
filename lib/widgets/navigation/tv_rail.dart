@@ -6,6 +6,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -96,14 +97,19 @@ class _TvRailState extends State<TvRail> {
         valueListenable: _extendedNotifier,
         builder: (context, extended, child) {
           const logo = AvesLogo(size: 48);
+          final appName = context.l10n.appName;
           final header = extended
               ? Row(
                   children: [
                     logo,
                     const SizedBox(width: 16),
                     Text(
-                      context.l10n.appName,
-                      style: _getAppTitleStyle(context),
+                      appName,
+                      style: AStyles.appNameStyle(context, appName).copyWith(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: .w300,
+                      ),
                     ),
                   ],
                 )
@@ -159,16 +165,6 @@ class _TvRailState extends State<TvRail> {
           );
         },
       ),
-    );
-  }
-
-  TextStyle _getAppTitleStyle(BuildContext context) {
-    return TextStyle(
-      color: Colors.white,
-      fontSize: 32,
-      fontWeight: .w300,
-      letterSpacing: context.localeSupportLetterSpacing ? 1 : 0,
-      fontFeatures: const [FontFeature.enable('smcp')],
     );
   }
 

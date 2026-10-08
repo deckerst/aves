@@ -1,21 +1,18 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/styles.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AboutSectionTitle extends StatelessWidget {
-  final String text;
-
-  const new({
-    super.key,
-    required this.text,
-  });
-
+class const AboutSectionTitle({
+  super.key,
+  required final String text,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = Container(
       alignment: .centerStart,
       constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
-      child: Text(text, style: AStyles.knownTitleText),
+      child: Text(text, style: AStyles.sectionTitleStyle(context.knownLocale)),
     );
 
     if (settings.useTvLayout) {

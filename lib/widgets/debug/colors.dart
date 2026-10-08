@@ -1,10 +1,9 @@
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugColorSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugColorSection({super.key}) extends StatefulWidget {
   @override
   State<DebugColorSection> createState() => _DebugColorSectionState();
 }
@@ -65,6 +64,7 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
     ];
     return AvesExpansionTile(
       title: 'Colors',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

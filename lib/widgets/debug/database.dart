@@ -12,12 +12,11 @@ import 'package:aves/model/viewer/video_playback.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugAppDatabaseSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugAppDatabaseSection({super.key}) extends StatefulWidget {
   @override
   State<DebugAppDatabaseSection> createState() => _DebugAppDatabaseSectionState();
 }
@@ -54,6 +53,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
 
     return AvesExpansionTile(
       title: 'Database',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

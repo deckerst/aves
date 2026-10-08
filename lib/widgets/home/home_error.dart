@@ -30,6 +30,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final knownLocale = context.knownLocale;
     return SafeArea(
       bottom: false,
       child: CustomScrollView(
@@ -41,6 +42,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                 [
                   AvesExpansionTile(
                     title: 'Error',
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: [
@@ -55,12 +57,14 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                   ),
                   AvesExpansionTile(
                     title: l10n.aboutBugSectionTitle,
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: const [BugReportContent()],
                   ),
                   AvesExpansionTile(
                     title: l10n.aboutDataUsageDatabase,
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: [

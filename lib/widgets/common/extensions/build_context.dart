@@ -1,6 +1,7 @@
 import 'package:aves/l10n/l10n.dart';
 import 'package:aves/locale/intl.dart';
 import 'package:aves/ref/locale/iso639_1.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,6 +18,8 @@ extension ExtraBuildContext on BuildContext {
   String get _localeIntlName => l10n.localeName;
 
   String get localeBcp47 => _localeIntlName.replaceAll('_', '-');
+
+  KnownLocale? get knownLocale => KnownLocale.fromBcp47(localeBcp47);
 
   String get _languageSubtag => IntlUtils.getLanguageSubTag(l10n.localeName);
 
@@ -35,17 +38,6 @@ extension ExtraBuildContext on BuildContext {
       }
     } else {
       return Unicode.LRM;
-    }
-  }
-
-  bool get localeSupportLetterSpacing {
-    switch (_languageSubtag) {
-      case LanguageCodesIso639_1.arabic:
-      case LanguageCodesIso639_1.persian:
-      case LanguageCodesIso639_1.urdu:
-        return false;
-      default:
-        return true;
     }
   }
 }
