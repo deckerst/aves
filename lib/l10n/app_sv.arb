@@ -56,7 +56,8 @@
     "@itemCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -64,7 +65,8 @@
     "@columnCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -397,7 +399,8 @@
     "@collectionDeleteFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -405,7 +408,8 @@
     "@collectionCopyFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -413,7 +417,8 @@
     "@collectionMoveFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -421,7 +426,8 @@
     "@collectionRenameFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -517,7 +523,8 @@
     "@unsupportedTypeDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             },
             "types": {
                 "type": "String",

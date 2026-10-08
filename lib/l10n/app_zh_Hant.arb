@@ -7,7 +7,8 @@
     "@itemCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -180,7 +181,8 @@
     "@deleteEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -204,7 +206,8 @@
     "@deleteMultiAlbumConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -282,7 +285,8 @@
     "@collectionRenameFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -290,7 +294,8 @@
     "@collectionEditFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -298,7 +303,8 @@
     "@collectionCopySuccessFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -306,7 +312,8 @@
     "@collectionRenameSuccessFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -314,7 +321,8 @@
     "@collectionEditSuccessFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -614,7 +622,8 @@
     "@deleteSingleAlbumConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -659,7 +668,8 @@
     "@collectionDeleteFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -667,7 +677,8 @@
     "@collectionCopyFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -675,7 +686,8 @@
     "@collectionExportFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -683,7 +695,8 @@
     "@collectionMoveSuccessFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -691,7 +704,8 @@
     "@collectionMoveFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -707,7 +721,8 @@
     "@unsupportedTypeDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             },
             "types": {
                 "type": "String",
@@ -720,7 +735,8 @@
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -753,7 +769,8 @@
     "@statsWithGps": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -831,7 +848,8 @@
     "@columnCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
