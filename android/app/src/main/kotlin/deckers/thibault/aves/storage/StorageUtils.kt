@@ -18,6 +18,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.storage.apis.FilePermissions
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.SafPermissions
@@ -784,8 +785,7 @@ object StorageUtils {
 
     fun deleteTempDirectory(context: Context): Boolean {
         val directory = getTempDirectory(context)
-        if (!directory.exists()) return false
-        return directory.deleteRecursively()
+        return directory.exists() && directory.deleteRecursively()
     }
 
     // convenience methods
@@ -798,5 +798,3 @@ object StorageUtils {
         return if (dirPath.endsWith(File.separator)) dirPath.dropLast(1) else dirPath
     }
 }
-
-class FileDescriptorException(message: String, cause: Throwable? = null) : IOException(message, cause)
