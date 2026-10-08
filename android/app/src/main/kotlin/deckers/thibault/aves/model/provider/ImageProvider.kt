@@ -1069,12 +1069,14 @@ abstract class ImageProvider {
     // so we check whether decoding it with `ImageDecoder` throws an exception
     private fun ensureDecodable(mimeType: String, file: File) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            // `ImageDecoder` auto closes the source
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
         }
     }
 
     private fun ensureDecodable(mimeType: String, context: Context, uri: Uri) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isMimeTypeSupported(mimeType)) {
+            // `ImageDecoder` auto closes the source
             ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
         }
     }
@@ -1103,7 +1105,7 @@ abstract class ImageProvider {
             // ensure content is decodable before editing
             ensureDecodable(mimeType, context, uri)
         } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode content before editing", ex))
+            callback.onFailure(Exception("failed to decode content (exists=${contentExists(context, uri)}) before editing", ex))
             return false
         }
 
@@ -1111,12 +1113,14 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
+        var trailerVideoSize: Long
+        var isTrailerVideoValid: Boolean
         var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
-            val trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff }
-            val isTrailerVideoValid = trailerVideoSize != null && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, trailerVideoSize) != null
+            trailerVideoSize = MultiPage.getTrailerVideoSize(context, uri, mimeType, originalFileSize)?.let { it + trailerDiff } ?: 0
+            isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, uri, originalFileSize, trailerVideoSize) != null
             try {
-                if (trailerVideoSize != null && isTrailerVideoValid) {
+                if (isTrailerVideoValid) {
                     // handle motion photo and embedded video separately
                     val imageSize = (originalFileSize - trailerVideoSize).toInt()
                     val videoByteSize = trailerVideoSize.toInt()
@@ -1145,7 +1149,7 @@ abstract class ImageProvider {
             // ensure file is decodable before editing
             ensureDecodable(mimeType, editableFile)
         } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode editable file before editing, with trailerVideoBytes=${trailerVideoBytes?.size}B", ex))
+            callback.onFailure(Exception("failed to decode editable file before editing, with trailer video size=$trailerVideoSize valid=$isTrailerVideoValid", ex))
             return false
         }
 
