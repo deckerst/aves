@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class _SettingsSwitchListTileState extends State<SettingsSwitchListTile> {
       selector: widget.selector,
       builder: (context, current, child) {
         Widget? leading = widget.leading;
-        Widget titleWidget = Text(widget.title(context) ?? '?');
+        Widget titleWidget = Text(widget.title(context) ?? AText.valueNotAvailable);
         final subtitle = widget.subtitle?.call(context);
         final trailing = widget.trailing;
         final onChanged = widget.onChanged;

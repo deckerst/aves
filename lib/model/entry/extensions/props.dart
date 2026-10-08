@@ -67,7 +67,7 @@ extension ExtraAvesEntryProps on AvesEntry {
       final h = height ~/ gcd;
       return isRotated ? '$h$separator$w' : '$w$separator$h';
     } else {
-      return '?$separator?';
+      return '${AText.valueNotAvailable}$separator${AText.valueNotAvailable}';
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -34,7 +35,7 @@ class const SliderListTile({
               child: Row(
                 children: [
                   Text(
-                    title(context) ?? '?',
+                    title(context) ?? AText.valueNotAvailable,
                     style: listTileTitleTextStyle,
                   ),
                   const Spacer(),

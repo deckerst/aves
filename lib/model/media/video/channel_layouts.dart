@@ -1,6 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 // channel layout constants from FFmpeg libavutil/channel_layout.h
+import 'package:aves/theme/text.dart';
+
 class ChannelLayouts {
   static const FRONT_LEFT = 0x00000001;
   static const FRONT_RIGHT = 0x00000002;
@@ -63,32 +65,32 @@ class ChannelLayouts {
   static const names = {
     LAYOUT_NATIVE: 'native',
     LAYOUT_MONO: 'mono',
-    LAYOUT_STEREO: 'stereo 2.0 • FL FR',
-    LAYOUT_2POINT1: 'stereo 2.1 • FL FR LFE',
-    LAYOUT_2_1: 'surround 3.0 • FL FR BC',
-    LAYOUT_SURROUND: 'stereo 3.0 • FL FR FC',
-    LAYOUT_3POINT1: 'stereo 3.1 • FL FR FC LFE',
-    LAYOUT_4POINT0: 'surround 4.0 • FL FR FC BC',
-    LAYOUT_4POINT1: 'surround 4.1 • FL FR FC BC LFE',
-    LAYOUT_2_2: 'quad (side) • FL FR SL SR',
-    LAYOUT_QUAD: 'quad (back) • FL FR BL BR',
-    LAYOUT_5POINT0: '5.0 (side) • FL FR FC SL SR',
-    LAYOUT_5POINT1: '5.1 (side) • FL FR FC SL SR LFE',
-    LAYOUT_5POINT0_BACK: '5.0 (back) • FL FR FC BL BR',
-    LAYOUT_5POINT1_BACK: '5.1 (back) • FL FR FC BL BR LFE',
-    LAYOUT_6POINT0: '6.0 (side) • FL FR FC SL SR BC',
-    LAYOUT_6POINT0_FRONT: '6.0 (front) • FL FR FLC FRC SL SR',
-    LAYOUT_HEXAGONAL: 'hexagonal • FL FR FC BL BR BC',
-    LAYOUT_6POINT1: '6.1 (side) • FL FR FC SL SR BC LFE',
-    LAYOUT_6POINT1_BACK: '6.1 (back) • FL FR FC BL BR BC LFE',
-    LAYOUT_6POINT1_FRONT: '6.1 (front) • FL FR FLC FRC SL SR LFE',
-    LAYOUT_7POINT0: 'surround 7.0 • FL FR FC SL SR BL BR',
-    LAYOUT_7POINT0_FRONT: 'wide 7.0 • FL FR FC FLC FRC SL SR',
-    LAYOUT_7POINT1: 'surround 7.1 • FL FR FC SL SR BL BR LFE',
-    LAYOUT_7POINT1_WIDE: 'wide 7.1 • FL FR FC FLC FRC SL SR LFE',
-    LAYOUT_7POINT1_WIDE_BACK: 'wide 7.1 (back) • FL FR FC FLC FRC BL BR LFE',
-    LAYOUT_OCTAGONAL: 'octagonal • FL FR FC SL SR BL BR BC',
-    LAYOUT_HEXADECAGONAL: 'hexadecagonal • FL FR FC WL WR TFL TFR TFC SL SR BL BR BC TBL TBR TBC',
+    LAYOUT_STEREO: 'stereo 2.0${AText.separator}FL FR',
+    LAYOUT_2POINT1: 'stereo 2.1${AText.separator}FL FR LFE',
+    LAYOUT_2_1: 'surround 3.0${AText.separator}FL FR BC',
+    LAYOUT_SURROUND: 'stereo 3.0${AText.separator}FL FR FC',
+    LAYOUT_3POINT1: 'stereo 3.1${AText.separator}FL FR FC LFE',
+    LAYOUT_4POINT0: 'surround 4.0${AText.separator}FL FR FC BC',
+    LAYOUT_4POINT1: 'surround 4.1${AText.separator}FL FR FC BC LFE',
+    LAYOUT_2_2: 'quad (side)${AText.separator}FL FR SL SR',
+    LAYOUT_QUAD: 'quad (back)${AText.separator}FL FR BL BR',
+    LAYOUT_5POINT0: '5.0 (side)${AText.separator}FL FR FC SL SR',
+    LAYOUT_5POINT1: '5.1 (side)${AText.separator}FL FR FC SL SR LFE',
+    LAYOUT_5POINT0_BACK: '5.0 (back)${AText.separator}FL FR FC BL BR',
+    LAYOUT_5POINT1_BACK: '5.1 (back)${AText.separator}FL FR FC BL BR LFE',
+    LAYOUT_6POINT0: '6.0 (side)${AText.separator}FL FR FC SL SR BC',
+    LAYOUT_6POINT0_FRONT: '6.0 (front)${AText.separator}FL FR FLC FRC SL SR',
+    LAYOUT_HEXAGONAL: 'hexagonal${AText.separator}FL FR FC BL BR BC',
+    LAYOUT_6POINT1: '6.1 (side)${AText.separator}FL FR FC SL SR BC LFE',
+    LAYOUT_6POINT1_BACK: '6.1 (back)${AText.separator}FL FR FC BL BR BC LFE',
+    LAYOUT_6POINT1_FRONT: '6.1 (front)${AText.separator}FL FR FLC FRC SL SR LFE',
+    LAYOUT_7POINT0: 'surround 7.0${AText.separator}FL FR FC SL SR BL BR',
+    LAYOUT_7POINT0_FRONT: 'wide 7.0${AText.separator}FL FR FC FLC FRC SL SR',
+    LAYOUT_7POINT1: 'surround 7.1${AText.separator}FL FR FC SL SR BL BR LFE',
+    LAYOUT_7POINT1_WIDE: 'wide 7.1${AText.separator}FL FR FC FLC FRC SL SR LFE',
+    LAYOUT_7POINT1_WIDE_BACK: 'wide 7.1 (back)${AText.separator}FL FR FC FLC FRC BL BR LFE',
+    LAYOUT_OCTAGONAL: 'octagonal${AText.separator}FL FR FC SL SR BL BR BC',
+    LAYOUT_HEXADECAGONAL: 'hexadecagonal${AText.separator}FL FR FC WL WR TFL TFR TFC SL SR BL BR BC TBL TBR TBC',
     LAYOUT_STEREO_DOWNMIX: 'stereo downmix',
   };
 }

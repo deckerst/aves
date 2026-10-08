@@ -102,7 +102,7 @@ class _VideoTrackSelectionDialogState extends State<VideoTrackSelectionDialog> {
     final language = track.language;
     if (language != null && language != 'und') {
       final formattedLanguage = _formatLanguage(language);
-      return '$formattedLanguage${title != null && title != formattedLanguage ? ' • $title' : ''}';
+      return '$formattedLanguage${title != null && title != formattedLanguage ? '${AText.separator}$title' : ''}';
     } else if (title != null) {
       return title;
     } else {
@@ -116,7 +116,7 @@ class _VideoTrackSelectionDialogState extends State<VideoTrackSelectionDialog> {
       final w = track.width;
       final h = track.height;
       if (w != null && h != null) {
-        return '$common • $w${AText.resolutionSeparator}$h';
+        return '$common${AText.separator}$w${AText.resolutionSeparator}$h';
       }
     }
     return common;

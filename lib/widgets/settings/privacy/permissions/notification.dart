@@ -6,9 +6,7 @@ import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class NotificationPermissionTile extends StatefulWidget {
-  const new({super.key});
-
+class const NotificationPermissionTile({super.key}) extends StatefulWidget {
   @override
   State<NotificationPermissionTile> createState() => _NotificationPermissionTileState();
 }

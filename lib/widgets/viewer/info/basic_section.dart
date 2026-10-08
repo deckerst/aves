@@ -23,6 +23,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/rate_button.dart';
@@ -404,7 +405,7 @@ class _BasicInfoState extends State<_BasicInfo> {
     if (isPhoto) {
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
-        s += ' • ${locale.numberFormat('0').format(megaPixels)} MP';
+        s += '${AText.separator}${locale.numberFormat('0').format(megaPixels)} MP';
       }
     }
 
