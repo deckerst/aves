@@ -91,6 +91,7 @@ object FileUtils {
     }
 
     // use `FileChannel` when possible, as it is potentially more efficient according to documentation
+    // auto closes the provided input stream
     fun File.copyFrom(inputStream: InputStream?, streamLength: Long?) {
         inputStream ?: return
 
