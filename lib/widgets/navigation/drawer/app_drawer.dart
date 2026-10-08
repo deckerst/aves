@@ -38,19 +38,13 @@ import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AppDrawer extends StatefulWidget {
+class const AppDrawer({
+  super.key,
+  final CollectionLens? currentCollection,
+  final String? currentExplorerPath,
+}) extends StatefulWidget {
   // collection loaded in the `CollectionPage`, if any
-  final CollectionLens? currentCollection;
-
   // current path loaded in the `ExplorerPage`, if any
-  final String? currentExplorerPath;
-
-  const new({
-    super.key,
-    this.currentCollection,
-    this.currentExplorerPath,
-  });
-
   @override
   State<AppDrawer> createState() => _AppDrawerState();
 
@@ -369,6 +363,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     if (pageBookmarks.isEmpty) return [];
 
     final source = context.read<CollectionSource>();
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
     return [
       const Divider(),
       ...pageBookmarks.map((route) {
@@ -377,22 +372,22 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           case AlbumListPage.routeName:
             trailing = StreamBuilder<AlbumsChangedEvent>(
               stream: source.eventBus.on<AlbumsChangedEvent>(),
-              builder: (context, _) => Text('${source.rawAlbums.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.rawAlbums.length)),
             );
           case CountryListPage.routeName:
             trailing = StreamBuilder<CountriesChangedEvent>(
               stream: source.eventBus.on<CountriesChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedCountries.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedCountries.length)),
             );
           case PlaceListPage.routeName:
             trailing = StreamBuilder<PlacesChangedEvent>(
               stream: source.eventBus.on<PlacesChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedPlaces.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedPlaces.length)),
             );
           case TagListPage.routeName:
             trailing = StreamBuilder<TagsChangedEvent>(
               stream: source.eventBus.on<TagsChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedTags.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedTags.length)),
             );
         }
 

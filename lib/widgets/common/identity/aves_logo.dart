@@ -1,18 +1,15 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/fx/colors.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AvesLogo extends StatelessWidget {
-  final double size;
-
-  const new({
-    super.key,
-    required this.size,
-  });
-
+class const AvesLogo({
+  super.key,
+  required final double size,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -32,13 +29,16 @@ class AvesLogo extends StatelessWidget {
       );
     }
 
-    return CircleAvatar(
-      backgroundColor: theme.dividerColor,
-      radius: size / 2,
+    return Transform.flip(
+      flipX: context.isRtl,
       child: CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: size / 2 - AvesBorder.curvedBorderWidth(context),
-        child: child,
+        backgroundColor: theme.dividerColor,
+        radius: size / 2,
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: size / 2 - AvesBorder.curvedBorderWidth(context),
+          child: child,
+        ),
       ),
     );
   }

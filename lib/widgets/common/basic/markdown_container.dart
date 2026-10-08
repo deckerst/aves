@@ -5,29 +5,23 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MarkdownContainer extends StatelessWidget {
-  final String data;
-  final TextDirection? textDirection;
-  final ScrollController? scrollController;
-
-  const new({
-    super.key,
-    required this.data,
-    this.textDirection,
-    this.scrollController,
-  });
-
+class const MarkdownContainer({
+  super.key,
+  required final String data,
+  final TextDirection? textDirection,
+  final ScrollController? scrollController,
+}) extends StatelessWidget {
   static const double mobileMaxWidth = 460;
 
   @override
   Widget build(BuildContext context) {
     final useTvLayout = settings.useTvLayout;
 
-    Widget child = Directionality(
-      textDirection: textDirection ?? Directionality.of(context),
-      // TODO TLAD remove bridge when this is merged: https://github.com/foresightmobile/flutter_markdown_plus/pull/145
-      // ignore: deprecated_member_use
-      child: MaterialUiCompatibilityBridge(
+    // TODO TLAD remove bridge when this is merged: https://github.com/foresightmobile/flutter_markdown_plus/pull/145
+    // ignore: deprecated_member_use
+    Widget child = MaterialUiCompatibilityBridge(
+      child: Directionality(
+        textDirection: textDirection ?? Directionality.of(context),
         child: Markdown(
           data: data,
           selectable: true,
