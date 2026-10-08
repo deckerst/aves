@@ -18,9 +18,9 @@ int applyFileSizeSuffix(String? suffix, int bytes) {
 }
 
 String formatFileSize(AvesLocale locale, int size, {int round = 2}) {
-  if (size < _kilo) return '$size B';
-
   final compactFormatter = locale.numberFormat('0${round > 0 ? '.${'0' * round}' : ''}');
+
+  if (size < _kilo) return '${compactFormatter.format(size)} B';
   if (size < _mega) return '${compactFormatter.format(size / _kilo)} KB';
   if (size < _giga) return '${compactFormatter.format(size / _mega)} MB';
   if (size < _tera) return '${compactFormatter.format(size / _giga)} GB';

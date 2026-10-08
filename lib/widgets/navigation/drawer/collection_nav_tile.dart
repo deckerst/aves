@@ -13,22 +13,14 @@ import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMixin {
-  final Widget? leading;
-  final Widget title;
-  final Widget? trailing;
-  final Set<CollectionFilter?>? filters;
-  final bool Function() isSelected;
-
-  const new({
-    super.key,
-    required this.leading,
-    required this.title,
-    this.trailing,
-    required this.filters,
-    required this.isSelected,
-  });
-
+class const CollectionNavTile({
+  super.key,
+  required final Widget? leading,
+  required final Widget title,
+  final Widget? trailing,
+  required final Set<CollectionFilter?>? filters,
+  required final bool Function() isSelected,
+}) extends StatelessWidget with FeedbackMixin, VaultAwareMixin {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -83,16 +75,11 @@ class CollectionNavTile extends StatelessWidget with FeedbackMixin, VaultAwareMi
   }
 }
 
-class AlbumNavTile extends StatelessWidget {
-  final AlbumBaseFilter filter;
-  final bool Function() isSelected;
-
-  const new({
-    super.key,
-    required this.filter,
-    required this.isSelected,
-  });
-
+class const AlbumNavTile({
+  super.key,
+  required final AlbumBaseFilter filter,
+  required final bool Function() isSelected,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _filter = filter;

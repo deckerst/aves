@@ -16,26 +16,16 @@ typedef DatumValueFormatter = String Function(int d);
 typedef DatumColorizer = Color Function(BuildContext context, AvesDonutDatum d);
 typedef DatumCallback = void Function(AvesDonutDatum d);
 
-class AvesDonut extends StatefulWidget {
-  final Widget title;
-  final Map<String, int> byTypes;
-  final Duration animationDuration;
-  final DatumKeyFormatter formatKey;
-  final DatumValueFormatter formatValue;
-  final DatumColorizer colorize;
-  final DatumCallback? onTap;
-
-  const new({
-    super.key,
-    required this.title,
-    required this.byTypes,
-    required this.animationDuration,
-    required this.formatKey,
-    required this.formatValue,
-    required this.colorize,
-    this.onTap,
-  });
-
+class const AvesDonut({
+  super.key,
+  required final Widget title,
+  required final Map<String, int> byTypes,
+  required final Duration animationDuration,
+  required final DatumKeyFormatter formatKey,
+  required final DatumValueFormatter formatValue,
+  required final DatumColorizer colorize,
+  final DatumCallback? onTap,
+}) extends StatefulWidget {
   @override
   State<AvesDonut> createState() => _AvesDonutState();
 }
@@ -185,15 +175,10 @@ class _AvesDonutState extends State<AvesDonut> with AutomaticKeepAliveClientMixi
 }
 
 @immutable
-class AvesDonutDatum extends Equatable {
-  final String key;
-  final int value;
-
+class const AvesDonutDatum({
+  required final String key,
+  required final int value,
+}) extends Equatable {
   @override
   List<Object?> get props => [key, value];
-
-  const new({
-    required this.key,
-    required this.value,
-  });
 }
