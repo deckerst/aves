@@ -11,15 +11,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class PermissionsPage extends StatelessWidget {
+class const PermissionsPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/privacy/permissions';
 
   static const List<String> settingKeys = [
     SettingKeys.isInstalledAppAccessAllowedKey,
     SettingKeys.isErrorReportingAllowedKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

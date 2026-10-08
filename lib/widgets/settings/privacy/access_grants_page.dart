@@ -6,10 +6,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:material_ui/material_ui.dart';
 
-class StorageAccessPage extends StatefulWidget {
+class const StorageAccessPage({super.key}) extends StatefulWidget {
   static const routeName = '/settings/storage_access';
-
-  const new({super.key});
 
   @override
   State<StorageAccessPage> createState() => _StorageAccessPageState();
@@ -90,9 +88,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
   }
 }
 
-class _Header extends StatelessWidget {
-  const new();
-
+class const _Header() extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

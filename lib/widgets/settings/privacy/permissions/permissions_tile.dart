@@ -31,9 +31,7 @@ class SettingsTilePermissions extends SettingsTile {
   );
 }
 
-class SettingsTilePermissionsSubtitle extends StatefulWidget {
-  const new({super.key});
-
+class const SettingsTilePermissionsSubtitle({super.key}) extends StatefulWidget {
   @override
   State<SettingsTilePermissionsSubtitle> createState() => _SettingsTilePermissionsSubtitleState();
 }
@@ -89,21 +87,8 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
               permissions.add((AIcons.allCollection, isMediaManagementGranted));
             }
 
-            final theme = Theme.of(context);
-            final subtitleTextStyle =
-                theme.listTileTheme.subtitleTextStyle ??
-                theme.textTheme.bodyMedium!.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                );
-            return IconTheme.merge(
-              data: IconThemeData(
-                size: 18,
-                color: subtitleTextStyle.color,
-              ),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    ...(permissions
+            final textSpans =
+                (permissions
                         .expand((v) {
                           final (icon, enabled) = v;
                           return [
@@ -117,8 +102,25 @@ class _SettingsTilePermissionsSubtitleState extends State<SettingsTilePermission
                             ),
                           ];
                         })
-                        .skip(1)),
-                  ],
+                        .skip(1))
+                    .toList();
+
+            final theme = Theme.of(context);
+            final subtitleTextStyle =
+                theme.listTileTheme.subtitleTextStyle ??
+                theme.textTheme.bodyMedium!.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                );
+            return IconTheme.merge(
+              data: IconThemeData(
+                size: 18,
+                color: subtitleTextStyle.color,
+              ),
+              child: Text.rich(
+                TextSpan(
+                  // text directionality does not affect children span order,
+                  // so we manually reverse them when necessary
+                  children: context.isRtl ? textSpans.reversed.toList() : textSpans,
                 ),
                 style: subtitleTextStyle,
               ),

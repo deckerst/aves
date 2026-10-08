@@ -1,3 +1,5 @@
+import 'package:aves/theme/text.dart';
+
 class BurstPatterns {
   static const _keyGroupName = 'key';
 
@@ -29,7 +31,7 @@ class BurstPatterns {
       realme => 'IMG20151021072800_BURST007',
       samsung => '20151021_072800_007',
       sony => 'DSC_0007_BURST20151021072800123',
-      _ => '?',
+      _ => AText.valueNotAvailable,
     };
   }
 
