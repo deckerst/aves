@@ -316,7 +316,8 @@
     "@deleteMultiAlbumConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -347,7 +348,8 @@
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -355,7 +357,8 @@
     "@deleteEntriesConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -363,7 +366,8 @@
     "@deleteSingleAlbumConfirmationDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -373,7 +377,8 @@
     "@unsupportedTypeDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             },
             "types": {
                 "type": "String",
