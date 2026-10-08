@@ -957,5 +957,9 @@
     "settingsCalendarTile": "Kalendář",
     "mapShowItemTracks": "Zobrazit cesty",
     "mapHideItemTracks": "Skrýt cesty",
-    "tileLayoutCalendar": "Kalendář"
+    "tileLayoutCalendar": "Kalendář",
+    "chipActionCopyCenterCoordinates": "Kopírovat souřadnice středu",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "videoThumbnailMethodEmbeddedImage": "Vložený obrázek"
 }

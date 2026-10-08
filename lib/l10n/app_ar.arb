@@ -966,5 +966,6 @@
     "videoThumbnailMethodPreviewFrame": "إطار المعاينة",
     "videoThumbnailMethodFirstFrame": "الإطار الأول",
     "settingsVideoThumbnailMethods": "الصورة المصغرة المفضلة",
-    "renameTagDialogLabelAlreadyExistsHelper": "الوسم موجود بالفعل"
+    "renameTagDialogLabelAlreadyExistsHelper": "الوسم موجود بالفعل",
+    "chipActionCopyCenterCoordinates": "إحداثيات مركز النسخ"
 }

@@ -573,7 +573,7 @@
     "editEntryDateDialogTitle": "Dem & Dîrok",
     "editEntryDateDialogSetCustom": "Dîroka kesane saz bike",
     "editEntryDateDialogCopyField": "Ji dîrokeke din jê bigire",
-    "editEntryDateDialogExtractFromTitle": "Ji sernavê derxîne",
+    "editEntryDateDialogExtractFromTitle": "Ji navê pelê derxîne",
     "editEntryDateDialogSourceFileModifiedDate": "Dîroka guherîna pelê",
     "editEntryLocationDialogSetCustom": "Cihê kesane saz bike",
     "editEntryLocationDialogChooseOnMap": "Li ser nexşeyê hilbijêre",
@@ -983,5 +983,11 @@
     "panoramaDisableSensorControl": "Kontrola sensorê neçalak bike",
     "settingsCalendarTile": "Salname",
     "calendarPersian": "Farisî",
-    "calendarGregorian": "Zayînî"
+    "calendarGregorian": "Zayînî",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "videoThumbnailMethodPreviewFrame": "Pêşdîtina frame",
+    "videoThumbnailMethodFirstFrame": "Frame ya yekem",
+    "renameTagDialogLabelAlreadyExistsHelper": "Nêşank jixwe heye",
+    "tileLayoutCalendar": "Salname"
 }

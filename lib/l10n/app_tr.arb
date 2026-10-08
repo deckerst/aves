@@ -747,5 +747,6 @@
     "videoThumbnailMethodPreviewFrame": "Ön İzleme Karesi",
     "videoThumbnailMethodFirstFrame": "İlk kare",
     "settingsVideoThumbnailMethods": "Tercih edilen küçük resim",
-    "renameTagDialogLabelAlreadyExistsHelper": "Etiket zaten var"
+    "renameTagDialogLabelAlreadyExistsHelper": "Etiket zaten var",
+    "chipActionCopyCenterCoordinates": "Merkez koordinatlarını kopyala"
 }

@@ -966,5 +966,6 @@
     "videoThumbnailMethodPreviewFrame": "Podgląd klatki",
     "videoThumbnailMethodFirstFrame": "Pierwsza klatka",
     "settingsVideoThumbnailMethods": "Preferowana miniatura",
-    "renameTagDialogLabelAlreadyExistsHelper": "Tag już istnieje"
+    "renameTagDialogLabelAlreadyExistsHelper": "Tag już istnieje",
+    "chipActionCopyCenterCoordinates": "Skopiuj współrzędne środka"
 }

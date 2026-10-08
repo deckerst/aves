@@ -747,5 +747,6 @@
     "videoThumbnailMethodPreviewFrame": "Marco de vista previa",
     "videoThumbnailMethodFirstFrame": "Primer fotograma",
     "settingsVideoThumbnailMethods": "Miniatura preferida",
-    "renameTagDialogLabelAlreadyExistsHelper": "La etiqueta ya existe"
+    "renameTagDialogLabelAlreadyExistsHelper": "La etiqueta ya existe",
+    "chipActionCopyCenterCoordinates": "Copiar las coordenadas del centro"
 }
