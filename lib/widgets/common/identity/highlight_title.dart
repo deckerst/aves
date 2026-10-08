@@ -31,8 +31,11 @@ class const HighlightTitle({
 
   @override
   Widget build(BuildContext context) {
+    final effectiveShowHighlight = showHighlight && context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome);
+
     final style = AStyles.sectionTitleStyle(locale).copyWith(
       fontSize: fontSize,
+      fontWeight: effectiveShowHighlight ? .normal : null,
       shadows: shadows(context),
     );
 
@@ -41,7 +44,7 @@ class const HighlightTitle({
       alignment: .centerStart,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 2),
-        decoration: showHighlight && context.select<Settings, bool>((v) => v.themeColorMode == AvesThemeColorMode.polychrome)
+        decoration: effectiveShowHighlight
             ? HighlightDecoration(
                 color: enabled ? color ?? colors.fromString(title) : disabledColor,
               )
