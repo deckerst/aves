@@ -391,8 +391,7 @@
     "@unsupportedTypeDialogMessage": {
         "placeholders": {
             "count": {
-                "type": "int",
-                "format": "decimalPattern"
+                "type": "int"
             },
             "types": {
                 "type": "String",
