@@ -156,7 +156,37 @@ mixin AlbumMixin on SourceBase {
 
   bool _isAlbumGroupKey(String key, _) => key.startsWith('${AlbumGroupFilter.type}-');
 
+  void _computeStoredAlbumSummaries() {
+    final entryCounts = <String, int>{};
+    final sizes = <String, int>{};
+    final recentEntries = <String, AvesEntry?>{};
+
+    sortedEntriesByDate.forEach((entry) {
+      final album = entry.directory;
+      if (album != null) {
+        entryCounts[album] = (entryCounts[album] ?? 0) + 1;
+        sizes[album] = (sizes[album] ?? 0) + (entry.sizeBytes ?? 0);
+        recentEntries.putIfAbsent(album, () => entry);
+      }
+    });
+
+    entryCounts.keys.forEach((album) {
+      final key = StoredAlbumFilter(album, null).key;
+      _filterSummary.putIfAbsent(
+        key,
+        () => FilterSummary(
+          entryCount: entryCounts[album] ?? 0,
+          size: sizes[album] ?? 0,
+          recentEntry: recentEntries[album],
+        ),
+      );
+    });
+  }
+
   FilterSummary _getSummary(AlbumBaseFilter filter) {
+    if (_filterSummary.isEmpty) {
+      _computeStoredAlbumSummaries();
+    }
     return _filterSummary.putIfAbsent(filter.key, () => computeFilterSummary(filter));
   }
 
