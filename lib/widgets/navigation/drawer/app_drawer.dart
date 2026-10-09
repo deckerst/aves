@@ -33,6 +33,7 @@ import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
@@ -403,7 +404,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
   Widget binTile(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final trashSize = source.trashedEntries.fold<int>(0, (sum, entry) => sum + (entry.sizeBytes ?? 0));
+    final trashSize = source.trashedEntries.map((entry) => entry.sizeBytes).sum;
 
     const filter = TrashFilter.instance;
     return CollectionNavTile(

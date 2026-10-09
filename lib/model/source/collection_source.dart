@@ -21,6 +21,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/events.dart';
+import 'package:aves/model/source/filter_summary.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/location/place.dart';
@@ -33,6 +34,7 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +68,8 @@ mixin SourceBase {
   void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
 
   void invalidateEntries();
+
+  FilterSummary computeFilterSummary(CollectionFilter filter);
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
@@ -565,6 +569,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   bool get canRefresh => _canRefresh;
 
   // filter summary
+
+  @override
+  FilterSummary computeFilterSummary(CollectionFilter filter) {
+    final entries = sortedEntriesByDate.where(filter.test).toList();
+    return FilterSummary(
+      entryCount: entries.length,
+      size: entries.map((v) => v.sizeBytes).sum,
+      recentEntry: entries.firstOrNull,
+    );
+  }
 
   int count(CollectionFilter filter) {
     switch (filter) {
