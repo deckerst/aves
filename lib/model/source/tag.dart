@@ -79,7 +79,7 @@ mixin TagMixin on SourceBase {
 
   // filter summary
 
-  // by tag
+  // by filter key
   final Map<String, FilterSummary> _filterSummary = {};
 
   void invalidateTagFilterSummary({
@@ -117,7 +117,37 @@ mixin TagMixin on SourceBase {
 
   bool _isTagGroupKey(String key, _) => key.startsWith('${TagGroupFilter.type}-');
 
+  void _computeTagSummaries() {
+    final entryCounts = <String, int>{};
+    final sizes = <String, int>{};
+    final recentEntries = <String, AvesEntry?>{};
+
+    sortedEntriesByDate.forEach((entry) {
+      final tags = entry.tags;
+      tags.forEach((tag) {
+        entryCounts[tag] = (entryCounts[tag] ?? 0) + 1;
+        sizes[tag] = (sizes[tag] ?? 0) + (entry.sizeBytes ?? 0);
+        recentEntries.putIfAbsent(tag, () => entry);
+      });
+    });
+
+    entryCounts.keys.forEach((tag) {
+      final key = TagFilter(tag).key;
+      _filterSummary.putIfAbsent(
+        key,
+        () => FilterSummary(
+          entryCount: entryCounts[tag] ?? 0,
+          size: sizes[tag] ?? 0,
+          recentEntry: recentEntries[tag],
+        ),
+      );
+    });
+  }
+
   FilterSummary _getSummary(TagBaseFilter filter) {
+    if (_filterSummary.isEmpty) {
+      _computeTagSummaries();
+    }
     return _filterSummary.putIfAbsent(filter.key, () => computeFilterSummary(filter));
   }
 
