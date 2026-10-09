@@ -1,64 +1,46 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves_utils/aves_utils.dart';
-import 'package:collection/collection.dart';
+import 'package:aves/model/source/filter_summary.dart';
 
 mixin StateMixin on SourceBase {
   // by state code
-  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
-  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
+  final Map<String, FilterSummary> _filterSummary = {};
 
   void invalidateStateFilterSummary({
     Set<AvesEntry>? entries,
     Set<String>? stateCodes,
     bool notify = true,
   }) {
-    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+    if (_filterSummary.isEmpty) return;
 
     if (entries == null && stateCodes == null) {
-      _filterEntryCountMap.clear();
-      _filterSizeMap.clear();
-      _filterRecentEntryMap.clear();
+      _filterSummary.clear();
     } else {
       stateCodes ??= {};
       if (entries != null) {
         stateCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.stateCode).nonNulls);
       }
-      stateCodes.forEach((stateCode) {
-        _filterEntryCountMap.remove(stateCode);
-        _filterSizeMap.remove(stateCode);
-        _filterRecentEntryMap.remove(stateCode);
-      });
+      stateCodes.forEach(_filterSummary.remove);
     }
     if (notify) {
       eventBus.fire(StateSummaryInvalidatedEvent(stateCodes));
     }
   }
 
-  int stateEntryCount(LocationFilter filter) {
+  FilterSummary _getSummary(LocationFilter filter) {
     final stateCode = filter.code;
-    if (stateCode == null) return 0;
-    return _filterEntryCountMap.putIfAbsent(stateCode, () => visibleEntries.where(filter.test).length);
+    if (stateCode == null) return FilterSummary.empty;
+    return _filterSummary.putIfAbsent(stateCode, () => computeFilterSummary(filter));
   }
 
-  int stateSize(LocationFilter filter) {
-    final stateCode = filter.code;
-    if (stateCode == null) return 0;
-    return _filterSizeMap.putIfAbsent(stateCode, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
-  }
+  int stateEntryCount(LocationFilter filter) => _getSummary(filter).entryCount;
 
-  AvesEntry? stateRecentEntry(LocationFilter filter) {
-    final stateCode = filter.code;
-    if (stateCode == null) return null;
-    return _filterRecentEntryMap.putIfAbsent(stateCode, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
-  }
+  int stateSize(LocationFilter filter) => _getSummary(filter).size;
+
+  AvesEntry? stateRecentEntry(LocationFilter filter) => _getSummary(filter).recentEntry;
 }
 
 class StatesChangedEvent;
 
-class StateSummaryInvalidatedEvent {
-  final Set<String>? stateCodes;
-
-  const new(this.stateCodes);
-}
+class const StateSummaryInvalidatedEvent(final Set<String>? stateCodes);

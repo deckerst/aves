@@ -31,18 +31,17 @@ mixin SizeAwareMixin {
     if (free == null) return true;
 
     late int needed;
-    int sumSize(int sum, AvesEntry entry) => sum + (entry.sizeBytes ?? 0);
     switch (moveType) {
       case .copy:
       case .export:
-        needed = selection.fold(0, sumSize);
+        needed = selection.map((entry) => entry.sizeBytes).sum;
       case .move:
       case .toBin:
       case .fromBin:
         // when moving, we only need space for the entries that are not already on the destination volume
         final byVolume = groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).whereNotNullKey();
         final otherVolumes = byVolume.keys.where((volume) => volume != destinationVolume);
-        final fromOtherVolumes = otherVolumes.fold<int>(0, (sum, volume) => sum + byVolume[volume]!.fold(0, sumSize));
+        final fromOtherVolumes = otherVolumes.map((volume) => byVolume[volume]!.map((entry) => entry.sizeBytes).sum).sum;
         // and we need at least as much space as the largest entry because individual entries are copied then deleted
         final largestSingle = selection.fold<int>(0, (largest, entry) => max(largest, entry.sizeBytes ?? 0));
         needed = max(fromOtherVolumes, largestSingle);

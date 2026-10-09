@@ -1,64 +1,46 @@
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves_utils/aves_utils.dart';
-import 'package:collection/collection.dart';
+import 'package:aves/model/source/filter_summary.dart';
 
 mixin CountryMixin on SourceBase {
   // by country code
-  final Map<String, int> _filterEntryCountMap = {}, _filterSizeMap = {};
-  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
+  final Map<String, FilterSummary> _filterSummary = {};
 
   void invalidateCountryFilterSummary({
     Set<AvesEntry>? entries,
     Set<String>? countryCodes,
     bool notify = true,
   }) {
-    if (_filterEntryCountMap.isEmpty && _filterSizeMap.isEmpty && _filterRecentEntryMap.isEmpty) return;
+    if (_filterSummary.isEmpty) return;
 
     if (entries == null && countryCodes == null) {
-      _filterEntryCountMap.clear();
-      _filterSizeMap.clear();
-      _filterRecentEntryMap.clear();
+      _filterSummary.clear();
     } else {
       countryCodes ??= {};
       if (entries != null) {
         countryCodes.addAll(entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).nonNulls);
       }
-      countryCodes.forEach((countryCode) {
-        _filterEntryCountMap.remove(countryCode);
-        _filterSizeMap.remove(countryCode);
-        _filterRecentEntryMap.remove(countryCode);
-      });
+      countryCodes.forEach(_filterSummary.remove);
     }
     if (notify) {
       eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
     }
   }
 
-  int countryEntryCount(LocationFilter filter) {
+  FilterSummary _getSummary(LocationFilter filter) {
     final countryCode = filter.code;
-    if (countryCode == null) return 0;
-    return _filterEntryCountMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).length);
+    if (countryCode == null) return FilterSummary.empty;
+    return _filterSummary.putIfAbsent(countryCode, () => computeFilterSummary(filter));
   }
 
-  int countrySize(LocationFilter filter) {
-    final countryCode = filter.code;
-    if (countryCode == null) return 0;
-    return _filterSizeMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).map((v) => v.sizeBytes).sum);
-  }
+  int countryEntryCount(LocationFilter filter) => _getSummary(filter).entryCount;
 
-  AvesEntry? countryRecentEntry(LocationFilter filter) {
-    final countryCode = filter.code;
-    if (countryCode == null) return null;
-    return _filterRecentEntryMap.putIfAbsent(countryCode, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
-  }
+  int countrySize(LocationFilter filter) => _getSummary(filter).size;
+
+  AvesEntry? countryRecentEntry(LocationFilter filter) => _getSummary(filter).recentEntry;
 }
 
 class CountriesChangedEvent;
 
-class CountrySummaryInvalidatedEvent {
-  final Set<String>? countryCodes;
-
-  const new(this.countryCodes);
-}
+class const CountrySummaryInvalidatedEvent(final Set<String>? countryCodes);
