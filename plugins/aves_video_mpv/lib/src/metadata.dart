@@ -413,7 +413,6 @@ class MpvVideoMetadataFetcher extends AvesVideoMetadataFetcher {
 
   // return bytes in BGRA
   Future<Uint8List?> _getFrameAtTime(Player player, Duration thumbnailTime) async {
-    debugPrint('TLAD current video=${player.state.track.video}');
     if (thumbnailTime != player.state.position) {
       await player.seek(thumbnailTime);
     }

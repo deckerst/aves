@@ -189,8 +189,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     // it is possible for entries hidden by a filter type, to have an impact on other types
     // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
     updateDirectories();
-    updateLocations();
-    updateTags();
+    invalidateLocations();
+    invalidateTags();
   }
 
   void _disposeEntries(bool Function(int id, AvesEntry entry) test) {
@@ -546,10 +546,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       } else {
         // explicit GC before cataloguing multiple items
         await deviceService.requestGarbageCollection();
-        await catalogEntries(_analysisController, todoEntries);
-        updateDerivedFilters(todoEntries);
-        await locateEntries(_analysisController, todoEntries);
-        updateDerivedFilters(todoEntries);
+        if (await catalogEntries(_analysisController, todoEntries)) {
+          updateDerivedFilters(todoEntries);
+        }
+        if (await locateEntries(_analysisController, todoEntries)) {
+          updateDerivedFilters(todoEntries);
+        }
       }
     }
     defaultAnalysisController.dispose();

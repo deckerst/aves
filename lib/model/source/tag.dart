@@ -9,13 +9,17 @@ import 'package:aves/model/source/filter_summary.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 mixin TagMixin on SourceBase {
   static const commitCountThreshold = 400;
   static const _stopCheckCountThreshold = 100;
 
-  List<String> sortedTags = List.unmodifiable([]);
+  List<String>? _sortedTags;
+
+  List<String> get sortedTags {
+    _sortedTags ??= List.unmodifiable(visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCaseNatural));
+    return _sortedTags!;
+  }
 
   Future<void> loadCatalogMetadata({Set<int>? ids}) async {
     final saved = await (ids != null ? localMediaDb.loadCatalogMetadataById(ids) : localMediaDb.loadCatalogMetadata());
@@ -26,12 +30,13 @@ mixin TagMixin on SourceBase {
 
   static bool catalogEntriesTest(AvesEntry entry) => !entry.isCatalogued;
 
-  Future<void> catalogEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
-    if (controller.isStopping) return;
+  // returns whether some entries got processed
+  Future<bool> catalogEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
+    if (controller.isStopping) return false;
 
     final force = controller.force;
     final todo = force ? candidateEntries : candidateEntries.where(catalogEntriesTest).toSet();
-    if (todo.isEmpty) return;
+    if (todo.isEmpty) return false;
 
     state = SourceState.cataloguing;
     var progressDone = controller.progressOffset;
@@ -54,27 +59,25 @@ mixin TagMixin on SourceBase {
         }
         if (++stopCheckCount >= _stopCheckCountThreshold) {
           stopCheckCount = 0;
-          if (controller.isStopping) return;
+          if (controller.isStopping) return true;
         }
       }
       setProgress(done: ++progressDone, total: progressTotal);
     }
     await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
     onCatalogMetadataChanged();
+    return true;
   }
 
   void onCatalogMetadataChanged() {
-    updateTags();
+    invalidateTags();
     eventBus.fire(CatalogMetadataChangedEvent());
   }
 
-  void updateTags() {
-    final updatedTags = visibleEntries.expand((entry) => entry.tags).toSet().toList()..sort(compareAsciiUpperCaseNatural);
-    if (!listEquals(updatedTags, sortedTags)) {
-      sortedTags = List.unmodifiable(updatedTags);
-      invalidateTagFilterSummary();
-      eventBus.fire(TagsChangedEvent());
-    }
+  void invalidateTags() {
+    _sortedTags = null;
+    invalidateTagFilterSummary();
+    eventBus.fire(TagsChangedEvent());
   }
 
   // filter summary

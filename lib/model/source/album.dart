@@ -70,13 +70,14 @@ mixin AlbumMixin on SourceBase {
   }
 
   void updateDirectories() {
+    final filledAlbums = visibleEntries.map((entry) => entry.directory).toSet();
     addDirectories(
       albums: {
-        ...visibleEntries.map((entry) => entry.directory),
+        ...filledAlbums,
         ...vaults.all.map((v) => v.path),
       },
     );
-    cleanEmptyAlbums();
+    _cleanEmptyAlbums(filledAlbums: filledAlbums);
   }
 
   void addDirectories({required Set<String?> albums, bool notify = true}) {
@@ -86,10 +87,19 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  void cleanEmptyAlbums([Set<String>? albums]) {
-    final filledAlbums = visibleEntries.map((entry) => entry.directory).toSet();
+  void cleanEmptyAlbums([Set<String>? targetAlbums]) {
+    _cleanEmptyAlbums(
+      filledAlbums: visibleEntries.map((entry) => entry.directory).toSet(),
+      targetAlbums: targetAlbums,
+    );
+  }
+
+  void _cleanEmptyAlbums({
+    required Set<String?> filledAlbums,
+    Set<String>? targetAlbums,
+  }) {
     final pinnedAlbums = settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album);
-    final removableAlbums = (albums ?? _directories).where((album) {
+    final removableAlbums = (targetAlbums ?? _directories).where((album) {
       if (filledAlbums.contains(album)) return false;
       if (_newAlbums.contains(album)) return false;
       if (vaults.isVault(album)) return false;
