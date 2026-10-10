@@ -87,20 +87,20 @@ mixin AlbumMixin on SourceBase {
   }
 
   void cleanEmptyAlbums([Set<String>? albums]) {
-    final removableAlbums = (albums ?? _directories).where(_isRemovable).toSet();
+    final filledAlbums = visibleEntries.map((entry) => entry.directory).toSet();
+    final pinnedAlbums = settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album);
+    final removableAlbums = (albums ?? _directories).where((album) {
+      if (filledAlbums.contains(album)) return false;
+      if (_newAlbums.contains(album)) return false;
+      if (vaults.isVault(album)) return false;
+      if (pinnedAlbums.contains(album)) return false;
+      return true;
+    }).toSet();
     if (removableAlbums.isNotEmpty) {
       _directories.removeAll(removableAlbums);
       _onAlbumChanged();
       invalidateAlbumFilterSummary(directories: removableAlbums);
     }
-  }
-
-  bool _isRemovable(String album) {
-    if (visibleEntries.any((entry) => entry.directory == album)) return false;
-    if (_newAlbums.contains(album)) return false;
-    if (vaults.isVault(album)) return false;
-    if (settings.pinnedFilters.whereType<StoredAlbumFilter>().map((v) => v.album).contains(album)) return false;
-    return true;
   }
 
   // filter summary
