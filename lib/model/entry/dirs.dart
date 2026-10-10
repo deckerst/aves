@@ -7,9 +7,7 @@ import 'package:collection/collection.dart';
 
 final entryDirRepo = EntryDirRepo._private();
 
-class EntryDirRepo {
-  new _private();
-
+class EntryDirRepo._private() {
   // mapping between the raw entry directory path to a resolvable directory
   final Map<String?, EntryDir> _dirs = {};
   final StreamController<EntryDir> _ambiguousDirStreamController = StreamController.broadcast();
@@ -36,12 +34,15 @@ class EntryDirRepo {
 // but the OS merge and present them as one directory.
 // This class resolves ambiguous directories to get the directory path
 // with the right case, as presented by the OS.
-class EntryDir {
-  final String? asIs, asIsLower;
+class EntryDir(final String? asIs) {
+  final String? asIsLower = asIs?.toLowerCase();
   bool ambiguous = false;
-  String? _resolved;
 
-  new(this.asIs) : asIsLower = asIs?.toLowerCase();
+  // assume directories leading to ambiguity do not change during app lifetime
+  // so we can cache directory children and avoid repeated synchronous listings
+  static final _childrenDirPathsByParent = <String, Set<String>>{};
+
+  String? _resolved;
 
   String? get resolved {
     if (!ambiguous) return asIs;
@@ -58,19 +59,26 @@ class EntryDir {
     var resolved = vrl.volumePath;
     final parts = pContext.split(vrl.relativeDir);
     for (final part in parts) {
-      FileSystemEntity? found;
-      final dir = Directory(resolved);
-      if (dir.existsSync()) {
+      String? found;
+      final childrenDirPaths = _childrenDirPathsByParent.putIfAbsent(resolved, () => _listDirChildren(resolved));
+      if (childrenDirPaths.isNotEmpty) {
         final partLower = part.toLowerCase();
-        try {
-          final childrenDirs = dir.listSync().where((v) => v.absolute is Directory).toSet();
-          found = childrenDirs.firstWhereOrNull((v) => pContext.basename(v.path).toLowerCase() == partLower);
-        } catch (error) {
-          // ignore, could be IO issue when listing directory
-        }
+        found = childrenDirPaths.firstWhereOrNull((v) => pContext.basename(v).toLowerCase() == partLower);
       }
-      resolved = found?.path ?? '$resolved${pContext.separator}$part';
+      resolved = found ?? '$resolved${pContext.separator}$part';
     }
     return resolved;
+  }
+
+  Set<String> _listDirChildren(String dirPath) {
+    final dir = Directory(dirPath);
+    if (dir.existsSync()) {
+      try {
+        return dir.listSync().where((v) => v.absolute is Directory).map((v) => v.path).toSet();
+      } catch (error) {
+        // ignore, could be IO issue when listing directory
+      }
+    }
+    return {};
   }
 }
