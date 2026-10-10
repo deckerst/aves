@@ -218,6 +218,7 @@ class MediaStoreSource extends CollectionSource {
     // fetch new & modified entries
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch new entries');
     final knownContentIds = knownDateByContentId.keys.toSet();
+    final knownEntryByContentId = Map.fromEntries(knownLiveEntries.map((entry) => MapEntry(entry.contentId, entry)));
     mediaStoreService
         .getEntries(knownDateByContentId, directory: directory)
         .listen(
@@ -225,7 +226,7 @@ class MediaStoreSource extends CollectionSource {
             // when discovering modified entry with known content ID,
             // reuse known entry ID to overwrite it while preserving favourites, etc.
             final contentId = entry.contentId;
-            final existingEntry = knownContentIds.contains(contentId) ? knownLiveEntries.firstWhereOrNull((entry) => entry.contentId == contentId) : null;
+            final existingEntry = knownContentIds.contains(contentId) ? knownEntryByContentId[contentId] : null;
             entry.id = existingEntry?.id ?? localMediaDb.nextId;
 
             newEntries.add(entry);
@@ -233,6 +234,7 @@ class MediaStoreSource extends CollectionSource {
           },
           onDone: () async {
             if (newEntries.isNotEmpty) {
+              // TODO TLAD perform DB ops with `newEntries` by chunks
               debugPrint('$runtimeType load ${stopwatch.elapsed} save ${newEntries.length} new entries');
               await localMediaDb.insertEntries(newEntries);
 
