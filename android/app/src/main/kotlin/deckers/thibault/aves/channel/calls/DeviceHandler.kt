@@ -180,7 +180,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun requestGarbageCollection(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        Runtime.getRuntime().gc()
+        MemoryUtils.requestGarbageCollection()
         result.success(true)
     }
 

@@ -68,6 +68,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
     if (entry.isSvg) return null;
 
     if (!kReleaseMode) {
+      // useful to track a specific file triggering a crash
       await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata ${entry.path ?? entry.uri}');
     }
 
