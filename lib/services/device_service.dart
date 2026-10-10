@@ -29,6 +29,8 @@ abstract class DeviceService {
 
   Future<void> requestMediaManagementPermission();
 
+  Future<int?> getAvailableProcessors();
+
   Future<Map<MemorySizeType, int?>> getHeapSizes(Set<MemorySizeType> types);
 
   Future<Map<MemorySizeType, int?>> getRamSizes(Set<MemorySizeType> types);
@@ -160,6 +162,17 @@ class PlatformDeviceService extends DeviceService {
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }
+  }
+
+  @override
+  Future<int?> getAvailableProcessors() async {
+    try {
+      final result = await _platform.invokeMethod('getAvailableProcessors');
+      if (result != null) return result as int;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return null;
   }
 
   @override

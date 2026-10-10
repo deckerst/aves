@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
+import 'package:aves/model/device.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -12,8 +14,15 @@ class ServicePolicy {
   final SplayTreeMap<int, LinkedHashMap<Object, _Task>> _queues = SplayTreeMap();
   final LinkedHashMap<Object, _Task> _runningQueue = LinkedHashMap();
 
-  // magic number
-  static const concurrentTaskMax = 4;
+  int _concurrentTaskMax = 0;
+
+  int get concurrentTaskMax {
+    if (_concurrentTaskMax < 1) {
+      // the minimum is a magic number
+      _concurrentTaskMax = max(4, device.availableProcessors ?? 0);
+    }
+    return _concurrentTaskMax;
+  }
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
 

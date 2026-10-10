@@ -7,6 +7,7 @@ final Device device = Device._private();
 
 class Device {
   late final String _packageName, _packageVersion, _userAgent;
+  late final int? _availableProcessors;
   late final bool _canAuthenticateUser, _canPinShortcut, _showPinShortcutFeedback;
   late final bool _canRenderSubdivisionFlagEmojis, _canRequestMediaManagementPermission, _canRequestNotificationPermission;
   late final bool _hasGeocoder, _isDynamicColorAvailable, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
@@ -17,6 +18,8 @@ class Device {
   String get packageVersion => _packageVersion;
 
   String get userAgent => _userAgent;
+
+  int? get availableProcessors => _availableProcessors;
 
   bool get canAuthenticateUser => _canAuthenticateUser;
 
@@ -56,6 +59,8 @@ class Device {
 
     final auth = LocalAuthentication();
     _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
+
+    _availableProcessors = await deviceService.getAvailableProcessors();
 
     final capabilities = await deviceService.getCapabilities();
     _canPinShortcut = capabilities['canPinShortcut'] as bool? ?? false;
