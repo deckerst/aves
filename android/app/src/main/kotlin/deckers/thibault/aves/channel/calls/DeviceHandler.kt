@@ -47,6 +47,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "isMediaManagementGranted" -> safe(call, result, ::isMediaManagementGranted)
             "requestMediaManagementPermission" -> safe(call, result, ::requestMediaManagementPermission)
+            "getAvailableProcessors" -> safe(call, result, ::getAvailableProcessors)
             "getHeapSizes" -> safe(call, result, ::getHeapSizes)
             "getRamSizes" -> safe(call, result, ::getRamSizes)
             "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
@@ -157,6 +158,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, "package:${context.packageName}".toUri())
         context.startActivity(intent)
         result.success(true)
+    }
+
+    private fun getAvailableProcessors(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(Runtime.getRuntime().availableProcessors())
     }
 
     private fun getHeapSizes(call: MethodCall, result: MethodChannel.Result) {

@@ -49,6 +49,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
               ),
               InfoRowGroup(
                 info: {
+                  'availableProcessors': '${device.availableProcessors}',
                   'canAuthenticateUser': '${device.canAuthenticateUser}',
                   'canPinShortcut': '${device.canPinShortcut}',
                   'canRenderSubdivisionFlagEmojis': '${device.canRenderSubdivisionFlagEmojis}',

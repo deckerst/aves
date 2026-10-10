@@ -166,6 +166,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
       'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, MPC $mpc, build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
+      'CPU: processors=${device.availableProcessors}',
       'Memory: ram.total=$ramTotal, heap.max=$heapMax',
       'Screen: size.physical=${viewPhysicalSize.width.round()}x${viewPhysicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
       'Graphics: size.logical=${MediaQuery.widthOf(context)}x${MediaQuery.heightOf(context)}, pixel ratio=${MediaQuery.devicePixelRatioOf(context)}, cross window blur=$crossWindowBlurEnabled',
