@@ -89,6 +89,7 @@ import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.HashUtils
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -535,6 +536,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val beforeAvailableHeapSize = MemoryUtils.getAvailableHeapSize()
+
         val metadataMap = HashMap<String, Any>()
         getCatalogMetadataByMetadataExtractor(mimeType, uri, path, sizeBytes, metadataMap)
 
@@ -564,6 +567,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isIsoBMFFImageSefdMotionPhoto(context, uri)) {
                 metadataMap[KEY_FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
             }
+        }
+
+        val afterAvailableHeapSize = MemoryUtils.getAvailableHeapSize()
+        val diff = beforeAvailableHeapSize - afterAvailableHeapSize
+        if (diff > LARGE_HEAP_USAGE_THRESHOLD) {
+            Log.d(LOG_TAG, "Large heap usage (${diff}B) from cataloguing entry with mimeType=$mimeType uri=$uri path=$path size=$sizeBytes")
+            MemoryUtils.requestGarbageCollection()
         }
 
         // report success even when empty
@@ -1482,6 +1492,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         private val doubleFormat = DecimalFormat("0.###")
         private const val SLOW_MOTION_MIN_CAPTURE_FRAME_RATE = 120
+        private const val LARGE_HEAP_USAGE_THRESHOLD = 15 * (1 shl 20) // MiB
 
         private val allMetadataRedundantDirNames = setOf(
             "MP4",

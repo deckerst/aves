@@ -29,11 +29,6 @@ abstract class DeviceService {
 
   Future<void> requestMediaManagementPermission();
 
-  Future<int> getAvailableHeapSize() async {
-    final sizes = await getHeapSizes({.available});
-    return sizes[MemorySizeType.available] ?? 0;
-  }
-
   Future<Map<MemorySizeType, int?>> getHeapSizes(Set<MemorySizeType> types);
 
   Future<Map<MemorySizeType, int?>> getRamSizes(Set<MemorySizeType> types);
