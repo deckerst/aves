@@ -107,9 +107,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .map:
       case .slideshow:
       case .stats:
-        return isMain;
+        return isMain && !isTrash;
       case .rescan:
-        return isMain && isSelecting && !useTvLayout;
+        return isMain && isSelecting && !isTrash && !useTvLayout;
       // selecting
       case .share:
       case .toggleFavourite:
