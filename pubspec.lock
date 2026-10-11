@@ -29,10 +29,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: a96e8b390886ee8abb49b7bd3ac8df6f451c621619f52a26e815fdcf568959ff
+      sha256: "58c8d17d8d589c4259f773522815115de873c397b977a29993588487d3f9acb4"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.9"
+    version: "4.5.0"
   args:
     dependency: transitive
     description:
@@ -254,10 +254,11 @@ packages:
   dlna_dart:
     dependency: "direct main"
     description:
-      name: dlna_dart
-      sha256: da607931548720331b7503f72c426fa7fbd19e9144a4778d293c16a5bc186407
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: aves
+      resolved-ref: "8fb4d1eabc23c50e53dec563942ff7800c992aa6"
+      url: "https://github.com/deckerst/dlna-dart.git"
+    source: git
     version: "0.1.1"
   dynamic_color:
     dependency: "direct main"
@@ -634,10 +635,10 @@ packages:
     dependency: "direct main"
     description:
       name: gpx
-      sha256: f5b12b86402c639079243600ee2b3afd85cd08d26117fc8885cf48efce471d8e
+      sha256: "1ab97d83824ce5d853b98c3ad13867ffa7f0a7aa175babb4f5c3d038c156961c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.5.0"
   highlight:
     dependency: "direct main"
     description:
@@ -706,10 +707,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: d701df3ef4761a22854c69b9661c9d8f25b264b3982985f25944247ce644761f
+      sha256: "89ed75b2f8231fe676808c5564f9590d728024ded7ac782a7ed8474f1c95b72a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.11.0"
+    version: "4.12.0"
   intl:
     dependency: "direct main"
     description:
@@ -1127,10 +1128,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdf
-      sha256: e47a275b267873d5944ad5f5ff0dcc7ac2e36c02b3046a0ffac9b72fd362c44b
+      sha256: "6e40827f370d196e97c6611724d923a3d86c431ce8e2ce1e59edd03a67a1a6e6"
       url: "https://pub.dev"
     source: hosted
-    version: "3.12.0"
+    version: "3.13.1"
   pdf_widget_wrapper:
     dependency: transitive
     description:
@@ -1248,10 +1249,10 @@ packages:
     dependency: "direct main"
     description:
       name: printing
-      sha256: "689170c9ddb1bda85826466ba80378aa8993486d3c959a71cd7d2d80cb606692"
+      sha256: "0f72f29f2e08b8453b7a45b6c7781eb792b1da3468bf0910be0eb3b1d6781f49"
       url: "https://pub.dev"
     source: hosted
-    version: "5.14.3"
+    version: "5.15.1"
   process:
     dependency: transitive
     description:
@@ -1300,14 +1301,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.2"
   record_use:
     dependency: transitive
     description:
@@ -1966,10 +1959,10 @@ packages:
     dependency: "direct main"
     description:
       name: xml
-      sha256: "971043b3a0d3da28727e40ed3e0b5d18b742fa5a68665cca88e74b7876d5e025"
+      sha256: "0fe8cc98946def31cbcbc8734aa4067031e6f65ea3a78a508060bfed2200bfeb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.6.1"
+    version: "7.1.0"
   yaml:
     dependency: transitive
     description:
