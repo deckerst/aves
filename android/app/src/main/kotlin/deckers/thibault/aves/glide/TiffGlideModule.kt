@@ -26,7 +26,9 @@ class TiffGlideModule : LibraryGlideModule() {
     }
 }
 
-class TiffImage(val context: Context, val contentAddress: ContentAddress)
+class TiffImage(val context: Context, val contentAddress: ContentAddress) {
+    override fun toString(): String = "TiffImage#${hashCode()}{$contentAddress}"
+}
 
 internal class TiffLoader : ModelLoader<TiffImage, Bitmap> {
     override fun buildLoadData(model: TiffImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {

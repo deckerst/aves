@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.util.Size
@@ -25,8 +24,9 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeFloat
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.VideoThumbnailMethod
-import deckers.thibault.aves.storage.StorageUtils.openMetadataRetriever
+import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
@@ -45,11 +45,14 @@ class VideoThumbnailGlideModule : LibraryGlideModule() {
     }
 }
 
-class VideoThumbnail(val context: Context, val uri: Uri, val methods: List<VideoThumbnailMethod>)
+class VideoThumbnail(val context: Context, val contentAddress: ContentAddress, val methods: List<VideoThumbnailMethod>) {
+    override fun toString(): String = "VideoThumbnail#${hashCode()}{$contentAddress methods=$methods}"
+}
 
 internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, Bitmap> {
     override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
-        return ModelLoader.LoadData(ObjectKey(model.uri), VideoThumbnailFetcher(model, width, height))
+        val uri = model.contentAddress.uri
+        return ModelLoader.LoadData(ObjectKey(uri), VideoThumbnailFetcher(model, width, height))
     }
 
     override fun handles(model: VideoThumbnail): Boolean = true
@@ -65,10 +68,12 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun loadData(priority: Priority, callback: DataCallback<in Bitmap>) {
+        val contentAddress = model.contentAddress
+
         ioScope.launch {
-            val retriever = openMetadataRetriever(model.context, model.uri)
+            val retriever = StorageUtils.openMetadataRetriever(model.context, contentAddress)
             if (retriever == null) {
-                callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for uri=${model.uri}"))
+                callback.onLoadFailed(Exception("failed to initialize MediaMetadataRetriever for $contentAddress"))
             } else {
                 val methods = arrayListOf<VideoThumbnailMethod>().apply {
                     addAll(model.methods)
@@ -77,7 +82,7 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail, val widt
                 try {
                     val bitmap = getPreferredThumbnail(retriever, methods)
                     if (bitmap == null) {
-                        callback.onLoadFailed(Exception("failed to get embedded picture or any frame for uri=${model.uri}"))
+                        callback.onLoadFailed(Exception("failed to get embedded picture or any frame for $contentAddress"))
                     } else {
                         callback.onDataReady(bitmap)
                     }

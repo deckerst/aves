@@ -21,7 +21,7 @@ object MultiTrackMedia {
         val uri = contentAddress.uri
         val trackIndex = contentAddress.pageId
 
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return null
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return null
         try {
             return if (trackIndex != null) {
                 val imageIndex = trackIndexToImageIndex(context, uri, trackIndex) ?: return null

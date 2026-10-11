@@ -85,7 +85,9 @@ class AndroidDebugService {
     try {
       // returns map with all data available from `MediaMetadataRetriever`
       final result = await _platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, Object?>{
+        'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'path': entry.path,
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {

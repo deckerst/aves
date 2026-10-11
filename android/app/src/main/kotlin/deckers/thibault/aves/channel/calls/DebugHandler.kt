@@ -282,14 +282,18 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
-        if (uri == null) {
+        val path = call.argument<String>("path")
+        if (mimeType == null || uri == null) {
             result.error("getMediaMetadataRetrieverMetadata-args", "missing arguments", null)
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val metadataMap = HashMap<String, String>()
-        val retriever = StorageUtils.openMetadataRetriever(context, uri)
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress)
         if (retriever != null) {
             try {
                 for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {

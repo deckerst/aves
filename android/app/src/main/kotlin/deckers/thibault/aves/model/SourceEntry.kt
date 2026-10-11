@@ -140,7 +140,9 @@ class SourceEntry {
 
     // finds: width, height, orientation, date, duration, title
     private fun fillVideoByMediaMetadataRetriever(context: Context) {
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return
+        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) { width = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) { height = it }

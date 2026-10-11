@@ -762,7 +762,8 @@ object StorageUtils {
         }
     }
 
-    fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
+    fun openMetadataRetriever(context: Context, contentAddress: ContentAddress): MediaMetadataRetriever? {
+        val uri = contentAddress.uri
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
@@ -772,7 +773,7 @@ object StorageUtils {
             }
         } catch (_: Exception) {
             // unsupported format
-            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for effectiveUri=$effectiveUri $contentAddress")
             null
         }
     }

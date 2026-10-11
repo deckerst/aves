@@ -235,14 +235,18 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun extractVideoEmbeddedPicture(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
+        val path = call.argument<String>("path")
         val displayName = call.argument<String>("displayName")
-        if (uri == null) {
+        if (mimeType == null || uri == null) {
             result.error("extractVideoEmbeddedPicture-args", "missing arguments", null)
             return
         }
 
-        val retriever = StorageUtils.openMetadataRetriever(context, uri)
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress)
         if (retriever != null) {
             try {
                 retriever.embeddedPicture?.let { bytes ->

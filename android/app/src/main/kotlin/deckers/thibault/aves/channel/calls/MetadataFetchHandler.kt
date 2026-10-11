@@ -3,7 +3,6 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.net.toUri
@@ -464,7 +463,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // this is used as fallback when the video metadata cannot be found on the Dart side
             // and to identify whether there is an accessible cover image
             // do not include HEIC here
-            val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
+            val mediaDir = getAllMetadataByMediaMetadataRetriever(contentAddress)
             if (mediaDir.isNotEmpty()) {
                 metadataMap[Metadata.DIR_MEDIA] = mediaDir
                 if (mediaDir.containsKey(KEY_HAS_EMBEDDED_PICTURE)) {
@@ -492,9 +491,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getAllMetadataByMediaMetadataRetriever(uri: Uri): MutableMap<String, String> {
+    private fun getAllMetadataByMediaMetadataRetriever(contentAddress: ContentAddress): MutableMap<String, String> {
         val dirMap = HashMap<String, String>()
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return dirMap
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return dirMap
         try {
             for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
                 retriever.getSafeDescription(code) { dirMap[name] = it }
@@ -504,7 +503,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 dirMap[KEY_HAS_EMBEDDED_PICTURE] = "yes"
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for $contentAddress", e)
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release()
@@ -921,9 +920,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         metadataMap: HashMap<String, Any>,
     ) {
         val mimeType = contentAddress.mimeType
-        val uri = contentAddress.uri
 
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
 
         var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         try {

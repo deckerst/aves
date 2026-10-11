@@ -122,7 +122,9 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('extractVideoEmbeddedPicture', <String, Object?>{
+        'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'path': entry.path,
         'displayName': ['${entry.bestTitle}', 'Cover'].join(AText.separator),
       });
       if (result != null) return result as Map;

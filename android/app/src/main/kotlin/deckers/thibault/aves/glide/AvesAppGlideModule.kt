@@ -94,7 +94,6 @@ class AvesAppGlideModule : AppGlideModule() {
             videoMethods: List<VideoThumbnailMethod>? = null,
         ): Any {
             val mimeType = contentAddress.mimeType
-            val uri = contentAddress.uri
             val pageId = contentAddress.pageId
 
             return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
@@ -102,9 +101,9 @@ class AvesAppGlideModule : AppGlideModule() {
             } else if (mimeType == MimeTypes.TIFF) {
                 TiffImage(context, contentAddress)
             } else if (mimeType == MimeTypes.SVG) {
-                SvgImage(context, uri = uri)
+                SvgImage(context, contentAddress)
             } else if (isVideo(mimeType)) {
-                VideoThumbnail(context, uri = uri, methods = videoMethods ?: listOf())
+                VideoThumbnail(context, contentAddress, videoMethods ?: listOf())
             } else {
                 StorageUtils.getGlideSafeUri(context, contentAddress, sizeBytes = sizeBytes)
             }
