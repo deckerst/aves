@@ -706,10 +706,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: a1e7f4951e538a568e14b856702afc9ae1d2f4b202daced8d22c1b9cd211ce89
+      sha256: d701df3ef4761a22854c69b9661c9d8f25b264b3982985f25944247ce644761f
       url: "https://pub.dev"
     source: hosted
-    version: "4.10.1"
+    version: "4.11.0"
   intl:
     dependency: "direct main"
     description:
@@ -1830,10 +1830,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "2fc56e537324a19eb649fca991aa308ac961b5406292876fa657b062de461fd8"
+      sha256: "4f8a845173377ab250a50f9b9dfe4a43500cc76a7c49dd8410d02d8fc29dfd8b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.0"
+    version: "2.12.1"
   video_player_platform_interface:
     dependency: transitive
     description:
@@ -1980,4 +1980,4 @@ packages:
     version: "3.1.4"
 sdks:
   dart: ">=3.13.3 <4.0.0"
-  flutter: "3.47.6"
+  flutter: "3.47.7"

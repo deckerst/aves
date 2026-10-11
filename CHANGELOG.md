@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 - Map: action to copy center to clipboard from coordinate filter
 - Urdu translation (thanks Bouzid Zeroug, Feliks-WR)
 
+### Changed
+
+- upgraded Flutter to stable v3.47.7
+
 ### Fixed
 
 - widget rendering failing for some videos
