@@ -290,7 +290,7 @@ class PlatformMediaFetchService implements MediaFetchService {
         );
 
         if (bytes.isEmpty && (MimeTypes.isVideo(mimeType) || mimeType == MimeTypes.avif)) {
-          final descriptor = await videoMetadataFetcher.getThumbnailDescriptor(
+          final descriptor = await videoThumbnailFetcher.getThumbnailDescriptor(
             uri: uri,
             mimeType: mimeType,
             targetExtentDip: extentDip,

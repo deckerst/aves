@@ -451,6 +451,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _monitorSettings();
     videoControllerFactory.init();
     videoMetadataFetcher.init();
+    videoThumbnailFetcher.init();
 
     unawaited(deviceService.setLocaleConfig(AvesApp.supportedLocales));
     unawaited(storageService.deleteTempDirectory());

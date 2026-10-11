@@ -5,26 +5,22 @@ import 'dart:ui' as ui;
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/settings/enums/widget_shape.dart';
+import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class HomeWidgetPainter {
-  final AvesEntry? entry;
-  final double devicePixelRatio;
-
+class HomeWidgetPainter({
+  required final AvesEntry? entry,
+  required final double devicePixelRatio,
+}) {
   // do not use `AlignmentDirectional` as there is no `TextDirection` in context
   static const backgroundGradient = LinearGradient(
     begin: .bottomLeft,
     end: .topRight,
     colors: AColors.boraBoraGradient,
   );
-
-  new({
-    required this.entry,
-    required this.devicePixelRatio,
-  });
 
   Future<Uint8List> drawWidget({
     required Size sizeDip,
@@ -33,10 +29,12 @@ class HomeWidgetPainter {
     required WidgetShape shape,
     ui.ImageByteFormat format = ui.ImageByteFormat.rawRgba,
   }) async {
-    final widthPx = sizeDip.width * devicePixelRatio;
-    final heightPx = sizeDip.height * devicePixelRatio;
-    final widgetSizePx = Size(widthPx, heightPx);
-    debugPrint('Draw widget for ${sizeDip.width}x${sizeDip.height} dp (${widgetSizePx.width}x${widgetSizePx.height} px), entry=$entry');
+    videoThumbnailFetcher.devicePixelRatio = devicePixelRatio;
+
+    final widthPx = (sizeDip.width * devicePixelRatio).round();
+    final heightPx = (sizeDip.height * devicePixelRatio).round();
+    final widgetSizePx = Size(widthPx.toDouble(), heightPx.toDouble());
+    debugPrint('Draw widget for ${sizeDip.width.round()} x ${sizeDip.height.round()} dp ($widthPx x $heightPx px), entry=$entry');
     final ui.Image? entryImage;
     if (entry != null) {
       final extent = shape.extentPx(widgetSizePx, entry!) / devicePixelRatio;
@@ -61,7 +59,7 @@ class HomeWidgetPainter {
     }
 
     final picture = recorder.endRecording();
-    final widgetImage = await picture.toImage(widthPx.round(), heightPx.round());
+    final widgetImage = await picture.toImage(widthPx, heightPx);
     picture.dispose();
 
     final imageData = await widgetImage.toByteData(format: format);

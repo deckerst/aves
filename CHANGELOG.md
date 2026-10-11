@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 - Map: action to copy center to clipboard from coordinate filter
 - Urdu translation (thanks Bouzid Zeroug, Feliks-WR)
 
+### Fixed
+
+- widget rendering failing for some videos
+
 ## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
 
 ### Added
