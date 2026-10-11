@@ -27,15 +27,11 @@ import 'package:csv/csv.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ExportCollectionStatsPage extends StatefulWidget {
+class const ExportCollectionStatsPage({
+  super.key,
+  required final Set<AvesEntry> entries,
+}) extends StatefulWidget {
   static const routeName = '/collection/stats/export';
-
-  final Set<AvesEntry> entries;
-
-  const new({
-    super.key,
-    required this.entries,
-  });
 
   @override
   State<ExportCollectionStatsPage> createState() => _ExportCollectionStatsPageState();
@@ -49,8 +45,6 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
   Set<AvesEntry> get entries => widget.entries;
-
-  AvesEntry get sample => entries.first;
 
   @override
   void initState() {
@@ -130,7 +124,8 @@ class _ExportCollectionStatsPageState extends State<ExportCollectionStatsPage> w
   }
 
   Widget _toTile(ExportableEntryField field) {
-    final preview = _exportEntryField(field, sample)?.toString() ?? '';
+    final sample = entries.firstOrNull;
+    final preview = sample != null ? _exportEntryField(field, sample)?.toString() ?? '' : '';
     return SwitchListTile(
       value: _selectedFields.contains(field),
       subtitle: preview.isNotEmpty ? Text(preview) : null,
