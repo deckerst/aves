@@ -90,6 +90,8 @@ class XmpElements {
   static const xXmpmeta = 'xmpmeta';
   static const rdfRoot = 'RDF';
   static const rdfDescription = 'Description';
+  static const rdfBag = 'Bag';
+  static const rdfLi = 'li';
   static const containerDirectory = 'Directory';
   static const dcDescription = 'description';
   static const dcSubject = 'subject';

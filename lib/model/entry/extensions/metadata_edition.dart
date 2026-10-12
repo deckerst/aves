@@ -56,7 +56,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             case .extractFromFileName:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
             case .shift:
-              final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
+              final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespaceUri: XmpNamespaces.xmp);
               if (xmpDate != null) {
                 final date = DateTime.tryParse(xmpDate);
                 if (date != null) {
@@ -235,7 +235,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             descriptions,
             XmpElements.dcTitle,
             title,
-            namespace: XmpNamespaces.dc,
+            namespaceUri: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
@@ -244,7 +244,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             descriptions,
             XmpElements.dcDescription,
             description,
-            namespace: XmpNamespaces.dc,
+            namespaceUri: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
@@ -367,7 +367,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpAttributes.xmpCreateDate,
       date != null ? XMP.toXmpDate(date) : null,
-      namespace: XmpNamespaces.xmp,
+      namespaceUri: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
   }
@@ -378,7 +378,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.dcSubject,
       tags,
-      namespace: XmpNamespaces.dc,
+      namespaceUri: XmpNamespaces.dc,
       strat: XmpEditStrategy.always,
     );
   }
@@ -391,7 +391,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.xmpRating,
       (rating ?? 0) == 0 ? null : '$rating',
-      namespace: XmpNamespaces.xmp,
+      namespaceUri: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
 
@@ -399,7 +399,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.msPhotoRating,
       XMP.toMsPhotoRating(rating),
-      namespace: XmpNamespaces.microsoftPhoto,
+      namespaceUri: XmpNamespaces.microsoftPhoto,
       strat: XmpEditStrategy.updateIfPresent,
     );
 
