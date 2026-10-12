@@ -84,7 +84,7 @@ class const InfoAppBar({
                   ],
                   onSelected: (action) async {
                     // wait for the popup menu to hide before proceeding with the action
-                    await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                    await Future.pause(animations.popUpAnimationDelay * timeDilation);
                     await actionDelegate.onActionSelected(context, entry, collection, action);
                   },
                   popUpAnimationStyle: animations.popUpAnimationStyle,

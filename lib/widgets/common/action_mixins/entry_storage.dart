@@ -519,7 +519,7 @@ mixin EntryStorageMixin on FeedbackMixin, PermissionAwareMixin, SizeAwareMixin, 
       );
     } else {
       // track in current page, without navigation
-      await Future.delayed(ADurations.highlightScrollInitDelay);
+      await Future.pause(ADurations.highlightScrollInitDelay);
       final targetEntry = collection.sortedEntries.firstWhereOrNull(highlightTest);
       if (targetEntry != null) {
         context.read<HighlightInfo>().trackItem(targetEntry, highlightItem: targetEntry);

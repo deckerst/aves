@@ -490,7 +490,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (newName == null || newName.isEmpty || newName == targetEntry.fileNameWithoutExtension) return;
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     await rename(
       context,
       entriesToNewName: {targetEntry: '$newName${targetEntry.extension}'},

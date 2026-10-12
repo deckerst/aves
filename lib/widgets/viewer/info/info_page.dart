@@ -325,7 +325,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   }
 
   void _onActionDelegateEvent(ActionEvent<EntryAction> event) {
-    Future.delayed(ADurations.dialogTransitionLoose).then((_) {
+    Future.delayed(ADurations.dialogTransitionLoose, () {
       if (!mounted) return;
       if (event is ActionStartedEvent) {
         _isEditingMetadataNotifier.value = event.action;

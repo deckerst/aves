@@ -42,7 +42,7 @@ class BackgroundPlayer {
     await player.open(Media(uri), play: false);
 
     final timeoutMillis = mimeType.startsWith('image') ? _probeTimeoutImage : _probeTimeoutVideo;
-    await Future.any([videoDecodedCompleter.future, Future.delayed(Duration(milliseconds: timeoutMillis))]);
+    await Future.any([videoDecodedCompleter.future, Future.pause(Duration(milliseconds: timeoutMillis))]);
 
     final videoParams = player.state.videoParams;
     if (videoParams.par == null) {

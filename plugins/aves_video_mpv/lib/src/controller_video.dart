@@ -296,7 +296,7 @@ class MpvVideoController(
       // but trying to seek then just plays from the start.
       // There is no state or hook identifying readiness to seek on start,
       // and `PlayerConfiguration.ready` hook is useless.
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.pause(const Duration(milliseconds: 500));
     }
     targetMillis = abRepeatNotifier.value?.clamp(targetMillis) ?? targetMillis;
     await _mkPlayer.seek(Duration(milliseconds: _toPlaybackTime(targetMillis)));

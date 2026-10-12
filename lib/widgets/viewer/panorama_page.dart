@@ -245,7 +245,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   Future<void> _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after page animation is complete
-    await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
+    await Future.pause(ModalRoute.of(context)!.transitionDuration * timeDilation);
     await _onOverlayVisibleChanged();
   }
 

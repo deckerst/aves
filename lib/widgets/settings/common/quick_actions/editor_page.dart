@@ -389,7 +389,7 @@ class _QuickActionEditorBodyState<T extends Object> extends State<QuickActionEdi
     _reordering = true;
     _removeQuickAction(action);
     controller.insert(targetIndex, action);
-    Future.delayed(_listAnimation).then((value) => _reordering = false);
+    Future.delayed(_listAnimation, () => _reordering = false);
     return true;
   }
 

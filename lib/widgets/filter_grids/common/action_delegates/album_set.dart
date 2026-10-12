@@ -235,7 +235,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumBaseFilter> 
       if (directory == null) return;
 
       // wait for the dialog to hide
-      await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+      await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     }
     final filter = StoredAlbumFilter(directory, source.getStoredAlbumDisplayName(context, directory));
 

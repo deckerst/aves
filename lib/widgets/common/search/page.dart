@@ -4,11 +4,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/pop/double_back.dart';
 import 'package:aves/widgets/common/behaviour/pop/scope.dart';
 import 'package:aves/widgets/common/behaviour/pop/tv_navigation.dart';
-import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:flutter/scheduler.dart';
@@ -72,7 +72,7 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionLoose * timeDilation, () {
       if (!mounted) return;
       _searchFieldFocusNode.requestFocus();
     });

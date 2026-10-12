@@ -61,7 +61,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             },
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
-              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+              await Future.pause(animations.popUpAnimationDelay * timeDilation);
               SettingsActionDelegate().onActionSelected(context, action);
             },
             popUpAnimationStyle: animations.popUpAnimationStyle,

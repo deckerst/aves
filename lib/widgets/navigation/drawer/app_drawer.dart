@@ -168,7 +168,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
-      await Future.delayed(ADurations.drawerTransitionLoose);
+      await Future.pause(ADurations.drawerTransitionLoose);
       await Navigator.maybeOf(context)?.push(
         MaterialPageRoute(
           settings: RouteSettings(name: routeName),

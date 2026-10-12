@@ -309,7 +309,7 @@ class _CollectionGridContentState extends State<_CollectionGridContent> {
     final animate = context.read<Settings>().animate;
     if (animate) {
       // TODO TLAD fix timing when transition is incomplete, e.g. when going back while going to the viewer
-      await Future.delayed(ADurations.pageTransitionExact * timeDilation);
+      await Future.pause(ADurations.pageTransitionExact * timeDilation);
     }
     viewerEntryNotifier.value = null;
   }

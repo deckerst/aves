@@ -147,7 +147,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
         },
         onSelected: (action) async {
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           final directory = widget.directoryNotifier.value;
           if (directory != null) {
             ExplorerActionDelegate(directory: directory).onActionSelected(context, action);

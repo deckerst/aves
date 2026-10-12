@@ -304,7 +304,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                         onSelected: (action) async {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                          await Future.pause(animations.popUpAnimationDelay * timeDilation);
                           actionDelegate.onActionSelected(context, action);
                         },
                         onCanceled: () {

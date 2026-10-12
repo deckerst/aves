@@ -637,7 +637,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     return supported;
   }
 

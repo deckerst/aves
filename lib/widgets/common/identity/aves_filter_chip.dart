@@ -132,7 +132,7 @@ class const AvesFilterChip({
     );
     if (selectedAction != null) {
       // wait for the popup menu to hide before proceeding with the action
-      await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+      await Future.pause(animations.popUpAnimationDelay * timeDilation);
       actionDelegate.onActionSelected(context, filter, selectedAction);
     }
   }

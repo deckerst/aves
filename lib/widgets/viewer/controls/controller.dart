@@ -136,7 +136,7 @@ class ViewerController with CastMixin {
       controller: animationController,
       animation: animation,
     );
-    Future.delayed(ADurations.viewerHorizontalPageAnimation).then((_) => _autopilotAnimators[vsync]?.controller.forward());
+    Future.delayed(ADurations.viewerHorizontalPageAnimation, () => _autopilotAnimators[vsync]?.controller.forward());
   }
 }
 

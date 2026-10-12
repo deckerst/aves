@@ -120,7 +120,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
         );
       } else {
         scrollController.jumpTo(scrollOffset);
-        await Future.delayed(ADurations.highlightJumpDelay);
+        await Future.pause(ADurations.highlightJumpDelay);
       }
     }
 
@@ -134,7 +134,7 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     // use a delay to obtain current layout metrics
     // so that we can handle window orientation change with the previous metrics,
     // regardless of the `View`/`WidgetsBindingObserver` order uncertainty
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.pause(const Duration(milliseconds: 500));
     if (!mounted) return;
     _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
     _lastScrollableSize = scrollableSize;

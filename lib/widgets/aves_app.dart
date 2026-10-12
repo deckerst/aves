@@ -771,7 +771,7 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
   // necessary on older devices
   Future<void> _updateSystemUI() async {
     await AvesApp.showSystemUI(true);
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.pause(const Duration(milliseconds: 400));
     AvesApp.setSystemUIStyle(Theme.of(context));
   }
 

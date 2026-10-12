@@ -36,7 +36,7 @@ class const LocaleTile({super.key}) extends StatelessWidget {
           ),
         );
         // wait for the dialog to hide
-        await Future.delayed(ADurations.pageTransitionLoose * timeDilation);
+        await Future.pause(ADurations.pageTransitionLoose * timeDilation);
         if (value != null) {
           settings.basicLocale = value == systemLocaleOption ? null : value;
         }

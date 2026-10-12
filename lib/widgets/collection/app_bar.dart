@@ -545,7 +545,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         onSelected: (action) async {
           _actionPopupExpandedNotifier.value = null;
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           await _onActionSelected(action);
         },
         onCanceled: () {
@@ -852,7 +852,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
       routeSettings: const RouteSettings(name: ChangeLayoutDialog.routeName),
     );
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       settings.setStoredCollectionTileLayout(filters, value.$1);
       settings.setStoredCollectionSortFactor(filters, value.$2);

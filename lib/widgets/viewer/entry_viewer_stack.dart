@@ -906,7 +906,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     final isStatusBarVisibleNotifier = AvesApp.isAndroidStatusBarVisibleNotifier;
     void onStatusBarVisibleChanged() async {
       // cf below for explanation on transition delay
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future.pause(const Duration(milliseconds: 50));
       systemUIReadyCompleter.complete(isStatusBarVisibleNotifier.value);
     }
 
@@ -964,7 +964,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     } else {
       // wait for MaterialPageRoute.transitionDuration
       // to show overlay after hero animation is complete
-      await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
+      await Future.pause(ModalRoute.of(context)!.transitionDuration * timeDilation);
       await _onOverlayVisibleChanged();
     }
     _overlayInitialized = true;

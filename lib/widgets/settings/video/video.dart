@@ -136,7 +136,7 @@ class SettingsTileVideoThumbnailMethods extends SettingsTile {
               routeSettings: const RouteSettings(name: AvesReorderableListDialog.routeName),
             );
             // wait for the dialog to hide
-            await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+            await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
             if (value != null) {
               settings.videoThumbnailMethods = value;
             }

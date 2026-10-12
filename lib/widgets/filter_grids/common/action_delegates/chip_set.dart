@@ -291,7 +291,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       routeSettings: const RouteSettings(name: ChangeLayoutDialog.routeName),
     );
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     if (value != null && initialValue != value) {
       settings.setTileLayout(settingsRouteKey, value.$1);
       sortFactor = value.$2;

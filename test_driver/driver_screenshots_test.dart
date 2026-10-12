@@ -49,7 +49,7 @@ void main() {
       await driver.scanMediaDir(screenshotsTargetDirAndroid);
       // recent heavy images may delay cataloguing because of thumbnail loading precedence
       // so we wait enough to avoid cataloguing progress subtitle in app bar when taking screenshots
-      await Future.delayed(const Duration(seconds: 40));
+      await Future.pause(const Duration(seconds: 40));
     }, timeout: const Timeout(Duration(minutes: 1)));
 
     localesBcp47.forEach((localeBcp47) {
@@ -79,7 +79,7 @@ Future<void> _selectMapStyle(String styleKey) async {
   await driver.tapKeyAndWait(styleKey);
 
   // tiles may take time to load
-  await Future.delayed(const Duration(seconds: 5));
+  await Future.pause(const Duration(seconds: 5));
 }
 
 Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
@@ -142,7 +142,7 @@ void viewer() {
     await _search('viewer', 'album-false-$screenshotsTargetDirAndroid/viewer');
 
     // delay to avoid flaky descendant resolution
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
     await driver.tap(
       find.descendant(
         of: find.byValueKey('collection-grid'),
@@ -151,11 +151,11 @@ void viewer() {
       ),
     );
     await driver.waitUntilNoTransientCallbacks();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
 
     final imageView = find.byValueKey('image_view');
     await driver.doubleTap(imageView);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.pause(const Duration(seconds: 1));
 
     await _takeScreenshot(driver, '2');
   });
@@ -167,12 +167,12 @@ void info() {
 
     await driver.scrollY(verticalPageView, -600);
     await _selectMapStyle('googleNormal');
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
 
     await _takeScreenshot(driver, '3');
 
     await driver.scrollY(verticalPageView, -680);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.pause(const Duration(seconds: 1));
 
     final gpsTile = find.descendant(
       of: find.byValueKey('tilecard-GPS'),

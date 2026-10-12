@@ -95,7 +95,7 @@ class _HistogramState extends State<Histogram> with AutomaticKeepAliveClientMixi
               entryCountPerDate: _entryCountPerDate,
             ),
           );
-          _areaChartLoader = _interpolatedDataLoader.then((_) => Future.delayed(animationDuration * timeDilation));
+          _areaChartLoader = _interpolatedDataLoader.then((_) => Future.pause(animationDuration * timeDilation));
         }
       }
     }
