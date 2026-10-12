@@ -191,7 +191,9 @@ class MpvVideoController(
 
   Future<void> _updateSlowMotionFactor() async {
     final playbackFps = _videoTracks.firstOrNull?.fps;
-    slowMotionFactor = await MpvVideoMetadataFetcher.computeSlowMotionFactor(_mkPlayer, playbackFps);
+    if (entry.isSlowMotion) {
+      slowMotionFactor = await MpvVideoMetadataFetcher.computeSlowMotionFactor(_mkPlayer, playbackFps);
+    }
     canSetSpeedNotifier.value = !isSlowMotion;
   }
 

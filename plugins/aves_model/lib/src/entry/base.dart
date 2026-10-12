@@ -21,6 +21,8 @@ mixin AvesEntryBase {
 
   bool get isAnimated;
 
+  bool get isSlowMotion;
+
   int get rotationDegrees;
 
   Size get displaySize;

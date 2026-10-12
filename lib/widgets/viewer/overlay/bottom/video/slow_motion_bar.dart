@@ -119,16 +119,7 @@ class _SlowMotionRangePainter({
   required final Color handleColor,
   required final Color lineColor,
 }) extends CustomPainter {
-  final Paint _handlePaint, _linePaint;
-
-  static const double _strokeWidth = 4;
-  static const double _handleRadius = 8;
-  static const double _handlePadding = 16;
-  static const double _slowLinePeriod = 16;
-  static const double _slowLineAmplitude = 4;
-
-  this
-    : _handlePaint = Paint()
+  final _handlePaint = Paint()
         ..color = handleColor
         ..strokeCap = .round
         ..strokeWidth = _strokeWidth
@@ -138,6 +129,12 @@ class _SlowMotionRangePainter({
         ..strokeCap = .round
         ..strokeWidth = _strokeWidth
         ..style = .stroke;
+
+  static const double _strokeWidth = 4;
+  static const double _handleRadius = 8;
+  static const double _handlePadding = 16;
+  static const double _slowLinePeriod = 16;
+  static const double _slowLineAmplitude = 4;
 
   @override
   void paint(Canvas canvas, Size size) {
