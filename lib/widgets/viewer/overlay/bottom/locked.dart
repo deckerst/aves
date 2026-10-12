@@ -7,17 +7,12 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerLockedOverlay extends StatefulWidget {
-  final AnimationController animationController;
-  final EdgeInsets? viewInsets, viewPadding;
-
-  const new({
-    super.key,
-    required this.animationController,
-    this.viewInsets,
-    this.viewPadding,
-  });
-
+class const ViewerLockedOverlay({
+  super.key,
+  required final AnimationController animationController,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ViewerLockedOverlayState();
 }

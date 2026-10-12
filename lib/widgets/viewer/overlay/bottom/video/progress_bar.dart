@@ -13,17 +13,12 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 
-class VideoProgressBar extends StatefulWidget {
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-
+class const VideoProgressBar({
+  super.key,
+  required final AvesVideoController? controller,
+  required final Animation<double> scale,
+}) extends StatefulWidget {
   static const padding = EdgeInsets.symmetric(horizontal: 16);
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.scale,
-  });
 
   @override
   State<VideoProgressBar> createState() => _VideoProgressBarState();

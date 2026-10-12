@@ -14,20 +14,13 @@ import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoControlOverlay extends StatefulWidget {
-  final AvesEntry entry;
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-  final Function(EntryAction value) onActionSelected;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.controller,
-    required this.scale,
-    required this.onActionSelected,
-  });
-
+class const VideoControlOverlay({
+  super.key,
+  required final AvesEntry entry,
+  required final AvesVideoController? controller,
+  required final Animation<double> scale,
+  required final Function(EntryAction value) onActionSelected,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _VideoControlOverlayState();
 }

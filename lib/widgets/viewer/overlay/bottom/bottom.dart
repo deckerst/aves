@@ -254,17 +254,12 @@ class _BottomOverlayContentState extends State<_BottomOverlayContent> {
   void _requestFocus() => _buttonRowFocusScopeNode.children.firstOrNull?.requestFocus();
 }
 
-class ExtraBottomOverlay extends StatelessWidget {
-  final EdgeInsets? viewInsets, viewPadding;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.viewInsets,
-    this.viewPadding,
-    required this.child,
-  });
-
+class const ExtraBottomOverlay({
+  super.key,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewInsets = this.viewInsets ?? MediaQuery.viewInsetsOf(context);

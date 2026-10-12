@@ -21,16 +21,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class WallpaperButtons extends StatelessWidget with FeedbackMixin {
-  final AvesEntry entry;
-  final Animation<double> scale;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.scale,
-  });
-
+class const WallpaperButtons({
+  super.key,
+  required final AvesEntry entry,
+  required final Animation<double> scale,
+}) extends StatelessWidget with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     const padding = ViewerButtonRowContent.padding;

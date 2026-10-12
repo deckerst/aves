@@ -14,19 +14,13 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SlideshowBottomOverlay extends StatelessWidget {
-  final AnimationController animationController;
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-
-  const new({
-    super.key,
-    required this.animationController,
-    required this.availableSize,
-    this.viewInsets,
-    this.viewPadding,
-  });
-
+class const SlideshowBottomOverlay({
+  super.key,
+  required final AnimationController animationController,
+  required final Size availableSize,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
@@ -47,19 +41,13 @@ class SlideshowBottomOverlay extends StatelessWidget {
   }
 }
 
-class SlideshowButtons extends StatefulWidget {
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-  final AnimationController animationController;
-
-  const new({
-    super.key,
-    required this.availableSize,
-    required this.viewInsets,
-    required this.viewPadding,
-    required this.animationController,
-  });
-
+class const SlideshowButtons({
+  super.key,
+  required final Size availableSize,
+  required final EdgeInsets? viewInsets,
+  required final EdgeInsets? viewPadding,
+  required final AnimationController animationController,
+}) extends StatefulWidget {
   @override
   State<SlideshowButtons> createState() => _SlideshowButtonsState();
 }

@@ -3,18 +3,12 @@ import 'package:aves/widgets/common/thumbnail/scroller.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ViewerThumbnailPreview extends StatefulWidget {
-  final List<AvesEntry> entries;
-  final int displayedIndex;
-  final double availableWidth;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.displayedIndex,
-    required this.availableWidth,
-  });
-
+class const ViewerThumbnailPreview({
+  super.key,
+  required final List<AvesEntry> entries,
+  required final int displayedIndex,
+  required final double availableWidth,
+}) extends StatefulWidget {
   @override
   State<ViewerThumbnailPreview> createState() => _ViewerThumbnailPreviewState();
 

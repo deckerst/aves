@@ -10,16 +10,11 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SlowMotionBar extends StatefulWidget {
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.scale,
-  });
-
+class const SlowMotionBar({
+  super.key,
+  required final AvesVideoController? controller,
+  required final Animation<double> scale,
+}) extends StatefulWidget {
   @override
   State<SlowMotionBar> createState() => _SlowMotionBarState();
 }
@@ -119,9 +114,11 @@ class _SlowMotionBarState extends State<SlowMotionBar> {
   }
 }
 
-class _SlowMotionRangePainter extends CustomPainter {
-  final SlowMotionRange range;
-  final Color handleColor, lineColor;
+class _SlowMotionRangePainter({
+  required final SlowMotionRange range,
+  required final Color handleColor,
+  required final Color lineColor,
+}) extends CustomPainter {
   final Paint _handlePaint, _linePaint;
 
   static const double _strokeWidth = 4;
@@ -130,20 +127,17 @@ class _SlowMotionRangePainter extends CustomPainter {
   static const double _slowLinePeriod = 16;
   static const double _slowLineAmplitude = 4;
 
-  new({
-    required this.range,
-    required this.handleColor,
-    required this.lineColor,
-  }) : _handlePaint = Paint()
-         ..color = handleColor
-         ..strokeCap = .round
-         ..strokeWidth = _strokeWidth
-         ..style = .stroke,
-       _linePaint = Paint()
-         ..color = lineColor
-         ..strokeCap = .round
-         ..strokeWidth = _strokeWidth
-         ..style = .stroke;
+  this
+    : _handlePaint = Paint()
+        ..color = handleColor
+        ..strokeCap = .round
+        ..strokeWidth = _strokeWidth
+        ..style = .stroke,
+      _linePaint = Paint()
+        ..color = lineColor
+        ..strokeCap = .round
+        ..strokeWidth = _strokeWidth
+        ..style = .stroke;
 
   @override
   void paint(Canvas canvas, Size size) {

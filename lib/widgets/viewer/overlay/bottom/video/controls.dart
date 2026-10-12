@@ -8,22 +8,15 @@ import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class VideoControlRow extends StatelessWidget {
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-  final bool canOpenVideoPlayer;
-  final Function(EntryAction value) onActionSelected;
-
+class const VideoControlRow({
+  super.key,
+  final AvesVideoController? controller,
+  final Animation<double> scale = kAlwaysCompleteAnimation,
+  final bool canOpenVideoPlayer = true,
+  required final Function(EntryAction value) onActionSelected,
+}) extends StatelessWidget {
   static const double edgeButtonPadding = 3;
   static const Radius radius = Radius.circular(123);
-
-  const new({
-    super.key,
-    this.controller,
-    this.scale = kAlwaysCompleteAnimation,
-    this.canOpenVideoPlayer = true,
-    required this.onActionSelected,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,23 +53,14 @@ class VideoControlRow extends StatelessWidget {
   }
 }
 
-class _VideoOverlayButton extends StatelessWidget {
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-  final bool canOpenVideoPlayer;
-  final Function(EntryAction value) onActionSelected;
-  final EntryAction action;
-  final BorderRadius? borderRadius;
-
-  const new({
-    required this.controller,
-    required this.scale,
-    required this.canOpenVideoPlayer,
-    required this.onActionSelected,
-    required this.action,
-    required this.borderRadius,
-  });
-
+class const _VideoOverlayButton({
+  required final AvesVideoController? controller,
+  required final Animation<double> scale,
+  required final bool canOpenVideoPlayer,
+  required final Function(EntryAction value) onActionSelected,
+  required final EntryAction action,
+  required final BorderRadius? borderRadius,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child;
