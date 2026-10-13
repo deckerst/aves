@@ -245,7 +245,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'imageWidth': request.imageSize.width.toInt(),
       'imageHeight': request.imageSize.height.toInt(),
     };
-    return servicePolicy.call(
+    return platformServicePolicy.call(
       () async {
         final bytes = await _getBytes(
           mimeType: request.mimeType,
@@ -282,7 +282,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'heightDip': extentDip,
       'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
     };
-    return servicePolicy.call(
+    return platformServicePolicy.call(
       () async {
         final bytes = await _getBytes(
           mimeType: request.mimeType,
@@ -341,13 +341,13 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
+  bool cancelRegion(Object taskKey) => platformServicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
 
   @override
-  bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
+  bool cancelThumbnail(Object taskKey) => platformServicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
   @override
-  Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  Future<T>? resumeLoading<T>(Object taskKey) => platformServicePolicy.resume<T>(taskKey);
 
   // convenience methods
 

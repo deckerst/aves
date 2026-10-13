@@ -102,7 +102,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
     }
 
     return background
-        ? servicePolicy.call(
+        ? platformServicePolicy.call(
             call,
             priority: ServiceCallPriority.getMetadata,
           )

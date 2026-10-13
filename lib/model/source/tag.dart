@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/catalog.dart';
 import 'package:aves/model/filters/container/tag_group.dart';
@@ -6,13 +8,14 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/filter_summary.dart';
+import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 
 mixin TagMixin on SourceBase {
-  static const commitCountThreshold = 400;
-  static const _stopCheckCountThreshold = 100;
+  static const commitCountThreshold = 500;
+  static const _stopCheckCountThreshold = 50;
 
   List<String>? _sortedTags;
 
@@ -35,37 +38,51 @@ mixin TagMixin on SourceBase {
     if (controller.isStopping) return false;
 
     final force = controller.force;
-    final todo = force ? candidateEntries : candidateEntries.where(catalogEntriesTest).toSet();
-    if (todo.isEmpty) return false;
+    if (!force) {
+      candidateEntries = candidateEntries.where(catalogEntriesTest).toSet();
+    }
+    if (candidateEntries.isEmpty) return false;
 
     state = SourceState.cataloguing;
     var progressDone = controller.progressOffset;
     var progressTotal = controller.progressTotal;
     if (progressTotal == 0) {
-      progressTotal = todo.length;
+      progressTotal = candidateEntries.length;
     }
     setProgress(done: progressDone, total: progressTotal);
 
-    var stopCheckCount = 0;
-    final newMetadata = <CatalogMetadata>{};
-    for (final entry in todo) {
-      await entry.catalog(background: true, force: force, persist: true);
-      if (entry.isCatalogued) {
-        newMetadata.add(entry.catalogMetadata!);
-        if (newMetadata.length >= commitCountThreshold) {
-          await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
-          onCatalogMetadataChanged();
-          newMetadata.clear();
-        }
-        if (++stopCheckCount >= _stopCheckCountThreshold) {
-          stopCheckCount = 0;
-          if (controller.isStopping) return true;
-        }
-      }
-      setProgress(done: ++progressDone, total: progressTotal);
+    Future<void> commitPendingData(Set<CatalogMetadata> metadata) async {
+      if (metadata.isEmpty) return;
+      await localMediaDb.saveCatalogMetadata(Set.unmodifiable(metadata));
+      onCatalogMetadataChanged();
     }
-    await localMediaDb.saveCatalogMetadata(Set.unmodifiable(newMetadata));
-    onCatalogMetadataChanged();
+
+    final newMetadata = <CatalogMetadata>{};
+
+    var stopCheckCount = 0;
+    await Future.wait(
+      candidateEntries.map((entry) async {
+        await scanServicePolicy.call(() async {
+          if (++stopCheckCount >= _stopCheckCountThreshold) {
+            stopCheckCount = 0;
+            if (controller.isStopping) return;
+          }
+
+          await entry.catalog(background: true, force: force, persist: true);
+          if (entry.isCatalogued) {
+            newMetadata.add(entry.catalogMetadata!);
+            if (newMetadata.length >= commitCountThreshold) {
+              final todo = Set.of(newMetadata);
+              newMetadata.clear();
+              await commitPendingData(todo);
+            }
+          }
+          setProgress(done: ++progressDone, total: progressTotal);
+        });
+      }),
+    );
+
+    await commitPendingData(newMetadata);
     return true;
   }
 

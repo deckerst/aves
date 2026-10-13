@@ -112,7 +112,7 @@ class const _TaskQueueOverlay() extends StatelessWidget {
               color: Colors.indigo.shade900.withAlpha(0xCC),
               padding: const EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
-                stream: servicePolicy.queueStream,
+                stream: platformServicePolicy.queueStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return const SizedBox();
                   final queuedEntries = <MapEntry<dynamic, int>>[];
