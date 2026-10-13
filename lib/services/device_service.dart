@@ -3,11 +3,20 @@ import 'dart:ui' as ui;
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 enum MemorySizeType { advertised, available, free, max, total, used }
 
 abstract class DeviceService {
+  Future<PackageInfo> getPackageInfo();
+
+  Future<AndroidDeviceInfo> getAndroidInfo();
+
+  Future<bool> canAuthenticateUser();
+
   Future<Map<String, Object?>> getCapabilities();
 
   Future<List<ui.Locale>> getLocales();
@@ -40,6 +49,18 @@ abstract class DeviceService {
 
 class PlatformDeviceService extends DeviceService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/device');
+
+  @override
+  Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
+
+  @override
+  Future<AndroidDeviceInfo> getAndroidInfo() => DeviceInfoPlugin().androidInfo;
+
+  @override
+  Future<bool> canAuthenticateUser() async {
+    final auth = LocalAuthentication();
+    return await auth.canCheckBiometrics || await auth.isDeviceSupported();
+  }
 
   @override
   Future<Map<String, Object?>> getCapabilities() async {

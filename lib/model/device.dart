@@ -1,7 +1,4 @@
 import 'package:aves/services/common/services.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 final Device device = Device._private();
 
@@ -48,18 +45,16 @@ class Device {
   new _private();
 
   Future<void> init() async {
-    final packageInfo = await PackageInfo.fromPlatform();
+    final packageInfo = await deviceService.getPackageInfo();
     _packageName = packageInfo.packageName;
     _packageVersion = packageInfo.version;
     _userAgent = '$_packageName/$_packageVersion';
 
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final androidInfo = await deviceService.getAndroidInfo();
     _isPhysicalDevice = androidInfo.isPhysicalDevice;
     _isTelevision = androidInfo.systemFeatures.contains('android.software.leanback');
 
-    final auth = LocalAuthentication();
-    _canAuthenticateUser = await auth.canCheckBiometrics || await auth.isDeviceSupported();
-
+    _canAuthenticateUser = await deviceService.canAuthenticateUser();
     _availableProcessors = await deviceService.getAvailableProcessors();
 
     final capabilities = await deviceService.getCapabilities();

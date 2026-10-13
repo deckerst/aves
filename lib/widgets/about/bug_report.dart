@@ -23,11 +23,9 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 class const BugReport({super.key}) extends StatefulWidget {
@@ -138,8 +136,8 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
   Future<String> _getInfo(BuildContext context) async {
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
-    final packageInfo = await PackageInfo.fromPlatform();
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final packageInfo = await deviceService.getPackageInfo();
+    final androidInfo = await deviceService.getAndroidInfo();
     final mpc = await deviceService.getMediaPerformanceClass();
     final viewPhysicalSize = View.of(context).physicalSize;
 
