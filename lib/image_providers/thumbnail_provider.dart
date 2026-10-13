@@ -55,6 +55,8 @@ class const ThumbnailProvider(final ThumbnailProviderKey key) extends ImageProvi
 
 @immutable
 class const ThumbnailProviderKey({
+  // do not store the entry as it is, because the key should be constant
+  // but the entry attributes may change over time
   required final String uri,
   required final String mimeType,
   required final int? pageId,
@@ -64,8 +66,6 @@ class const ThumbnailProviderKey({
   final double extent = 0,
   required final List<VideoThumbnailMethod>? videoThumbnailMethods,
 }) extends Equatable {
-  // do not store the entry as it is, because the key should be constant
-  // but the entry attributes may change over time
   @override
   List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, dateModifiedMillis, extent, videoThumbnailMethods];
 

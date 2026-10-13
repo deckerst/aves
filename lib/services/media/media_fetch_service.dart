@@ -5,12 +5,15 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -100,6 +103,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'sizeBytes': request.sizeBytes,
       'rotationDegrees': request.rotationDegrees ?? 0,
       'isFlipped': request.isFlipped,
+      'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
     };
   }
 
@@ -187,6 +191,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       isAnimated: entry.isAnimated,
       pageId: entry.pageId,
       sizeBytes: entry.sizeBytes,
+      videoThumbnailMethods: entry.isVideo ? settings.videoThumbnailMethods : null,
     );
     final bytes = await _getBytes(
       mimeType: request.mimeType,
@@ -408,8 +413,9 @@ class const ImageRequest(
   required final bool isAnimated,
   required final int? pageId,
   required final int? sizeBytes,
+  required final List<VideoThumbnailMethod>? videoThumbnailMethods,
   final BytesReceivedCallback? onBytesReceived,
 }) extends Equatable {
   @override
-  List<Object?> get props => [uri, mimeType, rotationDegrees, isFlipped, isAnimated, pageId, sizeBytes, onBytesReceived];
+  List<Object?> get props => [uri, mimeType, rotationDegrees, isFlipped, isAnimated, pageId, sizeBytes, videoThumbnailMethods, onBytesReceived];
 }

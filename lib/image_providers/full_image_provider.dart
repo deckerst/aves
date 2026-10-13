@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_fetch_service.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class const FullImage({
+  // do not store the entry as it is, because the key should be constant
+  // but the entry attributes may change over time
   required final String uri,
   required final String mimeType,
   required final int? pageId,
@@ -18,9 +21,10 @@ class const FullImage({
   required final bool isAnimated,
   final int? sizeBytes,
   final double scale = 1.0,
+  required final List<VideoThumbnailMethod>? videoThumbnailMethods,
 }) extends ImageProvider<FullImage> with Equatable {
   @override
-  List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, isAnimated, sizeBytes, scale];
+  List<Object?> get props => [uri, mimeType, pageId, rotationDegrees, isFlipped, isAnimated, sizeBytes, scale, videoThumbnailMethods];
 
   @override
   Future<FullImage> obtainKey(ImageConfiguration configuration) {
@@ -52,6 +56,7 @@ class const FullImage({
       isAnimated: isAnimated,
       pageId: pageId,
       sizeBytes: sizeBytes,
+      videoThumbnailMethods: videoThumbnailMethods,
       onBytesReceived: (cumulative, total) {
         chunkEvents.add(
           ImageChunkEvent(

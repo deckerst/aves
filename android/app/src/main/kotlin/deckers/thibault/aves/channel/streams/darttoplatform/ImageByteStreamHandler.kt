@@ -69,6 +69,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
+        val videoMethods = (arguments["videoMethods"] as List<*>?)?.filterIsInstance<String>()?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "missing arguments", null)
@@ -86,6 +87,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             streamVideoByGlide(
                 contentAddress = contentAddress,
                 sizeBytes = sizeBytes,
+                videoMethods = videoMethods,
                 decoded = decoded,
             )
         } else {
@@ -149,12 +151,17 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private suspend fun streamVideoByGlide(contentAddress: ContentAddress, sizeBytes: Long?, decoded: Boolean) {
+    private suspend fun streamVideoByGlide(
+        contentAddress: ContentAddress,
+        sizeBytes: Long?,
+        videoMethods: List<VideoThumbnailMethod>?,
+        decoded: Boolean,
+    ) {
         val mimeType = contentAddress.mimeType
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
-            .load(AvesAppGlideModule.getModel(context, contentAddress, sizeBytes))
+            .load(AvesAppGlideModule.getModel(context, contentAddress, sizeBytes, videoMethods = videoMethods))
             .submit()
         try {
             val bitmap = withContext(Dispatchers.IO) { target.get() }
