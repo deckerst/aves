@@ -234,7 +234,7 @@ class MediaStoreSource extends CollectionSource {
           },
           onDone: () async {
             if (newEntries.isNotEmpty) {
-              // TODO TLAD perform DB ops with `newEntries` by chunks
+              // TODO TLAD [perf] perform DB ops with `newEntries` by chunks
               debugPrint('$runtimeType load ${stopwatch.elapsed} save ${newEntries.length} new entries');
               await localMediaDb.insertEntries(newEntries);
 

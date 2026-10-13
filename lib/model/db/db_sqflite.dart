@@ -220,6 +220,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries) async {
     String where = 'origin = ? AND trashed = ?';
     if (entries != null) {
+      // TODO TLAD [perf] split queries when `IN` parameter is large
       where += ' AND contentId IN (${entries.map((v) => v.contentId).join(',')})';
     }
     final rows = await _db.rawQuery(
@@ -714,6 +715,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<Set<T>> _getByIds<T>(Set<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
     final result = <T>{};
     if (ids.isNotEmpty) {
+      // TODO TLAD [perf] split queries when `IN` parameter is large
       final cursor = await _db.queryCursor(table, where: 'id IN (${ids.join(',')})', bufferSize: _queryCursorBufferSize);
       while (await cursor.moveNext()) {
         result.add(mapRow(cursor.current));
