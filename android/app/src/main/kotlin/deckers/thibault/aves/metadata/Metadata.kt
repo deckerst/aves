@@ -151,6 +151,7 @@ object Metadata {
             MimeTypes.DNG,
             MimeTypes.DNG_ADOBE,
             MimeTypes.HEIC,
+            MimeTypes.HEIC_SEQUENCE,
             MimeTypes.HEIF,
             MimeTypes.MP4,
             MimeTypes.PSD_VND,

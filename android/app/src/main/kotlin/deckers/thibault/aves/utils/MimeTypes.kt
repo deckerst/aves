@@ -13,6 +13,7 @@ object MimeTypes {
     private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
+    const val HEIC_SEQUENCE = "image/heic-sequence"
     const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
@@ -70,7 +71,7 @@ object MimeTypes {
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith("video")
 
     // assume that `HEIF` is a `HEIC` (using the default `HEVC` codec)
-    fun isHeic(mimeType: String?) = mimeType == HEIC || mimeType == HEIF
+    fun isHeic(mimeType: String?) = mimeType == HEIC || mimeType == HEIC_SEQUENCE || mimeType == HEIF
 
     // `AVIF` and `HEIC` both derive from `HEIF`, which derives from `ISOBMFF`.
     // `MP4` also derives from `ISOBMFF` but is not an image format.
@@ -172,7 +173,7 @@ object MimeTypes {
     fun extensionFor(mimeType: String, defaultExtension: String?): String = when (mimeType) {
         AVI, AVI_VND -> ".avi"
         DNG, DNG_ADOBE -> ".dng"
-        HEIC, HEIF -> ".heif"
+        HEIC, HEIC_SEQUENCE, HEIF -> ".heif"
         MP2T, MP2TS -> ".m2ts"
         PSD_VND, PSD_X -> ".psd"
         else -> {

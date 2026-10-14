@@ -51,7 +51,7 @@ extension ExtraAvesEntryInfo on AvesEntry {
       );
     }).toList();
 
-    if (isVideo || (mimeType == MimeTypes.heif && isMultiPage) || mimeType == MimeTypes.avif) {
+    if (isVideo || (MimeTypes.isHeic(mimeType) && isMultiPage) || mimeType == MimeTypes.avif) {
       directories.addAll(await _getStreamDirectories(context));
     }
 

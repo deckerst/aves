@@ -401,7 +401,13 @@ class _BasicInfoState extends State<_BasicInfo> {
     var s = entry.getResolutionText(locale);
 
     // guess whether this is a photo, according to file type
-    final isPhoto = [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(entry.mimeType) || entry.isRaw;
+    final isPhoto =
+        [
+          ...MimeTypes.heicTypes,
+          MimeTypes.jpeg,
+          MimeTypes.tiff,
+        ].contains(entry.mimeType) ||
+        entry.isRaw;
     if (isPhoto) {
       final megaPixels = (entry.width * entry.height / 1000000).round();
       if (megaPixels > 0) {
