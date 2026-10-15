@@ -25,7 +25,7 @@ class DbTab extends StatefulWidget {
 }
 
 class _DbTabState extends State<DbTab> {
-  late Future<int?> _dbDateLoader;
+  late Future<DateAndZone?> _dbDateLoader;
   late Future<AvesEntry?> _dbEntryLoader;
   late Future<CatalogMetadata?> _dbMetadataLoader;
   late Future<AddressDetails?> _dbAddressLoader;
@@ -56,20 +56,21 @@ class _DbTabState extends State<DbTab> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder<int?>(
+        FutureBuilder<DateAndZone?>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
-            final data = snapshot.data;
+            final (dateMillis, timeZoneOffsetMinutes) = snapshot.data ?? (null, null);
             return Column(
               crossAxisAlignment: .start,
               children: [
-                Text('DB date:${data == null ? ' no row' : ''}'),
-                if (data != null)
+                Text('DB date:${dateMillis == null ? ' no row' : ''}'),
+                if (dateMillis != null)
                   InfoRowGroup(
                     info: {
-                      'dateMillis': ViewerDebugUtils.toDateValue(data),
+                      'dateMillis': ViewerDebugUtils.toDateValue(dateMillis, isUtc: timeZoneOffsetMinutes != null),
+                      'timeZoneOffsetMinutes': '$timeZoneOffsetMinutes',
                     },
                   ),
               ],

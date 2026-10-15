@@ -73,6 +73,8 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // catalog
 
+  bool get isDated => (catalogDateMillis ?? 0) != 0;
+
   bool get isGeotiff => catalogMetadata?.isGeotiff ?? false;
 
   bool get is360 => catalogMetadata?.is360 ?? false;

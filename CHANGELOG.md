@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- device time zone change will only trigger a rescan of items without a zoned date
 - upgraded Flutter to stable v3.47.7
 
 ### Fixed

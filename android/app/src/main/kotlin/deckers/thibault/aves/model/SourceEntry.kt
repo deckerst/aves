@@ -193,7 +193,7 @@ class SourceEntry {
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT) { height = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { sourceRotationDegrees = getRotationDegreesForExifCode(it) }
-                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { sourceDateTakenMillis = it }
+                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = false)?.let { sourceDateTakenMillis = it }
                     }
 
                     // dimensions reported in EXIF do not always match the image
@@ -225,12 +225,16 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val exif = ExifInterface(input)
+                val exifInterface = ExifInterface(input)
                 foundExif = true
-                exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
-                exif.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
-                exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
-                exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { sourceDateTakenMillis = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exifInterface.rotationDegrees }
+                exifInterface.getSafeDateMillis(
+                    ExifInterface.TAG_DATETIME,
+                    ExifInterface.TAG_SUBSEC_TIME,
+                    ExifInterface.TAG_OFFSET_TIME,
+                ) { date, _ -> sourceDateTakenMillis = date }
             }
         } catch (_: Exception) {
             // ExifInterface initialization can fail with a RuntimeException

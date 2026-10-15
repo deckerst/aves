@@ -58,7 +58,8 @@ class SqfliteLocalMediaDbSchema {
         return db.execute(
           'CREATE TABLE $dateTakenTable('
           'id INTEGER PRIMARY KEY'
-          ', dateMillis INTEGER'
+          ', dateMillis INTEGER NOT NULL'
+          ', timeZoneOffsetMinutes INTEGER'
           ')',
         );
       case metadataTable:
@@ -74,6 +75,7 @@ class SqfliteLocalMediaDbSchema {
           ', latitude REAL'
           ', longitude REAL'
           ', rating INTEGER'
+          ', timeZoneOffsetMinutes INTEGER'
           ')',
         );
       case addressTable:

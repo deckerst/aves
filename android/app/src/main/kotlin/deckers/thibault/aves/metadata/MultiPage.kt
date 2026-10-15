@@ -137,9 +137,9 @@ object MultiPage {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
-                        rotationDegrees = exif.rotationDegrees
+                    val exifInterface = ExifInterface(input)
+                    exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
+                        rotationDegrees = exifInterface.rotationDegrees
                     }
                 }
             } catch (e: Exception) {

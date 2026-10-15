@@ -152,8 +152,7 @@ mixin EntryEditorMixin {
 
     final undatedItems = entries.where((entry) {
       if (!entry.isCatalogued) return false;
-      final dateMillis = entry.catalogMetadata?.dateMillis;
-      return dateMillis == null || dateMillis == 0;
+      return !entry.isDated;
     }).toSet();
 
     if (undatedItems.isNotEmpty) {

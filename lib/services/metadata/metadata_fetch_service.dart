@@ -38,7 +38,7 @@ abstract class MetadataFetchService {
 
   Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 
-  Future<DateTime?> getDate(AvesEntry entry, MetadataField field);
+  Future<(DateTime?, int?)> getDate(AvesEntry entry, MetadataField field);
 
   Future<Map<String, Object?>> getFields(AvesEntry entry, Set<MetadataField> fields);
 }
@@ -78,6 +78,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         // returns map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
+        // 'timeZoneOffsetMinutes': offset in minutes of the time zone used for the date returned in `dateMillis` (int)
         // 'isAnimated': animated gif/webp (bool)
         // 'isFlipped': flipped according to EXIF orientation (bool)
         // 'rating': rating in [-1,5] (int)
@@ -264,7 +265,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   }
 
   @override
-  Future<DateTime?> getDate(AvesEntry entry, MetadataField field) async {
+  Future<(DateTime?, int?)> getDate(AvesEntry entry, MetadataField field) async {
     try {
       final result = await _channel.invokeMethod('getDate', <String, Object?>{
         'mimeType': entry.mimeType,
@@ -273,13 +274,18 @@ class PlatformMetadataFetchService implements MetadataFetchService {
         'sizeBytes': entry.sizeBytes,
         'field': field.toPlatform,
       });
-      if (result is int) {
-        return dateTimeFromMillis(result, isUtc: false);
+      if (result is Map) {
+        final fields = result.cast<String, Object?>();
+        final dateMillis = fields['dateMillis'] as int?;
+        final offsetMinutes = fields['timeZoneOffsetMinutes'] as int?;
+        if (dateMillis != null) {
+          return (dateTimeFromMillis(dateMillis, isUtc: false), offsetMinutes);
+        }
       }
     } on PlatformException catch (e, stack) {
       await _processPlatformException(entry, e, stack);
     }
-    return null;
+    return (null, null);
   }
 
   @override

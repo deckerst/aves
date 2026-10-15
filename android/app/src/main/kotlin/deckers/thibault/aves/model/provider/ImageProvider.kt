@@ -63,6 +63,7 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +78,7 @@ import java.nio.channels.Channels
 import java.util.Date
 import java.util.TimeZone
 import java.util.concurrent.CompletableFuture
-import kotlin.math.absoluteValue
+import kotlin.time.Clock
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 abstract class ImageProvider {
@@ -945,17 +946,22 @@ abstract class ImageProvider {
                     exifInterface.rotate(rotationDegrees)
                 }
 
-                val dateTimeMillis = (exifFields["dateTimeMillis"] as Number?)?.toLong()
-                if (dateTimeMillis != null) {
-                    val dateString = ExifInterfaceHelper.DATETIME_FORMAT.format(Date(dateTimeMillis))
+                val dateMillis = (exifFields["dateTimeMillis"] as Number?)?.toLong()
+                val timeZoneOffsetMinutes = exifFields["timeZoneOffsetMinutes"] as Int?
+                if (dateMillis != null) {
+                    val dateString = ExifInterfaceHelper.formatDateTime(dateMillis, isUtc = timeZoneOffsetMinutes != null)
                     exifInterface.setAttribute(ExifInterface.TAG_DATETIME, dateString)
                     exifInterface.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
 
-                    val timeZoneString = getTimeZoneString(TimeZone.getDefault(), dateTimeMillis)
+                    val timeZoneString = if (timeZoneOffsetMinutes != null) {
+                        TimeZones.format(timeZoneOffsetMinutes)
+                    } else {
+                        TimeZones.format(TimeZone.getDefault(), dateMillis)
+                    }
                     exifInterface.setAttribute(ExifInterface.TAG_OFFSET_TIME, timeZoneString)
                     exifInterface.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, timeZoneString)
 
-                    val sub = dateTimeMillis % 1000
+                    val sub = dateMillis % 1000
                     if (sub > 0) {
                         val subString = sub.toString()
                         exifInterface.setAttribute(ExifInterface.TAG_SUBSEC_TIME, subString)
@@ -1592,6 +1598,7 @@ abstract class ImageProvider {
         contentAddress: ContentAddress,
         sizeBytes: Long,
         dateMillis: Long?,
+        timeZoneOffsetMinutes: Int?,
         shiftSeconds: Long?,
         fields: List<String>,
         callback: ImageOpCallback,
@@ -1600,24 +1607,32 @@ abstract class ImageProvider {
             when {
                 dateMillis != null -> {
                     // set
-                    val date = Date(dateMillis)
-                    val dateString = ExifInterfaceHelper.DATETIME_FORMAT.format(date)
+                    val dateString = ExifInterfaceHelper.formatDateTime(dateMillis, isUtc = timeZoneOffsetMinutes != null)
                     val subSec = dateMillis % 1000
                     val subSecString = if (subSec > 0) subSec.toString().padStart(3, '0') else null
+                    val timeZoneString = if (timeZoneOffsetMinutes != null) {
+                        TimeZones.format(timeZoneOffsetMinutes)
+                    } else {
+                        TimeZones.format(TimeZone.getDefault(), dateMillis)
+                    }
 
                     if (fields.contains(ExifInterface.TAG_DATETIME)) {
                         exifInterface.setAttribute(ExifInterface.TAG_DATETIME, dateString)
                         exifInterface.setAttribute(ExifInterface.TAG_SUBSEC_TIME, subSecString)
+                        exifInterface.setAttribute(ExifInterface.TAG_OFFSET_TIME, timeZoneString)
                     }
                     if (fields.contains(ExifInterface.TAG_DATETIME_ORIGINAL)) {
                         exifInterface.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
                         exifInterface.setAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIGINAL, subSecString)
+                        exifInterface.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, timeZoneString)
                     }
                     if (fields.contains(ExifInterface.TAG_DATETIME_DIGITIZED)) {
                         exifInterface.setAttribute(ExifInterface.TAG_DATETIME_DIGITIZED, dateString)
                         exifInterface.setAttribute(ExifInterface.TAG_SUBSEC_TIME_DIGITIZED, subSecString)
+                        exifInterface.setAttribute(ExifInterface.TAG_OFFSET_TIME_DIGITIZED, timeZoneString)
                     }
                     if (fields.contains(ExifInterface.TAG_GPS_DATESTAMP)) {
+                        val date = Date(dateMillis)
                         exifInterface.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, ExifInterfaceHelper.GPS_DATE_FORMAT.format(date))
                         exifInterface.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, ExifInterfaceHelper.GPS_TIME_FORMAT.format(date))
                     }
@@ -1638,8 +1653,14 @@ abstract class ImageProvider {
                                 ExifInterface.TAG_DATETIME_ORIGINAL -> ExifInterface.TAG_SUBSEC_TIME_ORIGINAL
                                 else -> null
                             }
-                            exifInterface.getSafeDateMillis(field, subSecTag) { date ->
-                                exifInterface.setAttribute(field, ExifInterfaceHelper.DATETIME_FORMAT.format(date + shiftMillis))
+                            val timeZoneTag = when (field) {
+                                ExifInterface.TAG_DATETIME -> ExifInterface.TAG_OFFSET_TIME
+                                ExifInterface.TAG_DATETIME_DIGITIZED -> ExifInterface.TAG_OFFSET_TIME_DIGITIZED
+                                ExifInterface.TAG_DATETIME_ORIGINAL -> ExifInterface.TAG_OFFSET_TIME_ORIGINAL
+                                else -> null
+                            }
+                            exifInterface.getSafeDateMillis(field, subSecTag, timeZoneTag) { date, offset ->
+                                exifInterface.setAttribute(field, ExifInterfaceHelper.formatDateTime(date + shiftMillis, isUtc = offset != null))
                             }
                         }
                     }
@@ -1708,7 +1729,9 @@ abstract class ImageProvider {
             if (fieldsToEdit.isNotEmpty()) {
                 val modifiedDateTag = ExifInterface.TAG_DATETIME
                 if (!fieldsToEdit.containsKey(modifiedDateTag)) {
-                    fieldsToEdit[modifiedDateTag] = ExifInterfaceHelper.DATETIME_FORMAT.format(Date())
+                    val nowMillis = Clock.System.now().toEpochMilliseconds()
+                    fieldsToEdit[modifiedDateTag] = ExifInterfaceHelper.formatDateTime(nowMillis, isUtc = true)
+                    fieldsToEdit[ExifInterface.TAG_OFFSET_TIME] = TimeZones.format(TimeZones.currentOffsetMinutes)
                 }
                 if (!editExif(
                         context = context,
@@ -1982,15 +2005,6 @@ abstract class ImageProvider {
                 Log.e(LOG_TAG, "failed to query content at uri=$uri", ex)
             }
             return found
-        }
-
-        fun getTimeZoneString(timeZone: TimeZone, dateTimeMillis: Long): String {
-            val offset = timeZone.getOffset(dateTimeMillis)
-            val offsetInMinutes = offset.absoluteValue / 60000
-            val offsetSign = if (offset < 0) "-" else "+"
-            val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
-            val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
-            return "$offsetSign$offsetHours:$offsetMinutes"
         }
     }
 }

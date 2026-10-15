@@ -1,16 +1,30 @@
 import 'package:aves/services/geocoding_service.dart';
 import 'package:flutter/foundation.dart';
 
-class CatalogMetadata {
-  final int id;
-  final int? dateMillis;
-  final bool isAnimated, isGeotiff, is360, isMultiPage, isMotionPhoto, isHdr, isSlowMotion;
-  bool isFlipped;
-  int? rotationDegrees;
-  final String? mimeType, xmpSubjects, xmpTitle;
+typedef DateAndZone = (int dateMillis, int? timeZoneOffsetMinutes);
+
+class CatalogMetadata({
+  required final int id,
+  final String? mimeType,
+  final int? dateMillis,
+  final int? timeZoneOffsetMinutes,
+  final bool isAnimated = false,
+  var bool isFlipped = false,
+  final bool isGeotiff = false,
+  final bool is360 = false,
+  final bool isMultiPage = false,
+  final bool isMotionPhoto = false,
+  final bool isHdr = false,
+  final bool isSlowMotion = false,
+  var int? rotationDegrees,
+  final String? xmpSubjects,
+  final String? xmpTitle,
+  double? latitude,
+  double? longitude,
+  var int rating = 0,
+}) {
   double? latitude, longitude;
   Address? address;
-  int rating;
 
   // less lenient than Flutter's `precisionErrorTolerance` (1e-10)
   static const double _precisionErrorTolerance = 1e-9;
@@ -24,25 +38,7 @@ class CatalogMetadata {
   static const _isHdr = 1 << 6; // for images: embedded HDR gainmap, for videos: HDR color transfer
   static const _isSlowMotion = 1 << 7;
 
-  new({
-    required this.id,
-    this.mimeType,
-    this.dateMillis,
-    this.isAnimated = false,
-    this.isFlipped = false,
-    this.isGeotiff = false,
-    this.is360 = false,
-    this.isMultiPage = false,
-    this.isMotionPhoto = false,
-    this.isHdr = false,
-    this.isSlowMotion = false,
-    this.rotationDegrees,
-    this.xmpSubjects,
-    this.xmpTitle,
-    double? latitude,
-    double? longitude,
-    this.rating = 0,
-  }) {
+  this {
     // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky value like `1.7056881853375E7`
     // We also exclude zero coordinates, taking into account precision errors (e.g. {5.952380952380953e-11,-2.7777777777777777e-10}),
     // but Flutter's `precisionErrorTolerance` (1e-10) is slightly too lenient for this case.
@@ -61,6 +57,7 @@ class CatalogMetadata {
     int? id,
     String? mimeType,
     int? dateMillis,
+    int? timeZoneOffsetMinutes,
     bool? isAnimated,
     bool? isMultiPage,
     bool? isSlowMotion,
@@ -72,6 +69,7 @@ class CatalogMetadata {
       id: id ?? this.id,
       mimeType: mimeType ?? this.mimeType,
       dateMillis: dateMillis ?? this.dateMillis,
+      timeZoneOffsetMinutes: timeZoneOffsetMinutes ?? this.timeZoneOffsetMinutes,
       isAnimated: isAnimated ?? this.isAnimated,
       isFlipped: isFlipped,
       isGeotiff: isGeotiff,
@@ -95,6 +93,7 @@ class CatalogMetadata {
       id: map['id'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
+      timeZoneOffsetMinutes: map['timeZoneOffsetMinutes'],
       isAnimated: flags & _isAnimatedMask != 0,
       isFlipped: flags & _isFlippedMask != 0,
       isGeotiff: flags & _isGeotiffMask != 0,
@@ -117,6 +116,7 @@ class CatalogMetadata {
     'id': id,
     'mimeType': mimeType,
     'dateMillis': dateMillis,
+    'timeZoneOffsetMinutes': timeZoneOffsetMinutes,
     'flags':
         (isAnimated ? _isAnimatedMask : 0) |
         (isFlipped ? _isFlippedMask : 0) |
@@ -138,7 +138,7 @@ class CatalogMetadata {
 
   @override
   String toString() =>
-      '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis'
+      '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis timeZoneOffsetMinutes=$timeZoneOffsetMinutes'
       ', isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360'
       ', isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion'
       ', rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';

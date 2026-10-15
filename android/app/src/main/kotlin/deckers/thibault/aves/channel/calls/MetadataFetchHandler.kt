@@ -97,6 +97,7 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
 import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.TimeZones
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -400,8 +401,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    val allTags = describeAll(exif).toMutableMap()
+                    val exifInterface = ExifInterface(input)
+                    val allTags = describeAll(exifInterface).toMutableMap()
                     if (foundXmp) {
                         // do not overwrite XMP parsed by metadata-extractor
                         // with raw XMP found by ExifInterface
@@ -660,9 +661,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 }
                 xmpMeta.getSafeLocalizedText(XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
                 if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                    xmpMeta.getSafeDateMillis(XMP.XMP_CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                    xmpMeta.getSafeDateMillis(XMP.XMP_CREATE_DATE_PROP_NAME) { date, offset ->
+                        run {
+                            metadataMap[KEY_DATE_MILLIS] = date
+                            offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                        }
+                    }
                     if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                        xmpMeta.getSafeDateMillis(XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                        xmpMeta.getSafeDateMillis(XMP.PS_DATE_CREATED_PROP_NAME) { date, offset ->
+                            run {
+                                metadataMap[KEY_DATE_MILLIS] = date
+                                offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                            }
+                        }
                     }
                 }
 
@@ -710,17 +721,31 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     // EXIF
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                        dir.getDateOriginalMillis { metadataMap[KEY_DATE_MILLIS] = it }
+                        dir.getDateOriginalMillis { date, offset ->
+                            run {
+                                metadataMap[KEY_DATE_MILLIS] = date
+                                offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                            }
+                        }
                         if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                             // fetch date modified from SubIFD directory first, as the sub-second tag is here
-                            dir.getDateModifiedMillis { metadataMap[KEY_DATE_MILLIS] = it }
+                            dir.getDateModifiedMillis { date, offset ->
+                                run {
+                                    metadataMap[KEY_DATE_MILLIS] = date
+                                    offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                                }
+                            }
                         }
                     }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                            // fallback to fetch date modified from IFD0 directory, without the sub-second tag
+                            // fallback to fetch date modified from IFD0 directory,
+                            // without the sub-second tag nor the time zone offset tag,
                             // in case there was no SubIFD directory
-                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { metadataMap[KEY_DATE_MILLIS] = it }
+                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = true)?.let {
+                                metadataMap[KEY_DATE_MILLIS] = it
+                                metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
+                            }
                         }
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) { orientation ->
                             if (isFlippedForExifCode(orientation)) {
@@ -792,6 +817,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                         try {
                                             PNG_LAST_MODIFICATION_TIME_FORMAT.parse(it)?.let { date ->
                                                 metadataMap[KEY_DATE_MILLIS] = date.time
+                                                metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                                             }
                                         } catch (e: ParseException) {
                                             Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri path=$path", e)
@@ -847,16 +873,30 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    exif.getSafeDateMillis(ExifInterface.TAG_DATETIME_ORIGINAL, ExifInterface.TAG_SUBSEC_TIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
+                    val exifInterface = ExifInterface(input)
+                    exifInterface.getSafeDateMillis(
+                        ExifInterface.TAG_DATETIME_ORIGINAL,
+                        ExifInterface.TAG_SUBSEC_TIME_ORIGINAL,
+                        ExifInterface.TAG_OFFSET_TIME_ORIGINAL,
+                    ) { date, offset ->
+                        metadataMap[KEY_DATE_MILLIS] = date
+                        offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                    }
                     if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                        exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { metadataMap[KEY_DATE_MILLIS] = it }
+                        exifInterface.getSafeDateMillis(
+                            ExifInterface.TAG_DATETIME,
+                            ExifInterface.TAG_SUBSEC_TIME,
+                            ExifInterface.TAG_OFFSET_TIME,
+                        ) { date, offset ->
+                            metadataMap[KEY_DATE_MILLIS] = date
+                            offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                        }
                     }
-                    exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
-                        if (exif.isFlipped) flags = flags or MASK_IS_FLIPPED
-                        metadataMap[KEY_ROTATION_DEGREES] = exif.rotationDegrees
+                    exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
+                        if (exifInterface.isFlipped) flags = flags or MASK_IS_FLIPPED
+                        metadataMap[KEY_ROTATION_DEGREES] = exifInterface.rotationDegrees
                     }
-                    val latLong = exif.latLong
+                    val latLong = exifInterface.latLong
                     if (latLong?.size == 2) {
                         metadataMap[KEY_LATITUDE] = latLong[0]
                         metadataMap[KEY_LONGITUDE] = latLong[1]
@@ -927,7 +967,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
+                retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) {
+                    metadataMap[KEY_DATE_MILLIS] = it
+                    metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
+                }
             }
 
             if (!metadataMap.containsKey(KEY_LATITUDE) || !metadataMap.containsKey(KEY_LONGITUDE)) {
@@ -1043,18 +1086,18 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
+                    val exifInterface = ExifInterface(input)
                     if (fields.contains(KEY_APERTURE)) {
-                        exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
+                        exifInterface.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
                     }
                     if (fields.contains(KEY_EXPOSURE_TIME)) {
-                        exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
+                        exifInterface.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
                     }
                     if (fields.contains(KEY_FOCAL_LENGTH)) {
-                        exif.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
+                        exifInterface.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
                     }
                     if (fields.contains(KEY_ISO)) {
-                        exif.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                        exifInterface.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
                     }
                 }
             } catch (e: Exception) {
@@ -1378,6 +1421,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         var dateMillis: Long? = null
+        var offsetMinutes: Int? = null
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
@@ -1396,30 +1440,54 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     when (tag) {
                         ExifIFD0Directory.TAG_DATETIME -> {
                             for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                                dir.getDateModifiedMillis { dateMillis = it }
+                                dir.getDateModifiedMillis { date, offset ->
+                                    run {
+                                        dateMillis = date
+                                        offsetMinutes = offset
+                                    }
+                                }
                             }
                             if (dateMillis == null) {
+                                // fallback to fetch date modified from IFD0 directory,
+                                // without the sub-second tag nor the time zone offset tag,
+                                // in case there was no SubIFD directory
                                 for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                                    dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { dateMillis = it }
+                                    dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = true)?.let {
+                                        dateMillis = it
+                                        offsetMinutes = TimeZones.currentOffsetMinutes
+                                    }
                                 }
                             }
                         }
 
                         ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED -> {
                             for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                                dir.getDateDigitizedMillis { dateMillis = it }
+                                dir.getDateDigitizedMillis { date, offset ->
+                                    run {
+                                        dateMillis = date
+                                        offsetMinutes = offset
+                                    }
+                                }
                             }
                         }
 
                         ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL -> {
                             for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                                dir.getDateOriginalMillis { dateMillis = it }
+                                dir.getDateOriginalMillis { date, offset ->
+                                    run {
+                                        dateMillis = date
+                                        offsetMinutes = offset
+                                    }
+                                }
                             }
                         }
 
                         GpsDirectory.TAG_DATE_STAMP -> {
                             for (dir in metadata.getDirectoriesOfType(GpsDirectory::class.java)) {
-                                dir.gpsDate?.let { dateMillis = it.time }
+                                dir.gpsDate?.let {
+                                    dateMillis = it.time
+                                    offsetMinutes = TimeZones.currentOffsetMinutes
+                                }
                             }
                         }
                     }
@@ -1433,7 +1501,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        result.success(dateMillis)
+        val fields: FieldMap = hashMapOf(
+            KEY_DATE_MILLIS to dateMillis,
+            KEY_TIME_ZONE_OFFSET_MINUTES to offsetMinutes,
+        )
+
+        result.success(fields)
     }
 
     private fun getFields(call: MethodCall, result: MethodChannel.Result) {
@@ -1512,10 +1585,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // fallback to read EXIF via ExifInterface
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
+                    val exifInterface = ExifInterface(input)
                     fields.forEach { tag ->
-                        if (exif.hasAttribute(tag)) {
-                            val value = exif.getAttribute(tag)
+                        if (exifInterface.hasAttribute(tag)) {
+                            val value = exifInterface.getAttribute(tag)
                             if (value != null) {
                                 metadataMap[tag] = value
                             }
@@ -1574,6 +1647,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         // catalog metadata
         private const val KEY_MIME_TYPE = "mimeType"
         private const val KEY_DATE_MILLIS = "dateMillis"
+        private const val KEY_TIME_ZONE_OFFSET_MINUTES = "timeZoneOffsetMinutes"
         private const val KEY_FLAGS = "flags"
         private const val KEY_ROTATION_DEGREES = "rotationDegrees"
         private const val KEY_LATITUDE = "latitude"

@@ -42,11 +42,15 @@ abstract class LocalMediaDb {
 
   Future<void> clearDates();
 
-  Future<Map<int?, int?>> loadDates();
+  Future<void> clearDatesWithoutTimeZone();
+
+  Future<Map<int, DateAndZone>> loadDates();
 
   // catalog metadata
 
   Future<void> clearCatalogMetadata();
+
+  Future<void> clearCatalogMetadataWithoutTimeZone();
 
   Future<Set<CatalogMetadata>> loadCatalogMetadata();
 

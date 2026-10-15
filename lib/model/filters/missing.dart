@@ -1,3 +1,4 @@
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -24,7 +25,7 @@ class MissingFilter extends CollectionFilter {
   new _private(this.metadataType, {super.reversed = false}) {
     switch (metadataType) {
       case _date:
-        _test = (entry) => (entry.catalogMetadata?.dateMillis ?? 0) == 0;
+        _test = (entry) => !entry.isDated;
         _icon = AIcons.dateUndated;
       case _fineAddress:
         _test = (entry) => entry.hasGps && !entry.hasFineAddress;

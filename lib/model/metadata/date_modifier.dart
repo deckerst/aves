@@ -3,7 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class DateModifier extends Equatable {
+class const DateModifier._private(
+  final DateEditAction action, {
+  final Set<MetadataField> fields = const {},
+  final DateTime? setDateTime,
+  final int? timeZoneOffsetMinutes,
+  final DateFieldSource? copyFieldSource,
+  final int? shiftSeconds,
+}) extends Equatable {
   static const writableFields = <MetadataField>[
     .exifDate,
     .exifDateOriginal,
@@ -12,25 +19,15 @@ class DateModifier extends Equatable {
     .xmpXmpCreateDate,
   ];
 
-  final DateEditAction action;
-  final Set<MetadataField> fields;
-  final DateTime? setDateTime;
-  final DateFieldSource? copyFieldSource;
-  final int? shiftSeconds;
-
   @override
   List<Object?> get props => [action, fields, setDateTime, copyFieldSource, shiftSeconds];
 
-  const new _private(
-    this.action, {
-    this.fields = const {},
-    this.setDateTime,
-    this.copyFieldSource,
-    this.shiftSeconds,
-  });
-
-  factory setCustom(Set<MetadataField> fields, DateTime dateTime) {
-    return DateModifier._private(.setCustom, fields: fields, setDateTime: dateTime);
+  factory setCustom({
+    required Set<MetadataField> fields,
+    required DateTime date,
+    required int? timeZoneOffsetMinutes,
+  }) {
+    return DateModifier._private(.setCustom, fields: fields, setDateTime: date, timeZoneOffsetMinutes: timeZoneOffsetMinutes);
   }
 
   factory copyField(DateFieldSource copyFieldSource) {

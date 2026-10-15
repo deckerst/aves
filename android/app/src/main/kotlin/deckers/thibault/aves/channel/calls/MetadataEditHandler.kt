@@ -88,6 +88,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun editExifDate(call: MethodCall, result: MethodChannel.Result) {
         val dateMillis = call.argument<Number>("dateMillis")?.toLong()
+        val timeZoneOffsetMinutes = call.argument<Int>("timeZoneOffsetMinutes")
         val shiftSeconds = call.argument<Number>("shiftSeconds")?.toLong()
         val fields = call.argument<List<String>>("fields")
         val entryMap = call.argument<FieldMap>("entry")
@@ -119,6 +120,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             dateMillis = dateMillis,
+            timeZoneOffsetMinutes = timeZoneOffsetMinutes,
             shiftSeconds = shiftSeconds,
             fields = fields,
             callback = callback,

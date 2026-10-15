@@ -96,11 +96,11 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       if (!await checkFreeSpace(context, bytes.length, destinationAlbum)) return;
 
       final rotationDegrees = entry.rotationDegrees;
-      final dateTimeMillis = entry.catalogMetadata?.dateMillis;
       final latLng = entry.latLng;
       final exif = <String, num>{
         if (rotationDegrees != 0) 'rotationDegrees': rotationDegrees,
-        if (dateTimeMillis != null && dateTimeMillis != 0) 'dateTimeMillis': dateTimeMillis,
+        'dateTimeMillis': ?entry.catalogDateMillis,
+        'timeZoneOffsetMinutes': ?entry.catalogTimeZoneOffsetMinutes,
         if (latLng != null) ...{
           'latitude': latLng.latitude,
           'longitude': latLng.longitude,

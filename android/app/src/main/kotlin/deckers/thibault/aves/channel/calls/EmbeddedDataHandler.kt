@@ -74,9 +74,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithExifInterface(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-                    exif.thumbnailBitmap?.let { bitmap ->
+                    val exifInterface = ExifInterface(input)
+                    val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                    exifInterface.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
                             // do not recycle bitmaps fetched from `ExifInterface` as their lifecycle is unknown
                             BitmapUtils.getBytes(it, recycle = false, decoded = true, applyGainmap = false, mimeType = null)?.let { bytes -> thumbnails.add(bytes) }

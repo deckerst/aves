@@ -266,9 +266,9 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithExifInterface(mimeType, strict = false)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
-                        metadataMap[tag] = exif.getAttribute(tag)
+                    val exifInterface = ExifInterface(input)
+                    for (tag in ExifInterfaceHelper.allTags.keys.filter { exifInterface.hasAttribute(it) }) {
+                        metadataMap[tag] = exifInterface.getAttribute(tag)
                     }
                 }
             } catch (e: Exception) {

@@ -22,8 +22,8 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
+import deckers.thibault.aves.utils.TimeZones
 import org.mp4parser.boxes.UserBox
-import java.util.TimeZone
 
 object XMP {
     private val LOG_TAG = LogUtils.createTag<XMP>()
@@ -254,7 +254,7 @@ object XMP {
         }
     }
 
-    fun XMPMeta.getSafeDateMillis(prop: XMPPropName, save: (value: Long) -> Unit) {
+    fun XMPMeta.getSafeDateMillis(prop: XMPPropName, save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val schema = prop.nsUri
         val propName = prop.toString()
         try {
@@ -262,10 +262,9 @@ object XMP {
                 val item = getPropertyDate(schema, propName)
                 // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
-                    // strip time zone from XMP dates so that we show date/times as local ones
-                    // this aligns with Exif date/times, which are specified without time zones
-                    item.timeZone = TimeZone.getDefault()
-                    save(item.calendar.timeInMillis)
+                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(item.timeZone)
+                    item.timeZone = TimeZones.UTC
+                    save(item.calendar.timeInMillis, timeZoneOffsetMinutes)
                 }
             }
         } catch (e: XMPException) {

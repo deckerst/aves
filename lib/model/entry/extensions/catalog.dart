@@ -44,7 +44,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
       // post-processing
-      if ((isVideo && (catalogMetadata?.dateMillis ?? 0) == 0) || (mimeType == MimeTypes.avif && durationMillis != null)) {
+      if ((isVideo && !isDated) || (mimeType == MimeTypes.avif && durationMillis != null)) {
         final videoMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
         if (videoMetadata != null) {
           catalogMetadata = videoMetadata;

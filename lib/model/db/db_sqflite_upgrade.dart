@@ -56,6 +56,8 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom14(db);
         case 15:
           await _upgradeFrom15(db);
+        case 16:
+          await _upgradeFrom16(db);
       }
       oldVersion++;
     }
@@ -163,6 +165,7 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom3(Database db) async {
     debugPrint('upgrading DB from v3');
+
     await db.execute(
       'CREATE TABLE $coverTable ('
       'filter TEXT PRIMARY KEY'
@@ -173,6 +176,7 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom4(Database db) async {
     debugPrint('upgrading DB from v4');
+
     await db.execute(
       'CREATE TABLE $videoPlaybackTable ('
       'contentId INTEGER PRIMARY KEY'
@@ -183,11 +187,13 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom5(Database db) async {
     debugPrint('upgrading DB from v5');
+
     await db.execute('ALTER TABLE $metadataTable ADD COLUMN rating INTEGER;');
   }
 
   static Future<void> _upgradeFrom6(Database db) async {
     debugPrint('upgrading DB from v6');
+
     // new primary key column `id` instead of `contentId`
     // new column `trashed`
     await db.transaction((txn) async {
@@ -351,6 +357,7 @@ class LocalMediaDbUpgrader {
 
   static Future<void> _upgradeFrom7(Database db) async {
     debugPrint('upgrading DB from v7');
+
     await db.execute('ALTER TABLE $coverTable ADD COLUMN packageName TEXT;');
     await db.execute('ALTER TABLE $coverTable ADD COLUMN color INTEGER;');
   }
@@ -579,5 +586,14 @@ class LocalMediaDbUpgrader {
       ', message TEXT'
       ')',
     );
+  }
+
+  static Future<void> _upgradeFrom16(Database db) async {
+    debugPrint('upgrading DB from v16');
+
+    await db.delete(dateTakenTable, where: 'dateMillis IS NULL');
+
+    await db.execute('ALTER TABLE $dateTakenTable ADD COLUMN timeZoneOffsetMinutes INTEGER;');
+    await db.execute('ALTER TABLE $metadataTable ADD COLUMN timeZoneOffsetMinutes INTEGER;');
   }
 }

@@ -24,7 +24,7 @@ class const DebugAppDatabaseSection({super.key}) extends StatefulWidget {
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
   late Future<int> _fileSizeLoader;
   late Future<Iterable<AvesEntry>> _entryLoader;
-  late Future<Map<int?, int?>> _dateLoader;
+  late Future<Map<int, DateAndZone>> _dateLoader;
   late Future<Iterable<CatalogMetadata>> _metadataLoader;
   late Future<Iterable<AddressDetails>> _addressLoader;
   late Future<Iterable<TrashDetails>> _trashLoader;
@@ -103,7 +103,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<Map<int?, int?>>(
+              FutureBuilder<Map<int, DateAndZone>>(
                 future: _dateLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -119,6 +119,10 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ElevatedButton(
                         onPressed: () => localMediaDb.clearDates().then((_) => _reload()),
                         child: const Text('Clear'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => localMediaDb.clearDatesWithoutTimeZone().then((_) => _reload()),
+                        child: const Text('Clear (no TZ)'),
                       ),
                     ],
                   );
@@ -140,6 +144,10 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                       ElevatedButton(
                         onPressed: () => localMediaDb.clearCatalogMetadata().then((_) => _reload()),
                         child: const Text('Clear'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => localMediaDb.clearCatalogMetadataWithoutTimeZone().then((_) => _reload()),
+                        child: const Text('Clear (no TZ)'),
                       ),
                     ],
                   );

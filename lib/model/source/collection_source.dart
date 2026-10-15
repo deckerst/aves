@@ -16,6 +16,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -144,7 +145,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   // known date by entry ID
-  late Map<int?, int?> _savedDates;
+  late Map<int, DateAndZone> _savedDates;
 
   Future<void> loadDates() async {
     _savedDates = Map.unmodifiable(await localMediaDb.loadDates());
@@ -203,8 +204,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   void addEntries(Set<AvesEntry> entries, {bool notify = true}) {
     if (entries.isEmpty) return;
 
-    entries.where((entry) => entry.catalogDateMillis == null).forEach((entry) {
-      entry.catalogDateMillis = _savedDates[entry.id];
+    entries.where((entry) => !entry.isDated).forEach((entry) {
+      int? dateMillis;
+      int? timeZoneOffsetMinutes;
+      final v = _savedDates[entry.id];
+      if (v != null) {
+        (dateMillis, timeZoneOffsetMinutes) = v;
+      }
+      entry.setCatalogDate(dateMillis, timeZoneOffsetMinutes);
     });
 
     final newEntriesById = Map.fromEntries(entries.map((entry) => MapEntry(entry.id, entry)));
