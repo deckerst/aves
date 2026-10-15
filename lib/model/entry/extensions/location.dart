@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:aves/geo/countries.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/geocoding_service.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
@@ -53,7 +53,7 @@ extension ExtraAvesEntryLocation on AvesEntry {
     try {
       Future<List<Address>> call() => geocodingService.getAddress(latLng!, geocoderLocale);
       final addresses = await (background
-          ? servicePolicy.call(
+          ? platformServicePolicy.call(
               call,
               priority: ServiceCallPriority.getLocation,
             )

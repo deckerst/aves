@@ -38,6 +38,7 @@ final LocalMediaDb localMediaDb = getIt<LocalMediaDb>();
 final AvesAudioControllerFactory audioControllerFactory = getIt<AvesAudioControllerFactory>();
 final AvesVideoControllerFactory videoControllerFactory = getIt<AvesVideoControllerFactory>();
 final AvesVideoMetadataFetcher videoMetadataFetcher = getIt<AvesVideoMetadataFetcher>();
+final AvesVideoThumbnailFetcher videoThumbnailFetcher = getIt<AvesVideoThumbnailFetcher>();
 
 final AppService appService = getIt<AppService>();
 final AppProfileService appProfileService = getIt<AppProfileService>();
@@ -64,6 +65,7 @@ void initPlatformServices() {
   getIt.registerLazySingleton<AvesAudioControllerFactory>(MpvAudioControllerFactory.new);
   getIt.registerLazySingleton<AvesVideoControllerFactory>(MpvVideoControllerFactory.new);
   getIt.registerLazySingleton<AvesVideoMetadataFetcher>(MpvVideoMetadataFetcher.new);
+  getIt.registerLazySingleton<AvesVideoThumbnailFetcher>(MpvVideoThumbnailFetcher.new);
 
   getIt.registerLazySingleton<AppService>(PlatformAppService.new);
   getIt.registerLazySingleton<AppProfileService>(PlatformAppProfileService.new);

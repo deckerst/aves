@@ -43,7 +43,8 @@ class XmpNamespaces {
   static const gettyImagesGift = 'http://xmp.gettyimages.com/gift/1.0/';
   static const gimp210 = 'http://www.gimp.org/ns/2.10/';
   static const gimpXmp = 'http://www.gimp.org/xmp/';
-  static const hdrgm = 'http://ns.adobe.com/hdr-gain-map/1.0/';
+  static const hdrGainMap = 'http://ns.adobe.com/hdr-gain-map/1.0/';
+  static const hdrMetadata = 'http://ns.adobe.com/hdr-metadata/1.0/';
   static const illustrator = 'http://ns.adobe.com/illustrator/1.0/';
   static const iptc4xmpCore = 'http://iptc.org/std/Iptc4xmpCore/1.0/xmlns/';
   static const iptc4xmpExt = 'http://iptc.org/std/Iptc4xmpExt/2008-02-29/';
@@ -89,6 +90,8 @@ class XmpElements {
   static const xXmpmeta = 'xmpmeta';
   static const rdfRoot = 'RDF';
   static const rdfDescription = 'Description';
+  static const rdfBag = 'Bag';
+  static const rdfLi = 'li';
   static const containerDirectory = 'Directory';
   static const dcDescription = 'description';
   static const dcSubject = 'subject';

@@ -40,7 +40,7 @@ class AvesEntry with AvesEntryBase {
   bool trashed;
   int origin;
 
-  int? _catalogDateMillis;
+  int? _catalogDateMillis, _catalogTimeZoneOffsetMinutes;
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
   TrashDetails? trashDetails;
@@ -245,7 +245,14 @@ class AvesEntry with AvesEntryBase {
   DateTime? _bestDate;
 
   DateTime? get bestDate {
-    _bestDate ??= dateTimeFromMillis(_catalogDateMillis) ?? dateTimeFromMillis(sourceDateTakenMillis) ?? dateTimeFromMillis(dateModifiedMillis ?? 0);
+    if (_bestDate == null) {
+      final _catalogDateMillis = catalogDateMillis;
+      if (_catalogDateMillis != null) {
+        _bestDate = dateTimeFromMillis(_catalogDateMillis, isUtc: catalogDateIsUtc);
+      }
+      _bestDate ??= dateTimeFromMillis(sourceDateTakenMillis, isUtc: false);
+      _bestDate ??= dateTimeFromMillis(dateModifiedMillis, isUtc: false);
+    }
     return _bestDate;
   }
 
@@ -254,6 +261,7 @@ class AvesEntry with AvesEntryBase {
 
   bool get isHdr => _catalogMetadata?.isHdr ?? false;
 
+  @override
   bool get isSlowMotion => _catalogMetadata?.isSlowMotion ?? false;
 
   int get rating => _catalogMetadata?.rating ?? 0;
@@ -347,8 +355,14 @@ class AvesEntry with AvesEntryBase {
 
   int? get catalogDateMillis => _catalogDateMillis;
 
-  set catalogDateMillis(int? dateMillis) {
+  int? get catalogTimeZoneOffsetMinutes => _catalogTimeZoneOffsetMinutes;
+
+  bool get catalogDateIsUtc => catalogTimeZoneOffsetMinutes != null;
+
+  // when time zone offset is defined, provided date should be in UTC
+  void setCatalogDate(int? dateMillis, int? timeZoneOffsetMinutes) {
     _catalogDateMillis = dateMillis;
+    _catalogTimeZoneOffsetMinutes = timeZoneOffsetMinutes;
     _bestDate = null;
   }
 
@@ -360,7 +374,7 @@ class AvesEntry with AvesEntryBase {
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
 
-    catalogDateMillis = newMetadata?.dateMillis;
+    setCatalogDate(newMetadata?.dateMillis, newMetadata?.timeZoneOffsetMinutes);
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     _tags = null;

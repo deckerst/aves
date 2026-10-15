@@ -84,7 +84,8 @@ class ViewerDebugPage extends StatelessWidget {
         const Divider(),
         InfoRowGroup(
           info: {
-            'catalogDateMillis': ViewerDebugUtils.toDateValue(entry.catalogDateMillis),
+            'catalogDateMillis': ViewerDebugUtils.toDateValue(entry.catalogDateMillis, isUtc: entry.catalogDateIsUtc),
+            'catalogTimeZoneOffsetMinutes': '${entry.catalogTimeZoneOffsetMinutes}',
             'dateAddedSecs': ViewerDebugUtils.toDateValue(entry.dateAddedSecs, factor: 1000),
             'dateModifiedMillis': ViewerDebugUtils.toDateValue(entry.dateModifiedMillis),
             'sourceDateTakenMillis': ViewerDebugUtils.toDateValue(entry.sourceDateTakenMillis),

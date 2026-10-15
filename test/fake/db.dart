@@ -43,12 +43,18 @@ class FakeAvesDb extends Fake implements LocalMediaDb {
   Future<void> clearDates() => SynchronousFuture(null);
 
   @override
-  Future<Map<int?, int?>> loadDates() => SynchronousFuture({});
+  Future<void> clearDatesWithoutTimeZone() => SynchronousFuture(null);
+
+  @override
+  Future<Map<int, DateAndZone>> loadDates() => SynchronousFuture({});
 
   // catalog metadata
 
   @override
   Future<void> clearCatalogMetadata() => SynchronousFuture(null);
+
+  @override
+  Future<void> clearCatalogMetadataWithoutTimeZone() => SynchronousFuture(null);
 
   @override
   Future<Set<CatalogMetadata>> loadCatalogMetadata() => SynchronousFuture({});

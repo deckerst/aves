@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/locale/ui.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
@@ -10,16 +10,11 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SlowMotionBar extends StatefulWidget {
-  final AvesVideoController? controller;
-  final Animation<double> scale;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.scale,
-  });
-
+class const SlowMotionBar({
+  super.key,
+  required final AvesVideoController? controller,
+  required final Animation<double> scale,
+}) extends StatefulWidget {
   @override
   State<SlowMotionBar> createState() => _SlowMotionBarState();
 }
@@ -119,31 +114,27 @@ class _SlowMotionBarState extends State<SlowMotionBar> {
   }
 }
 
-class _SlowMotionRangePainter extends CustomPainter {
-  final SlowMotionRange range;
-  final Color handleColor, lineColor;
-  final Paint _handlePaint, _linePaint;
+class _SlowMotionRangePainter({
+  required final SlowMotionRange range,
+  required final Color handleColor,
+  required final Color lineColor,
+}) extends CustomPainter {
+  final _handlePaint = Paint()
+        ..color = handleColor
+        ..strokeCap = .round
+        ..strokeWidth = _strokeWidth
+        ..style = .stroke,
+      _linePaint = Paint()
+        ..color = lineColor
+        ..strokeCap = .round
+        ..strokeWidth = _strokeWidth
+        ..style = .stroke;
 
   static const double _strokeWidth = 4;
   static const double _handleRadius = 8;
   static const double _handlePadding = 16;
   static const double _slowLinePeriod = 16;
   static const double _slowLineAmplitude = 4;
-
-  new({
-    required this.range,
-    required this.handleColor,
-    required this.lineColor,
-  }) : _handlePaint = Paint()
-         ..color = handleColor
-         ..strokeCap = .round
-         ..strokeWidth = _strokeWidth
-         ..style = .stroke,
-       _linePaint = Paint()
-         ..color = lineColor
-         ..strokeCap = .round
-         ..strokeWidth = _strokeWidth
-         ..style = .stroke;
 
   @override
   void paint(Canvas canvas, Size size) {

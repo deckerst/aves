@@ -1,21 +1,15 @@
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/services/common/services.dart';
-import 'package:aves/widgets/common/app_bar/crumb_line.dart';
+import 'package:aves/widgets/common/bars/crumb_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 
-class FilterGroupCrumbLine extends StatelessWidget {
-  final Uri? groupUri;
-  final void Function(Uri? groupUri) onTap;
-  final WidgetBuilder? lastCrumbBuilder;
-
-  const new({
-    super.key,
-    required this.groupUri,
-    required this.onTap,
-    required this.lastCrumbBuilder,
-  });
-
+class const FilterGroupCrumbLine({
+  super.key,
+  required final Uri? groupUri,
+  required final void Function(Uri? groupUri) onTap,
+  required final WidgetBuilder? lastCrumbBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CrumbLine<Uri?>(

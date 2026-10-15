@@ -17,19 +17,19 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
 
   @override
   Future<List<int>> checkObsoleteContentIds(List<int?> knownContentIds) async {
-    if (latency != null) await Future.delayed(latency!);
+    if (latency != null) await Future.pause(latency!);
     return [];
   }
 
   @override
   Future<List<int>> checkObsoletePaths(Map<int?, String?> knownPathById) async {
-    if (latency != null) await Future.delayed(latency!);
+    if (latency != null) await Future.pause(latency!);
     return [];
   }
 
   @override
   Future<Map<String, int>?> getGenerationByVolume() async {
-    if (latency != null) await Future.delayed(latency!);
+    if (latency != null) await Future.pause(latency!);
     return null;
   }
 

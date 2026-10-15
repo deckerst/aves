@@ -63,7 +63,7 @@ class AndroidFileUtils {
     if (storageVolumes.isEmpty) {
       // this can happen when the device is booting up
       debugPrint('Storage volume list is empty. Retrying in a second...');
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.pause(const Duration(seconds: 1));
       await _initStorageVolumes();
     }
   }

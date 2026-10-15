@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/covered/location.dart';
@@ -35,10 +34,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AppDebugPage extends StatelessWidget {
+class const AppDebugPage({super.key}) extends StatelessWidget {
   static const routeName = '/debug';
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +62,7 @@ class AppDebugPage extends StatelessWidget {
                     .toList(),
                 onSelected: (action) async {
                   // wait for the popup menu to hide before proceeding with the action
-                  await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                  await Future.pause(animations.popUpAnimationDelay * timeDilation);
                   unawaited(_onActionSelected(context, action));
                 },
                 popUpAnimationStyle: animations.popUpAnimationStyle,
@@ -78,10 +75,10 @@ class AppDebugPage extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: Selector<MediaQueryData, double>(
-              selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-              builder: (context, mqPaddingBottom, child) {
+              selector: (context, mq) => mq.safeBottomPadding,
+              builder: (context, safeBottomPadding, child) {
                 return ListView(
-                  padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: mqPaddingBottom),
+                  padding: const EdgeInsets.all(8) + EdgeInsets.only(bottom: safeBottomPadding),
                   children: const [
                     DebugGeneralSection(),
                     DebugAppDatabaseSection(),

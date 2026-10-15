@@ -75,11 +75,11 @@ void main() {
 
     final source = MediaStoreSource();
     unawaited(source.init(scope: CollectionSource.fullScope));
-    await Future.delayed(const Duration(milliseconds: 10));
+    await Future.pause(const Duration(milliseconds: 10));
     expect(source.targetScope, CollectionSource.fullScope);
     await source.refreshUris({refreshEntry.uri});
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.pause(const Duration(seconds: 1));
     expect(source.allEntries.length, 1);
   });
 
@@ -385,8 +385,9 @@ void main() {
 
     await source.removeEntries({image1.uri}, includeTrash: true);
 
-    // waiting for microtask to make sure event bus listeners executed
-    await Future.microtask(() {});
+    // ensure event bus listeners executed
+    // `Future.microtask(() {})` is not as reliable as `Future.pause(Duration.zero)`
+    await Future.pause(Duration.zero);
 
     expect(source.rawAlbums.length, 0);
     expect(albumGrouping.exists(groupUri), false);

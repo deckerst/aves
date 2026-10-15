@@ -65,6 +65,7 @@ extension ExtraAvesEntryImages on AvesEntry {
       isFlipped: isFlipped,
       isAnimated: isAnimated,
       sizeBytes: sizeBytes,
+      videoThumbnailMethods: isVideo ? settings.videoThumbnailMethods : null,
     );
     EntryCache.registerKey(key);
     return key;

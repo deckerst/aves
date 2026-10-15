@@ -183,7 +183,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
       await _onPageChanged();
 
       if (entry.isMotionPhoto && shouldAutoPlayMotionPhoto) {
-        await Future.delayed(ADurations.motionPhotoAutoPlayDelay);
+        await Future.pause(ADurations.motionPhotoAutoPlayDelay);
         if (entry == entryNotifier.value) {
           multiPageController.page = 1;
         }
@@ -205,7 +205,7 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
-    await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
+    await Future.pause(const Duration(milliseconds: 300) * timeDilation);
 
     if (!videoController.isMuted && (videoController.entry.isAnimated || shouldAutoPlayVideoMuted)) {
       await videoController.mute(true);

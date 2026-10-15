@@ -2,7 +2,6 @@ package deckers.thibault.aves.glide
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -19,6 +18,7 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.MultiTrackMedia
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 
@@ -29,8 +29,8 @@ class MultiPageImageGlideModule : LibraryGlideModule() {
     }
 }
 
-class MultiPageImage(val context: Context, val uri: Uri, val mimeType: String, val pageId: Int?) {
-    override fun toString(): String = "MultiPageImage#${hashCode()}{uri=$uri mimeType=$mimeType pageId=$pageId}"
+class MultiPageImage(val context: Context, val contentAddress: ContentAddress) {
+    override fun toString(): String = "MultiPageImage#${hashCode()}{$contentAddress}"
 
     companion object {
         fun isSupported(mimeType: String) = isIsoBMFFImage(mimeType) || mimeType == MimeTypes.JPEG
@@ -39,7 +39,8 @@ class MultiPageImage(val context: Context, val uri: Uri, val mimeType: String, v
 
 internal class MultiPageThumbnailLoader : ModelLoader<MultiPageImage, Bitmap> {
     override fun buildLoadData(model: MultiPageImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
-        return ModelLoader.LoadData(ObjectKey(model.uri), MultiPageImageFetcher(model, width, height))
+        val uri = model.contentAddress.uri
+        return ModelLoader.LoadData(ObjectKey(uri), MultiPageImageFetcher(model, width, height))
     }
 
     override fun handles(model: MultiPageImage): Boolean = true
@@ -59,16 +60,14 @@ internal class MultiPageImageFetcher(val model: MultiPageImage, val width: Int, 
         }
 
         val context = model.context
-        val uri = model.uri
-        val mimeType = model.mimeType
+        val contentAddress = model.contentAddress
+        val mimeType = contentAddress.mimeType
 
         var bitmap: Bitmap? = null
         if (isIsoBMFFImage(mimeType)) {
-            val trackIndex = model.pageId
-            bitmap = MultiTrackMedia.getImage(context, uri, trackIndex)
+            bitmap = MultiTrackMedia.getImage(context, contentAddress)
         } else if (mimeType == MimeTypes.JPEG) {
-            val pageIndex = model.pageId ?: 0
-            bitmap = MultiPage.getJpegMpfBitmap(context, uri, pageIndex)
+            bitmap = MultiPage.getJpegMpfBitmap(context, contentAddress)
         }
 
         if (bitmap == null) {

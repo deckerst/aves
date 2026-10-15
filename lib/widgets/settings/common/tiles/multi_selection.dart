@@ -24,7 +24,7 @@ class const SettingsMultiSelectionListTile<T>({
       selector: selector,
       builder: (context, current, child) {
         return ListTile(
-          title: Text(tileTitle(context) ?? '?'),
+          title: Text(tileTitle(context) ?? AText.valueNotAvailable),
           subtitle: AvesListSubtitle(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator)),
           onTap: () => showSelectionDialog<List<T>>(
             context: context,

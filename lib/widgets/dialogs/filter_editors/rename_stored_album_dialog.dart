@@ -78,10 +78,11 @@ class _RenameStoredAlbumDialogState extends State<RenameStoredAlbumDialog> {
   }
 
   Future<void> _validate() async {
-    final newName = _nameController.text;
+    final newName = _nameController.text.trim();
     final path = _buildAlbumPath(newName);
     final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
     _existsNotifier.value = exists && newName != initialValue;
+    // allow existing target
     _isValidNotifier.value = newName.isNotEmpty;
   }
 

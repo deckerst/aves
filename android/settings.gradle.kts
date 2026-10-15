@@ -26,7 +26,7 @@ plugins {
 
     // define versions (Gradle version catalog cannot be referenced here)
     id("com.android.application") version "9.4.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.4.10" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.20" apply false
 }
 
 include(":app")

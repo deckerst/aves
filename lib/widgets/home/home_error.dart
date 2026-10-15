@@ -1,4 +1,4 @@
-import 'package:aves/ref/locales.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/about/bug_report.dart';
@@ -6,19 +6,14 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
-class HomeError extends StatefulWidget {
-  final Object error;
-  final StackTrace stack;
-
-  const new({
-    super.key,
-    required this.error,
-    required this.stack,
-  });
-
+class const HomeError({
+  super.key,
+  required final Object error,
+  required final StackTrace stack,
+}) extends StatefulWidget {
   @override
   State<HomeError> createState() => _HomeErrorState();
 }
@@ -35,6 +30,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final knownLocale = context.knownLocale;
     return SafeArea(
       bottom: false,
       child: CustomScrollView(
@@ -46,6 +42,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                 [
                   AvesExpansionTile(
                     title: 'Error',
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: [
@@ -60,12 +57,14 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                   ),
                   AvesExpansionTile(
                     title: l10n.aboutBugSectionTitle,
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: const [BugReportContent()],
                   ),
                   AvesExpansionTile(
                     title: l10n.aboutDataUsageDatabase,
+                    locale: knownLocale,
                     expandedNotifier: _expandedNotifier,
                     showHighlight: false,
                     children: [
@@ -77,7 +76,7 @@ class _HomeErrorState extends State<HomeError> with FeedbackMixin {
                               label: l10n.settingsActionExport,
                               onPressed: () async {
                                 final sourcePath = await localMediaDb.path;
-                                final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
+                                final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
                                 final success = await storageService.copyFile(
                                   basename: 'aves-database-$date',
                                   mimeType: MimeTypes.sqlite3,

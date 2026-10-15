@@ -122,7 +122,7 @@ class QueryFilter extends CollectionFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$calendar-$query';
+  String get key => '$type-$reversed-${calendar.name}-$query';
 
   EntryPredicate? fieldTest(String upQuery) {
     var match = _fieldPattern.firstMatch(upQuery);

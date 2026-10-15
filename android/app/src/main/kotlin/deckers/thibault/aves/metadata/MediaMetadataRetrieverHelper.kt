@@ -3,6 +3,7 @@ package deckers.thibault.aves.metadata
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
+import deckers.thibault.aves.utils.TimeZones
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -77,7 +78,7 @@ object MediaMetadataRetrieverHelper {
         }
     }
 
-    private val durationFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.ROOT).apply { timeZone = TimeZone.getTimeZone("UTC") }
+    private val durationFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.ROOT).apply { timeZone = TimeZones.UTC }
 
     // extensions
 

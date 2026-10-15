@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:aves/app_mode.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/entry/entry.dart';
@@ -26,7 +27,6 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/vaults/vaults.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/app_service.dart';
 import 'package:aves/services/common/image_op_events.dart';
@@ -107,9 +107,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       case .map:
       case .slideshow:
       case .stats:
-        return isMain;
+        return isMain && !isTrash;
       case .rescan:
-        return isMain && isSelecting && !useTvLayout;
+        return isMain && isSelecting && !isTrash && !useTvLayout;
       // selecting
       case .share:
       case .toggleFavourite:
@@ -502,7 +502,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final gpxContent = GpxWriter().asString(gpx);
     const mimeType = MimeTypes.gpx;
-    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(gpxDate);
+    final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(gpxDate);
     final success = await storageService.createFile(
       basename: 'aves-gpx-$date',
       mimeType: mimeType,
@@ -637,7 +637,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
     return supported;
   }
 
@@ -755,7 +755,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       };
     });
 
-    await _doEditTags(context, newTagsByEntry);
+    await doEditTags(context, newTagsByEntry);
   }
 
   Future<void> _editTags(BuildContext context) async {
@@ -765,10 +765,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final newTagsByEntry = await selectTags(context, entries);
     if (newTagsByEntry == null) return;
 
-    await _doEditTags(context, newTagsByEntry);
+    await doEditTags(context, newTagsByEntry);
   }
 
-  Future<void> _doEditTags(BuildContext context, Map<AvesEntry, Set<String>> newTagsByEntry) async {
+  Future<void> doEditTags(BuildContext context, Map<AvesEntry, Set<String>> newTagsByEntry) async {
     final entries = newTagsByEntry.keys.toSet();
 
     // only process modified items
@@ -870,7 +870,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (filters.isNotEmpty) {
       // we compute the default name beforehand
       // because some filter labels need localization
-      final sortedFilters = List<CollectionFilter>.from(filters)..sort();
+      final sortedFilters = List<CollectionFilter>.of(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context).replaceAll('\n', ' ');
     }
     return defaultName;

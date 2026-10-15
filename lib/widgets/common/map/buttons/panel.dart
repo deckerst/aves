@@ -187,7 +187,7 @@ class _MapButtonPanelState extends State<MapButtonPanel> {
             itemBuilder: (context) => actions.map(_toMenuItem).toList(),
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
-              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+              await Future.pause(animations.popUpAnimationDelay * timeDilation);
               _actionDelegate.onActionSelected(context, action);
             },
             iconSize: MapOverlayButton.iconSize(visualDensity),

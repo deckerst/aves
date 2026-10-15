@@ -18,6 +18,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.storage.apis.FilePermissions
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.SafPermissions
@@ -621,7 +623,10 @@ object StorageUtils {
     // to work around a bug from Android 10 (API 29) where metadata redaction corrupts HEIC images.
     // This loader relies on `MediaStore.setRequireOriginal` but this yields a `SecurityException`
     // for some non image/video content URIs (e.g. `downloads`, `file`)
-    fun getGlideSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long? = null): Uri {
+    fun getGlideSafeUri(context: Context, contentAddress: ContentAddress, sizeBytes: Long? = null): Uri {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val uriPath = uri.path
             when {
@@ -737,23 +742,28 @@ object StorageUtils {
         }
     }
 
-    fun openOutputFileDescriptor(context: Context, mimeType: String, uri: Uri, filePath: String, mode: String): ParcelFileDescriptor? {
+    fun openOutputFileDescriptor(context: Context, contentAddress: ContentAddress, mode: String): ParcelFileDescriptor? {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+
         val effectiveUri = if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
             getMediaStoreScopedStorageSafeUri(uri, mimeType)
         } else {
-            getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for path=$filePath, uri=$uri")
+            val path = contentAddress.path ?: throw IllegalArgumentException()
+            getDocumentFileForExistingFile(context, filePath = path, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for $contentAddress")
         }
         return try {
             context.contentResolver.openFileDescriptor(effectiveUri, mode)
         } catch (e: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for uri=$uri path=$filePath", e)
+            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", e)
             null
         }
     }
 
-    fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
+    fun openMetadataRetriever(context: Context, contentAddress: ContentAddress): MediaMetadataRetriever? {
+        val uri = contentAddress.uri
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
@@ -763,7 +773,7 @@ object StorageUtils {
             }
         } catch (_: Exception) {
             // unsupported format
-            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for uri=$uri effectiveUri=$effectiveUri")
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for effectiveUri=$effectiveUri $contentAddress")
             null
         }
     }
@@ -784,8 +794,7 @@ object StorageUtils {
 
     fun deleteTempDirectory(context: Context): Boolean {
         val directory = getTempDirectory(context)
-        if (!directory.exists()) return false
-        return directory.deleteRecursively()
+        return directory.exists() && directory.deleteRecursively()
     }
 
     // convenience methods
@@ -798,5 +807,3 @@ object StorageUtils {
         return if (dirPath.endsWith(File.separator)) dirPath.dropLast(1) else dirPath
     }
 }
-
-class FileDescriptorException(message: String, cause: Throwable? = null) : IOException(message, cause)

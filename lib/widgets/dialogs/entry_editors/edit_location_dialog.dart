@@ -42,17 +42,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EditEntryLocationDialog extends StatefulWidget {
+class const EditEntryLocationDialog({
+  super.key,
+  required final Set<AvesEntry> entries,
+  final CollectionLens? collection,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_location';
-
-  final Set<AvesEntry> entries;
-  final CollectionLens? collection;
-
-  const new({
-    super.key,
-    required this.entries,
-    this.collection,
-  });
 
   @override
   State<EditEntryLocationDialog> createState() => _EditEntryLocationDialogState();

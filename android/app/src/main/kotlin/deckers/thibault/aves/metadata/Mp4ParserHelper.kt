@@ -4,7 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import deckers.thibault.aves.metadata.xmp.XMP
-import deckers.thibault.aves.storage.FileDescriptorException
+import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.FileDescriptorException
+import deckers.thibault.aves.model.Mp4FragmentedException
+import deckers.thibault.aves.model.Mp4TooLargeException
+import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -66,12 +70,12 @@ object Mp4ParserHelper {
                     try {
                         // creating `IsoFile` with a `File` or a `File.inputStream()` yields `No such device`
                         return IsoFile(channel, boxParser).use(consumer)
-                    } catch (e: Exception) {
-                        val message = e.message
+                    } catch (ex: Exception) {
+                        val message = ex.message
                         if (message != null && message.startsWith("box size of zero")) {
-                            throw Mp4ZeroSizeBoxException(message, e)
+                            throw Mp4ZeroSizeBoxException(message, ex)
                         }
-                        throw e
+                        throw ex
                     }
                 }
             }
@@ -178,8 +182,8 @@ object Mp4ParserHelper {
                 }
                 return@consumeIso null
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to read sefd box", e)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to read sefd box", ex)
         }
         return null
     }
@@ -298,8 +302,8 @@ object Mp4ParserHelper {
                     is UserBox -> sb.appendLine("${"\t".repeat(indent)}[$boxType] userType=${box.userType.toHex()} $box")
                     else -> sb.appendLine("${"\t".repeat(indent)}[$boxType] $box")
                 }
-            } catch (e: Exception) {
-                sb.appendLine("${"\t".repeat(indent)}failed to access box type=$boxType exception=${e.message}")
+            } catch (ex: Exception) {
+                sb.appendLine("${"\t".repeat(indent)}failed to access box type=$boxType exception=${ex.message}")
             }
         }
     }
@@ -328,21 +332,20 @@ object Mp4ParserHelper {
         }
     }
 
-    fun getUserDataBox(
-        context: Context,
-        mimeType: String,
-        uri: Uri,
-    ): UserDataBox? {
+    fun getUserDataBox(context: Context, contentAddress: ContentAddress): UserDataBox? {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+
         if (mimeType != MimeTypes.MP4) return null
 
         try {
             return consumeIso(context, uri, metadataBoxParser()) { isoFile ->
                 return@consumeIso Path.getPath(isoFile.movieBox, UserDataBox.TYPE)
             }
-        } catch (e: NoClassDefFoundError) {
-            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get User Data box by MP4 parser for mimeType=$mimeType uri=$uri", e)
+        } catch (ex: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to parse MP4 for $contentAddress", ex)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to get User Data box by MP4 parser for $contentAddress", ex)
         }
         return null
     }
@@ -431,9 +434,3 @@ object Mp4ParserHelper {
         else -> type
     }
 }
-
-class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)
-
-class Mp4FragmentedException(message: String) : RuntimeException(message)
-
-class Mp4ZeroSizeBoxException(message: String, cause: Throwable) : RuntimeException(message, cause)

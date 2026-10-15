@@ -49,7 +49,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       await path,
       onCreate: (db, version) => SqfliteLocalMediaDbSchema.createLatestVersion(db),
       onUpgrade: LocalMediaDbUpgrader.upgradeDb,
-      version: 16,
+      version: 17,
     );
 
     final maxIdRows = await _db.rawQuery('SELECT MAX(id) AS maxId FROM $entryTable');
@@ -220,6 +220,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<Set<AvesEntry>> searchLiveDuplicates(int origin, Set<AvesEntry>? entries) async {
     String where = 'origin = ? AND trashed = ?';
     if (entries != null) {
+      // TODO TLAD [perf] split queries when `IN` parameter is large
       where += ' AND contentId IN (${entries.map((v) => v.contentId).join(',')})';
     }
     final rows = await _db.rawQuery(
@@ -247,12 +248,23 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   }
 
   @override
-  Future<Map<int?, int?>> loadDates() async {
-    final result = <int?, int?>{};
+  Future<void> clearDatesWithoutTimeZone() async {
+    final count = await _db.delete(dateTakenTable, where: 'timeZoneOffsetMinutes IS NULL');
+    debugPrint('$runtimeType clearDatesWithoutTimeZone deleted $count rows');
+  }
+
+  @override
+  Future<Map<int, DateAndZone>> loadDates() async {
+    final result = <int, DateAndZone>{};
     final cursor = await _db.queryCursor(dateTakenTable, bufferSize: _queryCursorBufferSize);
     while (await cursor.moveNext()) {
       final row = cursor.current;
-      result[row['id'] as int] = row['dateMillis'] as int? ?? 0;
+      final id = row['id'] as int;
+      final dateMillis = row['dateMillis'] as int?;
+      final timeZoneOffsetMinutes = row['timeZoneOffsetMinutes'] as int?;
+      if (dateMillis != null) {
+        result[id] = (dateMillis, timeZoneOffsetMinutes);
+      }
     }
     return result;
   }
@@ -262,7 +274,13 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   @override
   Future<void> clearCatalogMetadata() async {
     final count = await _db.delete(metadataTable, where: '1');
-    debugPrint('$runtimeType clearMetadataEntries deleted $count rows');
+    debugPrint('$runtimeType clearCatalogMetadata deleted $count rows');
+  }
+
+  @override
+  Future<void> clearCatalogMetadataWithoutTimeZone() async {
+    final count = await _db.delete(metadataTable, where: 'timeZoneOffsetMinutes IS NULL');
+    debugPrint('$runtimeType clearCatalogMetadataWithoutTimeZone deleted $count rows');
   }
 
   @override
@@ -286,7 +304,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
       final batch = _db.batch();
       metadataEntries.forEach((metadata) => _batchInsertMetadata(batch, metadata));
       await batch.commit(noResult: true);
-      debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
+      debugPrint('$runtimeType saveCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     } catch (error, stack) {
       debugPrint('$runtimeType failed to save metadata with error=$error\n$stack');
     }
@@ -303,12 +321,14 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
 
   void _batchInsertMetadata(Batch batch, CatalogMetadata? metadata) {
     if (metadata == null) return;
-    if (metadata.dateMillis != 0) {
+    final dateMillis = metadata.dateMillis ?? 0;
+    if (dateMillis != 0) {
       batch.insert(
         dateTakenTable,
         {
           'id': metadata.id,
-          'dateMillis': metadata.dateMillis,
+          'dateMillis': dateMillis,
+          'timeZoneOffsetMinutes': metadata.timeZoneOffsetMinutes,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -714,6 +734,7 @@ class SqfliteLocalMediaDb implements LocalMediaDb {
   Future<Set<T>> _getByIds<T>(Set<int> ids, String table, T Function(Map<String, Object?> row) mapRow) async {
     final result = <T>{};
     if (ids.isNotEmpty) {
+      // TODO TLAD [perf] split queries when `IN` parameter is large
       final cursor = await _db.queryCursor(table, where: 'id IN (${ids.join(',')})', bufferSize: _queryCursorBufferSize);
       while (await cursor.moveNext()) {
         result.add(mapRow(cursor.current));

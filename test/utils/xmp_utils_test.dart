@@ -17,7 +17,7 @@ void main() {
   List<XmlNode> _getDescriptions(String xmpString) {
     final xmpDoc = XmlDocument.parse(xmpString);
     final root = xmpDoc.rootElement;
-    final rdf = root.getElement(XmpElements.rdfRoot, namespace: XmpNamespaces.rdf);
+    final rdf = root.getElement(XmpElements.rdfRoot, namespaceUri: XmpNamespaces.rdf);
     return rdf!.children.where((node) {
       return node is XmlElement && node.name.local == XmpElements.rdfDescription && node.name.namespaceUri == XmpNamespaces.rdf;
     }).toList();
@@ -134,9 +134,9 @@ void main() {
 ''';
 
   test('Get string', () async {
-    expect(XMP.getString(_getDescriptions(inRatingAttribute), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), '5');
-    expect(XMP.getString(_getDescriptions(inRatingElement), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), '5');
-    expect(XMP.getString(_getDescriptions(inSubjects), XmpElements.xmpRating, namespace: XmpNamespaces.xmp), null);
+    expect(XMP.getString(_getDescriptions(inRatingAttribute), XmpElements.xmpRating, namespaceUri: XmpNamespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inRatingElement), XmpElements.xmpRating, namespaceUri: XmpNamespaces.xmp), '5');
+    expect(XMP.getString(_getDescriptions(inSubjects), XmpElements.xmpRating, namespaceUri: XmpNamespaces.xmp), null);
   });
 
   test('Set tags without existing XMP', () async {

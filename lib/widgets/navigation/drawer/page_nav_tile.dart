@@ -5,22 +5,14 @@ import 'package:material_ui/material_ui.dart';
 
 typedef TileRouteBuilder = Route Function(BuildContext context, String routeName, bool topLevel);
 
-class PageNavTile extends StatelessWidget {
-  final Widget? leading;
-  final Widget? title;
-  final Widget? trailing;
-  final AvesNavItem navItem;
-  final bool Function()? isSelected;
-
-  const new({
-    super.key,
-    this.leading,
-    this.title,
-    this.trailing,
-    required this.navItem,
-    this.isSelected,
-  });
-
+class const PageNavTile({
+  super.key,
+  final Widget? leading,
+  final Widget? title,
+  final Widget? trailing,
+  required final AvesNavItem navItem,
+  final bool Function()? isSelected,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeName = navItem.route;

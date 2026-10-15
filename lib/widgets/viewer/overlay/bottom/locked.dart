@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -9,17 +7,12 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerLockedOverlay extends StatefulWidget {
-  final AnimationController animationController;
-  final EdgeInsets? viewInsets, viewPadding;
-
-  const new({
-    super.key,
-    required this.animationController,
-    this.viewInsets,
-    this.viewPadding,
-  });
-
+class const ViewerLockedOverlay({
+  super.key,
+  required final AnimationController animationController,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ViewerLockedOverlayState();
 }
@@ -61,12 +54,12 @@ class _ViewerLockedOverlayState extends State<ViewerLockedOverlay> {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-      builder: (context, mqPaddingBottom, child) {
+      selector: (context, mq) => mq.safeBottomPadding,
+      builder: (context, safeBottomPadding, child) {
         final viewInsetsPadding = (widget.viewInsets ?? EdgeInsets.zero) + (widget.viewPadding ?? EdgeInsets.zero);
         return Container(
           alignment: .bottomRight,
-          padding: EdgeInsets.only(bottom: mqPaddingBottom) + const EdgeInsets.all(ViewerButtonRowContent.padding),
+          padding: EdgeInsets.only(bottom: safeBottomPadding) + const EdgeInsets.all(ViewerButtonRowContent.padding),
           child: SafeArea(
             top: false,
             bottom: false,

@@ -31,6 +31,7 @@ import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
+import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils.round
 import java.io.BufferedInputStream
@@ -231,9 +232,10 @@ object Helper {
         if (this.containsTag(tag)) save(this.getRational(tag))
     }
 
-    fun Directory.getSafeDateMillis(tag: Int, subSecond: String?): Long? {
+    fun Directory.getSafeDateMillis(tag: Int, subSecond: String?, isUtc: Boolean): Long? {
         if (this.containsTag(tag)) {
-            val date = this.getDatePlus(tag, subSecond, TimeZone.getDefault())
+            val timeZone = if (isUtc) TimeZones.UTC else TimeZone.getDefault()
+            val date = this.getDatePlus(tag, subSecond, timeZone)
             if (date != null) return date.time
         }
         return null
@@ -271,14 +273,15 @@ object Helper {
             isLenient = false
         }
     }.toTypedArray()
-    private val subsecondPattern = Pattern.compile("(\\d\\d:\\d\\d:\\d\\d)(\\.\\d+)")
-    private val timeZonePattern = Pattern.compile("(Z|[+-]\\d\\d:\\d\\d|[+-]\\d\\d\\d\\d)$")
+    private val subsecondPattern = Pattern.compile("(\\d{2}:\\d{2}:\\d{2})(\\.\\d+)")
+    private val timeZonePattern = Pattern.compile("(Z|[+-]\\d{1,2}:\\d{2}|[+-]\\d{4})$")
     private val calendar: Calendar = GregorianCalendar()
     private const val PARSED_DATE_YEAR_MAX = 10000
 
     // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()`
-    // to also parse dates written as timestamps
-    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone?): Date? {
+    // to also parse dates written as timestamps,
+    // and enforce time zone argument
+    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone): Date? {
         var effectiveSubSecond = subSecond
         var effectiveTimeZone = timeZone
         val o = this.getObject(tagType)
@@ -306,9 +309,7 @@ object Helper {
             }
             for (dateFormat in dateFormats) {
                 try {
-                    // If the metadata has set a time zone we use that, and otherwise
-                    // we assume that computer and image belong to the same geographical area.
-                    dateFormat.timeZone = effectiveTimeZone ?: TimeZone.getDefault()
+                    dateFormat.timeZone = effectiveTimeZone
                     val parsed = dateFormat.parse(dateString)
                     if (parsed != null) {
                         calendar.time = parsed
@@ -353,25 +354,37 @@ object Helper {
     }
 
     // time tag and sub-second tag are *not* in the same directory
-    fun ExifSubIFDDirectory.getDateModifiedMillis(save: (value: Long) -> Unit) {
+    fun ExifSubIFDDirectory.getDateModifiedMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val parent = parent
         if (parent is ExifIFD0Directory) {
             val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME)
-            val dateMillis = parent.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, subSecond)
-            if (dateMillis != null) save(dateMillis)
+            val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE)
+            val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+            val dateMillis = parent.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, subSecond, isUtc = true)
+            if (dateMillis != null) {
+                save(dateMillis, timeZoneOffsetMinutes)
+            }
         }
     }
 
-    fun ExifSubIFDDirectory.getDateDigitizedMillis(save: (value: Long) -> Unit) {
+    fun ExifSubIFDDirectory.getDateDigitizedMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_DIGITIZED)
-        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED, subSecond)
-        if (dateMillis != null) save(dateMillis)
+        val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE_DIGITIZED)
+        val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED, subSecond, isUtc = true)
+        if (dateMillis != null) {
+            save(dateMillis, timeZoneOffsetMinutes)
+        }
     }
 
-    fun ExifSubIFDDirectory.getDateOriginalMillis(save: (value: Long) -> Unit) {
+    fun ExifSubIFDDirectory.getDateOriginalMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_ORIGINAL)
-        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, subSecond)
-        if (dateMillis != null) save(dateMillis)
+        val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE_ORIGINAL)
+        val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, subSecond, isUtc = true)
+        if (dateMillis != null) {
+            save(dateMillis, timeZoneOffsetMinutes)
+        }
     }
 
     // geotiff

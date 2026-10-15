@@ -64,7 +64,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     super.initState();
 
     _isPageAnimatingNotifier = ValueNotifier(true);
-    Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
+    Future.delayed(ADurations.pageTransitionLoose * timeDilation, () {
       if (!mounted) return;
       _isPageAnimatingNotifier.value = false;
     });
@@ -292,7 +292,7 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
         : null;
     Widget header = Text(
       title,
-      style: AStyles.knownTitleText,
+      style: AStyles.sectionTitleStyle(context.knownLocale),
     );
     if (settings.useTvLayout) {
       header = Padding(
@@ -366,7 +366,9 @@ class _StatsPageState extends State<StatsPage> with FeedbackMixin, VaultAwareMix
     // even when the target is a child of an `AnimatedList`.
     // Do not use `WidgetsBinding.instance.addPostFrameCallback`,
     // as it may not trigger if there is no subsequent build.
-    Future.delayed(const Duration(milliseconds: 100), () => Navigator.maybeOf(context)?.popUntil((route) => route.settings.name == CollectionPage.routeName));
+    Future.delayed(const Duration(milliseconds: 100), () {
+      Navigator.maybeOf(context)?.popUntil((route) => route.settings.name == CollectionPage.routeName);
+    });
   }
 
   void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {

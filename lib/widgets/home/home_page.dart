@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:aves/app_mode.dart';
 import 'package:aves/geo/uri.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/app/intent.dart';
 import 'package:aves/model/app/permissions.dart';
 import 'package:aves/model/app_inventory.dart';
@@ -15,7 +16,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/services.dart';
@@ -50,15 +50,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
+class const HomePage({
+  super.key,
+  final Map<String, Object?>? intentData,
+}) extends StatefulWidget {
   static const routeName = '/';
-
-  final Map<String, Object?>? intentData;
-
-  const new({
-    super.key,
-    this.intentData,
-  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -123,7 +119,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         await localMediaDb.init();
         final logs = await localMediaDb.loadAllDebugLog();
 
-        final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
+        final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
         final success = await storageService.createFile(
           basename: 'aves_debug_logs-$date}',
           mimeType: MimeTypes.plainText,

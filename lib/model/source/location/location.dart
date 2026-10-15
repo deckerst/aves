@@ -10,18 +10,33 @@ import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/location/state.dart';
+import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
-mixin LocationMixin on CountryMixin, StateMixin {
-  static const commitCountThreshold = 200;
+mixin LocationMixin on CountryMixin, StateMixin, PlaceMixin {
+  static const commitCountThreshold = 500;
   static const _stopCheckCountThreshold = 50;
 
-  List<String> sortedCountries = List.unmodifiable([]);
-  List<String> sortedStates = List.unmodifiable([]);
-  List<String> sortedPlaces = List.unmodifiable([]);
+  List<String>? _sortedCountries;
+  List<String>? _sortedStates;
+  List<String>? _sortedPlaces;
+
+  List<String> get sortedCountries {
+    if (_sortedCountries == null) _computeLocations();
+    return _sortedCountries!;
+  }
+
+  List<String> get sortedStates {
+    if (_sortedStates == null) _computeLocations();
+    return _sortedStates!;
+  }
+
+  List<String> get sortedPlaces {
+    if (_sortedPlaces == null) _computeLocations();
+    return _sortedPlaces!;
+  }
 
   Future<void> loadAddresses({Set<int>? ids}) async {
     final saved = await (ids != null ? localMediaDb.loadAddressesById(ids) : localMediaDb.loadAddresses());
@@ -30,15 +45,17 @@ mixin LocationMixin on CountryMixin, StateMixin {
     onAddressMetadataChanged();
   }
 
-  Future<void> locateEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
-    await _locateCountries(controller, candidateEntries);
-    await _locatePlaces(controller, candidateEntries);
+  // returns whether some entries got processed
+  Future<bool> locateEntries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
+    var processed = await _locateCountries(controller, candidateEntries);
+    processed |= await _locatePlaces(controller, candidateEntries);
 
     final unlocatedIds = candidateEntries.where((entry) => !entry.hasGps).map((entry) => entry.id).toSet();
     if (unlocatedIds.isNotEmpty) {
       await localMediaDb.removeIds(unlocatedIds, dataTypes: {EntryDataType.address});
       onAddressMetadataChanged();
     }
+    return processed;
   }
 
   static bool locateCountriesTest(AvesEntry entry) => entry.hasGps && !entry.hasAddress;
@@ -46,43 +63,66 @@ mixin LocationMixin on CountryMixin, StateMixin {
   static bool locatePlacesTest(AvesEntry entry) => entry.hasGps && !entry.hasFineAddress;
 
   // quick reverse geocoding to find the countries, using an offline asset
-  Future<void> _locateCountries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
-    if (controller.isStopping) return;
+  // returns whether some entries got processed
+  Future<bool> _locateCountries(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
+    if (controller.isStopping) return false;
 
     final force = controller.force;
-    final todo = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locateCountriesTest)).toSet();
-    if (todo.isEmpty) return;
+    candidateEntries = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locateCountriesTest)).toSet();
+    if (candidateEntries.isEmpty) return false;
 
     state = SourceState.locatingCountries;
     var progressDone = 0;
-    final progressTotal = todo.length;
+    final progressTotal = candidateEntries.length;
     setProgress(done: progressDone, total: progressTotal);
 
-    final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng!).toSet());
-    final newAddresses = <AddressDetails>{};
-    todo.forEach((entry) {
-      final position = entry.latLng;
-      final countryCode = countryCodeMap.entries.firstWhereOrNull((kv) => kv.value.contains(position))?.key;
-      entry.setCountry(countryCode);
-      if (entry.hasAddress) {
-        newAddresses.add(entry.addressDetails!);
-      }
-      setProgress(done: ++progressDone, total: progressTotal);
-    });
-    if (newAddresses.isNotEmpty) {
-      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
+    Future<void> commitPendingData(Set<AddressDetails> addresses) async {
+      if (addresses.isEmpty) return;
+      await localMediaDb.saveAddresses(Set.unmodifiable(addresses));
       onAddressMetadataChanged();
     }
+
+    final countryCodeMap = await countryTopology.countryCodeMap(candidateEntries.map((entry) => entry.latLng!).toSet());
+    final newAddresses = <AddressDetails>{};
+
+    var stopCheckCount = 0;
+    await Future.wait(
+      candidateEntries.map((entry) async {
+        await scanServicePolicy.call(() async {
+          if (++stopCheckCount >= _stopCheckCountThreshold) {
+            stopCheckCount = 0;
+            if (controller.isStopping) return;
+          }
+
+          final position = entry.latLng;
+          final countryCode = countryCodeMap.entries.firstWhereOrNull((kv) => kv.value.contains(position))?.key;
+          entry.setCountry(countryCode);
+          if (entry.hasAddress) {
+            newAddresses.add(entry.addressDetails!);
+            if (newAddresses.length >= commitCountThreshold) {
+              final todo = Set.of(newAddresses);
+              newAddresses.clear();
+              await commitPendingData(todo);
+            }
+          }
+          setProgress(done: ++progressDone, total: progressTotal);
+        });
+      }),
+    );
+
+    await commitPendingData(newAddresses);
+    return true;
   }
 
   // full reverse geocoding, requiring geocoder and some connectivity
-  Future<void> _locatePlaces(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
-    if (controller.isStopping) return;
-    if (!await availability.canLocatePlaces) return;
+  // returns whether some entries got processed
+  Future<bool> _locatePlaces(AnalysisController controller, Set<AvesEntry> candidateEntries) async {
+    if (controller.isStopping) return false;
+    if (!await availability.canLocatePlaces) return false;
 
     final force = controller.force;
-    final todo = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locatePlacesTest)).toSet();
-    if (todo.isEmpty) return;
+    candidateEntries = (force ? candidateEntries.where((entry) => entry.hasGps) : candidateEntries.where(locatePlacesTest)).toSet();
+    if (candidateEntries.isEmpty) return false;
 
     // geocoder calls take between 150ms and 250ms
     // approximation and caching can reduce geocoder usage
@@ -102,7 +142,7 @@ mixin LocationMixin on CountryMixin, StateMixin {
       return ((lat * latLngFactor).round(), (lng * latLngFactor).round());
     }
 
-    final located = visibleEntries.where((entry) => entry.hasGps).toSet().difference(todo);
+    final located = visibleEntries.where((entry) => entry.hasGps).toSet().difference(candidateEntries);
     final knownLocations = <(int, int), AddressDetails?>{};
     located.forEach((entry) {
       final address = entry.addressDetails;
@@ -113,83 +153,96 @@ mixin LocationMixin on CountryMixin, StateMixin {
 
     state = SourceState.locatingPlaces;
     var progressDone = 0;
-    final progressTotal = todo.length;
+    final progressTotal = candidateEntries.length;
     setProgress(done: progressDone, total: progressTotal);
 
-    var stopCheckCount = 0;
-    final newAddresses = <AddressDetails>{};
-    for (final entry in todo) {
-      final latLng = approximateLatLng(entry);
-      if (knownLocations.containsKey(latLng)) {
-        entry.addressDetails = knownLocations[latLng]?.copyWith(id: entry.id);
-      } else {
-        await entry.locatePlace(background: true, force: force, geocoderLocale: settings.avesLocale);
-        // it is intended to insert `null` if the geocoder failed,
-        // so that we skip geocoding of following entries with the same coordinates
-        knownLocations[latLng] = entry.addressDetails;
-      }
-      if (entry.hasFineAddress) {
-        newAddresses.add(entry.addressDetails!);
-        if (newAddresses.length >= commitCountThreshold) {
-          await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
-          onAddressMetadataChanged();
-          newAddresses.clear();
-        }
-        if (++stopCheckCount >= _stopCheckCountThreshold) {
-          stopCheckCount = 0;
-          if (controller.isStopping) return;
-        }
-      }
-      setProgress(done: ++progressDone, total: progressTotal);
-    }
-    if (newAddresses.isNotEmpty) {
-      await localMediaDb.saveAddresses(Set.unmodifiable(newAddresses));
+    Future<void> commitPendingData(Set<AddressDetails> addresses) async {
+      if (addresses.isEmpty) return;
+      await localMediaDb.saveAddresses(Set.unmodifiable(addresses));
       onAddressMetadataChanged();
     }
+
+    final newAddresses = <AddressDetails>{};
+
+    var stopCheckCount = 0;
+    await Future.wait(
+      candidateEntries.map((entry) async {
+        await scanServicePolicy.call(() async {
+          if (++stopCheckCount >= _stopCheckCountThreshold) {
+            stopCheckCount = 0;
+            if (controller.isStopping) return;
+          }
+
+          final latLng = approximateLatLng(entry);
+          if (knownLocations.containsKey(latLng)) {
+            entry.addressDetails = knownLocations[latLng]?.copyWith(id: entry.id);
+          } else {
+            await entry.locatePlace(background: true, force: force, geocoderLocale: settings.avesLocale);
+            // it is intended to insert `null` if the geocoder failed,
+            // so that we skip geocoding of following entries with the same coordinates
+            knownLocations[latLng] = entry.addressDetails;
+          }
+          if (entry.hasFineAddress) {
+            newAddresses.add(entry.addressDetails!);
+            if (newAddresses.length >= commitCountThreshold) {
+              final todo = Set.of(newAddresses);
+              newAddresses.clear();
+              await commitPendingData(todo);
+            }
+          }
+          setProgress(done: ++progressDone, total: progressTotal);
+        });
+      }),
+    );
+
+    await commitPendingData(newAddresses);
+    return true;
   }
 
   void onAddressMetadataChanged() {
-    updateLocations();
+    invalidateLocations();
     eventBus.fire(AddressMetadataChangedEvent());
   }
 
-  void updateLocations() {
-    final locations = visibleEntries.map((entry) => entry.addressDetails).nonNulls.toList();
+  void invalidateLocations() {
+    _sortedCountries = null;
+    _sortedStates = null;
+    _sortedPlaces = null;
 
-    final updatedPlaces = locations.map((address) => address.place).nonNulls.where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
-    if (!listEquals(updatedPlaces, sortedPlaces)) {
-      sortedPlaces = List.unmodifiable(updatedPlaces);
-      eventBus.fire(PlacesChangedEvent());
-    }
+    invalidateCountryFilterSummary();
+    invalidateStateFilterSummary();
+    invalidatePlaceFilterSummary();
 
-    final updatedStates = _getAreaByCode(
-      locations: locations,
-      getCode: (v) => v.stateCode,
-      getName: (v) => v.stateName,
+    eventBus.fire(CountriesChangedEvent());
+    eventBus.fire(StatesChangedEvent());
+    eventBus.fire(PlacesChangedEvent());
+  }
+
+  void _computeLocations() {
+    final locations = visibleEntries.map((entry) => entry.addressDetails).nonNulls.toSet();
+
+    _sortedCountries = List.unmodifiable(
+      _getAreaByCode(
+        locations: locations,
+        getCode: (v) => v.countryCode,
+        getName: (v) => v.countryName,
+      ),
     );
-    if (!listEquals(updatedStates, sortedStates)) {
-      sortedStates = List.unmodifiable(updatedStates);
-      invalidateStateFilterSummary();
-      eventBus.fire(StatesChangedEvent());
-    }
-
-    final updatedCountries = _getAreaByCode(
-      locations: locations,
-      getCode: (v) => v.countryCode,
-      getName: (v) => v.countryName,
+    _sortedStates = List.unmodifiable(
+      _getAreaByCode(
+        locations: locations,
+        getCode: (v) => v.stateCode,
+        getName: (v) => v.stateName,
+      ),
     );
-    if (!listEquals(updatedCountries, sortedCountries)) {
-      sortedCountries = List.unmodifiable(updatedCountries);
-      invalidateCountryFilterSummary();
-      eventBus.fire(CountriesChangedEvent());
-    }
+    _sortedPlaces = List.unmodifiable(locations.map((v) => v.place).nonNulls.where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
   }
 
   // the same country/state code could be found with different country/state names
   // e.g. if the locale changed between geocoding calls
   // so we merge countries/states by code, keeping only one name for each code
   List<String> _getAreaByCode({
-    required List<AddressDetails> locations,
+    required Set<AddressDetails> locations,
     required String? Function(AddressDetails address) getCode,
     required String? Function(AddressDetails address) getName,
   }) {

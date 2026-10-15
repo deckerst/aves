@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/view/src/settings/enums.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
@@ -123,7 +124,7 @@ class SettingsTileVideoThumbnailMethods extends SettingsTile {
       builder: (context, current, child) {
         return ListTile(
           title: Text(title(context)),
-          subtitle: AvesListSubtitle(current.map((v) => v.getName(context)).join(', ')),
+          subtitle: AvesListSubtitle(current.map((v) => v.getName(context)).join(AText.separator)),
           onTap: () async {
             final value = await showAvesDialog<List<VideoThumbnailMethod>>(
               context: context,
@@ -136,7 +137,7 @@ class SettingsTileVideoThumbnailMethods extends SettingsTile {
               routeSettings: const RouteSettings(name: AvesReorderableListDialog.routeName),
             );
             // wait for the dialog to hide
-            await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+            await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
             if (value != null) {
               settings.videoThumbnailMethods = value;
             }

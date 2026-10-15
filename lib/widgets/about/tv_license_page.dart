@@ -1,6 +1,6 @@
 import 'dart:developer' show Flow, Timeline;
-import 'dart:ui' as ui;
 
+import 'package:aves/locale/ui.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';
@@ -307,7 +307,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 600.0),
               child: Localizations.override(
-                locale: const ui.Locale('en', 'US'),
+                locale: rootLocale,
                 context: context,
                 child: ScrollConfiguration(
                   // A Scrollbar is built-in below.
@@ -344,7 +344,7 @@ class _PackageLicensePageState extends State<_PackageLicensePage> {
               itemCount: listWidgets.length,
               itemBuilder: (context, index) {
                 return Localizations.override(
-                  locale: const ui.Locale('en', 'US'),
+                  locale: rootLocale,
                   context: context,
                   child: listWidgets[index],
                 );

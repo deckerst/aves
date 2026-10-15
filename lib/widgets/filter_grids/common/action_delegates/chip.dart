@@ -1,5 +1,7 @@
+import 'package:aves/geo/uri.dart';
 import 'package:aves/model/filters/container/album_group.dart';
 import 'package:aves/model/filters/container/dynamic_album.dart';
+import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
@@ -22,6 +24,7 @@ import 'package:aves/widgets/filter_grids/debug_page.dart';
 import 'package:aves/widgets/filter_grids/places_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
+import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
@@ -47,6 +50,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         return filter is RatingFilter && 1 <= filter.rating && filter.rating < 5 && filter.op != RatingFilter.opOrGreater;
       case .ratingOrLower:
         return filter is RatingFilter && 1 < filter.rating && filter.rating <= 5 && filter.op != RatingFilter.opOrLower;
+      case .copyCenterCoordinates:
+        return filter is CoordinateFilter;
       case .decompose:
         return filter is DynamicAlbumFilter;
       case .reverse:
@@ -94,6 +99,8 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
         SelectFilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrGreater)).dispatch(context);
       case .ratingOrLower:
         SelectFilterNotification((filter as RatingFilter).copyWith(RatingFilter.opOrLower)).dispatch(context);
+      case .copyCenterCoordinates:
+        _copyCenterCoordinates(context, filter as CoordinateFilter);
       case .decompose:
         DecomposeFilterNotification(filter).dispatch(context);
       case .reverse:
@@ -159,5 +166,16 @@ class ChipActionDelegate with FeedbackMixin, VaultAwareMixin {
     if (!await unlockFilters(context, filters)) return;
 
     settings.changeFilterVisibility(filters, true);
+  }
+
+  Future<void> _copyCenterCoordinates(BuildContext context, CoordinateFilter filter) async {
+    final bounds = ZoomedBounds(sw: filter.sw, ne: filter.ne, zoom: 20, rotation: 0);
+    final geoUri = toGeoUri(bounds.projectedCenter);
+    final success = await appService.copyToClipboard(text: geoUri);
+    if (success) {
+      showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+    }
   }
 }

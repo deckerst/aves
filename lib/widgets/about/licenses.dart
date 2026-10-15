@@ -26,10 +26,10 @@ class _LicensesState extends State<Licenses> {
   @override
   void initState() {
     super.initState();
-    _platform = List<Dependency>.from(Dependencies.androidDependencies);
-    _flutterPlugins = List<Dependency>.from(Dependencies.flutterPlugins(context.read<AppFlavor>()));
-    _flutterPackages = List<Dependency>.from(Dependencies.flutterPackages);
-    _dartPackages = List<Dependency>.from(Dependencies.dartPackages);
+    _platform = List<Dependency>.of(Dependencies.androidDependencies);
+    _flutterPlugins = List<Dependency>.of(Dependencies.flutterPlugins(context.read<AppFlavor>()));
+    _flutterPackages = List<Dependency>.of(Dependencies.flutterPackages);
+    _dartPackages = List<Dependency>.of(Dependencies.dartPackages);
     _sortPackages();
   }
 
@@ -50,6 +50,7 @@ class _LicensesState extends State<Licenses> {
   @override
   Widget build(BuildContext context) {
     final colors = context.watch<AvesColorsData>();
+    final knownLocale = context.knownLocale;
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
@@ -59,24 +60,28 @@ class _LicensesState extends State<Licenses> {
             const SizedBox(height: 16),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesAndroidLibrariesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.android),
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPluginsSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPlugins.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPackagesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _flutterPackages.map((package) => _LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesDartPackagesSectionTitle,
+              locale: knownLocale,
               highlightColor: colors.fromBrandColor(BrandColors.flutter),
               expandedNotifier: _expandedNotifier,
               children: _dartPackages.map((package) => _LicenseRow(package: package)).toList(),

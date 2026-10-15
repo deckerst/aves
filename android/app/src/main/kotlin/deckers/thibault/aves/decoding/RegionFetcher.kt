@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
 import deckers.thibault.aves.utils.BitmapUtils
@@ -38,27 +39,32 @@ class RegionFetcher internal constructor(
     private val context: Context,
 ) {
     suspend fun fetch(
-        uri: Uri,
-        pageId: Int?,
+        contentAddress: ContentAddress,
         decoded: Boolean,
         applyGainmap: Boolean,
-        mimeType: String,
         sampleSize: Int,
         regionRect: Rect,
         imageWidth: Int,
         imageHeight: Int,
-        requestKey: Pair<Uri, Int?> = Pair(uri, pageId),
+        requestKey: Pair<Uri, Int?> = Pair(contentAddress.uri, contentAddress.pageId),
         result: ByteSink,
     ) {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+        val pageId = contentAddress.pageId
+
         if (pageId != null && MultiPageImage.isSupported(mimeType)) {
             // use export for requested page
-            val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(uri, mimeType, pageId) }
+            val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(contentAddress) }
             fetch(
-                uri = exportUri,
-                pageId = null,
+                ContentAddress(
+                    mimeType = EXPORT_MIME_TYPE,
+                    uri = exportUri,
+                    pageId = null,
+                    path = null,
+                ),
                 decoded = decoded,
                 applyGainmap = applyGainmap,
-                mimeType = EXPORT_MIME_TYPE,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -72,7 +78,7 @@ class RegionFetcher internal constructor(
         try {
             val decoder = getOrCreateDecoder(context, uri, requestKey)
             if (decoder == null) {
-                result.error("fetch-read-null", "failed to open file for mimeType=$mimeType uri=$uri regionRect=$regionRect", null)
+                result.error("fetch-read-null", "failed to open file for $contentAddress regionRect=$regionRect", null)
                 return
             }
 
@@ -110,7 +116,7 @@ class RegionFetcher internal constructor(
             val targetBitmapSizeBytes = BitmapUtils.getExpectedImageSize(pixelCount.toLong(), options.inPreferredConfig)
             if (!MemoryUtils.canAllocate(targetBitmapSizeBytes)) {
                 // decoding a region that large would yield an OOM when creating the bitmap
-                result.error("fetch-large-region", "Region too large for uri=$uri regionRect=$regionRect", null)
+                result.error("fetch-large-region", "Region too large for $contentAddress regionRect=$regionRect", null)
                 return
             }
 
@@ -127,7 +133,7 @@ class RegionFetcher internal constructor(
 
             val bytes = BitmapUtils.getBytes(bitmap, recycle = true, decoded = decoded, applyGainmap = applyGainmap, mimeType = mimeType)
             if (bytes == null) {
-                result.error("fetch-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
+                result.error("fetch-null", "failed to decode region for $contentAddress regionRect=$regionRect", null)
             } else {
                 result.streamBytes(ByteArrayInputStream(bytes))
             }
@@ -135,13 +141,16 @@ class RegionFetcher internal constructor(
             if (EXPORT_MIME_TYPE != mimeType) {
                 // retry with export on failure,
                 // as some formats are not fully supported by `BitmapRegionDecoder`
-                val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(uri, mimeType, pageId) }
+                val exportUri = exportUris.getOrPut(requestKey) { createTemporaryExport(contentAddress) }
                 fetch(
-                    uri = exportUri,
-                    pageId = null,
+                    ContentAddress(
+                        mimeType = EXPORT_MIME_TYPE,
+                        uri = exportUri,
+                        pageId = null,
+                        path = null,
+                    ),
                     decoded = decoded,
                     applyGainmap = applyGainmap,
-                    mimeType = EXPORT_MIME_TYPE,
                     sampleSize = sampleSize,
                     regionRect = regionRect,
                     imageWidth = imageWidth,
@@ -152,17 +161,18 @@ class RegionFetcher internal constructor(
                 return
             }
 
-            result.error("fetch-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
+            result.error("fetch-read-exception", "failed to initialize region decoder for $contentAddress regionRect=$regionRect", e.message)
         }
     }
 
-    private suspend fun createTemporaryExport(uri: Uri, mimeType: String, pageId: Int?): Uri {
+    private suspend fun createTemporaryExport(contentAddress: ContentAddress): Uri {
         val exportFormat = EXPORT_FORMAT
-        Log.d(LOG_TAG, "create export for uri=$uri mimeType=$mimeType pageId=$pageId exportFormat=$exportFormat")
+        Log.d(LOG_TAG, "create export for $contentAddress exportFormat=$exportFormat")
+
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
-            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId))
+            .load(AvesAppGlideModule.getModel(context, contentAddress))
             .submit()
 
         try {
@@ -171,8 +181,9 @@ class RegionFetcher internal constructor(
                 outputStream().use { output ->
                     val encodedExport = bitmap.compress(exportFormat, 100, output)
                     if (!encodedExport) {
-                        Log.w(LOG_TAG, "failed export via encoded bytes for uri=$uri mimeType=$mimeType pageId=$pageId exportFormat=$exportFormat, with bitmap=${bitmap.describe()}")
+                        Log.w(LOG_TAG, "failed export via encoded bytes for $contentAddress exportFormat=$exportFormat, with bitmap=${bitmap.describe()}")
 
+                        val mimeType = contentAddress.mimeType
                         val decodedBytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = true, applyGainmap = false, mimeType = mimeType)
                         if (decodedBytes != null) {
                             val exportBitmap = createBitmap(bitmap.width, bitmap.height, PREFERRED_CONFIG)

@@ -205,7 +205,7 @@ class Dependencies {
     Dependency(
       name: 'Flutter Hijri Rrule (Aves fork)',
       license: mit,
-      sourceUrl: 'https://github.com/hb12devtn/flutter_hijri_rrule',
+      sourceUrl: 'https://github.com/deckerst/flutter_hijri_rrule',
     ),
     Dependency(
       name: 'Flutter Map',
@@ -306,9 +306,9 @@ class Dependencies {
       sourceUrl: 'https://github.com/close2/csv',
     ),
     Dependency(
-      name: 'DLNA Dart',
+      name: 'DLNA Dart (Aves fork)',
       license: bsd3,
-      sourceUrl: 'https://github.com/suconghou/dlna-dart',
+      sourceUrl: 'https://github.com/deckerst/dlna-dart',
     ),
     Dependency(
       name: 'Equatable',

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -14,9 +12,7 @@ import 'package:provider/provider.dart';
 // - `resizeToAvoidBottomInset` set to false,
 // - a vertically scrollable body.
 // It will prevent the body from scrolling when a user swipe from bottom to use Android 10 style navigation gestures.
-class BottomGestureAreaProtector extends StatelessWidget {
-  const new({super.key});
-
+class const BottomGestureAreaProtector({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -34,9 +30,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
 }
 
 // It will prevent the body from scrolling when a user swipe from top to show the status bar when system UI is hidden.
-class TopGestureAreaProtector extends StatelessWidget {
-  const new({super.key});
-
+class const TopGestureAreaProtector({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -54,9 +48,7 @@ class TopGestureAreaProtector extends StatelessWidget {
 }
 
 // It will prevent the body from scrolling when a user swipe from edges to use Android 10 style navigation gestures.
-class SideGestureAreaProtector extends StatelessWidget {
-  const new({super.key});
-
+class const SideGestureAreaProtector({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
@@ -87,14 +79,10 @@ class SideGestureAreaProtector extends StatelessWidget {
   }
 }
 
-class GestureAreaProtectorStack extends StatelessWidget {
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.child,
-  });
-
+class const GestureAreaProtectorStack({
+  super.key,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -106,25 +94,21 @@ class GestureAreaProtectorStack extends StatelessWidget {
   }
 }
 
-class BottomPaddingSliver extends StatelessWidget {
-  const new({super.key});
-
+class const SafeBottomPaddingSliver({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.effectiveBottomPadding,
-        builder: (context, mqPaddingBottom, child) {
-          return SizedBox(height: mqPaddingBottom);
+        selector: (context, mq) => mq.safeBottomPadding,
+        builder: (context, safeBottomPadding, child) {
+          return SizedBox(height: safeBottomPadding);
         },
       ),
     );
   }
 }
 
-class TvTileGridBottomPaddingSliver extends StatelessWidget {
-  const new({super.key});
-
+class const TvTileGridBottomPaddingSliver({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -137,16 +121,11 @@ class TvTileGridBottomPaddingSliver extends StatelessWidget {
 
 // `MediaQuery.padding` matches cutout areas but also includes other system UI like the status bar
 // so we cannot use `SafeArea` along `MediaQuery.removePadding()` to remove cutout areas
-class SafeCutoutArea extends StatelessWidget {
-  final Animation<double>? animation;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.animation,
-    required this.child,
-  });
-
+class const SafeCutoutArea({
+  super.key,
+  final Animation<double>? animation,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<EdgeInsets>(
@@ -173,42 +152,16 @@ class SafeCutoutArea extends StatelessWidget {
   }
 }
 
-extension ExtraMediaQueryData on MediaQueryData {
-  MediaQueryData removeCutoutInsets(EdgeInsets cutoutInsets) {
-    return copyWith(
-      padding: EdgeInsets.only(
-        left: max(0.0, padding.left - cutoutInsets.left),
-        top: max(0.0, padding.top - cutoutInsets.top),
-        right: max(0.0, padding.right - cutoutInsets.right),
-        bottom: max(0.0, padding.bottom - cutoutInsets.bottom),
-      ),
-      viewPadding: EdgeInsets.only(
-        left: max(0.0, viewPadding.left - cutoutInsets.left),
-        top: max(0.0, viewPadding.top - cutoutInsets.top),
-        right: max(0.0, viewPadding.right - cutoutInsets.right),
-        bottom: max(0.0, viewPadding.bottom - cutoutInsets.bottom),
-      ),
-    );
-  }
-}
-
-class DirectionalSafeArea extends StatelessWidget {
-  final bool start, top, end, bottom;
-  final EdgeInsets minimum;
-  final bool maintainBottomViewPadding;
-  final Widget child;
-
-  const new({
-    super.key,
-    this.start = true,
-    this.top = true,
-    this.end = true,
-    this.bottom = true,
-    this.minimum = EdgeInsets.zero,
-    this.maintainBottomViewPadding = false,
-    required this.child,
-  });
-
+class const DirectionalSafeArea({
+  super.key,
+  final bool start = true,
+  final bool top = true,
+  final bool end = true,
+  final bool bottom = true,
+  final EdgeInsets minimum = EdgeInsets.zero,
+  final bool maintainBottomViewPadding = false,
+  required final Widget child,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = context.isRtl;

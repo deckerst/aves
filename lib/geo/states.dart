@@ -1,4 +1,4 @@
-import 'package:aves/ref/unicode.dart';
+import 'package:aves/ref/emoji_state_codes.dart';
 import 'package:country_code/country_code.dart';
 
 class GeoStates {

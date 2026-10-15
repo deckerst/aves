@@ -2,13 +2,12 @@ import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugOSCodecSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugOSCodecSection({super.key}) extends StatefulWidget {
   @override
   State<DebugOSCodecSection> createState() => _DebugOSCodecSectionState();
 }
@@ -35,6 +34,7 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
 
     return AvesExpansionTile(
       title: 'OS Codecs',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
@@ -69,9 +69,15 @@ class _DebugOSCodecSectionState extends State<DebugOSCodecSection> with Automati
                 crossAxisAlignment: .start,
                 children: [
                   QueryBar(queryNotifier: _queryNotifier),
-                  const HighlightTitle(title: 'Decoders'),
+                  const HighlightTitle(
+                    title: 'Decoders',
+                    locale: KnownLocale.english,
+                  ),
                   _toCodecColumn(decoders),
-                  const HighlightTitle(title: 'Encoders'),
+                  const HighlightTitle(
+                    title: 'Encoders',
+                    locale: KnownLocale.english,
+                  ),
                   _toCodecColumn(encoders),
                 ],
               );

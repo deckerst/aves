@@ -2,6 +2,7 @@ package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.net.Uri
 import android.os.Build
 import android.os.TransactionTooLargeException
@@ -109,6 +110,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         } catch (ex: Exception) {
             if (ex.anyCauseIs<TransactionTooLargeException>()) {
                 error("requestMediaStoreFileAccess-large", "transaction too large with ${uris.size} uris", ex)
+            } else if (ex.anyCauseIs<IntentSender.SendIntentException>()) {
+                error("requestMediaStoreFileAccess-sendintent", "intent no longer usable", ex)
             } else {
                 val byFromMediaStore = uris.groupBy(StorageUtils::isMediaStoreContentUri)
                 error(
@@ -250,8 +253,8 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
     }
 
     private fun edit() {
-        val uri = args["uri"] as String?
         val mimeType = args["mimeType"] as String? // optional
+        val uri = args["uri"] as String?
         if (uri == null) {
             error("edit-args", "missing arguments", null)
             return

@@ -140,7 +140,9 @@ class SourceEntry {
 
     // finds: width, height, orientation, date, duration, title
     private fun fillVideoByMediaMetadataRetriever(context: Context) {
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return
+        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) { width = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) { height = it }
@@ -163,8 +165,10 @@ class SourceEntry {
             || MimeTypes.isRaw(sourceMimeType)
         ) return
 
+        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+
         try {
-            Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
+            Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                 val metadata = Helper.safeRead(input, sizeBytes)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
@@ -189,7 +193,7 @@ class SourceEntry {
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT) { height = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { sourceRotationDegrees = getRotationDegreesForExifCode(it) }
-                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null)?.let { sourceDateTakenMillis = it }
+                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = false)?.let { sourceDateTakenMillis = it }
                     }
 
                     // dimensions reported in EXIF do not always match the image
@@ -217,14 +221,20 @@ class SourceEntry {
     private fun fillByExifInterface(context: Context) {
         if (!MimeTypes.canReadWithExifInterface(sourceMimeType)) return
 
+        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+
         try {
-            Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
-                val exif = ExifInterface(input)
+            Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                val exifInterface = ExifInterface(input)
                 foundExif = true
-                exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
-                exif.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
-                exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
-                exif.getSafeDateMillis(ExifInterface.TAG_DATETIME, ExifInterface.TAG_SUBSEC_TIME) { sourceDateTakenMillis = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
+                exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exifInterface.rotationDegrees }
+                exifInterface.getSafeDateMillis(
+                    ExifInterface.TAG_DATETIME,
+                    ExifInterface.TAG_SUBSEC_TIME,
+                    ExifInterface.TAG_OFFSET_TIME,
+                ) { date, _ -> sourceDateTakenMillis = date }
             }
         } catch (_: Exception) {
             // ExifInterface initialization can fail with a RuntimeException

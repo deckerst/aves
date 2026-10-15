@@ -8,10 +8,10 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
@@ -33,24 +33,19 @@ import 'package:aves/widgets/navigation/drawer/tile.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AppDrawer extends StatefulWidget {
+class const AppDrawer({
+  super.key,
+  final CollectionLens? currentCollection,
+  final String? currentExplorerPath,
+}) extends StatefulWidget {
   // collection loaded in the `CollectionPage`, if any
-  final CollectionLens? currentCollection;
-
   // current path loaded in the `ExplorerPage`, if any
-  final String? currentExplorerPath;
-
-  const new({
-    super.key,
-    this.currentCollection,
-    this.currentExplorerPath,
-  });
-
   @override
   State<AppDrawer> createState() => _AppDrawerState();
 
@@ -143,15 +138,15 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
         horizontalTitleGap: 20,
         visualDensity: VisualDensity.comfortable,
         child: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.effectiveBottomPadding,
-          builder: (context, mqPaddingBottom, child) {
+          selector: (context, mq) => mq.safeBottomPadding,
+          builder: (context, safeBottomPadding, child) {
             final textScaler = MediaQuery.textScalerOf(context);
             final iconTheme = IconTheme.of(context);
             return SingleChildScrollView(
               controller: _scrollController,
               // key is expected by test driver
               key: const Key('drawer-scrollview'),
-              padding: EdgeInsets.only(bottom: mqPaddingBottom),
+              padding: EdgeInsets.only(bottom: safeBottomPadding),
               child: IconTheme(
                 data: iconTheme.copyWith(
                   size: textScaler.scale(iconTheme.size!),
@@ -169,10 +164,11 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = context.l10n;
+    final appName = l10n.appName;
 
     Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
       Navigator.maybeOf(context)?.pop();
-      await Future.delayed(ADurations.drawerTransitionLoose);
+      await Future.pause(ADurations.drawerTransitionLoose);
       await Navigator.maybeOf(context)?.push(
         MaterialPageRoute(
           settings: RouteSettings(name: routeName),
@@ -215,13 +211,11 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
                     OutlinedText(
                       textSpans: [
                         TextSpan(
-                          text: l10n.appName,
-                          style: TextStyle(
+                          text: appName,
+                          style: AStyles.appNameStyle(context, appName).copyWith(
                             color: Colors.white,
                             fontSize: 38,
                             fontWeight: .w300,
-                            letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
-                            fontFeatures: const [FontFeature.enable('smcp')],
                           ),
                         ),
                       ],
@@ -370,6 +364,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
     if (pageBookmarks.isEmpty) return [];
 
     final source = context.read<CollectionSource>();
+    final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
     return [
       const Divider(),
       ...pageBookmarks.map((route) {
@@ -378,22 +373,22 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
           case AlbumListPage.routeName:
             trailing = StreamBuilder<AlbumsChangedEvent>(
               stream: source.eventBus.on<AlbumsChangedEvent>(),
-              builder: (context, _) => Text('${source.rawAlbums.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.rawAlbums.length)),
             );
           case CountryListPage.routeName:
             trailing = StreamBuilder<CountriesChangedEvent>(
               stream: source.eventBus.on<CountriesChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedCountries.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedCountries.length)),
             );
           case PlaceListPage.routeName:
             trailing = StreamBuilder<PlacesChangedEvent>(
               stream: source.eventBus.on<PlacesChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedPlaces.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedPlaces.length)),
             );
           case TagListPage.routeName:
             trailing = StreamBuilder<TagsChangedEvent>(
               stream: source.eventBus.on<TagsChangedEvent>(),
-              builder: (context, _) => Text('${source.sortedTags.length}'),
+              builder: (context, _) => Text(itemCountFormatter.format(source.sortedTags.length)),
             );
         }
 
@@ -409,7 +404,7 @@ class _AppDrawerState extends State<AppDrawer> with WidgetsBindingObserver {
 
   Widget binTile(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final trashSize = source.trashedEntries.fold<int>(0, (sum, entry) => sum + (entry.sizeBytes ?? 0));
+    final trashSize = source.trashedEntries.map((entry) => entry.sizeBytes).sum;
 
     const filter = TrashFilter.instance;
     return CollectionNavTile(

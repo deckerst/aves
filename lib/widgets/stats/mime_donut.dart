@@ -7,25 +7,18 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MimeDonut extends StatelessWidget {
-  final IconData icon;
-  final Map<String, int> byMimeTypes;
-  final Duration animationDuration;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.icon,
-    required this.byMimeTypes,
-    required this.animationDuration,
-    required this.onFilterSelection,
-  });
-
+class const MimeDonut({
+  super.key,
+  required final IconData icon,
+  required final Map<String, int> byMimeTypes,
+  required final Duration animationDuration,
+  required final AFilterCallback onFilterSelection,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemCountFormatter = settings.avesLocale.decimalNumberFormat();
 
-    String formatKey(d) => MimeUtils.displayType(d.key);
+    String formatKey(AvesDonutDatum d) => MimeUtils.displayType(d.key);
     return AvesDonut(
       title: Icon(icon),
       byTypes: byMimeTypes,

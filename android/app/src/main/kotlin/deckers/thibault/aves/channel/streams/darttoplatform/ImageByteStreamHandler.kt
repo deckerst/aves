@@ -11,6 +11,7 @@ import deckers.thibault.aves.decoding.SvgRegionFetcher
 import deckers.thibault.aves.decoding.ThumbnailFetcher
 import deckers.thibault.aves.decoding.TiffRegionFetcher
 import deckers.thibault.aves.glide.AvesAppGlideModule
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
@@ -62,17 +63,20 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
+        val mimeType = arguments["mimeType"] as String?
         val uri = (arguments["uri"] as String?)?.toUri()
         val pageId = arguments["pageId"] as Int?
-        val mimeType = arguments["mimeType"] as String?
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
+        val videoMethods = (arguments["videoMethods"] as List<*>?)?.filterIsInstance<String>()?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "missing arguments", null)
             return
         }
+
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
 
         if (!decoded && handleEncodedBytesInFlutter(mimeType)) {
             // the image can be decoded by Flutter codecs,
@@ -81,9 +85,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             streamOriginalBytesWithTrailer(uri, mimeType)
         } else if (isVideo(mimeType)) {
             streamVideoByGlide(
-                uri = uri,
-                mimeType = mimeType,
+                contentAddress = contentAddress,
                 sizeBytes = sizeBytes,
+                videoMethods = videoMethods,
                 decoded = decoded,
             )
         } else {
@@ -91,9 +95,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             // it needs to be processed on the platform side
             // so we decode, process, optionally reencode, then stream it
             streamImageByGlide(
-                uri = uri,
-                pageId = pageId,
-                mimeType = mimeType,
+                contentAddress = contentAddress,
                 sizeBytes = sizeBytes,
                 rotationDegrees = rotationDegrees,
                 isFlipped = isFlipped,
@@ -115,19 +117,20 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
     }
 
     private suspend fun streamImageByGlide(
-        uri: Uri,
-        pageId: Int?,
-        mimeType: String,
+        contentAddress: ContentAddress,
         sizeBytes: Long?,
         rotationDegrees: Int,
         isFlipped: Boolean,
         decoded: Boolean,
         applyGainmap: Boolean
     ) {
+        val mimeType = contentAddress.mimeType
+        val pageId = contentAddress.pageId
+
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
-            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId, sizeBytes))
+            .load(AvesAppGlideModule.getModel(context, contentAddress, sizeBytes))
             .submit()
         try {
             var bitmap = withContext(Dispatchers.IO) { target.get() }
@@ -139,20 +142,26 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = applyGainmap, mimeType = mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
-                error("streamImage-image-decode-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
+                error("streamImage-image-decode-null", "failed to get image for $contentAddress", null)
             }
         } catch (e: Exception) {
-            error("streamImage-image-decode-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
+            error("streamImage-image-decode-exception", "failed to get image for $contentAddress", e.stackTraceToString())
         } finally {
             Glide.with(context).clear(target)
         }
     }
 
-    private suspend fun streamVideoByGlide(uri: Uri, mimeType: String, sizeBytes: Long?, decoded: Boolean) {
+    private suspend fun streamVideoByGlide(
+        contentAddress: ContentAddress,
+        sizeBytes: Long?,
+        videoMethods: List<VideoThumbnailMethod>?,
+        decoded: Boolean,
+    ) {
+        val mimeType = contentAddress.mimeType
         val target = Glide.with(context)
             .asBitmap()
             .apply(AvesAppGlideModule.uncachedFullImageOptions)
-            .load(AvesAppGlideModule.getModel(context, uri, mimeType, null, sizeBytes))
+            .load(AvesAppGlideModule.getModel(context, contentAddress, sizeBytes, videoMethods = videoMethods))
             .submit()
         try {
             val bitmap = withContext(Dispatchers.IO) { target.get() }
@@ -161,10 +170,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
                 val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = mimeType)
                 streamBytes(ByteArrayInputStream(bytes))
             } else {
-                error("streamImage-video-null", "failed to get image for mimeType=$mimeType uri=$uri", null)
+                error("streamImage-video-null", "failed to get image for $contentAddress", null)
             }
         } catch (e: Exception) {
-            error("streamImage-video-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
+            error("streamImage-video-exception", "failed to get image for $contentAddress", e.stackTraceToString())
         } finally {
             Glide.with(context).clear(target)
         }
@@ -175,9 +184,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
+        val mimeType = arguments["mimeType"] as String?
         val uri = (arguments["uri"] as String?)?.toUri()
         val pageId = arguments["pageId"] as Int?
-        val mimeType = arguments["mimeType"] as String?
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val sampleSize = arguments["sampleSize"] as Int?
         val x = arguments["regionX"] as Int?
@@ -191,6 +200,8 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             error("getRegion-args", "missing arguments", null)
             return
         }
+
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
 
         val regionRect = Rect(x, y, x + width, y + height)
         when (mimeType) {
@@ -215,11 +226,9 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             )
 
             else -> regionFetcher.fetch(
-                uri = uri,
-                pageId = pageId,
+                contentAddress = contentAddress,
                 decoded = decoded,
                 applyGainmap = applyGainmap,
-                mimeType = mimeType,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
                 imageWidth = imageWidth,
@@ -249,13 +258,13 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
+
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         ThumbnailFetcher(
             context = context,
-            uri = uri,
-            pageId = pageId,
+            contentAddress = contentAddress,
             decoded = decoded,
-            mimeType = mimeType,
             dateModifiedMillis = dateModifiedMillis ?: (Date().time),
             rotationDegrees = rotationDegrees,
             isFlipped = isFlipped,

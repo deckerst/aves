@@ -1,15 +1,11 @@
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/aves_app.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 class Themes {
-  static const _titleTextStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: .normal,
-    fontFeatures: [FontFeature.enable('smcp')],
-  );
-
   static String asButtonLabel(String s) => s.toUpperCase();
 
   static TextStyle searchFieldStyle(BuildContext context) => Theme.of(context).textTheme.bodyLarge!;
@@ -181,7 +177,7 @@ class Themes {
   static const _lightActionIconColor = Color(0xAA000000);
   static const _lightOnSurface = Colors.black;
 
-  static ThemeData lightTheme(Color accentColor, bool deviceInitialized) {
+  static ThemeData lightTheme(Color accentColor, bool deviceInitialized, KnownLocale locale) {
     final onAccent = ColorUtils.textColorOn(accentColor);
     final colors = ColorScheme.fromSeed(
       seedColor: accentColor,
@@ -202,13 +198,13 @@ class Themes {
         // `foregroundColor` is used by icons
         foregroundColor: _lightActionIconColor,
         // `titleTextStyle.color` is used by text
-        titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
+        titleTextStyle: AStyles.pageTitleTextStyle(locale).copyWith(color: _lightTitleColor),
         // `systemOverlayStyle` is assumed by the app to never be null
         systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : const SystemUiOverlayStyle(),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
-        titleTextStyle: _titleTextStyle.copyWith(color: _lightTitleColor),
+        titleTextStyle: AStyles.pageTitleTextStyle(locale).copyWith(color: _lightTitleColor),
       ),
       listTileTheme: _listTileTheme.copyWith(
         iconColor: _lightActionIconColor,
@@ -245,7 +241,7 @@ class Themes {
     return colors;
   }
 
-  static ThemeData _baseDarkTheme(ColorScheme colors, bool deviceInitialized) {
+  static ThemeData _baseDarkTheme(ColorScheme colors, bool deviceInitialized, KnownLocale locale) {
     final textTheme = _darkThemeTypo;
     return _baseTheme(colors, deviceInitialized).copyWith(
       // TYPOGRAPHY & ICONOGRAPHY
@@ -256,13 +252,13 @@ class Themes {
         // `foregroundColor` is used by icons
         foregroundColor: _darkTitleColor,
         // `titleTextStyle.color` is used by text
-        titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
+        titleTextStyle: AStyles.pageTitleTextStyle(locale).copyWith(color: _darkTitleColor),
         // `systemOverlayStyle` is assumed by the app to never be null
         systemOverlayStyle: deviceInitialized ? AvesApp.systemUIStyleForBrightness(colors.brightness, _schemeFirstLayer(colors)) : const SystemUiOverlayStyle(),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: _schemeSecondLayer(colors),
-        titleTextStyle: _titleTextStyle.copyWith(color: _darkTitleColor),
+        titleTextStyle: AStyles.pageTitleTextStyle(locale).copyWith(color: _darkTitleColor),
       ),
       listTileTheme: _listTileTheme,
       popupMenuTheme: _popupMenuTheme(colors, textTheme),
@@ -280,17 +276,17 @@ class Themes {
     );
   }
 
-  static ThemeData darkTheme(Color accentColor, bool deviceInitialized) {
+  static ThemeData darkTheme(Color accentColor, bool deviceInitialized, KnownLocale locale) {
     final colors = _darkColorScheme(accentColor);
-    return _baseDarkTheme(colors, deviceInitialized);
+    return _baseDarkTheme(colors, deviceInitialized, locale);
   }
 
   // black
 
-  static ThemeData blackTheme(Color accentColor, bool deviceInitialized) {
+  static ThemeData blackTheme(Color accentColor, bool deviceInitialized, KnownLocale locale) {
     final colors = _darkColorScheme(accentColor).copyWith(
       surface: Colors.black,
     );
-    return _baseDarkTheme(colors, deviceInitialized);
+    return _baseDarkTheme(colors, deviceInitialized, locale);
   }
 }

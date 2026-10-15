@@ -40,12 +40,12 @@ class _DrawerFixedListTabState<T> extends State<DrawerFixedListTab<T>> {
         ],
         Flexible(
           child: Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.effectiveBottomPadding,
-            builder: (context, mqPaddingBottom, child) {
+            selector: (context, mq) => mq.safeBottomPadding,
+            builder: (context, safeBottomPadding, child) {
               // `ReorderableListView` does not automatically pad
               // for `MediaQuery` insets, like regular `ListView`
               return ReorderableListView.builder(
-                padding: EdgeInsets.only(bottom: mqPaddingBottom),
+                padding: EdgeInsets.only(bottom: safeBottomPadding),
                 itemBuilder: (context, index) {
                   final filter = widget.items[index];
                   final visible = visibleItems.contains(filter);

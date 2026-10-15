@@ -1,7 +1,6 @@
 package deckers.thibault.aves.metadata.xmp
 
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -16,14 +15,15 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
 import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
+import deckers.thibault.aves.utils.TimeZones
 import org.mp4parser.boxes.UserBox
-import java.util.TimeZone
 
 object XMP {
     private val LOG_TAG = LogUtils.createTag<XMP>()
@@ -69,11 +69,13 @@ object XMP {
     // so we fall back to the native content resolver, if possible
     fun checkIsoBMFFImage(
         context: Context,
-        mimeType: String,
-        uri: Uri,
+        contentAddress: ContentAddress,
         foundXmp: Boolean,
         processXmp: (xmpMeta: XMPMeta) -> Unit,
     ) {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+
         if (!foundXmp && isIsoBMFFImage(mimeType) && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val xmpBytes = context.queryContentPropValue(uri, mimeType, MediaStore.MediaColumns.XMP)
@@ -82,7 +84,7 @@ object XMP {
                     processXmp(xmpMeta)
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get XMP by content resolver for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get XMP by content resolver for $contentAddress", e)
             }
         }
     }
@@ -91,10 +93,12 @@ object XMP {
     // so we fall back to parsing with `mp4parser`
     fun checkMp4(
         context: Context,
-        mimeType: String,
-        uri: Uri,
+        contentAddress: ContentAddress,
         processDirs: (dirs: List<Directory>) -> Unit,
     ) {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+
         if (mimeType != MimeTypes.MP4) return
         try {
             Mp4ParserHelper.consumeIso(context, uri, Mp4ParserHelper.metadataBoxParser()) { isoFile ->
@@ -108,14 +112,14 @@ object XMP {
                         SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
                         processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
                     } else {
-                        Log.w(LOG_TAG, "MP4 box too large at $boxSize bytes, for mimeType=$mimeType uri=$uri")
+                        Log.w(LOG_TAG, "MP4 box too large at $boxSize bytes, for $contentAddress")
                     }
                 }
             }
         } catch (e: NoClassDefFoundError) {
-            Log.w(LOG_TAG, "failed to parse MP4 for mimeType=$mimeType uri=$uri", e)
+            Log.w(LOG_TAG, "failed to parse MP4 for $contentAddress", e)
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get XMP by MP4 parser for mimeType=$mimeType uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get XMP by MP4 parser for $contentAddress", e)
         }
     }
 
@@ -250,7 +254,7 @@ object XMP {
         }
     }
 
-    fun XMPMeta.getSafeDateMillis(prop: XMPPropName, save: (value: Long) -> Unit) {
+    fun XMPMeta.getSafeDateMillis(prop: XMPPropName, save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val schema = prop.nsUri
         val propName = prop.toString()
         try {
@@ -258,10 +262,9 @@ object XMP {
                 val item = getPropertyDate(schema, propName)
                 // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 if (item != null) {
-                    // strip time zone from XMP dates so that we show date/times as local ones
-                    // this aligns with Exif date/times, which are specified without time zones
-                    item.timeZone = TimeZone.getDefault()
-                    save(item.calendar.timeInMillis)
+                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(item.timeZone)
+                    item.timeZone = TimeZones.UTC
+                    save(item.calendar.timeInMillis, timeZoneOffsetMinutes)
                 }
             }
         } catch (e: XMPException) {

@@ -15,7 +15,7 @@ Future<void> showSelectionDialog<T>({
     routeSettings: const RouteSettings(name: AvesSingleSelectionDialog.routeName),
   );
   // wait for the dialog to hide
-  await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+  await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
   if (value != null) {
     onSelection(value);
   }

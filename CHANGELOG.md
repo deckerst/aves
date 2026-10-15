@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.6"></a>[v1.15.6] - 2026-10-15
+
+### Added
+
+- Collection: support for Realme burst pattern
+- Tags: direct renaming of tags and tag groups
+- Map: action to copy center to clipboard from coordinate filter
+- Urdu translation (thanks Bouzid Zeroug, Feliks-WR)
+
+### Changed
+
+- device time zone change will only trigger a rescan of items without a zoned date
+- upgraded Flutter to stable v3.47.7
+
+### Fixed
+
+- widget rendering failing for some videos
+- variable framerate video playback
+
 ## <a id="v1.15.5"></a>[v1.15.5] - 2026-10-02
 
 ### Added

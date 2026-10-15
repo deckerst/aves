@@ -123,7 +123,7 @@ class PlatformMediaEditService implements MediaEditService {
           .receiveBroadcastStream(<String, Object?>{
             'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
-            'mimeType': options.mimeType,
+            'exportMimeType': options.mimeType,
             'quality': options.quality,
             'lengthUnit': options.lengthUnit.name,
             'width': options.width,

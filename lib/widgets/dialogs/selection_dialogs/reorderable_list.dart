@@ -1,4 +1,5 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:collection/collection.dart';
@@ -46,7 +47,7 @@ class _AvesReorderableListDialogState<T> extends State<AvesReorderableListDialog
             return ListTile(
               key: ValueKey(item),
               leading: const Icon(AIcons.dragHandle),
-              title: Text(options[item] ?? '?'),
+              title: Text(options[item] ?? AText.valueNotAvailable),
             );
           },
           itemCount: options.length,

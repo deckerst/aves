@@ -2,7 +2,7 @@ import 'package:aves/model/settings/enums/accessibility_animations.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -17,9 +17,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SettingsMobilePage extends StatefulWidget {
-  const new({super.key});
-
+class const SettingsMobilePage({super.key}) extends StatefulWidget {
   @override
   State<SettingsMobilePage> createState() => _SettingsMobilePageState();
 }
@@ -63,7 +61,7 @@ class _SettingsMobilePageState extends State<SettingsMobilePage> with FeedbackMi
             },
             onSelected: (action) async {
               // wait for the popup menu to hide before proceeding with the action
-              await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+              await Future.pause(animations.popUpAnimationDelay * timeDilation);
               SettingsActionDelegate().onActionSelected(context, action);
             },
             popUpAnimationStyle: animations.popUpAnimationStyle,

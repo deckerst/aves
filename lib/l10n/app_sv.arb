@@ -56,7 +56,8 @@
     "@itemCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -64,7 +65,8 @@
     "@columnCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -397,7 +399,8 @@
     "@collectionDeleteFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -405,7 +408,8 @@
     "@collectionCopyFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -413,7 +417,8 @@
     "@collectionMoveFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -421,7 +426,8 @@
     "@collectionRenameFailureFeedback": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -972,5 +978,11 @@
     "collectionActionShowLayoutBar": "Visa layoutfält",
     "collectionActionHideLayoutBar": "Dölj layoutfält",
     "calendarHijriTabular": "Hijri (tabellbaserad)",
-    "calendarHijriUmalqura": "Hijri (Umm al-Qura)"
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "chipActionCopyCenterCoordinates": "Kopiera mittkoordinater",
+    "videoThumbnailMethodEmbeddedImage": "Inbäddad bild",
+    "videoThumbnailMethodPreviewFrame": "Förhandsgranskningsruta",
+    "videoThumbnailMethodFirstFrame": "Första bildrutan",
+    "renameTagDialogLabelAlreadyExistsHelper": "Tagg existerar redan",
+    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild"
 }

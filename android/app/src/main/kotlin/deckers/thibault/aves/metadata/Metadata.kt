@@ -3,6 +3,7 @@ package deckers.thibault.aves.metadata
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.LogUtils
@@ -137,13 +138,20 @@ object Metadata {
 
     private val previewFiles = HashMap<Uri, File>()
 
-    private fun getSafeUri(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): Uri {
+    private fun getSafeUri(
+        context: Context,
+        mimeType: String?,
+        uri: Uri,
+        path: String?,
+        sizeBytes: Long?
+    ): Uri {
         // formats known to yield OOM for large files
         return when (mimeType) {
             // formats known to yield OOM for large files
             MimeTypes.DNG,
             MimeTypes.DNG_ADOBE,
             MimeTypes.HEIC,
+            MimeTypes.HEIC_SEQUENCE,
             MimeTypes.HEIF,
             MimeTypes.MP4,
             MimeTypes.PSD_VND,
@@ -151,7 +159,7 @@ object Metadata {
             MimeTypes.TIFF,
             null ->
                 if (isDangerouslyLarge(sizeBytes)) {
-                    Log.d(LOG_TAG, "Dangerously large file with uri=$uri, mimeType=$mimeType, size=$sizeBytes")
+                    Log.d(LOG_TAG, "Dangerously large file with mimeType=$mimeType uri=$uri path=$path size=$sizeBytes")
                     // make a preview from the beginning of the file,
                     // hoping the metadata is accessible in the copied chunk
                     var previewFile = previewFiles[uri]
@@ -179,8 +187,26 @@ object Metadata {
         }
     }
 
-    fun openSafeInputStream(context: Context, uri: Uri, mimeType: String?, sizeBytes: Long?): InputStream? {
-        val safeUri = getSafeUri(context, uri, mimeType, sizeBytes)
+    fun openSafeInputStream(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): InputStream? {
+        val safeUri = getSafeUri(
+            context = context,
+            mimeType = contentAddress.mimeType,
+            uri = contentAddress.uri,
+            path = contentAddress.path,
+            sizeBytes = sizeBytes,
+        )
+        return StorageUtils.openInputStream(context, safeUri)
+    }
+
+    // alternative signature to allow unknown MIME type
+    fun openSafeInputStream(context: Context, mimeType: String?, uri: Uri, path: String?, sizeBytes: Long?): InputStream? {
+        val safeUri = getSafeUri(
+            context = context,
+            mimeType = mimeType,
+            uri = uri,
+            path = path,
+            sizeBytes = sizeBytes,
+        )
         return StorageUtils.openInputStream(context, safeUri)
     }
 }

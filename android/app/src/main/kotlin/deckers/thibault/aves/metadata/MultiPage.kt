@@ -23,6 +23,7 @@ import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
@@ -107,14 +108,14 @@ object MultiPage {
         return null
     }
 
-    private fun getJpegMpfPrimaryRotation(context: Context, uri: Uri, sizeBytes: Long): Int {
+    private fun getJpegMpfPrimaryRotation(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Int {
         val mimeType = MimeTypes.JPEG
         var rotationDegrees = 0
 
         var foundExif = false
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input, sizeBytes)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
@@ -124,27 +125,27 @@ object MultiPage {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
             } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
             }
         }
 
         if (!foundExif) {
             // fallback to read EXIF via ExifInterface
             try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
-                        rotationDegrees = exif.rotationDegrees
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                    val exifInterface = ExifInterface(input)
+                    exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
+                        rotationDegrees = exifInterface.rotationDegrees
                     }
                 }
             } catch (e: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
             }
         }
 
@@ -152,14 +153,13 @@ object MultiPage {
     }
 
     // starts after `[APP2 marker (1 byte)] [segment size (2 bytes)] [MPF marker (4 bytes)]`
-    fun getJpegMpfBaseOffset(context: Context, uri: Uri, sizeBytes: Long?): Int? {
-        val mimeType = MimeTypes.JPEG
+    fun getJpegMpfBaseOffset(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): Int? {
         val endMarker = 0xFF
         val app2Marker = JpegSegmentType.APP2.byteValue
         val mpfMarker = "MPF".toByteArray() + 0x00
 
         try {
-            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+            Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                 var offset = 0
                 val marker = ByteArray(4)
                 while (true) {
@@ -187,15 +187,14 @@ object MultiPage {
                 }
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get MPF base offset from uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get MPF base offset from $contentAddress", e)
         }
         return null
     }
 
-    fun getJpegMpfEntries(context: Context, uri: Uri, sizeBytes: Long?): List<MpEntry>? {
-        val mimeType = MimeTypes.JPEG
+    fun getJpegMpfEntries(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): List<MpEntry>? {
         try {
-            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+            Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                 val metadata = Helper.safeRead(input, sizeBytes)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
@@ -209,12 +208,14 @@ object MultiPage {
         return null
     }
 
-    fun getJpegMpfPages(context: Context, uri: Uri, sizeBytes: Long): ArrayList<FieldMap> {
-        val primaryRotation = getJpegMpfPrimaryRotation(context, uri, sizeBytes)
+    fun getJpegMpfPages(context: Context, contentAddress: ContentAddress, sizeBytes: Long): ArrayList<FieldMap> {
+        val uri = contentAddress.uri
+
+        val primaryRotation = getJpegMpfPrimaryRotation(context, contentAddress, sizeBytes)
 
         val pages = ArrayList<FieldMap>()
-        val baseOffset = getJpegMpfBaseOffset(context, uri, sizeBytes)
-        val mpEntries = getJpegMpfEntries(context, uri, sizeBytes)
+        val baseOffset = getJpegMpfBaseOffset(context, contentAddress, sizeBytes)
+        val mpEntries = getJpegMpfEntries(context, contentAddress, sizeBytes)
         if (mpEntries != null && baseOffset != null) {
             for ((pageIndex, mpEntry) in mpEntries.withIndex()) {
                 mpEntry.mimeType?.let { embedMimeType ->
@@ -247,13 +248,16 @@ object MultiPage {
         return pages
     }
 
-    fun getJpegMpfBitmap(context: Context, uri: Uri, pageIndex: Int): Bitmap? {
-        val mpEntries = getJpegMpfEntries(context, uri, null)
+    fun getJpegMpfBitmap(context: Context, contentAddress: ContentAddress): Bitmap? {
+        val uri = contentAddress.uri
+        val pageIndex = contentAddress.pageId ?: 0
+
+        val mpEntries = getJpegMpfEntries(context, contentAddress, null)
         if (mpEntries != null && pageIndex < mpEntries.size) {
             val mpEntry = mpEntries[pageIndex]
             var dataOffset = mpEntry.dataOffset
             if (dataOffset > 0) {
-                val baseOffset = getJpegMpfBaseOffset(context, uri, null)
+                val baseOffset = getJpegMpfBaseOffset(context, contentAddress, null)
                 if (baseOffset != null) {
                     dataOffset += baseOffset
                 }
@@ -266,9 +270,11 @@ object MultiPage {
         return null
     }
 
-    fun getMotionPhotoPages(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): ArrayList<FieldMap> {
+    fun getMotionPhotoPages(context: Context, contentAddress: ContentAddress, sizeBytes: Long): ArrayList<FieldMap> {
+        val mimeType = contentAddress.mimeType
+
         val pages = ArrayList<FieldMap>()
-        getMotionPhotoVideoInfo(context, uri, mimeType, sizeBytes)?.let { videoInfo ->
+        getMotionPhotoVideoInfo(context, contentAddress, sizeBytes)?.let { videoInfo ->
             // set the original image as the first and default track
             var pageIndex = 0
             pages.add(
@@ -297,13 +303,15 @@ object MultiPage {
         return pages
     }
 
-    fun getTrailerVideoSize(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
+    fun getTrailerVideoSize(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Long? {
+        val mimeType = contentAddress.mimeType
+
         if (isHeic(mimeType)) {
             // XMP in HEIC motion photos (as taken with a Samsung Camera v12.0.01.50) indicates an `Item:Length` of 68 bytes for the video.
             // This item does not contain the video itself, but only some kind of metadata (no doc, no spec),
             // so we ignore the `Item:Length` and look instead for the MP4 marker bytes indicating the start of the video.
             try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     if (MemoryUtils.canAllocate(sizeBytes)) {
                         val bytes = ByteArray(sizeBytes.toInt())
                         DataInputStream(input).use {
@@ -316,7 +324,7 @@ object MultiPage {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get motion photo offset from $contentAddress", e)
             }
         }
 
@@ -328,36 +336,38 @@ object MultiPage {
         }
 
         try {
-            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+            Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                 val metadata = Helper.safeRead(input, sizeBytes)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get motion photo offset from $contentAddress", e)
         } catch (e: NoClassDefFoundError) {
-            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get motion photo offset from $contentAddress", e)
         } catch (e: AssertionError) {
-            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get motion photo offset from $contentAddress", e)
         }
 
-        XMP.checkIsoBMFFImage(context, mimeType, uri, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::processXmp)
 
         return offsetFromEnd
     }
 
-    private fun getMotionPhotoVideoInfo(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): MediaFormat? {
-        getMotionPhotoVideoSizing(context, uri, mimeType, sizeBytes)?.let { (videoOffset, videoSize) ->
-            return getEmbedVideoInfo(context, uri, videoOffset, videoSize)
+    private fun getMotionPhotoVideoInfo(context: Context, contentAddress: ContentAddress, sizeBytes: Long): MediaFormat? {
+        getMotionPhotoVideoSizing(context, contentAddress, sizeBytes)?.let { (videoOffset, videoSize) ->
+            return getEmbedVideoInfo(context, contentAddress, videoOffset, videoSize)
         }
         return null
     }
 
-    fun getTrailerVideoInfo(context: Context, uri: Uri, fileSize: Long, videoSize: Long): MediaFormat? {
-        return getEmbedVideoInfo(context, uri, videoOffset = fileSize - videoSize, videoSize = videoSize)
+    fun getTrailerVideoInfo(context: Context, contentAddress: ContentAddress, fileSize: Long, videoSize: Long): MediaFormat? {
+        return getEmbedVideoInfo(context, contentAddress, videoOffset = fileSize - videoSize, videoSize = videoSize)
     }
 
-    private fun getEmbedVideoInfo(context: Context, uri: Uri, videoOffset: Long, videoSize: Long): MediaFormat? {
+    private fun getEmbedVideoInfo(context: Context, contentAddress: ContentAddress, videoOffset: Long, videoSize: Long): MediaFormat? {
+        val uri = contentAddress.uri
+
         val extractor = MediaExtractor()
         var pfd: ParcelFileDescriptor? = null
         try {
@@ -374,12 +384,12 @@ object MultiPage {
                             }
                         }
                     } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to get track information for uri=$uri, track num=$trackIndex", e)
+                        Log.w(LOG_TAG, "failed to get track information for $contentAddress, track num=$trackIndex", e)
                     }
                 }
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to open motion photo for uri=$uri", e)
+            Log.w(LOG_TAG, "failed to open motion photo for $contentAddress", e)
         } finally {
             extractor.release()
             pfd?.close()
@@ -387,12 +397,15 @@ object MultiPage {
         return null
     }
 
-    fun getMotionPhotoVideoSizing(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Pair<Long, Long>? {
+    fun getMotionPhotoVideoSizing(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Pair<Long, Long>? {
         // default to trailer videos
-        getTrailerVideoSize(context, uri, mimeType, sizeBytes)?.let { videoSize ->
+        getTrailerVideoSize(context, contentAddress, sizeBytes)?.let { videoSize ->
             val videoOffset = sizeBytes - videoSize
             return Pair(videoOffset, videoSize)
         }
+
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
 
         if (isIsoBMFFImage(mimeType)) {
             // fallback to video within Samsung SEFD box

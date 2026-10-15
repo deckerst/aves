@@ -1,41 +1,30 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/gestures/ink_well.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/bars/floating_bar.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AvesAppBar extends StatelessWidget {
-  final double contentHeight;
-  final bool pinned;
-  final Widget? leading;
-  final Widget title;
-  final List<Widget> Function(BuildContext context, double maxWidth) actions;
-  final Widget? bottom;
-  final Object? transitionKey;
-
+class const AvesAppBar({
+  super.key,
+  required final double contentHeight,
+  required final bool pinned,
+  required final Widget? leading,
+  required final Widget title,
+  required final List<Widget> Function(BuildContext context, double maxWidth) actions,
+  final Widget? bottom,
+  final Object? transitionKey,
+}) extends StatelessWidget {
   static const leadingHeroTag = 'appbar-leading';
   static const titleHeroTag = 'appbar-title';
   static const double _titleMinWidth = 96;
-
-  const new({
-    super.key,
-    required this.contentHeight,
-    required this.pinned,
-    required this.leading,
-    required this.title,
-    required this.actions,
-    this.bottom,
-    this.transitionKey,
-  });
+  static const margin = EdgeInsets.all(8);
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +87,7 @@ class AvesAppBar extends StatelessWidget {
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: AvesApp.themeSystemOverlayStyle(theme),
             child: AvesFloatingBar(
+              margin: margin,
               builder: (context, backgroundColor, child) => Material(
                 color: backgroundColor,
                 child: AInkResponse(
@@ -180,18 +170,13 @@ class AvesAppBar extends StatelessWidget {
     );
   }
 
-  static double appBarHeightForContentHeight(double contentHeight) => AvesFloatingBar.margin.vertical + contentHeight;
+  static double appBarHeightForContentHeight(double contentHeight) => margin.vertical + contentHeight;
 }
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final double height;
-  final Widget child;
-
-  const new({
-    required this.height,
-    required this.child,
-  });
-
+class const _SliverAppBarDelegate({
+  required final double height,
+  required final Widget child,
+}) extends SliverPersistentHeaderDelegate {
   @override
   double get minExtent => height;
 
@@ -203,95 +188,4 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant _SliverAppBarDelegate oldDelegate) => true;
-}
-
-class AvesFloatingBar extends StatefulWidget {
-  final Widget Function(BuildContext context, Color backgroundColor, Widget? child) builder;
-  final Widget? child;
-
-  static const margin = EdgeInsets.all(8);
-  static const borderRadius = BorderRadius.all(Radius.circular(8));
-
-  const new({
-    super.key,
-    required this.builder,
-    this.child,
-  });
-
-  @override
-  State<AvesFloatingBar> createState() => _AvesFloatingBarState();
-}
-
-class _AvesFloatingBarState extends State<AvesFloatingBar> with RouteAware {
-  // prevent expensive blurring when the current page is hidden
-  final ValueNotifier<bool> _isBlurAllowedNotifier = ValueNotifier(true);
-  Timer? _blurBlockTimer;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final route = ModalRoute.of(context);
-    if (route is PageRoute) {
-      AvesApp.pageRouteObserver.subscribe(this, route);
-    }
-  }
-
-  @override
-  void dispose() {
-    AvesApp.pageRouteObserver.unsubscribe(this);
-    _isBlurAllowedNotifier.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didPopNext() {
-    // post to prevent single frame flash during hero
-    _blurBlockTimer?.cancel();
-    _blurBlockTimer = null;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _isBlurAllowedNotifier.value = true;
-    });
-  }
-
-  @override
-  void didPushNext() {
-    // delay blur disabling, otherwise visual artifacts appear during page transition with Impeller
-    _blurBlockTimer?.cancel();
-    _blurBlockTimer = Timer(ADurations.pageTransitionLoose, () {
-      if (mounted) {
-        _isBlurAllowedNotifier.value = false;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final backgroundColor = theme.appBarTheme.backgroundColor ?? Themes.firstLayerColor(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isBlurAllowedNotifier,
-      builder: (context, isBlurAllowed, child) {
-        final blurred = isBlurAllowed && context.select<Settings, bool>((v) => v.enableBlurEffect);
-        return Container(
-          foregroundDecoration: BoxDecoration(
-            border: Border.all(
-              color: theme.dividerColor,
-            ),
-            borderRadius: AvesFloatingBar.borderRadius,
-          ),
-          margin: AvesFloatingBar.margin,
-          child: BlurredRRect(
-            enabled: blurred,
-            borderRadius: AvesFloatingBar.borderRadius,
-            child: widget.builder(
-              context,
-              blurred ? backgroundColor.withValues(alpha: .85) : backgroundColor,
-              widget.child,
-            ),
-          ),
-        );
-      },
-    );
-  }
 }

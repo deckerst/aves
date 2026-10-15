@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/calendar/ops/gregorian.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/media/video/channel_layouts.dart';
@@ -9,13 +11,11 @@ import 'package:aves/model/media/video/profiles/h264.dart';
 import 'package:aves/model/media/video/profiles/hevc.dart';
 import 'package:aves/model/media/video/stereo_3d_modes.dart';
 import 'package:aves/model/metadata/catalog.dart';
-import 'package:aves/ref/languages.dart';
+import 'package:aves/ref/locale/iso639_2.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/format.dart';
-import 'package:aves/locale/aves_locale.dart';
-import 'package:aves/locale/calendar/ops/gregorian.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
@@ -519,9 +519,8 @@ class VideoMetadataFormatter {
     return size != null ? formatFileSize(AvesLocale.ascii, size) : '$value';
   }
 
-  static String _formatLanguage(String value) {
-    final language = Language.living639_2.firstWhereOrNull((language) => language.iso639_2 == value);
-    return language?.native ?? value;
+  static String _formatLanguage(String iso639_2) {
+    return LanguageCodesIso639_2.endonymOf(iso639_2) ?? iso639_2;
   }
 
   // format ISO 6709 input, e.g. '+37.5090+127.0243/' (Samsung), '+51.3328-000.7053+113.474/' (Apple)

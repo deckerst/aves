@@ -115,8 +115,8 @@ class PlatformAppService implements AppService {
       _stream
           .receiveBroadcastStream(<String, Object?>{
             'op': 'edit',
-            'uri': uri,
             'mimeType': mimeType,
+            'uri': uri,
           })
           .listen(
             (data) => opCompleter.complete(data as Map?),
@@ -142,8 +142,8 @@ class PlatformAppService implements AppService {
   Future<bool> open(String uri, String mimeType, {required bool forceChooser}) async {
     try {
       final result = await _platform.invokeMethod('open', <String, Object?>{
-        'uri': uri,
         'mimeType': mimeType,
+        'uri': uri,
         'forceChooser': forceChooser,
       });
       if (result != null) return result as bool;
@@ -170,8 +170,8 @@ class PlatformAppService implements AppService {
   Future<bool> setAs(String uri, String mimeType) async {
     try {
       final result = await _platform.invokeMethod('setAs', <String, Object?>{
-        'uri': uri,
         'mimeType': mimeType,
+        'uri': uri,
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e, stack) {

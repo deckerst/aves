@@ -128,7 +128,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   String get category => type;
 
   @override
-  String get key => '$type-$reversed-$level-$code-$place';
+  String get key => '$type-$reversed-${level.name}-$code-$place';
 }
 
 enum LocationLevel { place, state, country }

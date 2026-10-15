@@ -12,10 +12,8 @@ import 'package:aves/widgets/settings/language/locale_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class LocaleSelectionPage extends StatefulWidget {
+class const LocaleSelectionPage({super.key}) extends StatefulWidget {
   static const routeName = '/settings/locale';
-
-  const new({super.key});
 
   @override
   State<LocaleSelectionPage> createState() => _LocaleSelectionPageState();
@@ -68,12 +66,13 @@ class _LocaleSelectionPageState extends State<LocaleSelectionPage> {
                         return title.toUpperCase().contains(upQuery);
                       })
                       .map((kv) {
-                        final value = kv.key;
+                        final locale = kv.key;
                         final title = kv.value;
+                        final localeBcp47 = locale.toLanguageTag();
                         return ReselectableRadioListTile<ui.Locale>(
                           // key is expected by test driver
-                          key: Key(value.toString()),
-                          value: value,
+                          key: Key(localeBcp47),
+                          value: locale,
                           reselectable: true,
                           title: FadingLine(title),
                         );

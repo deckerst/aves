@@ -96,7 +96,7 @@ mixin AppSettings on SettingsAccess {
   // advanced identifier, resolved to match user settings
   AvesLocale get avesLocale {
     _avesLocale ??= AvesLocale(
-      languageTag: resolvedLocale.toLanguageTag(),
+      languageBcp47: resolvedLocale.toLanguageTag(),
       calendar: calendar,
       forceWesternArabicNumerals: forceWesternArabicNumerals,
     );

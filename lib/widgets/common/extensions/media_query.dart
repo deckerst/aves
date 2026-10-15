@@ -61,5 +61,35 @@ extension ExtraMediaQueryData on MediaQueryData {
   viewInsets        EdgeInsets(0.0, 0.0, 0.0, 338.0)
    */
 
-  double get effectiveBottomPadding => max(viewPadding.bottom, viewInsets.bottom);
+  double get safeBottomPadding => <double>{
+    viewPadding.bottom,
+    viewInsets.bottom,
+    systemGestureInsets.bottom,
+    bottomDisplayCornerRadius,
+  }.fold(0, max);
+
+  double get bottomDisplayCornerRadius {
+    final r = displayCornerRadii;
+    if (r == null) return 0;
+    final bl = r.bottomLeft;
+    final br = r.bottomRight;
+    return [bl.x, bl.y, br.x, br.y].fold(0, max);
+  }
+
+  MediaQueryData removeCutoutInsets(EdgeInsets cutoutInsets) {
+    return copyWith(
+      padding: EdgeInsets.only(
+        left: max(0.0, padding.left - cutoutInsets.left),
+        top: max(0.0, padding.top - cutoutInsets.top),
+        right: max(0.0, padding.right - cutoutInsets.right),
+        bottom: max(0.0, padding.bottom - cutoutInsets.bottom),
+      ),
+      viewPadding: EdgeInsets.only(
+        left: max(0.0, viewPadding.left - cutoutInsets.left),
+        top: max(0.0, viewPadding.top - cutoutInsets.top),
+        right: max(0.0, viewPadding.right - cutoutInsets.right),
+        bottom: max(0.0, viewPadding.bottom - cutoutInsets.bottom),
+      ),
+    );
+  }
 }

@@ -201,6 +201,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
             Expanded(
               child: HighlightTitle(
                 title: title,
+                locale: context.knownLocale,
                 showHighlight: false,
               ),
             ),

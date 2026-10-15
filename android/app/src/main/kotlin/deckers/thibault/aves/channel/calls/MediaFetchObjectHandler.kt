@@ -46,10 +46,15 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
             return
         }
 
-        provider.fetchSingle(context, uri, mimeType, allowUnsized, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
-        })
+        provider.fetchSingle(
+            context = context,
+            sourceMimeType = mimeType,
+            uri = uri,
+            allowUnsized = allowUnsized,
+            callback = object : ImageOpCallback {
+                override fun onSuccess(fields: FieldMap) = result.success(fields)
+                override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
+            })
     }
 
     private fun clearDecoders(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

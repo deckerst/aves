@@ -98,6 +98,7 @@
   "chipActionGoToPlacePage": "Show in Places",
   "chipActionGoToTagPage": "Show in Tags",
   "chipActionGoToExplorerPage": "Show in Explorer",
+  "chipActionCopyCenterCoordinates": "Copy center coordinates",
   "chipActionDecompose": "Split",
   "chipActionFilterOut": "Filter out",
   "chipActionFilterIn": "Filter in",
@@ -485,6 +486,7 @@
 
   "renameAlbumDialogLabel": "New name",
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
+  "renameTagDialogLabelAlreadyExistsHelper": "Tag already exists",
 
   "renameEntrySetPageTitle": "Rename",
   "renameEntrySetPagePatternFieldLabel": "Naming pattern",

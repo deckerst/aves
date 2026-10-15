@@ -5,6 +5,7 @@ import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_card.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/crs.dart';
@@ -131,6 +132,7 @@ class XmpNamespace extends Equatable {
                 padding: const EdgeInsets.only(top: 8, bottom: 4),
                 child: HighlightTitle(
                   title: displayTitle,
+                  locale: KnownLocale.english,
                   color: context.select<AvesColorsData, Color?>((v) => v.fromBrandColor(BrandColors.get(displayTitle))),
                 ),
               ),

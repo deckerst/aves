@@ -2,7 +2,6 @@ package deckers.thibault.aves.decoding
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -17,6 +16,7 @@ import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
@@ -35,10 +35,8 @@ import kotlin.math.roundToInt
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
-    private val uri: Uri,
-    private val pageId: Int?,
+    private val contentAddress: ContentAddress,
     private val decoded: Boolean,
-    private val mimeType: String,
     private val dateModifiedMillis: Long,
     private val rotationDegrees: Int,
     private val isFlipped: Boolean,
@@ -47,6 +45,10 @@ class ThumbnailFetcher internal constructor(
     private val videoMethods: List<VideoThumbnailMethod>?,
     private val result: ByteSink,
 ) {
+    private val mimeType = contentAddress.mimeType
+    private val uri = contentAddress.uri
+    private val pageId = contentAddress.pageId
+
     private val density = context.devicePixelRatio()
     private val defaultSize = (DEFAULT_SIZE_DIP * density).roundToInt()
     private val width: Int = if (widthDip?.takeIf { it > 0 } != null) (widthDip * density).roundToInt() else defaultSize
@@ -110,7 +112,7 @@ class ThumbnailFetcher internal constructor(
             if (bitmap.byteCount > BITMAP_SIZE_DANGER_THRESHOLD) {
                 result.error(
                     "getThumbnail-large", "thumbnail bitmap dangerously large" +
-                            " for mimeType=$mimeType uri=$uri pageId=$pageId width=$width height=$height" +
+                            " for $contentAddress width=$width height=$height" +
                             ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height} config=${bitmap.config?.name}", null
                 )
                 return
@@ -124,7 +126,7 @@ class ThumbnailFetcher internal constructor(
             if (errorDetails?.isNotEmpty() == true) {
                 errorDetails = errorDetails.split(Regex("\n"), 2).first()
             }
-            result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
+            result.error("getThumbnail-null", "failed to get thumbnail for $contentAddress", errorDetails)
         } else {
             result.streamBytes(ByteArrayInputStream(bytes))
         }
@@ -170,7 +172,7 @@ class ThumbnailFetcher internal constructor(
         val target = Glide.with(context)
             .asBitmap()
             .apply(options)
-            .load(AvesAppGlideModule.getModel(context, uri, mimeType, pageId, videoMethods = videoMethods))
+            .load(AvesAppGlideModule.getModel(context, contentAddress, videoMethods = videoMethods))
             .submit(width, height)
 
         return try {

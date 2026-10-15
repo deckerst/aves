@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -12,30 +10,24 @@ import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/slideshow_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SlideshowBottomOverlay extends StatelessWidget {
-  final AnimationController animationController;
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-
-  const new({
-    super.key,
-    required this.animationController,
-    required this.availableSize,
-    this.viewInsets,
-    this.viewPadding,
-  });
-
+class const SlideshowBottomOverlay({
+  super.key,
+  required final AnimationController animationController,
+  required final Size availableSize,
+  final EdgeInsets? viewInsets,
+  final EdgeInsets? viewPadding,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom),
-      builder: (context, mqPaddingBottom, child) {
+      selector: (context, mq) => mq.safeBottomPadding,
+      builder: (context, safeBottomPadding, child) {
         return Padding(
-          padding: EdgeInsets.only(bottom: mqPaddingBottom),
+          padding: EdgeInsets.only(bottom: safeBottomPadding),
           child: child,
         );
       },
@@ -49,19 +41,13 @@ class SlideshowBottomOverlay extends StatelessWidget {
   }
 }
 
-class SlideshowButtons extends StatefulWidget {
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-  final AnimationController animationController;
-
-  const new({
-    super.key,
-    required this.availableSize,
-    required this.viewInsets,
-    required this.viewPadding,
-    required this.animationController,
-  });
-
+class const SlideshowButtons({
+  super.key,
+  required final Size availableSize,
+  required final EdgeInsets? viewInsets,
+  required final EdgeInsets? viewPadding,
+  required final AnimationController animationController,
+}) extends StatefulWidget {
   @override
   State<SlideshowButtons> createState() => _SlideshowButtonsState();
 }

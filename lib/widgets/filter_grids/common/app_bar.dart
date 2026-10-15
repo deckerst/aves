@@ -12,13 +12,13 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/crumb_line.dart';
+import 'package:aves/widgets/common/bars/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/bars/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
+import 'package:aves/widgets/common/bars/crumb_line.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
@@ -435,7 +435,7 @@ class _FilterGridAppBarState<T extends CollectionFilter, CSAD extends ChipSetAct
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           _onActionSelected(context, action, actionDelegate);
         },
         popUpAnimationStyle: animations.popUpAnimationStyle,

@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.util.Log
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.MainActivity.Companion.SCOPED_STORAGE_PERMISSION_REQUEST
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
@@ -85,7 +86,13 @@ class MediaStoreImageProvider : ImageProvider() {
     // the provided URI can point to the wrong media collection,
     // e.g. a GIF image with the URI `content://media/external/video/media/[ID]`
     // so the effective entry URI may not match the provided URI
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
+    override fun fetchSingle(
+        context: Context,
+        sourceMimeType: String?,
+        uri: Uri,
+        allowUnsized: Boolean,
+        callback: ImageOpCallback,
+    ) {
         var found = false
         val fetched = arrayListOf<FieldMap>()
         val id = uri.tryParseId()
@@ -374,7 +381,11 @@ class MediaStoreImageProvider : ImageProvider() {
         return newPath
     }
 
-    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
+    override fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+        val path = contentAddress.path
+
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, _ ->
             val projection = arrayOf(
                 MediaStore.MediaColumns.DATE_MODIFIED,

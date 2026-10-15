@@ -8,18 +8,15 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MetadataTab extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const MetadataTab({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<MetadataTab> createState() => _MetadataTabState();
 }
@@ -93,6 +90,7 @@ class _MetadataTabState extends State<MetadataTab> {
       );
       return AvesExpansionTile(
         title: title,
+        locale: KnownLocale.english,
         children: [
           if (data.isNotEmpty)
             Padding(
@@ -144,6 +142,7 @@ class _MetadataTabState extends State<MetadataTab> {
             final data = snapshot.data?.trim();
             return AvesExpansionTile(
               title: 'MP4 Parser',
+              locale: KnownLocale.english,
               children: [
                 if (data != null && data.isNotEmpty)
                   Padding(

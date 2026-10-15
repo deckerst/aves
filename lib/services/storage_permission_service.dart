@@ -177,8 +177,12 @@ class PlatformStoragePermissionService implements StoragePermissionService {
       // `await` here, so that `completeError` will be caught below
       return await opCompleter.future;
     } on PlatformException catch (e) {
-      if (e.code == 'requestMediaStoreFileAccess-large') {
+      final code = e.code;
+      final customException = CustomPlatformException.fromStandard(e);
+      if (code == 'requestMediaStoreFileAccess-large') {
         throw TooManyItemsException();
+      } else if (code == 'requestMediaStoreFileAccess-sendintent') {
+        await mediaStoreFileAccessSendIntent(customException);
       } else {
         final message = e.message;
         // mute issue in the specific case when an item:
@@ -186,7 +190,7 @@ class PlatformStoragePermissionService implements StoragePermissionService {
         // 2) has no `images` or `video` entry,
         // 3) is in a restricted directory
         if (message == null || !message.contains('/external/file/')) {
-          await mediaStoreFileAccessDenied(CustomPlatformException.fromStandard(e));
+          await mediaStoreFileAccessDenied(customException);
         }
       }
     }
@@ -195,6 +199,11 @@ class PlatformStoragePermissionService implements StoragePermissionService {
 
   // distinct exceptions to convince Crashlytics to split reports into distinct issues
   // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
+
+  Future<void> mediaStoreFileAccessSendIntent(CustomPlatformException e) {
+    debugPrint('mediaStoreFileAccessSendIntent $e');
+    return reportService.recordError(e);
+  }
 
   Future<void> mediaStoreFileAccessDenied(CustomPlatformException e) {
     debugPrint('mediaStoreFileAccessDenied $e');

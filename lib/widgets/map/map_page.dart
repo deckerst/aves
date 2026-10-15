@@ -138,7 +138,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (settings.mapStyle?.isHeavy ?? false) {
       _isPageAnimatingNotifier.value = true;
-      Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionLoose * timeDilation, () {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });
@@ -299,7 +299,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
           if (index != null && _selectedIndexNotifier.value != index) {
             _selectedIndexNotifier.value = index;
           }
-          await Future.delayed(const Duration(milliseconds: 500));
+          await Future.pause(const Duration(milliseconds: 500));
           context.read<HighlightInfo>().set(entry);
         },
         onMarkerLongPress: appMode.canEditEntry ? _onMarkerLongPress : null,
@@ -546,7 +546,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
     );
     if (selectedAction != null) {
       // wait for the popup menu to hide before proceeding with the action
-      await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+      await Future.pause(animations.popUpAnimationDelay * timeDilation);
       final delegate = EntrySetActionDelegate();
       switch (selectedAction) {
         case .editLocation:

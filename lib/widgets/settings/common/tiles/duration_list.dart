@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
@@ -28,7 +29,7 @@ class const SettingsDurationListTile({
         ].join(' ');
 
         return ListTile(
-          title: Text(title(context) ?? '?'),
+          title: Text(title(context) ?? AText.valueNotAvailable),
           subtitle: AvesListSubtitle(subtitle),
           onTap: () async {
             final seconds = await showAvesDialog<int>(

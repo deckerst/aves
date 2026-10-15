@@ -71,6 +71,7 @@ class AndroidDebugService {
       final result = await _platform.invokeMethod('getExifInterfaceMetadata', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'path': entry.path,
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
@@ -84,7 +85,9 @@ class AndroidDebugService {
     try {
       // returns map with all data available from `MediaMetadataRetriever`
       final result = await _platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, Object?>{
+        'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'path': entry.path,
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {
@@ -99,6 +102,7 @@ class AndroidDebugService {
       final result = await _platform.invokeMethod('getMetadataExtractorSummary', <String, Object?>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'path': entry.path,
         'sizeBytes': entry.sizeBytes,
       });
       if (result != null) return result as Map;
@@ -152,9 +156,9 @@ class AndroidDebugService {
   static Future<Uint8List?> getThumbnail(ThumbnailProviderKey request, ThumbnailMethod method) async {
     try {
       final result = await _platform.invokeMethod('getThumbnail', <String, Object?>{
+        'mimeType': request.mimeType,
         'uri': request.uri,
         'pageId': request.pageId,
-        'mimeType': request.mimeType,
         'dateModifiedMillis': request.dateModifiedMillis,
         'rotationDegrees': request.rotationDegrees,
         'isFlipped': request.isFlipped,

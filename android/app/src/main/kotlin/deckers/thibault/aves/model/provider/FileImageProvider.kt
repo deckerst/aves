@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
@@ -15,7 +16,13 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 internal class FileImageProvider : ImageProvider() {
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
+    override fun fetchSingle(
+        context: Context,
+        sourceMimeType: String?,
+        uri: Uri,
+        allowUnsized: Boolean,
+        callback: ImageOpCallback,
+    ) {
         var mimeType = sourceMimeType
         val path = uri.path
 
@@ -42,7 +49,13 @@ internal class FileImageProvider : ImageProvider() {
                 callback.onFailure(e)
                 return
             }
-            mimeType = detectMimeType(context, uri, mimeType = null, sizeBytes)
+            mimeType = detectMimeType(
+                context = context,
+                mimeType = null,
+                uri = uri,
+                path = path,
+                sizeBytes = sizeBytes
+            )
         }
 
         if (mimeType == null) {
@@ -97,7 +110,9 @@ internal class FileImageProvider : ImageProvider() {
         )
     }
 
-    override fun scanPostMetadataEdit(context: Context, path: String, uri: Uri, mimeType: String, newFields: FieldMap, callback: ImageOpCallback) {
+    override fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
+        val path = contentAddress.path ?: throw IllegalArgumentException()
+
         try {
             val file = File(path)
             if (file.exists()) {

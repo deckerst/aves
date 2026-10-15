@@ -1,22 +1,16 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
-import 'package:aves/widgets/common/app_bar/crumb_line.dart';
+import 'package:aves/widgets/common/bars/crumb_line.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ExplorerCrumbLine extends StatelessWidget {
-  final VolumeRelativeDirectory? directory;
-  final void Function(VolumeRelativeDirectory? combinedPath) onTap;
-  final WidgetBuilder? lastCrumbBuilder;
-
-  const new({
-    super.key,
-    required this.directory,
-    required this.onTap,
-    required this.lastCrumbBuilder,
-  });
-
+class const ExplorerCrumbLine({
+  super.key,
+  required final VolumeRelativeDirectory? directory,
+  required final void Function(VolumeRelativeDirectory? combinedPath) onTap,
+  required final WidgetBuilder? lastCrumbBuilder,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CrumbLine<VolumeRelativeDirectory?>(

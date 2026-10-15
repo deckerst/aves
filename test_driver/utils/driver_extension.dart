@@ -15,7 +15,7 @@ extension ExtraFlutterDriver on FlutterDriver {
 
   Future<void> doubleTap(SerializableFinder finder, {Duration? timeout}) async {
     await tap(finder, timeout: timeout);
-    await Future.delayed(doubleTapDelay);
+    await Future.pause(doubleTapDelay);
     await tap(finder, timeout: timeout);
   }
 

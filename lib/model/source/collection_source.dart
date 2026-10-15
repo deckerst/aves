@@ -16,11 +16,13 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/trash.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
+import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/analysis_controller.dart';
 import 'package:aves/model/source/events.dart';
+import 'package:aves/model/source/filter_summary.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/location.dart';
 import 'package:aves/model/source/location/place.dart';
@@ -33,6 +35,7 @@ import 'package:aves/services/common/image_op_events.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +69,8 @@ mixin SourceBase {
   void setProgress({required int done, required int total}) => progressNotifier.value = ProgressEvent(done: done, total: total);
 
   void invalidateEntries();
+
+  FilterSummary computeFilterSummary(CollectionFilter filter);
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, PlaceMixin, StateMixin, LocationMixin, TagMixin, TrashMixin {
@@ -140,7 +145,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   }
 
   // known date by entry ID
-  late Map<int?, int?> _savedDates;
+  late Map<int, DateAndZone> _savedDates;
 
   Future<void> loadDates() async {
     _savedDates = Map.unmodifiable(await localMediaDb.loadDates());
@@ -185,8 +190,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
     // it is possible for entries hidden by a filter type, to have an impact on other types
     // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
     updateDirectories();
-    updateLocations();
-    updateTags();
+    invalidateLocations();
+    invalidateTags();
   }
 
   void _disposeEntries(bool Function(int id, AvesEntry entry) test) {
@@ -199,8 +204,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   void addEntries(Set<AvesEntry> entries, {bool notify = true}) {
     if (entries.isEmpty) return;
 
-    entries.where((entry) => entry.catalogDateMillis == null).forEach((entry) {
-      entry.catalogDateMillis = _savedDates[entry.id];
+    entries.where((entry) => !entry.isDated).forEach((entry) {
+      int? dateMillis;
+      int? timeZoneOffsetMinutes;
+      final v = _savedDates[entry.id];
+      if (v != null) {
+        (dateMillis, timeZoneOffsetMinutes) = v;
+      }
+      entry.setCatalogDate(dateMillis, timeZoneOffsetMinutes);
     });
 
     final newEntriesById = Map.fromEntries(entries.map((entry) => MapEntry(entry.id, entry)));
@@ -542,10 +553,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       } else {
         // explicit GC before cataloguing multiple items
         await deviceService.requestGarbageCollection();
-        await catalogEntries(_analysisController, todoEntries);
-        updateDerivedFilters(todoEntries);
-        await locateEntries(_analysisController, todoEntries);
-        updateDerivedFilters(todoEntries);
+        if (await catalogEntries(_analysisController, todoEntries)) {
+          updateDerivedFilters(todoEntries);
+        }
+        if (await locateEntries(_analysisController, todoEntries)) {
+          updateDerivedFilters(todoEntries);
+        }
       }
     }
     defaultAnalysisController.dispose();
@@ -565,6 +578,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   bool get canRefresh => _canRefresh;
 
   // filter summary
+
+  @override
+  FilterSummary computeFilterSummary(CollectionFilter filter) {
+    final entries = sortedEntriesByDate.where(filter.test).toList();
+    return FilterSummary(
+      entryCount: entries.length,
+      size: entries.map((v) => v.sizeBytes).sum,
+      recentEntry: entries.firstOrNull,
+    );
+  }
 
   int count(CollectionFilter filter) {
     switch (filter) {

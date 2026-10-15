@@ -5,12 +5,15 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/app/support.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/props.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/output_buffer.dart';
 import 'package:aves/services/common/service_policy.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves_model/aves_model.dart';
 import 'package:aves_report/aves_report.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -72,8 +75,8 @@ class PlatformMediaFetchService implements MediaFetchService {
   Future<AvesEntry?> getEntry(String uri, String? mimeType, {bool allowUnsized = false}) async {
     try {
       final result = await _platformObject.invokeMethod('getEntry', <String, Object?>{
-        'uri': uri,
         'mimeType': mimeType,
+        'uri': uri,
         'allowUnsized': allowUnsized,
       }) as Map;
       AvesEntry.normalizeMimeTypeFields(result);
@@ -94,12 +97,13 @@ class PlatformMediaFetchService implements MediaFetchService {
     return <String, Object?>{
       'op': 'getFullImage',
       'decoded': decoded,
+      'mimeType': request.mimeType,
       'uri': request.uri,
       'pageId': request.pageId,
-      'mimeType': request.mimeType,
       'sizeBytes': request.sizeBytes,
       'rotationDegrees': request.rotationDegrees ?? 0,
       'isFlipped': request.isFlipped,
+      'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
     };
   }
 
@@ -187,6 +191,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       isAnimated: entry.isAnimated,
       pageId: entry.pageId,
       sizeBytes: entry.sizeBytes,
+      videoThumbnailMethods: entry.isVideo ? settings.videoThumbnailMethods : null,
     );
     final bytes = await _getBytes(
       mimeType: request.mimeType,
@@ -233,9 +238,9 @@ class PlatformMediaFetchService implements MediaFetchService {
       'op': 'getRegion',
       'decoded': decoded,
       'applyGainmap': applyHdrGainmap,
+      'mimeType': request.mimeType,
       'uri': request.uri,
       'pageId': request.pageId,
-      'mimeType': request.mimeType,
       'sizeBytes': request.sizeBytes,
       'sampleSize': request.sampleSize,
       'regionX': request.regionRect.left,
@@ -245,7 +250,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'imageWidth': request.imageSize.width.toInt(),
       'imageHeight': request.imageSize.height.toInt(),
     };
-    return servicePolicy.call(
+    return platformServicePolicy.call(
       () async {
         final bytes = await _getBytes(
           mimeType: request.mimeType,
@@ -272,9 +277,9 @@ class PlatformMediaFetchService implements MediaFetchService {
     final args = <String, Object?>{
       'op': 'getThumbnail',
       'decoded': decoded,
+      'mimeType': mimeType,
       'uri': uri,
       'pageId': request.pageId,
-      'mimeType': mimeType,
       'dateModifiedMillis': request.dateModifiedMillis,
       'rotationDegrees': request.rotationDegrees,
       'isFlipped': request.isFlipped,
@@ -282,7 +287,7 @@ class PlatformMediaFetchService implements MediaFetchService {
       'heightDip': extentDip,
       'videoMethods': request.videoThumbnailMethods?.map((v) => v.name).toList(),
     };
-    return servicePolicy.call(
+    return platformServicePolicy.call(
       () async {
         final bytes = await _getBytes(
           mimeType: request.mimeType,
@@ -290,7 +295,7 @@ class PlatformMediaFetchService implements MediaFetchService {
         );
 
         if (bytes.isEmpty && (MimeTypes.isVideo(mimeType) || mimeType == MimeTypes.avif)) {
-          final descriptor = await videoMetadataFetcher.getThumbnailDescriptor(
+          final descriptor = await videoThumbnailFetcher.getThumbnailDescriptor(
             uri: uri,
             mimeType: mimeType,
             targetExtentDip: extentDip,
@@ -341,13 +346,13 @@ class PlatformMediaFetchService implements MediaFetchService {
   }
 
   @override
-  bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
+  bool cancelRegion(Object taskKey) => platformServicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
 
   @override
-  bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
+  bool cancelThumbnail(Object taskKey) => platformServicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
   @override
-  Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  Future<T>? resumeLoading<T>(Object taskKey) => platformServicePolicy.resume<T>(taskKey);
 
   // convenience methods
 
@@ -400,27 +405,17 @@ class PlatformMediaFetchService implements MediaFetchService {
 }
 
 @immutable
-class ImageRequest extends Equatable {
-  final String uri;
-  final String mimeType;
-  final int? rotationDegrees;
-  final bool isFlipped;
-  final bool isAnimated;
-  final int? pageId;
-  final int? sizeBytes;
-  final BytesReceivedCallback? onBytesReceived;
-
+class const ImageRequest(
+  final String uri,
+  final String mimeType, {
+  required final int? rotationDegrees,
+  required final bool isFlipped,
+  required final bool isAnimated,
+  required final int? pageId,
+  required final int? sizeBytes,
+  required final List<VideoThumbnailMethod>? videoThumbnailMethods,
+  final BytesReceivedCallback? onBytesReceived,
+}) extends Equatable {
   @override
-  List<Object?> get props => [uri, mimeType, rotationDegrees, isFlipped, isAnimated, pageId, sizeBytes, onBytesReceived];
-
-  const new(
-    this.uri,
-    this.mimeType, {
-    required this.rotationDegrees,
-    required this.isFlipped,
-    required this.isAnimated,
-    required this.pageId,
-    required this.sizeBytes,
-    this.onBytesReceived,
-  });
+  List<Object?> get props => [uri, mimeType, rotationDegrees, isFlipped, isAnimated, pageId, sizeBytes, videoThumbnailMethods, onBytesReceived];
 }

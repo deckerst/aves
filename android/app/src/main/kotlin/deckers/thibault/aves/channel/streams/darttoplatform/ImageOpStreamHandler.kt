@@ -87,14 +87,14 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         }
 
         var destinationDir = arguments["destinationPath"] as String?
-        val mimeType = arguments["mimeType"] as String?
+        val exportMimeType = arguments["exportMimeType"] as String?
         val quality = (arguments["quality"] as Number?)?.toInt()
         val lengthUnit = arguments["lengthUnit"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
         val writeMetadata = arguments["writeMetadata"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.fromKey(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || mimeType == null || quality == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
+        if (destinationDir == null || exportMimeType == null || quality == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
             error("convert-args", "missing arguments", null)
             return
         }
@@ -111,7 +111,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         val entries = entryMapList.map(::AvesEntry)
         provider.convertMultiple(
             context = context,
-            imageExportMimeType = mimeType,
+            exportMimeType = exportMimeType,
             targetDir = destinationDir,
             entries = entries,
             quality = quality,

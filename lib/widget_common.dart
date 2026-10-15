@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/app_flavor.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/sort.dart';
 import 'package:aves/model/settings/enums/widget_outline.dart';
@@ -13,8 +14,8 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
 const _widgetDrawChannel = AvesMethodChannel('deckers.thibault/aves/widget_draw');
 
@@ -22,8 +23,10 @@ void widgetMainCommon(AppFlavor flavor) async {
   debugPrint('Widget main start');
   WidgetsFlutterBinding.ensureInitialized();
   initPlatformServices();
+  await device.init();
   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
   await reportService.init();
+  videoThumbnailFetcher.init();
 
   debugPrint('Widget channel method handling setup');
   _widgetDrawChannel.setMethodCallHandler((call) async {
@@ -45,10 +48,12 @@ Future<Map<String, Object>> _drawWidget(Object? args) async {
   final argMap = args.cast<String, Object?>();
   final widgetId = argMap['widgetId'] as int;
   final sizesDip = (argMap['sizesDip'] as List).cast<Map>().map((kv) {
-    return Size(kv['widthDip'] as double, kv['heightDip'] as double);
+    final widthDip = (kv['widthDip'] as num).toDouble();
+    final heightDip = (kv['heightDip'] as num).toDouble();
+    return Size(widthDip, heightDip);
   }).toList();
-  final cornerRadiusPx = argMap['cornerRadiusPx'] as double?;
-  final devicePixelRatio = argMap['devicePixelRatio'] as double;
+  final cornerRadiusPx = (argMap['cornerRadiusPx'] as num?)?.toDouble();
+  final devicePixelRatio = (argMap['devicePixelRatio'] as num).toDouble();
   final drawEntryImage = argMap['drawEntryImage'] as bool;
   final reuseEntry = argMap['reuseEntry'] as bool;
   final isSystemThemeDark = argMap['isSystemThemeDark'] as bool;

@@ -25,6 +25,7 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.VideoThumbnailMethod
@@ -252,25 +253,28 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
+        val path = call.argument<String>("path")
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getExifInterfaceMetadata-args", "missing arguments", null)
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val metadataMap = HashMap<String, String?>()
         if (canReadWithExifInterface(mimeType, strict = false)) {
             try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-                    val exif = ExifInterface(input)
-                    for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
-                        metadataMap[tag] = exif.getAttribute(tag)
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                    val exifInterface = ExifInterface(input)
+                    for (tag in ExifInterfaceHelper.allTags.keys.filter { exifInterface.hasAttribute(it) }) {
+                        metadataMap[tag] = exifInterface.getAttribute(tag)
                     }
                 }
             } catch (e: Exception) {
                 // ExifInterface initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=$uri", e.message)
+                result.error("getExifInterfaceMetadata-failure", "failed to get exif for $contentAddress", e.message)
                 return
             }
         }
@@ -278,14 +282,18 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
-        if (uri == null) {
+        val path = call.argument<String>("path")
+        if (mimeType == null || uri == null) {
             result.error("getMediaMetadataRetrieverMetadata-args", "missing arguments", null)
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val metadataMap = HashMap<String, String>()
-        val retriever = StorageUtils.openMetadataRetriever(context, uri)
+        val retriever = StorageUtils.openMetadataRetriever(context, contentAddress)
         if (retriever != null) {
             try {
                 for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
@@ -304,16 +312,19 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
+        val path = call.argument<String>("path")
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getMetadataExtractorSummary-args", "missing arguments", null)
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val metadataMap = HashMap<String, String>()
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
-                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = Helper.safeRead(input, sizeBytes)
                     metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
                         if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
@@ -335,11 +346,11 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for $contentAddress", e)
             } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for $contentAddress", e)
             } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for $contentAddress", e)
             }
         }
         result.success(metadataMap)
@@ -473,15 +484,15 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
+
         val decoded = false
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         val fetcher = ThumbnailFetcher(
             context = context,
-            uri = uri,
-            pageId = pageId,
+            contentAddress = contentAddress,
             decoded = decoded,
-            mimeType = mimeType,
             dateModifiedMillis = dateModifiedMillis ?: (Date().time),
             rotationDegrees = rotationDegrees,
             isFlipped = isFlipped,
@@ -529,7 +540,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             if (errorDetails?.isNotEmpty() == true) {
                 errorDetails = errorDetails.split(Regex("\n"), 2).first()
             }
-            result.error("getThumbnail-null", "failed to get thumbnail for mimeType=$mimeType uri=$uri", errorDetails)
+            result.error("getThumbnail-null", "failed to get thumbnail for contentAddress", errorDetails)
         } else {
             result.success(bytes)
         }

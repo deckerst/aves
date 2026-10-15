@@ -5,18 +5,12 @@ import 'package:aves/widgets/viewer/view/conductor.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MultiPageOverlay extends StatefulWidget {
-  final MultiPageController controller;
-  final double availableWidth;
-  final bool scrollable;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.availableWidth,
-    required this.scrollable,
-  });
-
+class const MultiPageOverlay({
+  super.key,
+  required final MultiPageController controller,
+  required final double availableWidth,
+  required final bool scrollable,
+}) extends StatefulWidget {
   @override
   State<MultiPageOverlay> createState() => _MultiPageOverlayState();
 }

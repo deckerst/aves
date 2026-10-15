@@ -27,17 +27,13 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ExplorerPage extends StatefulWidget {
+class const ExplorerPage({super.key, final String? path}) extends StatefulWidget {
   static const routeName = '/explorer';
-
-  final String? path;
-
-  const new({super.key, this.path});
 
   @override
   State<ExplorerPage> createState() => _ExplorerPageState();
@@ -209,17 +205,11 @@ class _ExplorerPageState extends State<ExplorerPage> {
   }
 }
 
-class _ExplorerPageContent extends StatelessWidget {
-  final ValueNotifier<VolumeRelativeDirectory?> directoryNotifier;
-  final ValueNotifier<VolumeRelativeDirectory?> contentsDirectoryNotifier;
-  final ValueNotifier<List<Directory>> contentsNotifier;
-
-  const new({
-    required this.directoryNotifier,
-    required this.contentsDirectoryNotifier,
-    required this.contentsNotifier,
-  });
-
+class const _ExplorerPageContent({
+  required final ValueNotifier<VolumeRelativeDirectory?> directoryNotifier,
+  required final ValueNotifier<VolumeRelativeDirectory?> contentsDirectoryNotifier,
+  required final ValueNotifier<List<Directory>> contentsNotifier,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -267,7 +257,6 @@ class _ExplorerPageContent extends StatelessWidget {
                           ),
                         ),
                   const NavBarPaddingSliver(),
-                  const BottomPaddingSliver(),
                 ],
               );
             },
@@ -315,13 +304,9 @@ class _ExplorerPageContent extends StatelessWidget {
   }
 }
 
-class _ExplorerContentLine extends StatelessWidget {
-  final FileSystemEntity entity;
-
-  const new({
-    required this.entity,
-  });
-
+class const _ExplorerContentLine({
+  required final FileSystemEntity entity,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
@@ -355,27 +340,13 @@ class _ExplorerContentLine extends StatelessWidget {
   }
 }
 
-abstract class _ExplorerNotification extends Notification {
-  const new();
-}
+abstract class const _ExplorerNotification() extends Notification;
 
 @immutable
-class _GoToDirectoryNotification extends _ExplorerNotification {
-  final VolumeRelativeDirectory? dir;
-
-  const new(this.dir);
-}
+class const _GoToDirectoryNotification(final VolumeRelativeDirectory? dir) extends _ExplorerNotification;
 
 @immutable
-class _GoToPathNotification extends _ExplorerNotification {
-  final String path;
-
-  const new(this.path);
-}
+class const _GoToPathNotification(final String path) extends _ExplorerNotification;
 
 @immutable
-class _GoToCollectionPageNotification extends _ExplorerNotification {
-  final CollectionFilter filter;
-
-  const new(this.filter);
-}
+class const _GoToCollectionPageNotification(final CollectionFilter filter) extends _ExplorerNotification;

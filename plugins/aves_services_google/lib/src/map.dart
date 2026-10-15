@@ -209,7 +209,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
                             _serviceMapController = controller;
                             final zoom = await controller.getZoomLevel();
                             // the visible region is sometimes incorrect when queried right after creation,
-                            await Future.delayed(boundInitDelay);
+                            await Future.pause(boundInitDelay);
                             await _updateVisibleRegion(zoom: zoom, rotation: bounds.rotation);
                             // `onCameraIdle` is not always automatically triggered following map creation
                             _onIdle();
@@ -252,7 +252,7 @@ class _EntryGoogleMapState<T> extends State<EntryGoogleMap<T>> {
   // sometimes the map does not properly update after changing the widget size,
   // so we monitor the size and force refreshing after an arbitrary small delay
   Future<void> _onSizeChanged() async {
-    await Future.delayed(boundInitDelay);
+    await Future.pause(boundInitDelay);
     _onIdle();
   }
 

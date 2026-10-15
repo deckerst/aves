@@ -1,5 +1,5 @@
-<i>Aves</i> can handle all sorts of images and videos, including your typical JPEGs and MP4s, but also more exotic things like <b>multi-page TIFFs, SVGs, old AVIs and more</b>! It scans your media collection to identify <b>motion photos</b>, <b>panoramas</b> (aka photo spheres), <b>360° videos</b>, as well as <b>GeoTIFF</b> files.
+<i>Aves</i> ہر قسم کی تصاویر اور ویڈیوز کو سنبھال سکتا ہے، جن میں عام JPEG اور MP4 فائلیں شامل ہیں، لیکن ساتھ ہی کچھ غیر معمولی چیزیں بھی جیسے <b>کئی صفحات والی TIFF، SVG، پرانی AVI اور بہت کچھ</b>! یہ آپ کے میڈیا کلیکشن کو اسکین کر کے <b>موشن فوٹوز</b>، <b>پینوراما</b> (جنہیں فوٹو اسفیئر بھی کہا جاتا ہے)، <b>360° ویڈیوز</b> کے ساتھ ساتھ <b>GeoTIFF</b> فائلوں کی بھی نشاندہی کرتا ہے۔
 
-<b>Navigation and search</b> is an important part of <i>Aves</i>. The goal is for users to easily flow from albums to photos to tags to maps, etc.
+<b>نیویگیشن اور تلاش</b>، <i>Aves</i> کا ایک اہم حصہ ہے۔ مقصد یہ ہے کہ صارفین آسانی سے البمز سے تصاویر، پھر ٹیگز اور پھر نقشوں وغیرہ تک بغیر کسی رکاوٹ کے منتقل ہو سکیں۔
 
-<i>Aves</i> integrates with Android (including Android TV) with features such as <b>widgets</b>, <b>app shortcuts</b>, <b>screen saver</b> and <b>global search</b> handling. It also works as a <b>media viewer and picker</b>.
+<i>Aves</i> اینڈرائیڈ (بشمول اینڈرائیڈ ٹی وی) کے ساتھ مربوط ہو جاتا ہے اور اس میں <b>ویجٹس</b>، <b>ایپ شارٹ کٹس</b>، <b>اسکرین سیور</b> اور <b>گلوبل سرچ</b> کو سنبھالنے جیسی خصوصیات موجود ہیں۔ یہ <b>میڈیا ویور اور پکر</b> کے طور پر بھی کام کرتا ہے۔

@@ -2,12 +2,11 @@ import 'dart:collection';
 
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugOSPathSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugOSPathSection({super.key}) extends StatefulWidget {
   @override
   State<DebugOSPathSection> createState() => _DebugOSPathSectionState();
 }
@@ -27,6 +26,7 @@ class _DebugOSPathSectionState extends State<DebugOSPathSection> with AutomaticK
 
     return AvesExpansionTile(
       title: 'OS Paths',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

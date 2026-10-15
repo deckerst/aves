@@ -4,12 +4,11 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugOSStorageSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugOSStorageSection({super.key}) extends StatefulWidget {
   @override
   State<DebugOSStorageSection> createState() => _DebugOSStorageSectionState();
 }
@@ -32,6 +31,7 @@ class _DebugOSStorageSectionState extends State<DebugOSStorageSection> with Auto
 
     return AvesExpansionTile(
       title: 'OS Storage',
+      locale: KnownLocale.english,
       children: [
         ...androidFileUtils.storageVolumes.expand((v) {
           final freeSpace = _freeSpaceByVolume[v.path];

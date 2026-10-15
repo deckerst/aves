@@ -18,7 +18,13 @@ open class UnknownContentProvider : ImageProvider() {
     open val reliableProviderMimeType: Boolean
         get() = false
 
-    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, allowUnsized: Boolean, callback: ImageOpCallback) {
+    override fun fetchSingle(
+        context: Context,
+        sourceMimeType: String?,
+        uri: Uri,
+        allowUnsized: Boolean,
+        callback: ImageOpCallback,
+    ) {
         var mimeType = sourceMimeType
         if (sourceMimeType == null || !reliableProviderMimeType) {
             // source MIME type may be incorrect, so we get a second opinion if possible

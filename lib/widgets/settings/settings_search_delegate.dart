@@ -81,6 +81,7 @@ class SettingsSearchDelegate extends AvesSearchDelegate {
                       Expanded(
                         child: HighlightTitle(
                           title: section.title(context),
+                          locale: context.knownLocale,
                           showHighlight: false,
                         ),
                       ),

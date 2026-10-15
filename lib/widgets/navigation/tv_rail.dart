@@ -6,7 +6,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
+import 'package:aves/theme/styles.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -97,19 +97,18 @@ class _TvRailState extends State<TvRail> {
         valueListenable: _extendedNotifier,
         builder: (context, extended, child) {
           const logo = AvesLogo(size: 48);
+          final appName = context.l10n.appName;
           final header = extended
               ? Row(
                   children: [
                     logo,
                     const SizedBox(width: 16),
                     Text(
-                      context.l10n.appName,
-                      style: TextStyle(
+                      appName,
+                      style: AStyles.appNameStyle(context, appName).copyWith(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: .w300,
-                        letterSpacing: canHaveLetterSpacing(context.localeName) ? 1 : 0,
-                        fontFeatures: const [FontFeature.enable('smcp')],
                       ),
                     ),
                   ],

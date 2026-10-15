@@ -107,7 +107,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
               _lastToIndex = _fromIndex;
               _scrollableInsets = EdgeInsets.only(
                 top: appBarHeight,
-                bottom: context.read<MediaQueryData>().effectiveBottomPadding,
+                bottom: context.read<MediaQueryData>().safeBottomPadding,
               );
               _scrollSpeedFactor = 0;
               _pressing = true;

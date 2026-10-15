@@ -572,7 +572,8 @@
     "@columnCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -746,5 +747,7 @@
     "videoThumbnailMethodEmbeddedImage": "Gömülü resim",
     "videoThumbnailMethodPreviewFrame": "Ön İzleme Karesi",
     "videoThumbnailMethodFirstFrame": "İlk kare",
-    "settingsVideoThumbnailMethods": "Tercih edilen küçük resim"
+    "settingsVideoThumbnailMethods": "Tercih edilen küçük resim",
+    "renameTagDialogLabelAlreadyExistsHelper": "Etiket zaten var",
+    "chipActionCopyCenterCoordinates": "Merkez koordinatlarını kopyala"
 }

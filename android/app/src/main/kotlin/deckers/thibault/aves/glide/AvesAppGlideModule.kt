@@ -1,7 +1,6 @@
 package deckers.thibault.aves.glide
 
 import android.content.Context
-import android.net.Uri
 import android.text.format.Formatter
 import android.util.Log
 import com.bumptech.glide.Glide
@@ -21,6 +20,7 @@ import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.resource.bitmap.ExifInterfaceImageHeaderParser
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.LogUtils
@@ -89,22 +89,23 @@ class AvesAppGlideModule : AppGlideModule() {
 
         fun getModel(
             context: Context,
-            uri: Uri,
-            mimeType: String,
-            pageId: Int?,
+            contentAddress: ContentAddress,
             sizeBytes: Long? = null,
             videoMethods: List<VideoThumbnailMethod>? = null,
         ): Any {
+            val mimeType = contentAddress.mimeType
+            val pageId = contentAddress.pageId
+
             return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
-                MultiPageImage(context, uri, mimeType, pageId)
+                MultiPageImage(context, contentAddress)
             } else if (mimeType == MimeTypes.TIFF) {
-                TiffImage(context, uri, pageId)
+                TiffImage(context, contentAddress)
             } else if (mimeType == MimeTypes.SVG) {
-                SvgImage(context, uri)
+                SvgImage(context, contentAddress)
             } else if (isVideo(mimeType)) {
-                VideoThumbnail(context, uri, videoMethods ?: listOf())
+                VideoThumbnail(context, contentAddress, videoMethods ?: listOf())
             } else {
-                StorageUtils.getGlideSafeUri(context, uri, mimeType, sizeBytes)
+                StorageUtils.getGlideSafeUri(context, contentAddress, sizeBytes = sizeBytes)
             }
         }
     }

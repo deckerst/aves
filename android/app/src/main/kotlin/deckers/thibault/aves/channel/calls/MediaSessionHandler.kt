@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 class MediaSessionHandler(private val context: Context, private val mediaCommandHandler: MediaCommandStreamHandler) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -103,12 +104,13 @@ class MediaSessionHandler(private val context: Context, private val mediaCommand
             actions = actions or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
         }
 
+        val updateTime = Clock.System.now().toEpochMilliseconds()
         val playbackState = PlaybackStateCompat.Builder()
             .setState(
                 state,
                 positionMillis,
                 playbackSpeed,
-                System.currentTimeMillis()
+                updateTime
             )
             .setActions(actions)
             .build()

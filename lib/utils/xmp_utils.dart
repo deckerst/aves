@@ -1,14 +1,14 @@
-import 'package:aves/ref/locales.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/ref/metadata/xmp.dart';
 import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
 class XMP {
   static const xmlnsPrefix = 'xmlns';
-  static const propNamespaceSeparator = ':';
+  static const propNamespaceSeparator = XmlToken.namespace;
   static const structFieldSeparator = '/';
 
-  static final _defaultPrefixes = {
+  static final _defaultPrefixByNamespaceUri = {
     XmpNamespaces.gContainer: 'Container',
     XmpNamespaces.dc: 'dc',
     XmpNamespaces.gCamera: 'GCamera',
@@ -20,7 +20,7 @@ class XMP {
     XmpNamespaces.xmpNote: 'xmpNote',
   };
 
-  static String prefixOf(String ns) => _defaultPrefixes[ns] ?? '';
+  static String prefixOf(String namespaceUri) => _defaultPrefixByNamespaceUri[namespaceUri] ?? '';
 
   static const nsRdf = XmpNamespaces.rdf;
   static const nsX = XmpNamespaces.x;
@@ -61,37 +61,39 @@ class XMP {
     return '${offsetMinutes.isNegative ? '-' : '+'}${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
   }
 
-  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', kAsciiLocale).format(date)}${_xmpTimeZoneDesignator(date)}';
+  static String toXmpDate(DateTime date) => '${DateFormat('yyyy-MM-ddTHH:mm:ss', IntlUtils.rootLocaleName).format(date)}${_xmpTimeZoneDesignator(date)}';
 
   static String? getString(
     List<XmlNode> nodes,
     String name, {
-    required String namespace,
+    required String namespaceUri,
   }) {
     for (final node in nodes) {
-      final attribute = node.getAttribute(name, namespace: namespace);
+      final attribute = node.getAttribute(name, namespaceUri: namespaceUri);
       if (attribute != null) return attribute;
 
-      final element = node.getElement(name, namespace: namespace);
+      final element = node.getElement(name, namespaceUri: namespaceUri);
       if (element != null) return element.innerText;
     }
     return null;
   }
 
-  static void _addNamespaces(XmlNode node, Map<String, String> namespaces) => namespaces.forEach((uri, prefix) => node.setAttribute('$xmlnsPrefix:$prefix', uri));
+  static void _addNamespace(XmlNode node, String prefix, String namespaceUri) {
+    node.setAttribute('$xmlnsPrefix$propNamespaceSeparator$prefix', namespaceUri);
+  }
 
   // remove elements and attributes
-  static bool removeElements(List<XmlNode> nodes, String name, String namespace) {
+  static bool removeElements(List<XmlNode> nodes, String name, String namespaceUri) {
     var removed = false;
     nodes.forEach((node) {
-      final elements = node.findElements(name, namespace: namespace).toSet();
+      final elements = node.findElements(name, namespaceUri: namespaceUri).toSet();
       if (elements.isNotEmpty) {
         elements.forEach(node.children.remove);
         removed = true;
       }
 
-      if (node.getAttributeNode(name, namespace: namespace) != null) {
-        node.removeAttribute(name, namespace: namespace);
+      if (node.getAttributeNode(name, namespaceUri: namespaceUri) != null) {
+        node.removeAttribute(name, namespaceUri: namespaceUri);
         removed = true;
       }
     });
@@ -103,20 +105,20 @@ class XMP {
     List<XmlNode> nodes,
     String name,
     String? value, {
-    required String namespace,
+    required String namespaceUri,
     required XmpEditStrategy strat,
   }) {
-    final removed = removeElements(nodes, name, namespace);
+    final removed = removeElements(nodes, name, namespaceUri);
 
     if (value == null) return removed;
 
     bool modified = removed;
     if (strat == XmpEditStrategy.always || (strat == XmpEditStrategy.updateIfPresent && removed)) {
       final node = nodes.first;
-      _addNamespaces(node, {namespace: prefixOf(namespace)});
+      _addNamespace(node, prefixOf(namespaceUri), namespaceUri);
 
       // use qualified name, otherwise the namespace prefix is not added
-      final qualifiedName = '${prefixOf(namespace)}$propNamespaceSeparator$name';
+      final qualifiedName = '${prefixOf(namespaceUri)}$propNamespaceSeparator$name';
       node.setAttribute(qualifiedName, value);
       modified = true;
     }
@@ -124,71 +126,47 @@ class XMP {
     return modified;
   }
 
-  // remove attribute/element from all nodes, and create element with new value, if any, in the first node
-  static void setElement(
-    List<XmlNode> nodes,
-    String name,
-    String? value, {
-    required String namespace,
-    required XmpEditStrategy strat,
-  }) {
-    final removed = removeElements(nodes, name, namespace);
-
-    if (value == null) return;
-
-    if (strat == XmpEditStrategy.always || (strat == XmpEditStrategy.updateIfPresent && removed)) {
-      final node = nodes.first;
-      _addNamespaces(node, {namespace: prefixOf(namespace)});
-
-      final builder = XmlBuilder();
-      builder.namespace(namespace, prefixOf(namespace));
-      builder.element(
-        name,
-        namespace: namespace,
-        nest: () {
-          builder.text(value);
-        },
-      );
-      node.children.add(builder.buildFragment());
-    }
-  }
-
   // remove bag from all nodes, and create bag with new values, if any, in the first node
   static bool setStringBag(
     List<XmlNode> nodes,
     String name,
     Set<String> values, {
-    required String namespace,
+    required String namespaceUri,
     required XmpEditStrategy strat,
   }) {
     // remove existing
-    final removed = removeElements(nodes, name, namespace);
+    final removed = removeElements(nodes, name, namespaceUri);
 
     if (values.isEmpty) return removed;
 
     bool modified = removed;
     if (strat == XmpEditStrategy.always || (strat == XmpEditStrategy.updateIfPresent && removed)) {
       final node = nodes.first;
-      _addNamespaces(node, {namespace: prefixOf(namespace)});
+      _addNamespace(node, prefixOf(namespaceUri), namespaceUri);
 
       // add new bag
-      final rootBuilder = XmlBuilder();
-      rootBuilder.namespace(namespace, prefixOf(namespace));
-      rootBuilder.element(name, namespace: namespace);
-      node.children.add(rootBuilder.buildFragment());
-
-      final bagBuilder = XmlBuilder();
-      bagBuilder.namespace(nsRdf, prefixOf(nsRdf));
-      bagBuilder.element(
-        'Bag',
-        namespace: nsRdf,
-        nest: () {
-          values.forEach((v) {
-            bagBuilder.element('li', namespace: nsRdf, nest: v);
-          });
-        },
+      node.children.add(
+        // e.g. `<dc:subject>`
+        XmlElement(
+          XmlName.parts(name, prefix: prefixOf(namespaceUri)),
+          [],
+          [
+            // `<rdf:Bag>`
+            XmlElement(
+              XmlName.parts(XmpElements.rdfBag, prefix: prefixOf(nsRdf)),
+              [],
+              values.map((v) {
+                // e.g. `<rdf:li>lorem ipsum</rdf:li>`
+                return XmlElement(
+                  XmlName.parts(XmpElements.rdfLi, prefix: prefixOf(nsRdf)),
+                  [],
+                  [XmlText(v)],
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       );
-      node.children.last.children.add(bagBuilder.buildFragment());
       modified = true;
     }
 
@@ -207,35 +185,25 @@ class XMP {
     }
     if (xmpDoc == null) {
       final builder = XmlBuilder();
-      builder.namespace(nsX, prefixOf(nsX));
+      // `<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="$toolkit">`
       builder.element(
         XmpElements.xXmpmeta,
-        namespace: nsX,
-        namespaces: {
-          nsX: prefixOf(nsX),
-        },
-        attributes: {
-          '${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}': toolkit,
+        namespaceUri: nsX,
+        nest: () {
+          builder.namespaceUri(prefixOf(nsX), nsX);
+          builder.attribute('${prefixOf(nsX)}$propNamespaceSeparator${XmpAttributes.xXmptk}', toolkit);
         },
       );
       xmpDoc = builder.buildDocument();
     }
 
     final root = xmpDoc.rootElement;
-    XmlNode? rdf = root.getElement(XmpElements.rdfRoot, namespace: nsRdf);
+    XmlNode? rdf = root.getElement(XmpElements.rdfRoot, namespaceUri: nsRdf);
     if (rdf == null) {
-      final builder = XmlBuilder();
-      builder.namespace(nsRdf, prefixOf(nsRdf));
-      builder.element(
-        XmpElements.rdfRoot,
-        namespace: nsRdf,
-        namespaces: {
-          nsRdf: prefixOf(nsRdf),
-        },
-      );
-      // get element because doc fragment cannot be used to edit
-      root.children.add(builder.buildFragment());
-      rdf = root.getElement(XmpElements.rdfRoot, namespace: nsRdf)!;
+      // `<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">`
+      rdf = XmlElement(XmlName.parts(XmpElements.rdfRoot, prefix: prefixOf(nsRdf)));
+      _addNamespace(rdf, prefixOf(nsRdf), nsRdf);
+      root.children.add(rdf);
     }
 
     // content can be split in multiple `rdf:Description` elements
@@ -244,18 +212,15 @@ class XMP {
     }).toList();
 
     if (descriptions.isEmpty) {
-      final builder = XmlBuilder();
-      builder.namespace(nsRdf, prefixOf(nsRdf));
-      builder.element(
-        XmpElements.rdfDescription,
-        namespace: nsRdf,
-        attributes: {
-          '${prefixOf(nsRdf)}$propNamespaceSeparator${XmpAttributes.rdfAbout}': '',
+      final descriptionElement = XmlElement(
+        XmlName.parts(XmpElements.rdfDescription, prefix: prefixOf(nsRdf)),
+        {
+          XmlAttribute(XmlName.parts(XmpAttributes.rdfAbout, prefix: prefixOf(nsRdf)), ''),
         },
       );
-      rdf.children.add(builder.buildFragment());
-      // get element because doc fragment cannot be used to edit
-      descriptions.add(rdf.getElement(XmpElements.rdfDescription, namespace: nsRdf)!);
+
+      rdf.children.add(descriptionElement);
+      descriptions.add(descriptionElement);
     }
     final modified = apply(descriptions);
 
@@ -267,10 +232,10 @@ class XMP {
 
     if (rdf.children.isNotEmpty) {
       if (modified) {
-        _addNamespaces(descriptions.first, {nsXmp: prefixOf(nsXmp)});
+        _addNamespace(descriptions.first, prefixOf(nsXmp), nsXmp);
         final xmpDate = toXmpDate(modifyDate ?? DateTime.now());
-        setAttribute(descriptions, XmpAttributes.xmpMetadataDate, xmpDate, namespace: nsXmp, strat: XmpEditStrategy.always);
-        setAttribute(descriptions, XmpAttributes.xmpModifyDate, xmpDate, namespace: nsXmp, strat: XmpEditStrategy.always);
+        setAttribute(descriptions, XmpAttributes.xmpMetadataDate, xmpDate, namespaceUri: nsXmp, strat: XmpEditStrategy.always);
+        setAttribute(descriptions, XmpAttributes.xmpModifyDate, xmpDate, namespaceUri: nsXmp, strat: XmpEditStrategy.always);
       }
     } else {
       // clear XMP if there are no attributes or elements worth preserving

@@ -152,7 +152,7 @@ class const FilterListDetails<T extends CollectionFilter>({
           leading,
           const SizedBox(width: 8),
           FadingLine(
-            '${context.l10n.itemCount(source.count(filter))} • ${formatFileSize(settings.avesLocale, source.size(filter))}',
+            '${context.l10n.itemCount(source.count(filter))}${AText.separator}${formatFileSize(settings.avesLocale, source.size(filter))}',
             style: detailsTheme.captionStyle,
           ),
         ],

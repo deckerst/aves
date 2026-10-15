@@ -5,14 +5,10 @@ import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/navigation/nav_display.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DrawerFilterIcon extends StatelessWidget {
-  final CollectionFilter? filter;
-
-  const new({
-    super.key,
-    required this.filter,
-  });
-
+class const DrawerFilterIcon({
+  super.key,
+  required final CollectionFilter? filter,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScaler = MediaQuery.textScalerOf(context);
@@ -24,26 +20,18 @@ class DrawerFilterIcon extends StatelessWidget {
   }
 }
 
-class DrawerFilterTitle extends StatelessWidget {
-  final CollectionFilter? filter;
-
-  const new({
-    super.key,
-    required this.filter,
-  });
-
+class const DrawerFilterTitle({
+  super.key,
+  required final CollectionFilter? filter,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(NavigationDisplay.getFilterTitle(context, filter));
 }
 
-class DrawerPageIcon extends StatelessWidget {
-  final String route;
-
-  const new({
-    super.key,
-    required this.route,
-  });
-
+class const DrawerPageIcon({
+  super.key,
+  required final String route,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final icon = NavigationDisplay.getPageIcon(route);
@@ -63,14 +51,10 @@ class DrawerPageIcon extends StatelessWidget {
   }
 }
 
-class DrawerPageTitle extends StatelessWidget {
-  final String route;
-
-  const new({
-    super.key,
-    required this.route,
-  });
-
+class const DrawerPageTitle({
+  super.key,
+  required final String route,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(NavigationDisplay.getPageTitle(context, route));
 }

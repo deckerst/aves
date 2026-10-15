@@ -67,7 +67,7 @@ class _ContentState extends State<_Content> with SingleTickerProviderStateMixin 
 
     if (settings.mapStyle?.isHeavy ?? false) {
       _isPageAnimatingNotifier = ValueNotifier(true);
-      Future.delayed(ADurations.pageTransitionLoose * timeDilation).then((_) {
+      Future.delayed(ADurations.pageTransitionLoose * timeDilation, () {
         if (!mounted) return;
         _isPageAnimatingNotifier.value = false;
       });

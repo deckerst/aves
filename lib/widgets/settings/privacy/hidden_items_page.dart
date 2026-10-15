@@ -11,15 +11,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class HiddenItemsPage extends StatelessWidget {
+class const HiddenItemsPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/hidden_items';
 
   static const List<String> settingKeys = [
     SettingKeys.hiddenFiltersKey,
     SettingKeys.deactivatedHiddenFiltersKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +109,7 @@ class HiddenItemsPage extends StatelessWidget {
   }
 }
 
-class _Banner extends StatelessWidget {
-  final String bannerText;
-
-  const new({required this.bannerText});
-
+class const _Banner({required final String bannerText}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

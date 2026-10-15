@@ -50,7 +50,7 @@ object MediaStorePermissions : StoragePermissions {
     }
 
     fun isMediaManagementGranted(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaStore.canManageMedia(context) else false
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MediaStore.canManageMedia(context)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -85,12 +85,12 @@ object MediaStorePermissions : StoragePermissions {
             val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
             MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
             activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
-        } catch (e: IllegalArgumentException) {
+        } catch (ex: IllegalArgumentException) {
             // hard-coded limit in Android source code
-            if (e.message == "URI list restricted to 2000 per request") {
-                throw TransactionTooLargeException(e.message)
+            if (ex.message == "URI list restricted to 2000 per request") {
+                throw TransactionTooLargeException(ex.message)
             }
-            throw e
+            throw ex
         }
 
         val granted = MainActivity.pendingPermissionCompleter!!.join()

@@ -1,27 +1,29 @@
 import 'package:aves/l10n/l10n.dart';
+import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/model/entry/extensions/location.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/locale/aves_locale.dart';
 import 'package:aves_map/aves_map.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
-class CoordinateFilter extends CollectionFilter {
+class CoordinateFilter(
+  final LatLng sw,
+  final LatLng ne, {
+  final bool minuteSecondPadding = false,
+  super.reversed = false,
+}) extends CollectionFilter {
   static const type = 'coordinate';
 
-  final LatLng sw;
-  final LatLng ne;
-  final bool minuteSecondPadding;
   late final EntryPredicate _test;
 
   @override
   List<Object?> get props => [sw, ne, reversed];
 
-  new(this.sw, this.ne, {this.minuteSecondPadding = false, super.reversed = false}) {
+  this {
     _test = (entry) => GeoUtils.contains(sw, ne, entry.latLng);
   }
 

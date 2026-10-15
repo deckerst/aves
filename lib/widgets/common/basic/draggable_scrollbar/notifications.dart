@@ -1,10 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 @immutable
-class DraggableScrollbarNotification extends Notification {
-  final DraggableScrollbarEvent event;
-
-  const new(this.event);
-}
+class const DraggableScrollbarNotification(final DraggableScrollbarEvent event) extends Notification;
 
 enum DraggableScrollbarEvent { dragStart, dragEnd }

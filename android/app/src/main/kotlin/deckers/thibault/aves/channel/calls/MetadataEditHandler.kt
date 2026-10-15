@@ -3,14 +3,16 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.Mp4FragmentedException
-import deckers.thibault.aves.metadata.Mp4TooLargeException
-import deckers.thibault.aves.metadata.Mp4ZeroSizeBoxException
+import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.ExifInterfaceException
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.FileDescriptorException
+import deckers.thibault.aves.model.Mp4FragmentedException
+import deckers.thibault.aves.model.Mp4TooLargeException
+import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.storage.FileDescriptorException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -57,9 +59,9 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
         if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("editOrientation-args", "failed because entry fields are missing", null)
@@ -72,12 +74,12 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val callback = MetadataOpCallback("editOrientation", entryMap, result)
         provider.editOrientation(
             context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
+            contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             op = op,
             callback = callback,
@@ -86,6 +88,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun editExifDate(call: MethodCall, result: MethodChannel.Result) {
         val dateMillis = call.argument<Number>("dateMillis")?.toLong()
+        val timeZoneOffsetMinutes = call.argument<Int>("timeZoneOffsetMinutes")
         val shiftSeconds = call.argument<Number>("shiftSeconds")?.toLong()
         val fields = call.argument<List<String>>("fields")
         val entryMap = call.argument<FieldMap>("entry")
@@ -94,9 +97,9 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
         if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("editExifDate-args", "failed because entry fields are missing", null)
@@ -109,14 +112,15 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val callback = MetadataOpCallback("editExifDate", entryMap, result)
         provider.editExifDate(
             context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
+            contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             dateMillis = dateMillis,
+            timeZoneOffsetMinutes = timeZoneOffsetMinutes,
             shiftSeconds = shiftSeconds,
             fields = fields,
             callback = callback,
@@ -132,9 +136,9 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
         if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("editMetadata-args", "failed because entry fields are missing", null)
@@ -147,12 +151,12 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val callback = MetadataOpCallback("editMetadata", entryMap, result)
         provider.editMetadata(
             context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
+            contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             modifier = metadata,
             autoCorrectTrailerOffset = autoCorrectTrailerOffset,
@@ -167,9 +171,9 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
         if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("removeTrailerVideo-args", "failed because entry fields are missing", null)
@@ -182,12 +186,12 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val callback = MetadataOpCallback("removeTrailerVideo", entryMap, result)
         provider.removeTrailerVideo(
             context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
+            contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             callback = callback,
         )
@@ -201,9 +205,9 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val mimeType = entryMap["mimeType"] as String?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
         if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("removeTypes-args", "failed because entry fields are missing", null)
@@ -216,12 +220,12 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
         val callback = MetadataOpCallback("removeTypes", entryMap, result)
         provider.removeMetadataTypes(
             context = context,
-            path = path,
-            uri = uri,
-            mimeType = mimeType,
+            contentAddress = contentAddress,
             sizeBytes = sizeBytes,
             types = types.toSet(),
             callback = callback,
@@ -240,7 +244,9 @@ private class MetadataOpCallback(
 ) : ImageOpCallback {
     override fun onSuccess(fields: FieldMap) = result.success(fields)
     override fun onFailure(throwable: Throwable) {
-        val errorCode = if (throwable is Mp4TooLargeException) {
+        val errorCode = if (throwable is ExifInterfaceException) {
+            "$errorCodeBase-exifinterface"
+        } else if (throwable is Mp4TooLargeException) {
             if (throwable.type == "moov") {
                 "$errorCodeBase-mp4largemoov"
             } else {

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:aves/widgets/debug/app_debug_action.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -12,18 +13,18 @@ import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
 late FlutterDriver driver;
-String _languageCode = '';
+String _localeBcp47 = '';
 
-final languageCodes = <String>[
-  'en', // always start with English, as preferred language for country names from reverse geocoding
-  ...SupportedLocales.languagesByLanguageCode.keys,
+final localesBcp47 = <String>[
+  KnownLocale.english.bcp47, // always start with English, as preferred language for country names from reverse geocoding
+  ...KnownLocale.all.map((v) => v.bcp47).whereNot((v) => v == KnownLocale.english.bcp47),
 ];
 const outputDirectory = 'screenshots/raw';
 
 void main() {
   group('[Aves app]', () {
     setUpAll(() async {
-      await Future.forEach(languageCodes, (languageCode) => Directory('$outputDirectory/$languageCode').create(recursive: true));
+      await Future.forEach(localesBcp47, (localeBcp47) => Directory('$outputDirectory/$localeBcp47').create(recursive: true));
 
       await copyContent(screenshotsSourceDir, screenshotsTargetDirAdb);
       await Future.forEach<String>(
@@ -48,11 +49,11 @@ void main() {
       await driver.scanMediaDir(screenshotsTargetDirAndroid);
       // recent heavy images may delay cataloguing because of thumbnail loading precedence
       // so we wait enough to avoid cataloguing progress subtitle in app bar when taking screenshots
-      await Future.delayed(const Duration(seconds: 40));
+      await Future.pause(const Duration(seconds: 20));
     }, timeout: const Timeout(Duration(minutes: 1)));
 
-    languageCodes.forEach((languageCode) {
-      setLanguage(languageCode);
+    localesBcp47.forEach((localeBcp47) {
+      setLanguage(localeBcp47);
       configureCollectionVisibility(AppDebugAction.prepScreenshotThumbnails);
       collection();
       configureCollectionVisibility(AppDebugAction.prepScreenshotStats);
@@ -78,29 +79,29 @@ Future<void> _selectMapStyle(String styleKey) async {
   await driver.tapKeyAndWait(styleKey);
 
   // tiles may take time to load
-  await Future.delayed(const Duration(seconds: 5));
+  await Future.pause(const Duration(seconds: 5));
 }
 
 Future<void> _takeScreenshot(FlutterDriver driver, String name) async {
   final pixels = await driver.screenshot();
-  final file = File('$outputDirectory/$_languageCode/$name.png');
+  final file = File('$outputDirectory/$_localeBcp47/$name.png');
   await file.writeAsBytes(pixels);
   print('* saved screenshot to ${file.path}');
 }
 
-void setLanguage(String languageCode) {
+void setLanguage(String localeBcp47) {
   test('set language', () async {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-settings-button');
     await driver.tapKeyAndWait('section-language');
     await driver.tapKeyAndWait('tile-language');
 
-    final name = SupportedLocales.languagesByLanguageCode[languageCode] ?? languageCode;
+    final name = KnownLocale.all.firstWhereOrNull((v) => v.bcp47 == localeBcp47)?.endonym ?? localeBcp47;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(name);
 
-    await driver.tapKeyAndWait(languageCode);
-    _languageCode = languageCode;
+    await driver.tapKeyAndWait(localeBcp47);
+    _localeBcp47 = localeBcp47;
 
     await pressDeviceBackButton();
     await driver.waitUntilNoTransientCallbacks();
@@ -141,7 +142,7 @@ void viewer() {
     await _search('viewer', 'album-false-$screenshotsTargetDirAndroid/viewer');
 
     // delay to avoid flaky descendant resolution
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
     await driver.tap(
       find.descendant(
         of: find.byValueKey('collection-grid'),
@@ -150,11 +151,11 @@ void viewer() {
       ),
     );
     await driver.waitUntilNoTransientCallbacks();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
 
     final imageView = find.byValueKey('image_view');
     await driver.doubleTap(imageView);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.pause(const Duration(seconds: 1));
 
     await _takeScreenshot(driver, '2');
   });
@@ -166,12 +167,12 @@ void info() {
 
     await driver.scrollY(verticalPageView, -600);
     await _selectMapStyle('googleNormal');
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.pause(const Duration(seconds: 2));
 
     await _takeScreenshot(driver, '3');
 
     await driver.scrollY(verticalPageView, -680);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.pause(const Duration(seconds: 1));
 
     final gpsTile = find.descendant(
       of: find.byValueKey('tilecard-GPS'),
@@ -198,8 +199,8 @@ void stats() {
     final maxYear = DateTime.now().year + 1;
     final maxQuery = 'year<$maxYear';
     const minQuery = 'year>2005';
-    await _search(maxQuery, 'query-false-$maxQuery');
-    await _search(minQuery, 'query-false-$minQuery');
+    await _search(maxQuery, 'query-false-gregorian-$maxQuery');
+    await _search(minQuery, 'query-false-gregorian-$minQuery');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-stats');
@@ -225,7 +226,7 @@ void map() {
     await driver.tapKeyAndWait('appbar-leading-button');
     await driver.tapKeyAndWait('drawer-type-null');
 
-    await _search('Riomaggiore', 'location-false-LocationLevel.place-null-Riomaggiore');
+    await _search('Riomaggiore', 'location-false-place-null-Riomaggiore');
 
     await driver.tapKeyAndWait('appbar-menu-button');
     await driver.tapKeyAndWait('menu-map');

@@ -47,6 +47,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "isSystemFilePickerEnabled" -> safe(call, result, ::isSystemFilePickerEnabled)
             "isMediaManagementGranted" -> safe(call, result, ::isMediaManagementGranted)
             "requestMediaManagementPermission" -> safe(call, result, ::requestMediaManagementPermission)
+            "getAvailableProcessors" -> safe(call, result, ::getAvailableProcessors)
             "getHeapSizes" -> safe(call, result, ::getHeapSizes)
             "getRamSizes" -> safe(call, result, ::getRamSizes)
             "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
@@ -159,6 +160,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         result.success(true)
     }
 
+    private fun getAvailableProcessors(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(Runtime.getRuntime().availableProcessors())
+    }
+
     private fun getHeapSizes(call: MethodCall, result: MethodChannel.Result) {
         val types = call.argument<List<String>>("types")
         if (types.isNullOrEmpty()) {
@@ -180,7 +185,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun requestGarbageCollection(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
-        Runtime.getRuntime().gc()
+        MemoryUtils.requestGarbageCollection()
         result.success(true)
     }
 

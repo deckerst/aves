@@ -98,9 +98,9 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
             val preferences = applicationContext.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
             val entryIdStrings = preferences.getStringSet(PREF_ENTRY_IDS_KEY, null)
             startDartAnalysisService(entryIdStrings)
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to initialize worker", e)
-            workCont?.resumeWithException(e)
+        } catch (ex: Exception) {
+            Log.e(LOG_TAG, "failed to initialize worker", ex)
+            workCont?.resumeWithException(ex)
         }
     }
 
@@ -211,7 +211,17 @@ class AnalysisWorker(context: Context, parameters: WorkerParameters) : Coroutine
     private suspend fun updateNotification(call: MethodCall, result: MethodChannel.Result) {
         val title = call.argument<String>("title")
         val message = call.argument<String>("message")
-        setForeground(createForegroundInfo(title, message))
+        val foregroundInfo = createForegroundInfo(title, message)
+        if (!isStopped) {
+            try {
+                setForeground(foregroundInfo)
+            } catch (ex: Exception) {
+                // updating foreground service notification on a timer sometimes fail with:
+                // `Calls to setForegroundAsync() must complete before a ListenableWorker
+                // signals completion of work by returning an instance of Result.`
+                Log.w(LOG_TAG, "failed to update notification", ex)
+            }
+        }
         result.success(null)
     }
 

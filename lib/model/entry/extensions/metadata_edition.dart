@@ -56,7 +56,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             case .extractFromFileName:
               editCreateDateXmp(descriptions, appliedModifier.setDateTime);
             case .shift:
-              final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespace: XmpNamespaces.xmp);
+              final xmpDate = XMP.getString(descriptions, XmpAttributes.xmpCreateDate, namespaceUri: XmpNamespaces.xmp);
               if (xmpDate != null) {
                 final date = DateTime.tryParse(xmpDate);
                 if (date != null) {
@@ -235,7 +235,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             descriptions,
             XmpElements.dcTitle,
             title,
-            namespace: XmpNamespaces.dc,
+            namespaceUri: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
@@ -244,7 +244,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
             descriptions,
             XmpElements.dcDescription,
             description,
-            namespace: XmpNamespaces.dc,
+            namespaceUri: XmpNamespaces.dc,
             strat: XmpEditStrategy.always,
           );
         }
@@ -367,7 +367,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpAttributes.xmpCreateDate,
       date != null ? XMP.toXmpDate(date) : null,
-      namespace: XmpNamespaces.xmp,
+      namespaceUri: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
   }
@@ -378,7 +378,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.dcSubject,
       tags,
-      namespace: XmpNamespaces.dc,
+      namespaceUri: XmpNamespaces.dc,
       strat: XmpEditStrategy.always,
     );
   }
@@ -391,7 +391,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.xmpRating,
       (rating ?? 0) == 0 ? null : '$rating',
-      namespace: XmpNamespaces.xmp,
+      namespaceUri: XmpNamespaces.xmp,
       strat: XmpEditStrategy.always,
     );
 
@@ -399,7 +399,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
       descriptions,
       XmpElements.msPhotoRating,
       XMP.toMsPhotoRating(rating),
-      namespace: XmpNamespaces.microsoftPhoto,
+      namespaceUri: XmpNamespaces.microsoftPhoto,
       strat: XmpEditStrategy.updateIfPresent,
     );
 
@@ -444,6 +444,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     switch (modifier.action) {
       case .copyField:
         DateTime? date;
+        int? offset;
         final source = modifier.copyFieldSource;
         if (source != null) {
           switch (source) {
@@ -458,16 +459,32 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
                 }
               } on FileSystemException catch (_) {}
             default:
-              date = await metadataFetchService.getDate(this, source.toMetadataField()!);
+              (date, offset) = await metadataFetchService.getDate(this, source.toMetadataField()!);
           }
         }
-        return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
+        if (date == null) return null;
+        return DateModifier.setCustom(
+          fields: mainMetadataDate(),
+          date: date,
+          timeZoneOffsetMinutes: offset,
+        );
       case .extractFromFileName:
         final date = parseUnknownDateFormat(fileNameWithoutExtension);
-        return date != null ? DateModifier.setCustom(mainMetadataDate(), date) : null;
+        if (date == null) return null;
+        return DateModifier.setCustom(
+          fields: mainMetadataDate(),
+          date: date,
+          timeZoneOffsetMinutes: null,
+        );
       case .setCustom:
       case .copyItem:
-        return DateModifier.setCustom(mainMetadataDate(), modifier.setDateTime!);
+        final date = modifier.setDateTime;
+        if (date == null) throw Exception('failed to get date from modifier=$modifier');
+        return DateModifier.setCustom(
+          fields: mainMetadataDate(),
+          date: date,
+          timeZoneOffsetMinutes: modifier.timeZoneOffsetMinutes,
+        );
       case .shift:
       case .remove:
         return modifier;

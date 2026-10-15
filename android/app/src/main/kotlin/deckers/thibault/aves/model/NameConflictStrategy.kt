@@ -13,4 +13,4 @@ enum class NameConflictStrategy {
     }
 }
 
-class NameConflictResolution(var nameWithoutExtension: String?, var replacementFile: File?)
+class NameConflictResolution(var nameWithoutExtension: String?, var replacedFileCopy: File?)

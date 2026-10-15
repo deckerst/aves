@@ -7,6 +7,7 @@ class MimeTypes {
   static const bmpX = 'image/x-ms-bmp';
   static const gif = 'image/gif';
   static const heic = 'image/heic';
+  static const heicSequence = 'image/heic-sequence';
   static const heif = 'image/heif';
   static const ico = 'image/ico';
   static const icoX = 'image/x-icon';
@@ -120,12 +121,15 @@ class MimeTypes {
 
   // groups
 
+  // assume that `HEIF` is a `HEIC` (using the default `HEVC` codec)
+  static const heicTypes = {heic, heicSequence, heif};
+
   // formats that support transparency
-  static const Set<String> alphaImages = {avif, bmp, bmpX, gif, heic, heif, ico, icoX, png, svg, tiff, webp};
+  static const alphaImages = {avif, bmp, bmpX, gif, ...heicTypes, ico, icoX, png, svg, tiff, webp};
 
-  static const Set<String> rawImages = {arw, cr2, crw, dcr, dcraw, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
+  static const rawImages = {arw, cr2, crw, dcr, dcraw, dng, dngX, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f};
 
-  static const Set<String> developedRawImages = {jpeg, heic, heif};
+  static const developedRawImages = {jpeg, heic, heif};
 
   static bool canHaveAlpha(String mimeType) => MimeTypes.alphaImages.contains(mimeType);
 
@@ -137,7 +141,13 @@ class MimeTypes {
 
   static bool isVisual(String mimeType) => isImage(mimeType) || isVideo(mimeType);
 
+  static bool isHeic(String? mimeType) => heicTypes.contains(mimeType);
+
   static String normalize(String mimeType) {
+    if (isHeic(mimeType)) {
+      return heic;
+    }
+
     switch (mimeType) {
       case avi:
       case aviMSVideo:
@@ -150,9 +160,6 @@ class MimeTypes {
       case flv:
       case flvX:
         return flv;
-      case heic:
-      case heif:
-        return heic;
       case mov:
       case movX:
         return mov;

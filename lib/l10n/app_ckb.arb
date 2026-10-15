@@ -6,7 +6,8 @@
     "@columnCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },
@@ -84,7 +85,8 @@
     "@itemCount": {
         "placeholders": {
             "count": {
-                "type": "int"
+                "type": "int",
+                "format": "decimalPattern"
             }
         }
     },

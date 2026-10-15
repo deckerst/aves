@@ -100,8 +100,8 @@ class PlatformMediaStoreService implements MediaStoreService {
   Future<Uri?> scanFile(String path, String mimeType) async {
     try {
       final result = await _platform.invokeMethod('scanFile', <String, Object?>{
-        'path': path,
         'mimeType': mimeType,
+        'path': path,
       });
       if (result != null) return Uri.tryParse(result);
     } on PlatformException catch (e, stack) {

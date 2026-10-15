@@ -7,6 +7,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/text_dropdown_button.dart';
@@ -46,8 +47,6 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   bool _showOptions = false;
   final Set<MetadataField> _fields = {...DateModifier.writableFields};
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-
-  DateTime get copyItemDate => _copyItemSource.bestDate ?? DateTime.now();
 
   @override
   void initState() {
@@ -179,11 +178,12 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
   Widget _buildCopyItemContent(BuildContext context) {
     final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
 
+    final copyItemDate = _copyItemSource.bestDate;
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
       child: Row(
         children: [
-          Expanded(child: Text(formatDateTime(copyItemDate, settings.avesLocale, use24hour))),
+          Expanded(child: Text(copyItemDate != null ? formatDateTime(copyItemDate, settings.avesLocale, use24hour) : AText.valueNotAvailable)),
           const SizedBox(width: 8),
           ItemPicker(
             extent: 48,
@@ -332,11 +332,21 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     // whether each item supports Exif edition
     switch (_action) {
       case .setCustom:
-        return DateModifier.setCustom(const {}, _customDateTime);
+        return DateModifier.setCustom(
+          fields: const {},
+          date: _customDateTime,
+          timeZoneOffsetMinutes: null,
+        );
       case .copyField:
         return DateModifier.copyField(_copyFieldSource);
       case .copyItem:
-        return DateModifier.setCustom(const {}, copyItemDate);
+        final copyDate = _copyItemSource.bestDate;
+        if (copyDate == null) throw Exception('failed to copy date from entry=$_copyItemSource');
+        return DateModifier.setCustom(
+          fields: const {},
+          date: copyDate,
+          timeZoneOffsetMinutes: copyDate.isUtc ? _copyItemSource.catalogTimeZoneOffsetMinutes : null,
+        );
       case .extractFromFileName:
         return DateModifier.extractFromFileName();
       case .shift:
@@ -350,9 +360,10 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     switch (_action) {
       case .setCustom:
       case .copyField:
-      case .copyItem:
       case .extractFromFileName:
         _isValidNotifier.value = true;
+      case .copyItem:
+        _isValidNotifier.value = _copyItemSource.bestDate != null;
       case .shift:
       case .remove:
         _isValidNotifier.value = _fields.isNotEmpty;

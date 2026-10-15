@@ -8,12 +8,12 @@ publish_to: none
 # - edit GitHub changelog:     /CHANGELOG.md
 # - edit Play Store changelog: /whatsnew/whatsnew-en-US
 # - run `scripts/apply_version_bump.sh`
-version: 1.15.5+179
+version: 1.15.6+180
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.47.6
+  flutter: 3.47.7
   sdk: ">=3.13.3 <4.0.0"
 
 platforms:
@@ -77,6 +77,9 @@ dependencies:
   csv:
   device_info_plus:
   dlna_dart:
+    git:
+      url: https://github.com/deckerst/dlna-dart.git
+      ref: aves
   dynamic_color:
   equatable:
   event_bus:

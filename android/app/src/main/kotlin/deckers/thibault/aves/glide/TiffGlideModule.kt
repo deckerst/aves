@@ -2,7 +2,6 @@ package deckers.thibault.aves.glide
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.core.graphics.scale
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -17,6 +16,7 @@ import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
+import deckers.thibault.aves.model.ContentAddress
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 
 @GlideModule
@@ -26,11 +26,14 @@ class TiffGlideModule : LibraryGlideModule() {
     }
 }
 
-class TiffImage(val context: Context, val uri: Uri, val page: Int?)
+class TiffImage(val context: Context, val contentAddress: ContentAddress) {
+    override fun toString(): String = "TiffImage#${hashCode()}{$contentAddress}"
+}
 
 internal class TiffLoader : ModelLoader<TiffImage, Bitmap> {
     override fun buildLoadData(model: TiffImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
-        return ModelLoader.LoadData(ObjectKey(model.uri), TiffFetcher(model, width, height))
+        val uri = model.contentAddress.uri
+        return ModelLoader.LoadData(ObjectKey(uri), TiffFetcher(model, width, height))
     }
 
     override fun handles(model: TiffImage): Boolean = true
@@ -45,8 +48,8 @@ internal class TiffLoader : ModelLoader<TiffImage, Bitmap> {
 internal class TiffFetcher(val model: TiffImage, val width: Int, val height: Int) : DataFetcher<Bitmap> {
     override fun loadData(priority: Priority, callback: DataCallback<in Bitmap>) {
         val context = model.context
-        val uri = model.uri
-        val page = model.page ?: 0
+        val uri = model.contentAddress.uri
+        val page = model.contentAddress.pageId ?: 0
 
         var sampleSize = 1
         val customSize = width > 0 && height > 0

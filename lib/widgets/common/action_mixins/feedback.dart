@@ -28,7 +28,7 @@ mixin FeedbackMixin {
 
   static EdgeInsets snackBarMarginDefault(BuildContext context) {
     return EdgeInsets.only(
-      bottom: context.select<MediaQueryData, double>((mq) => max(mq.effectiveBottomPadding, mq.systemGestureInsets.bottom)),
+      bottom: context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding),
     );
   }
 

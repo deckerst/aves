@@ -78,8 +78,8 @@ Future<List<Map<String, String?>>> _getSuggestions(Object? args) async {
         entries.map((entry) {
           final date = entry.bestDate;
           return {
-            'data': entry.uri,
             'mimeType': entry.mimeType,
+            'data': entry.uri,
             'title': entry.bestTitle,
             'subtitle': date != null ? formatDateTime(date, settings.avesLocale, use24hour) : null,
             'iconUri': entry.uri,

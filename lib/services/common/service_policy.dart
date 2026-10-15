@@ -1,23 +1,31 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
+import 'package:aves/model/device.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-final ServicePolicy servicePolicy = ServicePolicy._private();
+final ServicePolicy platformServicePolicy = ServicePolicy._private();
+final ServicePolicy scanServicePolicy = ServicePolicy._private();
 
-class ServicePolicy {
+class ServicePolicy._private() {
   final StreamController<QueueState> _queueStreamController = StreamController.broadcast();
   final Map<Object, (int, _Task)> _paused = {};
   final SplayTreeMap<int, LinkedHashMap<Object, _Task>> _queues = SplayTreeMap();
   final LinkedHashMap<Object, _Task> _runningQueue = LinkedHashMap();
 
-  // magic number
-  static const concurrentTaskMax = 4;
+  int _concurrentTaskMax = 0;
+
+  int get concurrentTaskMax {
+    if (_concurrentTaskMax < 1) {
+      // the minimum is a magic number
+      _concurrentTaskMax = max(4, device.availableProcessors ?? 0);
+    }
+    return _concurrentTaskMax;
+  }
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
-
-  new _private();
 
   Future<T> call<T>(
     Future<T> Function() platformCall, {
@@ -109,12 +117,10 @@ class ServicePolicy {
   }
 }
 
-class _Task<T> {
-  final VoidCallback callback;
-  final Completer<T> completer;
-
-  const new(this.callback, this.completer);
-}
+class const _Task<T>(
+  final VoidCallback callback,
+  final Completer<T> completer,
+);
 
 class CancelledException;
 
@@ -127,9 +133,8 @@ class ServiceCallPriority {
   static const int getLocation = 1000;
 }
 
-class QueueState {
-  final Map<int, int> queueByPriority;
-  final int runningCount, pausedCount;
-
-  const new(this.queueByPriority, this.runningCount, this.pausedCount);
-}
+class const QueueState(
+  final Map<int, int> queueByPriority,
+  final int runningCount,
+  final int pausedCount,
+);

@@ -3,7 +3,6 @@ package deckers.thibault.aves.glide
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.net.Uri
 import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -23,6 +22,7 @@ import com.caverock.androidsvg.utils.SVGAndroidRenderer
 import deckers.thibault.aves.metadata.SVGParserBufferedInputStream
 import deckers.thibault.aves.metadata.SvgHelper.IMAGE_BASE64_SIZE_DANGER_THRESHOLD
 import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
 import kotlin.math.ceil
 
@@ -33,11 +33,14 @@ class SvgGlideModule : LibraryGlideModule() {
     }
 }
 
-class SvgImage(val context: Context, val uri: Uri)
+class SvgImage(val context: Context, val contentAddress: ContentAddress) {
+    override fun toString(): String = "SvgImage#${hashCode()}{$contentAddress}"
+}
 
 internal class SvgLoader : ModelLoader<SvgImage, Bitmap> {
     override fun buildLoadData(model: SvgImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
-        return ModelLoader.LoadData(ObjectKey(model.uri), SvgFetcher(model, width, height))
+        val uri = model.contentAddress.uri
+        return ModelLoader.LoadData(ObjectKey(uri), SvgFetcher(model, width, height))
     }
 
     override fun handles(model: SvgImage): Boolean = true
@@ -52,7 +55,8 @@ internal class SvgLoader : ModelLoader<SvgImage, Bitmap> {
 internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) : DataFetcher<Bitmap> {
     override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap>) {
         val context = model.context
-        val uri = model.uri
+        val contentAddress = model.contentAddress
+        val uri = contentAddress.uri
 
         val bitmap: Bitmap? = StorageUtils.openInputStream(context, uri)?.use { input ->
             try {
@@ -85,7 +89,7 @@ internal class SvgFetcher(val model: SvgImage, val width: Int, val height: Int) 
         }
 
         if (bitmap == null) {
-            callback.onLoadFailed(Exception("failed to load SVG for uri=$uri"))
+            callback.onLoadFailed(Exception("failed to load SVG for $contentAddress"))
         } else {
             callback.onDataReady(bitmap)
         }

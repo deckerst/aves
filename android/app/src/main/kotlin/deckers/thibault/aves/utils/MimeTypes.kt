@@ -13,6 +13,7 @@ object MimeTypes {
     private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
+    const val HEIC_SEQUENCE = "image/heic-sequence"
     const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
@@ -70,7 +71,7 @@ object MimeTypes {
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith("video")
 
     // assume that `HEIF` is a `HEIC` (using the default `HEVC` codec)
-    fun isHeic(mimeType: String?) = mimeType == HEIC || mimeType == HEIF
+    fun isHeic(mimeType: String?) = mimeType == HEIC || mimeType == HEIC_SEQUENCE || mimeType == HEIF
 
     // `AVIF` and `HEIC` both derive from `HEIF`, which derives from `ISOBMFF`.
     // `MP4` also derives from `ISOBMFF` but is not an image format.
@@ -144,7 +145,7 @@ object MimeTypes {
         else -> false
     }
 
-    // Glide automatically applies EXIF orientation when decoding images of known formats
+    // Glide automatically applies EXIF orientation when decoding images of known formats,
     // but we need to rotate the decoded bitmap for the other formats.
     // Maybe related to ExifInterface version used by Glide:
     // https://github.com/bumptech/glide/blob/master/gradle/libs.versions.toml#L29
@@ -158,7 +159,7 @@ object MimeTypes {
     }
 
     // Thumbnails obtained from the Media Store are automatically rotated
-    // according to EXIF orientation when decoding images of known formats
+    // according to EXIF orientation when decoding images of known formats,
     // but we need to rotate the decoded bitmap for the other formats
     fun needRotationAfterContentResolverThumbnail(mimeType: String) = when (mimeType) {
         DNG, DNG_ADOBE, PNG -> true
@@ -172,7 +173,7 @@ object MimeTypes {
     fun extensionFor(mimeType: String, defaultExtension: String?): String = when (mimeType) {
         AVI, AVI_VND -> ".avi"
         DNG, DNG_ADOBE -> ".dng"
-        HEIC, HEIF -> ".heif"
+        HEIC, HEIC_SEQUENCE, HEIF -> ".heif"
         MP2T, MP2TS -> ".m2ts"
         PSD_VND, PSD_X -> ".psd"
         else -> {

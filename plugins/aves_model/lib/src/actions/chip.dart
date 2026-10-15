@@ -6,6 +6,7 @@ enum ChipAction {
   goToExplorerPage,
   ratingOrGreater,
   ratingOrLower,
+  copyCenterCoordinates,
   decompose,
   reverse,
   hide,

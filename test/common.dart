@@ -1,5 +1,6 @@
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/db/db.dart';
+import 'package:aves/model/device.dart';
 import 'package:aves/model/dynamic_albums.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -45,6 +46,7 @@ Future<void> setUpAllServices() async {
   SharedPreferencesStorePlatform.instance = InMemorySharedPreferencesStore.empty();
   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);
   await androidFileUtils.init();
+  await device.init();
 
   albumGrouping.init();
   tagGrouping.init();

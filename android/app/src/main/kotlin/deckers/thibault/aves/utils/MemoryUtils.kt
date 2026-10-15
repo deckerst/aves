@@ -46,6 +46,8 @@ object MemoryUtils {
         return result
     }
 
+    fun requestGarbageCollection() = Runtime.getRuntime().gc()
+
     fun getRamSizes(context: Context, types: List<String>): Map<String, Long?> {
         val result = HashMap<String, Long?>()
 

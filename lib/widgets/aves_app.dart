@@ -17,13 +17,12 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
-import 'package:aves/ref/locales.dart';
+import 'package:aves/ref/locale/usage.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/accessibility_service.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/theme/styles.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/about/app_ref.dart';
@@ -45,6 +44,7 @@ import 'package:aves/widgets/home/home_page.dart';
 import 'package:aves/widgets/navigation/tv_page_transitions.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/settings/settings_action_delegate.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:aves_model/aves_model.dart';
@@ -85,7 +85,6 @@ class const AvesApp({
     'sat', // Santali
     'sl', // Slovenian
     'sr', // Serbian
-    'ur', // Urdu
   }.map(Locale.new).toSet();
   static final List<Locale> supportedLocales = AppLocalizations.supportedLocales.where((v) => !_unsupportedLocales.contains(v)).toList();
   static final ValueNotifier<bool> canGestureToOtherApps = ValueNotifier(false);
@@ -272,8 +271,9 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
                         lightAccent = lightScheme?.primary ?? lightAccent;
                         darkAccent = darkScheme?.primary ?? darkAccent;
                       }
-                      final lightTheme = Themes.lightTheme(lightAccent, initialized);
-                      final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized) : Themes.darkTheme(darkAccent, initialized);
+                      final knownLocale = KnownLocale.fromBcp47(settingsLocale?.toLanguageTag()) ?? KnownLocale.english;
+                      final lightTheme = Themes.lightTheme(lightAccent, initialized, knownLocale);
+                      final darkTheme = themeBrightness == AvesThemeBrightness.black ? Themes.blackTheme(darkAccent, initialized, knownLocale) : Themes.darkTheme(darkAccent, initialized, knownLocale);
                       return Shortcuts(
                         shortcuts: {
                           // handle Android TV remote `select` button (KEYCODE_DPAD_CENTER)
@@ -392,17 +392,18 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     settings.resetResolvedLocale();
 
     final resolvedLocale = settings.resolvedLocale;
-    final languageCode = resolvedLocale.languageCode;
-    AStyles.updateStylesForLocale(languageCode);
+    final languageSubtag = resolvedLocale.languageCode;
 
     Locale? countrifiedLocale;
     if (resolvedLocale.countryCode == null) {
-      countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageCode);
+      countrifiedLocale = WidgetsBinding.instance.platformDispatcher.locales.firstWhereOrNull((v) => v.languageCode == languageSubtag);
     }
+
+    final countrySubtag = countrifiedLocale?.countryCode;
 
     // `intl` setup here, for date formatters
     // `intl4x` setup is done when building the locale, in the `Settings` getter
-    final useNativeDigits = !settings.forceWesternArabicNumerals && shouldUseNativeDigits(countrifiedLocale);
+    final useNativeDigits = !settings.forceWesternArabicNumerals && LocaleUsage.shouldUseNativeDigits(languageSubtag, countrySubtag);
     DateFormat.useNativeDigitsByDefaultFor(resolvedLocale.toLanguageTag(), useNativeDigits);
     if (countrifiedLocale != null) {
       DateFormat.useNativeDigitsByDefaultFor(countrifiedLocale.toLanguageTag(), useNativeDigits);
@@ -450,6 +451,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     _monitorSettings();
     videoControllerFactory.init();
     videoMetadataFetcher.init();
+    videoThumbnailFetcher.init();
 
     unawaited(deviceService.setLocaleConfig(AvesApp.supportedLocales));
     unawaited(storageService.deleteTempDirectory());
@@ -769,7 +771,7 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
   // necessary on older devices
   Future<void> _updateSystemUI() async {
     await AvesApp.showSystemUI(true);
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.pause(const Duration(milliseconds: 400));
     AvesApp.setSystemUIStyle(Theme.of(context));
   }
 

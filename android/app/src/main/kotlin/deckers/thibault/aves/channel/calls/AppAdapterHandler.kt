@@ -250,9 +250,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun open(call: MethodCall, result: MethodChannel.Result) {
-        val title = call.argument<String>("title")
-        val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.toUri()
         val forceChooser = call.argument<Boolean>("forceChooser")
         if (uri == null || forceChooser == null) {
             result.error("open-args", "missing arguments", null)
@@ -262,7 +261,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(getShareableUri(context, uri), mimeType)
-        val started = if (forceChooser) safeStartActivityChooser(title, intent) else safeStartActivity(intent)
+        val started = if (forceChooser) safeStartActivityChooser(null, intent) else safeStartActivity(intent)
 
         result.success(started)
     }
@@ -281,9 +280,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun setAs(call: MethodCall, result: MethodChannel.Result) {
-        val title = call.argument<String>("title")
-        val uri = call.argument<String>("uri")?.toUri()
         val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.toUri()
         if (uri == null) {
             result.error("setAs-args", "missing arguments", null)
             return
@@ -292,7 +290,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(getShareableUri(context, uri), mimeType)
-        val started = safeStartActivityChooser(title, intent)
+        val started = safeStartActivityChooser(null, intent)
 
         result.success(started)
     }

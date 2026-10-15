@@ -37,25 +37,19 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerButtons extends StatelessWidget {
-  final AvesEntry mainEntry, pageEntry;
-  final CollectionLens? collection;
-  final Animation<double> scale;
-
+class const ViewerButtons({
+  super.key,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+  required final CollectionLens? collection,
+  required final Animation<double> scale,
+}) extends StatelessWidget {
   static const double outerPadding = 8;
   static const double innerPadding = 8;
 
   static double preferredHeight(BuildContext context) => _buttonSize(context) + ViewerButtonRowContent.padding;
 
   static double _buttonSize(BuildContext context) => OverlayButton.getSize(context);
-
-  const new({
-    super.key,
-    required this.mainEntry,
-    required this.pageEntry,
-    required this.collection,
-    required this.scale,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -110,18 +104,12 @@ class ViewerButtons extends StatelessWidget {
   }
 }
 
-class _TvButtonRowContent extends StatelessWidget {
-  final EntryActionDelegate actionDelegate;
-  final Animation<double> scale;
-  final AvesEntry mainEntry, pageEntry;
-
-  const new({
-    required this.actionDelegate,
-    required this.scale,
-    required this.mainEntry,
-    required this.pageEntry,
-  });
-
+class const _TvButtonRowContent({
+  required final EntryActionDelegate actionDelegate,
+  required final Animation<double> scale,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
@@ -209,25 +197,18 @@ class _TvButtonRowContent extends StatelessWidget {
   }
 }
 
-class ViewerButtonRowContent extends StatefulWidget {
-  final EntryActionDelegate actionDelegate;
-  final List<EntryAction> quickActions, topLevelActions, exportActions, videoActions;
-  final Animation<double> scale;
-  final AvesEntry mainEntry, pageEntry;
-
+class const ViewerButtonRowContent({
+  super.key,
+  required final EntryActionDelegate actionDelegate,
+  required final List<EntryAction> quickActions,
+  required final List<EntryAction> topLevelActions,
+  required final List<EntryAction> exportActions,
+  required final List<EntryAction> videoActions,
+  required final Animation<double> scale,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+}) extends StatefulWidget {
   static const double padding = 8;
-
-  const new({
-    super.key,
-    required this.actionDelegate,
-    required this.quickActions,
-    required this.topLevelActions,
-    required this.exportActions,
-    required this.videoActions,
-    required this.scale,
-    required this.mainEntry,
-    required this.pageEntry,
-  });
 
   @override
   State<ViewerButtonRowContent> createState() => _ViewerButtonRowContentState();
@@ -323,7 +304,7 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
                         onSelected: (action) async {
                           _popupExpandedNotifier.value = null;
                           // wait for the popup menu to hide before proceeding with the action
-                          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+                          await Future.pause(animations.popUpAnimationDelay * timeDilation);
                           actionDelegate.onActionSelected(context, action);
                         },
                         onCanceled: () {

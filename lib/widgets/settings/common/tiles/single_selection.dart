@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:aves/widgets/common/identity/aves_list_subtitle.dart';
 import 'package:aves/widgets/dialogs/selection_dialogs/common.dart';
@@ -23,7 +24,7 @@ class const SettingsSelectionListTile<T>({
       selector: selector,
       builder: (context, current, child) {
         return ListTile(
-          title: Text(tileTitle(context) ?? '?'),
+          title: Text(tileTitle(context) ?? AText.valueNotAvailable),
           subtitle: AvesListSubtitle(getName(context, current)),
           trailing: trailingBuilder?.call(context),
           onTap: () => showSelectionDialog<T>(

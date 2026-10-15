@@ -12,9 +12,13 @@ import com.drew.metadata.exif.makernotes.OlympusCameraSettingsMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusImageProcessingMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusMakernoteDirectory
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.TimeZones
+import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToLong
@@ -22,7 +26,20 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object ExifInterfaceHelper {
     private val LOG_TAG = LogUtils.createTag<ExifInterfaceHelper>()
-    val DATETIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
+    private val DATETIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
+
+    fun formatDateTime(dateMillis: Long, isUtc: Boolean): String {
+        val dateFormat = DATETIME_FORMAT.clone() as DateFormat
+        dateFormat.timeZone = if (isUtc) TimeZones.UTC else TimeZone.getDefault()
+        return dateFormat.format(Date(dateMillis))
+    }
+
+    fun parseDateTime(dateString: String, isUtc: Boolean): Date? {
+        val dateFormat = DATETIME_FORMAT.clone() as DateFormat
+        dateFormat.timeZone = if (isUtc) TimeZones.UTC else TimeZone.getDefault()
+        return dateFormat.parse(dateString)
+    }
+
     val GPS_DATE_FORMAT = SimpleDateFormat("yyyy:MM:dd", Locale.ROOT)
     val GPS_TIME_FORMAT = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
 
@@ -367,17 +384,29 @@ object ExifInterfaceHelper {
         }
     }
 
-    fun ExifInterface.getSafeDateMillis(tag: String, subSecTag: String?, save: (value: Long) -> Unit) {
+    fun ExifInterface.getSafeDateMillis(
+        tag: String,
+        subSecTag: String?,
+        timeZoneTag: String?,
+        save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit,
+    ) {
         if (this.hasAttribute(tag)) {
             val dateString = this.getAttribute(tag)
             if (dateString != null) {
                 try {
-                    DATETIME_FORMAT.parse(dateString)?.let { date ->
+                    var timeZoneOffsetMinutes: Int? = null
+                    if (timeZoneTag != null && this.hasAttribute(timeZoneTag)) {
+                        val timeZoneOffset = this.getAttribute(timeZoneTag)
+                        timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset)
+                    }
+
+                    parseDateTime(dateString, isUtc = timeZoneOffsetMinutes != null)?.let { date ->
                         var dateMillis = date.time
                         if (subSecTag != null && this.hasAttribute(subSecTag)) {
                             dateMillis += Metadata.parseSubSecond(this.getAttribute(subSecTag))
                         }
-                        save(dateMillis)
+                        timeZoneOffsetMinutes ?: TimeZones.currentOffsetMinutes
+                        save(dateMillis, timeZoneOffsetMinutes)
                     }
                 } catch (e: ParseException) {
                     Log.w(LOG_TAG, "failed to parse date=$dateString", e)

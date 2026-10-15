@@ -3,10 +3,10 @@ import 'dart:io';
 
 import 'package:aves/app_flavor.dart';
 import 'package:aves/locale/aves_locale.dart';
+import 'package:aves/locale/intl.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/ref/locales.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
@@ -23,16 +23,12 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class BugReport extends StatefulWidget {
-  const new({super.key});
-
+class const BugReport({super.key}) extends StatefulWidget {
   @override
   State<BugReport> createState() => _BugReportState();
 }
@@ -57,7 +53,10 @@ class _BugReportState extends State<BugReport> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               alignment: .centerStart,
-              child: Text(context.l10n.aboutBugSectionTitle, style: AStyles.knownTitleText),
+              child: Text(
+                context.l10n.aboutBugSectionTitle,
+                style: AStyles.sectionTitleStyle(context.knownLocale),
+              ),
             ),
           ),
           body: const BugReportContent(),
@@ -137,8 +136,8 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
 
   Future<String> _getInfo(BuildContext context) async {
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
-    final packageInfo = await PackageInfo.fromPlatform();
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final packageInfo = await deviceService.getPackageInfo();
+    final androidInfo = await deviceService.getAndroidInfo();
     final mpc = await deviceService.getMediaPerformanceClass();
     final viewPhysicalSize = View.of(context).physicalSize;
 
@@ -165,6 +164,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
       'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, MPC $mpc, build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
+      'CPU: processors=${device.availableProcessors}',
       'Memory: ram.total=$ramTotal, heap.max=$heapMax',
       'Screen: size.physical=${viewPhysicalSize.width.round()}x${viewPhysicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
       'Graphics: size.logical=${MediaQuery.widthOf(context)}x${MediaQuery.heightOf(context)}, pixel ratio=${MediaQuery.devicePixelRatioOf(context)}, cross window blur=$crossWindowBlurEnabled',
@@ -189,7 +189,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       contentLog,
     ].join('\n--------------------------------------------------------------------------------\n');
 
-    final date = DateFormat('yyyyMMdd_HHmmss', kAsciiLocale).format(DateTime.now());
+    final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
     final success = await storageService.createFile(
       basename: 'aves-logs-$date',
       mimeType: MimeTypes.plainText,

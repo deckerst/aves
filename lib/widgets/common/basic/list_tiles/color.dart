@@ -1,4 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -15,7 +16,7 @@ class const ColorListTile({
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title(context) ?? '?'),
+      title: Text(title(context) ?? AText.valueNotAvailable),
       trailing: ColorIndicator(
         value: value,
       ),

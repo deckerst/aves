@@ -330,7 +330,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           onActionSelected(action);
         },
         popUpAnimationStyle: animations.popUpAnimationStyle,
@@ -347,7 +347,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     if (uri == null) return;
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
 
     _pickFilter(context, AlbumGroupFilter.empty(uri));
   }
@@ -361,7 +361,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     if (directory == null) return;
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
 
     _pickStoredAlbum(context, directory);
   }
@@ -385,7 +385,7 @@ class _AlbumPickPageState extends State<_AlbumPickPage> with FeedbackMixin, Vaul
     if (details == null) return;
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
 
     await vaults.create(details);
     _pickStoredAlbum(context, details.path);

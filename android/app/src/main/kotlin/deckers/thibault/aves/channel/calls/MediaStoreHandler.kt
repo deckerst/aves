@@ -76,8 +76,8 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun scanFile(call: MethodCall, result: MethodChannel.Result) {
-        val path = call.argument<String>("path")
         val mimeType = call.argument<String>("mimeType")
+        val path = call.argument<String>("path")
         MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, uri: Uri? -> result.success(uri?.toString()) }
     }
 

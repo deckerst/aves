@@ -2,12 +2,11 @@ import 'package:aves/model/device.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugCapabilitiesSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugCapabilitiesSection({super.key}) extends StatefulWidget {
   @override
   State<DebugCapabilitiesSection> createState() => _DebugCapabilitiesSectionState();
 }
@@ -37,15 +36,20 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
     super.build(context);
     return AvesExpansionTile(
       title: 'Capabilities',
+      locale: KnownLocale.english,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             crossAxisAlignment: .start,
             children: [
-              const HighlightTitle(title: 'Device'),
+              const HighlightTitle(
+                title: 'Device',
+                locale: KnownLocale.english,
+              ),
               InfoRowGroup(
                 info: {
+                  'availableProcessors': '${device.availableProcessors}',
                   'canAuthenticateUser': '${device.canAuthenticateUser}',
                   'canPinShortcut': '${device.canPinShortcut}',
                   'canRenderSubdivisionFlagEmojis': '${device.canRenderSubdivisionFlagEmojis}',
@@ -81,7 +85,10 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
-                  const HighlightTitle(title: 'Window'),
+                  const HighlightTitle(
+                    title: 'Window',
+                    locale: KnownLocale.english,
+                  ),
                   InfoRowGroup(
                     info: {
                       'isCutoutAware': '$isCutoutAware',
@@ -112,7 +119,10 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
-                  const HighlightTitle(title: 'App'),
+                  const HighlightTitle(
+                    title: 'App',
+                    locale: KnownLocale.english,
+                  ),
                   InfoRowGroup(
                     info: {
                       'userAgent': device.userAgent,

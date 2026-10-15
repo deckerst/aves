@@ -8,9 +8,13 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/filter_group_provider.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/rename_group_dialog.dart';
+import 'package:aves/widgets/dialogs/filter_editors/rename_tag_dialog.dart';
 import 'package:aves/widgets/dialogs/pick_dialogs/tag_pick_page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:aves/widgets/filter_grids/common/enums.dart';
@@ -72,6 +76,8 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
         return isMain && isSelecting && !useTvLayout;
       case .remove:
         return isMain && isSelecting && !settings.isReadOnly && (selectedFilters.isEmpty || selectedFilters.every((v) => v is TagFilter));
+      case .rename:
+        return isMain && isSelecting && !settings.isReadOnly;
       default:
         return super.isVisible(
           action,
@@ -112,6 +118,9 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
         _remove(context);
       case .group:
         _group(context);
+      // single filter
+      case .rename:
+        _rename(context);
       default:
         break;
     }
@@ -163,5 +172,61 @@ class TagChipSetActionDelegate extends ChipSetActionDelegate<TagBaseFilter> {
     final source = context.read<CollectionSource>();
     source.invalidateTagGroupFilterSummary(notify: true);
     browse(context);
+  }
+
+  Future<void> _rename(BuildContext context) async {
+    final filters = getSelectedFilters(context);
+    if (filters.isEmpty) return;
+
+    final filter = filters.first;
+    if (filter is TagFilter) {
+      final source = context.read<CollectionSource>();
+      final collectionTags = source.sortedTags.toSet();
+
+      final newName = await showAvesDialog<String>(
+        context: context,
+        builder: (context) => RenameTagDialog(tag: filter.tag, collectionTags: collectionTags),
+        routeSettings: const RouteSettings(name: RenameTagDialog.routeName),
+      );
+      if (newName == null || newName.isEmpty) return;
+
+      await _doRenameTag(context, filter, newName);
+    } else if (filter is TagGroupFilter) {
+      final newGroupUri = await showAvesDialog<Uri>(
+        context: context,
+        builder: (context) => RenameGroupDialog(grouping: tagGrouping, groupUri: filter.uri),
+        routeSettings: const RouteSettings(name: RenameGroupDialog.routeName),
+      );
+      if (newGroupUri == null) return;
+
+      await _doRenameTagGroup(context, filter, newGroupUri);
+    }
+  }
+
+  Future<void> _doRenameTagGroup(BuildContext context, TagGroupFilter oldFilter, Uri newUri) async {
+    tagGrouping.rename(oldFilter.uri, newUri);
+    final newFilter = tagGrouping.uriToFilter(newUri);
+    if (newFilter == null) {
+      showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+      return;
+    }
+    browse(context);
+  }
+
+  Future<void> _doRenameTag(BuildContext context, TagFilter tagFilter, String newName) async {
+    final source = context.read<CollectionSource>();
+    final todoEntries = source.visibleEntries.where(tagFilter.test).toSet();
+
+    final oldName = tagFilter.tag;
+    final newTagsByEntry = Map.fromEntries(
+      todoEntries.map((entry) {
+        final newTags = Set.of(entry.tags)
+          ..remove(oldName)
+          ..add(newName);
+        return MapEntry(entry, newTags);
+      }),
+    );
+
+    await EntrySetActionDelegate().doEditTags(context, newTagsByEntry);
   }
 }

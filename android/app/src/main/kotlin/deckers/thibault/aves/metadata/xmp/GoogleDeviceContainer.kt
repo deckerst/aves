@@ -1,11 +1,11 @@
 package deckers.thibault.aves.metadata.xmp
 
 import android.content.Context
-import android.net.Uri
 import com.adobe.internal.xmp.XMPMeta
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.xmp.XMP.countPropPathArrayItems
 import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.utils.indexOfBytes
 import java.io.DataInputStream
 
@@ -34,8 +34,8 @@ class GoogleDeviceContainer {
         }
     }
 
-    fun findOffsets(context: Context, uri: Uri, mimeType: String, sizeBytes: Long) {
-        Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+    fun findOffsets(context: Context, contentAddress: ContentAddress, sizeBytes: Long) {
+        Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
             val bytes = ByteArray(sizeBytes.toInt())
             DataInputStream(input).use {
                 it.readFully(bytes)

@@ -11,14 +11,14 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/app_bar/app_bar_title.dart';
-import 'package:aves/widgets/common/app_bar/crumb_line.dart';
+import 'package:aves/widgets/common/bars/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/bars/app_bar_title.dart';
+import 'package:aves/widgets/common/bars/crumb_line.dart';
 import 'package:aves/widgets/common/basic/font_size_icon_theme.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_app_bar.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/select_storage_dialog.dart';
@@ -147,7 +147,7 @@ class _ExplorerAppBarState extends State<ExplorerAppBar> with WidgetsBindingObse
         },
         onSelected: (action) async {
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           final directory = widget.directoryNotifier.value;
           if (directory != null) {
             ExplorerActionDelegate(directory: directory).onActionSelected(context, action);

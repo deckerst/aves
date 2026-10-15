@@ -7,6 +7,7 @@ import 'package:aves/theme/colors.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/metadata/geotiff.dart';
@@ -18,23 +19,15 @@ import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MetadataDirTile extends StatelessWidget {
-  final AvesEntry entry;
-  final String title;
-  final MetadataDirectory dir;
-  final ValueNotifier<String?>? expandedDirectoryNotifier;
-  final bool initiallyExpanded, showThumbnails;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.title,
-    required this.dir,
-    this.expandedDirectoryNotifier,
-    this.initiallyExpanded = false,
-    this.showThumbnails = true,
-  });
-
+class const MetadataDirTile({
+  super.key,
+  required final AvesEntry entry,
+  required final String title,
+  required final MetadataDirectory dir,
+  final ValueNotifier<String?>? expandedDirectoryNotifier,
+  final bool initiallyExpanded = false,
+  final bool showThumbnails = true,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tags = dir.tags;
@@ -42,6 +35,7 @@ class MetadataDirTile extends StatelessWidget {
 
     return AvesExpansionTile(
       title: title,
+      locale: KnownLocale.english,
       highlightColor: getTitleColor(context, dir),
       expandedNotifier: expandedDirectoryNotifier,
       initiallyExpanded: initiallyExpanded,
@@ -66,18 +60,12 @@ class MetadataDirTile extends StatelessWidget {
   }
 }
 
-class MetadataDirTileBody extends StatelessWidget {
-  final AvesEntry entry;
-  final MetadataDirectory dir;
-  final bool showThumbnails;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.dir,
-    this.showThumbnails = true,
-  });
-
+class const MetadataDirTileBody({
+  super.key,
+  required final AvesEntry entry,
+  required final MetadataDirectory dir,
+  final bool showThumbnails = true,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tags = dir.tags;

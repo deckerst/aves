@@ -302,7 +302,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
           FocusManager.instance.primaryFocus?.unfocus();
 
           // wait for the popup menu to hide before proceeding with the action
-          await Future.delayed(animations.popUpAnimationDelay * timeDilation);
+          await Future.pause(animations.popUpAnimationDelay * timeDilation);
           onActionSelected(action);
         },
         popUpAnimationStyle: animations.popUpAnimationStyle,
@@ -319,7 +319,7 @@ class _TagPickPageState extends State<_TagPickPage> with FeedbackMixin {
     if (uri == null) return;
 
     // wait for the dialog to hide
-    await Future.delayed(ADurations.dialogTransitionLoose * timeDilation);
+    await Future.pause(ADurations.dialogTransitionLoose * timeDilation);
 
     _pickFilter(context, TagGroupFilter.empty(uri));
   }

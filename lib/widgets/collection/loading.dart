@@ -6,14 +6,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:material_ui/material_ui.dart';
 
-class LoadingEmptyContent extends StatelessWidget {
-  final CollectionSource source;
-
-  const new({
-    super.key,
-    required this.source,
-  });
-
+class const LoadingEmptyContent({
+  super.key,
+  required final CollectionSource source,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemCountFormatter = settings.avesLocale.decimalNumberFormat();

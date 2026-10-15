@@ -4,14 +4,11 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class SlowMotionRange {
-  final double start, end; // in [0, 1]
-
-  new({
-    required double start,
-    required double end,
-  }) : start = start.clamp(0, 1),
-       end = end.clamp(0, 1);
+class SlowMotionRange({
+  required double start, // in [0, 1]
+  required double end, // in [0, 1]
+}) {
+  final double start = start.clamp(0, 1), end = end.clamp(0, 1);
 
   SlowMotionRange sanitize() {
     if (start > end) {

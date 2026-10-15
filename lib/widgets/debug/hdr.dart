@@ -1,11 +1,10 @@
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/media_fetch_service.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:material_ui/material_ui.dart';
 
-class DebugHdrSection extends StatefulWidget {
-  const new({super.key});
-
+class const DebugHdrSection({super.key}) extends StatefulWidget {
   @override
   State<DebugHdrSection> createState() => _DebugHdrSectionState();
 }
@@ -34,6 +33,7 @@ class _DebugHdrSectionState extends State<DebugHdrSection> with AutomaticKeepAli
     super.build(context);
     return AvesExpansionTile(
       title: 'HDR',
+      locale: KnownLocale.english,
       children: [
         FutureBuilder<bool>(
           future: _wideGamutModeLoader,

@@ -6,21 +6,15 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-abstract class EquatableNotification extends Notification with Equatable {
-  const new();
-
+abstract class const EquatableNotification() extends Notification with Equatable {
   @override
   List<Object?> get props => [];
 }
 
 @immutable
-class LockViewNotification extends EquatableNotification {
-  final bool locked;
-
+class const LockViewNotification({required final bool locked}) extends EquatableNotification {
   @override
   List<Object?> get props => [locked];
-
-  const new({required this.locked});
 }
 
 @immutable
@@ -33,37 +27,24 @@ class ShowImageNotification extends EquatableNotification;
 class ShowInfoPageNotification extends EquatableNotification;
 
 @immutable
-class ShowPreviousEntryNotification extends EquatableNotification {
-  final bool animate;
-
+class const ShowPreviousEntryNotification({required final bool animate}) extends EquatableNotification {
   @override
   List<Object?> get props => [animate];
-
-  const new({required this.animate});
 }
 
 @immutable
-class ShowNextEntryNotification extends EquatableNotification {
-  final bool animate;
-
+class const ShowNextEntryNotification({required final bool animate}) extends EquatableNotification {
   @override
   List<Object?> get props => [animate];
-
-  const new({required this.animate});
 }
 
 @immutable
-class ShowEntryNotification extends EquatableNotification {
-  final bool animate;
-  final int index;
-
+class const ShowEntryNotification({
+  required final bool animate,
+  required final int index,
+}) extends EquatableNotification {
   @override
   List<Object?> get props => [animate, index];
-
-  const new({
-    required this.animate,
-    required this.index,
-  });
 }
 
 @immutable
@@ -73,13 +54,9 @@ class ShowPreviousVideoNotification extends EquatableNotification;
 class ShowNextVideoNotification extends EquatableNotification;
 
 @immutable
-class ToggleOverlayNotification extends EquatableNotification {
-  final bool? visible;
-
+class const ToggleOverlayNotification({final bool? visible}) extends EquatableNotification {
   @override
   List<Object?> get props => [visible];
-
-  const new({this.visible});
 }
 
 @immutable
@@ -89,81 +66,49 @@ class TvShowLessInfoNotification extends EquatableNotification;
 class TvShowMoreInfoNotification extends EquatableNotification;
 
 @immutable
-class VideoActionNotification extends EquatableNotification {
-  final AvesVideoController controller;
-  final AvesEntry entry;
-  final EntryAction action;
-
+class const VideoActionNotification({
+  required final AvesVideoController controller,
+  required final AvesEntry entry,
+  required final EntryAction action,
+}) extends EquatableNotification {
   @override
   List<Object?> get props => [controller, entry, action];
-
-  const new({
-    required this.controller,
-    required this.entry,
-    required this.action,
-  });
 }
 
 @immutable
-class CastNotification extends EquatableNotification {
-  final bool enabled;
-
+class const CastNotification(final bool enabled) extends EquatableNotification {
   @override
   List<Object?> get props => [enabled];
-
-  const new(this.enabled);
 }
 
 @immutable
-class SelectFilterNotification extends EquatableNotification {
-  final CollectionFilter filter;
-
+class const SelectFilterNotification(final CollectionFilter filter) extends EquatableNotification {
   @override
   List<Object?> get props => [filter];
-
-  const new(this.filter);
 }
 
 @immutable
-class DecomposeFilterNotification extends EquatableNotification {
-  final CollectionFilter filter;
-
+class const DecomposeFilterNotification(final CollectionFilter filter) extends EquatableNotification {
   @override
   List<Object?> get props => [filter];
-
-  const new(this.filter);
 }
 
 @immutable
-class EntryDeletedNotification extends EquatableNotification {
-  final Set<AvesEntry> entries;
-
+class const EntryDeletedNotification(final Set<AvesEntry> entries) extends EquatableNotification {
   @override
   List<Object?> get props => [entries];
-
-  const new(this.entries);
 }
 
 @immutable
-class EntryMovedNotification extends EquatableNotification {
-  final MoveType moveType;
-  final Set<AvesEntry> entries;
-
+class const EntryMovedNotification(final MoveType moveType, final Set<AvesEntry> entries) extends EquatableNotification {
   @override
   List<Object?> get props => [moveType, entries];
-
-  const new(this.moveType, this.entries);
 }
 
 @immutable
-class FullImageLoadedNotification extends EquatableNotification {
-  final AvesEntry entry;
-  final ImageProvider image;
-
+class const FullImageLoadedNotification(final AvesEntry entry, final ImageProvider image) extends EquatableNotification {
   @override
   List<Object?> get props => [entry, image];
-
-  const new(this.entry, this.image);
 }
 
 @immutable
