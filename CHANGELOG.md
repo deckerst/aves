@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.6"></a>[v1.15.6] - 2026-10-15
+
 ### Added
 
 - Collection: support for Realme burst pattern
