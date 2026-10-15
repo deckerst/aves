@@ -747,5 +747,7 @@
     "videoThumbnailMethodFirstFrame": "첫 프레임",
     "videoThumbnailMethodPreviewFrame": "미리보기 프레임",
     "videoThumbnailMethodEmbeddedImage": "첨부 사진",
-    "settingsVideoThumbnailMethods": "우선 섬네일"
+    "settingsVideoThumbnailMethods": "우선 섬네일",
+    "chipActionCopyCenterCoordinates": "중심 좌표 복사",
+    "renameTagDialogLabelAlreadyExistsHelper": "태그가 이미 있습니다"
 }

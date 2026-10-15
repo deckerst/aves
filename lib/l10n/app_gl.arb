@@ -982,5 +982,7 @@
     "videoThumbnailMethodFirstFrame": "Primeiro fotograma",
     "collectionActionShowLayoutBar": "Amosar barra de deseño",
     "collectionActionHideLayoutBar": "Agochar barra de deseño",
-    "settingsVideoThumbnailMethods": "Miniatura preferida"
+    "settingsVideoThumbnailMethods": "Miniatura preferida",
+    "chipActionCopyCenterCoordinates": "Copiar as coordenadas do centro",
+    "renameTagDialogLabelAlreadyExistsHelper": "A etiqueta xa existe"
 }

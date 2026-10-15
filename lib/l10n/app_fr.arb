@@ -747,5 +747,7 @@
     "videoThumbnailMethodEmbeddedImage": "Couverture incluse",
     "videoThumbnailMethodPreviewFrame": "Image d’aperçu",
     "videoThumbnailMethodFirstFrame": "Première image",
-    "settingsVideoThumbnailMethods": "Vignette préférée"
+    "settingsVideoThumbnailMethods": "Vignette préférée",
+    "chipActionCopyCenterCoordinates": "Copier les coordonnées du centre",
+    "renameTagDialogLabelAlreadyExistsHelper": "L’étiquette existe déjà"
 }
