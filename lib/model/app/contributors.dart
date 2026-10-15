@@ -192,6 +192,7 @@ class Contributors {
     Contributor('Adrien Cordonnier', 'adrien.cordonnier@gmail.com'),
     Contributor('Bouzid Zeroug', 'bouzidzeroug98@gmail.com'),
     Contributor('Feliks-WR', 'aq.1428@tuta.io'),
+    Contributor('Jani Buni', 'alejandrolage@outlook.com'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
@@ -221,6 +222,7 @@ class Contributors {
     // Contributor('Nevena', 'kontakt.nc@outlook.com'), // Serbian
     // Contributor('mytja', 'mamnju21@gmail.com'), // Slovenian
     // Contributor('jakobkreft', 'jk6684@student.uni-lj.si'), // Slovenian
+    // Contributor('Primozz', 'primoz@users.noreply.hosted.weblate.org'), // Slovenian
 
     // * blocked
     // Contributor('Mireli5656', 'miraliseyidli5656@gmail.com'), // Azerbaijani
