@@ -1,10 +1,194 @@
 {
-  "appName": "Aves",
-  "@appName": {},
-  "welcomeMessage": "Dobrodošli v Avesu",
-  "@welcomeMessage": {},
-  "welcomeOptional": "Izbirno",
-  "@welcomeOptional": {},
-  "welcomeTermsToggle": "Sprejmem pogoje uporabe",
-  "@welcomeTermsToggle": {}
+    "appName": "Aves",
+    "welcomeMessage": "Dobrodošli v Avesu",
+    "welcomeOptional": "Izbirno",
+    "welcomeTermsToggle": "Sprejmem pogoje uporabe",
+    "itemCount": "{count, plural, =1{{count} predmet} two{{count} predmeta} few{{count} predmeti} other{{count} predmetov}}",
+    "@itemCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "columnCount": "{count, plural, =1{{count} stolpec} two{{count} stolpca} few{{count} stolpci} other{{count} stolpcev}}",
+    "@columnCount": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "timeSeconds": "{count, plural, =1{{count} sekunda} two{{count} sekundi} few{{count} sekunde} other{{count} sekund}}",
+    "@timeSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "timeMinutes": "{count, plural, =1{{count} minute} two{{count} minuti} few{{count} minute} other{{count} minut}}",
+    "@timeMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "timeDays": "{count, plural, =1{{count} dan} two{{count} dneva} few{{count} dnevi} other{{count} dni}}",
+    "@timeDays": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "focalLength": "{length} mm",
+    "@focalLength": {
+        "placeholders": {
+            "length": {
+                "type": "String",
+                "example": "5.4"
+            }
+        }
+    },
+    "applyButtonLabel": "UPORABI",
+    "createButtonLabel": "USTVARI",
+    "deleteButtonLabel": "IZBRIŠI",
+    "nextButtonLabel": "NAPREJ",
+    "showButtonLabel": "PRIKAŽI",
+    "hideButtonLabel": "SKRIJ",
+    "continueButtonLabel": "NADALJUJ",
+    "saveCopyButtonLabel": "SHRANI KOPIJO",
+    "applyTooltip": "Uporabi",
+    "cancelTooltip": "Prekliči",
+    "changeTooltip": "Spremeni",
+    "clearTooltip": "Počisti",
+    "previousTooltip": "Nazaj",
+    "nextTooltip": "Naprej",
+    "showTooltip": "Prikaži",
+    "hideTooltip": "Skrij",
+    "actionRemove": "Odstrani",
+    "resetTooltip": "Ponastavi",
+    "saveTooltip": "Shrani",
+    "doubleBackExitMessage": "Ponovno pritisni „nazaj“ za izhod.",
+    "doNotAskAgain": "Ne sprašuj ponovno",
+    "sourceStateLoading": "Nalagam",
+    "sourceStateCataloguing": "Popisujem",
+    "sourceStateLocatingCountries": "Iščem države",
+    "sourceStateLocatingPlaces": "Iščem kraje",
+    "chipActionDelete": "Izbriši",
+    "chipActionRemove": "Odstrani",
+    "chipActionShowCollection": "Prikaži med zbirkami",
+    "chipActionGoToAlbumPage": "Prikaži med albumi",
+    "chipActionGoToCountryPage": "Prikaži med državami",
+    "chipActionGoToPlacePage": "Prikaži med kraji",
+    "chipActionGoToTagPage": "Prikaži med oznakami",
+    "chipActionGoToExplorerPage": "Prikaži v Raziskovalcu",
+    "stopTooltip": "Ustavi",
+    "pickTooltip": "Izberi",
+    "chipActionCopyCenterCoordinates": "Kopiraj srednje koordinate",
+    "chipActionDecompose": "Razdeli",
+    "chipActionFilterOut": "Izloči iz prikaza",
+    "chipActionFilterIn": "Dodaj v prikaz",
+    "chipActionHide": "Skrij",
+    "chipActionLock": "Zakleni",
+    "chipActionPin": "Pripni na vrh",
+    "chipActionUnpin": "Odstrani z vrha",
+    "chipActionGroup": "Spremeni skupino",
+    "chipActionRename": "Preimenuj",
+    "chipActionSetCover": "Nastavi naslovno sliko",
+    "chipActionShowCountryStates": "Prikaži dežele",
+    "chipActionCreateGroup": "Ustvari skupino",
+    "chipActionCreateAlbum": "Ustvari album",
+    "chipActionCreateVault": "Ustvari sef",
+    "chipActionConfigureVault": "Nastavitve sefa",
+    "entryActionCopyToClipboard": "Kopiraj v odložišče",
+    "entryActionDelete": "Izbriši",
+    "entryActionConvert": "Pretvori",
+    "entryActionExport": "Izvozi",
+    "entryActionInfo": "Info",
+    "entryActionRename": "Preimenuj",
+    "entryActionRestore": "Obnovi",
+    "entryActionRotateCCW": "Zavrti proti smeri urinega kazalca",
+    "entryActionRotateCW": "Zavrti v smeri urinega kazalca",
+    "entryActionFlip": "Zrcali vodoravno",
+    "entryActionPrint": "Tiskaj",
+    "entryActionShare": "Deli",
+    "entryActionShareImageOnly": "Deli samo sliko",
+    "entryActionShareVideoOnly": "Deli samo video",
+    "entryActionViewSource": "Prikaži vir",
+    "entryActionShowGeoTiffOnMap": "Prikaži na zemljevidu",
+    "entryActionConvertMotionPhotoToStillImage": "Pretvori v statično sliko",
+    "entryActionViewMotionPhotoVideo": "Odpri video",
+    "entryActionEdit": "Uredi",
+    "entryActionOpen": "Odpri z",
+    "entryActionSetAs": "Nastavi kot",
+    "entryActionCast": "Prenos (cast)",
+    "entryActionOpenMap": "Prikaži v aplikaciji za zemljevide",
+    "entryActionRotateScreen": "Zavrti ekran",
+    "entryActionAddFavourite": "Dodaj med priljubljene",
+    "entryActionRemoveFavourite": "Odstrani iz priljubljenih",
+    "videoActionCaptureFrame": "Zajemi sliko iz videa",
+    "videoActionMute": "Utišaj",
+    "videoActionUnmute": "Vključi zvok",
+    "videoActionPause": "Pavza",
+    "videoActionPlay": "Predvajaj",
+    "videoActionReplay10": "Prevrti 10 sekund nazaj",
+    "videoActionSkip10": "Prevrti 10 sekund naprej",
+    "videoActionShowPreviousFrame": "Prejšnja sličica",
+    "videoActionShowNextFrame": "Naslednja sličica",
+    "videoActionSelectStreams": "Izberi kanale",
+    "videoActionSetSpeed": "Hitrost predvajanja",
+    "videoActionABRepeat": "A-B ponavljanje",
+    "videoRepeatActionSetStart": "Izberi začetek",
+    "videoRepeatActionSetEnd": "Izberi konec",
+    "viewerActionSettings": "Nastavitve",
+    "viewerActionLock": "Zakleni prikaz",
+    "viewerActionUnlock": "Odkleni prikaz",
+    "slideshowActionResume": "Nadaljuj",
+    "slideshowActionShowInCollection": "Prikaži v zbirki",
+    "entryInfoActionEditDate": "Uredi datum in čas",
+    "entryInfoActionEditLocation": "Uredi lokacijo",
+    "entryInfoActionEditTitleDescription": "Uredi naziv in opis",
+    "entryInfoActionEditRating": "Uredi oceno",
+    "entryInfoActionEditTags": "Uredi oznake",
+    "entryInfoActionRemoveMetadata": "Odstrani metapodatke",
+    "entryInfoActionExportMetadata": "Izvozi metapodatke",
+    "entryInfoActionRemoveLocation": "Odstrani lokacijo",
+    "editorActionTransform": "Preoblikuj",
+    "editorTransformCrop": "Obreži",
+    "editorTransformRotate": "Zavrti",
+    "cropAspectRatioFree": "Prosto",
+    "cropAspectRatioOriginal": "Izvirnik",
+    "cropAspectRatioSquare": "Kvadrat",
+    "filterAspectRatioLandscapeLabel": "Ležeče",
+    "filterAspectRatioPortraitLabel": "Pokončno",
+    "filterBinLabel": "Koš",
+    "filterFavouriteLabel": "Priljubljeni",
+    "filterNoDateLabel": "Brez datuma",
+    "filterNoAddressLabel": "Brez naslova",
+    "filterLocatedLabel": "Z lokacijo",
+    "filterNoLocationLabel": "Brez lokacije",
+    "filterNoRatingLabel": "Brez ocene",
+    "filterTaggedLabel": "Z oznakami",
+    "filterNoTagLabel": "Brez oznak",
+    "filterNoTitleLabel": "Brez naziva",
+    "filterOnThisDayLabel": "Na ta dan",
+    "filterRecentlyAddedLabel": "Nedavno dodani",
+    "filterRatingRejectedLabel": "Zavrnjeno",
+    "filterTypeAnimatedLabel": "Animacije",
+    "filterTypeMotionPhotoLabel": "Slika z gibanjem",
+    "filterTypePanoramaLabel": "Panorama",
+    "filterTypeRawLabel": "RAW",
+    "filterTypeSlowMotionVideoLabel": "Počasni posnetek",
+    "filterTypeSphericalVideoLabel": "360° video",
+    "filterTypeGeotiffLabel": "GeoTIFF",
+    "filterMimeImageLabel": "Slika",
+    "filterMimeVideoLabel": "Video"
 }
