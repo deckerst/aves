@@ -739,5 +739,15 @@
     "settingsCalendarTile": "Calendário",
     "mapShowItemTracks": "Mostrar caminhos",
     "mapHideItemTracks": "Ocultar caminhos",
-    "tileLayoutCalendar": "Calendário"
+    "tileLayoutCalendar": "Calendário",
+    "chipActionCopyCenterCoordinates": "Copiar coordenadas centrais",
+    "calendarHijriTabular": "Hijiri (Tabular)",
+    "videoThumbnailMethodEmbeddedImage": "Imagem embutida",
+    "videoThumbnailMethodPreviewFrame": "Visualizar quadro",
+    "videoThumbnailMethodFirstFrame": "Primeiro quadro",
+    "renameTagDialogLabelAlreadyExistsHelper": "Etiqueta já existe",
+    "collectionActionShowLayoutBar": "Mostrar barra de layout",
+    "collectionActionHideLayoutBar": "Ocultar barra de layout",
+    "settingsVideoThumbnailMethods": "Preferência de miniatura",
+    "calendarHijriUmalqura": "Hijiri (Umm al-Qura)"
 }
