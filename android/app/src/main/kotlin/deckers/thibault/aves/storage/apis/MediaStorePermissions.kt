@@ -12,6 +12,7 @@ import android.os.TransactionTooLargeException
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.provider.ImageProvider.Companion.contentExists
@@ -25,6 +26,7 @@ import java.util.concurrent.CompletableFuture
 
 object MediaStorePermissions : StoragePermissions {
     private val LOG_TAG = LogUtils.createTag<MediaStorePermissions>()
+    private val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
     private val INSERTION_PRIMARY_DIRS_LOWER = listOf(
         Environment.DIRECTORY_DCIM,
         Environment.DIRECTORY_DOWNLOADS,
@@ -90,8 +92,17 @@ object MediaStorePermissions : StoragePermissions {
             activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
         } catch (ex: IllegalArgumentException) {
             // hard-coded limit in Android source code
-            if (ex.message == "URI list restricted to 2000 per request") {
-                throw TransactionTooLargeException(ex.message)
+            val message = ex.message
+            if (message == "URI list restricted to 2000 per request") {
+                throw TransactionTooLargeException(message)
+            } else if (message != null && message.startsWith(INVALID_URI_EXCEPTION_MESSAGE_PREFIX)) {
+                val invalidUri = message.substring(INVALID_URI_EXCEPTION_MESSAGE_PREFIX.length).toUri()
+                if (uris.contains(invalidUri)) {
+                    val retryUris = uris as? ArrayList ?: arrayListOf<Uri>().apply { addAll(uris) }
+                    retryUris.remove(invalidUri)
+                    Log.w(LOG_TAG, "retry request without invalid URI=$invalidUri")
+                    requestFileAccess(activity, retryUris, mimeTypes)
+                }
             }
             throw ex
         }
