@@ -41,6 +41,7 @@ import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictResolution
 import deckers.thibault.aves.model.NameConflictStrategy
+import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
@@ -209,13 +210,12 @@ abstract class ImageProvider {
         if (StorageUtils.isInVault(context, path)) {
             FileImageProvider().apply {
                 val uri = Uri.fromFile(File(path))
-                deleteSingle(context, uri, path, mimeType)
+                deleteSingle(context, ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null))
             }
         } else {
             MediaStoreImageProvider().apply {
-                val uri = getContentUriForPath(context, path)
-                uri ?: throw Exception("failed to find content URI for path=$path")
-                deleteSingle(context, uri, path, mimeType)
+                val uri = getContentUriForPath(context, path) ?: throw Exception("failed to find content URI for path=$path")
+                deleteSingle(context, ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null))
             }
         }
     }
@@ -224,10 +224,12 @@ abstract class ImageProvider {
     // - there is a content row in the Media Store and there is a file on storage
     // - there is a content row in the Media Store, but there is no longer a file on storage
     // - there is no content row in the Media Store, but there is a file on storage
-    fun deleteSingle(context: Context, uri: Uri, filePath: String?, mimeType: String) {
-        filePath ?: throw Exception("failed to delete file because path is null")
+    fun deleteSingle(context: Context, contentAddress: ContentAddress) {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
+        val path = contentAddress.path ?: throw Exception("failed to delete file because path is null")
 
-        val file = File(filePath)
+        val file = File(path)
 
         val initialContentExists = contentExists(context, uri)
         val initialFileExists = file.exists()
@@ -237,7 +239,7 @@ abstract class ImageProvider {
             // the delete request may yield a `RecoverableSecurityException` when using scoped storage,
             // even if we have permissions on the tree document via SAF
             val scopedStorage = Build.VERSION.SDK_INT > Build.VERSION_CODES.Q
-            if (MediaStorePermissions.canEdit(context, uri, mimeType) || !scopedStorage) {
+            if (MediaStorePermissions.canEdit(context, contentAddress) || !scopedStorage) {
                 Log.d(LOG_TAG, "delete via content resolver at uri=$uri")
                 try {
                     val rowDeleted = context.contentResolver.delete(uri, null, null) > 0
@@ -266,7 +268,7 @@ abstract class ImageProvider {
                         throw Exception("failed to get permission from recoverable security exception", ex)
                     }
 
-                    return deleteSingle(context, uri, filePath, mimeType)
+                    return deleteSingle(context, contentAddress)
                 }
             }
         }
@@ -279,12 +281,12 @@ abstract class ImageProvider {
         } else if (uri.isFileScheme) {
             val uriFilePath = File(uri.path!!).path
             // URI and path both point to the same non-existent path
-            if (uriFilePath == filePath) return
+            if (uriFilePath == path) return
         }
 
         if (file.exists()) {
-            Log.d(LOG_TAG, "delete document at path=$filePath")
-            val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = uri)
+            Log.d(LOG_TAG, "delete document at path=$path")
+            val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = path, mediaUri = uri)
             if (df == null || !df.delete()) {
                 throw Exception("failed to delete document with df=$df")
             }
@@ -293,7 +295,7 @@ abstract class ImageProvider {
         if (contentExists(context, uri) && StorageUtils.isMediaStoreContentUri(uri)) {
             // in theory, scanning an obsolete path should remove the entry from the Media Store
             // in practice, the entry may still be there afterward
-            MediaStoreImageProvider.scanObsoletePath(context, uri, filePath, mimeType)
+            MediaStoreImageProvider.scanObsoletePath(context, uri, path, mimeType)
         }
     }
 
@@ -334,7 +336,7 @@ abstract class ImageProvider {
 
                         val sourceFile = if (sourcePath != null) File(sourcePath) else null
                         if (sourceFile != null && !sourceFile.exists() && toBin) {
-                            deleteSingle(context, sourceUri, sourcePath, mimeType = mimeType)
+                            deleteSingle(context, ContentAddress(mimeType = mimeType, uri = sourceUri, path = sourcePath, pageId = null))
                             deletedFieldMap
                         } else {
                             var effectiveTargetDirPath = targetDir
@@ -520,7 +522,7 @@ abstract class ImageProvider {
                 if (!copy) {
                     // delete original entry
                     try {
-                        deleteSingle(context, sourceUri, sourcePath, mimeType)
+                        deleteSingle(context, ContentAddress(mimeType = mimeType, uri = sourceUri, path = sourcePath, pageId = null))
                     } catch (ex: Exception) {
                         Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", ex)
                     }
@@ -1218,7 +1220,7 @@ abstract class ImageProvider {
                 return false
             }
             editableFile.delete()
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             callback.onFailure(ex)
             return false
         }
@@ -1321,7 +1323,7 @@ abstract class ImageProvider {
                 return false
             }
             editableFile.delete()
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             callback.onFailure(ex)
             return false
         }
@@ -1466,7 +1468,7 @@ abstract class ImageProvider {
                 return false
             }
             editableFile.delete()
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             callback.onFailure(ex)
             return false
         }
@@ -1879,7 +1881,7 @@ abstract class ImageProvider {
             // copy the edited temporary file back to the original
             editableFile.copyTo(outputStream(context, contentAddress))
             editableFile.delete()
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             callback.onFailure(ex)
             return
         }
@@ -1945,7 +1947,7 @@ abstract class ImageProvider {
                 return
             }
             editableFile.delete()
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             callback.onFailure(ex)
             return
         }
@@ -1954,21 +1956,22 @@ abstract class ImageProvider {
         scanPostMetadataEdit(context, contentAddress, newFields, callback)
     }
 
-    private fun outputStream(
-        context: Context,
-        contentAddress: ContentAddress
-    ): OutputStream {
-        val mimeType = contentAddress.mimeType
-        val uri = contentAddress.uri
-
+    private fun outputStream(context: Context, contentAddress: ContentAddress): OutputStream {
         // truncate is necessary when overwriting a longer file
         val mode = "wt"
-        return if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
-            StorageUtils.openOutputStream(context, mimeType, uri, mode) ?: throw Exception("failed to open output stream for uri=$uri")
+        return if (MediaStorePermissions.canEdit(context, contentAddress)) {
+            StorageUtils.openOutputStream(context, contentAddress, mode)
         } else {
             val path = contentAddress.path ?: throw IllegalArgumentException()
-            val documentUri = StorageUtils.getDocumentFileForExistingFile(context, filePath = path, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for $contentAddress")
-            context.contentResolver.openOutputStream(documentUri, mode) ?: throw Exception("failed to open output stream from documentUri=$documentUri for $contentAddress")
+
+            val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = path, mediaUri = contentAddress.uri)
+            df ?: throw Exception("failed to get document file for $contentAddress")
+
+            val documentUri = df.uri
+            context.contentResolver.openOutputStream(documentUri, mode) ?: throw OutputStreamException(
+                "failed to open output stream because provider recently crashed" +
+                        ", from mode=$mode documentUri=$documentUri for $contentAddress"
+            )
         }
     }
 

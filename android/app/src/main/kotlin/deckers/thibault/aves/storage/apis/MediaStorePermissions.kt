@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.provider.ImageProvider.Companion.contentExists
 import deckers.thibault.aves.storage.PathSegments
 import deckers.thibault.aves.storage.PermissionManager
@@ -99,8 +100,10 @@ object MediaStorePermissions : StoragePermissions {
         return granted
     }
 
-    fun canEdit(context: Context, uri: Uri, mimeType: String): Boolean {
+    fun canEdit(context: Context, contentAddress: ContentAddress): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val mimeType = contentAddress.mimeType
+            val uri = contentAddress.uri
             val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
 
             val pid = Binder.getCallingPid()
