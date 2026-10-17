@@ -104,7 +104,11 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         }
 
         try {
-            val granted = MediaStorePermissions.requestFileAccess(activity, uris, mimeTypes)
+            var granted = true
+            // process URIs by chunk to avoid large inter-process transactions
+            uris.chunked(1000).forEach { chunkedUris ->
+                granted = granted and MediaStorePermissions.requestFileAccess(activity, chunkedUris, mimeTypes)
+            }
             success(granted)
             endOfStream()
         } catch (ex: Exception) {
