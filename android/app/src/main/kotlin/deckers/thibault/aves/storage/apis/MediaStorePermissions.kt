@@ -63,6 +63,7 @@ object MediaStorePermissions : StoragePermissions {
         val uid = Binder.getCallingUid()
         val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // checking permissions with too many URIs will trigger a "large outgoing transaction"
             activity.checkUriPermissions(safeUris, pid, uid, flags)
         } else {
             safeUris.map { activity.checkUriPermission(it, pid, uid, flags) }.toIntArray()
@@ -81,8 +82,9 @@ object MediaStorePermissions : StoragePermissions {
 
         if (todoUris.isEmpty()) return true
 
-        Log.i(LOG_TAG, "request write access to ${todoUris.size} uris=$todoUris")
+        Log.i(LOG_TAG, "request write access to ${todoUris.size} uris")
         try {
+            // creating a request with too many URIs will trigger a "large outgoing transaction"
             val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
             MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
             activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
