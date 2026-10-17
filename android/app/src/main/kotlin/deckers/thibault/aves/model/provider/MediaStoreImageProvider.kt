@@ -340,21 +340,24 @@ class MediaStoreImageProvider : ImageProvider() {
         oldMediaUri: Uri,
         oldPath: String,
         newFile: File,
-    ): FieldMap = when {
-        FilePermissions.canEdit(context, oldPath) -> {
-            val newPath = FileImageProvider.move(File(oldPath), newFile, copy = false)
-            scanObsoletePath(context, oldMediaUri, oldPath, mimeType)
-            return scanNewPathByMediaStore(context, newPath, mimeType)
-        }
+    ): FieldMap {
+        val oldContentAddress = ContentAddress(mimeType = mimeType, uri = oldMediaUri, path = oldPath, pageId = null)
+        when {
+            FilePermissions.canEdit(context, oldPath) -> {
+                val newPath = FileImageProvider.move(File(oldPath), newFile, copy = false)
+                scanObsoletePath(context, oldMediaUri, oldPath, mimeType)
+                return scanNewPathByMediaStore(context, newPath, mimeType)
+            }
 
-        MediaStorePermissions.canEdit(context, oldMediaUri, mimeType) -> {
-            return MediaStoreImageProvider.rename(context, mimeType, oldMediaUri, newFile)
-        }
+            MediaStorePermissions.canEdit(context, oldContentAddress) -> {
+                return MediaStoreImageProvider.rename(context, mimeType, oldMediaUri, newFile)
+            }
 
-        else -> {
-            val newPath = renameSingleByTreeDoc(context, oldMediaUri, oldPath, newFile)
-            scanObsoletePath(context, oldMediaUri, oldPath, mimeType)
-            return scanNewPathByMediaStore(context, newPath, mimeType)
+            else -> {
+                val newPath = renameSingleByTreeDoc(context, oldMediaUri, oldPath, newFile)
+                scanObsoletePath(context, oldMediaUri, oldPath, mimeType)
+                return scanNewPathByMediaStore(context, newPath, mimeType)
+            }
         }
     }
 

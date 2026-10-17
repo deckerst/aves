@@ -20,6 +20,7 @@ import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.FileDescriptorException
+import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.storage.apis.FilePermissions
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.SafPermissions
@@ -177,8 +178,8 @@ object StorageUtils {
             // `context.getExternalFilesDir(null)` yields:
             // /storage/emulated/0/Android/data/{application_id}/files
             return appSpecificVolumePath(context.getExternalFilesDir(null))
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to find primary volume path", e)
+        } catch (ex: Exception) {
+            Log.e(LOG_TAG, "failed to find primary volume path", ex)
         }
         return null
     }
@@ -217,8 +218,8 @@ object StorageUtils {
                         totalDelay += retryInterval
                         try {
                             Thread.sleep(retryInterval)
-                        } catch (e: InterruptedException) {
-                            Log.e(LOG_TAG, "insomnia", e)
+                        } catch (ex: InterruptedException) {
+                            Log.e(LOG_TAG, "insomnia", ex)
                         }
                     }
                 } while (!validFiles && totalDelay < maxDelay)
@@ -239,8 +240,8 @@ object StorageUtils {
             System.getenv("SECONDARY_STORAGE")?.let { secondaryStorages ->
                 paths.addAll(secondaryStorages.split(File.pathSeparator).filter { it.isNotEmpty() })
             }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to find volume paths", e)
+        } catch (ex: Exception) {
+            Log.e(LOG_TAG, "failed to find volume paths", ex)
         }
 
         return paths.map { ensureTrailingSeparator(it) }.toList()
@@ -420,8 +421,8 @@ object StorageUtils {
                         if (docUri != null) {
                             return DocumentFileCompat.fromSingleUri(context, docUri)
                         }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", e)
+                    } catch (ex: Exception) {
+                        Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", ex)
                     }
                 }
 
@@ -438,8 +439,8 @@ object StorageUtils {
 
             // good old `File`
             return DocumentFileCompat.fromFile(File(filePath))
-        } catch (e: SecurityException) {
-            Log.w(LOG_TAG, "failed to get document file from mediaUri=$mediaUri", e)
+        } catch (ex: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file from mediaUri=$mediaUri", ex)
         }
         return null
     }
@@ -455,8 +456,8 @@ object StorageUtils {
 
             // good old `File`
             return DocumentFileCompat.fromFile(File(filePath))
-        } catch (e: SecurityException) {
-            Log.w(LOG_TAG, "failed to get document file for filePath=$filePath", e)
+        } catch (ex: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file for filePath=$filePath", ex)
         }
         return null
     }
@@ -472,8 +473,8 @@ object StorageUtils {
                     parentFile?.createDirectory(displayName)
                 }
             }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to create directory at path=$dirPath", e)
+        } catch (ex: Exception) {
+            Log.e(LOG_TAG, "failed to create directory at path=$dirPath", ex)
             return null
         }
     }
@@ -533,7 +534,7 @@ object StorageUtils {
         return parentFile
     }
 
-    // variation on `DocumentFileCompat.findFile()` to allow case insensitive search
+    // variation on `DocumentFileCompat.findFile()` to allow case-insensitive search
     private fun findDocumentFileIgnoreCase(documentFile: DocumentFileCompat?, displayName: String?): DocumentFileCompat? {
         documentFile ?: return null
         for (doc in documentFile.listFiles()) {
@@ -642,8 +643,8 @@ object StorageUtils {
                         try {
                             copyFrom(openInputStream(context, uri), sizeBytes)
                             return Uri.fromFile(this)
-                        } catch (e: Exception) {
-                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", e)
+                        } catch (ex: Exception) {
+                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", ex)
                         }
                     }
                 }
@@ -710,23 +711,27 @@ object StorageUtils {
             } else {
                 context.contentResolver.openInputStream(effectiveUri)
             }
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open input stream from effectiveUri=$effectiveUri for uri=$uri", e)
+            Log.w(LOG_TAG, "failed to open input stream from effectiveUri=$effectiveUri for uri=$uri", ex)
             null
         }
     }
 
-    fun openOutputStream(context: Context, mimeType: String, uri: Uri, mode: String): OutputStream? {
+    fun openOutputStream(context: Context, contentAddress: ContentAddress, mode: String): OutputStream {
+        val mimeType = contentAddress.mimeType
+        val uri = contentAddress.uri
         val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
         return try {
-            context.contentResolver.openOutputStream(effectiveUri, mode)
-        } catch (e: Exception) {
+            context.contentResolver.openOutputStream(effectiveUri, mode) ?: throw OutputStreamException(
+                "failed to open output stream because provider recently crashed" +
+                        ", from mode=$mode effectiveUri=$effectiveUri for $contentAddress"
+            )
+        } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output stream from effectiveUri=$effectiveUri for uri=$uri mode=$mode", e)
-            null
+            throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
         }
     }
 
@@ -734,11 +739,11 @@ object StorageUtils {
         val effectiveUri = getOriginalUri(context, uri)
         return try {
             context.contentResolver.openFileDescriptor(effectiveUri, "r")
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
-            throw FileDescriptorException("failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", e)
+            Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", ex)
+            throw FileDescriptorException("failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", ex)
         }
     }
 
@@ -746,7 +751,7 @@ object StorageUtils {
         val mimeType = contentAddress.mimeType
         val uri = contentAddress.uri
 
-        val effectiveUri = if (MediaStorePermissions.canEdit(context, uri, mimeType)) {
+        val effectiveUri = if (MediaStorePermissions.canEdit(context, contentAddress)) {
             getMediaStoreScopedStorageSafeUri(uri, mimeType)
         } else {
             val path = contentAddress.path ?: throw IllegalArgumentException()
@@ -754,10 +759,10 @@ object StorageUtils {
         }
         return try {
             context.contentResolver.openFileDescriptor(effectiveUri, mode)
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", e)
+            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", ex)
             null
         }
     }

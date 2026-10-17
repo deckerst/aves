@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import deckers.thibault.aves.channel.calls.MediaEditHandler.Companion.cancelledOps
 import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
@@ -55,9 +56,8 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
     private fun delete() {
         val entries = entryMapList.map(::AvesEntry)
         for (entry in entries) {
-            val mimeType = entry.mimeType
-            val uri = entry.uri
-            val path = entry.storagePath
+            val contentAddress = ContentAddress(mimeType = entry.mimeType, uri = entry.uri, path = entry.storagePath, pageId = null)
+            val uri = contentAddress.uri
 
             val result: FieldMap = hashMapOf(
                 "uri" to uri.toString(),
@@ -68,10 +68,10 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
                 result["success"] = false
                 getProvider(context, uri)?.let { provider ->
                     try {
-                        provider.deleteSingle(context, uri, path, mimeType)
+                        provider.deleteSingle(context, contentAddress)
                         result["success"] = true
                     } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
+                        Log.w(LOG_TAG, "failed to delete entry for $contentAddress", e)
                     }
                 }
             }
