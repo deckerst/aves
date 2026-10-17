@@ -19,7 +19,7 @@ class StoragePermissionHandler(private val context: Context) : MethodCallHandler
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getEditionApis" -> safe(call, result, ::getEditionApis)
+            "getEditionApis" -> ioScope.launch { safe(call, result, ::getEditionApis) }
             "getSafDirectoryToRequest" -> ioScope.launch { safe(call, result, ::getSafDirectoryToRequest) }
             "getSafGrantedDirectories" -> ioScope.launch { safe(call, result, ::getSafGrantedDirectories) }
             "revokeSafDirectoryAccess" -> safe(call, result, ::revokeSafDirectoryAccess)
