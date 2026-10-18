@@ -244,7 +244,7 @@ class ActivityWindowHandler(private val activity: Activity) : WindowHandler(acti
                 val cutout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     activity.getDisplayCompat()?.cutout
                 } else {
-                    activity.window.decorView.rootWindowInsets.displayCutout
+                    activity.window.decorView.rootWindowInsets?.displayCutout
                 }
 
                 if (cutout != null) {
