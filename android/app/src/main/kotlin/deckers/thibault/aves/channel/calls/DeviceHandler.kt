@@ -50,6 +50,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
             "getAvailableProcessors" -> safe(call, result, ::getAvailableProcessors)
             "getHeapSizes" -> safe(call, result, ::getHeapSizes)
             "getRamSizes" -> safe(call, result, ::getRamSizes)
+            "getMemoryClasses" -> safe(call, result, ::getMemoryClasses)
             "requestGarbageCollection" -> safe(call, result, ::requestGarbageCollection)
             else -> result.notImplemented()
         }
@@ -182,6 +183,10 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(MemoryUtils.getRamSizes(context, types))
+    }
+
+    private fun getMemoryClasses(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {
+        result.success(MemoryUtils.getMemoryClasses(context))
     }
 
     private fun requestGarbageCollection(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

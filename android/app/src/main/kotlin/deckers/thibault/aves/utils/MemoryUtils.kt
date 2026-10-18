@@ -70,4 +70,12 @@ object MemoryUtils {
         }
         return result
     }
+
+    fun getMemoryClasses(context: Context): Map<String, Int?> {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        return hashMapOf(
+            "normal" to activityManager?.memoryClass,
+            "large" to activityManager?.largeMemoryClass,
+        )
+    }
 }
