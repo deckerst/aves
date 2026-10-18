@@ -31,9 +31,9 @@ import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
-import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils.round
+import deckers.thibault.aves.utils.TimeZones
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -278,9 +278,10 @@ object Helper {
     private val calendar: Calendar = GregorianCalendar()
     private const val PARSED_DATE_YEAR_MAX = 10000
 
-    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()`
-    // to also parse dates written as timestamps,
-    // and enforce time zone argument
+    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()` to:
+    // - parse dates written as timestamps,
+    // - enforce time zone argument,
+    // - guard against more exception types.
     private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone): Date? {
         var effectiveSubSecond = subSecond
         var effectiveTimeZone = timeZone
@@ -318,8 +319,18 @@ object Helper {
                             break
                         }
                     }
-                } catch (_: ParseException) {
-                    // simply try the next pattern
+                } catch (ex: Exception) {
+                    when (ex) {
+                        is ParseException,
+                        is ArrayIndexOutOfBoundsException,
+                        is NumberFormatException -> {
+                            // `Date.parse()` declares throwing `ParseException`,
+                            // but the other types are occasionally thrown too.
+                            // We simply try the next pattern for these known exceptions.
+                        }
+
+                        else -> throw ex
+                    }
                 }
             }
             if (date == null) {
