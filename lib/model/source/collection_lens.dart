@@ -41,7 +41,7 @@ class CollectionLens with ChangeNotifier {
   final AChangeNotifier layoutChangeNotifier = .new();
   final Set<StreamSubscription> _subscriptions = {};
   int? id;
-  bool listenToSource, stackBursts, stackDevelopedRaws, fixedSort;
+  bool listenToSource, allowStacks, fixedSort;
   List<AvesEntry>? fixedSelection;
 
   // temporary entries created for stacks of original entries
@@ -62,8 +62,7 @@ class CollectionLens with ChangeNotifier {
     Set<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
-    this.stackBursts = true,
-    this.stackDevelopedRaws = true,
+    this.allowStacks = true,
     this.fixedSort = false,
     this.fixedSelection,
   }) : filters = (filters ?? {}).nonNulls.toSet() {
@@ -209,13 +208,11 @@ class CollectionLens with ChangeNotifier {
     _disposeSyntheticEntries();
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
 
-    if (tileLayout == .calendar) {
-      _stackByDate();
-    } else {
-      if (stackBursts) {
+    if (allowStacks) {
+      if (tileLayout == .calendar) {
+        _stackByDate();
+      } else {
         _stackBursts();
-      }
-      if (stackDevelopedRaws) {
         _stackDevelopedRaws();
       }
     }

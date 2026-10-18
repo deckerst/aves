@@ -369,8 +369,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
             // if we group bursts/RAWs, opening a sub-entry should:
             // - identify and select the containing main entry,
             // - select the sub-entry in the Viewer page.
-            stackBursts: false,
-            stackDevelopedRaws: false,
+            allowStacks: false,
           );
           // useful when opening transient images from camera apps
           await source.checkForChanges();
