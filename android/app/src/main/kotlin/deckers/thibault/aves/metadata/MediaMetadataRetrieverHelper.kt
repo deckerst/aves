@@ -107,11 +107,11 @@ object MediaMetadataRetrieverHelper {
         if (value != null) save(value)
     }
 
-    fun MediaMetadataRetriever.getSafeDateMillis(tag: Int, save: (value: Long) -> Unit) {
+    fun MediaMetadataRetriever.getSafeDateMillis(tag: Int, save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
         val dateString = this.extractMetadata(tag)
-        val dateMillis = Metadata.parseVideoMetadataDate(dateString)
+        val (dateMillis, timeZoneOffsetMinutes) = Metadata.parseVideoMetadataDate(dateString)
         // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-        if (dateMillis > 0) save(dateMillis)
+        if (dateMillis > 0) save(dateMillis, timeZoneOffsetMinutes)
     }
 
     private fun formatBitrate(size: Long): String {
@@ -183,7 +183,7 @@ object MediaMetadataRetrieverHelper {
 
                 MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER -> if (value != "0/0") value else null
                 MediaMetadataRetriever.METADATA_KEY_DATE -> {
-                    val dateMillis = Metadata.parseVideoMetadataDate(value)
+                    val (dateMillis, _) = Metadata.parseVideoMetadataDate(value)
                     // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
                     if (dateMillis > 0) value else null
                 }

@@ -263,9 +263,10 @@ object XMP {
                 // double check retrieved items as the property sometimes is reported to exist, but it is actually null
                 val timeZone = item?.timeZone
                 if (timeZone != null) {
-                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(timeZone)
                     item.timeZone = TimeZones.UTC
-                    save(item.calendar.timeInMillis, timeZoneOffsetMinutes)
+                    val dateMillis = item.calendar.timeInMillis
+                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(timeZone, dateMillis)
+                    save(dateMillis, timeZoneOffsetMinutes)
                 }
             }
         } catch (e: XMPException) {

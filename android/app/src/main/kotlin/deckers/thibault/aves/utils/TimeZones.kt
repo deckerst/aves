@@ -9,11 +9,13 @@ import kotlin.time.Clock
 object TimeZones {
     val UTC: TimeZone = TimeZone.getTimeZone("UTC")
 
-    val currentOffsetMinutes: Int = getOffsetMinutes(TimeZone.getDefault())
+    val currentOffsetMinutes: Int = getOffsetMinutes(
+        timeZone = TimeZone.getDefault(),
+        dateMillis = Clock.System.now().toEpochMilliseconds(),
+    )
 
-    fun getOffsetMinutes(timeZone: TimeZone): Int {
-        val nowMillis = Clock.System.now().toEpochMilliseconds()
-        return timeZone.getOffset(nowMillis) / 60000
+    fun getOffsetMinutes(timeZone: TimeZone, dateMillis: Long): Int {
+        return timeZone.getOffset(dateMillis) / 60000
     }
 
     private val offsetPattern = Pattern.compile("([+-])(\\d{1,2}):(\\d{2})$")
