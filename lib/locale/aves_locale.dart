@@ -4,13 +4,11 @@ import 'package:aves/locale/calendar/dateformat/intl.dart';
 import 'package:aves/locale/calendar/dateformat/intl4x.dart';
 import 'package:aves/locale/calendar/delegate/hijri.dart';
 import 'package:aves/locale/calendar/delegate/persian.dart';
-import 'package:aves/locale/intl4x.dart';
 import 'package:aves/locale/number.dart';
 import 'package:aves/ref/locale/iso639_1.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:intl4x/calendar.dart' as date4x;
-import 'package:intl4x/number_format.dart' as num4x;
 import 'package:material_ui/material_ui.dart';
 
 typedef ACalendar = date4x.Calendar;
@@ -20,13 +18,7 @@ class AvesLocale({
   required final ACalendar calendar,
   required final bool forceWesternArabicNumerals,
 }) {
-  late final DateFormatDelegate _dateFormatDelegate;
-  late final num4x.Locale _locale4x;
-
-  this {
-    _dateFormatDelegate = _getDateFormatDelegate();
-    _locale4x = Intl4x.toLocale4x(languageBcp47, calendar, forceWesternArabicNumerals);
-  }
+  late final DateFormatDelegate _dateFormatDelegate = _getDateFormatDelegate();
 
   static final AvesLocale ascii = AvesLocale(
     languageBcp47: LanguageCodesIso639_1.english,
@@ -52,13 +44,11 @@ class AvesLocale({
   }
 
   ANumberFormat decimalNumberFormat() {
-    return ANumberFormat.fromIntl4x(num4x.NumberFormat(locale: _locale4x));
+    return ANumberFormat.fromIntl(intl.NumberFormat.decimalPattern(languageBcp47));
   }
 
   ANumberFormat percentNumberFormat() {
     return ANumberFormat.fromIntl(intl.NumberFormat.percentPattern(languageBcp47));
-    // as of intl4x v1.0.0 `NumberFormat.percent` is not implemented for native
-    // return ANumberFormat.fromIntl4x(num4x.NumberFormat.percent(locale: _locale4x));
   }
 
   ANumberParser numberParser(String pattern) {

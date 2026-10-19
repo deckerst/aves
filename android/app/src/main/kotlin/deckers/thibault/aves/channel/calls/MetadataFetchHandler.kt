@@ -98,6 +98,7 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isIsoBMFFImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.TimeZones
+import deckers.thibault.aves.utils.TimeZones.toUtcEpochMillis
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -111,6 +112,7 @@ import org.mp4parser.tools.Path
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import java.text.ParseException
+import java.time.LocalDateTime
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
@@ -815,8 +817,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 for (dir in metadata.getDirectoriesOfType(PngDirectory::class.java).filter { it.name == PNG_TIME_DIR_NAME }) {
                                     dir.getSafeString(PngDirectory.TAG_LAST_MODIFICATION_TIME) {
                                         try {
-                                            PNG_LAST_MODIFICATION_TIME_FORMAT.parse(it)?.let { date ->
-                                                metadataMap[KEY_DATE_MILLIS] = date.time
+                                            LocalDateTime.parse(it, PNG_LAST_MODIFICATION_TIME_FORMAT)?.let { date ->
+                                                metadataMap[KEY_DATE_MILLIS] = date.toUtcEpochMillis()
                                                 metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                                             }
                                         } catch (e: ParseException) {

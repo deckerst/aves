@@ -10,9 +10,8 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import java.io.File
 import java.io.InputStream
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.TimeZone
 import java.util.regex.Pattern
@@ -113,16 +112,17 @@ object Metadata {
             dateString = timeZoneMatcher.replaceAll("")
         }
 
-        val date: Date = try {
-            val parser = SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.ROOT)
-            parser.timeZone = timeZone ?: TimeZone.getTimeZone("GMT")
-            parser.parse(dateString)
-        } catch (_: ParseException) {
+        var epochTimeMillis: Long? = null
+        try {
+            val zoneId = (timeZone ?: TimeZone.getTimeZone("GMT")).toZoneId()
+            val formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss", Locale.ROOT).withZone(zoneId)
+            epochTimeMillis = LocalDateTime.parse(dateString, formatter).atZone(zoneId).toEpochSecond() * 1000
+        } catch (_: Exception) {
             // ignore
-            null
-        } ?: return 0
+        }
+        epochTimeMillis ?: return 0
 
-        return date.time + parseSubSecond(subSecond)
+        return epochTimeMillis + parseSubSecond(subSecond)
     }
 
     // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
