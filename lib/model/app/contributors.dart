@@ -193,6 +193,7 @@ class Contributors {
     Contributor('Bouzid Zeroug', 'bouzidzeroug98@gmail.com'),
     Contributor('Feliks-WR', 'aq.1428@tuta.io'),
     Contributor('Jani Buni', 'alejandrolage@outlook.com'),
+    Contributor('Checon56', 'checon56@users.noreply.hosted.weblate.org'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani

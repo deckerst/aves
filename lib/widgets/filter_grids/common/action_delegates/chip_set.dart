@@ -330,16 +330,16 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
   }
 
   Future<void> _goToSlideshow(BuildContext context) async {
+    final source = context.read<CollectionSource>();
     final entries = _selectedEntries(context).toList();
+
     await Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
           return SlideshowPage(
-            collection: CollectionLens(
-              source: context.read<CollectionSource>(),
-              fixedSelection: entries,
-            ),
+            source: source,
+            sortedEntries: entries,
           );
         },
       ),

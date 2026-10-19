@@ -197,7 +197,7 @@
     "videoStreamSelectionDialogTrack": "Stran",
     "genericSuccessFeedback": "Qediya!",
     "genericFailureFeedback": "Têkçûyî",
-    "menuActionConfigureView": "Dîtin",
+    "menuActionConfigureView": "Şêwazê biguhêrîne",
     "menuActionSelect": "Hilbijêre",
     "menuActionMap": "Nexşe",
     "menuActionStats": "Amar",
@@ -986,8 +986,13 @@
     "calendarGregorian": "Zayînî",
     "calendarHijriTabular": "Hijri (Tabular)",
     "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
-    "videoThumbnailMethodPreviewFrame": "Pêşdîtina frame",
-    "videoThumbnailMethodFirstFrame": "Frame ya yekem",
+    "videoThumbnailMethodPreviewFrame": "Çarçoveya pêşdîtinê",
+    "videoThumbnailMethodFirstFrame": "Çarçoveya yekem",
     "renameTagDialogLabelAlreadyExistsHelper": "Nêşank jixwe heye",
-    "tileLayoutCalendar": "Salname"
+    "tileLayoutCalendar": "Salname",
+    "collectionActionShowLayoutBar": "Bendê şewazê biguhêrîne",
+    "collectionActionHideLayoutBar": "Bendê şêwazê veşêre",
+    "settingsVideoThumbnailMethods": "Wêneyê biçûk ê bijarte",
+    "chipActionCopyCenterCoordinates": "Koordînatên navendê jê bigire",
+    "videoThumbnailMethodEmbeddedImage": "Wêneyê pêvekirî"
 }

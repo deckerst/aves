@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.7"></a>[v1.15.7] - 2026-10-19
+
+### Changed
+
+- enable large heap
+
+### Fixed
+
+- concurrent date fetch
+- processing invalid URIs via MediaStore API
+- processing many URIs via MediaStore API
+
 ## <a id="v1.15.6"></a>[v1.15.6] - 2026-10-15
 
 ### Added

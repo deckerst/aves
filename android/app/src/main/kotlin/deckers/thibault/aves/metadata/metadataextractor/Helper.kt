@@ -31,17 +31,15 @@ import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
-import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils.round
+import deckers.thibault.aves.utils.TimeZones
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
-import java.util.GregorianCalendar
 import java.util.Locale
 import java.util.TimeZone
 import java.util.regex.Pattern
@@ -57,7 +55,7 @@ object Helper {
     private const val PNG_RAW_PROFILE_EXIF = "Raw profile type exif"
     private const val PNG_RAW_PROFILE_IPTC = "Raw profile type iptc"
 
-    val PNG_LAST_MODIFICATION_TIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
+    val PNG_LAST_MODIFICATION_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
 
     // Pattern to extract profile name, length, and text data
     // of raw profiles (EXIF, IPTC, etc.) in PNG `zTXt` chunks
@@ -232,18 +230,18 @@ object Helper {
         if (this.containsTag(tag)) save(this.getRational(tag))
     }
 
+    // returns date time as UTC milliseconds since Epoch
     fun Directory.getSafeDateMillis(tag: Int, subSecond: String?, isUtc: Boolean): Long? {
         if (this.containsTag(tag)) {
             val timeZone = if (isUtc) TimeZones.UTC else TimeZone.getDefault()
-            val date = this.getDatePlus(tag, subSecond, timeZone)
-            if (date != null) return date.time
+            return this.getDatePlus(tag, subSecond, timeZone)
         }
         return null
     }
 
     // This seems to cover all known Exif and Xmp date strings
     // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
-    private val dateFormats = arrayOf(
+    private val dateTimeFormatters = arrayOf(
         "yyyy:MM:dd HH:mm:ss",
         "yyyy:MM:dd HH:mm",
         "yyyy-MM-dd HH:mm:ss",
@@ -257,37 +255,25 @@ object Helper {
         "yyyyMMdd",  // as used in IPTC data
         "yyyy"
     ).map {
-        SimpleDateFormat(it, Locale.ROOT).apply {
-            /*
-             * Some older digital cameras, such as the Olympus C750UZ, may not have recorded a proper
-             * exif:DateTimeOriginal value. Instead of leaving this field empty, they used
-             * 0000:00:00 00:00:00 as a placeholder.
-             *
-             * "0000:00:00 00:00:00" will result in "Sun Nov 30 00:00:00 GMT 2",
-             * which is not what a user would expect.
-             *
-             * Any illegal formats should result in an exception and not be parsed.
-             *
-             * It's best to turn lenient mode off.
-             */
-            isLenient = false
-        }
+        // prefer `DateTimeFormatter` over `SimpleDateFormat` for concurrent usage
+        DateTimeFormatter.ofPattern(it, Locale.ROOT)
     }.toTypedArray()
     private val subsecondPattern = Pattern.compile("(\\d{2}:\\d{2}:\\d{2})(\\.\\d+)")
     private val timeZonePattern = Pattern.compile("(Z|[+-]\\d{1,2}:\\d{2}|[+-]\\d{4})$")
-    private val calendar: Calendar = GregorianCalendar()
     private const val PARSED_DATE_YEAR_MAX = 10000
 
-    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()`
-    // to also parse dates written as timestamps,
-    // and enforce time zone argument
-    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone): Date? {
+    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()` to:
+    // - parse dates written as timestamps,
+    // - enforce time zone argument,
+    // - fixed concurrent date format usage.
+    // returns date time as UTC milliseconds since Epoch
+    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone): Long? {
         var effectiveSubSecond = subSecond
         var effectiveTimeZone = timeZone
         val o = this.getObject(tagType)
-        if (o is Date) return o
+        if (o is Date) return o.time
 
-        var date: Date? = null
+        var epochTimeMillis: Long? = null
         if (o is String || o is StringValue) {
             var dateString = o.toString()
 
@@ -307,50 +293,47 @@ object Helper {
                 effectiveTimeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replace("Z".toRegex(), ""))
                 dateString = timeZoneMatcher.replaceAll("")
             }
-            for (dateFormat in dateFormats) {
+            val zoneId = effectiveTimeZone.toZoneId()
+            for (formatter in dateTimeFormatters) {
+                val zonedFormatter = formatter.withZone(zoneId)
                 try {
-                    dateFormat.timeZone = effectiveTimeZone
-                    val parsed = dateFormat.parse(dateString)
-                    if (parsed != null) {
-                        calendar.time = parsed
-                        if (calendar.get(Calendar.YEAR) < PARSED_DATE_YEAR_MAX) {
-                            date = parsed
-                            break
-                        }
+                    val parsed = LocalDateTime.parse(dateString, zonedFormatter)
+                    if (parsed.year < PARSED_DATE_YEAR_MAX) {
+                        epochTimeMillis = parsed.atZone(zoneId).toEpochSecond() * 1000
+                        break
                     }
-                } catch (_: ParseException) {
-                    // simply try the next pattern
+                } catch (ex: Exception) {
+                    // `Date.parse()` declares throwing `ParseException`,
+                    // but other types are occasionally thrown too.
+                    // We simply try the next pattern.
+                    Log.d(LOG_TAG, "failed to parse date=$dateString with zonedFormatter=$zonedFormatter, ex=${ex.message}")
                 }
             }
-            if (date == null) {
+            if (epochTimeMillis == null) {
                 val dateLong = dateString.toLongOrNull()
                 if (dateLong != null) {
-                    val epochTimeMillis = when (dateLong) {
+                    epochTimeMillis = when (dateLong) {
                         in 0..99999999999 -> dateLong * 1000 // seconds
                         in 100000000000..99999999999999 -> dateLong // millis
                         in 100000000000000..9999999999999999 -> dateLong / 1000 // micros
                         else -> dateLong / 1000000 // nanos
                     }
-                    date = Date(epochTimeMillis)
                 }
             }
         }
-        if (date == null) return null
 
-        if (effectiveSubSecond != null) {
+        if (epochTimeMillis != null && effectiveSubSecond != null) {
             try {
-                val millisecond = (".$effectiveSubSecond".toDouble() * 1000).toInt()
-                if (millisecond in 0..999) {
-                    val calendar = Calendar.getInstance()
-                    calendar.time = date
-                    calendar[Calendar.MILLISECOND] = millisecond
-                    return calendar.time
+                val subSecondMillis = (".$effectiveSubSecond".toDouble() * 1000).toInt()
+                if (subSecondMillis in 0..999) {
+                    return epochTimeMillis + subSecondMillis
                 }
             } catch (_: NumberFormatException) {
                 // ignore
             }
         }
-        return date
+
+        return epochTimeMillis
     }
 
     // time tag and sub-second tag are *not* in the same directory

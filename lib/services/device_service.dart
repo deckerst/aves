@@ -44,6 +44,8 @@ abstract class DeviceService {
 
   Future<Map<MemorySizeType, int?>> getRamSizes(Set<MemorySizeType> types);
 
+  Future<Map<String, int?>> getMemoryClasses();
+
   Future<void> requestGarbageCollection();
 }
 
@@ -216,6 +218,17 @@ class PlatformDeviceService extends DeviceService {
         'types': types.map((v) => v.name).toList(),
       });
       if (result is Map) return result.cast<String, int?>().map((k, v) => MapEntry(MemorySizeType.values.safeByName(k)!, v));
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
+  @override
+  Future<Map<String, int?>> getMemoryClasses() async {
+    try {
+      final result = await _platform.invokeMethod('getMemoryClasses');
+      if (result is Map) return result.cast<String, int?>();
     } on PlatformException catch (e, stack) {
       await reportService.recordError(e, stack);
     }

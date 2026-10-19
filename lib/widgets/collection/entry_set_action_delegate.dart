@@ -821,19 +821,16 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   void _goToSlideshow(BuildContext context) {
-    final collection = context.read<CollectionLens>();
-    final entries = _getTargetItems(context);
+    final source = context.read<CollectionSource>();
+    final entries = _getTargetItems(context).toList();
 
     Navigator.maybeOf(context)?.push(
       MaterialPageRoute(
         settings: const RouteSettings(name: SlideshowPage.routeName),
         builder: (context) {
           return SlideshowPage(
-            collection: CollectionLens(
-              source: collection.source,
-              filters: collection.filters,
-              fixedSelection: entries.toList(),
-            ),
+            source: source,
+            sortedEntries: entries,
           );
         },
       ),

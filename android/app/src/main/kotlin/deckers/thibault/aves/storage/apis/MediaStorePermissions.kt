@@ -12,7 +12,9 @@ import android.os.TransactionTooLargeException
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.provider.ImageProvider.Companion.contentExists
 import deckers.thibault.aves.storage.PathSegments
 import deckers.thibault.aves.storage.PermissionManager
@@ -24,6 +26,7 @@ import java.util.concurrent.CompletableFuture
 
 object MediaStorePermissions : StoragePermissions {
     private val LOG_TAG = LogUtils.createTag<MediaStorePermissions>()
+    private val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
     private val INSERTION_PRIMARY_DIRS_LOWER = listOf(
         Environment.DIRECTORY_DCIM,
         Environment.DIRECTORY_DOWNLOADS,
@@ -62,6 +65,7 @@ object MediaStorePermissions : StoragePermissions {
         val uid = Binder.getCallingUid()
         val flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // checking permissions with too many URIs will trigger a "large outgoing transaction"
             activity.checkUriPermissions(safeUris, pid, uid, flags)
         } else {
             safeUris.map { activity.checkUriPermission(it, pid, uid, flags) }.toIntArray()
@@ -80,15 +84,25 @@ object MediaStorePermissions : StoragePermissions {
 
         if (todoUris.isEmpty()) return true
 
-        Log.i(LOG_TAG, "request write access to ${todoUris.size} uris=$todoUris")
+        Log.i(LOG_TAG, "request write access to ${todoUris.size} uris")
         try {
+            // creating a request with too many URIs will trigger a "large outgoing transaction"
             val intentSender = MediaStore.createWriteRequest(activity.contentResolver, safeUris).intentSender
             MainActivity.pendingPermissionCompleter = CompletableFuture<Boolean>()
             activity.startIntentSenderForResult(intentSender, MainActivity.SCOPED_STORAGE_PERMISSION_REQUEST, null, 0, 0, 0, null)
         } catch (ex: IllegalArgumentException) {
             // hard-coded limit in Android source code
-            if (ex.message == "URI list restricted to 2000 per request") {
-                throw TransactionTooLargeException(ex.message)
+            val message = ex.message
+            if (message == "URI list restricted to 2000 per request") {
+                throw TransactionTooLargeException(message)
+            } else if (message != null && message.startsWith(INVALID_URI_EXCEPTION_MESSAGE_PREFIX)) {
+                val invalidUri = message.substring(INVALID_URI_EXCEPTION_MESSAGE_PREFIX.length).toUri()
+                if (uris.contains(invalidUri)) {
+                    val retryUris = uris as? ArrayList ?: arrayListOf<Uri>().apply { addAll(uris) }
+                    retryUris.remove(invalidUri)
+                    Log.w(LOG_TAG, "retry request without invalid URI=$invalidUri")
+                    requestFileAccess(activity, retryUris, mimeTypes)
+                }
             }
             throw ex
         }
@@ -99,8 +113,10 @@ object MediaStorePermissions : StoragePermissions {
         return granted
     }
 
-    fun canEdit(context: Context, uri: Uri, mimeType: String): Boolean {
+    fun canEdit(context: Context, contentAddress: ContentAddress): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val mimeType = contentAddress.mimeType
+            val uri = contentAddress.uri
             val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
 
             val pid = Binder.getCallingPid()

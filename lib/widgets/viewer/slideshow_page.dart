@@ -20,15 +20,13 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class SlideshowPage extends StatefulWidget {
+class const SlideshowPage({
+  super.key,
+  // do not pass a collection, as it may change section/sort
+  required final CollectionSource source,
+  required final List<AvesEntry> sortedEntries,
+}) extends StatefulWidget {
   static const routeName = '/collection/slideshow';
-
-  final CollectionLens collection;
-
-  const new({
-    super.key,
-    required this.collection,
-  });
 
   @override
   State<SlideshowPage> createState() => _SlideshowPageState();
@@ -40,7 +38,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
   late CollectionLens _slideshowCollection;
   AvesEntry? _initialEntry;
 
-  CollectionSource get source => widget.collection.source;
+  CollectionSource get source => widget.source;
 
   @override
   void initState() {
@@ -106,7 +104,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
   void _disposeViewerController() => _viewerController.dispose();
 
   void _initSlideshowCollection() {
-    var entries = List.of(widget.collection.sortedEntries);
+    var entries = List.of(widget.sortedEntries);
     if (settings.slideshowVideoPlayback == SlideshowVideoPlayback.skip) {
       entries = entries.where((entry) => !MimeFilter.video.test(entry)).toList();
     }
@@ -116,6 +114,8 @@ class _SlideshowPageState extends State<SlideshowPage> {
     _slideshowCollection = CollectionLens(
       source: source,
       listenToSource: false,
+      // do not stack, so that all entries are part of the slideshow
+      allowStacks: false,
       fixedSort: true,
       fixedSelection: entries,
     );
@@ -179,8 +179,4 @@ class _SlideshowPageState extends State<SlideshowPage> {
   }
 }
 
-class SlideshowActionNotification extends Notification {
-  final SlideshowAction action;
-
-  new(this.action);
-}
+class SlideshowActionNotification(final SlideshowAction action) extends Notification;

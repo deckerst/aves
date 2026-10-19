@@ -134,6 +134,8 @@ class PlatformMetadataEditService implements MetadataEditService {
         await mp4LargeMoov(customException);
       } else if (code.endsWith('mp4largeother')) {
         await mp4LargeOther(customException);
+      } else if (code.endsWith('outputstream')) {
+        await outputstream(customException);
       } else if (code.endsWith('filenotfound')) {
         debugPrint('Unreported `fileNotFound` error with exception=$e');
       } else {
@@ -167,6 +169,11 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   Future<void> mp4LargeOther(CustomPlatformException e) {
     debugPrint('mp4LargeOther $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> outputstream(CustomPlatformException e) {
+    debugPrint('outputstream $e');
     return reportService.recordError(e);
   }
 }

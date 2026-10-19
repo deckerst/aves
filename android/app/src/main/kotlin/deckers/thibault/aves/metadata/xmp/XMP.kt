@@ -261,8 +261,9 @@ object XMP {
             if (doesPropertyExist(schema, propName)) {
                 val item = getPropertyDate(schema, propName)
                 // double check retrieved items as the property sometimes is reported to exist, but it is actually null
-                if (item != null) {
-                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(item.timeZone)
+                val timeZone = item?.timeZone
+                if (timeZone != null) {
+                    val timeZoneOffsetMinutes = TimeZones.getOffsetMinutes(timeZone)
                     item.timeZone = TimeZones.UTC
                     save(item.calendar.timeInMillis, timeZoneOffsetMinutes)
                 }

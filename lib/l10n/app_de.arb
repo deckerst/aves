@@ -741,5 +741,12 @@
     "settingsCalendarTile": "Kalender",
     "tileLayoutCalendar": "Kalender",
     "collectionActionShowLayoutBar": "Layoutleiste anzeigen",
-    "collectionActionHideLayoutBar": "Layoutleiste verbergen"
+    "collectionActionHideLayoutBar": "Layoutleiste verbergen",
+    "calendarHijriTabular": "Hijri (Tabular)",
+    "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
+    "videoThumbnailMethodEmbeddedImage": "Eingebettetes Bild",
+    "videoThumbnailMethodPreviewFrame": "Vorschaurahmen",
+    "videoThumbnailMethodFirstFrame": "Erster Frame",
+    "renameTagDialogLabelAlreadyExistsHelper": "Tag existiert bereits",
+    "settingsVideoThumbnailMethods": "Bevorzugte Miniaturansicht"
 }

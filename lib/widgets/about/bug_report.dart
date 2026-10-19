@@ -145,6 +145,9 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final heap = await deviceService.getHeapSizes(<MemorySizeType>{.max});
     final ramTotal = formatFileSize(AvesLocale.ascii, ram[MemorySizeType.total] ?? 0);
     final heapMax = formatFileSize(AvesLocale.ascii, heap[MemorySizeType.max] ?? 0);
+    final memoryClasses = await deviceService.getMemoryClasses();
+    final normalMemoryClass = memoryClasses['normal'];
+    final largeMemoryClass = memoryClasses['large'];
 
     final supportsHdr = await windowService.supportsHdr();
     final supportsWideGamut = await windowService.supportsWideGamut();
@@ -165,7 +168,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Android: ${androidInfo.version.release}, API ${androidInfo.version.sdkInt}, MPC $mpc, build: ${androidInfo.display}',
       'Device: ${androidInfo.manufacturer} ${androidInfo.model}',
       'CPU: processors=${device.availableProcessors}',
-      'Memory: ram.total=$ramTotal, heap.max=$heapMax',
+      'Memory: ram.total=$ramTotal, heap.max=$heapMax, class.normal=$normalMemoryClass, class.large=$largeMemoryClass',
       'Screen: size.physical=${viewPhysicalSize.width.round()}x${viewPhysicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
       'Graphics: size.logical=${MediaQuery.widthOf(context)}x${MediaQuery.heightOf(context)}, pixel ratio=${MediaQuery.devicePixelRatioOf(context)}, cross window blur=$crossWindowBlurEnabled',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}, geocoder=${device.hasGeocoder}',

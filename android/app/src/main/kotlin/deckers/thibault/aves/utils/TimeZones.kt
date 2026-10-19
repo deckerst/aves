@@ -1,5 +1,6 @@
 package deckers.thibault.aves.utils
 
+import java.time.LocalDateTime
 import java.util.TimeZone
 import java.util.regex.Pattern
 import kotlin.math.absoluteValue
@@ -43,5 +44,11 @@ object TimeZones {
         val hours = "${absOffsetInMinutes / 60}".padStart(2, '0')
         val minutes = "${absOffsetInMinutes % 60}".padStart(2, '0')
         return "$sign$hours:$minutes"
+    }
+
+    // extensions
+
+    fun LocalDateTime.toUtcEpochMillis(): Long {
+        return atZone(UTC.toZoneId()).toEpochSecond() * 1000
     }
 }
