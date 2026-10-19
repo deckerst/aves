@@ -8,6 +8,7 @@ import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.TimeZones
 import java.io.File
 import java.io.InputStream
 import java.time.LocalDateTime
@@ -93,8 +94,8 @@ object Metadata {
     // not sure which standards are used for the different video formats,
     // but looks like some form of ISO 8601 `basic format`:
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
-    fun parseVideoMetadataDate(metadataDate: String?): Long {
-        var dateString = metadataDate ?: return 0
+    fun parseVideoMetadataDate(metadataDate: String?): Pair<Long, Int?> {
+        var dateString = metadataDate ?: return Pair(0, null)
 
         // optional sub-second
         var subSecond: String? = null
@@ -111,18 +112,27 @@ object Metadata {
             timeZone = TimeZone.getTimeZone("GMT${timeZoneMatcher.group().replace("Z", "")}")
             dateString = timeZoneMatcher.replaceAll("")
         }
+        timeZone = timeZone ?: TimeZones.UTC
 
         var epochTimeMillis: Long? = null
         try {
-            val zoneId = (timeZone ?: TimeZone.getTimeZone("GMT")).toZoneId()
-            val formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss", Locale.ROOT).withZone(zoneId)
-            epochTimeMillis = LocalDateTime.parse(dateString, formatter).atZone(zoneId).toEpochSecond() * 1000
+            val zoneId = timeZone.toZoneId()
+            val zonedFormatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss", Locale.ROOT).withZone(zoneId)
+            val parsed = LocalDateTime.parse(dateString, zonedFormatter)
+            epochTimeMillis = parsed.atZone(zoneId).toEpochSecond() * 1000
         } catch (_: Exception) {
             // ignore
         }
-        epochTimeMillis ?: return 0
+        epochTimeMillis ?: return Pair(0, null)
 
-        return epochTimeMillis + parseSubSecond(subSecond)
+        epochTimeMillis += parseSubSecond(subSecond)
+
+        val localTimeZone = TimeZone.getDefault()
+        val localOffsetMinutes = TimeZones.getOffsetMinutes(localTimeZone, epochTimeMillis)
+        val offsetMinutes = TimeZones.getOffsetMinutes(timeZone, epochTimeMillis)
+        epochTimeMillis += (localOffsetMinutes - offsetMinutes) * 60000
+
+        return Pair(epochTimeMillis, localOffsetMinutes)
     }
 
     // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),

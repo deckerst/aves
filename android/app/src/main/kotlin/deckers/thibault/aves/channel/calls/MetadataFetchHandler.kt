@@ -744,8 +744,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             // fallback to fetch date modified from IFD0 directory,
                             // without the sub-second tag nor the time zone offset tag,
                             // in case there was no SubIFD directory
-                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = true)?.let {
-                                metadataMap[KEY_DATE_MILLIS] = it
+                            dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = true)?.let { date ->
+                                metadataMap[KEY_DATE_MILLIS] = date
                                 metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                             }
                         }
@@ -817,10 +817,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 for (dir in metadata.getDirectoriesOfType(PngDirectory::class.java).filter { it.name == PNG_TIME_DIR_NAME }) {
                                     dir.getSafeString(PngDirectory.TAG_LAST_MODIFICATION_TIME) {
                                         try {
-                                            LocalDateTime.parse(it, PNG_LAST_MODIFICATION_TIME_FORMAT)?.let { date ->
-                                                metadataMap[KEY_DATE_MILLIS] = date.toUtcEpochMillis()
-                                                metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
-                                            }
+                                            val date = LocalDateTime.parse(it, PNG_LAST_MODIFICATION_TIME_FORMAT).toUtcEpochMillis()
+                                            metadataMap[KEY_DATE_MILLIS] = date
+                                            metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                                         } catch (e: ParseException) {
                                             Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri path=$path", e)
                                         }
@@ -969,9 +968,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) {
-                    metadataMap[KEY_DATE_MILLIS] = it
-                    metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
+                retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { date, offset ->
+                    metadataMap[KEY_DATE_MILLIS] = date
+                    offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
                 }
             }
 

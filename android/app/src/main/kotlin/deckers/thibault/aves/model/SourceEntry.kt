@@ -147,7 +147,7 @@ class SourceEntry {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) { width = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) { height = it }
             retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
-            retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { sourceDateTakenMillis = it }
+            retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { date, _ -> sourceDateTakenMillis = date }
             retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
         } catch (_: Exception) {
