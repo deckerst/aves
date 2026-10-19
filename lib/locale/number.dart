@@ -8,6 +8,9 @@ class ANumberFormat._private(
     return ANumberFormat._private(nf.format);
   }
 
+  // As of intl4x v1.0.0 `NumberFormat.percent()` is not implemented for native.
+  // As of intl4x v1.0.1, `icu4x` makes the app crash in debug mode on Android API 26,
+  // so prefer `NumberFormat.fromIntl()` when possible.
   factory fromIntl4x(num4x.NumberFormat nf) {
     return ANumberFormat._private(nf.format);
   }

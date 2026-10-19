@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- concurrent date fetch
 - processing invalid URIs via MediaStore API
 - processing many URIs via MediaStore API
 

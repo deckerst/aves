@@ -4,10 +4,10 @@ import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
 import deckers.thibault.aves.utils.TimeZones
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.Duration
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.TimeZone
 
 object MediaMetadataRetrieverHelper {
     val allKeys = hashMapOf(
@@ -78,7 +78,7 @@ object MediaMetadataRetrieverHelper {
         }
     }
 
-    private val durationFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.ROOT).apply { timeZone = TimeZones.UTC }
+    private val DURATION_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS", Locale.ROOT).withZone(TimeZones.UTC.toZoneId())
 
     // extensions
 
@@ -146,7 +146,7 @@ object MediaMetadataRetrieverHelper {
 
                 MediaMetadataRetriever.METADATA_KEY_DURATION -> {
                     val dateMillis = value.toLongOrNull() ?: 0
-                    if (dateMillis > 0) durationFormat.format(Date(dateMillis)) else null
+                    if (dateMillis > 0) LocalTime.ofNanoOfDay(Duration.ofMillis(dateMillis).toNanos()).format(DURATION_FORMAT) else null
                 }
 
                 MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE -> {
