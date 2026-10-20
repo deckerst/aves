@@ -90,7 +90,9 @@ mixin CastMixin {
           return VideoMime.mpeg;
         case MimeTypes.mp4:
           return VideoMime.mp4;
-        case MimeTypes.mkvX:
+        case MimeTypes.matroska:
+        case MimeTypes.matroskaX:
+        case MimeTypes.mkv:
           return VideoMime.xMatroska;
         case MimeTypes.mov:
           return VideoMime.quicktime;

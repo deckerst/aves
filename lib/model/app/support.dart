@@ -13,6 +13,7 @@ class AppSupport {
     MimeTypes.dxf,
     MimeTypes.emf,
     MimeTypes.fits,
+    MimeTypes.fst,
     MimeTypes.jng,
     MimeTypes.jpeg2000,
     MimeTypes.jpx,
