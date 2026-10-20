@@ -14,34 +14,19 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 // metadata to identify entry from RenderObject hit test during collection scaling
-class ScalerMetadata<T> {
-  final T item;
+class const ScalerMetadata<T>(final T item);
 
-  const new(this.item);
-}
-
-class GridScaleGestureDetector<T> extends StatefulWidget {
-  final GlobalKey scrollableKey;
-  final TileLayout tileLayout;
-  final double Function(double width) heightForWidth;
-  final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder;
-  final TileBuilder<T> scaledItemBuilder;
-  final MosaicItemBuilder mosaicItemBuilder;
-  final Object Function(T item)? highlightItem;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.scrollableKey,
-    required this.tileLayout,
-    required this.heightForWidth,
-    required this.gridBuilder,
-    required this.scaledItemBuilder,
-    required this.mosaicItemBuilder,
-    this.highlightItem,
-    required this.child,
-  });
-
+class const GridScaleGestureDetector<T>({
+  super.key,
+  required final GlobalKey scrollableKey,
+  required final TileLayout tileLayout,
+  required final double Function(double width) heightForWidth,
+  required final Widget Function(Offset center, Size tileSize, Widget child) gridBuilder,
+  required final TileBuilder<T> scaledItemBuilder,
+  required final MosaicItemBuilder mosaicItemBuilder,
+  final Object Function(T item)? highlightItem,
+  required final Widget child,
+}) extends StatefulWidget {
   @override
   State<GridScaleGestureDetector<T>> createState() => _GridScaleGestureDetectorState<T>();
 }
@@ -241,10 +226,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       _applyingScale = false;
     } else {
       // scroll to show the focal point thumbnail at its new position
+      final highlightInfo = context.read<HighlightInfo>();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final trackItem = _metadata!.item;
         final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
-        context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
+        highlightInfo.trackItem(trackItem, animate: false, highlightItem: highlightItem);
         _applyingScale = false;
       });
     }
