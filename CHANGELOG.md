@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Changed
+
+- when rotating motion photo, try to rotate video part too
+
 ## <a id="v1.15.7"></a>[v1.15.7] - 2026-10-19
 
 ### Changed

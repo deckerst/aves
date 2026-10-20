@@ -123,7 +123,11 @@ object FileUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             FileChannel.open(toPath()).use { fileInput ->
                 Channels.newChannel(outputStream).use { output ->
-                    fileInput.transferTo(0, fileInput.size(), output)
+                    val fileSize = fileInput.size()
+                    val actuallyTransferred = fileInput.transferTo(0, fileSize, output)
+                    if (actuallyTransferred != fileSize) {
+                        throw Exception("failed to transfer $fileSize bytes, only transferred $actuallyTransferred bytes from file=$this to output stream")
+                    }
                 }
             }
         } else {

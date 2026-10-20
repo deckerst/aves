@@ -5,6 +5,7 @@ import android.app.RecoverableSecurityException
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.BaseColumns
@@ -18,6 +19,7 @@ import deckers.thibault.aves.MainActivity.Companion.SCOPED_STORAGE_PERMISSION_RE
 import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
 import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
@@ -70,6 +72,7 @@ import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -1120,7 +1123,8 @@ abstract class ImageProvider {
         callback: ImageOpCallback,
         autoCorrectTrailerOffset: Boolean = true,
         trailerDiff: Int = 0,
-        edit: (exif: ExifInterface) -> Unit,
+        editImage: (exifInterface: ExifInterface) -> Unit,
+        editTrailerVideo: (trailerVideoBytes: ByteArray?) -> ByteArray?,
     ): Boolean {
         val mimeType = contentAddress.mimeType
         val uri = contentAddress.uri
@@ -1183,7 +1187,7 @@ abstract class ImageProvider {
         }
 
         try {
-            edit(ExifInterface(editableFile))
+            editImage(ExifInterface(editableFile))
 
             val editableFilePath = editableFile.path
             val editableFileSizeBytes = getFileSize(editableFilePath)
@@ -1200,6 +1204,7 @@ abstract class ImageProvider {
             // ensure file is decodable after editing
             ensureDecodable(mimeType, editableFile)
 
+            trailerVideoBytes = editTrailerVideo(trailerVideoBytes)
             if (trailerVideoBytes != null) {
                 // append trailer video, if any
                 editableFile.appendBytes(trailerVideoBytes)
@@ -1212,7 +1217,8 @@ abstract class ImageProvider {
                     context = context,
                     contentAddress = contentAddress,
                     sizeBytes = sizeBytes,
-                    trailerOffset = trailerVideoBytes?.size,
+                    originalTrailerOffset = trailerVideoSize,
+                    editedTrailerOffset = trailerVideoBytes?.size?.toLong(),
                     editedFile = editableFile,
                     callback = callback,
                 )
@@ -1249,12 +1255,13 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
+        var trailerVideoSize: Long
         var trailerVideoBytes: ByteArray? = null
         val editableFile = StorageUtils.createTempFile(context).apply {
-            val trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff }
-            val isTrailerVideoValid = trailerVideoSize != null && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
+            trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff } ?: 0
+            val isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
             try {
-                if (trailerVideoSize != null && isTrailerVideoValid) {
+                if (isTrailerVideoValid) {
                     // handle motion photo and embedded video separately
                     val imageSize = (originalFileSize - trailerVideoSize).toInt()
                     val videoByteSize = trailerVideoSize.toInt()
@@ -1315,7 +1322,8 @@ abstract class ImageProvider {
                     context = context,
                     contentAddress = contentAddress,
                     sizeBytes = sizeBytes,
-                    trailerOffset = trailerVideoBytes?.size,
+                    originalTrailerOffset = trailerVideoSize,
+                    editedTrailerOffset = trailerVideoBytes?.size?.toLong(),
                     editedFile = editableFile,
                     callback = callback,
                 )
@@ -1405,7 +1413,7 @@ abstract class ImageProvider {
         sizeBytes: Long,
         callback: ImageOpCallback,
         autoCorrectTrailerOffset: Boolean = true,
-        trailerDiff: Int = 0,
+        trailerDiff: Long = 0L,
         coreXmp: String? = null,
         extendedXmp: String? = null,
         editCoreXmp: ((xmp: String) -> String)? = null,
@@ -1431,7 +1439,7 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
-        val trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it.toInt() + trailerDiff }
+        val trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it.toInt() + trailerDiff } ?: 0
         val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 editXmpWithPixy(
@@ -1461,7 +1469,8 @@ abstract class ImageProvider {
                     context = context,
                     contentAddress = contentAddress,
                     sizeBytes = sizeBytes,
-                    trailerOffset = trailerVideoSize,
+                    originalTrailerOffset = trailerVideoSize,
+                    editedTrailerOffset = trailerVideoSize,
                     editedFile = editableFile,
                     callback = callback,
                 )
@@ -1527,24 +1536,38 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
-        trailerOffset: Number?,
+        originalTrailerOffset: Long,
+        editedTrailerOffset: Long?,
         editedFile: File,
         callback: ImageOpCallback,
     ): Boolean {
-        if (trailerOffset == null) return true
+        if (originalTrailerOffset == 0L) return true
 
         val path = contentAddress.path ?: throw IllegalArgumentException()
 
         val expectedLength = getFileSize(editedFile.path)
         val actualLength = getFileSize(path)
-        val diff = (actualLength - expectedLength).toInt()
-        if (diff == 0) return true
+        val fileSizeDiff = (actualLength - expectedLength).toInt()
+        if (fileSizeDiff != 0) {
+            Log.w(
+                LOG_TAG, "Edited file length=$expectedLength does not match final document file length=$actualLength. " +
+                        "We need to edit XMP to adjust trailer video offset by $fileSizeDiff bytes."
+            )
+        }
 
-        Log.w(
-            LOG_TAG, "Edited file length=$expectedLength does not match final document file length=$actualLength. " +
-                    "We need to edit XMP to adjust trailer video offset by $diff bytes."
-        )
-        val newTrailerOffset = trailerOffset.toLong() + diff
+        val trailerOffset = editedTrailerOffset ?: originalTrailerOffset
+        val trailerSizeDiff = trailerOffset - originalTrailerOffset
+        if (trailerSizeDiff != 0L) {
+            Log.w(
+                LOG_TAG, "Edited trailer size changed from=$originalTrailerOffset to=$editedTrailerOffset " +
+                        "We need to edit XMP to adjust trailer video offset by $trailerSizeDiff bytes."
+            )
+        }
+
+        val diff = fileSizeDiff + trailerSizeDiff
+        if (diff == 0L) return true
+
+        val newTrailerOffset = trailerOffset + fileSizeDiff
         return editXmp(
             context = context,
             contentAddress = contentAddress,
@@ -1552,22 +1575,76 @@ abstract class ImageProvider {
             callback = callback,
             trailerDiff = diff,
             editCoreXmp = { xmp ->
-                GoogleXMP.updateTrailingVideoOffset(xmp, trailerOffset, newTrailerOffset)
+                GoogleXMP.updateTrailingVideoOffset(xmp, originalTrailerOffset, newTrailerOffset)
             },
         )
+    }
+
+    fun editTrailerVideo(
+        context: Context,
+        trailerVideoBytes: ByteArray,
+        edit: (contentAddress: ContentAddress, callback: ImageOpCallback) -> Unit,
+    ): ByteArray? {
+        val editableFile = StorageUtils.createTempFile(context).apply {
+            try {
+                copyFrom(ByteArrayInputStream(trailerVideoBytes), trailerVideoBytes.size.toLong())
+            } catch (ex: Exception) {
+                Log.d(LOG_TAG, "failed to copy trailer video", ex)
+                // skip
+                return trailerVideoBytes
+            }
+        }
+
+        val trailerContentAddress = ContentAddress(mimeType = MimeTypes.MP4, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
+        val completer = CompletableFuture<FieldMap>()
+        val trailerCallback = object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) {
+                completer.complete(fields)
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                completer.completeExceptionally(throwable)
+            }
+        }
+        try {
+            edit(trailerContentAddress, trailerCallback)
+            completer.join()
+        } catch (ex: Exception) {
+            Log.d(LOG_TAG, "failed to edit trailer video", ex)
+            // skip
+            return trailerVideoBytes
+        }
+
+        val baos = ByteArrayOutputStream()
+        editableFile.copyTo(baos)
+        return baos.toByteArray()
     }
 
     fun editOrientation(
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
-        currentRotationDegrees: Int,
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
         val newFields: FieldMap = hashMapOf()
 
         val success = if (contentAddress.mimeType == MimeTypes.MP4) {
+            // a motion photo image part and video part may have different orientations,
+            // so we should not get it from the entry, but fetch it from the part instead
+            val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
+
+            var currentRotationDegrees: Int? = null
+            try {
+                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { currentRotationDegrees = it }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get video rotation by MediaMetadataRetriever for $contentAddress", e)
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release()
+            }
+            currentRotationDegrees ?: return
+
             val rotationDegrees = (currentRotationDegrees + when (op) {
                 ExifOrientationOp.ROTATE_CW -> 90
                 ExifOrientationOp.ROTATE_CCW -> -90
@@ -1578,7 +1655,7 @@ abstract class ImageProvider {
             )
             editMp4Metadata(context, contentAddress, callback, fieldsToEdit, newFields)
         } else {
-            editExif(context, contentAddress, sizeBytes, callback) { exifInterface ->
+            fun editImage(exifInterface: ExifInterface) {
                 // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                 // in that case we explicitly set it to `normal` first
                 // because ExifInterface fails to rotate an image with undefined orientation
@@ -1602,6 +1679,17 @@ abstract class ImageProvider {
                 newFields["rotationDegrees"] = exifInterface.rotationDegrees
                 newFields["isFlipped"] = exifInterface.isFlipped
             }
+
+            fun editTrailerVideo(trailerVideoBytes: ByteArray?): ByteArray? {
+                if (trailerVideoBytes == null) return null
+
+                return editTrailerVideo(context, trailerVideoBytes) { contentAddress, callback ->
+                    val sizeBytes = trailerVideoBytes.size.toLong()
+                    editOrientation(context, contentAddress, sizeBytes, op, callback)
+                }
+            }
+
+            editExif(context, contentAddress, sizeBytes, callback, editImage = ::editImage, editTrailerVideo = ::editTrailerVideo)
         }
 
         if (success) {
@@ -1619,7 +1707,7 @@ abstract class ImageProvider {
         fields: List<String>,
         callback: ImageOpCallback,
     ) {
-        val success = editExif(context, contentAddress, sizeBytes, callback) { exifInterface ->
+        fun editImage(exifInterface: ExifInterface) {
             when {
                 dateMillis != null -> {
                     // set
@@ -1720,6 +1808,13 @@ abstract class ImageProvider {
             }
         }
 
+        fun editTrailerVideo(trailerVideoBytes: ByteArray?): ByteArray? {
+            // do not edit trailer video
+            return trailerVideoBytes
+        }
+
+        val success = editExif(context, contentAddress, sizeBytes, callback, editImage = ::editImage, editTrailerVideo = ::editTrailerVideo)
+
         if (success) {
             scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
         }
@@ -1749,61 +1844,70 @@ abstract class ImageProvider {
                     fieldsToEdit[modifiedDateTag] = ExifInterfaceHelper.formatDateTime(nowMillis, isUtc = true)
                     fieldsToEdit[ExifInterface.TAG_OFFSET_TIME] = TimeZones.format(TimeZones.currentOffsetMinutes)
                 }
+                fun editImage(exifInterface: ExifInterface) {
+                    var setLocation = false
+                    fieldsToEdit.forEach { kv ->
+                        val tag = kv.key as String?
+                        if (tag != null) {
+                            val value = kv.value
+                            if (value == null) {
+                                // remove attribute
+                                exifInterface.setAttribute(tag, null)
+                            } else {
+                                when (tag) {
+                                    ExifInterface.TAG_GPS_LATITUDE,
+                                    ExifInterface.TAG_GPS_LATITUDE_REF,
+                                    ExifInterface.TAG_GPS_LONGITUDE,
+                                    ExifInterface.TAG_GPS_LONGITUDE_REF -> {
+                                        setLocation = true
+                                    }
+
+                                    else -> {
+                                        if (value is String) {
+                                            exifInterface.setAttribute(tag, value)
+                                        } else {
+                                            Log.w(LOG_TAG, "failed to set Exif attribute $tag because value=$value is not a string")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (setLocation) {
+                        val latAbs = (fieldsToEdit[ExifInterface.TAG_GPS_LATITUDE] as Number?)?.toDouble()
+                        val latRef = fieldsToEdit[ExifInterface.TAG_GPS_LATITUDE_REF] as String?
+                        val lngAbs = (fieldsToEdit[ExifInterface.TAG_GPS_LONGITUDE] as Number?)?.toDouble()
+                        val lngRef = fieldsToEdit[ExifInterface.TAG_GPS_LONGITUDE_REF] as String?
+                        if (latAbs != null && latRef != null && lngAbs != null && lngRef != null) {
+                            val latitude = if (latRef == ExifInterface.LATITUDE_SOUTH) -latAbs else latAbs
+                            val longitude = if (lngRef == ExifInterface.LONGITUDE_WEST) -lngAbs else lngAbs
+                            exifInterface.setLatLong(latitude, longitude)
+                        } else {
+                            Log.w(LOG_TAG, "failed to set Exif location with latAbs=$latAbs, latRef=$latRef, lngAbs=$lngAbs, lngRef=$lngRef")
+                        }
+                    }
+
+                    try {
+                        exifInterface.saveAttributes()
+                    } catch (ex: IOException) {
+                        throw ExifInterfaceException(ex)
+                    }
+                }
+
+                fun editTrailerVideo(trailerVideoBytes: ByteArray?): ByteArray? {
+                    // do not edit trailer video
+                    return trailerVideoBytes
+                }
+
                 if (!editExif(
                         context = context,
                         contentAddress = contentAddress,
                         sizeBytes = sizeBytes,
                         callback = callback,
                         autoCorrectTrailerOffset = autoCorrectTrailerOffset,
-                    ) { exifInterface ->
-                        var setLocation = false
-                        fieldsToEdit.forEach { kv ->
-                            val tag = kv.key as String?
-                            if (tag != null) {
-                                val value = kv.value
-                                if (value == null) {
-                                    // remove attribute
-                                    exifInterface.setAttribute(tag, null)
-                                } else {
-                                    when (tag) {
-                                        ExifInterface.TAG_GPS_LATITUDE,
-                                        ExifInterface.TAG_GPS_LATITUDE_REF,
-                                        ExifInterface.TAG_GPS_LONGITUDE,
-                                        ExifInterface.TAG_GPS_LONGITUDE_REF -> {
-                                            setLocation = true
-                                        }
-
-                                        else -> {
-                                            if (value is String) {
-                                                exifInterface.setAttribute(tag, value)
-                                            } else {
-                                                Log.w(LOG_TAG, "failed to set Exif attribute $tag because value=$value is not a string")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (setLocation) {
-                            val latAbs = (fieldsToEdit[ExifInterface.TAG_GPS_LATITUDE] as Number?)?.toDouble()
-                            val latRef = fieldsToEdit[ExifInterface.TAG_GPS_LATITUDE_REF] as String?
-                            val lngAbs = (fieldsToEdit[ExifInterface.TAG_GPS_LONGITUDE] as Number?)?.toDouble()
-                            val lngRef = fieldsToEdit[ExifInterface.TAG_GPS_LONGITUDE_REF] as String?
-                            if (latAbs != null && latRef != null && lngAbs != null && lngRef != null) {
-                                val latitude = if (latRef == ExifInterface.LATITUDE_SOUTH) -latAbs else latAbs
-                                val longitude = if (lngRef == ExifInterface.LONGITUDE_WEST) -lngAbs else lngAbs
-                                exifInterface.setLatLong(latitude, longitude)
-                            } else {
-                                Log.w(LOG_TAG, "failed to set Exif location with latAbs=$latAbs, latRef=$latRef, lngAbs=$lngAbs, lngRef=$lngRef")
-                            }
-                        }
-
-                        try {
-                            exifInterface.saveAttributes()
-                        } catch (ex: IOException) {
-                            throw ExifInterfaceException(ex)
-                        }
-                    }
+                        editImage = ::editImage,
+                        editTrailerVideo = ::editTrailerVideo
+                    )
                 ) return
             }
         }
@@ -1925,8 +2029,8 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
-        val trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)
-        val isTrailerVideoValid = trailerVideoSize != null && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
+        val trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize) ?: 0
+        val isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
         val editableFile = StorageUtils.createTempFile(context).apply {
             try {
                 outputStream().use { output ->
@@ -1955,7 +2059,8 @@ abstract class ImageProvider {
                     context = context,
                     contentAddress = contentAddress,
                     sizeBytes = sizeBytes,
-                    trailerOffset = trailerVideoSize,
+                    originalTrailerOffset = trailerVideoSize,
+                    editedTrailerOffset = trailerVideoSize,
                     editedFile = editableFile,
                     callback = callback,
                 )

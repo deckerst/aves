@@ -63,9 +63,8 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
         val mimeType = entryMap["mimeType"] as String?
         val uri = (entryMap["uri"] as String?)?.toUri()
         val path = entryMap["path"] as String?
-        val currentRotationDegrees = entryMap["rotationDegrees"] as Int?
         val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
-        if (uri == null || path == null || mimeType == null || sizeBytes == null || currentRotationDegrees == null) {
+        if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("editOrientation-args", "failed because entry fields are missing", null)
             return
         }
@@ -83,7 +82,6 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
-            currentRotationDegrees = currentRotationDegrees,
             op = op,
             callback = callback,
         )
