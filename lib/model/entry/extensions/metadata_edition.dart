@@ -134,7 +134,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
-  Future<Set<EntryDataType>> _changeExifOrientation(Future<Map<String, dynamic>> Function() apply) async {
+  Future<Set<EntryDataType>> _editOrientation(Future<Map<String, dynamic>> Function() apply) async {
     final dataTypes = <EntryDataType>{};
 
     final newFields = await apply();
@@ -151,41 +151,12 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
     return dataTypes;
   }
 
-  Future<Set<EntryDataType>> _rotateMp4(int rotationDegrees) async {
-    final dataTypes = <EntryDataType>{};
-
-    final mp4Fields = <MetadataField, String?>{
-      .mp4RotationDegrees: rotationDegrees.toString(),
-    };
-
-    final metadata = <MetadataType, dynamic>{
-      MetadataType.mp4: Map<String, String?>.fromEntries(mp4Fields.entries.map((kv) => MapEntry(kv.key.toPlatform!, kv.value))),
-    };
-
-    final newFields = await metadataEditService.editMetadata(this, metadata);
-    // applying fields is only useful for a smoother visual change,
-    // as proper refreshing and persistence happens at the caller level
-    await applyNewFields(newFields, persist: false);
-    if (newFields.isNotEmpty) {
-      dataTypes.addAll({
-        EntryDataType.basic,
-        EntryDataType.aspectRatio,
-        EntryDataType.catalog,
-      });
-    }
-    return dataTypes;
-  }
-
   Future<Set<EntryDataType>> rotate({required bool clockwise}) {
-    if (mimeType == MimeTypes.mp4) {
-      return _rotateMp4((rotationDegrees + (clockwise ? 90 : -90) + 360) % 360);
-    } else {
-      return _changeExifOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
-    }
+    return _editOrientation(() => metadataEditService.rotate(this, clockwise: clockwise));
   }
 
   Future<Set<EntryDataType>> flip() {
-    return _changeExifOrientation(() => metadataEditService.flip(this));
+    return _editOrientation(() => metadataEditService.flip(this));
   }
 
   // write title:

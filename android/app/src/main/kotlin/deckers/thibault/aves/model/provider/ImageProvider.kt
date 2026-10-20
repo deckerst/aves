@@ -935,7 +935,7 @@ abstract class ImageProvider {
 
                 val exifInterface = ExifInterface(editableFile)
 
-                val rotationDegrees = exifFields["rotationDegrees"] as Int?
+                val rotationDegrees = exifFields[Metadata.FIELD_ROTATION_DEGREES] as Int?
                 if (rotationDegrees != null) {
                     // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                     // in that case we explicitly set it to `normal` first
@@ -1335,8 +1335,8 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         callback: ImageOpCallback,
-        fieldsToEdit: Map<*, *>,
-        newFields: FieldMap? = null,
+        fieldsToEdit: Map<String, String?>,
+        newFields: FieldMap,
     ): Boolean {
         val mimeType = contentAddress.mimeType
         val uri = contentAddress.uri
@@ -1349,18 +1349,18 @@ abstract class ImageProvider {
         try {
             val edits = Mp4ParserHelper.computeEdits(context, uri) { isoFile ->
                 fieldsToEdit.forEach { kv ->
-                    val tag = kv.key as String
-                    val value = kv.value as String?
+                    val tag = kv.key
+                    val value = kv.value
                     when (tag) {
-                        "gpsCoordinates" -> isoFile.updateLocation(value)
-                        "rotationDegrees" -> {
+                        Metadata.FIELD_GPS_COORDINATES -> isoFile.updateLocation(value)
+                        Metadata.FIELD_ROTATION_DEGREES -> {
                             val degrees = value?.toIntOrNull() ?: throw Exception("failed because of invalid rotation=$value")
-                            if (isoFile.updateRotation(degrees) && newFields != null) {
+                            if (isoFile.updateRotation(degrees)) {
                                 newFields["rotationDegrees"] = degrees
                             }
                         }
 
-                        "xmp" -> isoFile.updateXmp(value)
+                        Metadata.FIELD_XMP -> isoFile.updateXmp(value)
                     }
                 }
             }
@@ -1422,7 +1422,8 @@ abstract class ImageProvider {
                 context = context,
                 contentAddress = contentAddress,
                 callback = callback,
-                fieldsToEdit = mapOf("xmp" to coreXmp),
+                fieldsToEdit = mapOf(Metadata.FIELD_XMP to coreXmp),
+                newFields = hashMapOf(),
             )
         }
 
@@ -1560,34 +1561,47 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        currentRotationDegrees: Int,
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
         val newFields: FieldMap = hashMapOf()
 
-        val success = editExif(context, contentAddress, sizeBytes, callback) { exifInterface ->
-            // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
-            // in that case we explicitly set it to `normal` first
-            // because ExifInterface fails to rotate an image with undefined orientation
-            // as of androidx.exifinterface:exifinterface:1.3.0
-            val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-            if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
-                exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
-            }
-            when (op) {
-                ExifOrientationOp.ROTATE_CW -> exifInterface.rotate(90)
-                ExifOrientationOp.ROTATE_CCW -> exifInterface.rotate(-90)
-                ExifOrientationOp.FLIP -> exifInterface.flipHorizontally()
-            }
+        val success = if (contentAddress.mimeType == MimeTypes.MP4) {
+            val rotationDegrees = (currentRotationDegrees + when (op) {
+                ExifOrientationOp.ROTATE_CW -> 90
+                ExifOrientationOp.ROTATE_CCW -> -90
+                ExifOrientationOp.FLIP -> throw IllegalArgumentException()
+            } + 360) % 360
+            val fieldsToEdit = mapOf(
+                Metadata.FIELD_ROTATION_DEGREES to rotationDegrees.toString(),
+            )
+            editMp4Metadata(context, contentAddress, callback, fieldsToEdit, newFields)
+        } else {
+            editExif(context, contentAddress, sizeBytes, callback) { exifInterface ->
+                // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
+                // in that case we explicitly set it to `normal` first
+                // because ExifInterface fails to rotate an image with undefined orientation
+                // as of androidx.exifinterface:exifinterface:1.3.0
+                val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
+                    exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+                }
+                when (op) {
+                    ExifOrientationOp.ROTATE_CW -> exifInterface.rotate(90)
+                    ExifOrientationOp.ROTATE_CCW -> exifInterface.rotate(-90)
+                    ExifOrientationOp.FLIP -> exifInterface.flipHorizontally()
+                }
 
-            try {
-                exifInterface.saveAttributes()
-            } catch (ex: IOException) {
-                throw ExifInterfaceException(ex)
-            }
+                try {
+                    exifInterface.saveAttributes()
+                } catch (ex: IOException) {
+                    throw ExifInterfaceException(ex)
+                }
 
-            newFields["rotationDegrees"] = exifInterface.rotationDegrees
-            newFields["isFlipped"] = exifInterface.isFlipped
+                newFields["rotationDegrees"] = exifInterface.rotationDegrees
+                newFields["isFlipped"] = exifInterface.isFlipped
+            }
         }
 
         if (success) {
@@ -1808,7 +1822,8 @@ abstract class ImageProvider {
         }
 
         if (modifier.containsKey(TYPE_MP4)) {
-            val fieldsToEdit = modifier[TYPE_MP4] as Map<*, *>?
+            @Suppress("unchecked_cast")
+            val fieldsToEdit = modifier[TYPE_MP4] as Map<String, String?>?
             if (!fieldsToEdit.isNullOrEmpty()) {
                 if (!editMp4Metadata(
                         context = context,
@@ -1822,10 +1837,11 @@ abstract class ImageProvider {
         }
 
         if (modifier.containsKey(TYPE_XMP)) {
-            val xmp = modifier[TYPE_XMP] as Map<*, *>?
+            @Suppress("unchecked_cast")
+            val xmp = modifier[TYPE_XMP] as Map<String, String?>?
             if (xmp != null) {
-                val coreXmp = xmp["xmp"] as String?
-                val extendedXmp = xmp["extendedXmp"] as String?
+                val coreXmp = xmp["xmp"]
+                val extendedXmp = xmp["extendedXmp"]
                 if (!editXmp(
                         context = context,
                         contentAddress = contentAddress,
