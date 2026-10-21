@@ -17,31 +17,20 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerTopOverlay extends StatelessWidget {
-  final List<AvesEntry> entries;
-  final int index;
-  final AvesEntry mainEntry;
-  final Animation<double> scale;
-  final bool hasCollection;
-  final ValueNotifier<bool> expandedNotifier;
-  final Size availableSize;
-  final EdgeInsets? viewInsets, viewPadding;
-
+class const ViewerTopOverlay({
+  super.key,
+  required final List<AvesEntry> entries,
+  required final int index,
+  required final AvesEntry mainEntry,
+  required final Animation<double> scale,
+  required final bool hasCollection,
+  required final ValueNotifier<bool> expandedNotifier,
+  required final Size availableSize,
+  required final EdgeInsets? viewInsets,
+  required final EdgeInsets? viewPadding,
+}) extends StatelessWidget {
   static const Color componentBorderColor = Colors.white30;
   static const double componentDimension = 96;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.index,
-    required this.mainEntry,
-    required this.scale,
-    required this.hasCollection,
-    required this.expandedNotifier,
-    required this.availableSize,
-    required this.viewInsets,
-    required this.viewPadding,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -159,14 +148,10 @@ class ViewerTopOverlay extends StatelessWidget {
   }
 }
 
-class ZoomLevelIndicator extends StatelessWidget {
-  final ValueNotifier<ViewState> viewStateNotifier;
-
-  const new({
-    super.key,
-    required this.viewStateNotifier,
-  });
-
+class const ZoomLevelIndicator({
+  super.key,
+  required final ValueNotifier<ViewState> viewStateNotifier,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blurred = settings.enableBlurEffect;

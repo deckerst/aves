@@ -5,18 +5,12 @@ import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class OverlayPositionTitleRow extends StatelessWidget {
-  final AvesEntry entry;
-  final String? collectionPosition;
-  final MultiPageController? multiPageController;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.collectionPosition,
-    required this.multiPageController,
-  });
-
+class const OverlayPositionTitleRow({
+  super.key,
+  required final AvesEntry entry,
+  required final String? collectionPosition,
+  required final MultiPageController? multiPageController,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _title = entry.bestTitle;

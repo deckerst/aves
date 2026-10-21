@@ -12,6 +12,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/device_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/format.dart';
 import 'package:aves/theme/styles.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/about/app_ref.dart';
@@ -162,6 +163,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     final albumCount = source.rawAlbums.length;
     final tagCount = source.sortedTags.length;
 
+    final nowLocal = DateTime.now();
     return [
       'Aves: ${device.packageVersion}-$flavor, build ${packageInfo.buildNumber}, package=${device.packageName}, installer=${packageInfo.installerStore}',
       'Flutter: ${FlutterVersion.channel} ${FlutterVersion.version}',
@@ -174,6 +176,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}, geocoder=${device.hasGeocoder}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',
+      'Time zone: ${formatTimeZoneOffset(nowLocal.timeZoneOffset)} (${nowLocal.timeZoneName})',
       'Storage volumes: ${storageVolumes.map((v) => v.path).join(', ')}',
       'SAF grants: ${safGrants.join(', ')}',
       'Error reporting: ${settings.isErrorReportingAllowed}',

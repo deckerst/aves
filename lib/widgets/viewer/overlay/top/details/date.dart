@@ -8,16 +8,11 @@ import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:material_ui/material_ui.dart';
 
-class OverlayDateRow extends StatelessWidget {
-  final AvesEntry entry;
-  final MultiPageController? multiPageController;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.multiPageController,
-  });
-
+class const OverlayDateRow({
+  super.key,
+  required final AvesEntry entry,
+  required final MultiPageController? multiPageController,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = settings.avesLocale;

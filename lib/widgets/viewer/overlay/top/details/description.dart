@@ -3,14 +3,10 @@ import 'package:aves/widgets/common/basic/text/icon_span.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:material_ui/material_ui.dart';
 
-class OverlayDescriptionRow extends StatelessWidget {
-  final String description;
-
-  const new({
-    super.key,
-    required this.description,
-  });
-
+class const OverlayDescriptionRow({
+  super.key,
+  required final String description,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text.rich(
