@@ -252,6 +252,10 @@ class AvesEntry with AvesEntryBase {
       }
       _bestDate ??= dateTimeFromMillis(sourceDateTakenMillis, isUtc: false);
       _bestDate ??= dateTimeFromMillis(dateModifiedMillis, isUtc: false);
+      if (_bestDate != null && !_bestDate!.isUtc) {
+        // always return UTC dates, so that comparison and display are coherent
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(_bestDate!.millisecondsSinceEpoch, isUtc: true).add(_bestDate!.timeZoneOffset);
+      }
     }
     return _bestDate;
   }
