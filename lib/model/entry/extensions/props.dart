@@ -81,20 +81,25 @@ extension ExtraAvesEntryProps on AvesEntry {
 
   // trash
 
+  DateTime? get _trashDateLocal {
+    final millis = trashDetails?.dateMillis;
+    return millis != null ? DateTime.fromMillisecondsSinceEpoch(millis, isUtc: false) : null;
+  }
+
   bool get isExpiredTrash {
-    final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) {
+    final date = _trashDateLocal;
+    if (date == null) {
       // for trashed items which are for some reason missing trash details,
       // consider them expired so they are cleaned automatically on launch
       return true;
     }
-    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
+    return date.add(TrashMixin.binKeepDuration).isBefore(DateTime.now());
   }
 
   int? get trashDaysLeft {
-    final dateMillis = trashDetails?.dateMillis;
-    if (dateMillis == null) return null;
-    return DateTime.fromMillisecondsSinceEpoch(dateMillis).add(TrashMixin.binKeepDuration).difference(DateTime.now()).inHumanDays;
+    final date = _trashDateLocal;
+    if (date == null) return null;
+    return date.add(TrashMixin.binKeepDuration).difference(DateTime.now()).inHumanDays;
   }
 
   // storage

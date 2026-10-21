@@ -11,6 +11,7 @@ import 'package:aves/ref/poi.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
 import 'package:aves/widgets/common/map/attribution.dart';
@@ -372,7 +373,7 @@ class _GeoMapState extends State<GeoMap> {
       final entries = widget.collection?.sortedEntries;
       if (entries != null && entries.isNotEmpty) {
         final itemTrackPoints = <List<LatLng>>[];
-        var prevDate = DateTime.fromMillisecondsSinceEpoch(0);
+        var prevDate = epoch;
         var prevLatLng = const LatLng(0, 0);
         final currentTrack = <LatLng>[];
         for (final entry in entries.sorted(AvesEntrySort.compareByDate).reversed) {

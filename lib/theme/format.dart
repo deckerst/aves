@@ -37,3 +37,14 @@ String formatPreciseDuration(Duration d) {
   final hours = (d.inHours).toString().padLeft(2, '0');
   return '$hours:$minutes:$seconds.$millis';
 }
+
+String formatTimeZoneOffset(Duration d) {
+  final isNegative = d.isNegative;
+  final sign = isNegative ? '-' : '+';
+  d = d.abs();
+  final hours = d.inHours;
+  d -= Duration(hours: hours);
+  final minutes = d.inMinutes;
+
+  return '$sign$hours:${minutes.toString().padLeft(2, '0')}';
+}

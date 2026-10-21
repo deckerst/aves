@@ -6,14 +6,10 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/top/details/details.dart';
 import 'package:material_ui/material_ui.dart';
 
-class OverlayShootingRow extends StatelessWidget {
-  final OverlayMetadata details;
-
-  const new({
-    super.key,
-    required this.details,
-  });
-
+class const OverlayShootingRow({
+  super.key,
+  required final OverlayMetadata details,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = settings.avesLocale;

@@ -29,6 +29,7 @@ class MimeTypes {
   static const dxf = 'image/vnd.dxf';
   static const emf = 'image/emf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const fits = 'image/fits'; // https://en.wikipedia.org/wiki/FITS
+  static const fst = 'image/vnd.fst'; // https://en.wikipedia.org/wiki/Microsoft_Development_Center_Norway
   static const jng = 'image/x-jng';
   static const jpeg2000 = 'image/jp2';
   static const jpx = 'image/jpx';
@@ -95,8 +96,9 @@ class MimeTypes {
   static const gl = 'video/gl';
   static const lsf = 'video/x-la-asf';
   static const m4s = 'video/iso.segment';
+  static const matroska = 'video/matroska';
+  static const matroskaX = 'video/x-matroska';
   static const mkv = 'video/mkv';
-  static const mkvX = 'video/x-matroska';
   static const mov = 'video/quicktime';
   static const movX = 'video/x-quicktime';
   static const mp2p = 'video/mp2p';

@@ -1,16 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class OverlayRowExpander extends StatefulWidget {
-  final ValueNotifier<bool> expandedNotifier;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.expandedNotifier,
-    required this.child,
-  });
-
+class const OverlayRowExpander({
+  super.key,
+  required final ValueNotifier<bool> expandedNotifier,
+  required final Widget child,
+}) extends StatefulWidget {
   @override
   State<OverlayRowExpander> createState() => _OverlayRowExpanderState();
 }

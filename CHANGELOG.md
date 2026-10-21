@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.8"></a>[v1.15.8] - 2026-10-21
+
+### Changed
+
+- when rotating motion photo, try to rotate video part too
+
+### Fixed
+
+- sorting by date items with and without metadata dates
+
 ## <a id="v1.15.7"></a>[v1.15.7] - 2026-10-19
 
 ### Changed

@@ -33,8 +33,13 @@ class WallpaperHandler(private val context: Context) : MethodCallHandler {
         }
 
         val manager = WallpaperManager.getInstance(context)
-        if (!manager.isWallpaperSupported || !manager.isSetWallpaperAllowed) {
-            result.error("setWallpaper-unsupported", "failed because setting wallpaper is not allowed", null)
+        if (!manager.isWallpaperSupported) {
+            result.error("setWallpaper-notsupported", "failed because setting wallpaper is not supported", null)
+            return
+        }
+
+        if (!manager.isSetWallpaperAllowed) {
+            result.error("setWallpaper-notallowed", "failed because setting wallpaper is not allowed", null)
             return
         }
 

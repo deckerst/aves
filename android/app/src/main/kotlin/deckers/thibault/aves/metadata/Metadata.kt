@@ -54,6 +54,11 @@ object Metadata {
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"
 
+    // fields to edit, possibly in multiple types
+    const val FIELD_GPS_COORDINATES = "gpsCoordinates"
+    const val FIELD_ROTATION_DEGREES = "rotationDegrees"
+    const val FIELD_XMP = "xmp"
+
     // interpret EXIF code to angle (0, 90, 180 or 270 degrees)
     fun getRotationDegreesForExifCode(exifOrientation: Int): Int = when (exifOrientation) {
         ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_TRANSVERSE -> 90

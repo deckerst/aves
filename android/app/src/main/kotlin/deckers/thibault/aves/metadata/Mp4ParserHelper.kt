@@ -106,6 +106,7 @@ object Mp4ParserHelper {
                     box == isoFile.movieBox -> false
                     testXmpBox(box) -> false
                     box is FreeBox -> false
+                    box is UnknownBox -> false
                     else -> true
                 }
             }
