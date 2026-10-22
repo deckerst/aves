@@ -533,11 +533,10 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
                     final scrollController = widget.scrollController;
                     final offsetIncrementSnapThreshold = context.select<TileExtentController, double>((v) => (v.extentNotifier.value + v.spacing) / 4);
                     return DraggableScrollbar(
-                      backgroundColor: Colors.white,
                       scrollThumbSize: AvesScrollThumb.thumbSize,
                       scrollThumbBuilder: AvesScrollThumb.builder(
+                        context: context,
                         height: AvesScrollThumb.thumbHeight,
-                        backgroundColor: Colors.white,
                       ),
                       controller: scrollController,
                       dragOffsetSnapper: (scrollOffset, offsetIncrement) {

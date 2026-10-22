@@ -11,16 +11,16 @@ class AvesScrollThumb {
   static const double thumbHeight = 48;
   static final thumbSize = Size(_thumbWidth, thumbHeight);
 
-  // height and background color do not change
-  // so we do not rely on the builder props
   static ScrollThumbBuilder builder({
+    required BuildContext context,
     required double height,
-    required Color backgroundColor,
   }) {
+    final theme = Theme.of(context);
+    const borderRadius = BorderRadius.all(Radius.circular(12));
     final scrollThumb = Container(
-      decoration: const BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onSurface.withAlpha(66),
+        borderRadius: borderRadius,
       ),
       height: height,
       margin: _margin,
@@ -30,16 +30,15 @@ class AvesScrollThumb {
         child: Container(
           width: _width,
           decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: borderRadius,
           ),
         ),
       ),
     );
-    return (backgroundColor, thumbAnimation, labelAnimation, height, {labelText}) {
+    return (thumbAnimation, labelAnimation, height, {labelText}) {
       return DraggableScrollbar.buildScrollThumbAndLabel(
         scrollThumb: scrollThumb,
-        backgroundColor: backgroundColor,
         thumbAnimation: thumbAnimation,
         labelAnimation: labelAnimation,
         labelText: labelText,

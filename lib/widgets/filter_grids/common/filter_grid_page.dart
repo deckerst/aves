@@ -704,11 +704,10 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                 final canNavigate = context.select<ValueNotifier<AppMode>, bool>((v) => v.value.canNavigate);
                 final showBottomNavBar = canNavigate && enableBottomNavBar;
                 return DraggableScrollbar(
-                  backgroundColor: Colors.white,
                   scrollThumbSize: AvesScrollThumb.thumbSize,
                   scrollThumbBuilder: AvesScrollThumb.builder(
+                    context: context,
                     height: AvesScrollThumb.thumbHeight,
-                    backgroundColor: Colors.white,
                   ),
                   controller: scrollController,
                   padding: EdgeInsets.only(
