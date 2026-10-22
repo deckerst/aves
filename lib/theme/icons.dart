@@ -34,12 +34,7 @@ class AIcons {
   static const height = Symbols.fit_page_height;
   static const histogram = Symbols.area_chart;
   static const home = Symbols.home;
-
-  // as of Flutter v3.16.3,
-  // `label_important_outlined` matches text direction but is filled
-  // `label_important_outline` is outlined but does not match text direction
-  static const important = IconData(labelImportantOutlineCodePoint, fontFamily: materialIconsFontFamily, matchTextDirection: true);
-
+  static const important = Symbols.label_important;
   static const language = Symbols.translate;
   static const legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
@@ -150,8 +145,8 @@ class AIcons {
   static const reverse = Symbols.invert_colors;
   static const reset = Symbols.restart_alt;
   static const restore = Symbols.restore;
-  static const rotateLeft = Symbols.rotate_left;
-  static const rotateRight = Symbols.rotate_right;
+  static const rotateLeft = IconData(_rotateLeftCodePoint, fontFamily: _materialSymbolsOutlinedFontFamily, fontPackage: _materialSymbolsIconsFontPackage, matchTextDirection: false);
+  static const rotateRight = IconData(_rotateRightCodePoint, fontFamily: _materialSymbolsOutlinedFontFamily, fontPackage: _materialSymbolsIconsFontPackage, matchTextDirection: false);
   static const rotateScreen = Symbols.screen_rotation;
   static const search = Symbols.search;
   static const select = Symbols.select_all;
@@ -228,8 +223,10 @@ class AIcons {
   static const selected = Symbols.check_circle;
   static const unselected = Symbols.radio_button_unchecked;
 
-  // Material Icons references to make constant instances of `IconData`
+  // References to make constant instances of `IconData`
   // as non-constant instances of `IconData` prevent icon font tree shaking
-  static const labelImportantOutlineCodePoint = 0xe362;
-  static const materialIconsFontFamily = 'MaterialIcons';
+  static const _materialSymbolsIconsFontPackage = 'material_symbols_icons';
+  static const _materialSymbolsOutlinedFontFamily = 'MaterialSymbolsOutlined';
+  static const _rotateLeftCodePoint = 0xe419;
+  static const _rotateRightCodePoint = 0xe41a;
 }
