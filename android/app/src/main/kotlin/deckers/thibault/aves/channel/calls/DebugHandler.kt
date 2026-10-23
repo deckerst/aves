@@ -272,7 +272,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 result.error("getExifInterfaceMetadata-failure", "failed to get exif for $contentAddress", e.message)
                 return

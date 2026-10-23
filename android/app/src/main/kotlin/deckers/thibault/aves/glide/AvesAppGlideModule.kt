@@ -71,7 +71,7 @@ class AvesAppGlideModule : AppGlideModule() {
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        // prevent ExifInterface error logs
+        // prevent `ExifInterface` error logs
         // cf https://github.com/bumptech/glide/issues/3383
         registry.imageHeaderParsers.removeIf { parser: ImageHeaderParser? -> parser is ExifInterfaceImageHeaderParser }
     }

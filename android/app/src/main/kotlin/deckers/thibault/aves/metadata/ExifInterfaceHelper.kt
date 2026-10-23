@@ -45,7 +45,7 @@ object ExifInterfaceHelper {
 
     private const val PRECISION_ERROR_TOLERANCE = 1e-10
 
-    // ExifInterface always states it has the following attributes
+    // `ExifInterface` always states it has the following attributes
     // and returns "0" instead of "null" when they are actually missing
     private val neverNullTags = listOf(
         ExifInterface.TAG_IMAGE_LENGTH,
@@ -226,8 +226,8 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_RW2_SENSOR_TOP_BORDER to TagMapper(PanasonicRawIFD0Directory.TagSensorTopBorder, DirType.PRIFD0, TagFormat.LONG), // IFD_TIFF_TAGS 0x0004
     )
 
-    // list of known ExifInterface tags (as of androidx.exifinterface:exifinterface:1.3.0)
-    // mapped to metadata-extractor tags (as of v2.14.0)
+    // list of known `ExifInterface` tags (as of androidx.exifinterface:exifinterface:1.3.0)
+    // mapped to `metadata-extractor` tags (as of v2.14.0)
     val allTags: Map<String, TagMapper?> = hashMapOf<String, TagMapper?>(
     ).apply {
         putAll(baseTags)
@@ -238,9 +238,9 @@ object ExifInterfaceHelper {
     }
 
     fun describeAll(exif: ExifInterface): Map<String, Map<String, String>> {
-        // initialize metadata-extractor directories that we will fill
-        // by tags converted from the ExifInterface attributes
-        // so that we can rely on metadata-extractor descriptions
+        // initialize `metadata-extractor` directories that we will fill
+        // by tags converted from the `ExifInterface` attributes
+        // so that we can rely on `metadata-extractor` descriptions
         val dirs = DirType.entries.associateWith { it.createDirectory() }
 
         // exclude Exif directory when it only includes image size

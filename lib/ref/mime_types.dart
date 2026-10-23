@@ -51,6 +51,7 @@ class MimeTypes {
   static const vtf = 'image/vnd.valve.source.texture';
   static const wmf = 'image/wmf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const xbm = 'image/x-xbitmap'; // https://en.wikipedia.org/wiki/X_BitMap
+  static const xcf = 'image/x-xcf'; // https://en.wikipedia.org/wiki/XCF_(file_format)
   static const xpm = 'image/x-xpixmap'; // https://en.wikipedia.org/wiki/X_PixMap
   static const xwd = 'image/x-xwindowdump'; // https://en.wikipedia.org/wiki/Xwd
 

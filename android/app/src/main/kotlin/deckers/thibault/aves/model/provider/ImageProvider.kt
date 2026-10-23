@@ -852,7 +852,7 @@ abstract class ImageProvider {
         // copy IPTC / XMP via PixyMeta
         PixyMetaHelper.copyIptcXmp(context, sourceMimeType, sourceUri, targetMimeType, targetUri, editableFile)
 
-        // copy Exif via ExifInterface
+        // copy Exif via `ExifInterface`
         val exifData = HashMap<String, String?>()
         val skippedTags = listOf(
             ExifInterface.TAG_IMAGE_LENGTH,
@@ -942,7 +942,7 @@ abstract class ImageProvider {
                 if (rotationDegrees != null) {
                     // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                     // in that case we explicitly set it to `normal` first
-                    // because ExifInterface fails to rotate an image with undefined orientation
+                    // because `ExifInterface` fails to rotate an image with undefined orientation
                     // as of androidx.exifinterface:exifinterface:1.3.0
                     val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
@@ -1658,7 +1658,7 @@ abstract class ImageProvider {
             fun editImage(exifInterface: ExifInterface) {
                 // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                 // in that case we explicitly set it to `normal` first
-                // because ExifInterface fails to rotate an image with undefined orientation
+                // because `ExifInterface` fails to rotate an image with undefined orientation
                 // as of androidx.exifinterface:exifinterface:1.3.0
                 val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                 if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {

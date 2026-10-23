@@ -400,14 +400,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (!foundExif && canReadWithExifInterface(mimeType)) {
-            // fallback to read EXIF via ExifInterface
+            // fallback to read EXIF via `ExifInterface`
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
                     val allTags = describeAll(exifInterface).toMutableMap()
                     if (foundXmp) {
-                        // do not overwrite XMP parsed by metadata-extractor
-                        // with raw XMP found by ExifInterface
+                        // do not overwrite XMP parsed by `metadata-extractor`
+                        // with raw XMP found by `ExifInterface`
                         allTags.remove(Metadata.DIR_XMP)
                     } else {
                         val xmpTags = allTags[Metadata.DIR_XMP]
@@ -428,7 +428,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     metadataMap.putAll(allTags.mapValues { it.value.toMutableMap() })
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
             }
@@ -871,7 +871,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (!foundExif && canReadWithExifInterface(mimeType)) {
-            // fallback to read EXIF via ExifInterface
+            // fallback to read EXIF via `ExifInterface`
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
@@ -904,7 +904,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri path=$path", e)
             }
@@ -1084,7 +1084,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (!foundExif && canReadWithExifInterface(mimeType)) {
-            // fallback to read EXIF via ExifInterface
+            // fallback to read EXIF via `ExifInterface`
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
@@ -1102,7 +1102,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
             }
@@ -1583,7 +1583,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (!foundExif && canReadWithExifInterface(mimeType)) {
-            // fallback to read EXIF via ExifInterface
+            // fallback to read EXIF via `ExifInterface`
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
@@ -1597,7 +1597,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
             }

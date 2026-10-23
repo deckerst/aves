@@ -134,7 +134,7 @@ object MultiPage {
         }
 
         if (!foundExif) {
-            // fallback to read EXIF via ExifInterface
+            // fallback to read EXIF via `ExifInterface`
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
@@ -143,7 +143,7 @@ object MultiPage {
                     }
                 }
             } catch (e: Exception) {
-                // ExifInterface initialization can fail with a RuntimeException
+                // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
             }

@@ -147,7 +147,7 @@ object MimeTypes {
 
     // Glide automatically applies EXIF orientation when decoding images of known formats,
     // but we need to rotate the decoded bitmap for the other formats.
-    // Maybe related to ExifInterface version used by Glide:
+    // Maybe related to `ExifInterface` version used by Glide:
     // https://github.com/bumptech/glide/blob/master/gradle/libs.versions.toml#L29
     fun needRotationAfterGlide(mimeType: String, pageId: Int?): Boolean {
         return if (pageId != null && MultiPageImage.isSupported(mimeType)) {

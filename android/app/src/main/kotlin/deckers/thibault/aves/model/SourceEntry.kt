@@ -237,7 +237,7 @@ class SourceEntry {
                 ) { date, _ -> sourceDateTakenMillis = date }
             }
         } catch (_: Exception) {
-            // ExifInterface initialization can fail with a RuntimeException
+            // `ExifInterface` initialization can fail with a RuntimeException
             // caused by an internal MediaMetadataRetriever failure
         }
     }
