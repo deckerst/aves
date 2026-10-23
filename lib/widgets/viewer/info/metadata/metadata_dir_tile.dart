@@ -10,7 +10,6 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
-import 'package:aves/widgets/viewer/info/metadata/geotiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
@@ -89,13 +88,6 @@ class const MetadataDirTileBody({
           linkHandlers = getSvgLinkHandlers(tags);
         case MetadataDirectory.coverDirectory:
           linkHandlers = getVideoCoverLinkHandlers(tags);
-        case MetadataDirectory.geoTiffDirectory:
-          tags = SplayTreeMap.from(
-            tags.map((name, value) {
-              final tag = GeoTiffDirectory.tagForName(name);
-              return MapEntry(name, GeoTiffDirectory.formatValue(tag, value));
-            }),
-          );
       }
 
       children = [

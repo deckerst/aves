@@ -65,7 +65,7 @@ object XMP {
 
     private val PMTM_IS_PANO360_PROP_NAME = XMPPropName(PMTM_NS_URI, "IsPano360")
 
-    // as of `metadata-extractor` v2.18.0, XMP is not discovered in AVIF/HEIC images,
+    // as of `metadata-extractor` v2.22.0, XMP is not discovered in AVIF images,
     // so we fall back to the native content resolver, if possible
     fun checkIsoBMFFImage(
         context: Context,
@@ -89,7 +89,7 @@ object XMP {
         }
     }
 
-    // as of `metadata-extractor` v2.18.0, processing large MP4 files may crash,
+    // as of `metadata-extractor` v2.22.0, processing large MP4 files may crash,
     // so we fall back to parsing with `mp4parser`
     fun checkMp4(
         context: Context,

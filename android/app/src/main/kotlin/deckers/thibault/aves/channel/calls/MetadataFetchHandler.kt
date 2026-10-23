@@ -21,6 +21,7 @@ import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.GpsDirectory
 import com.drew.metadata.file.FileTypeDirectory
+import com.drew.metadata.geotiff.GeoTiffDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
 import com.drew.metadata.mov.metadata.QuickTimeMetadataDirectory
@@ -29,7 +30,6 @@ import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.ExifGeoTiffTags
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -38,7 +38,6 @@ import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
 import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.GSpherical
-import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
@@ -46,7 +45,6 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDouble
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.DIR_DNG
-import deckers.thibault.aves.metadata.Metadata.DIR_EXIF_GEOTIFF
 import deckers.thibault.aves.metadata.Metadata.DIR_PNG_TEXTUAL_DATA
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
@@ -57,8 +55,6 @@ import deckers.thibault.aves.metadata.QuickTimeMetadata
 import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_LAST_MODIFICATION_TIME_FORMAT
 import deckers.thibault.aves.metadata.metadataextractor.Helper.PNG_TIME_DIR_NAME
-import deckers.thibault.aves.metadata.metadataextractor.Helper.containsGeoTiffTags
-import deckers.thibault.aves.metadata.metadataextractor.Helper.extractGeoKeys
 import deckers.thibault.aves.metadata.metadataextractor.Helper.extractPngProfile
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getDateDigitizedMillis
 import deckers.thibault.aves.metadata.metadataextractor.Helper.getDateModifiedMillis
@@ -110,7 +106,6 @@ import org.json.JSONObject
 import org.mp4parser.boxes.threegpp.ts26244.LocationInformationBox
 import org.mp4parser.tools.Path
 import java.nio.charset.StandardCharsets
-import java.text.DecimalFormat
 import java.text.ParseException
 import java.time.LocalDateTime
 import java.util.Locale
@@ -282,32 +277,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                 when {
                                     dir is ExifDirectoryBase -> {
                                         when {
-                                            dir.containsGeoTiffTags() -> {
-                                                // split GeoTIFF tags in their own directory
-                                                val geoTiffDirMap = metadataMap[DIR_EXIF_GEOTIFF] ?: HashMap()
-                                                metadataMap[DIR_EXIF_GEOTIFF] = geoTiffDirMap
-                                                val byGeoTiff = tags.groupBy { ExifTags.isGeoTiffTag(it.tagType) }
-                                                byGeoTiff[true]?.flatMap { tag ->
-                                                    when (tag.tagType) {
-                                                        ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY -> {
-                                                            val geoTiffTags = (dir as ExifIFD0Directory).extractGeoKeys(dir.getIntArray(tag.tagType))
-                                                            geoTiffTags.map { geoTag ->
-                                                                val name = GeoTiffKeys.getTagName(geoTag.key) ?: "0x${geoTag.key.toString(16)}"
-                                                                val value = geoTag.value
-                                                                val description = if (value is DoubleArray) value.joinToString(" ") { doubleFormat.format(it) } else "$value"
-                                                                Pair(name, description)
-                                                            }
-                                                        }
-                                                        // skip `Geo double/ascii params`, as their content is split and presented through various GeoTIFF keys
-                                                        ExifGeoTiffTags.TAG_GEO_DOUBLE_PARAMS,
-                                                        ExifGeoTiffTags.TAG_GEO_ASCII_PARAMS -> ArrayList()
-
-                                                        else -> listOf(exifTagMapper(dir, tag))
-                                                    }
-                                                }?.let { geoTiffDirMap.putAll(it) }
-                                                byGeoTiff[false]?.map { exifTagMapper(dir, it) }?.let { dirMap.putAll(it) }
-                                            }
-
                                             mimeType == MimeTypes.DNG || mimeType == MimeTypes.DNG_ADOBE -> {
                                                 // split DNG tags in their own directory
                                                 val dngDirMap = metadataMap[DIR_DNG] ?: HashMap()
@@ -317,7 +286,18 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                                 byDng[false]?.map { exifTagMapper(dir, it) }?.let { dirMap.putAll(it) }
                                             }
 
-                                            else -> dirMap.putAll(tags.map { exifTagMapper(dir, it) })
+                                            else -> {
+                                                dirMap.putAll(tags.filter { tag ->
+                                                    when (tag.tagType) {
+                                                        // skip GeoTIFF tags which contents are presented through various keys in the GeoTIFF directory
+                                                        ExifDirectoryBase.TAG_GEOTIFF_GEO_KEYS,
+                                                        ExifDirectoryBase.TAG_GEOTIFF_GEO_DOUBLE_PARAMS,
+                                                        ExifDirectoryBase.TAG_GEOTIFF_GEO_ASCII_PARAMS -> false
+
+                                                        else -> true
+                                                    }
+                                                }.map { exifTagMapper(dir, it) })
+                                            }
                                         }
                                     }
 
@@ -851,10 +831,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                         MimeTypes.TIFF -> {
                             // identification of GeoTIFF
-                            for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                                if (dir.containsGeoTiffTags()) {
-                                    flags = flags or MASK_IS_GEOTIFF
-                                }
+                            if (metadata.containsDirectoryOfType(GeoTiffDirectory::class.java)) {
+                                flags = flags or MASK_IS_GEOTIFF
                             }
                         }
                     }
@@ -1152,6 +1130,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         return description
     }
 
+    /*
+        returns map of GeoTIFF tag/key codes to various types:
+          - GeoTiffExifTags.modelPixelScale -> double list
+          - GeoTiffExifTags.modelTiePoints -> double list
+          - GeoTiffExifTags.modelTransformation -> double list
+          - GeoTiffKeys.projCSType -> int
+          - GeoTiffKeys.projLinearUnits -> int
+     */
     private fun getGeoTiffInfo(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.toUri()
@@ -1170,17 +1156,27 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes)
                     val fields = HashMap<Int, Any?>()
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                        if (dir.containsGeoTiffTags()) {
-                            fields.putAll(dir.tags.map { it.tagType }.filter { ExifTags.isGeoTiffTag(it) }.map {
-                                val value = when (it) {
-                                    ExifGeoTiffTags.TAG_GEO_ASCII_PARAMS -> dir.getString(it)
-                                    else -> dir.getObject(it)
-                                }
-                                Pair(it, value)
-                            })
-                            val geoKeyDirectory = dir.getIntArray(ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY)
-                            fields.putAll((dir as ExifIFD0Directory).extractGeoKeys(geoKeyDirectory))
-                        }
+                        fields.putAll(dir.tags.map { it.tagType }.filter { tagType ->
+                            when (tagType) {
+                                ExifDirectoryBase.TAG_PIXEL_SCALE,
+                                ExifDirectoryBase.TAG_MODEL_TIE_POINT,
+                                ExifDirectoryBase.TAG_MODEL_TRANSFORMATION,
+                                    -> true
+
+                                else -> false
+                            }
+                        }.map { Pair(it, dir.getObject(it)) })
+                    }
+                    for (dir in metadata.getDirectoriesOfType(GeoTiffDirectory::class.java)) {
+                        fields.putAll(dir.tags.map { it.tagType }.filter { tagType ->
+                            when (tagType) {
+                                GeoTiffDirectory.TAG_PROJECTED_CS_TYPE,
+                                GeoTiffDirectory.TAG_PROJ_LINEAR_UNITS,
+                                    -> true
+
+                                else -> false
+                            }
+                        }.map { Pair(it, dir.getObject(it)) })
                     }
                     result.success(fields)
                     return
@@ -1610,7 +1606,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag<MetadataFetchHandler>()
         const val CHANNEL = "deckers.thibault/aves/metadata_fetch"
 
-        private val doubleFormat = DecimalFormat("0.###")
         private const val SLOW_MOTION_MIN_CAPTURE_FRAME_RATE = 120
         private const val LARGE_HEAP_USAGE_THRESHOLD = 15 * (1 shl 20) // MiB
 

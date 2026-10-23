@@ -33,12 +33,11 @@ object Metadata {
     private val VIDEO_TIME_ZONE_PATTERN = Pattern.compile("(Z|[+-]\\d{4})$")
 
     // directory names, as shown when listing all metadata
-    const val DIR_GPS = "GPS" // from metadata-extractor
-    const val DIR_XMP = "XMP" // from metadata-extractor
+    const val DIR_GPS = "GPS" // from `metadata-extractor`
+    const val DIR_XMP = "XMP" // from `metadata-extractor`
     const val DIR_MEDIA = "Media" // custom
     const val DIR_COVER_ART = "Cover" // custom
     const val DIR_DNG = "DNG" // custom
-    const val DIR_EXIF_GEOTIFF = "GeoTIFF" // custom
     const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
     const val DIR_MP4_USER_DATA = "User Data" // custom
 
@@ -140,7 +139,7 @@ object Metadata {
         return Pair(epochTimeMillis, localOffsetMinutes)
     }
 
-    // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // Opening some large files yields an OOM (both with `metadata-extractor` v2.22.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
     private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MiB

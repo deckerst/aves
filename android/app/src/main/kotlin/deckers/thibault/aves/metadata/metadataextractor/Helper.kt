@@ -17,7 +17,6 @@ import com.drew.lang.SequentialByteArrayReader
 import com.drew.metadata.Directory
 import com.drew.metadata.StringValue
 import com.drew.metadata.Tag
-import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
 import com.drew.metadata.exif.ExifReader
 import com.drew.metadata.exif.ExifSubIFDDirectory
@@ -26,9 +25,7 @@ import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.xmp.XmpReader
 import deckers.thibault.aves.metadata.DngTags
-import deckers.thibault.aves.metadata.ExifGeoTiffTags
 import deckers.thibault.aves.metadata.ExifTags
-import deckers.thibault.aves.metadata.GeoTiffKeys
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
 import deckers.thibault.aves.utils.LogUtils
@@ -262,7 +259,7 @@ object Helper {
     private val timeZonePattern = Pattern.compile("(Z|[+-]\\d{1,2}:\\d{2}|[+-]\\d{4})$")
     private const val PARSED_DATE_YEAR_MAX = 10000
 
-    // adapted from `metadata-extractor` v2.21.0 `Directory.getDate()` to:
+    // adapted from `metadata-extractor` v2.22.0 `Directory.getDate()` to:
     // - parse dates written as timestamps,
     // - enforce time zone argument,
     // - fixed concurrent date format usage.
@@ -368,75 +365,6 @@ object Helper {
         if (dateMillis != null) {
             save(dateMillis, timeZoneOffsetMinutes)
         }
-    }
-
-    // geotiff
-
-    /*
-    cf http://docs.opengeospatial.org/is/19-008r4/19-008r4.html#_underlying_tiff_requirements
-    - One of ModelTiepointTag or ModelTransformationTag SHALL be included in an Image File Directory (IFD)
-    - If the ModelTransformationTag is included in an IFD, then a ModelPixelScaleTag SHALL NOT be included
-    - If the ModelPixelScaleTag is included in an IFD, then a ModelTiepointTag SHALL also be included.
-     */
-    fun ExifDirectoryBase.containsGeoTiffTags(): Boolean {
-        if (!this.containsTag(ExifGeoTiffTags.TAG_GEO_KEY_DIRECTORY)) return false
-
-        val modelTiePoints = this.containsTag(ExifGeoTiffTags.TAG_MODEL_TIE_POINT)
-        val modelTransformation = this.containsTag(ExifGeoTiffTags.TAG_MODEL_TRANSFORMATION)
-        if (!modelTiePoints && !modelTransformation) return false
-
-        val modelPixelScale = this.containsTag(ExifGeoTiffTags.TAG_MODEL_PIXEL_SCALE)
-        return !(modelTransformation && modelPixelScale)
-    }
-
-    // TODO TLAD use `GeoTiffDirectory` from the Java version of `metadata-extractor` when available
-    // adapted from https://github.com/drewnoakes/metadata-extractor-dotnet/blob/master/MetadataExtractor/Formats/Exif/ExifTiffHandler.cs
-    fun ExifIFD0Directory.extractGeoKeys(geoKeys: IntArray): HashMap<Int, Any?> {
-        val fields = HashMap<Int, Any?>()
-        if (geoKeys.size < 4) return fields
-
-        var i = 0
-        val directoryVersion = geoKeys[i++]
-        val revision = geoKeys[i++]
-        val minorRevision = geoKeys[i++]
-        val numberOfKeys = geoKeys[i++]
-
-        fields[GeoTiffKeys.GEOTIFF_VERSION] = "$directoryVersion.$revision.$minorRevision"
-
-        (0..<numberOfKeys).forEach { _ ->
-            val keyId = geoKeys[i++]
-            val tiffTagLocation = geoKeys[i++]
-            val valueCount = geoKeys[i++]
-            val valueOffset = geoKeys[i++]
-
-            try {
-                if (tiffTagLocation == 0) {
-                    fields[keyId] = valueOffset
-                } else {
-                    val sourceValue = getObject(tiffTagLocation)
-                    if (sourceValue is StringValue) {
-                        if (valueOffset + valueCount <= sourceValue.bytes.size) {
-                            fields[keyId] = String(sourceValue.bytes, valueOffset, valueCount).trimEnd('|')
-                        } else {
-                            Log.w(LOG_TAG, "GeoTIFF key $keyId with offset $valueOffset and count $valueCount extends beyond length of source value (${sourceValue.bytes.size})")
-                        }
-                    } else if (sourceValue.javaClass.isArray) {
-                        val sourceArray = sourceValue as DoubleArray
-                        if (valueOffset + valueCount <= sourceArray.size) {
-                            fields[keyId] = sourceArray.copyOfRange(valueOffset, valueOffset + valueCount)
-                        } else {
-                            Log.w(LOG_TAG, "GeoTIFF key $keyId with offset $valueOffset and count $valueCount extends beyond length of source value (${sourceArray.size})")
-                        }
-                    } else {
-                        Log.w(LOG_TAG, "GeoTIFF key $keyId references tag $tiffTagLocation which has unsupported type of ${sourceValue?.javaClass}")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "failed to extract GeoTiff fields from keys", e)
-            }
-        }
-
-        return fields
     }
 
     // PNG
