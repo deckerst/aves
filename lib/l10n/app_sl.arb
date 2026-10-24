@@ -190,5 +190,411 @@
     "filterTypeSphericalVideoLabel": "360° video",
     "filterTypeGeotiffLabel": "GeoTIFF",
     "filterMimeImageLabel": "Slika",
-    "filterMimeVideoLabel": "Video"
+    "filterMimeVideoLabel": "Video",
+    "accessibilityAnimationsRemove": "Prepreči zaslonske efekte",
+    "accessibilityAnimationsKeep": "Ohrani zaslonske efekte",
+    "albumTierNew": "Novi",
+    "albumTierPinned": "Pripeti",
+    "albumTierGroups": "Skupine",
+    "albumTierSpecial": "Skupni",
+    "albumTierApps": "Aplikacije",
+    "albumTierVaults": "Sef",
+    "albumTierDynamic": "Dinamični",
+    "albumTierRegular": "Drugi",
+    "calendarGregorian": "Gregorijanski",
+    "calendarHijriTabular": "Islamski (tabelarni)",
+    "calendarHijriUmalqura": "Islamski (Umm al-Qura)",
+    "calendarPersian": "Perzijski",
+    "coordinateFormatDms": "DMS (stopinje, minute, sekunde)",
+    "coordinateFormatDdm": "DDM (stopnje, minute, decimalne minute)",
+    "coordinateFormatDecimal": "DD (decimalne stopinje)",
+    "coordinateDms": "{coordinate} {direction}",
+    "@coordinateDms": {
+        "placeholders": {
+            "coordinate": {
+                "type": "String",
+                "example": "38° 41′ 47.72″"
+            },
+            "direction": {
+                "type": "String",
+                "example": "S"
+            }
+        }
+    },
+    "coordinateDmsNorth": "N",
+    "coordinateDmsSouth": "S",
+    "coordinateDmsEast": "E",
+    "coordinateDmsWest": "W",
+    "displayRefreshRatePreferHighest": "Najvišja frekvenca",
+    "displayRefreshRatePreferLowest": "Najnižja frekvenca",
+    "keepScreenOnNever": "Nikoli",
+    "keepScreenOnVideoPlayback": "Med predvajanjem videa",
+    "keepScreenOnViewerOnly": "Samo med ogledom slik",
+    "keepScreenOnAlways": "Vedno",
+    "lengthUnitPixel": "px",
+    "lengthUnitPercent": "%",
+    "mapStyleGoogleNormal": "Google Maps",
+    "mapStyleGoogleHybrid": "Google Maps (hibrid)",
+    "mapStyleGoogleTerrain": "Google Maps (teren)",
+    "mapStyleOsmLiberty": "OSM Liberty",
+    "mapStyleOpenTopoMap": "OpenTopoMap",
+    "mapStyleOsmHot": "Humanitarian OSM",
+    "mapStyleStamenWatercolor": "Stamen Watercolor",
+    "maxBrightnessNever": "Nikoli",
+    "maxBrightnessAlways": "Vedno",
+    "nameConflictStrategyRename": "Preimenuj",
+    "nameConflictStrategyReplace": "Prepiši",
+    "nameConflictStrategySkip": "Preskoči",
+    "overlayHistogramNone": "Brez",
+    "overlayHistogramRGB": "RGB",
+    "overlayHistogramLuminance": "Svetlost",
+    "subtitlePositionTop": "Zgoraj",
+    "subtitlePositionBottom": "Spodaj",
+    "themeBrightnessLight": "Svetla",
+    "themeBrightnessDark": "Temna",
+    "themeBrightnessBlack": "Črna",
+    "unitSystemMetric": "Metrične",
+    "unitSystemImperial": "Imperialne",
+    "vaultLockTypePattern": "Vzorec",
+    "vaultLockTypePin": "PIN",
+    "vaultLockTypePassword": "Geslo",
+    "settingsVideoEnablePip": "Slika v sliki",
+    "videoControlsPlayOutside": "Odpri z drugim predvajalnikom",
+    "videoLoopModeNever": "Nikoli",
+    "videoLoopModeShortOnly": "Samo kratki videoposnetki",
+    "videoLoopModeAlways": "Vedno",
+    "videoPlaybackSkip": "Preskoči",
+    "videoPlaybackMuted": "Predvajaj utišano",
+    "videoPlaybackWithSound": "Predvajaj z zvokom",
+    "videoResumptionModeNever": "Nikoli",
+    "videoResumptionModeAlways": "Vedno",
+    "videoThumbnailMethodEmbeddedImage": "Vdelana slika",
+    "videoThumbnailMethodPreviewFrame": "Sličica predogleda",
+    "videoThumbnailMethodFirstFrame": "Prva sličica",
+    "viewerTransitionSlide": "Drsenje",
+    "viewerTransitionParallax": "Paralaksa (dvojno drsenje)",
+    "viewerTransitionFade": "Preliv",
+    "viewerTransitionZoomIn": "Približanje",
+    "viewerTransitionNone": "Brez",
+    "wallpaperTargetHome": "Domači zaslon",
+    "wallpaperTargetLock": "Zaklenjeni zaslon",
+    "wallpaperTargetHomeLock": "Domači in zaklenjeni zaslon",
+    "widgetDisplayedItemRandom": "Naključno",
+    "widgetDisplayedItemMostRecent": "Najnovejše",
+    "widgetOpenPageHome": "Odpri vstopni zaslon",
+    "widgetOpenPageCollection": "Odpri zbirko",
+    "widgetOpenPageViewer": "Odpri pregledovalnik",
+    "widgetTapUpdateWidget": "Uredi gradnik",
+    "storageVolumeDescriptionFallbackPrimary": "Interna shramba",
+    "storageVolumeDescriptionFallbackNonPrimary": "SD kartica",
+    "rootDirectoryDescription": "Korenski imenik",
+    "otherDirectoryDescription": "imenik „{name}“",
+    "@otherDirectoryDescription": {
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Pictures",
+                "description": "the name of a specific directory"
+            }
+        }
+    },
+    "storageAccessDialogMessage": "Na naslednjem zaslonu izberi imenik {directory} na „{volume}“ in tako tej aplikaciji dovoli dostop do tega imenika.",
+    "@storageAccessDialogMessage": {
+        "placeholders": {
+            "directory": {
+                "type": "String",
+                "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+            },
+            "volume": {
+                "type": "String",
+                "example": "SD card",
+                "description": "the name of a storage volume"
+            }
+        }
+    },
+    "restrictedAccessDialogMessage": "Ta aplikacija nima dovoljenja spreminjati datotek v imeniku {directory} na „{volume}“.\n\nUporabi sistemski brskalnik datotek ali aplikacijo za slike in premakni predmete v drug imenik.",
+    "@restrictedAccessDialogMessage": {
+        "placeholders": {
+            "directory": {
+                "type": "String",
+                "description": "the name of a directory, using the output of `rootDirectoryDescription` or `otherDirectoryDescription`"
+            },
+            "volume": {
+                "type": "String",
+                "example": "SD card",
+                "description": "the name of a storage volume"
+            }
+        }
+    },
+    "notEnoughSpaceDialogMessage": "Ta operacija potrebuje {neededSize} prostega prostora na „{volume}“, a na voljo je le {freeSize}.",
+    "@notEnoughSpaceDialogMessage": {
+        "placeholders": {
+            "neededSize": {
+                "type": "String",
+                "example": "314 MB"
+            },
+            "freeSize": {
+                "type": "String",
+                "example": "123 MB"
+            },
+            "volume": {
+                "type": "String",
+                "example": "SD card",
+                "description": "the name of a storage volume"
+            }
+        }
+    },
+    "missingSystemFilePickerDialogMessage": "Sistemski izbirnik datotek ni na voljo. Omogoči ga in poskusi ponovno.",
+    "unsupportedTypeDialogMessage": "{count, plural, =1{Ta operacija ni podprta za predmete naslednjega tipa: {types}.} other{Ta operacija ni podprta za predmete naslednjih tipov: {types}.}}",
+    "@unsupportedTypeDialogMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "types": {
+                "type": "String",
+                "example": "GIF, TIFF, MP4",
+                "description": "a list of unsupported types"
+            }
+        }
+    },
+    "nameConflictDialogSingleSourceMessage": "Nekatere datoteke v ciljnem imeniku imajo enak naziv.",
+    "nameConflictDialogMultipleSourceMessage": "Nekatere datoteke imajo enak naziv.",
+    "addShortcutDialogLabel": "Naziv bližnjice",
+    "addShortcutButtonLabel": "Dodaj",
+    "noMatchingAppDialogMessage": "Ni aplikacij, ki bi podpirale to operacijo.",
+    "binEntriesConfirmationDialogMessage": "{count, plural, =1{Prestavim ta predmet v koš?} two{Prestavim ta {count} predmeta v koš?} few{Prestavim te {count} predmete v koš?} other{Prestavim teh {count} predmetov v koš?}}",
+    "@binEntriesConfirmationDialogMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Izbrišem ta predmet?} two{Izbrišem ta {count} predmeta?} few{Izbrišem te {count} predmete?} other{Ibrišem teh {count} predmetov?}}",
+    "@deleteEntriesConfirmationDialogMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "videoResumeDialogMessage": "Nadaljujem predvajanje na {time}?",
+    "@videoResumeDialogMessage": {
+        "placeholders": {
+            "time": {
+                "type": "String",
+                "example": "13:37"
+            }
+        }
+    },
+    "videoStartOverButtonLabel": "OD ZAČETKA",
+    "videoResumeButtonLabel": "NADALJUJ",
+    "setCoverDialogLatest": "Zadnji predmet",
+    "setCoverDialogAuto": "Samodejno",
+    "setCoverDialogCustom": "Po meri",
+    "hideFilterConfirmationDialogMessage": "Predmeti, ki ustrezajo filtru, bodo skriti iz zbirke. Ponovno jih lahko prikažeš v nastavitvah pod „Zasebnost“.\n\nJih želiš skriti?",
+    "newAlbumDialogTitle": "Nov album",
+    "newAlbumDialogNameLabel": "Naziv albuma",
+    "newAlbumDialogAlbumAlreadyExistsHelper": "Album že obstaja",
+    "newAlbumDialogNameLabelAlreadyExistsHelper": "Imenik že obstaja",
+    "newAlbumDialogStorageLabel": "Shramba:",
+    "newDynamicAlbumDialogTitle": "Nov dinamični album",
+    "dynamicAlbumAlreadyExists": "Dinamični album že obstaja",
+    "newGroupDialogTitle": "Nova skupina",
+    "newGroupDialogNameLabel": "Naziv skupine",
+    "groupAlreadyExists": "Skupina že obstaja",
+    "groupEmpty": "Ni skupin",
+    "ungrouped": "Brez skupine",
+    "groupPickerTitle": "Izberi skupino",
+    "groupPickerUseThisGroupButton": "Uporabi to skupino",
+    "newVaultWarningDialogMessage": "Predmeti v sefih so dostopni samo v tej aplikaciji in nobeni drugi.\n\nČe izbrišeš to aplikacijo ali počistiš aplikacijske podatke, se izbrišejo tudi vsi predmeti v sefih.",
+    "newVaultDialogTitle": "Nov sef",
+    "configureVaultDialogTitle": "Nastavitve sefa",
+    "vaultDialogLockModeWhenScreenOff": "Zakleni sef, ko se ugasne ekran",
+    "vaultDialogLockTypeLabel": "Način zaklepanja",
+    "patternDialogEnter": "Izberi vzorec",
+    "patternDialogConfirm": "Potrdi vzorec",
+    "pinDialogEnter": "Vnesi PIN",
+    "pinDialogConfirm": "Potrdi PIN",
+    "passwordDialogEnter": "Vnesi geslo",
+    "passwordDialogConfirm": "Potrdi geslo",
+    "authenticateToConfigureVault": "Zahtevaj prijavo za nastavitve sefa",
+    "authenticateToUnlockVault": "Zahtevaj prijavo za odklepanje sefa",
+    "vaultBinUsageDialogMessage": "Nekateri sefi uporabljajo koš.",
+    "renameAlbumDialogLabel": "Nov naziv",
+    "renameAlbumDialogLabelAlreadyExistsHelper": "Imenik že obstaja",
+    "renameTagDialogLabelAlreadyExistsHelper": "Oznaka že obstaja",
+    "renameEntrySetPageTitle": "Preimenuj",
+    "renameEntrySetPagePatternFieldLabel": "Vzorec naziva",
+    "renameEntrySetPageInsertTooltip": "Vstavi polje",
+    "renameEntrySetPagePreviewSectionTitle": "Predogled",
+    "renameProcessorCounter": "Števec",
+    "renameProcessorHash": "Zgoščena vrednost",
+    "renameProcessorName": "Naziv",
+    "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Izbrišem ta album in predmet v njem?} two{Izbrišem ta album in {count} predmeta v njem?} few {Izbrišem ta album in {count} predmete v njem?} other{Izbrišem ta album in {count}predmetov v njem?}}",
+    "@deleteSingleAlbumConfirmationDialogMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Izbrišem izbrane albume in predmet v njih?} two{Izbrišem izbrane albume in {count} predmeta v njih?} few {Izbrišem izbrane albume in {count} predmete v njih?} other{Izbrišem izbrane albume in {count}predmetov v njih?}}",
+    "@deleteMultiAlbumConfirmationDialogMessage": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "exportEntryDialogFormat": "Format:",
+    "exportEntryDialogWidth": "Širina",
+    "exportEntryDialogHeight": "Višina",
+    "exportEntryDialogQuality": "Kvaliteta",
+    "exportEntryDialogWriteMetadata": "Zapiši metapodatke",
+    "renameEntryDialogLabel": "Nov naziv",
+    "editEntryDialogCopyFromItem": "Kopiraj iz drugega predmeta",
+    "editEntryDialogTargetFieldsHeader": "Spremeni polja",
+    "editEntryDateDialogTitle": "Datum in čas",
+    "editEntryDateDialogSetCustom": "Izberi datum in čas",
+    "editEntryDateDialogCopyField": "Kopiraj iz drugega datumskega polja",
+    "editEntryDateDialogExtractFromTitle": "Izlušči iz naziva datoteke",
+    "editEntryDateDialogShift": "Zamakni čas",
+    "editEntryDateDialogSourceFileModifiedDate": "Datum spremembe datoteke",
+    "durationDialogHours": "Ure",
+    "durationDialogMinutes": "Minute",
+    "durationDialogSeconds": "Sekunde",
+    "editEntryLocationDialogTitle": "Lokacija",
+    "editEntryLocationDialogSetCustom": "Vnesi koordinate",
+    "editEntryLocationDialogChooseOnMap": "Izberi na zemljevidu",
+    "editEntryLocationDialogImportGpx": "Uvozi GPX",
+    "editEntryLocationDialogLatitude": "Zemljepisna širina",
+    "editEntryLocationDialogLongitude": "Zemljepisna dolžina",
+    "editEntryLocationDialogTimeShift": "Časovni zamik",
+    "locationPickerUseThisLocationButton": "Uporabi to lokacijo",
+    "editEntryRatingDialogTitle": "Ocena",
+    "removeEntryMetadataDialogTitle": "Odstrani metapodatke",
+    "removeEntryMetadataDialogAll": "Vse",
+    "removeEntryMetadataDialogMore": "Več",
+    "removeEntryMetadataMotionPhotoXmpWarningDialogMessage": "Za predvajanje videa znotraj slike z gibanjem je potreben XMP.\n\nGa res želiš odstraniti?",
+    "videoSpeedDialogLabel": "Hitrost predvajanja",
+    "videoStreamSelectionDialogVideo": "Video",
+    "videoStreamSelectionDialogAudio": "Zvok",
+    "videoStreamSelectionDialogText": "Podnapisi",
+    "videoStreamSelectionDialogOff": "Brez",
+    "videoStreamSelectionDialogTrack": "Kanal",
+    "videoStreamSelectionDialogNoSelection": "Ni drugih kanalov.",
+    "genericSuccessFeedback": "Končano!",
+    "genericFailureFeedback": "Ni uspelo",
+    "tooManyItemsErrorDialogMessage": "Poskusi ponovno z manj izbranimi predmeti.",
+    "menuActionConfigureView": "Spremeni postavitev",
+    "menuActionSelect": "Izberi",
+    "menuActionSelectAll": "Izberi vse",
+    "menuActionSelectNone": "Počisti izbiro",
+    "menuActionMap": "Zemljevid",
+    "menuActionSlideshow": "Predvajanje",
+    "menuActionStats": "Statistika",
+    "viewDialogSortSectionTitle": "Sortiraj",
+    "viewDialogGroupSectionTitle": "Razdelki",
+    "viewDialogLayoutSectionTitle": "Postavitev",
+    "viewDialogReverseSortOrder": "Obrni vrstni red",
+    "tileLayoutMosaic": "Mozaik",
+    "tileLayoutGrid": "Mreža",
+    "tileLayoutList": "Seznam",
+    "tileLayoutCalendar": "Koledar",
+    "coverDialogTabCover": "Naslovna slika",
+    "coverDialogTabApp": "Aplikacija",
+    "coverDialogTabColor": "Barva",
+    "appPickDialogTitle": "Izberi aplikacijo",
+    "appPickDialogNone": "Nič",
+    "aboutPageTitle": "O aplikaciji",
+    "aboutLinkLicense": "Licenca",
+    "aboutLinkPolicy": "Politika zasebnosti",
+    "aboutBugSectionTitle": "Poročilo o napaki",
+    "aboutBugSaveLogInstruction": "Shrani dnevnik v datoteko",
+    "aboutBugReportInstruction": "Pošlji poročilo z dnevniki in sistemskimi informacijami na GitHub",
+    "aboutBugReportButton": "Poročilo",
+    "aboutDataUsageSectionTitle": "Raba podatkov",
+    "aboutDataUsageData": "Podatki",
+    "aboutDataUsageCache": "Medpomnilnik",
+    "aboutDataUsageDatabase": "Baza podatkov",
+    "aboutDataUsageMisc": "Ostalo",
+    "aboutDataUsageInternal": "Interno",
+    "aboutDataUsageExternal": "Eksterno",
+    "aboutDataUsageClearCache": "Počisti medpomnilnik",
+    "aboutCreditsSectionTitle": "Avtorji",
+    "aboutCreditsWorldAtlas1": "Aplikacija uporablja TopoJSON iz",
+    "aboutCreditsWorldAtlas2": "z licenco ISC.",
+    "aboutTranslatorsSectionTitle": "Prevajalci",
+    "aboutLicensesSectionTitle": "Odprtokodne licence",
+    "aboutLicensesBanner": "Aplikacija uporablja naslednje odprtokodne pakete in knjižnice.",
+    "aboutLicensesAndroidLibrariesSectionTitle": "Androidove knjižnice",
+    "aboutLicensesFlutterPluginsSectionTitle": "Flutter vtičniki",
+    "aboutLicensesFlutterPackagesSectionTitle": "Flutter paketi",
+    "aboutLicensesDartPackagesSectionTitle": "Dart paketi",
+    "aboutLicensesShowAllButtonLabel": "Prikaži vse licence",
+    "policyPageTitle": "Politika zasebnosti",
+    "collectionPageTitle": "Zbirka",
+    "collectionPickPageTitle": "Izberi",
+    "collectionSelectPageTitle": "Izberi predmete",
+    "collectionActionShowLayoutBar": "Prikaži meni za postavitev",
+    "collectionActionHideLayoutBar": "Skrij meni za postavitev",
+    "collectionActionShowTitleSearch": "Prikaži filter za naziv",
+    "collectionActionHideTitleSearch": "Skrij filter za naziv",
+    "collectionActionAddDynamicAlbum": "Dodaj dinamični album",
+    "collectionActionAddShortcut": "Dodaj bližnjico",
+    "collectionActionSetHome": "Nastavi kot domači zaslon",
+    "collectionActionEmptyBin": "Izprazni koš",
+    "collectionActionCopy": "Kopiraj v album",
+    "collectionActionMove": "Premakni v album",
+    "collectionActionRescan": "Osveži",
+    "collectionActionEdit": "Uredi",
+    "collectionActionExportGpx": "Izvozi GPX",
+    "collectionSearchTitlesHintText": "Išči po nazivih",
+    "collectionGroupAlbum": "Po albumih",
+    "collectionGroupMonth": "Po mesecih",
+    "collectionGroupDay": "Po dnevih",
+    "sectionNone": "Brez razdelkov",
+    "sectionUnknown": "Neznano",
+    "dateToday": "Danes",
+    "dateYesterday": "Včeraj",
+    "dateThisMonth": "Ta mesec",
+    "collectionEmptyFavourites": "Ni priljubljenih",
+    "collectionEmptyVideos": "Ni videoposnetkov",
+    "collectionEmptyImages": "Ni slik",
+    "collectionEmptyGrantAccessButtonLabel": "Dovoli dostop",
+    "collectionSelectSectionTooltip": "Izberi razdelek",
+    "drawerAboutButton": "O aplikaciji",
+    "drawerSettingsButton": "Nastavitve",
+    "drawerCollectionAll": "Zbirka vseh",
+    "drawerCollectionFavourites": "Priljubljeni",
+    "drawerCollectionImages": "Slike",
+    "drawerCollectionVideos": "Videoposnetki",
+    "drawerCollectionAnimated": "Animacije",
+    "drawerCollectionMotionPhotos": "Slike z gibanjem",
+    "drawerCollectionPanoramas": "Panorame",
+    "drawerCollectionRaws": "RAW format",
+    "drawerCollectionSlowMotionVideos": "Počasni posnetki",
+    "drawerCollectionSphericalVideos": "360° videoposnetki",
+    "drawerAlbumPage": "Albumi",
+    "drawerCountryPage": "Države",
+    "drawerPlacePage": "Kraji",
+    "drawerTagPage": "Oznake",
+    "sortByDate": "Po datumu",
+    "sortByName": "Po nazivu",
+    "sortByItemCount": "Po številu predmetov",
+    "sortBySize": "Po velikosti",
+    "sortByAlbumFileName": "Po albumu in nazivu predmeta",
+    "sortByRating": "Po oceni",
+    "sortByDuration": "Po trajanju",
+    "sortByPath": "Po poti datoteke",
+    "sortOrderNewestFirst": "Najnovejši na vrhu",
+    "sortOrderOldestFirst": "Najstarejši na vrhu",
+    "sortOrderAtoZ": "A do Ž",
+    "sortOrderZtoA": "Ž do A"
 }

@@ -748,5 +748,6 @@
     "videoThumbnailMethodPreviewFrame": "Vorschaurahmen",
     "videoThumbnailMethodFirstFrame": "Erster Frame",
     "renameTagDialogLabelAlreadyExistsHelper": "Tag existiert bereits",
-    "settingsVideoThumbnailMethods": "Bevorzugte Miniaturansicht"
+    "settingsVideoThumbnailMethods": "Bevorzugte Miniaturansicht",
+    "chipActionCopyCenterCoordinates": "Zentrale Koordinaten kopieren"
 }
