@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';

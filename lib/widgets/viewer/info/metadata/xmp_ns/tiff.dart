@@ -1,6 +1,7 @@
 import 'package:aves/ref/metadata/exif.dart';
 import 'package:aves/ref/metadata/xmp.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
 
 // cf https://github.com/adobe/xmp-docs/blob/master/XMPNamespaces/tiff.md
 class XmpTiffNamespace extends XmpNamespace {

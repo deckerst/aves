@@ -1,5 +1,6 @@
 import 'package:aves/ref/metadata/xmp.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
 
 class XmpCrsNamespace extends XmpNamespace {
   new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.crs);

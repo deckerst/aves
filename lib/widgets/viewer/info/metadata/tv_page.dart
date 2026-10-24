@@ -4,23 +4,18 @@ import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/behaviour/intents.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/navigation/tv_rail.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 
-class TvMetadataPage extends StatefulWidget {
+class const TvMetadataPage({
+  super.key,
+  required final AvesEntry entry,
+  required final Map<String, MetadataDirectory> metadata,
+}) extends StatefulWidget {
   static const routeName = '/info/metadata';
-
-  final AvesEntry entry;
-  final Map<String, MetadataDirectory> metadata;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.metadata,
-  });
 
   @override
   State<TvMetadataPage> createState() => _TvMetadataPageState();

@@ -2,19 +2,15 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:aves/utils/xmp_utils.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class XmpDirTileBody extends StatefulWidget {
-  final SplayTreeMap<String, String> allTags, tags;
-
-  const new({
-    super.key,
-    required this.allTags,
-    required this.tags,
-  });
-
+class const XmpDirTileBody({
+  super.key,
+  required final SplayTreeMap<String, String> allTags,
+  required final SplayTreeMap<String, String> tags,
+}) extends StatefulWidget {
   @override
   State<XmpDirTileBody> createState() => _XmpDirTileBodyState();
 }

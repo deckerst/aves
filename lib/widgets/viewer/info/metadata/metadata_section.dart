@@ -7,7 +7,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/tv_page.dart';
 import 'package:flutter/scheduler.dart';
@@ -15,16 +15,11 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MetadataSectionSliver extends StatefulWidget {
-  final AvesEntry entry;
-  final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.metadataNotifier,
-  });
-
+class const MetadataSectionSliver({
+  super.key,
+  required final AvesEntry entry,
+  required final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();
 }

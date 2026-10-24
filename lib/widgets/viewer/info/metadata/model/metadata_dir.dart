@@ -2,30 +2,24 @@ import 'dart:collection';
 
 import 'package:material_ui/material_ui.dart';
 
-class MetadataDirectory {
-  final String name;
-  final Color? color;
-  final String? parent;
-  final int? index;
-  final SplayTreeMap<String, String> allTags;
-  final SplayTreeMap<String, String> tags;
+class const MetadataDirectory(
+  final String name,
+  final SplayTreeMap<String, String> allTags, {
+  SplayTreeMap<String, String>? tags,
+  final Color? color,
+  final String? parent,
+  final int? index,
+}) {
+  final SplayTreeMap<String, String> tags = tags ?? allTags;
 
   // special directory names
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
   static const coverDirectory = 'Cover'; // custom
+  static const c2paDirectory = 'C2PA'; // custom
   static const geoTiffDirectory = 'GeoTIFF'; // custom
   static const mediaDirectory = 'Media'; // custom
   static const mpfImageDirectoryPrefix = 'MPF Image #'; // custom
-
-  const new(
-    this.name,
-    this.allTags, {
-    SplayTreeMap<String, String>? tags,
-    this.color,
-    this.parent,
-    this.index,
-  }) : tags = tags ?? allTags;
 
   MetadataDirectory filterKeys(bool Function(String key) testKey) {
     final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));

@@ -3,7 +3,8 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
 
 class XmpBasicNamespace extends XmpNamespace {
   new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.xmp);

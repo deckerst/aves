@@ -7,25 +7,23 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
 import 'package:material_ui/material_ui.dart';
 
 typedef XmpExtractedCard = (Map<String, XmpProp>, List<XmpCardData>?);
 
-class XmpCard extends StatefulWidget {
-  final String title;
+class XmpCard({
+  super.key,
+  required final String title,
+  required Map<int?, XmpExtractedCard> structByIndex,
+  required final String Function(XmpProp prop) formatValue,
+  final Map<String, InfoValueSpanBuilder> Function(int? index)? spanBuilders,
+}) extends StatefulWidget {
   late final XmpExtractedCard? directStruct;
   late final List<XmpExtractedCard>? indexedStructs;
-  final String Function(XmpProp prop) formatValue;
-  final Map<String, InfoValueSpanBuilder> Function(int? index)? spanBuilders;
 
-  new({
-    super.key,
-    required this.title,
-    required Map<int?, XmpExtractedCard> structByIndex,
-    required this.formatValue,
-    this.spanBuilders,
-  }) {
+  this {
     directStruct = structByIndex[null];
 
     final length = structByIndex.keys.nonNulls.fold(0, max);

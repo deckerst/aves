@@ -11,7 +11,7 @@ import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';

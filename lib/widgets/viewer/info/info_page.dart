@@ -17,7 +17,7 @@ import 'package:aves/widgets/viewer/info/color_section.dart';
 import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';

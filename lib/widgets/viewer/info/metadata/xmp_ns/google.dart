@@ -2,7 +2,9 @@ import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
 import 'package:collection/collection.dart';
 
 abstract class XmpGoogleNamespace({

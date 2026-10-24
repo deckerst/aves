@@ -6,9 +6,9 @@ extension ExtraWallpaperTargetView on WallpaperTarget {
   String getName(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      WallpaperTarget.home => l10n.wallpaperTargetHome,
-      WallpaperTarget.lock => l10n.wallpaperTargetLock,
-      WallpaperTarget.homeLock => l10n.wallpaperTargetHomeLock,
+      .home => l10n.wallpaperTargetHome,
+      .lock => l10n.wallpaperTargetLock,
+      .homeLock => l10n.wallpaperTargetHomeLock,
     };
   }
 }

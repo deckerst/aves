@@ -1,12 +1,12 @@
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/utils/string_utils.dart';
-import 'package:aves/utils/xmp_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_card.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/crs.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
@@ -17,7 +17,6 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -150,97 +149,4 @@ class XmpNamespace extends Equatable {
   Map<String, InfoValueSpanBuilder> linkifyValues(List<XmpProp> props) => {};
 
   static String prefixForUri(Map<String, String> schemaRegistryPrefixes, String nsUri) => schemaRegistryPrefixes.entries.firstWhereOrNull((kv) => kv.value == nsUri)?.key ?? '';
-}
-
-class XmpProp(
-  final String path,
-  final String value,
-) implements Comparable<XmpProp> {
-  final String displayKey = formatKey(path);
-
-  static String formatKey(String propPath) {
-    return propPath.splitMapJoin(
-      XMP.structFieldSeparator,
-      onMatch: (match) => ' ${match.group(0)} ',
-      onNonMatch: (s) {
-        // strip namespace
-        final key = s.split(XMP.propNamespaceSeparator).last;
-        // format
-        return key.replaceAll('_', ' ').toSentenceCase();
-      },
-    );
-  }
-
-  @override
-  int compareTo(XmpProp other) => compareAsciiUpperCaseNatural(displayKey, other.displayKey);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
-}
-
-class XmpCardData(
-  final RegExp pattern, {
-  String? title,
-  final Map<String, InfoValueSpanBuilder> Function(int? index, Map<String, XmpProp> data)? spanBuilders,
-  final List<XmpCardData>? cards,
-}) {
-  final String title = title ?? XmpProp.formatKey(titlePattern.firstMatch(pattern.pattern)!.group(1)!);
-  final bool indexed = pattern.pattern.contains(r'\[(\d+)\]');
-  final Map<int?, XmpExtractedCard> data = {};
-
-  bool get isEmpty => data.isEmpty && (cards?.every((card) => card.isEmpty) ?? true);
-
-  static final titlePattern = RegExp(r'(.*?)[\\/]');
-
-  XmpCardData cloneEmpty() {
-    return XmpCardData(
-      pattern,
-      title: title,
-      spanBuilders: spanBuilders,
-      cards: cards?.map((v) => v.cloneEmpty()).toList(),
-    );
-  }
-
-  bool extract(XmpProp prop) => indexed ? _extractIndexedStruct(prop) : _extractDirectStruct(prop);
-
-  bool _extractDirectStruct(XmpProp prop) {
-    final matches = pattern.allMatches(prop.path);
-    if (matches.isEmpty) return false;
-
-    final match = matches.first;
-    final field = match.group(1)!;
-
-    final fields = data.putIfAbsent(null, () => (<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
-    final _cards = fields.$2;
-    if (_cards != null) {
-      final fieldProp = XmpProp(field, prop.value);
-      if (_cards.any((v) => v.extract(fieldProp))) {
-        return true;
-      }
-    }
-
-    fields.$1[field] = prop;
-    return true;
-  }
-
-  bool _extractIndexedStruct(XmpProp prop) {
-    final matches = pattern.allMatches(prop.path);
-    if (matches.isEmpty) return false;
-
-    final match = matches.first;
-    final index = int.parse(match.group(1)!);
-    final field = match.group(2)!;
-
-    final fields = data.putIfAbsent(index, () => (<String, XmpProp>{}, cards?.map((v) => v.cloneEmpty()).toList()));
-    final _cards = fields.$2;
-    if (_cards != null) {
-      final fieldProp = XmpProp(field, prop.value);
-      if (_cards.any((v) => v.extract(fieldProp))) {
-        return true;
-      }
-    }
-
-    fields.$1[field] = prop;
-    return true;
-  }
 }
