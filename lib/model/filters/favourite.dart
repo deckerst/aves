@@ -8,7 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class FavouriteFilter extends CollectionFilter {
+class const FavouriteFilter._private({
+  super.reversed = false,
+}) extends CollectionFilter {
   static const type = 'favourite';
 
   static bool _test(AvesEntry entry) => entry.isFavourite;
@@ -18,8 +20,6 @@ class FavouriteFilter extends CollectionFilter {
 
   @override
   List<Object?> get props => [reversed];
-
-  const new _private({super.reversed = false});
 
   factory fromMap(Map<String, Object?> json) {
     final reversed = json['reversed'] as bool? ?? false;

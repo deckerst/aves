@@ -9,6 +9,7 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
@@ -241,6 +242,8 @@ class AvesEntry with AvesEntryBase {
   String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
   bool get isCatalogued => _catalogMetadata != null;
+
+  C2paValidity get credentialsValidity => _catalogMetadata?.credentialsValidity ?? .unknown;
 
   DateTime? _bestDate;
 

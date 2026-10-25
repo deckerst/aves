@@ -118,7 +118,11 @@ class VideoMetadataFormatter {
     if (dateMillis != null) {
       final date = DateTime.fromMillisecondsSinceEpoch(dateMillis, isUtc: false);
       if (!GregorianCalendarOps.instance.isSameYearMonthDay(date, epoch)) {
-        catalogMetadata = catalogMetadata.copyWith(dateMillis: dateMillis);
+        catalogMetadata = catalogMetadata.copyWith(
+          dateMillis: dateMillis,
+          // TODO TLAD [timezone] get time zone matching the date
+          timeZoneOffsetMinutes: catalogMetadata.timeZoneOffsetMinutes,
+        );
       }
     }
 

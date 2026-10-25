@@ -133,6 +133,7 @@ class ViewerDebugPage extends StatelessWidget {
             'canRotate': '${entry.canRotate}',
             'canFlip': '${entry.canFlip}',
             'tags': '${entry.tags}',
+            'credentialsValidity': '${entry.credentialsValidity}',
           },
         ),
         const Divider(),

@@ -5,7 +5,7 @@ import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
-import 'package:aves/theme/icons.dart';
+import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
@@ -58,15 +58,7 @@ class const MetadataDirTile({
       case MetadataDirectory.c2paDirectory:
         final validityString = dir.tags['validity'];
         final validity = C2paValidity.values.safeByName(validityString, ignoreCase: true) ?? .unknown;
-        switch (validity) {
-          case .unknown:
-            return null;
-          case .invalid:
-            return const Icon(AIcons.credentialsInvalid);
-          case .valid:
-          case .trusted:
-            return const Icon(AIcons.credentialsValid);
-        }
+        return Icon(validity.getIconData());
       default:
         return null;
     }

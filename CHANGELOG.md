@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Cataloguing: detect/filter C2PA content credentials validity
 - Info: show C2PA content credentials
 
 ### Changed

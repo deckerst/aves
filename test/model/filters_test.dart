@@ -8,6 +8,7 @@ import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/credentials.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -45,13 +46,17 @@ void main() {
     CollectionFilter? jsonMapRoundTrip(CollectionFilter filter) => CollectionFilter.fromJson(filter.toJsonMap());
     CollectionFilter? jsonStringRoundTrip(CollectionFilter filter) => CollectionFilter.fromJson(filter.toJsonString());
 
-    final aspectRatio = AspectRatioFilter.landscape;
+    const aspectRatio = AspectRatioFilter.landscape;
     expect(aspectRatio, jsonMapRoundTrip(aspectRatio));
     expect(aspectRatio, jsonStringRoundTrip(aspectRatio));
 
-    final bounds = CoordinateFilter(const LatLng(29.979167, 28.223615), const LatLng(36.451000, 31.134167));
+    const bounds = CoordinateFilter(LatLng(29.979167, 28.223615), LatLng(36.451000, 31.134167));
     expect(bounds, jsonMapRoundTrip(bounds));
     expect(bounds, jsonStringRoundTrip(bounds));
+
+    const credentials = ContentCredentialsFilter(.valid);
+    expect(credentials, jsonMapRoundTrip(credentials));
+    expect(credentials, jsonStringRoundTrip(credentials));
 
     const calendar = ACalendar.gregorian;
     final date = DateFilter(calendar, DateLevel.ym, DateTime(1969, 7));
@@ -78,7 +83,7 @@ void main() {
     expect(path, jsonMapRoundTrip(path));
     expect(path, jsonStringRoundTrip(path));
 
-    final placeholder = PlaceholderFilter.country;
+    const placeholder = PlaceholderFilter.country;
     expect(placeholder, jsonMapRoundTrip(placeholder));
     expect(placeholder, jsonStringRoundTrip(placeholder));
 

@@ -186,6 +186,10 @@
   "filterAspectRatioLandscapeLabel": "Landscape",
   "filterAspectRatioPortraitLabel": "Portrait",
   "filterBinLabel": "Recycle bin",
+  "filterCredentialsValidityUnknownLabel": "Unknown credentials",
+  "filterCredentialsValidityInvalidLabel": "Invalid credentials",
+  "filterCredentialsValidityValidLabel": "Valid credentials",
+  "filterCredentialsValidityTrustedLabel": "Trusted credentials",
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
   "filterNoAddressLabel": "No address",
@@ -849,6 +853,7 @@
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Ratings",
   "searchMetadataSectionTitle": "Metadata",
+  "searchCredentialsSectionTitle": "Content Credentials",
 
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System default",

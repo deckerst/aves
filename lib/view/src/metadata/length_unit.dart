@@ -6,8 +6,8 @@ extension ExtraLengthUnitView on LengthUnit {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      LengthUnit.px => l10n.lengthUnitPixel,
-      LengthUnit.percent => l10n.lengthUnitPercent,
+      .px => l10n.lengthUnitPixel,
+      .percent => l10n.lengthUnitPercent,
     };
   }
 }

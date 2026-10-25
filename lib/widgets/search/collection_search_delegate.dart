@@ -6,6 +6,7 @@ import 'package:aves/model/filters/container/set_and.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/credentials.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -24,6 +25,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location/country.dart';
 import 'package:aves/model/source/location/place.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
@@ -160,6 +162,7 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
                     _buildTagFilters(isVisible),
                     _buildRatingFilters(context, isVisible),
                     _buildMetadataFilters(context, isVisible),
+                    _buildCredentialsFilters(context, isVisible),
                   ],
                 );
               },
@@ -331,6 +334,14 @@ class CollectionSearchDelegate extends AvesSearchDelegate with FeedbackMixin, Va
         RatingFilter(0),
         MissingFilter.title,
       ].where(containQuery).toList(),
+    );
+  }
+
+  Widget _buildCredentialsFilters(BuildContext context, CollectionFilterPredicate containQuery) {
+    return _buildFilterRow(
+      context: context,
+      title: context.l10n.searchCredentialsSectionTitle,
+      filters: C2paValidity.values.map(ContentCredentialsFilter.new).where(containQuery).toList(),
     );
   }
 

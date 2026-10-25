@@ -4,29 +4,18 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
-class AspectRatioFilter extends CollectionFilter {
+class const AspectRatioFilter(
+  final double threshold,
+  final String op, {
+  super.reversed = false,
+}) extends CollectionFilter {
   static const type = 'aspect_ratio';
 
-  final double threshold;
-  final String op;
-  late final EntryPredicate _test;
-
-  static final landscape = AspectRatioFilter(1, QueryFilter.opGreater);
-  static final portrait = AspectRatioFilter(1, QueryFilter.opLower);
+  static const landscape = AspectRatioFilter(1, QueryFilter.opGreater);
+  static const portrait = AspectRatioFilter(1, QueryFilter.opLower);
 
   @override
   List<Object?> get props => [threshold, op, reversed];
-
-  new(this.threshold, this.op, {super.reversed = false}) {
-    switch (op) {
-      case QueryFilter.opEqual:
-        _test = (entry) => entry.displayAspectRatio == threshold;
-      case QueryFilter.opLower:
-        _test = (entry) => entry.displayAspectRatio < threshold;
-      case QueryFilter.opGreater:
-        _test = (entry) => entry.displayAspectRatio > threshold;
-    }
-  }
 
   factory fromMap(Map<String, Object?> json) {
     return AspectRatioFilter(
@@ -45,7 +34,17 @@ class AspectRatioFilter extends CollectionFilter {
   };
 
   @override
-  EntryPredicate get positiveTest => _test;
+  EntryPredicate get positiveTest {
+    switch (op) {
+      case QueryFilter.opEqual:
+        return (entry) => entry.displayAspectRatio == threshold;
+      case QueryFilter.opLower:
+        return (entry) => entry.displayAspectRatio < threshold;
+      case QueryFilter.opGreater:
+        return (entry) => entry.displayAspectRatio > threshold;
+    }
+    return (entry) => false;
+  }
 
   @override
   bool get exclusiveProp => true;

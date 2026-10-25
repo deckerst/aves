@@ -6,18 +6,18 @@ extension ExtraExportableEntryFields on ExportableEntryField {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      ExportableEntryField.uri => l10n.viewerInfoLabelUri,
-      ExportableEntryField.path => l10n.viewerInfoLabelPath,
-      ExportableEntryField.title => l10n.viewerInfoLabelTitle,
-      ExportableEntryField.date => l10n.viewerInfoLabelDate,
-      ExportableEntryField.size => l10n.viewerInfoLabelSize,
-      ExportableEntryField.resolution => l10n.viewerInfoLabelResolution,
-      ExportableEntryField.width => l10n.exportEntryDialogWidth,
-      ExportableEntryField.height => l10n.exportEntryDialogHeight,
-      ExportableEntryField.duration => l10n.viewerInfoLabelDuration,
-      ExportableEntryField.coordinates => l10n.viewerInfoLabelCoordinates,
-      ExportableEntryField.address => l10n.viewerInfoLabelAddress,
-      ExportableEntryField.tags => l10n.searchTagsSectionTitle,
+      .uri => l10n.viewerInfoLabelUri,
+      .path => l10n.viewerInfoLabelPath,
+      .title => l10n.viewerInfoLabelTitle,
+      .date => l10n.viewerInfoLabelDate,
+      .size => l10n.viewerInfoLabelSize,
+      .resolution => l10n.viewerInfoLabelResolution,
+      .width => l10n.exportEntryDialogWidth,
+      .height => l10n.exportEntryDialogHeight,
+      .duration => l10n.viewerInfoLabelDuration,
+      .coordinates => l10n.viewerInfoLabelCoordinates,
+      .address => l10n.viewerInfoLabelAddress,
+      .tags => l10n.searchTagsSectionTitle,
     };
   }
 }
