@@ -26,9 +26,9 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/layout_bar.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/bars/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/bars/app_bar_title.dart';
-import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';

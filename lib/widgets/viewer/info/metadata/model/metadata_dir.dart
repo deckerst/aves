@@ -16,7 +16,7 @@ class const MetadataDirectory(
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
   static const coverDirectory = 'Cover'; // custom
-  static const c2paDirectory = 'C2PA'; // custom
+  static const c2paDirectory = 'Content Credentials'; // custom
   static const geoTiffDirectory = 'GeoTIFF'; // custom
   static const mediaDirectory = 'Media'; // custom
   static const mpfImageDirectoryPrefix = 'MPF Image #'; // custom

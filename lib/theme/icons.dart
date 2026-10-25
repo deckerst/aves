@@ -21,6 +21,9 @@ class AIcons {
   static const circle = Symbols.fiber_manual_record;
   static const count = MdiIcons.counter;
   static const counter = Symbols.plus_one;
+  static const credentialsInvalid = Symbols.gpp_bad;
+  static const credentialsValid = Symbols.verified_user;
+  static const credentialsUnknown = Symbols.shield_question;
   static const description = Symbols.description;
   static const descriptionUntitled = Symbols.comments_disabled;
   static const display = Symbols.light_mode;

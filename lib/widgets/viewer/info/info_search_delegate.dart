@@ -5,8 +5,8 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/search/delegate.dart';
 import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
+import 'package:aves/widgets/viewer/info/metadata/dir_tiles/metadata.dart';
 import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 

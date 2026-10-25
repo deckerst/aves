@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:highlight/highlight.dart' show highlight, Node;
+import 'package:material_ui/material_ui.dart';
 
 // adapted from package `flutter_highlight` v0.7.0 `HighlightView`
 // TODO TLAD use the TextSpan getter when this is fixed: https://github.com/pd4d10/highlight/issues/6

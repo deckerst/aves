@@ -1,8 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/bars/app_bar.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 

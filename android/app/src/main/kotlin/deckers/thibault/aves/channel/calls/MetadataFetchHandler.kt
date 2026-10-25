@@ -30,6 +30,7 @@ import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.metadata.C2paHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -119,6 +120,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "getContentCredentials" -> ioScope.launch { safe(call, result, ::getContentCredentials) }
             "getAllMetadata" -> ioScope.launch { safe(call, result, ::getAllMetadata) }
             "getCatalogMetadata" -> ioScope.launch { safe(call, result, ::getCatalogMetadata) }
             "getOverlayMetadata" -> ioScope.launch { safe(call, result, ::getOverlayMetadata) }
@@ -133,6 +135,27 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "getFields" -> ioScope.launch { safe(call, result, ::getFields) }
             else -> result.notImplemented()
         }
+    }
+
+    // as of `c2pa-android` v0.0.15, library is usable only from Android P (API 28)
+    private fun getContentCredentials(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.toUri()
+        val path = call.argument<String>("path")
+
+        if (mimeType == null || uri == null || path == null) {
+            result.error("getContentCredentials-args", "missing arguments", null)
+            return
+        }
+
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+
+        val fields: FieldMap = hashMapOf(
+            "validity" to C2paHelper.getValidity(contentAddress).toString(),
+            "json" to C2paHelper.getManifestJson(contentAddress),
+        )
+
+        result.success(fields)
     }
 
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {

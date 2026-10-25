@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef CaptionedIconButtonBuilder = Widget Function(BuildContext context, FocusNode focusNode);
 

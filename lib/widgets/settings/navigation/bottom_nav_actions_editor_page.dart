@@ -16,8 +16,8 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:aves/widgets/settings/navigation/drawer_editor_page.dart';
 import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class BottomNavigationActionEditorPage extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:aves/widgets/common/aves_highlight.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SourceViewerPage extends StatefulWidget {
   static const routeName = '/viewer/source';

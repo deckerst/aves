@@ -11,9 +11,9 @@ import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:flex_color_picker/flex_color_picker.dart' as flex;
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class ColorSectionSliver extends StatefulWidget {

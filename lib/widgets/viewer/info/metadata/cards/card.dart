@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
@@ -7,55 +5,35 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
-import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
 import 'package:material_ui/material_ui.dart';
 
-typedef XmpExtractedCard = (Map<String, XmpProp>, List<XmpCardData>?);
-
-class XmpCard({
+class const MetadataCard({
   super.key,
   required final String title,
-  required Map<int?, XmpExtractedCard> structByIndex,
-  required final String Function(XmpProp prop) formatValue,
-  final Map<String, InfoValueSpanBuilder> Function(int? index)? spanBuilders,
+  required final int count,
+  required final InfoRowGroup Function(int? index) indexedInfoGroupBuilder,
+  required final List<Widget> Function(int? index) subCardsBuilder,
 }) extends StatefulWidget {
-  late final XmpExtractedCard? directStruct;
-  late final List<XmpExtractedCard>? indexedStructs;
-
-  this {
-    directStruct = structByIndex[null];
-
-    final length = structByIndex.keys.nonNulls.fold(0, max);
-    indexedStructs = length > 0 ? [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? const ({}, null)] : null;
-  }
-
   @override
-  State<XmpCard> createState() => _XmpCardState();
+  State<MetadataCard> createState() => _MetadataCardState();
 }
 
-class _XmpCardState extends State<XmpCard> {
+class _MetadataCardState extends State<MetadataCard> {
   final ValueNotifier<int> _indexNotifier = ValueNotifier(0);
 
-  List<XmpExtractedCard>? get indexedStructs => widget.indexedStructs;
-
-  bool get isIndexed => indexedStructs != null;
-
-  int get indexedStructCount => indexedStructs?.length ?? 0;
+  int get count => widget.count;
 
   @override
   void initState() {
     super.initState();
-    if (isIndexed) {
-      _indexNotifier.value = indexedStructCount - 1;
-    }
+    _indexNotifier.value = count - 1;
   }
 
   @override
-  void didUpdateWidget(covariant XmpCard oldWidget) {
+  void didUpdateWidget(covariant MetadataCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (isIndexed && _indexNotifier.value >= indexedStructCount) {
-      _indexNotifier.value = indexedStructCount - 1;
+    if (widget.count != oldWidget.count) {
+      _indexNotifier.value = count - 1;
     }
   }
 
@@ -67,7 +45,7 @@ class _XmpCardState extends State<XmpCard> {
 
   @override
   Widget build(BuildContext context) {
-    final _isIndexed = isIndexed;
+    final isIndexed = count > 0;
 
     return Container(
       decoration: BoxDecoration(
@@ -79,10 +57,6 @@ class _XmpCardState extends State<XmpCard> {
       child: ValueListenableBuilder<int>(
         valueListenable: _indexNotifier,
         builder: (context, index, child) {
-          final data = _isIndexed ? indexedStructs![index] : widget.directStruct!;
-          final props = data.$1.entries.map((kv) => XmpProp(kv.key, kv.value.value)).toList()..sort();
-          final cards = data.$2;
-
           return Column(
             crossAxisAlignment: .start,
             children: [
@@ -98,7 +72,7 @@ class _XmpCardState extends State<XmpCard> {
                         showHighlight: false,
                       ),
                     ),
-                    if (_isIndexed) ...[
+                    if (isIndexed) ...[
                       IconButton(
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(AIcons.previous),
@@ -113,7 +87,7 @@ class _XmpCardState extends State<XmpCard> {
                       IconButton(
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(AIcons.next),
-                        onPressed: index < indexedStructCount - 1 ? () => _setIndex(index + 1) : null,
+                        onPressed: index < count - 1 ? () => _setIndex(index + 1) : null,
                         tooltip: context.l10n.nextTooltip,
                       ),
                     ],
@@ -129,25 +103,10 @@ class _XmpCardState extends State<XmpCard> {
                   // so that the crossfader can animate the content size
                   // without clipping the text
                   padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: InfoRowGroup(
-                    info: Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, widget.formatValue(prop)))),
-                    spanBuilders: widget.spanBuilders?.call(_isIndexed ? index + 1 : null),
-                  ),
+                  child: widget.indexedInfoGroupBuilder(isIndexed ? index : null),
                 ),
               ),
-              if (cards != null)
-                ...cards.where((v) => !v.isEmpty).map((card) {
-                  final spanBuilders = card.spanBuilders;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    child: XmpCard(
-                      title: card.title,
-                      structByIndex: card.data,
-                      formatValue: widget.formatValue,
-                      spanBuilders: spanBuilders != null ? (index) => spanBuilders(index, card.data[index]!.$1) : null,
-                    ),
-                  );
-                }),
+              ...widget.subCardsBuilder(isIndexed ? index : null),
             ],
           );
         },
@@ -155,5 +114,5 @@ class _XmpCardState extends State<XmpCard> {
     );
   }
 
-  void _setIndex(int index) => _indexNotifier.value = index.clamp(0, indexedStructCount - 1);
+  void _setIndex(int index) => _indexNotifier.value = index.clamp(0, count - 1);
 }

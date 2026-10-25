@@ -2,6 +2,9 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 // names should match possible values on platform
+enum C2paValidity { unknown, invalid, valid, trusted }
+
+// names should match possible values on platform
 enum NameConflictStrategy { rename, replace, skip }
 
 extension ExtraNameConflictStrategy on NameConflictStrategy {

@@ -17,6 +17,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataFetchService {
+  Future<Map> getContentCredentials(AvesEntry entry);
+
   // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   Future<Map> getAllMetadata(AvesEntry entry);
 
@@ -45,6 +47,21 @@ abstract class MetadataFetchService {
 
 class PlatformMetadataFetchService implements MetadataFetchService {
   static const _channel = AvesMethodChannel(AvesChannels.metadataFetch);
+
+  @override
+  Future<Map> getContentCredentials(AvesEntry entry) async {
+    try {
+      final result = await _channel.invokeMethod('getContentCredentials', <String, Object?>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'path': entry.path,
+      });
+      if (result != null) return result as Map;
+    } on PlatformException catch (e, stack) {
+      await _processPlatformException(entry, e, stack);
+    }
+    return {};
+  }
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {

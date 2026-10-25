@@ -1,6 +1,6 @@
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/cards/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/model/xmp_prop.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_card.dart';
 
 class XmpCardData(
   final RegExp pattern, {
