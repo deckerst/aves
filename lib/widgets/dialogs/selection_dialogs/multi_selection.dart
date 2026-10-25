@@ -8,6 +8,7 @@ class const AvesMultiSelectionDialog<T>({
   super.key,
   required final Set<T> initialValue,
   required final Map<T, String> options,
+  final IconBuilder<T>? optionLeadingBuilder,
   final TextBuilder<T>? optionSubtitleBuilder,
   final String? title,
   final String? message,
@@ -44,8 +45,21 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
           ),
         ...widget.options.entries.map((kv) {
           final value = kv.key;
-          final title = kv.value;
+          final titleText = kv.value;
+          final leading = widget.optionLeadingBuilder?.call(value);
           final subtitle = widget.optionSubtitleBuilder?.call(value);
+
+          Widget title = Text(titleText);
+          if (leading != null) {
+            title = Row(
+              children: [
+                Icon(leading),
+                const SizedBox(width: 16),
+                Expanded(child: title),
+              ],
+            );
+          }
+
           return SwitchListTile(
             value: _selectedValues.contains(value),
             onChanged: (v) {
@@ -58,7 +72,7 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
             },
             title: Align(
               alignment: .centerStart,
-              child: Text(title),
+              child: title,
             ),
             subtitle: subtitle != null ? FadingLine(subtitle) : null,
             dense: widget.dense,
@@ -70,8 +84,8 @@ class _AvesMultiSelectionDialogState<T> extends State<AvesMultiSelectionDialog<T
         const CancelButton(),
         TextButton(
           onPressed: () {
-            final result = widget.options.keys.where(_selectedValues.contains).toList();
-            return Navigator.maybeOf(context)?.pop<List<T>>(result);
+            final result = widget.options.keys.where(_selectedValues.contains).toSet();
+            return Navigator.maybeOf(context)?.pop<Set<T>>(result);
           },
           child: Text(context.l10n.applyButtonLabel),
         ),

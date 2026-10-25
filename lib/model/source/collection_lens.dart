@@ -31,7 +31,7 @@ import 'package:flutter/foundation.dart';
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
-  late List<String> burstPatterns;
+  late Set<String> burstPatterns;
   late TileLayout tileLayout;
   late SortFactor sortFactor;
   late bool sortReverse;

@@ -13,7 +13,7 @@ extension ExtraAvesEntryMultipage on AvesEntry {
 
   bool get isMotionPhoto => catalogMetadata?.isMotionPhoto ?? false;
 
-  String? getBurstKey(List<String> patterns) {
+  String? getBurstKey(Iterable<String> patterns) {
     final key = BurstPatterns.getKeyForName(fileNameWithoutExtension, patterns);
     return key != null ? '$directory/$key' : null;
   }

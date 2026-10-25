@@ -117,7 +117,7 @@ class ViewerOverlayPage extends StatelessWidget {
                   final style = context.select<Settings, OverlayHistogramStyle>((v) => v.overlayHistogramStyle);
                   return SettingSwitchTrailingIcon(
                     key: ValueKey(style),
-                    icon: AIcons.histogram,
+                    iconBuilder: (_) => const Icon(AIcons.histogram),
                     disabled: style == OverlayHistogramStyle.none,
                   );
                 },

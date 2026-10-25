@@ -79,6 +79,7 @@ class SettingKeys {
   static const showThumbnailHdrKey = 'show_thumbnail_hdr';
   static const thumbnailLocationIconKey = 'thumbnail_location_icon';
   static const thumbnailTagIconKey = 'thumbnail_tag_icon';
+  static const thumbnailCredentialValidityKey = 'thumbnail_credential_validity';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
