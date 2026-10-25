@@ -10,6 +10,7 @@ class const JsonCard({
   super.key,
   required final String titleKey,
   required final Object? content,
+  final Map<String, InfoValueSpanBuilder> Function(SplayTreeMap<String, String> tags)? getLinkHandlers,
   final EdgeInsets? padding,
 }) extends StatelessWidget {
   @override
@@ -38,11 +39,12 @@ class const JsonCard({
         indexedInfoGroupBuilder: (index) {
           final content = contents[index!] as Map<String, Object?>;
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toSet();
+          final infoEntries = content.entries.whereNot((kv) => subKeys.contains(kv.key)).toSet();
+          final info = SplayTreeMap.of(Map.fromEntries(infoEntries.map((kv) => MapEntry(formatKey(kv.key), kv.value.toString()))));
 
           return InfoRowGroup(
-            info: Map.fromEntries(
-              content.entries.whereNot((kv) => subKeys.contains(kv.key)).map((kv) => MapEntry(formatKey(kv.key), kv.value.toString())),
-            ),
+            info: info,
+            spanBuilders: getLinkHandlers?.call(info),
           );
         },
         subCardsBuilder: (index) {
@@ -67,11 +69,12 @@ class const JsonCard({
         count: 0,
         indexedInfoGroupBuilder: (index) {
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toSet();
+          final infoEntries = content.entries.whereNot((kv) => subKeys.contains(kv.key)).toSet();
+          final info = SplayTreeMap.of(Map.fromEntries(infoEntries.map((kv) => MapEntry(formatKey(kv.key), kv.value.toString()))));
 
           return InfoRowGroup(
-            info: Map.fromEntries(
-              content.entries.whereNot((kv) => subKeys.contains(kv.key)).map((kv) => MapEntry(formatKey(kv.key), kv.value.toString())),
-            ),
+            info: info,
+            spanBuilders: getLinkHandlers?.call(info),
           );
         },
         subCardsBuilder: (index) {

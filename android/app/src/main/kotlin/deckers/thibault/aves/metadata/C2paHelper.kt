@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.utils.LogUtils
+import org.contentauth.c2pa.ByteArrayStream
 import org.contentauth.c2pa.C2PAError
 import org.contentauth.c2pa.FileStream
 import org.contentauth.c2pa.Reader
@@ -61,6 +62,29 @@ object C2paHelper {
             try {
                 Reader.fromStream(contentAddress.mimeType, imageStream).use { reader ->
                     return reader.json()
+                }
+            } catch (_: C2PAError.Api) {
+                // ignore
+                return null
+            }
+        }
+    }
+
+    fun openResource(contentAddress: ContentAddress, uri: String): ByteArray? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return null
+        }
+
+        val path = contentAddress.path ?: return null
+
+        val imageStream = FileStream(File(path), FileStream.Mode.READ)
+        imageStream.use { imageStream ->
+            try {
+                Reader.fromStream(contentAddress.mimeType, imageStream).use { reader ->
+                    ByteArrayStream().use { outputStream ->
+                        reader.resource(uri, outputStream)
+                        return outputStream.getData()
+                    }
                 }
             } catch (_: C2PAError.Api) {
                 // ignore

@@ -112,9 +112,9 @@ class const MetadataDirTileBody({
         Map<String, InfoValueSpanBuilder>? linkHandlers;
         switch (dirName) {
           case SvgMetadataService.metadataDirectory:
-            linkHandlers = getSvgLinkHandlers(tags);
+            linkHandlers = _getSvgLinkHandlers(tags);
           case MetadataDirectory.coverDirectory:
-            linkHandlers = getVideoCoverLinkHandlers(tags);
+            linkHandlers = _getVideoCoverLinkHandlers(tags);
         }
 
         children = [
@@ -148,7 +148,7 @@ class const MetadataDirTileBody({
     );
   }
 
-  static Map<String, InfoValueSpanBuilder> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
+  static Map<String, InfoValueSpanBuilder> _getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
     return {
       'Metadata': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoViewXmlLinkText,
@@ -166,7 +166,7 @@ class const MetadataDirTileBody({
     };
   }
 
-  static Map<String, InfoValueSpanBuilder> getVideoCoverLinkHandlers(SplayTreeMap<String, String> tags) {
+  static Map<String, InfoValueSpanBuilder> _getVideoCoverLinkHandlers(SplayTreeMap<String, String> tags) {
     return {
       'Image': InfoRowGroup.linkSpanBuilder(
         linkText: (context) => context.l10n.viewerInfoOpenLinkText,
