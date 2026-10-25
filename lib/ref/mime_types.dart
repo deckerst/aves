@@ -1,4 +1,5 @@
 class MimeTypes {
+  static const any = '*/*';
   static const anyImage = 'image/*';
 
   // supported

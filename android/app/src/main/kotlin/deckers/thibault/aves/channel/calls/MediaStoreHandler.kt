@@ -64,9 +64,13 @@ class MediaStoreHandler(private val context: Context) : MethodCallHandler {
             MediaStore.getExternalVolumeNames(context).associateWith { volumeName ->
                 try {
                     MediaStore.getGeneration(context, volumeName)
-                } catch (ex: IllegalArgumentException) {
-                    Log.w(LOG_TAG, "failed to get generation for volume=$volumeName", ex)
-                    null
+                } catch (ex: Exception) {
+                    if (ex is IllegalArgumentException || ex is IllegalStateException) {
+                        Log.w(LOG_TAG, "failed to get generation for volume=$volumeName", ex)
+                        null
+                    } else {
+                        throw ex
+                    }
                 }
             }
         } else {

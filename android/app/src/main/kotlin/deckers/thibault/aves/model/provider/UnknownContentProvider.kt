@@ -83,7 +83,7 @@ open class UnknownContentProvider : ImageProvider() {
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
-            callback.onFailure(Exception("entry has no size"))
+            callback.onFailure(Exception("entry is not sized, for fields=$fields"))
         }
     }
 

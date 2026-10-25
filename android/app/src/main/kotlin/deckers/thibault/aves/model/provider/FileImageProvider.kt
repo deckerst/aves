@@ -83,10 +83,11 @@ internal class FileImageProvider : ImageProvider() {
         }
         entry.fillPreCatalogMetadata(context)
 
+        val fields = entry.toMap()
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
-            callback.onSuccess(entry.toMap())
+            callback.onSuccess(fields)
         } else {
-            callback.onFailure(Exception("entry has no size"))
+            callback.onFailure(Exception("entry is not sized, for fields=$fields"))
         }
     }
 
