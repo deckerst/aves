@@ -32,10 +32,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('getExifThumbnails', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
       });
       if (result != null) {
         final descriptors = <ui.ImageDescriptor?>[];
@@ -54,9 +51,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractC2paResource(AvesEntry entry, String dataUri) async {
     try {
       final result = await _platform.invokeMethod('extractC2paResource', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', dataUri].join(AText.separator),
         'dataUri': dataUri,
       });
@@ -71,10 +66,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractGoogleDeviceItem(AvesEntry entry, String dataUri) async {
     try {
       final result = await _platform.invokeMethod('extractGoogleDeviceItem', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', dataUri].join(AText.separator),
         'dataUri': dataUri,
       });
@@ -89,10 +81,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractMotionPhotoImage(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('extractMotionPhotoImage', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', 'Image'].join(AText.separator),
       });
       if (result != null) return result as Map;
@@ -106,10 +95,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractMotionPhotoVideo(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('extractMotionPhotoVideo', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', 'Video'].join(AText.separator),
       });
       if (result != null) return result as Map;
@@ -123,10 +109,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractJpegMpfItem(AvesEntry entry, int id) async {
     try {
       final result = await _platform.invokeMethod('extractJpegMpfItem', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', 'MPF #$id'].join(AText.separator),
         'id': id,
       });
@@ -141,9 +124,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry) async {
     try {
       final result = await _platform.invokeMethod('extractVideoEmbeddedPicture', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', 'Cover'].join(AText.separator),
       });
       if (result != null) return result as Map;
@@ -160,10 +141,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   Future<Map> extractXmpDataProp(AvesEntry entry, List<Object?>? propPath, String? propMimeType) async {
     try {
       final result = await _platform.invokeMethod('extractXmpDataProp', <String, Object?>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'path': entry.path,
-        'sizeBytes': entry.sizeBytes,
+        ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', '$propPath'].join(AText.separator),
         'propPath': propPath,
         'propMimeType': propMimeType,
