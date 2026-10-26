@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg1810" width="2e3" height="1400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs id="defs1790">
+  <g id="star" transform="scale(500)"/>
+ </defs>
+ <rect id="rect1792" width="100%" height="100%" fill="#FFFFFF"/>
+ <path id="path1794" d="m0 800v-800h1600z" fill="#00a5ff" stroke-width=".942809"/>
+ <path id="path1796" d="m2e3 600v800h-1600z" fill="#008200" stroke-width=".894427"/>
+ <path id="rect1798" d="m0 1180h2e3v40h-2e3z" fill="#dc0000"/>
+ <path id="polygon2210" d="M 1000,200 887.86669,543.77035 H 525 L 818.56472,756.22966 706.43335,1100 1000,887.53877 1293.5667,1100 1181.4353,756.2316 1475,543.77035 h -362.8667 z" fill="#f8c300" stroke-width="498.476"/>
+</svg>

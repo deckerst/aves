@@ -122,6 +122,9 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
             // Australia (public domain)
             // https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
             CountryCode.AU.alpha2,
+            // Brazil (public domain)
+            // https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
+            CountryCode.BR.alpha2,
             // Canada (public domain)
             // https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
             CountryCode.CA.alpha2,
