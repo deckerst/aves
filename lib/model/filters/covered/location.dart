@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter with CoveredFilter {
@@ -96,6 +95,8 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   @override
   String getLabel(BuildContext context) => _isUnlocated ? context.l10n.filterNoLocationLabel : _location;
 
+  static final _flagAssets = <String, ByteData>{};
+
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
     if (_isUnlocated) {
@@ -117,15 +118,30 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
       case .state:
         if (_code != null) {
           final countryCode = _code.substring(0, 2).toUpperCase();
-          if (<String>{
+          if ({
             // Australia (public domain): https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
             CountryCode.AU.alpha2,
+            // Canada (public domain): https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
+            CountryCode.CA.alpha2,
           }.contains(countryCode)) {
+            final flagAsset = _flagAssets[_code];
+            final Future<ByteData> flagAssetFuture;
+            if (flagAsset != null) {
+              flagAssetFuture = SynchronousFuture(flagAsset);
+            } else {
+              flagAssetFuture = DefaultAssetBundle.of(context).load('assets/flags/$_code.svg');
+              flagAssetFuture.then((v) => _flagAssets[_code] = v);
+            }
+
             return FutureBuilder<ByteData>(
-              future: DefaultAssetBundle.of(context).load('assets/flags/$code.svg'),
+              future: flagAssetFuture,
               builder: (context, snapshot) {
                 final svgBytes = snapshot.data;
                 if (svgBytes == null) return const SizedBox();
+
+                // arbitrary ratio applied to the provided icon size,
+                // to make the flags appear as large as country emoji icons
+                const flagRatio = 1.4;
 
                 const mimeType = MimeTypes.svg;
                 return Image(
@@ -137,11 +153,11 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
                       rotationDegrees: 0,
                       isFlipped: false,
                       dateModifiedMillis: -1,
-                      extent: size,
+                      extent: size * flagRatio,
                       videoThumbnailMethods: null,
                     ),
                   ),
-                  width: size,
+                  width: size * flagRatio,
                   height: size,
                 );
               },

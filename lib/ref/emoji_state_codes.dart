@@ -82,7 +82,6 @@ class EmojiStateCodes {
   };
 
   // CA
-  // TODO TLAD use flag assets from https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
   static const caAlberta = 'caab';
   static const caBritishColumbia = 'cabc';
   static const caManitoba = 'camb';
