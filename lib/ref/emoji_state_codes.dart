@@ -81,6 +81,37 @@ class EmojiStateCodes {
     brTocantins,
   };
 
+  // CA
+  static const caAlberta = 'caab';
+  static const caBritishColumbia = 'cabc';
+  static const caManitoba = 'camb';
+  static const caNewBrunswick = 'canb';
+  static const caNewfoundlandAndLabrador = 'canl';
+  static const caNorthwestTerritories = 'cant';
+  static const caNovaScotia = 'cans';
+  static const caNunavut = 'canu';
+  static const caOntario = 'caon';
+  static const caPrinceEdwardIsland = 'cape';
+  static const caQuebec = 'caqc';
+  static const caSaskatchewan = 'cask';
+  static const caYukon = 'cayt';
+
+  static const canada = {
+    caAlberta,
+    caBritishColumbia,
+    caManitoba,
+    caNewBrunswick,
+    caNewfoundlandAndLabrador,
+    caNorthwestTerritories,
+    caNovaScotia,
+    caNunavut,
+    caOntario,
+    caPrinceEdwardIsland,
+    caQuebec,
+    caSaskatchewan,
+    caYukon,
+  };
+
   // GB
   static const gbEngland = 'gbeng';
   static const gbNorthernIreland = 'gbnir';

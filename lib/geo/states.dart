@@ -5,6 +5,7 @@ class GeoStates {
   static final stateCodesByCountryCode = <String, Set<String>>{
     CountryCode.AU.alpha2: EmojiStateCodes.australia,
     CountryCode.BR.alpha2: EmojiStateCodes.brazil,
+    CountryCode.CA.alpha2: EmojiStateCodes.canada,
     CountryCode.GB.alpha2: EmojiStateCodes.unitedKingdom,
     CountryCode.IN.alpha2: EmojiStateCodes.india,
     CountryCode.MX.alpha2: EmojiStateCodes.mexico,
@@ -14,6 +15,7 @@ class GeoStates {
   static const stateCodeByName = <String, String>{
     ..._australiaEnglish,
     ..._brazilPortuguese,
+    ..._canadaEnglish,
     ..._indiaEnglish,
     ..._mexicoSpanish,
     ..._unitedKingdomEnglish,
@@ -94,6 +96,22 @@ class GeoStates {
     'São Paulo': EmojiStateCodes.brSaoPaulo,
     'Sergipe': EmojiStateCodes.brSergipe,
     'Tocantins': EmojiStateCodes.brTocantins,
+  };
+
+  static const _canadaEnglish = {
+    'Ontario': EmojiStateCodes.caOntario,
+    'Quebec': EmojiStateCodes.caQuebec,
+    'Nova Scotia': EmojiStateCodes.caNovaScotia,
+    'New Brunswick': EmojiStateCodes.caNewBrunswick,
+    'Manitoba': EmojiStateCodes.caManitoba,
+    'British Columbia': EmojiStateCodes.caBritishColumbia,
+    'Prince Edward Island': EmojiStateCodes.caPrinceEdwardIsland,
+    'Saskatchewan': EmojiStateCodes.caSaskatchewan,
+    'Alberta': EmojiStateCodes.caAlberta,
+    'Newfoundland and Labrador': EmojiStateCodes.caNewfoundlandAndLabrador,
+    'Northwest Territories': EmojiStateCodes.caNorthwestTerritories,
+    'Yukon': EmojiStateCodes.caYukon,
+    'Nunavut': EmojiStateCodes.caNunavut,
   };
 
   static const _indiaEnglish = {
