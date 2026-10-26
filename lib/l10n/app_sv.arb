@@ -984,5 +984,11 @@
     "videoThumbnailMethodPreviewFrame": "Förhandsgranskningsruta",
     "videoThumbnailMethodFirstFrame": "Första bildrutan",
     "renameTagDialogLabelAlreadyExistsHelper": "Tagg existerar redan",
-    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild"
+    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild",
+    "filterCredentialsValidityUnknownLabel": "Okänd",
+    "filterCredentialsValidityInvalidLabel": "Ogiltig",
+    "filterCredentialsValidityValidLabel": "Giltig",
+    "filterCredentialsValidityTrustedLabel": "Betrodd",
+    "searchCredentialsSectionTitle": "Innehållsreferenser",
+    "settingsThumbnailShowCredentialValidity": "Visa giltighet för referenser"
 }

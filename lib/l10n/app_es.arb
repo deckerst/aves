@@ -749,5 +749,11 @@
     "videoThumbnailMethodFirstFrame": "Primer fotograma",
     "settingsVideoThumbnailMethods": "Miniatura preferida",
     "renameTagDialogLabelAlreadyExistsHelper": "La etiqueta ya existe",
-    "chipActionCopyCenterCoordinates": "Copiar las coordenadas del centro"
+    "chipActionCopyCenterCoordinates": "Copiar las coordenadas del centro",
+    "filterCredentialsValidityUnknownLabel": "Desconocida",
+    "filterCredentialsValidityValidLabel": "Válida",
+    "filterCredentialsValidityInvalidLabel": "No válida",
+    "filterCredentialsValidityTrustedLabel": "De confianza",
+    "searchCredentialsSectionTitle": "Credenciales de contenido",
+    "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales"
 }
