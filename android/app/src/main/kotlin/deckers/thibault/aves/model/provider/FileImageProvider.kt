@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
@@ -49,7 +50,7 @@ internal class FileImageProvider : ImageProvider() {
                 callback.onFailure(e)
                 return
             }
-            mimeType = detectMimeType(
+            mimeType = MetadataExtractorHelper.readMimeType(
                 context = context,
                 mimeType = null,
                 uri = uri,

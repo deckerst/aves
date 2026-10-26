@@ -20,10 +20,10 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeString
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
-import deckers.thibault.aves.metadata.metadataextractor.Helper
-import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeDateMillis
-import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
-import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeLong
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeInt
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeLong
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
@@ -169,7 +169,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input, sizeBytes)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)

@@ -1,5 +1,7 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.drew.imaging.FileType
 import com.drew.imaging.FileTypeDetector
@@ -28,8 +30,11 @@ import deckers.thibault.aves.metadata.DngTags
 import deckers.thibault.aves.metadata.ExifTags
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
+import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils.round
+import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
 import deckers.thibault.aves.utils.TimeZones
 import java.io.BufferedInputStream
 import java.io.IOException
@@ -42,8 +47,8 @@ import java.util.TimeZone
 import java.util.regex.Pattern
 import kotlin.math.floor
 
-object Helper {
-    private val LOG_TAG = LogUtils.createTag<Helper>()
+object MetadataExtractorHelper {
+    private val LOG_TAG = LogUtils.createTag<MetadataExtractorHelper>()
 
     const val PNG_ITXT_DIR_NAME = "PNG-iTXt"
     private const val PNG_TEXT_DIR_NAME = "PNG-tEXt"
@@ -117,15 +122,64 @@ object Helper {
         } ?: "${dir.getObject(tag.tagType)}"
     }
 
-    fun readMimeType(input: InputStream): String? {
-        val bufferedInputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
-        return FileTypeDetector.detectFileType(bufferedInputStream).mimeType
+    /**
+     * - `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`, `avif` as `mov`)
+     * - the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `heif` as `tiff`, `tiff` as `srw`)
+     * - `context.getContentResolver().getType()` sometimes returns an incorrect value
+     * - `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
+     * - file extension is unreliable
+     * In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd`/`mov`/`zip`
+     * (false positives, false negatives), in which case we trust the file extension
+     */
+    fun readMimeType(input: InputStream, path: String?, sizeBytes: Long?): String? {
+        var detectedMimeType: String? = null
+        val metadata = safeRead(input, sizeBytes, path)
+        for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
+            if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
+                detectedMimeType = MimeTypes.TIFF
+            } else {
+                // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
+                    if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
+                        detectedMimeType = it
+                    }
+                }
+            }
+        }
+        return detectedMimeType
+    }
+
+    fun readMimeType(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): String {
+        return readMimeType(
+            context = context,
+            mimeType = contentAddress.mimeType,
+            uri = contentAddress.uri,
+            path = contentAddress.path,
+            sizeBytes = sizeBytes
+        ) ?: contentAddress.mimeType
+    }
+
+    // alternative signature to allow unknown MIME type
+    fun readMimeType(context: Context, mimeType: String?, uri: Uri, path: String?, sizeBytes: Long?): String? {
+        var detectedMimeType: String? = null
+        try {
+            Metadata.openSafeInputStream(context, mimeType, uri, path, sizeBytes)?.use { input ->
+                detectedMimeType = readMimeType(input, path, sizeBytes)
+            }
+        } catch (_: Exception) {
+            // ignore
+        } catch (_: NoClassDefFoundError) {
+            // ignore
+        } catch (_: AssertionError) {
+            // ignore
+        }
+        return detectedMimeType ?: mimeType
     }
 
     @Throws(IOException::class, ImageProcessingException::class)
-    fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?): com.drew.metadata.Metadata {
+    fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?, path: String?): com.drew.metadata.Metadata {
         val inputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
-        val fileType = FileTypeDetector.detectFileType(inputStream)
+        val fileType = FileTypeDetector.detectFileType(inputStream, path)
 
         // Providing the stream length is risky, as it may crash if it is incorrect.
         // Not providing the stream length is also risky, as it may lead to OOM

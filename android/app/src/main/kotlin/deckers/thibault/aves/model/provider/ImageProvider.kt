@@ -33,7 +33,7 @@ import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ContentAddress
@@ -1069,31 +1069,6 @@ abstract class ImageProvider {
         return NameConflictResolution(resolvedName, replacedFileCopy)
     }
 
-    // cf `MetadataFetchHandler.getCatalogMetadataByMetadataExtractor()` for a more thorough check
-    fun detectMimeType(context: Context, mimeType: String?, uri: Uri, path: String?, sizeBytes: Long?): String? {
-        var detectedMimeType: String? = null
-        if (MimeTypes.canReadWithMetadataExtractor(mimeType)) {
-            try {
-                Metadata.openSafeInputStream(
-                    context = context,
-                    mimeType = mimeType,
-                    uri = uri,
-                    path = path,
-                    sizeBytes = sizeBytes,
-                )?.use { input ->
-                    detectedMimeType = Helper.readMimeType(input)
-                }
-            } catch (ex: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            } catch (ex: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            } catch (ex: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            }
-        }
-        return detectedMimeType
-    }
-
     // editing may corrupt the file for various reasons,
     // making them undecodable by some decoders (including Android's and Chrome's)
     // even though `BitmapFactory` successfully decodes their bounds,
@@ -1196,7 +1171,13 @@ abstract class ImageProvider {
                 return false
             }
 
-            val editedMimeType = detectMimeType(context, mimeType, Uri.fromFile(editableFile), editableFilePath, editableFileSizeBytes)
+            val editedMimeType = MetadataExtractorHelper.readMimeType(
+                context = context,
+                mimeType = mimeType,
+                uri = Uri.fromFile(editableFile),
+                path = editableFilePath,
+                sizeBytes = editableFileSizeBytes,
+            )
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for $contentAddress")
             }

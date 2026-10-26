@@ -14,7 +14,7 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.C2paHelper
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
-import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
@@ -136,7 +136,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
@@ -278,7 +278,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 retriever.embeddedPicture?.let { bytes ->
                     var embedMimeType: String? = null
                     bytes.inputStream().use { input ->
-                        Helper.readMimeType(input)?.let { embedMimeType = it }
+                        MetadataExtractorHelper.readMimeType(input, path = null, sizeBytes = bytes.size.toLong())?.let { embedMimeType = it }
                     }
                     embedMimeType?.let { mime ->
                         copyEmbeddedBytes(result, mime, displayName, bytes.inputStream(), bytes.size.toLong())
@@ -321,7 +321,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)

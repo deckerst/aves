@@ -24,7 +24,7 @@ import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.dumpBoxes
 import deckers.thibault.aves.metadata.PixyMetaHelper
-import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
@@ -325,7 +325,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
                         if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
                             dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)

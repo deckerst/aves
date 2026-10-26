@@ -17,8 +17,8 @@ import deckers.thibault.aves.glide.TiffFetcher
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
-import deckers.thibault.aves.metadata.metadataextractor.Helper
-import deckers.thibault.aves.metadata.metadataextractor.Helper.getSafeInt
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
@@ -116,7 +116,7 @@ object MultiPage {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = Helper.safeRead(input, sizeBytes)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
@@ -195,7 +195,7 @@ object MultiPage {
     fun getJpegMpfEntries(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): List<MpEntry>? {
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input, sizeBytes)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
         } catch (e: Exception) {
@@ -337,7 +337,7 @@ object MultiPage {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = Helper.safeRead(input, sizeBytes)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
