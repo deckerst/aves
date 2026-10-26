@@ -984,5 +984,11 @@
     "videoThumbnailMethodFirstFrame": "الإطار الأول",
     "settingsVideoThumbnailMethods": "الصورة المصغرة المفضلة",
     "renameTagDialogLabelAlreadyExistsHelper": "الوسم موجود بالفعل",
-    "chipActionCopyCenterCoordinates": "إحداثيات مركز النسخ"
+    "chipActionCopyCenterCoordinates": "إحداثيات مركز النسخ",
+    "filterCredentialsValidityUnknownLabel": "مجهول",
+    "filterCredentialsValidityInvalidLabel": "غير صالح",
+    "filterCredentialsValidityValidLabel": "صالح",
+    "filterCredentialsValidityTrustedLabel": "موثوق به",
+    "searchCredentialsSectionTitle": "بيانات اعتماد المحتوى",
+    "settingsThumbnailShowCredentialValidity": "إثبات صحة الشهادة"
 }

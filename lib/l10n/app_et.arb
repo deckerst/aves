@@ -993,5 +993,11 @@
     "videoThumbnailMethodFirstFrame": "Esimene kaader",
     "settingsVideoThumbnailMethods": "Eelista pisipilti",
     "renameTagDialogLabelAlreadyExistsHelper": "Selline silt juba on olemas",
-    "chipActionCopyCenterCoordinates": "Kopeeri keskpunkti koordinaadid"
+    "chipActionCopyCenterCoordinates": "Kopeeri keskpunkti koordinaadid",
+    "filterCredentialsValidityUnknownLabel": "Pole teada",
+    "filterCredentialsValidityInvalidLabel": "Vigane",
+    "filterCredentialsValidityValidLabel": "Kehtiv",
+    "filterCredentialsValidityTrustedLabel": "Usaldatud",
+    "searchCredentialsSectionTitle": "Sisu autentimisandmed",
+    "settingsThumbnailShowCredentialValidity": "Näita autentimisandmete kehtivust"
 }

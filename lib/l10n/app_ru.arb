@@ -221,7 +221,7 @@
     "videoStreamSelectionDialogNoSelection": "Других дорожек нет.",
     "genericSuccessFeedback": "Выполнено!",
     "genericFailureFeedback": "Не удалось",
-    "menuActionConfigureView": "Сменить вид",
+    "menuActionConfigureView": "Изменить макет",
     "menuActionSelect": "Выбрать",
     "menuActionSelectAll": "Выбрать все",
     "menuActionSelectNone": "Снять выделение",
@@ -739,5 +739,15 @@
     "calendarGregorian": "Григорианский",
     "calendarPersian": "Персидский",
     "settingsCalendarTile": "Календарь",
-    "tileLayoutCalendar": "Календарь"
+    "tileLayoutCalendar": "Календарь",
+    "chipActionCopyCenterCoordinates": "Копировать координаты центра",
+    "calendarHijriTabular": "Хиджри (табличный)",
+    "calendarHijriUmalqura": "Хиджри (Умм аль‑Кура)",
+    "videoThumbnailMethodEmbeddedImage": "Встроенное изображение",
+    "videoThumbnailMethodPreviewFrame": "Кадр предпросмотра",
+    "videoThumbnailMethodFirstFrame": "Первый кадр",
+    "renameTagDialogLabelAlreadyExistsHelper": "Тег уже существует",
+    "collectionActionShowLayoutBar": "Показать панель макета",
+    "collectionActionHideLayoutBar": "Скрыть панель макета",
+    "settingsVideoThumbnailMethods": "Предпочитаемая миниатюра"
 }

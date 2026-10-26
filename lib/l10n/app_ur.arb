@@ -993,5 +993,11 @@
     "panoramaEnableSensorControl": "سینسر کنٹرول فعال کریں",
     "panoramaDisableSensorControl": "سینسر کنٹرول غیر فعال کریں",
     "sourceViewerPageTitle": "ماخذ",
-    "chipActionCopyCenterCoordinates": "مرکزی متناسقات کاپی کریں"
+    "chipActionCopyCenterCoordinates": "مرکزی متناسقات کاپی کریں",
+    "filterCredentialsValidityUnknownLabel": "نامعلوم",
+    "filterCredentialsValidityInvalidLabel": "غلط",
+    "filterCredentialsValidityValidLabel": "جائز",
+    "filterCredentialsValidityTrustedLabel": "قابلِ اعتماد",
+    "searchCredentialsSectionTitle": "مواد کے اسناد",
+    "settingsThumbnailShowCredentialValidity": "اسناد کی توثیق دکھائیں"
 }

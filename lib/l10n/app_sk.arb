@@ -984,5 +984,11 @@
     "videoThumbnailMethodFirstFrame": "Prvá snímka",
     "settingsVideoThumbnailMethods": "Predvolená miniatúra",
     "renameTagDialogLabelAlreadyExistsHelper": "Štítok už existuje",
-    "chipActionCopyCenterCoordinates": "Skopírovať súradnice stredu"
+    "chipActionCopyCenterCoordinates": "Skopírovať súradnice stredu",
+    "filterCredentialsValidityUnknownLabel": "Neznáme",
+    "filterCredentialsValidityInvalidLabel": "Neplatné",
+    "filterCredentialsValidityValidLabel": "Platné",
+    "filterCredentialsValidityTrustedLabel": "Dôveryhodné",
+    "searchCredentialsSectionTitle": "Overovacie údaje obsahu",
+    "settingsThumbnailShowCredentialValidity": "Zobraziť platnosť overovacích údajov"
 }
