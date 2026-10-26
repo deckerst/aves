@@ -2,7 +2,7 @@
 androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
 androidGradlePlugin = "9.4.1"
-androidSvg = "c7e58e8e59"
+androidSvg = "447068deae"
 androidxAnnotation = "1.11.0"
 androidxAppcompat = "1.8.0"
 androidxCoreKtx = "1.19.1"

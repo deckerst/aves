@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
 
 - upgraded Flutter to stable v3.47.8
 
+### Fixed
+
+- rendering of some malformed SVG
+
 ## <a id="v1.15.8"></a>[v1.15.8] - 2026-10-21
 
 ### Changed
