@@ -400,7 +400,6 @@
     "dateYesterday": "Včera",
     "exportEntryDialogQuality": "Kvalita",
     "locationPickerUseThisLocationButton": "Použiť túto polohu",
-    "aboutCreditsWorldAtlas2": "pod ISC licenciou.",
     "collectionPageTitle": "Kolekcie",
     "collectionActionMove": "Presunúť do albumu",
     "viewerActionLock": "Uzamknúť pohľad",
@@ -410,7 +409,14 @@
     "collectionActionRescan": "Opätovné skenovanie",
     "albumTierVaults": "Trezory",
     "vaultDialogLockTypeLabel": "Typ uzamknutia",
-    "aboutCreditsWorldAtlas1": "Táto aplikácia používa TopoJSON súbor od",
+    "aboutCreditsWorldAtlas": "Táto aplikácia používa TopoJSON súbor od [World Atlas]({link}) pod ISC licenciou.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionActionAddShortcut": "Pridať skratku",
     "collectionGroupAlbum": "Podľa albumu",
     "collectionGroupMonth": "Podľa mesiaca",

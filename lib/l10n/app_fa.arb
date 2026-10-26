@@ -597,7 +597,6 @@
     "aboutDataUsageExternal": "خارجی",
     "aboutLicensesSectionTitle": "مجوز متن-باز",
     "aboutDataUsageClearCache": "پاک ساری حافظه موقت",
-    "aboutCreditsWorldAtlas2": "زیر مجوز ISC.",
     "aboutLicensesBanner": "این برنامه بسته‌ها و کتابخانه‌های آزاد زیر به‌کار می‌برد.",
     "collectionSelectPageTitle": "انتخاب موارد",
     "collectionSearchTitlesHintText": "جستجو عناوین",
@@ -850,7 +849,14 @@
             }
         }
     },
-    "aboutCreditsWorldAtlas1": "این برنامه یک پرونده TopoJSON استفاده میکند از",
+    "aboutCreditsWorldAtlas": "این برنامه یک پرونده TopoJSON استفاده میکند از [World Atlas]({link}) زیر مجوز ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionCopyFailureFeedback": "{count, plural, =1{رونوشت ۱ مورد ناموفق بود} other{رونوشت {count} مورد ناموفق بود}}",
     "@collectionCopyFailureFeedback": {
         "placeholders": {

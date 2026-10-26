@@ -104,7 +104,6 @@
     "entryInfoActionRemoveLocation": "Loại bỏ vị trí",
     "entryActionShareImageOnly": "Chỉ chia sẻ hình ảnh",
     "filterNoDateLabel": "không ghi ngày tháng",
-    "aboutCreditsWorldAtlas2": "dưới bản quyền ISC.",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{Chuyển vào thùng rác?} other{Chuyển {count} mục vào thùng rác?}}",
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
@@ -211,7 +210,14 @@
     "tileLayoutGrid": "Lưới",
     "settingsDisplayUseTvInterface": "Giao diện Android TV",
     "settingsTimeToTakeActionTile": "Thời gian hành động",
-    "aboutCreditsWorldAtlas1": "Ứng dụng này dùng tệp TopoJSON từ",
+    "aboutCreditsWorldAtlas": "Ứng dụng này dùng tệp TopoJSON từ [World Atlas]({link}) dưới bản quyền ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "tagEditorSectionRecent": "Gần đây",
     "nameConflictDialogMultipleSourceMessage": "Một số tệp có cùng tên.",
     "settingsVideoSectionTitle": "Video",

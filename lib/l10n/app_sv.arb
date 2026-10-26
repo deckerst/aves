@@ -358,8 +358,14 @@
     "aboutDataUsageMisc": "Diverse",
     "aboutDataUsageExternal": "Externt",
     "aboutDataUsageClearCache": "Rensa Cacheminnet",
-    "aboutCreditsWorldAtlas1": "Den här appen använder en TopoJSON fil från",
-    "aboutCreditsWorldAtlas2": "under ISC Licens.",
+    "aboutCreditsWorldAtlas": "Den här appen använder en TopoJSON fil från [World Atlas]({link}) under ISC Licens.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Översättare",
     "aboutLicensesSectionTitle": "Öppen-Källkod Licenser",
     "aboutLicensesAndroidLibrariesSectionTitle": "Android Bibliotek",

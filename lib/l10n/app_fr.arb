@@ -250,8 +250,14 @@
     "aboutBugReportInstruction": "Créer une « issue » sur GitHub en attachant les logs et informations d’environnement",
     "aboutBugReportButton": "Créer",
     "aboutCreditsSectionTitle": "Remerciements",
-    "aboutCreditsWorldAtlas1": "Cette app utilise un fichier TopoJSON de",
-    "aboutCreditsWorldAtlas2": "sous licence ISC.",
+    "aboutCreditsWorldAtlas": "Cette app utilise un fichier TopoJSON de [World Atlas]({link}) sous licence ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traducteurs",
     "aboutLicensesSectionTitle": "Licences open-source",
     "aboutLicensesBanner": "Cette app utilise ces librairies et packages open-source.",

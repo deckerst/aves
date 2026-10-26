@@ -268,7 +268,14 @@
     "aboutBugSectionTitle": "Повідомити про помилку",
     "aboutBugSaveLogInstruction": "Зберегти логи додатка у файл",
     "aboutCreditsSectionTitle": "Подяки",
-    "aboutCreditsWorldAtlas1": "Цей додаток використовує файл TopoJSON із",
+    "aboutCreditsWorldAtlas": "Цей додаток використовує файл TopoJSON із [World Atlas]({link}) за ліцензією ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Перекладачі",
     "aboutLicensesSectionTitle": "Ліцензії з відкритим вихідним кодом",
     "aboutLicensesAndroidLibrariesSectionTitle": "Бібліотеки Android",
@@ -530,7 +537,6 @@
     "menuActionStats": "Статистика",
     "viewDialogReverseSortOrder": "Зворотній порядок сортування",
     "aboutBugReportInstruction": "Надіслати звіт про помилку на GitHub разом із логами та системною інформацією",
-    "aboutCreditsWorldAtlas2": "за ліцензією ISC.",
     "aboutLicensesBanner": "Цей додаток використовує наступні пакети та бібліотеки з відкритим вихідним кодом.",
     "aboutBugReportButton": "Надіслати звіт",
     "collectionActionEdit": "Редагувати",

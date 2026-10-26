@@ -528,8 +528,14 @@
     "aboutDataUsageExternal": "خارجی",
     "aboutDataUsageClearCache": "کیش صاف کریں",
     "aboutCreditsSectionTitle": "کریڈٹس",
-    "aboutCreditsWorldAtlas1": "یہ ایپ TopoJSON فائل استعمال کرتی ہے از",
-    "aboutCreditsWorldAtlas2": "ISC لائسنس کے تحت۔",
+    "aboutCreditsWorldAtlas": "یہ ایپ TopoJSON فائل استعمال کرتی ہے از [World Atlas]({link}) ISC لائسنس کے تحت۔",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "مترجمین",
     "aboutLicensesSectionTitle": "اوپن سورس لائسنسز",
     "aboutLicensesBanner": "یہ ایپ درج ذیل اوپن سورس پیکجز اور لائبریریز استعمال کرتی ہے۔",

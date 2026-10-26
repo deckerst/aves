@@ -515,8 +515,14 @@
     "aboutDataUsageExternal": "Външни",
     "aboutDataUsageClearCache": "Изчисти кеш",
     "aboutCreditsSectionTitle": "Благодарности",
-    "aboutCreditsWorldAtlas1": "Това приложение използва файл TopoJSON от",
-    "aboutCreditsWorldAtlas2": "под ISC License.",
+    "aboutCreditsWorldAtlas": "Това приложение използва файл TopoJSON от [World Atlas]({link}) под ISC License.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesSectionTitle": "Лиценз с отворен код",
     "aboutLicensesAndroidLibrariesSectionTitle": "Библиотеки Android",
     "aboutLicensesFlutterPluginsSectionTitle": "Flutter плъгини",

@@ -536,8 +536,14 @@
     "aboutDataUsageInternal": "𐑦𐑯𐑑𐑻𐑯𐑩𐑤",
     "aboutDataUsageClearCache": "𐑒𐑤𐑽 𐑒𐑨𐑖",
     "aboutCreditsSectionTitle": "𐑒𐑮𐑧𐑛𐑦𐑑𐑕",
-    "aboutCreditsWorldAtlas1": "𐑞𐑦𐑕 𐑨𐑐 𐑿𐑟𐑩𐑟 𐑩 ⸰𐑑𐑪𐑐𐑩𐑡𐑕𐑪𐑯 𐑓𐑲𐑤 𐑓𐑮𐑪𐑥",
-    "aboutCreditsWorldAtlas2": "𐑳𐑯𐑛𐑼 ⸰𐑦𐑕𐑒 𐑤𐑲𐑕𐑩𐑯𐑕.",
+    "aboutCreditsWorldAtlas": "𐑞𐑦𐑕 𐑨𐑐 𐑿𐑟𐑩𐑟 𐑩 ⸰𐑑𐑪𐑐𐑩𐑡𐑕𐑪𐑯 𐑓𐑲𐑤 𐑓𐑮𐑪𐑥 [World Atlas]({link}) 𐑳𐑯𐑛𐑼 ⸰𐑦𐑕𐑒 𐑤𐑲𐑕𐑩𐑯𐑕.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesBanner": "𐑞𐑦𐑕 𐑨𐑐 𐑿𐑟𐑩𐑟 𐑞 𐑓𐑪𐑤𐑴𐑦𐑙 𐑴𐑐𐑩𐑯-𐑕𐑹𐑕 𐑐𐑨𐑒𐑦𐑡𐑩𐑟 𐑯 𐑤𐑲𐑚𐑮𐑼𐑦𐑟.",
     "aboutLicensesAndroidLibrariesSectionTitle": "·𐑨𐑯𐑛𐑮𐑶𐑛 𐑤𐑲𐑚𐑮𐑼𐑦𐑟",
     "aboutLicensesFlutterPluginsSectionTitle": "·𐑓𐑤𐑳𐑑𐑼 𐑐𐑤𐑳𐑜𐑦𐑯𐑟",

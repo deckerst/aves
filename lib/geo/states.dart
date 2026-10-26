@@ -203,6 +203,7 @@ class GeoStates {
     'South Carolina': EmojiStateCodes.usSouthCarolina,
     'South Dakota': EmojiStateCodes.usSouthDakota,
     'Tennessee': EmojiStateCodes.usTennessee,
+    'Texas': EmojiStateCodes.usTexas,
     'Utah': EmojiStateCodes.usUtah,
     'Vermont': EmojiStateCodes.usVermont,
     'Virginia': EmojiStateCodes.usVirginia,

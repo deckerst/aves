@@ -683,7 +683,14 @@
     "menuActionConfigureView": "ನೋಟ",
     "menuActionSelect": "ಆರಿಸು",
     "aboutDataUsageCache": "ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಹ",
-    "aboutCreditsWorldAtlas1": "ಈ ಅಪ್ಲಿಕೇಶನ್ TopoJSON ಕಡತವನ್ನು ಇವರಿಂದ ಬಳಸುತ್ತದೆ",
+    "aboutCreditsWorldAtlas": "ಈ ಅಪ್ಲಿಕೇಶನ್ TopoJSON ಕಡತವನ್ನು ಇವರಿಂದ ಬಳಸುತ್ತದೆ [World Atlas]({link}) ISC ಪರವಾನಗಿ ಅಡಿಯಲ್ಲಿ.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "appPickDialogNone": "ಏನಿಲ್ಲ",
     "aboutBugSectionTitle": "ದೋಷದ ವರದಿ",
     "aboutDataUsageData": "ದತ್ತಾಂಶ",
@@ -864,7 +871,6 @@
     "aboutDataUsageInternal": "ಆಂತರಿಕ",
     "aboutDataUsageExternal": "ಬಾಹ್ಯ",
     "aboutDataUsageClearCache": "ಕ್ಯಾಶೆ ಸಂಗ್ರಹ ಅಳಿಸಿ",
-    "aboutCreditsWorldAtlas2": "ISC ಪರವಾನಗಿ ಅಡಿಯಲ್ಲಿ.",
     "collectionActionSetHome": "ಮುಖಪುಟವಾಗಿ ಹೊಂದಿಸಿ",
     "collectionActionCopy": "ಆಲ್ಬಮ್‌ಗೆ ನಕಲಿಸಿ",
     "collectionGroupMonth": "ತಿಂಗಳಿನಂತೆ",

@@ -237,8 +237,14 @@
     "aboutBugReportInstruction": "Reportar en GitHub con los registros y la información del sistema",
     "aboutBugReportButton": "Reportar",
     "aboutCreditsSectionTitle": "Créditos",
-    "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
-    "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
+    "aboutCreditsWorldAtlas": "Esta aplicación usa un archivo TopoJSON de [World Atlas]({link}) bajo licencia ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traductores",
     "aboutLicensesSectionTitle": "Licencias de código abierto",
     "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",

@@ -315,6 +315,7 @@ class EmojiStateCodes {
   static const usSouthCarolina = 'ussc';
   static const usSouthDakota = 'ussd';
   static const usTennessee = 'ustn';
+  static const usTexas = 'ustx';
   static const usUtah = 'usut';
   static const usVermont = 'usvt';
   static const usVirginia = 'usva';

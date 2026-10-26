@@ -528,8 +528,14 @@
     "aboutDataUsageExternal": "Eksterno",
     "aboutDataUsageClearCache": "Počisti medpomnilnik",
     "aboutCreditsSectionTitle": "Avtorji",
-    "aboutCreditsWorldAtlas1": "Aplikacija uporablja TopoJSON iz",
-    "aboutCreditsWorldAtlas2": "z licenco ISC.",
+    "aboutCreditsWorldAtlas": "Aplikacija uporablja TopoJSON iz [World Atlas]({link}) z licenco ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Prevajalci",
     "aboutLicensesSectionTitle": "Odprtokodne licence",
     "aboutLicensesBanner": "Aplikacija uporablja naslednje odprtokodne pakete in knjižnice.",

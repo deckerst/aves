@@ -426,7 +426,6 @@
     "collectionActionCopy": "Copiar a álbum",
     "albumScreenRecordings": "Gravacións de pantalla",
     "searchRecentSectionTitle": "Recente",
-    "aboutCreditsWorldAtlas2": "baixo licenza ISC.",
     "sectionUnknown": "Descoñecido",
     "collectionSelectPageTitle": "Escolmar elementos",
     "collectionSelectSectionTooltip": "Escolmar sección",
@@ -535,7 +534,14 @@
     "aboutDataUsageInternal": "Interno",
     "aboutDataUsageClearCache": "Limpar caché",
     "aboutBugSaveLogInstruction": "Gardar rexistros da aplicación nun arquivo",
-    "aboutCreditsWorldAtlas1": "Esta apliación usa un arquivo TopoJSON de",
+    "aboutCreditsWorldAtlas": "Esta apliación usa un arquivo TopoJSON de [World Atlas]({link}) baixo licenza ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutBugReportInstruction": "Informar en GitHub cos rexistros e información do sistema",
     "aboutDataUsageExternal": "Externo",
     "aboutLicensesBanner": "Esta aplicación usa os paquetes e bibliotecas de código aberto que seguen.",

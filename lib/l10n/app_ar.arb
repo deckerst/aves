@@ -50,7 +50,6 @@
     "chipActionUnpin": "إلغاء التثبيت في الأعلى",
     "chipActionGoToTagPage": "عرض في الوسوم",
     "sourceStateLocatingPlaces": "تحديد المواقع",
-    "aboutCreditsWorldAtlas2": "بموجب ترخيص ISC.",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{هل تريد نقل هذا العنصر إلى سلة المحذوفات؟} other{حرك هذه {count}العناصر إلى سلة المحذوفات؟}}",
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
@@ -158,7 +157,14 @@
     "tileLayoutGrid": "شبكة",
     "settingsDisplayUseTvInterface": "واجهة أندرويد TV",
     "settingsTimeToTakeActionTile": "وقت إتخاذ الإجراءات",
-    "aboutCreditsWorldAtlas1": "يستخدم هذا التطبيق ملف TopoJSON من",
+    "aboutCreditsWorldAtlas": "يستخدم هذا التطبيق ملف TopoJSON من [World Atlas]({link}) بموجب ترخيص ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "nameConflictDialogMultipleSourceMessage": "بعض الملفات لها نفس الاسم.",
     "settingsVideoSectionTitle": "الفيديو",
     "appExportCovers": "أغلفة",

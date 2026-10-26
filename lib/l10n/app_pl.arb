@@ -428,7 +428,6 @@
     "viewDialogReverseSortOrder": "Odwróć porządek sortowania",
     "coverDialogTabColor": "Kolor",
     "aboutBugReportButton": "Zgłoś",
-    "aboutCreditsWorldAtlas2": "na licencji ISC.",
     "aboutTranslatorsSectionTitle": "Tłumacze",
     "aboutLicensesSectionTitle": "Licencje o otwartym kodzie",
     "aboutLicensesBanner": "Ta aplikacja używa następujących pakietów i bibliotek z otwartym kodem.",
@@ -455,7 +454,14 @@
     "editEntryLocationDialogLatitude": "Szerokość geograficzna",
     "removeEntryMetadataDialogMore": "Więcej",
     "viewDialogSortSectionTitle": "Sortuj",
-    "aboutCreditsWorldAtlas1": "Ta aplikacja używa pliku TopoJSON z",
+    "aboutCreditsWorldAtlas": "Ta aplikacja używa pliku TopoJSON z [World Atlas]({link}) na licencji ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "policyPageTitle": "Polityka prywatności",
     "drawerCollectionImages": "Obrazy",
     "drawerCollectionVideos": "Wideo",

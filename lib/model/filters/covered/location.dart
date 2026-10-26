@@ -119,10 +119,15 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
         if (_code != null) {
           final countryCode = _code.substring(0, 2).toUpperCase();
           if ({
-            // Australia (public domain): https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
+            // Australia (public domain)
+            // https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
             CountryCode.AU.alpha2,
-            // Canada (public domain): https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
+            // Canada (public domain)
+            // https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
             CountryCode.CA.alpha2,
+            // USA (public domain, except CC BY-SA for Maine's)
+            // https://commons.wikimedia.org/wiki/Flags_of_the_U.S._states_and_territories
+            CountryCode.US.alpha2,
           }.contains(countryCode)) {
             final flagAsset = _flagAssets[_code];
             final Future<ByteData> flagAssetFuture;

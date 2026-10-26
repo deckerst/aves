@@ -237,8 +237,14 @@
     "aboutBugReportInstruction": "ログとシステム情報とともに GitHub で報告",
     "aboutBugReportButton": "報告",
     "aboutCreditsSectionTitle": "クレジット",
-    "aboutCreditsWorldAtlas1": "このアプリは TopoJSON ファイルを",
-    "aboutCreditsWorldAtlas2": "ISC License の下使用しています。",
+    "aboutCreditsWorldAtlas": "このアプリは TopoJSON ファイルを [World Atlas]({link}) ISC License の下使用しています。",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "翻訳",
     "aboutLicensesSectionTitle": "オープンソース ライセンス",
     "aboutLicensesBanner": "このアプリは下記のオープンソース パッケージおよびライブラリを使用しています。",

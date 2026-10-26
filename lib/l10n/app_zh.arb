@@ -248,8 +248,14 @@
     "aboutBugReportInstruction": "在 GitHub 上报告日志和系统信息",
     "aboutBugReportButton": "报告",
     "aboutCreditsSectionTitle": "鸣谢",
-    "aboutCreditsWorldAtlas1": "本应用使用的 TopoJSON 文件来自",
-    "aboutCreditsWorldAtlas2": "符合 ISC 许可协议",
+    "aboutCreditsWorldAtlas": "本应用使用的 TopoJSON 文件来自 [World Atlas]({link}) 符合 ISC 许可协议",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "翻译人员",
     "aboutLicensesSectionTitle": "开源许可协议",
     "aboutLicensesBanner": "本应用使用以下开源软件包和库。",

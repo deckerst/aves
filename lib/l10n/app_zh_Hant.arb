@@ -260,7 +260,14 @@
     "aboutBugReportInstruction": "回報日誌和系統資訊到 GitHub",
     "aboutBugReportButton": "回報",
     "aboutCreditsSectionTitle": "感謝名單",
-    "aboutCreditsWorldAtlas1": "本 App 使用的 TopoJSON 檔案來自",
+    "aboutCreditsWorldAtlas": "本 App 使用的 TopoJSON 檔案來自 [World Atlas]({link}) 符合 ISC 授權條款.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "翻譯人員",
     "aboutLicensesSectionTitle": "開放原始碼授權條款",
     "aboutLicensesAndroidLibrariesSectionTitle": "Android 函式庫",
@@ -639,7 +646,6 @@
     "coverDialogTabCover": "封面",
     "appPickDialogNone": "無",
     "aboutBugSaveLogInstruction": "將 App 日誌儲存到檔案",
-    "aboutCreditsWorldAtlas2": "符合 ISC 授權條款.",
     "searchCountriesSectionTitle": "國家",
     "albumPickPageTitleExport": "匯出到相簿",
     "tagPageTitle": "標籤",

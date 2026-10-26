@@ -621,8 +621,15 @@
   "aboutDataUsageClearCache": "Clear Cache",
 
   "aboutCreditsSectionTitle": "Credits",
-  "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
-  "aboutCreditsWorldAtlas2": "under ISC License.",
+  "aboutCreditsWorldAtlas": "This app uses a TopoJSON file from [World Atlas]({link}) under ISC License.",
+  "@aboutCreditsWorldAtlas": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutCreditsStateFlags": "State flags are from Wikimedia Commons. They are in the public domain, except:",
   "aboutTranslatorsSectionTitle": "Translators",
 
   "aboutLicensesSectionTitle": "Open-Source Licenses",

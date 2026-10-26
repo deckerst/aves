@@ -248,8 +248,14 @@
     "aboutBugReportInstruction": "Отправьте отчёт об ошибке на GitHub вместе с логами и системной информацией",
     "aboutBugReportButton": "Отправить",
     "aboutCreditsSectionTitle": "Благодарности",
-    "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
-    "aboutCreditsWorldAtlas2": "под лицензией ISC.",
+    "aboutCreditsWorldAtlas": "Это приложение использует файл TopoJSON из [World Atlas]({link}) под лицензией ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Переводчики",
     "aboutLicensesSectionTitle": "Лицензии с открытым исходным кодом",
     "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",

@@ -1,5 +1,4 @@
 {
-    "aboutCreditsWorldAtlas2": "með ISC-notkunarleyfi.",
     "binEntriesConfirmationDialogMessage": "{count, plural, =1{Færa þetta atriði í ruslmöppuna?} other{Færa þessi {count} atriði í ruslmöppuna?}}",
     "@binEntriesConfirmationDialogMessage": {
         "placeholders": {
@@ -111,7 +110,14 @@
     "tileLayoutGrid": "Reitir",
     "settingsDisplayUseTvInterface": "Android TV viðmót",
     "settingsTimeToTakeActionTile": "Tími til að grípa til aðgerða",
-    "aboutCreditsWorldAtlas1": "Þetta forrit notar TopoJSON-skrá frá",
+    "aboutCreditsWorldAtlas": "Þetta forrit notar TopoJSON-skrá frá [World Atlas]({link}) með ISC-notkunarleyfi.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "tagEditorSectionRecent": "Nýlegt",
     "nameConflictDialogMultipleSourceMessage": "Einhverjar skrár eru með sama heiti.",
     "settingsVideoSectionTitle": "Myndskeið",

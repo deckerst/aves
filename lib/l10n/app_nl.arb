@@ -246,8 +246,14 @@
     "aboutBugReportInstruction": "Melden op GitHub met de logs en systeeminformatie",
     "aboutBugReportButton": "Melden",
     "aboutCreditsSectionTitle": "Dankbetuiging",
-    "aboutCreditsWorldAtlas1": "Deze applicatie gebruikt een TopoJSON-bestand van",
-    "aboutCreditsWorldAtlas2": "onder ISC-licentie.",
+    "aboutCreditsWorldAtlas": "Deze applicatie gebruikt een TopoJSON-bestand van [World Atlas]({link}) onder ISC-licentie.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Vertalers",
     "aboutLicensesSectionTitle": "Open-Source Licenties",
     "aboutLicensesBanner": "Deze app maakt gebruik van de volgende open-sourcepakketten en bibliotheken.",

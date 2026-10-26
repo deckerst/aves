@@ -250,8 +250,14 @@
     "aboutBugReportInstruction": "로그와 시스템 정보를 첨부하여 GitHub에서 이슈를 제출하기",
     "aboutBugReportButton": "제출",
     "aboutCreditsSectionTitle": "크레딧",
-    "aboutCreditsWorldAtlas1": "이 앱은",
-    "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
+    "aboutCreditsWorldAtlas": "이 앱은 [World Atlas]({link}) 의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "번역가",
     "aboutLicensesSectionTitle": "오픈 소스 라이선스",
     "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",

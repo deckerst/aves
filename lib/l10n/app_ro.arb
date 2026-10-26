@@ -338,8 +338,14 @@
     "aboutBugReportInstruction": "Raportați pe GitHub cu jurnalele și informațiile de sistem",
     "aboutBugReportButton": "Raport",
     "aboutCreditsSectionTitle": "Credite",
-    "aboutCreditsWorldAtlas1": "Această aplicație folosește un fișier TopoJSON de la",
-    "aboutCreditsWorldAtlas2": "sub licență ISC.",
+    "aboutCreditsWorldAtlas": "Această aplicație folosește un fișier TopoJSON de la [World Atlas]({link}) sub licență ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traducători",
     "aboutLicensesSectionTitle": "Licențe open-source",
     "aboutLicensesBanner": "Această aplicație folosește următoarele pachete și biblioteci open-source.",

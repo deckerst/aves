@@ -58,8 +58,14 @@
     "aboutDataUsageExternal": "வெளிப்புறம்",
     "aboutDataUsageClearCache": "தற்காலிக சேமிப்பு துடை",
     "aboutCreditsSectionTitle": "நன்றி",
-    "aboutCreditsWorldAtlas1": "இந்தப் பயன்பாடு ஒரு டோபோச்சன் கோப்பைப் பயன்படுத்துகிறது",
-    "aboutCreditsWorldAtlas2": "ஐஎச்சி உரிமத்தின் கீழ்.",
+    "aboutCreditsWorldAtlas": "இந்தப் பயன்பாடு ஒரு டோபோச்சன் கோப்பைப் பயன்படுத்துகிறது [World Atlas]({link}) ஐஎச்சி உரிமத்தின் கீழ்.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "மொழிபெயர்ப்பாளர்கள்",
     "aboutLicensesSectionTitle": "திறந்த மூல உரிமங்கள்",
     "aboutLicensesBanner": "இந்தப் பயன்பாடு பின்வரும் திறந்த மூல தொகுப்புகள் மற்றும் நூலகங்களைப் பயன்படுத்துகிறது.",

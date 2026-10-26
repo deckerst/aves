@@ -572,7 +572,6 @@
     "aboutBugSaveLogInstruction": "Uložte aplikační logy do souboru",
     "aboutBugReportInstruction": "Nahlásit na GitHub s logy a informacemi o systému",
     "aboutBugReportButton": "Nahlásit",
-    "aboutCreditsWorldAtlas2": "pod ISC licencí.",
     "collectionEmptyFavourites": "Žádné oblíbené položky",
     "albumScreenRecordings": "Nahrávky obrazovky",
     "aboutCreditsSectionTitle": "Zásluhy",
@@ -605,7 +604,14 @@
     },
     "drawerCollectionRaws": "Fotografie Raw",
     "drawerTagPage": "Štítky",
-    "aboutCreditsWorldAtlas1": "Tato aplikace využívá soubor TopoJSON od",
+    "aboutCreditsWorldAtlas": "Tato aplikace využívá soubor TopoJSON od [World Atlas]({link}) pod ISC licencí.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "drawerCollectionSphericalVideos": "360° videa",
     "aboutLicensesBanner": "Tato aplikace využívá tyto open-source baličky a knihovny.",
     "aboutLicensesSectionTitle": "Licence open-source",

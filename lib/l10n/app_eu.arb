@@ -421,9 +421,15 @@
     "aboutBugReportInstruction": "GitHubera txostena erregistro eta sistemako informazioarekin bidali",
     "aboutCreditsSectionTitle": "Kredituak",
     "aboutBugReportButton": "Txostena bidali",
-    "aboutCreditsWorldAtlas1": "Aplikazio honek TopoJSON fitxategi bat erabiltzen du",
+    "aboutCreditsWorldAtlas": "Aplikazio honek TopoJSON fitxategi bat erabiltzen du [World Atlas]({link}) ISC lizentziapekoa.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesFlutterPluginsSectionTitle": "Flutterreko pluginak",
-    "aboutCreditsWorldAtlas2": "ISC lizentziapekoa.",
     "collectionSelectPageTitle": "Elementuak hautatu",
     "collectionActionHideTitleSearch": "Izenburuen iragazkiak ezkutatu",
     "collectionActionAddShortcut": "Lasterbidea gehitu",

@@ -476,8 +476,14 @@
     "aboutDataUsageSectionTitle": "Andmekasutus",
     "aboutDataUsageCache": "Vahemälu",
     "aboutDataUsageClearCache": "Tühjenda vahemälu",
-    "aboutCreditsWorldAtlas1": "See rakendus kasutab TopoJSONi faili, mille on koostanud",
-    "aboutCreditsWorldAtlas2": ", avaldatud ISC Litsentsi alusel.",
+    "aboutCreditsWorldAtlas": "See rakendus kasutab TopoJSONi faili, mille on koostanud [World Atlas]({link}), avaldatud ISC Litsentsi alusel.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesSectionTitle": "Avatud lähtekoodiga tarkvara litsentsid",
     "aboutLicensesFlutterPackagesSectionTitle": "Flutteri paketid",
     "aboutLicensesDartPackagesSectionTitle": "Darti paketid",

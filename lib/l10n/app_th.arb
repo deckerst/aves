@@ -286,8 +286,14 @@
     "aboutBugSaveLogInstruction": "บันทึกล็อกของแอปสู่ไฟล์",
     "aboutBugReportInstruction": "รายงานบน GitHub พร้อมล็อกและข้อมูลระบบ",
     "aboutBugReportButton": "รายงาน",
-    "aboutCreditsWorldAtlas1": "แอปนี้ใช้ไฟล์ TopoJSON จาก",
-    "aboutCreditsWorldAtlas2": "ภายใต้ใบอนุญาต ISC",
+    "aboutCreditsWorldAtlas": "แอปนี้ใช้ไฟล์ TopoJSON จาก [World Atlas]({link}) ภายใต้ใบอนุญาต ISC",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "ผู้แปล",
     "policyPageTitle": "นโยบายความเป็นส่วนตัว",
     "viewDialogGroupSectionTitle": "ส่วนแยก",
