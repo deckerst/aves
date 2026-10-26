@@ -1,10 +1,17 @@
+import 'dart:convert';
+
+import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/covered/covered.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/emoji_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:country_code/country_code.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter with CoveredFilter {
@@ -108,14 +115,46 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
         }
         return Icon(AIcons.country, size: size);
       case .state:
-        if (_code != null && device.canRenderSubdivisionFlagEmojis) {
-          final flag = EmojiUtils.stateCodeToFlag(_code);
-          if (flag != null) {
-            return Text(
-              flag,
-              style: TextStyle(fontSize: size),
-              textScaler: TextScaler.noScaling,
+        if (_code != null) {
+          final countryCode = _code.substring(0, 2).toUpperCase();
+          if (<String>{
+            // Australia (public domain): https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
+            CountryCode.AU.alpha2,
+          }.contains(countryCode)) {
+            return FutureBuilder<ByteData>(
+              future: DefaultAssetBundle.of(context).load('assets/flags/$code.svg'),
+              builder: (context, snapshot) {
+                final svgBytes = snapshot.data;
+                if (svgBytes == null) return const SizedBox();
+
+                const mimeType = MimeTypes.svg;
+                return Image(
+                  image: ThumbnailProvider(
+                    ThumbnailProviderKey(
+                      uri: 'data:$mimeType;base64,${base64.encode(Uint8List.sublistView(svgBytes))}',
+                      mimeType: mimeType,
+                      pageId: null,
+                      rotationDegrees: 0,
+                      isFlipped: false,
+                      dateModifiedMillis: -1,
+                      extent: size,
+                      videoThumbnailMethods: null,
+                    ),
+                  ),
+                  width: size,
+                  height: size,
+                );
+              },
             );
+          } else if (device.canRenderSubdivisionFlagEmojis) {
+            final flag = EmojiUtils.stateCodeToFlag(_code);
+            if (flag != null) {
+              return Text(
+                flag,
+                style: TextStyle(fontSize: size),
+                textScaler: TextScaler.noScaling,
+              );
+            }
           }
         }
         return Icon(AIcons.state, size: size);

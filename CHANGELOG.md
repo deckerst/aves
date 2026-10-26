@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Cataloguing: detect/filter C2PA content credentials validity
 - Info: show C2PA content credentials
 - Countries: show states for Canada (provinces and territories)
+- States: flag icons
 
 ### Changed
 

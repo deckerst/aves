@@ -24,7 +24,6 @@ import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.SVG
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -58,7 +57,7 @@ class ThumbnailFetcher internal constructor(
 
     private fun isCustomFetch(): Boolean {
         // use custom Glide models for videos / SVG / TIFF / multi-page images
-        if (isVideo(mimeType) || mimeType == SVG || mimeType == MimeTypes.TIFF) return true
+        if (isVideo(mimeType) || mimeType == MimeTypes.SVG || mimeType == MimeTypes.TIFF) return true
         if (pageId != null && MultiPageImage.isSupported(mimeType)) return true
         return false
     }
@@ -101,7 +100,7 @@ class ThumbnailFetcher internal constructor(
                 val reduction = 1f - (dstWidth * dstHeight).toFloat() / (bitmap.width * bitmap.height)
                 if (reduction > RESCALE_REDUCTION_THRESHOLD) {
                     Log.d(
-                        LOG_TAG, "rescale thumbnail for mimeType=$mimeType uri=$uri width=$width height=$height" +
+                        LOG_TAG, "rescale thumbnail for $contentAddress width=$width height=$height" +
                                 ", with bitmap byteCount=${bitmap.byteCount} size=${bitmap.width}x${bitmap.height}, to target=${dstWidth}x${dstHeight}" +
                                 ", reduced by ${(reduction * 100).roundToInt()}%)"
                     )

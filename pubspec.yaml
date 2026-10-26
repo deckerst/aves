@@ -180,6 +180,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/flags/
+    - assets/map_samples/
   generate: true
   uses-material-design: true
 

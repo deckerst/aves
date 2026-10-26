@@ -29,6 +29,7 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
+import deckers.thibault.aves.utils.UriUtils.isDataScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
@@ -38,6 +39,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.io.encoding.Base64
 
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
@@ -50,6 +52,7 @@ object StorageUtils {
 
     private const val TREE_URI_ROOT = "${ContentResolver.SCHEME_CONTENT}://$EXTERNAL_STORAGE_PROVIDER_AUTHORITY/tree/"
 
+    private const val DATA_URI_BASE64_SEPARATOR = ";base64,"
     private val UUID_PATTERN = Regex("[A-Fa-f\\d-]+")
     private val TREE_URI_PATH_PATTERN = Pattern.compile("(.*?):(.*)")
 
@@ -708,6 +711,11 @@ object StorageUtils {
         return try {
             return if (uri.isFileScheme) {
                 FileInputStream(uri.path)
+            } else if (uri.isDataScheme) {
+                val uriString = uri.toString()
+                val index = uriString.indexOf(DATA_URI_BASE64_SEPARATOR)
+                if (index == -1) throw Exception("unsupported data URI encoding for uri=$uri")
+                Base64.decode(uriString, index + DATA_URI_BASE64_SEPARATOR.length).inputStream()
             } else {
                 context.contentResolver.openInputStream(effectiveUri)
             }

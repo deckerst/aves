@@ -5,10 +5,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
-class PolicyPage extends StatefulWidget {
+class const PolicyPage({super.key}) extends StatefulWidget {
   static const routeName = '/about/policy';
-
-  const new({super.key});
 
   @override
   State<PolicyPage> createState() => _PolicyPageState();
@@ -17,13 +15,13 @@ class PolicyPage extends StatefulWidget {
 class _PolicyPageState extends State<PolicyPage> {
   late Future<String> _termsLoader;
 
-  static const termsPath = 'assets/terms.md';
-  static const termsDirection = TextDirection.ltr;
+  static const _termsPath = 'assets/terms.md';
+  static const _termsDirection = TextDirection.ltr;
 
   @override
-  void initState() {
-    super.initState();
-    _termsLoader = rootBundle.loadString(termsPath);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _termsLoader = DefaultAssetBundle.of(context).loadString(_termsPath);
   }
 
   @override
@@ -51,7 +49,7 @@ class _PolicyPageState extends State<PolicyPage> {
                   child: MarkdownContainer(
                     scrollController: PrimaryScrollController.of(context),
                     data: terms,
-                    textDirection: termsDirection,
+                    textDirection: _termsDirection,
                   ),
                 );
               },
