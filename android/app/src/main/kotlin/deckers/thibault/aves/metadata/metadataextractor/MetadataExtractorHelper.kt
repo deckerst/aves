@@ -133,18 +133,22 @@ object MetadataExtractorHelper {
      */
     fun readMimeType(input: InputStream, path: String?, sizeBytes: Long?): String? {
         var detectedMimeType: String? = null
-        val metadata = safeRead(input, sizeBytes, path)
-        for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-            if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
-                detectedMimeType = MimeTypes.TIFF
-            } else {
-                // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                    if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
-                        detectedMimeType = it
+        try {
+            val metadata = safeRead(input, sizeBytes, path)
+            for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
+                if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
+                    detectedMimeType = MimeTypes.TIFF
+                } else {
+                    // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                    dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
+                        if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
+                            detectedMimeType = it
+                        }
                     }
                 }
             }
+        } catch (_: ImageProcessingException) {
+            // ignore
         }
         return detectedMimeType
     }

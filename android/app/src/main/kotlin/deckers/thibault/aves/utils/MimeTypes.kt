@@ -6,6 +6,7 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object MimeTypes {
     const val ANY = "*/*"
+    const val ANY_IMAGE = "image/*"
 
     // generic raster
     private const val AVIF = "image/avif"

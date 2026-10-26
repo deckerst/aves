@@ -5,7 +5,6 @@ import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.util.Log
-import androidx.core.net.toUri
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -139,16 +138,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
     // as of `c2pa-android` v0.0.15, library is usable only from Android P (API 28)
     private fun getContentCredentials(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
-
-        if (mimeType == null || uri == null || path == null) {
+        val contentAddress = ContentAddress.fromMethodCall(call)
+        if (contentAddress == null) {
             result.error("getContentCredentials-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val fields: FieldMap = hashMapOf(
             "validity" to C2paHelper.getValidity(contentAddress).toString(),
@@ -159,16 +153,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getAllMetadata-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
+        val mimeType = contentAddress.mimeType
 
         val metadataMap = HashMap<String, MutableMap<String, String>>()
         var foundExif = false
@@ -483,7 +475,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // about embedded images as they do not list them as separate tracks
             // and only identify at most one
         } else if (isIsoBMFFImage(mimeType)) {
-            Mp4ParserHelper.getSamsungSefd(context, uri)?.let { (_, bytes) ->
+            Mp4ParserHelper.getSamsungSefd(context, contentAddress.uri)?.let { (_, bytes) ->
                 metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = hashMapOf(
                     "Size" to bytes.size.toString(),
                 )
@@ -534,22 +526,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / xmp:Rating
     // - XMP / MicrosoftPhoto:Rating
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getCatalogMetadata-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val beforeAvailableHeapSize = MemoryUtils.getAvailableHeapSize()
 
         val metadataMap = HashMap<String, Any>()
         getCatalogMetadataByMetadataExtractor(contentAddress, sizeBytes, metadataMap)
 
+        val mimeType = contentAddress.mimeType
         if (isVideo(mimeType) || isIsoBMFFImage(mimeType)) {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(contentAddress, metadataMap)
 
@@ -573,7 +562,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         if (isIsoBMFFImage(mimeType)) {
             val flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
-            if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isIsoBMFFImageSefdMotionPhoto(context, uri)) {
+            if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isIsoBMFFImageSefdMotionPhoto(context, contentAddress.uri)) {
                 metadataMap[KEY_FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
             }
         }
@@ -995,18 +984,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val fields = call.argument<List<String>>("fields")
-        if (mimeType == null || uri == null || fields == null) {
+        if (contentAddress == null || fields == null) {
             result.error("getOverlayMetadata-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
+        val mimeType = contentAddress.mimeType
         val metadataMap = HashMap<String, Any>()
         if (fields.isEmpty() || isVideo(mimeType)) {
             result.success(metadataMap)
@@ -1080,7 +1066,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             } catch (e: Exception) {
                 // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
             }
         }
 
@@ -1137,18 +1123,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
           - GeoTiffKeys.projLinearUnits -> int
      */
     private fun getGeoTiffInfo(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getGeoTiffInfo-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
-        if (canReadWithMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
@@ -1191,28 +1173,24 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMultiPageInfo(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val isMotionPhoto = call.argument<Boolean>("isMotionPhoto")
-        if (mimeType == null || uri == null || sizeBytes == null || isMotionPhoto == null) {
+        if (contentAddress == null || sizeBytes == null || isMotionPhoto == null) {
             result.error("getMultiPageInfo-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
         val pages: ArrayList<FieldMap>? = if (isMotionPhoto) {
             MultiPage.getMotionPhotoPages(context, contentAddress, sizeBytes)
         } else {
-            when (mimeType) {
+            when (contentAddress.mimeType) {
                 MimeTypes.HEIC,
                 MimeTypes.HEIC_SEQUENCE,
-                MimeTypes.HEIF -> MultiPage.getHeicTracks(context, uri)
+                MimeTypes.HEIF -> MultiPage.getHeicTracks(context, contentAddress.uri)
 
                 MimeTypes.JPEG -> MultiPage.getJpegMpfPages(context, contentAddress, sizeBytes)
-                MimeTypes.TIFF -> MultiPage.getTiffPages(context, uri)
+                MimeTypes.TIFF -> MultiPage.getTiffPages(context, contentAddress.uri)
                 else -> null
             }
         }
@@ -1224,16 +1202,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getPanoramaInfo(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getPanoramaInfo-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val fields: FieldMap = hashMapOf()
         var foundXmp = false
@@ -1244,6 +1218,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             fields.putAll(GoogleXMP.getPanoramaInfo(xmpMeta))
         }
 
+        val mimeType = contentAddress.mimeType
         if (canReadWithMetadataExtractor(mimeType) && !isLargeMp4(mimeType, sizeBytes)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
@@ -1279,19 +1254,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getIptc(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
-        if (mimeType == null || uri == null) {
+        val contentAddress = ContentAddress.fromMethodCall(call)
+        if (contentAddress == null) {
             result.error("getIptc-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
-        if (MimeTypes.canReadWithPixyMeta(mimeType)) {
+        if (MimeTypes.canReadWithPixyMeta(contentAddress.mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                StorageUtils.openInputStream(context, contentAddress.uri)?.use { input ->
                     val iptcDataList = PixyMetaHelper.getIptc(input)
                     result.success(iptcDataList)
                     return
@@ -1308,16 +1279,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // returns XMP components
     // returns an empty list if there is no XMP
     private fun getXmp(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getXmp-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val xmpStrings = mutableListOf<String>()
         var foundXmp = false
@@ -1328,10 +1295,11 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 xmpStrings.add(XMPMetaFactory.serializeToString(xmpMeta, xmpSerializeOptions))
             } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", e)
             }
         }
 
+        val mimeType = contentAddress.mimeType
         if (canReadWithMetadataExtractor(mimeType) && !isLargeMp4(mimeType, sizeBytes)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
@@ -1383,19 +1351,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getContentPropValue(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val prop = call.argument<String>("prop")
-        if (mimeType == null || uri == null || prop == null) {
+        if (contentAddress == null || prop == null) {
             result.error("getContentPropValue-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
         try {
-            val value = context.queryContentPropValue(uri, mimeType, prop)
+            val value = context.queryContentPropValue(contentAddress.uri, contentAddress.mimeType, prop)
             result.success(value?.toString())
         } catch (e: Exception) {
             result.error("getContentPropValue-query", "failed to query prop for $contentAddress", e.stackTraceToString())
@@ -1403,21 +1367,17 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getDate(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val field = call.argument<String>("field")
-        if (mimeType == null || uri == null || field == null) {
+        if (contentAddress == null || field == null) {
             result.error("getDate-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
         var dateMillis: Long? = null
         var offsetMinutes: Int? = null
-        if (canReadWithMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
@@ -1505,17 +1465,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getFields(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val fields = call.argument<List<String>>("fields")
-        if (mimeType == null || uri == null || fields == null) {
+        if (contentAddress == null || fields == null) {
             result.error("getFields-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val metadataMap = HashMap<String, Any?>()
 

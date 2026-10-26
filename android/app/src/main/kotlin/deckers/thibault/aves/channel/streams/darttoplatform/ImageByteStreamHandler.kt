@@ -2,8 +2,6 @@ package deckers.thibault.aves.channel.streams.darttoplatform
 
 import android.content.Context
 import android.graphics.Rect
-import android.net.Uri
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.streams.BaseStreamHandler
 import deckers.thibault.aves.decoding.RegionFetcher
@@ -63,26 +61,23 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
-        val mimeType = arguments["mimeType"] as String?
-        val uri = (arguments["uri"] as String?)?.toUri()
-        val pageId = arguments["pageId"] as Int?
+        val contentAddress = ContentAddress.fromMap(arguments)
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
         val videoMethods = (arguments["videoMethods"] as List<*>?)?.filterIsInstance<String>()?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             error("streamImage-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
-
+        val mimeType = contentAddress.mimeType
         if (!decoded && handleEncodedBytesInFlutter(mimeType)) {
             // the image can be decoded by Flutter codecs,
             // and there is no need for processing on the platform side
             // so we stream it without decoding it
-            streamOriginalBytesWithTrailer(uri, mimeType)
+            streamOriginalBytesWithTrailer(contentAddress)
         } else if (isVideo(mimeType)) {
             streamVideoByGlide(
                 contentAddress = contentAddress,
@@ -105,14 +100,14 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         }
     }
 
-    private fun streamOriginalBytesWithTrailer(uri: Uri, mimeType: String) {
+    private fun streamOriginalBytesWithTrailer(contentAddress: ContentAddress) {
         try {
-            val sent = StorageUtils.openInputStream(context, uri)?.use(::streamBytes)
+            val sent = StorageUtils.openInputStream(context, contentAddress.uri)?.use(::streamBytes)
             if (sent ?: false) {
                 success(BitmapUtils.FORMAT_BYTE_ENCODED_AS_BYTES)
             }
         } catch (e: Exception) {
-            error("streamImage-image-read-exception", "failed to get image for mimeType=$mimeType uri=$uri", e.stackTraceToString())
+            error("streamImage-image-read-exception", "failed to get image for $contentAddress", e.stackTraceToString())
         }
     }
 
@@ -184,9 +179,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
-        val mimeType = arguments["mimeType"] as String?
-        val uri = (arguments["uri"] as String?)?.toUri()
-        val pageId = arguments["pageId"] as Int?
+        val contentAddress = ContentAddress.fromMap(arguments)
         val sizeBytes = (arguments["sizeBytes"] as Number?)?.toLong()
         val sampleSize = arguments["sampleSize"] as Int?
         val x = arguments["regionX"] as Int?
@@ -196,17 +189,15 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val imageWidth = arguments["imageWidth"] as Int?
         val imageHeight = arguments["imageHeight"] as Int?
 
-        if (uri == null || mimeType == null || sampleSize == null || x == null || y == null || width == null || height == null || imageWidth == null || imageHeight == null) {
+        if (contentAddress == null || sampleSize == null || x == null || y == null || width == null || height == null || imageWidth == null || imageHeight == null) {
             error("getRegion-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
-
         val regionRect = Rect(x, y, x + width, y + height)
-        when (mimeType) {
+        when (contentAddress.mimeType) {
             MimeTypes.SVG -> SvgRegionFetcher(context).fetch(
-                uri = uri,
+                uri = contentAddress.uri,
                 decoded = decoded,
                 sizeBytes = sizeBytes,
                 scale = sampleSize,
@@ -217,8 +208,8 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             )
 
             MimeTypes.TIFF -> TiffRegionFetcher(context).fetch(
-                uri = uri,
-                page = pageId ?: 0,
+                uri = contentAddress.uri,
+                page = contentAddress.pageId ?: 0,
                 decoded = decoded,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
@@ -243,9 +234,7 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
             return
         }
 
-        val uri = (arguments[EntryFields.URI] as String?)?.toUri()
-        val pageId = arguments["pageId"] as Int?
-        val mimeType = arguments[EntryFields.MIME_TYPE] as String?
+        val contentAddress = ContentAddress.fromMap(arguments)
         val dateModifiedMillis = (arguments[EntryFields.DATE_MODIFIED_MILLIS] as Number?)?.toLong()
         val rotationDegrees = arguments[EntryFields.ROTATION_DEGREES] as Int?
         val isFlipped = arguments[EntryFields.IS_FLIPPED] as Boolean?
@@ -253,12 +242,10 @@ class ImageByteStreamHandler(private val context: Context, private val arguments
         val heightDip = (arguments["heightDip"] as Number?)?.toDouble()
         val videoMethods = (arguments["videoMethods"] as List<*>?)?.filterIsInstance<String>()?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
-        if (uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
+        if (contentAddress == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
             error("getThumbnail-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
         ThumbnailFetcher(

@@ -251,19 +251,15 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getExifInterfaceMetadata-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
         val metadataMap = HashMap<String, String?>()
-        if (canReadWithExifInterface(mimeType, strict = false)) {
+        if (canReadWithExifInterface(contentAddress.mimeType, strict = false)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
@@ -282,15 +278,11 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
-        if (mimeType == null || uri == null) {
+        val contentAddress = ContentAddress.fromMethodCall(call)
+        if (contentAddress == null) {
             result.error("getMediaMetadataRetrieverMetadata-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val metadataMap = HashMap<String, String>()
         val retriever = StorageUtils.openMetadataRetriever(context, contentAddress)
@@ -310,19 +302,15 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.toUri()
-        val path = call.argument<String>("path")
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
+        if (contentAddress == null) {
             result.error("getMetadataExtractorSummary-args", "missing arguments", null)
             return
         }
 
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
-
         val metadataMap = HashMap<String, String>()
-        if (canReadWithMetadataExtractor(mimeType)) {
+        if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
@@ -468,10 +456,8 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
     )
 
     private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
+        val contentAddress = ContentAddress.fromMethodCall(call)
         val method = call.argument<String>("method")
-        val uri = call.argument<String>(EntryFields.URI)?.toUri()
-        val pageId = call.argument<Int>("pageId")
-        val mimeType = call.argument<String>(EntryFields.MIME_TYPE)
         val dateModifiedMillis = call.argument<Number>(EntryFields.DATE_MODIFIED_MILLIS)?.toLong()
         val rotationDegrees = call.argument<Int>(EntryFields.ROTATION_DEGREES)
         val isFlipped = call.argument<Boolean>(EntryFields.IS_FLIPPED)
@@ -479,12 +465,10 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         val heightDip = call.argument<Number>("heightDip")?.toDouble()
         val videoMethods = call.argument<List<String>>("videoMethods")?.mapNotNull { VideoThumbnailMethod.fromKey(it) }
 
-        if (method == null || uri == null || mimeType == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
+        if (contentAddress == null || method == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null) {
             result.error("getThumbnail-args", "missing arguments", null)
             return
         }
-
-        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = null, pageId = pageId)
 
         val decoded = false
 
@@ -533,7 +517,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         // do not recycle bitmaps fetched from `ContentResolver` or Glide as their lifecycle is unknown
-        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = mimeType)
+        val bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = decoded, applyGainmap = false, mimeType = contentAddress.mimeType)
 
         if (bytes == null) {
             var errorDetails: String? = exception?.message
