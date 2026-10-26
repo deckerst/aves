@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/dirs.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
@@ -154,7 +155,7 @@ class AvesEntry with AvesEntryBase {
   }
 
   // for DB only
-  Map<String, dynamic> toDatabaseMap() {
+  Map<String, Object?> toDatabaseMap() {
     return {
       EntryFields.id: id,
       EntryFields.uri: uri,
@@ -175,7 +176,7 @@ class AvesEntry with AvesEntryBase {
     };
   }
 
-  Map<String, dynamic> toPlatformEntryMap() {
+  Map<String, Object?> toPlatformEntryMap() {
     return {
       EntryFields.uri: uri,
       EntryFields.path: path,
@@ -190,6 +191,15 @@ class AvesEntry with AvesEntryBase {
       EntryFields.trashed: trashed,
       EntryFields.trashPath: trashDetails?.path,
       EntryFields.origin: origin,
+    };
+  }
+
+  Map<String, Object?> toPlatformContentAddress() {
+    return {
+      EntryFields.mimeType: mimeType,
+      EntryFields.uri: uri,
+      EntryFields.path: storagePath,
+      EntryFields.sizeBytes: sizeBytes,
     };
   }
 

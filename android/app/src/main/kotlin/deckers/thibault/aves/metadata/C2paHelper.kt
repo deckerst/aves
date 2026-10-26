@@ -25,6 +25,7 @@ object C2paHelper {
         }
 
         val path = contentAddress.path ?: return C2paValidity.UNKNOWN
+        if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
         val imageStream = FileStream(File(path), FileStream.Mode.READ)
         imageStream.use { imageStream ->
@@ -56,6 +57,7 @@ object C2paHelper {
         }
 
         val path = contentAddress.path ?: return null
+        if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
         val imageStream = FileStream(File(path), FileStream.Mode.READ)
         imageStream.use { imageStream ->
@@ -76,6 +78,7 @@ object C2paHelper {
         }
 
         val path = contentAddress.path ?: return null
+        if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
         val imageStream = FileStream(File(path), FileStream.Mode.READ)
         imageStream.use { imageStream ->
