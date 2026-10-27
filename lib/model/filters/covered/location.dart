@@ -9,6 +9,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/emoji_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -95,7 +96,8 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
   @override
   String getLabel(BuildContext context) => _isUnlocated ? context.l10n.filterNoLocationLabel : _location;
 
-  static final _flagAssets = <String, ByteData>{};
+  // MIME type and image bytes pair by state code
+  static final _flagAssets = <String, (String, ByteData)>{};
 
   @override
   Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) {
@@ -133,29 +135,45 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
             CountryCode.US.alpha2,
           }.contains(countryCode)) {
             final flagAsset = _flagAssets[_code];
-            final Future<ByteData> flagAssetFuture;
+            final Future<(String, ByteData)?> flagAssetFuture;
             if (flagAsset != null) {
               flagAssetFuture = SynchronousFuture(flagAsset);
             } else {
-              flagAssetFuture = DefaultAssetBundle.of(context).load('assets/flags/$_code.svg');
-              flagAssetFuture.then((v) => _flagAssets[_code] = v);
+              final assetBundle = DefaultAssetBundle.of(context);
+              flagAssetFuture = Future.wait(
+                // Some assets are in SVG, others in PNG, to save space.
+                // We try both formats, instead of maintaining a list of formats used for each state flag.
+                [MimeTypes.svg, MimeTypes.png].map((mimeType) async {
+                  try {
+                    final bytes = await assetBundle.load('assets/flags/$_code${MimeTypes.extensionFor(mimeType)}');
+                    return (mimeType, bytes);
+                  } catch (_) {
+                    return null;
+                  }
+                }),
+              ).then((v) => v.nonNulls.firstOrNull);
+
+              // cache result
+              flagAssetFuture.then((v) {
+                if (v != null) _flagAssets[_code] = v;
+              });
             }
 
-            return FutureBuilder<ByteData>(
+            return FutureBuilder<(String, ByteData)?>(
               future: flagAssetFuture,
               builder: (context, snapshot) {
-                final svgBytes = snapshot.data;
-                if (svgBytes == null) return const SizedBox();
+                final flagAsset = snapshot.data;
+                if (flagAsset == null) return const SizedBox();
 
                 // arbitrary ratio applied to the provided icon size,
                 // to make the flags appear as large as country emoji icons
                 const flagRatio = 1.4;
 
-                const mimeType = MimeTypes.svg;
+                final (mimeType, bytes) = flagAsset;
                 return Image(
                   image: ThumbnailProvider(
                     ThumbnailProviderKey(
-                      uri: 'data:$mimeType;base64,${base64.encode(Uint8List.sublistView(svgBytes))}',
+                      uri: 'data:$mimeType;base64,${base64.encode(Uint8List.sublistView(bytes))}',
                       mimeType: mimeType,
                       pageId: null,
                       rotationDegrees: 0,
