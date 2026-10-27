@@ -521,6 +521,7 @@
   },
 
   "exportEntryDialogFormat": "Format:",
+  "exportEntryDialogDimension": "Dimension:",
   "exportEntryDialogWidth": "Width",
   "exportEntryDialogHeight": "Height",
   "exportEntryDialogQuality": "Quality",

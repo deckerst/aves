@@ -11,10 +11,15 @@ All notable changes to this project will be documented in this file.
 - Info: show C2PA content credentials
 - Countries: show states for Canada (provinces and territories)
 - States: flag icons
+- Export: conversion of mixed aspect ratios with a single target dimension
 
 ### Changed
 
 - upgraded Flutter to stable v3.47.8
+
+### Removed
+
+- Export: conversion to BMP
 
 ### Fixed
 

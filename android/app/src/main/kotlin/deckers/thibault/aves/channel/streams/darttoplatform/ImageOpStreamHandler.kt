@@ -90,11 +90,12 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         val exportMimeType = arguments["exportMimeType"] as String?
         val quality = (arguments["quality"] as Number?)?.toInt()
         val lengthUnit = arguments["lengthUnit"] as String?
+        val targetDimension = arguments["targetDimension"] as String?
         val width = (arguments["width"] as Number?)?.toInt()
         val height = (arguments["height"] as Number?)?.toInt()
         val writeMetadata = arguments["writeMetadata"] as Boolean?
         val nameConflictStrategy = NameConflictStrategy.fromKey(arguments["nameConflictStrategy"] as String?)
-        if (destinationDir == null || exportMimeType == null || quality == null || lengthUnit == null || width == null || height == null || writeMetadata == null || nameConflictStrategy == null) {
+        if (destinationDir == null || exportMimeType == null || quality == null || lengthUnit == null || targetDimension == null || writeMetadata == null || nameConflictStrategy == null) {
             error("convert-args", "missing arguments", null)
             return
         }
@@ -114,10 +115,11 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
             exportMimeType = exportMimeType,
             targetDir = destinationDir,
             entries = entries,
-            quality = quality,
+            targetDimension = targetDimension,
             lengthUnit = lengthUnit,
             width = width,
             height = height,
+            quality = quality,
             writeMetadata = writeMetadata,
             nameConflictStrategy = nameConflictStrategy,
             callback = object : ImageOpCallback {

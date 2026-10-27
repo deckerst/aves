@@ -17,6 +17,8 @@ enum DateFieldSource {
 
 enum EntryConvertAction { convert, convertMotionPhotoToStillImage }
 
+enum ConvertDimension { width, height, both }
+
 enum LengthUnit { px, percent }
 
 enum LocationEditAction {

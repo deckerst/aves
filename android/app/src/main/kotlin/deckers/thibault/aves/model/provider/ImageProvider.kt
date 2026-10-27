@@ -82,6 +82,7 @@ import java.nio.channels.Channels
 import java.util.Date
 import java.util.TimeZone
 import java.util.concurrent.CompletableFuture
+import kotlin.math.roundToInt
 import kotlin.time.Clock
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
@@ -635,10 +636,11 @@ abstract class ImageProvider {
         exportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
-        quality: Int,
+        targetDimension: String,
         lengthUnit: String,
-        width: Int,
-        height: Int,
+        width: Int?,
+        height: Int?,
+        quality: Int,
         writeMetadata: Boolean,
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
@@ -649,6 +651,7 @@ abstract class ImageProvider {
         }
 
         for (entry in entries) {
+            val sourceMimeType = entry.mimeType
             val sourceUri = entry.uri
             val sourcePath = entry.path
             val pageId = entry.pageId
@@ -659,7 +662,25 @@ abstract class ImageProvider {
                 "success" to false,
             )
 
-            val sourceMimeType = entry.mimeType
+            val targetWidth: Int
+            val targetHeight: Int
+            when (targetDimension) {
+                "width" -> {
+                    targetWidth = width!!
+                    targetHeight = (targetWidth / entry.displayAspectRatio).roundToInt()
+                }
+
+                "height" -> {
+                    targetHeight = height!!
+                    targetWidth = (targetHeight * entry.displayAspectRatio).roundToInt()
+                }
+
+                else -> {
+                    targetWidth = width!!
+                    targetHeight = height!!
+                }
+            }
+
             try {
                 val newFields = convertSingle(
                     context = context,
@@ -667,8 +688,8 @@ abstract class ImageProvider {
                     targetDir = targetDir,
                     quality = quality,
                     lengthUnit = lengthUnit,
-                    width = width,
-                    height = height,
+                    width = targetWidth,
+                    height = targetHeight,
                     writeMetadata = writeMetadata,
                     nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else exportMimeType,
