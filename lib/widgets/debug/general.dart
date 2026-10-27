@@ -77,6 +77,28 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
           onPressed: () => AnalysisService.startService(force: false),
           child: const Text('Start analysis service'),
         ),
+        Selector<Settings, int>(
+          selector: (context, s) => s.debugCatalogConcurrentTaskMax,
+          builder: (context, concurrentTaskMax, child) {
+            return Column(
+              crossAxisAlignment: .start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text('Catalog max concurrent tasks ($concurrentTaskMax)'),
+                ),
+                Slider(
+                  value: concurrentTaskMax.toDouble(),
+                  onChanged: (v) => settings.debugCatalogConcurrentTaskMax = v.round(),
+                  min: 1.0,
+                  max: 8.0,
+                  divisions: 7,
+                  label: '$concurrentTaskMax',
+                ),
+              ],
+            );
+          },
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),

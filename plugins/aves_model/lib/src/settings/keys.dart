@@ -41,6 +41,7 @@ class SettingKeys {
   static const recentTagsKey = 'recent_tags';
 
   // debug
+  static const debugCatalogConcurrentTaskMaxKey = 'debug_catalog_concurrent_task_max';
   static const debugShowViewerTilesKey = 'debug_show_viewer_tiles';
 
   // display
