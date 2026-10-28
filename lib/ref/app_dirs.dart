@@ -32,6 +32,12 @@ class AppDirs {
       'Imaging Edge Mobile',
     },
 
+    // App name: "VWFNDR™ + MBL"
+    // https://play.google.com/store/apps/details?id=com.vwfndr.mbl
+    'com.vwfndr.mbl': {
+      'VWFNDR MBL',
+    },
+
     // App name: "WhatsApp"
     // https://play.google.com/store/apps/details?id=com.whatsapp
     'com.whatsapp': {

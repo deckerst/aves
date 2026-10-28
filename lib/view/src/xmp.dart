@@ -19,6 +19,7 @@ class XmpNamespaceView {
     XmpNamespaces.crss: 'Camera Raw Saved Settings',
     XmpNamespaces.darktable: 'darktable',
     XmpNamespaces.dc: 'Dublin Core',
+    XmpNamespaces.dcterms: 'DC Terms',
     XmpNamespaces.dicom: 'DICOM',
     XmpNamespaces.digiKam: 'digiKam',
     XmpNamespaces.droneDji: 'DJI Drone',
