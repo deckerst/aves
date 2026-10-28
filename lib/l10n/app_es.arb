@@ -761,5 +761,7 @@
     "filterCredentialsValidityInvalidLabel": "No válida",
     "filterCredentialsValidityTrustedLabel": "De confianza",
     "searchCredentialsSectionTitle": "Credenciales de contenido",
-    "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales"
+    "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales",
+    "exportEntryDialogDimension": "Dimensión:",
+    "aboutCreditsStateFlags": "Las banderas de los estados provienen de Wikimedia Commons. Son de dominio público, excepto:"
 }

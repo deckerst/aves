@@ -248,7 +248,7 @@
     "aboutBugReportInstruction": "在 GitHub 上报告日志和系统信息",
     "aboutBugReportButton": "报告",
     "aboutCreditsSectionTitle": "鸣谢",
-    "aboutCreditsWorldAtlas": "本应用使用的 TopoJSON 文件来自 [World Atlas]({link}) 符合 ISC 许可协议",
+    "aboutCreditsWorldAtlas": "本应用使用的 TopoJSON 文件来自 [World Atlas]({link}) 符合 ISC 许可协议。",
     "@aboutCreditsWorldAtlas": {
         "placeholders": {
             "link": {
@@ -761,5 +761,7 @@
     "filterCredentialsValidityValidLabel": "有效",
     "filterCredentialsValidityTrustedLabel": "信任",
     "searchCredentialsSectionTitle": "内容凭据",
-    "settingsThumbnailShowCredentialValidity": "显示凭据有效性"
+    "settingsThumbnailShowCredentialValidity": "显示凭据有效性",
+    "aboutCreditsStateFlags": "来自 Wikimedia Commons 的地区旗帜。它们位于公共领域，除了：",
+    "exportEntryDialogDimension": "尺寸："
 }

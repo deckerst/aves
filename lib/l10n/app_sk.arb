@@ -996,5 +996,7 @@
     "filterCredentialsValidityValidLabel": "Platné",
     "filterCredentialsValidityTrustedLabel": "Dôveryhodné",
     "searchCredentialsSectionTitle": "Overovacie údaje obsahu",
-    "settingsThumbnailShowCredentialValidity": "Zobraziť platnosť overovacích údajov"
+    "settingsThumbnailShowCredentialValidity": "Zobraziť platnosť overovacích údajov",
+    "aboutCreditsStateFlags": "Vlajky štátov pochádzajú z Wikimedia Commons. Nachádzajú sa vo verejnej doméne, s výnimkou:",
+    "exportEntryDialogDimension": "Rozmer:"
 }

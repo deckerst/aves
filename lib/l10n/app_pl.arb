@@ -990,5 +990,13 @@
     "videoThumbnailMethodFirstFrame": "Pierwsza klatka",
     "settingsVideoThumbnailMethods": "Preferowana miniatura",
     "renameTagDialogLabelAlreadyExistsHelper": "Tag już istnieje",
-    "chipActionCopyCenterCoordinates": "Skopiuj współrzędne środka"
+    "chipActionCopyCenterCoordinates": "Skopiuj współrzędne środka",
+    "filterCredentialsValidityUnknownLabel": "Nieznane",
+    "filterCredentialsValidityInvalidLabel": "Nieprawidłowe",
+    "filterCredentialsValidityValidLabel": "Prawidłowe",
+    "filterCredentialsValidityTrustedLabel": "Zaufane",
+    "aboutCreditsStateFlags": "Flagi państw pochodzą z serwisu Wikimedia Commons. Znajdują się one w domenie publicznej, z wyjątkiem:",
+    "searchCredentialsSectionTitle": "Dane uwierzytelniające treści",
+    "settingsThumbnailShowCredentialValidity": "Pokaż ważność poświadczeń",
+    "exportEntryDialogDimension": "Wymiary:"
 }
