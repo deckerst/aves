@@ -38,24 +38,15 @@ import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class BasicSection extends StatefulWidget {
-  final AvesEntry entry;
-  final CollectionLens? collection;
-  final EntryInfoActionDelegate actionDelegate;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ValueNotifier<EntryAction?> isEditingMetadataNotifier;
-  final AFilterCallback onFilterSelection;
-
-  const new({
-    super.key,
-    required this.entry,
-    this.collection,
-    required this.actionDelegate,
-    required this.isScrollingNotifier,
-    required this.isEditingMetadataNotifier,
-    required this.onFilterSelection,
-  });
-
+class const BasicSection({
+  super.key,
+  required final AvesEntry entry,
+  final CollectionLens? collection,
+  required final EntryInfoActionDelegate actionDelegate,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ValueNotifier<EntryAction?> isEditingMetadataNotifier,
+  required final AFilterCallback onFilterSelection,
+}) extends StatefulWidget {
   @override
   State<BasicSection> createState() => _BasicSectionState();
 }
@@ -127,7 +118,7 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
     final tags = entry.tags.toList()..sort(compareAsciiUpperCaseNatural);
 
     final filters = {
-      MimeFilter(entry.mimeType),
+      if (entry.mimeType != MimeTypes.any) MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
       if (entry.isGeotiff) TypeFilter.geotiff,
       if (entry.isHdr) TypeFilter.hdr,
@@ -281,13 +272,9 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
   bool get wantKeepAlive => true;
 }
 
-class _BasicInfo extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({
-    required this.entry,
-  });
-
+class const _BasicInfo({
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<_BasicInfo> createState() => _BasicInfoState();
 }

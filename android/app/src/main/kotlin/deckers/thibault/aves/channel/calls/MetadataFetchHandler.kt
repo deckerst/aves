@@ -106,6 +106,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.mp4parser.boxes.threegpp.ts26244.LocationInformationBox
 import org.mp4parser.tools.Path
+import java.io.FileNotFoundException
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
 import java.time.LocalDateTime
@@ -144,12 +145,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val fields: FieldMap = hashMapOf(
-            "validity" to C2paHelper.getValidity(contentAddress).toString(),
-            "json" to C2paHelper.getManifestJson(contentAddress),
-        )
-
-        result.success(fields)
+        try {
+            val fields: FieldMap = hashMapOf(
+                "validity" to C2paHelper.getValidity(contentAddress).toString(),
+                "json" to C2paHelper.getManifestJson(contentAddress),
+            )
+            result.success(fields)
+        } catch (ex: FileNotFoundException) {
+            result.error("getContentCredentials-filenotfound", "failed to get content credentials for $contentAddress", ex)
+        }
     }
 
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
@@ -582,16 +586,20 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         fun addCredentialsFlags(contentAddress: ContentAddress, existingFlags: Int): Int {
             var flags = existingFlags
 
-            val validity = C2paHelper.getValidity(contentAddress)
+            try {
+                val validity = C2paHelper.getValidity(contentAddress)
 
-            if (validity == C2paValidity.UNKNOWN) return flags
-            flags = flags or MASK_ARE_CREDENTIALS_PRESENT
+                if (validity == C2paValidity.UNKNOWN) return flags
+                flags = flags or MASK_ARE_CREDENTIALS_PRESENT
 
-            if (validity == C2paValidity.INVALID) return flags
-            flags = flags or MASK_ARE_CREDENTIALS_VALID
+                if (validity == C2paValidity.INVALID) return flags
+                flags = flags or MASK_ARE_CREDENTIALS_VALID
 
-            if (validity == C2paValidity.VALID) return flags
-            flags = flags or MASK_ARE_CREDENTIALS_TRUSTED
+                if (validity == C2paValidity.VALID) return flags
+                flags = flags or MASK_ARE_CREDENTIALS_TRUSTED
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to get content credentials for $contentAddress", ex)
+            }
 
             return flags
         }
