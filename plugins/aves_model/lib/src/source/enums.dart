@@ -12,6 +12,7 @@ enum SortFactor {
   albumItemName,
   rating,
   duration,
+  random,
 }
 
 enum ChipSectionFactor { none, importance, mimeType, volume }

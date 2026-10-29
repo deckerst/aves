@@ -94,6 +94,7 @@ class Settings
     _unregister();
     _register(monitorPlatformSettings);
     initHistorySettings();
+    changeRandomSortSeed();
     if (shouldSanitize) {
       await sanitize();
     }
@@ -140,6 +141,8 @@ class Settings
       await Future.forEach<String>(store.getKeys().whereNot(SettingKeys.isInternalKey), store.remove);
     }
   }
+
+  void changeRandomSortSeed() => settings.collectionSortRandomSeed = Random().nextInt(randomNextIntMax);
 
   Future<void> setContextualDefaults(AppFlavor flavor) async {
     // performance

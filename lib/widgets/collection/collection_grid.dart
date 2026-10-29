@@ -749,6 +749,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> with Widge
       case .rating:
       case .size:
       case .duration:
+      case .random:
         break;
       case .chipName:
       case .count:

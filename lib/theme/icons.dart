@@ -50,6 +50,7 @@ class AIcons {
   static const palette = Symbols.palette;
   static const path = Symbols.account_tree;
   static const privacy = Symbols.shield_person;
+  static const random = Symbols.ifl;
   static const rating = Symbols.star;
   static const ratingRejected = MdiIcons.starMinusOutline;
   static const ratingUnrated = MdiIcons.starOffOutline;
@@ -162,6 +163,7 @@ class AIcons {
   static const show = Symbols.visibility;
   static const showFullscreenArrows = Symbols.open_in_full;
   static const showFullscreenCorners = Symbols.fullscreen;
+  static const shuffle = Symbols.casino;
   static const slideshow = Symbols.slideshow;
   static const split = Symbols.call_split;
   static const stats = Symbols.donut_small;

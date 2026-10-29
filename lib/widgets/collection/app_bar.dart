@@ -66,6 +66,7 @@ class const CollectionAppBar({
     .size,
     .rating,
     .duration,
+    .random,
   ];
 
   static const sectionOptions = <EntrySectionFactor>[

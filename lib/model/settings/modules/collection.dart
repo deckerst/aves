@@ -72,6 +72,10 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   set _collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
 
+  int get collectionSortRandomSeed => getInt(SettingKeys.collectionSortRandomSeedKey) ?? 0;
+
+  set collectionSortRandomSeed(int newValue) => set(SettingKeys.collectionSortRandomSeedKey, newValue);
+
   EntrySectionFactor get _collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
 
   set _collectionSectionFactor(EntrySectionFactor newValue) => set(SettingKeys.collectionSectionFactorKey, newValue.name);
@@ -152,6 +156,7 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
             return .name;
           case .size:
           case .duration:
+          case .random:
             return .none;
           case .rating:
             return .rating;

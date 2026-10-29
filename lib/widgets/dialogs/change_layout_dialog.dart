@@ -106,7 +106,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
             _selectedSort = v as SortFactor;
             _reverseSort = false;
           },
-          bottom: _buildSortOrderToggle(context),
+          bottom: _selectedSort != .random ? _buildSortOrderToggle(context) : null,
         ),
         _buildSelector(
           show: canSection,
@@ -231,11 +231,18 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
                   padding: EdgeInsetsDirectional.only(start: iconSize + 16),
                   child: selector,
                 ),
-                if (bottom != null)
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(start: iconSize),
-                    child: bottom,
-                  ),
+                AnimatedSwitcher(
+                  duration: context.select<DurationsData, Duration>((v) => v.formTransition),
+                  switchInCurve: Curves.easeInOutCubic,
+                  switchOutCurve: Curves.easeInOutCubic,
+                  transitionBuilder: AvesTransitions.formTransitionBuilder,
+                  child: bottom != null
+                      ? Padding(
+                          padding: EdgeInsetsDirectional.only(start: iconSize),
+                          child: bottom,
+                        )
+                      : const SizedBox(),
+                ),
               ],
             )
           : Row(

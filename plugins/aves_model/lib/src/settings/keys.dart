@@ -4,16 +4,20 @@ class SettingKeys {
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneOffsetMillisKey,
-    platformAccelerometerRotationKey,
-    platformTransitionAnimationScaleKey,
     topEntryIdsKey,
     // history
-    recentSettingKeysKey,
     searchHistoryKey,
+    recentSettingKeysKey,
     recentDestinationAlbumsKey,
     recentTagsKey,
     // debug
+    debugCatalogConcurrentTaskMaxKey,
     debugShowViewerTilesKey,
+    // collection
+    collectionSortRandomSeedKey,
+    // platform settings
+    platformAccelerometerRotationKey,
+    platformTransitionAnimationScaleKey,
   };
 
   static const _widgetKeyPrefix = 'widget_';
@@ -72,6 +76,7 @@ class SettingKeys {
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
+  static const collectionSortRandomSeedKey = 'collection_sort_random_seed';
   static const collectionSectionFactorKey = 'collection_group_factor';
   static const showCollectionLayoutBarKey = 'show_collection_layout_bar';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';

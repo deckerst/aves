@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:aves/locale/aves_locale.dart';
 import 'package:aves/locale/calendar/calendar_utils.dart';
@@ -35,6 +36,7 @@ class CollectionLens with ChangeNotifier {
   late TileLayout tileLayout;
   late SortFactor sortFactor;
   late bool sortReverse;
+  late int sortRandomSeed;
   late EntrySectionFactor sectionFactor;
   late ACalendar calendar;
   final AChangeNotifier filterChangeNotifier = .new();
@@ -168,6 +170,7 @@ class CollectionLens with ChangeNotifier {
         return !filters.any((f) => f is RatingFilter);
       case .size:
       case .duration:
+      case .random:
         return false;
       case .chipName:
       case .count:
@@ -307,6 +310,10 @@ class CollectionLens with ChangeNotifier {
         _filteredSortedEntries.sort(AvesEntrySort.compareByDuration);
       case .path:
         _filteredSortedEntries.sort(AvesEntrySort.compareByPath);
+      case .random:
+        // sort before shuffle, so that the random order is repeatable for a specific set of items
+        _filteredSortedEntries.sort(AvesEntrySort.compareByDate);
+        _filteredSortedEntries.shuffle(Random(sortRandomSeed));
       case .chipName:
       case .count:
         throw UnimplementedError();
@@ -359,6 +366,7 @@ class CollectionLens with ChangeNotifier {
           sections = groupBy<AvesEntry, EntryRatingSectionKey>(_filteredSortedEntries, (entry) => EntryRatingSectionKey(entry.rating));
         case .size:
         case .duration:
+        case .random:
           sections = Map.fromEntries([
             MapEntry(const SectionKey(), _filteredSortedEntries),
           ]);
@@ -396,6 +404,7 @@ class CollectionLens with ChangeNotifier {
       SettingKeys.tileLayoutPrefixKey + CollectionPage.routeName,
       SettingKeys.collectionSortFactorKey,
       SettingKeys.collectionSortReverseKey,
+      SettingKeys.collectionSortRandomSeedKey,
       SettingKeys.collectionSectionFactorKey,
       SettingKeys.calendarKey,
     ].contains(event.key);
@@ -407,6 +416,7 @@ class CollectionLens with ChangeNotifier {
     tileLayout = settings.getEffectiveCollectionTileLayout(_filters);
     sortFactor = settings.getEffectiveCollectionSortFactor(_filters);
     sortReverse = settings.getEffectiveCollectionSortReverse(_filters);
+    sortRandomSeed = settings.collectionSortRandomSeed;
     sectionFactor = settings.getEffectiveCollectionSectionFactor(_filters);
     calendar = settings.calendar;
   }
@@ -416,13 +426,17 @@ class CollectionLens with ChangeNotifier {
     final oldTileLayout = tileLayout;
     final oldSortFactor = sortFactor;
     final oldSortReverse = sortReverse;
+    final oldSortRandomSeed = sortRandomSeed;
     final oldSectionFactor = sectionFactor;
     final oldCalendar = calendar;
 
     _updateLayoutFactors();
 
     final sortFactorChanged = oldSortFactor != sortFactor;
-    final sortOrderChanged = oldSortReverse != sortReverse;
+    final sortOrderChanged = switch(sortFactor) {
+      .random => oldSortRandomSeed != sortRandomSeed,
+      _ => oldSortReverse != sortReverse
+    };
     final sectionFactorChanged = oldSectionFactor != sectionFactor;
 
     final isCalendarLayout = tileLayout == .calendar;

@@ -70,6 +70,7 @@ class const CollectionSectionHeader({
         );
       case .size:
       case .duration:
+      case .random:
         break;
       case .chipName:
       case .count:
