@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
@@ -25,20 +26,13 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class InfoPage extends StatefulWidget {
-  final CollectionLens? collection;
-  final ValueNotifier<AvesEntry?> entryNotifier;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ValueNotifier<double> pageInViewNotifier;
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.entryNotifier,
-    required this.isScrollingNotifier,
-    required this.pageInViewNotifier,
-  });
-
+class const InfoPage({
+  super.key,
+  required final CollectionLens? collection,
+  required final ValueNotifier<AvesEntry?> entryNotifier,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ValueNotifier<double> pageInViewNotifier,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _InfoPageState();
 }
@@ -131,25 +125,15 @@ class _InfoPageState extends State<InfoPage> {
   }
 }
 
-class _InfoPageContent extends StatefulWidget {
-  final CollectionLens? collection;
-  final AvesEntry entry;
-  final ValueNotifier<bool> isScrollingNotifier;
-  final ValueNotifier<double> pageInViewNotifier;
-  final ScrollController scrollController;
-  final bool split;
-  final VoidCallback goToViewer;
-
-  const new({
-    required this.collection,
-    required this.entry,
-    required this.isScrollingNotifier,
-    required this.pageInViewNotifier,
-    required this.scrollController,
-    required this.split,
-    required this.goToViewer,
-  });
-
+class const _InfoPageContent({
+  required final CollectionLens? collection,
+  required final AvesEntry entry,
+  required final ValueNotifier<bool> isScrollingNotifier,
+  required final ValueNotifier<double> pageInViewNotifier,
+  required final ScrollController scrollController,
+  required final bool split,
+  required final VoidCallback goToViewer,
+}) extends StatefulWidget {
   @override
   State<_InfoPageContent> createState() => _InfoPageContentState();
 }
@@ -160,7 +144,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   final ValueNotifier<bool> _isBasicSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isMetadataSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isColorSectionVisibleNotifier = ValueNotifier(false);
-  final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
+  final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> _metadataNotifier = ValueNotifier(SplayTreeMap());
   final ValueNotifier<EntryAction?> _isEditingMetadataNotifier = ValueNotifier(null);
 
   static const _basicSectionVisibilityRatio = .2;

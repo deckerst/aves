@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -10,24 +12,16 @@ import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
-class InfoSearchDelegate extends AvesSearchDelegate {
-  final AvesEntry entry;
-  final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
-  final bool isSelecting;
-
-  Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
-
+class InfoSearchDelegate({
+  required super.searchFieldLabel,
+  required super.searchFieldStyle,
+  required final AvesEntry entry,
+  required final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> metadataNotifier,
+  required final bool isSelecting,
+}) extends AvesSearchDelegate {
   static const pageRouteName = '/info/search';
 
-  new({
-    required super.searchFieldLabel,
-    required super.searchFieldStyle,
-    required this.entry,
-    required this.metadataNotifier,
-    required this.isSelecting,
-  }) : super(
-         routeName: pageRouteName,
-       );
+  this : super(routeName: pageRouteName);
 
   @override
   Widget? buildLeading(BuildContext context) {
@@ -98,14 +92,9 @@ class InfoSearchDelegate extends AvesSearchDelegate {
       return queryIncludeAny.any(key.contains) && queryExcludeAll.every((q) => !key.contains(q));
     }
 
-    final filteredMetadata = Map.fromEntries(
-      metadata.entries.map((kv) {
-        final filteredDir = kv.value.filterKeys(testKey);
-        return MapEntry(kv.key, filteredDir);
-      }),
-    );
-
-    final tiles = filteredMetadata.entries
+    final tiles = metadataNotifier.value
+        .map((k, v) => MapEntry(k, v.filterKeys(testKey)))
+        .entries
         .where((kv) => kv.value.tags.isNotEmpty)
         .map(
           (kv) => MetadataDirTile(

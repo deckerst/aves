@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -27,7 +29,7 @@ class const InfoAppBar({
   required final AvesEntry entry,
   required final CollectionLens? collection,
   required final EntryInfoActionDelegate actionDelegate,
-  required final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier,
+  required final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> metadataNotifier,
   required final VoidCallback onBackPressed,
 }) extends StatelessWidget {
   @override

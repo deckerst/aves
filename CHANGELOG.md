@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Info: do not merge `Exif SubIFD` sections
 - upgraded Flutter to stable v3.47.8
 
 ### Removed

@@ -1573,7 +1573,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             "QuickTime Video",
         )
         private val allMetadataMergeableDirNames = setOf(
-            "Exif SubIFD",
             "GIF Control",
             "GIF Image",
             "HEIF",
