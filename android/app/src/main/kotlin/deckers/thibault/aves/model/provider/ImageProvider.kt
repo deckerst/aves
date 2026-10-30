@@ -63,6 +63,7 @@ import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
+import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -1458,8 +1459,15 @@ abstract class ImageProvider {
             }
         }
 
-        if (getFileSize(editableFile.path) == 0L) {
+        val editedFileSize = getFileSize(editableFile.path)
+        if (editedFileSize == 0L) {
             callback.onFailure(Exception("editing XMP yielded an empty file"))
+            return false
+        }
+
+        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
+        if (hasMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)) {
+            callback.onFailure(Exception("editing XMP yielded metadata errors"))
             return false
         }
 
@@ -1529,6 +1537,24 @@ abstract class ImageProvider {
                 }
             }
         }
+    }
+
+    fun hasMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Boolean {
+        if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    return metadata.directories.any { it.hasErrors() }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            }
+        }
+        return false
     }
 
     // A few bytes are sometimes appended when writing to a document output stream.
