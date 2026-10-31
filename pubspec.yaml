@@ -225,10 +225,10 @@ flutter:
 #  adapts from Flutter v3.41.9 `SnackBar` in `/material/snack_bar.dart`
 #
 #  `AGestureDetector` in `/widgets/common/basic/gestures/gesture_detector.dart`
-#  adapts from Flutter v3.41.9 `GestureDetector` in `/widgets/gesture_detector.dart`
+#  adapts from Flutter v3.47.8 `GestureDetector` in `/widgets/gesture_detector.dart`
 #
 #  `AInkResponse` in `/widgets/common/basic/gestures/ink_well.dart`
-#  adapts from Flutter v3.41.9 `InkResponse` and related classes in `/material/ink_well.dart`
+#  adapts from Flutter v3.47.8 `InkResponse` and related classes in `/material/ink_well.dart`
 #
 #  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
 #  adapts from Flutter v3.41.9 `ScaleGestureRecognizer` in `/gestures/scale.dart`

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-// as of Flutter v3.41.9, `GestureDetector` does not allow setting long press delay
+// as of Flutter v3.47.8, `GestureDetector` does not allow setting long press delay
 // adapted from Flutter `GestureDetector` in `/widgets/gesture_detector.dart`
 class AGestureDetector extends StatelessWidget {
   /// Creates a widget that detects gestures.
