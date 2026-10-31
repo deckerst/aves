@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - rendering of some malformed SVG
+- view state when relaunching the app from launcher
 - Accessibility: truncated headers with large font sizes
 
 ## <a id="v1.15.8"></a>[v1.15.8] - 2026-10-21

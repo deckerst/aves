@@ -559,6 +559,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return currentRoute;
   }
 
+  static const _ignoredDefaultIntentDataKeys = {'debug'};
+
+  bool _isDefaultIntentData(Map? intentData) {
+    if (intentData == null) return true;
+    return intentData.entries.where((kv) {
+      if (_ignoredDefaultIntentDataKeys.contains(kv.key)) return false;
+      if (kv.value == null) return false;
+      return true;
+    }).isEmpty;
+  }
+
   void _onNewIntent(Map? intentData) {
     reportService.log('New intent data=$intentData');
 
@@ -567,7 +578,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;
 
-      if (!shouldReset && (intentData ?? {}).values.nonNulls.isEmpty) {
+      if (!shouldReset && _isDefaultIntentData(intentData)) {
         reportService.log('Relaunch');
         return;
       }
