@@ -595,27 +595,27 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         return MoveButton(
           copy: true,
           blurred: blurred,
-          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: true),
+          onChooserValues: (v) => _actionDelegate.quickMove(context, v.first, copy: true),
           onPressed: onPressed,
         );
       case .move:
         return MoveButton(
           copy: false,
           blurred: blurred,
-          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: false),
+          onChooserValues: (v) => _actionDelegate.quickMove(context, v.first, copy: false),
           onPressed: onPressed,
         );
       case .editRating:
         return RateButton(
           blurred: blurred,
-          onChooserValue: (rating) => _actionDelegate.quickRate(context, rating),
+          onChooserValues: (v) => _actionDelegate.quickRate(context, v.first),
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case .editTags:
         return TagButton(
           blurred: blurred,
-          onChooserValue: (filter) => _actionDelegate.quickTag(context, filter),
+          onChooserValues: (v) => _actionDelegate.quickTag(context, v),
           focusNode: focusNode,
           onPressed: onPressed,
         );

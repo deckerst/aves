@@ -209,13 +209,13 @@ class _BasicSectionState extends State<BasicSection> with AutomaticKeepAliveClie
           case .editRating:
             button = RateButton(
               blurred: false,
-              onChooserValue: (rating) => actionDelegate.quickRate(context, entry, rating),
+              onChooserValues: (v) => actionDelegate.quickRate(context, entry, v.first),
               onPressed: onPressed,
             );
           case .editTags:
             button = TagButton(
               blurred: false,
-              onChooserValue: (filter) => actionDelegate.quickTag(context, entry, filter),
+              onChooserValues: (v) => actionDelegate.quickTag(context, entry, v),
               onPressed: onPressed,
             );
           default:

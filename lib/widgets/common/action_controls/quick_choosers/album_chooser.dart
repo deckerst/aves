@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 class const AlbumQuickChooser({
   super.key,
-  required final ValueNotifier<String?> valueNotifier,
+  required final ValueNotifier<Set<String>> valuesNotifier,
   @override required final List<String> options,
   required final bool blurred,
   required final PopupMenuPosition chooserPosition,
@@ -20,7 +20,7 @@ class const AlbumQuickChooser({
   @override
   Widget build(BuildContext context) {
     return MenuQuickChooser<String>(
-      valueNotifier: valueNotifier,
+      selectedValuesNotifier: valuesNotifier,
       options: options,
       autoReverse: true,
       blurred: blurred,

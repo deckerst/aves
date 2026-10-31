@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/action_controls/quick_choosers/common/button.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_chooser.dart';
 import 'package:aves_ui/aves_ui.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -12,12 +14,13 @@ import 'package:provider/provider.dart';
 
 class const MenuQuickChooser<T>({
   super.key,
-  required final ValueNotifier<T?> valueNotifier,
+  required final ValueNotifier<Set<T>> selectedValuesNotifier,
   required final List<T> options,
   required final bool autoReverse,
   required final bool blurred,
   required final PopupMenuPosition chooserPosition,
   required final Stream<Offset> pointerGlobalPosition,
+  final ValueNotifier<SelectionMode>? selectionModeNotifier,
   final int maxTotalOptionCount = maxVisibleOptionCount,
   final double itemHeight = kMinInteractiveDimension,
   final double? Function(BuildContext context)? contentWidth,
@@ -39,7 +42,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   Timer? _scrollUpdateTimer;
   Offset _globalPosition = Offset.zero;
 
-  ValueNotifier<T?> get _valueNotifier => widget.valueNotifier;
+  ValueNotifier<Set<T>> get _selectedValuesNotifier => widget.selectedValuesNotifier;
 
   bool get _reversed => widget.autoReverse && widget.chooserPosition == PopupMenuPosition.over;
 
@@ -47,7 +50,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
 
   double get _itemHeight => widget.itemHeight;
 
-  double get contentHeight {
+  double get _contentHeight {
     final visibleOptionCount = min(MenuQuickChooser.maxVisibleOptionCount, _options.length);
     return max(0, _itemHeight * visibleOptionCount + _intraPadding * (visibleOptionCount - 1));
   }
@@ -103,9 +106,9 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   Widget build(BuildContext context) {
     return QuickChooser(
       blurred: widget.blurred,
-      child: ValueListenableBuilder<T?>(
-        valueListenable: _valueNotifier,
-        builder: (context, selectedValue, child) {
+      child: ValueListenableBuilder<Set<T>>(
+        valueListenable: _selectedValuesNotifier,
+        builder: (context, selectedValues, child) {
           final durations = context.watch<DurationsData>();
 
           if (_options.isEmpty) {
@@ -115,92 +118,130 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
             );
           }
 
-          return Stack(
-            children: [
-              ValueListenableBuilder<Rect>(
-                valueListenable: _selectedRowRect,
-                builder: (context, selectedRowRect, child) {
-                  Widget child = const Center(child: AvesDot());
-                  child = AnimatedOpacity(
-                    opacity: selectedValue != null ? 1 : 0,
-                    curve: Curves.easeInOutCubic,
-                    duration: const Duration(milliseconds: 200),
-                    child: child,
-                  );
-                  child = AnimatedPositioned(
-                    top: selectedRowRect.top,
-                    height: selectedRowRect.height,
-                    curve: Curves.easeInOutCubic,
-                    duration: const Duration(milliseconds: 200),
-                    child: child,
-                  );
-                  return child;
-                },
-              ),
-              Container(
-                width: widget.contentWidth?.call(context),
-                margin: const EdgeInsetsDirectional.only(start: _selectorMargin),
-                child: Column(
-                  mainAxisSize: .min,
-                  children: [
-                    _scrollable
-                        ? ListenableBuilder(
-                            listenable: _scrollController,
-                            builder: (context, child) => Opacity(
-                              opacity: canGoUp ? 1 : .5,
-                              child: child,
-                            ),
-                            child: _buildScrollerArea(AIcons.up),
-                          )
-                        : const SizedBox(height: _nonScrollablePaddingHeight),
-                    ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(height: contentHeight),
-                      child: ListView.separated(
-                        reverse: _reversed,
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemBuilder: (context, index) {
-                          final child = Container(
-                            alignment: .centerStart,
-                            constraints: BoxConstraints.tightFor(height: _itemHeight),
-                            child: widget.itemBuilder(context, _options[index]),
-                          );
-                          if (index < MenuQuickChooser.maxVisibleOptionCount) {
-                            // only animate items visible on first render
-                            return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: durations.staggeredAnimation * .5,
-                              delay: durations.staggeredAnimationDelay * .5 * timeDilation,
-                              child: SlideAnimation(
-                                verticalOffset: 50.0 * (widget.chooserPosition == PopupMenuPosition.over ? 1 : -1),
-                                child: FadeInAnimation(
+          return NullableValueListenableBuilder<SelectionMode>(
+            valueListenable: widget.selectionModeNotifier,
+            builder: (context, selectionMode, child) {
+              selectionMode ??= .single;
+              return Stack(
+                children: [
+                  ValueListenableBuilder<Rect>(
+                    valueListenable: _selectedRowRect,
+                    builder: (context, selectedRowRect, child) {
+                      Widget child = const Center(child: AvesDot(filled: true));
+                      child = AnimatedOpacity(
+                        opacity: selectionMode == .single && selectedValues.isNotEmpty ? 1 : 0,
+                        curve: Curves.easeInOutCubic,
+                        duration: const Duration(milliseconds: 200),
+                        child: child,
+                      );
+                      child = AnimatedPositioned(
+                        left: 2,
+                        top: selectedRowRect.top,
+                        height: selectedRowRect.height,
+                        curve: Curves.easeInOutCubic,
+                        duration: const Duration(milliseconds: 200),
+                        child: child,
+                      );
+                      return child;
+                    },
+                  ),
+                  SizedBox(
+                    width: widget.contentWidth?.call(context),
+                    child: Column(
+                      mainAxisSize: .min,
+                      children: [
+                        _scrollable
+                            ? ListenableBuilder(
+                                listenable: _scrollController,
+                                builder: (context, child) => Opacity(
+                                  opacity: canGoUp ? 1 : .5,
                                   child: child,
                                 ),
-                              ),
-                            );
-                          } else {
-                            return child;
-                          }
-                        },
-                        separatorBuilder: (context, index) => const SizedBox(height: _intraPadding),
-                        itemCount: _options.length,
-                      ),
+                                child: _buildScrollerArea(AIcons.up),
+                              )
+                            : const SizedBox(height: _nonScrollablePaddingHeight),
+                        ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(height: _contentHeight),
+                          child: ListView.separated(
+                            reverse: _reversed,
+                            controller: _scrollController,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              final option = _options[index];
+                              final isSelected = selectedValues.contains(option);
+                              final child = Stack(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: _selectorMargin,
+                                        alignment: .center,
+                                        child: selectionMode == .multiple ? AvesDot(filled: isSelected) : null,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Container(
+                                          alignment: .centerStart,
+                                          constraints: BoxConstraints.tightFor(height: _itemHeight),
+                                          child: widget.itemBuilder(context, option),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (selectionMode == .multiple)
+                                    Positioned.fill(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (isSelected) {
+                                            selectedValues.remove(option);
+                                          } else {
+                                            selectedValues.add(option);
+                                          }
+                                          // create a new `Set` to trigger notification
+                                          _selectedValuesNotifier.value = Set.of(selectedValues);
+                                        },
+                                      ),
+                                    ),
+                                ],
+                              );
+                              if (index < MenuQuickChooser.maxVisibleOptionCount) {
+                                // only animate items visible on first render
+                                return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: durations.staggeredAnimation * .5,
+                                  delay: durations.staggeredAnimationDelay * .5 * timeDilation,
+                                  child: SlideAnimation(
+                                    verticalOffset: 50.0 * (widget.chooserPosition == PopupMenuPosition.over ? 1 : -1),
+                                    child: FadeInAnimation(
+                                      child: child,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return child;
+                              }
+                            },
+                            separatorBuilder: (context, index) => const SizedBox(height: _intraPadding),
+                            itemCount: _options.length,
+                          ),
+                        ),
+                        _scrollable
+                            ? ListenableBuilder(
+                                listenable: _scrollController,
+                                builder: (context, child) => Opacity(
+                                  opacity: canGoDown ? 1 : .5,
+                                  child: child,
+                                ),
+                                child: _buildScrollerArea(AIcons.down),
+                              )
+                            : const SizedBox(height: _nonScrollablePaddingHeight),
+                      ],
                     ),
-                    _scrollable
-                        ? ListenableBuilder(
-                            listenable: _scrollController,
-                            builder: (context, child) => Opacity(
-                              opacity: canGoDown ? 1 : .5,
-                              child: child,
-                            ),
-                            child: _buildScrollerArea(AIcons.down),
-                          )
-                        : const SizedBox(height: _nonScrollablePaddingHeight),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
@@ -225,7 +266,6 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     return Container(
       alignment: .center,
       height: _scrollerAreaHeight,
-      margin: const EdgeInsetsDirectional.only(end: _selectorMargin),
       child: Icon(icon),
     );
   }
@@ -242,7 +282,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     final localPosition = chooserBox.globalToLocal(globalPosition);
     final dx = localPosition.dx;
     if (!(0 < dx && dx < contentWidth)) {
-      _valueNotifier.value = null;
+      _selectedValuesNotifier.value = {};
       return;
     }
 
@@ -252,7 +292,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
       dy -= _scrollerAreaHeight;
       if (-_scrollerAreaHeight < dy && dy < 0) {
         scrollDirection = _reversed ? 1 : -1;
-      } else if (contentHeight < dy && dy < contentHeight + _scrollerAreaHeight) {
+      } else if (_contentHeight < dy && dy < _contentHeight + _scrollerAreaHeight) {
         scrollDirection = _reversed ? -1 : 1;
       }
       _scroll(scrollDirection);
@@ -261,8 +301,8 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     }
 
     T? selectedValue;
-    if (scrollDirection == 0 && 0 < dy && dy < contentHeight) {
-      final visibleOffset = _reversed ? contentHeight - dy : dy;
+    if (scrollDirection == 0 && 0 < dy && dy < _contentHeight) {
+      final visibleOffset = _reversed ? _contentHeight - dy : dy;
       final fullItemHeight = _itemHeight + _intraPadding;
       final scrollOffset = _scrollController.offset;
       final index = (visibleOffset + _intraPadding + scrollOffset) ~/ (fullItemHeight);
@@ -274,7 +314,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
         _selectedRowRect.value = Rect.fromLTWH(0, top, contentWidth, _itemHeight);
       }
     }
-    _valueNotifier.value = selectedValue;
+    _selectedValuesNotifier.value = {?selectedValue};
   }
 
   void _scroll(int scrollDirection) {

@@ -9,7 +9,7 @@ import 'package:material_ui/material_ui.dart';
 class const RateQuickChooser({
   super.key,
   required final bool blurred,
-  required final ValueNotifier<int?> valueNotifier,
+  required final ValueNotifier<Set<int>> valuesNotifier,
   required final Stream<Offset> pointerGlobalPosition,
 }) extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class const RateQuickChooser({
 class _RateQuickChooserState extends State<RateQuickChooser> {
   final Set<StreamSubscription> _subscriptions = {};
 
-  ValueNotifier<int?> get valueNotifier => widget.valueNotifier;
+  ValueNotifier<Set<int>> get valuesNotifier => widget.valuesNotifier;
 
   @override
   void initState() {
@@ -56,10 +56,10 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
       blurred: widget.blurred,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ValueListenableBuilder<int?>(
-          valueListenable: valueNotifier,
-          builder: (context, selectedValue, child) {
-            final _rating = selectedValue ?? 0;
+        child: ValueListenableBuilder<Set<int>>(
+          valueListenable: valuesNotifier,
+          builder: (context, selectedValues, child) {
+            final _rating = selectedValues.isNotEmpty ? selectedValues.first : 0;
             return Row(
               mainAxisSize: .min,
               children: List.generate(5, (i) {
@@ -89,6 +89,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
 
     final local = chooserBox.globalToLocal(globalPosition);
     final t = (local.dx - padding / 2) / contentWidth;
-    valueNotifier.value = (5 * (context.isRtl ? 1 - t : t)).ceil().clamp(0, 5);
+    final rating = (5 * (context.isRtl ? 1 - t : t)).ceil().clamp(0, 5);
+    valuesNotifier.value = {rating};
   }
 }

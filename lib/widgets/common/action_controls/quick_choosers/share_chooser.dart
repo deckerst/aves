@@ -10,7 +10,7 @@ import 'package:material_ui/material_ui.dart';
 
 class const ShareQuickChooser({
   super.key,
-  required final ValueNotifier<ShareAction?> valueNotifier,
+  required final ValueNotifier<Set<ShareAction>> valuesNotifier,
   required final List<ShareAction> options,
   required final bool blurred,
   required final PopupMenuPosition chooserPosition,
@@ -21,7 +21,7 @@ class const ShareQuickChooser({
   @override
   Widget build(BuildContext context) {
     return MenuQuickChooser<ShareAction>(
-      valueNotifier: valueNotifier,
+      selectedValuesNotifier: valuesNotifier,
       options: options,
       autoReverse: false,
       blurred: blurred,

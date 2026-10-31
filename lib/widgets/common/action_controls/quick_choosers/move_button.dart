@@ -17,7 +17,7 @@ class const MoveButton({
   super.key,
   required final bool copy,
   required super.blurred,
-  super.onChooserValue,
+  super.onChooserValues,
   required super.onPressed,
 }) extends ChooserQuickButton<String> {
   @override
@@ -53,7 +53,7 @@ class _MoveButtonState extends ChooserQuickButtonState<MoveButton, String> {
           scale: animation,
           alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
           child: AlbumQuickChooser(
-            valueNotifier: chooserValueNotifier,
+            valuesNotifier: chooserValuesNotifier,
             options: options,
             blurred: widget.blurred,
             chooserPosition: chooserPosition,

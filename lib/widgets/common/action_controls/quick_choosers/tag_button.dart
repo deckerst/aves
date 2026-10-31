@@ -16,10 +16,12 @@ import 'package:provider/provider.dart';
 class const TagButton({
   super.key,
   required super.blurred,
-  super.onChooserValue,
+  super.onChooserValues,
   super.focusNode,
   required super.onPressed,
 }) extends ChooserQuickButton<CollectionFilter> {
+  this : super(allowMultipleSelection: true);
+
   @override
   State<TagButton> createState() => _TagButtonState();
 }
@@ -62,11 +64,12 @@ class _TagButtonState extends ChooserQuickButtonState<TagButton, CollectionFilte
           scale: animation,
           alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
           child: TagQuickChooser(
-            valueNotifier: chooserValueNotifier,
+            valuesNotifier: chooserValuesNotifier,
             options: options,
             blurred: widget.blurred,
             chooserPosition: chooserPosition,
             pointerGlobalPosition: pointerGlobalPosition,
+            selectionModeNotifier: selectionModeNotifier,
           ),
         ),
       ),

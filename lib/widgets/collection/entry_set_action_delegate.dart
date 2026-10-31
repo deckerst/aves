@@ -743,7 +743,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await _edit(context, entries, (entry) => entry.editRating(rating));
   }
 
-  Future<void> quickTag(BuildContext context, CollectionFilter filter) async {
+  Future<void> quickTag(BuildContext context, Set<CollectionFilter> filters) async {
     final entries = await _getEditableTargetItems(context, canEdit: (entry) => entry.canEditTags);
     if (entries == null || entries.isEmpty) return;
 
@@ -751,7 +751,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     await Future.forEach(entries, (entry) async {
       newTagsByEntry[entry] = {
         ...entry.tags,
-        ...await getTagsFromFilters({filter}, entry),
+        ...await getTagsFromFilters(filters, entry),
       };
     });
 

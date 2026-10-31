@@ -9,6 +9,7 @@ class const AvesDot({
   final double innerBorderWidth = 2,
   final ColorBuilder getOuterBorderColor = themedOuterBorderColor,
   final ColorBuilder getInnerBorderColor = themedInnerBorderColor,
+  final bool filled = false,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class const AvesDot({
           child: Container(
             width: diameter,
             height: diameter,
-            color: theme.colorScheme.primary,
+            color: filled ? theme.colorScheme.primary : Colors.transparent,
           ),
         ),
       ),

@@ -7,7 +7,7 @@ import 'package:material_ui/material_ui.dart';
 class const RateButton({
   super.key,
   required super.blurred,
-  super.onChooserValue,
+  super.onChooserValues,
   super.focusNode,
   required super.onPressed,
 }) extends ChooserQuickButton<int> {
@@ -25,9 +25,6 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
   String get tooltip => _action.getText(context);
 
   @override
-  int? get defaultValue => 3;
-
-  @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     return FadeTransition(
       opacity: animation,
@@ -36,7 +33,7 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
         alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
         child: RateQuickChooser(
           blurred: widget.blurred,
-          valueNotifier: chooserValueNotifier,
+          valuesNotifier: chooserValuesNotifier,
           pointerGlobalPosition: pointerGlobalPosition,
         ),
       ),

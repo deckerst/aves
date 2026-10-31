@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Collection: C2PA content credentials validity overlay icons
 - Collection: sort randomly
+- Collection: long press and release on tag quick action to add multiple tags
 - Cataloguing: detect/filter C2PA content credentials validity
 - Info: show C2PA content credentials
 - Countries: show states for Canada (provinces and territories)

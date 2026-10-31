@@ -4,39 +4,44 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/route_layout.dart';
 import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
+import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 abstract class const ChooserQuickButton<T>({
   super.key,
   required final bool blurred,
-  final ValueSetter<T>? onChooserValue,
+  final ValueSetter<Set<T>>? onChooserValues,
+  final bool allowMultipleSelection = false,
   final FocusNode? focusNode,
   required final VoidCallback? onPressed,
 }) extends StatefulWidget;
+
+enum SelectionMode { single, multiple }
 
 abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> extends State<T> with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
   CurvedAnimation? _animation;
   OverlayEntry? _chooserOverlayEntry;
-  final ValueNotifier<U?> _chooserValueNotifier = ValueNotifier(null);
+  final ValueNotifier<SelectionMode> _selectionModeNotifier = ValueNotifier(.single);
+  final ValueNotifier<Set<U>> _chooserValuesNotifier = ValueNotifier({});
   final StreamController<LongPressMoveUpdateDetails> _moveUpdateStreamController = StreamController.broadcast();
 
   Widget get icon;
 
   String get tooltip;
 
-  U? get defaultValue => null;
-
   Duration get animationDuration => context.read<DurationsData>().quickChooserAnimation;
 
   Curve get animationCurve => Curves.easeOutQuad;
 
-  bool get hasChooser => widget.onChooserValue != null;
+  bool get hasChooser => widget.onChooserValues != null;
 
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition);
 
-  ValueNotifier<U?> get chooserValueNotifier => _chooserValueNotifier;
+  ValueNotifier<SelectionMode> get selectionModeNotifier => _selectionModeNotifier;
+
+  ValueNotifier<Set<U>> get chooserValuesNotifier => _chooserValuesNotifier;
 
   Stream<Offset> get pointerGlobalPosition => _moveUpdateStreamController.stream.map((event) => event.globalPosition);
 
@@ -45,7 +50,8 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
     _animation?.dispose();
     _animationController?.dispose();
     _clearChooserOverlayEntry();
-    _chooserValueNotifier.dispose();
+    _selectionModeNotifier.dispose();
+    _chooserValuesNotifier.dispose();
     super.dispose();
   }
 
@@ -80,11 +86,15 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
         onLongPressMoveUpdate: _hasChooser ? _moveUpdateStreamController.add : null,
         onLongPressEnd: _hasChooser
             ? (details) {
-                _clearChooserOverlayEntry();
-                final selectedValue = _chooserValueNotifier.value;
-                if (selectedValue != null) {
-                  widget.onChooserValue?.call(selectedValue);
+                if (widget.allowMultipleSelection) {
+                  final triggerBox = context.findRenderObject() as RenderBox;
+                  final result = BoxHitTestResult();
+                  if (triggerBox.hitTest(result, position: details.localPosition)) {
+                    _selectionModeNotifier.value = .multiple;
+                    return;
+                  }
                 }
+                _submitSelectedValues();
               }
             : null,
         onLongPressCancel: _clearChooserOverlayEntry,
@@ -101,6 +111,15 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
     _chooserOverlayEntry = null;
   }
 
+  void _submitSelectedValues() {
+    _clearChooserOverlayEntry();
+
+    final selectedValues = _chooserValuesNotifier.value;
+    if (selectedValues.isNotEmpty) {
+      widget.onChooserValues?.call(selectedValues);
+    }
+  }
+
   void _showChooser(LongPressStartDetails details) {
     final overlay = Overlay.of(context);
     final triggerBox = context.findRenderObject() as RenderBox;
@@ -110,19 +129,31 @@ abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> exten
       Offset.zero & overlayBox.size,
     );
 
-    _chooserValueNotifier.value = defaultValue;
+    _selectionModeNotifier.value = .single;
     _chooserOverlayEntry = OverlayEntry(
       builder: (context) {
         final mq = MediaQuery.of(context);
         final chooserPosition = (details.globalPosition.dy > mq.size.height / 2) ? PopupMenuPosition.over : PopupMenuPosition.under;
-        return CustomSingleChildLayout(
-          delegate: QuickChooserRouteLayout(
-            triggerRect,
-            chooserPosition,
-            mq.padding,
-            DisplayFeatureSubScreen.avoidBounds(mq).toSet(),
-          ),
-          child: buildChooser(_animation!, chooserPosition),
+        return Stack(
+          children: [
+            const Positioned.fill(
+              child: AbsorbPointer(),
+            ),
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _submitSelectedValues,
+              ),
+            ),
+            CustomSingleChildLayout(
+              delegate: QuickChooserRouteLayout(
+                triggerRect,
+                chooserPosition,
+                mq.padding,
+                DisplayFeatureSubScreen.avoidBounds(mq).toSet(),
+              ),
+              child: buildChooser(_animation!, chooserPosition),
+            ),
+          ],
         );
       },
     );

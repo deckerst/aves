@@ -10,7 +10,7 @@ class const ShareButton({
   super.key,
   required super.blurred,
   required final Set<AvesEntry> entries,
-  super.onChooserValue,
+  super.onChooserValues,
   super.focusNode,
   required super.onPressed,
 }) extends ChooserQuickButton<ShareAction> {
@@ -45,7 +45,7 @@ class _ShareButtonState extends ChooserQuickButtonState<ShareButton, ShareAction
         scale: animation,
         alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
         child: ShareQuickChooser(
-          valueNotifier: chooserValueNotifier,
+          valuesNotifier: chooserValuesNotifier,
           options: options,
           blurred: widget.blurred,
           chooserPosition: chooserPosition,
