@@ -154,21 +154,22 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
       );
     }
 
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.only(start: 4),
-          child: icon,
-        ),
-        GestureDetector(
-          onTap: _toggleSortOrder,
-          child: ChangeHighlightText(
-            TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
-            textStyle: TextDropdownButton.textStyle(context),
-            duration: context.read<DurationsData>().formTextStyleTransition,
+    return FontSizeIconTheme(
+      child: Row(
+        children: [
+          icon,
+          Expanded(
+            child: GestureDetector(
+              onTap: _toggleSortOrder,
+              child: ChangeHighlightText(
+                TextSpan(text: widget.sortOrder(_selectedSort, _reverseSort)),
+                textStyle: TextDropdownButton.textStyle(context),
+                duration: context.read<DurationsData>().formTextStyleTransition,
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -228,20 +229,29 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
               children: [
                 label,
                 Padding(
-                  padding: EdgeInsetsDirectional.only(start: iconSize + 16),
-                  child: selector,
-                ),
-                AnimatedSwitcher(
-                  duration: context.select<DurationsData, Duration>((v) => v.formTransition),
-                  switchInCurve: Curves.easeInOutCubic,
-                  switchOutCurve: Curves.easeInOutCubic,
-                  transitionBuilder: AvesTransitions.formTransitionBuilder,
-                  child: bottom != null
-                      ? Padding(
-                          padding: EdgeInsetsDirectional.only(start: iconSize),
-                          child: bottom,
-                        )
-                      : const SizedBox(),
+                  padding: EdgeInsetsDirectional.only(start: iconSize),
+                  child: Column(
+                    mainAxisSize: .min,
+                    crossAxisAlignment: .start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 16),
+                        child: selector,
+                      ),
+                      AnimatedSwitcher(
+                        duration: context.select<DurationsData, Duration>((v) => v.formTransition),
+                        switchInCurve: Curves.easeInOutCubic,
+                        switchOutCurve: Curves.easeInOutCubic,
+                        transitionBuilder: AvesTransitions.formTransitionBuilder,
+                        child: bottom != null
+                            ? Padding(
+                                padding: const EdgeInsetsDirectional.only(start: 4),
+                                child: bottom,
+                              )
+                            : const SizedBox(),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             )
@@ -250,6 +260,7 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
               crossAxisAlignment: .start,
               children: [
                 Expanded(
+                  flex: 3,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(minHeight: kMinInteractiveDimension),
                     child: label,
@@ -257,10 +268,14 @@ class _ChangeLayoutDialogState<G> extends State<ChangeLayoutDialog<G>> with Sing
                 ),
                 const SizedBox(width: 8),
                 Expanded(
+                  flex: 4,
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      selector,
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 12),
+                        child: selector,
+                      ),
                       ?bottom,
                     ],
                   ),
