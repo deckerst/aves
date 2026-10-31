@@ -97,7 +97,7 @@ class DynamicAlbums with ChangeNotifier {
 
     final grouping = FilterGrouping.forUri(oldGroupUri);
     final newGroupFilter = grouping?.uriToFilter(newGroupUri);
-    CollectionFilter? transformer(v) {
+    CollectionFilter? transformer(CollectionFilter v) {
       if (isOldGroupFilter(v)) return v.reversed ? newGroupFilter?.reverse() : newGroupFilter;
       if (v is ContainerFilter) return v.replaceFilters(transformer);
       return v;

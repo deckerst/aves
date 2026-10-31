@@ -13,7 +13,7 @@ abstract class const ChooserQuickButton<T>({
   final ValueSetter<T>? onChooserValue,
   final FocusNode? focusNode,
   required final VoidCallback? onPressed,
-}) extends StatefulWidget {}
+}) extends StatefulWidget;
 
 abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> extends State<T> with SingleTickerProviderStateMixin {
   AnimationController? _animationController;

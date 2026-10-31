@@ -10,35 +10,21 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MenuQuickChooser<T> extends StatefulWidget {
-  final ValueNotifier<T?> valueNotifier;
-  final List<T> options;
-  final bool autoReverse;
-  final bool blurred;
-  final PopupMenuPosition chooserPosition;
-  final Stream<Offset> pointerGlobalPosition;
-  final int maxTotalOptionCount;
-  final double itemHeight;
-  final double? Function(BuildContext context)? contentWidth;
-  final Widget Function(BuildContext context, T menuItem) itemBuilder;
-  final WidgetBuilder? emptyBuilder;
-
+class const MenuQuickChooser<T>({
+  super.key,
+  required final ValueNotifier<T?> valueNotifier,
+  required final List<T> options,
+  required final bool autoReverse,
+  required final bool blurred,
+  required final PopupMenuPosition chooserPosition,
+  required final Stream<Offset> pointerGlobalPosition,
+  final int maxTotalOptionCount = maxVisibleOptionCount,
+  final double itemHeight = kMinInteractiveDimension,
+  final double? Function(BuildContext context)? contentWidth,
+  required final Widget Function(BuildContext context, T menuItem) itemBuilder,
+  final WidgetBuilder? emptyBuilder,
+}) extends StatefulWidget {
   static const int maxVisibleOptionCount = 5;
-
-  new({
-    super.key,
-    required this.valueNotifier,
-    required List<T> options,
-    required this.autoReverse,
-    required this.blurred,
-    required this.chooserPosition,
-    required this.pointerGlobalPosition,
-    this.maxTotalOptionCount = maxVisibleOptionCount,
-    this.itemHeight = kMinInteractiveDimension,
-    this.contentWidth,
-    required this.itemBuilder,
-    this.emptyBuilder,
-  }) : options = options.take(maxTotalOptionCount).toList();
 
   @override
   State<MenuQuickChooser<T>> createState() => _MenuQuickChooserState<T>();
@@ -48,30 +34,30 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   final Set<StreamSubscription> _subscriptions = {};
   final ValueNotifier<Rect> _selectedRowRect = ValueNotifier(Rect.zero);
   final ScrollController _scrollController = ScrollController();
+  List<T> _options = [];
   int _scrollDirection = 0;
   Timer? _scrollUpdateTimer;
   Offset _globalPosition = Offset.zero;
 
-  ValueNotifier<T?> get valueNotifier => widget.valueNotifier;
+  ValueNotifier<T?> get _valueNotifier => widget.valueNotifier;
 
-  List<T> get options => widget.options;
+  bool get _reversed => widget.autoReverse && widget.chooserPosition == PopupMenuPosition.over;
 
-  bool get reversed => widget.autoReverse && widget.chooserPosition == PopupMenuPosition.over;
+  bool get _scrollable => _options.length > MenuQuickChooser.maxVisibleOptionCount;
 
-  bool get scrollable => options.length > MenuQuickChooser.maxVisibleOptionCount;
+  double get _itemHeight => widget.itemHeight;
 
-  int get visibleOptionCount => min(MenuQuickChooser.maxVisibleOptionCount, options.length);
-
-  double get itemHeight => widget.itemHeight;
-
-  double get contentHeight => max(0, itemHeight * visibleOptionCount + _intraPadding * (visibleOptionCount - 1));
+  double get contentHeight {
+    final visibleOptionCount = min(MenuQuickChooser.maxVisibleOptionCount, _options.length);
+    return max(0, _itemHeight * visibleOptionCount + _intraPadding * (visibleOptionCount - 1));
+  }
 
   static const double _selectorMargin = 24;
   static const double _intraPadding = 8;
   static const double _nonScrollablePaddingHeight = _intraPadding;
   static const double _scrollerAreaHeight = kMinInteractiveDimension;
-  static const double scrollMaxPixelPerSecond = 600.0;
-  static const Duration scrollUpdateInterval = Duration(milliseconds: 100);
+  static const double _scrollMaxPixelPerSecond = 600.0;
+  static const Duration _scrollUpdateInterval = Duration(milliseconds: 100);
 
   @override
   void initState() {
@@ -83,7 +69,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _selectedRowRect.value = Rect.fromLTWH(0, MediaQuery.sizeOf(context).height * (reversed ? 1 : -1), 0, 0);
+    _selectedRowRect.value = Rect.fromLTWH(0, MediaQuery.sizeOf(context).height * (_reversed ? 1 : -1), 0, 0);
   }
 
   @override
@@ -103,6 +89,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
   }
 
   void _registerWidget(MenuQuickChooser<T> widget) {
+    _options = widget.options.take(widget.maxTotalOptionCount).toList();
     _subscriptions.add(widget.pointerGlobalPosition.listen(_onPointerMove));
   }
 
@@ -117,11 +104,11 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     return QuickChooser(
       blurred: widget.blurred,
       child: ValueListenableBuilder<T?>(
-        valueListenable: valueNotifier,
+        valueListenable: _valueNotifier,
         builder: (context, selectedValue, child) {
           final durations = context.watch<DurationsData>();
 
-          if (options.isEmpty) {
+          if (_options.isEmpty) {
             return Padding(
               padding: const EdgeInsets.all(16),
               child: widget.emptyBuilder?.call(context) ?? const SizedBox(),
@@ -156,7 +143,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
                 child: Column(
                   mainAxisSize: .min,
                   children: [
-                    scrollable
+                    _scrollable
                         ? ListenableBuilder(
                             listenable: _scrollController,
                             builder: (context, child) => Opacity(
@@ -169,15 +156,15 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(height: contentHeight),
                       child: ListView.separated(
-                        reverse: reversed,
+                        reverse: _reversed,
                         controller: _scrollController,
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         itemBuilder: (context, index) {
                           final child = Container(
                             alignment: .centerStart,
-                            constraints: BoxConstraints.tightFor(height: itemHeight),
-                            child: widget.itemBuilder(context, options[index]),
+                            constraints: BoxConstraints.tightFor(height: _itemHeight),
+                            child: widget.itemBuilder(context, _options[index]),
                           );
                           if (index < MenuQuickChooser.maxVisibleOptionCount) {
                             // only animate items visible on first render
@@ -197,10 +184,10 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
                           }
                         },
                         separatorBuilder: (context, index) => const SizedBox(height: _intraPadding),
-                        itemCount: options.length,
+                        itemCount: _options.length,
                       ),
                     ),
-                    scrollable
+                    _scrollable
                         ? ListenableBuilder(
                             listenable: _scrollController,
                             builder: (context, child) => Opacity(
@@ -224,14 +211,14 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     if (!_scrollController.hasClients) return false;
     final position = _scrollController.position;
     if (!position.hasContentDimensions) return false;
-    return reversed ? position.pixels < position.maxScrollExtent : 0 < position.pixels;
+    return _reversed ? position.pixels < position.maxScrollExtent : 0 < position.pixels;
   }
 
   bool get canGoDown {
     if (!_scrollController.hasClients) return false;
     final position = _scrollController.position;
     if (!position.hasContentDimensions) return false;
-    return reversed ? 0 < position.pixels : position.pixels < position.maxScrollExtent;
+    return _reversed ? 0 < position.pixels : position.pixels < position.maxScrollExtent;
   }
 
   Widget _buildScrollerArea(IconData icon) {
@@ -255,18 +242,18 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     final localPosition = chooserBox.globalToLocal(globalPosition);
     final dx = localPosition.dx;
     if (!(0 < dx && dx < contentWidth)) {
-      valueNotifier.value = null;
+      _valueNotifier.value = null;
       return;
     }
 
     double dy = localPosition.dy - chooserBoxEdgeHeight;
     int scrollDirection = 0;
-    if (scrollable) {
+    if (_scrollable) {
       dy -= _scrollerAreaHeight;
       if (-_scrollerAreaHeight < dy && dy < 0) {
-        scrollDirection = reversed ? 1 : -1;
+        scrollDirection = _reversed ? 1 : -1;
       } else if (contentHeight < dy && dy < contentHeight + _scrollerAreaHeight) {
-        scrollDirection = reversed ? -1 : 1;
+        scrollDirection = _reversed ? -1 : 1;
       }
       _scroll(scrollDirection);
     } else {
@@ -275,19 +262,19 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
 
     T? selectedValue;
     if (scrollDirection == 0 && 0 < dy && dy < contentHeight) {
-      final visibleOffset = reversed ? contentHeight - dy : dy;
-      final fullItemHeight = itemHeight + _intraPadding;
+      final visibleOffset = _reversed ? contentHeight - dy : dy;
+      final fullItemHeight = _itemHeight + _intraPadding;
       final scrollOffset = _scrollController.offset;
       final index = (visibleOffset + _intraPadding + scrollOffset) ~/ (fullItemHeight);
-      if (0 <= index && index < options.length) {
-        selectedValue = options[index];
+      if (0 <= index && index < _options.length) {
+        selectedValue = _options[index];
         double fromEdge = fullItemHeight * index;
-        fromEdge += (scrollable ? _scrollerAreaHeight - scrollOffset : _nonScrollablePaddingHeight);
-        final top = reversed ? chooserSize.height - chooserBoxEdgeHeight - fromEdge - fullItemHeight : fromEdge;
-        _selectedRowRect.value = Rect.fromLTWH(0, top, contentWidth, itemHeight);
+        fromEdge += (_scrollable ? _scrollerAreaHeight - scrollOffset : _nonScrollablePaddingHeight);
+        final top = _reversed ? chooserSize.height - chooserBoxEdgeHeight - fromEdge - fullItemHeight : fromEdge;
+        _selectedRowRect.value = Rect.fromLTWH(0, top, contentWidth, _itemHeight);
       }
     }
-    valueNotifier.value = selectedValue;
+    _valueNotifier.value = selectedValue;
   }
 
   void _scroll(int scrollDirection) {
@@ -304,7 +291,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
     final target = scrollDirection > 0 ? _scrollController.position.maxScrollExtent : .0;
     if (target != current) {
       final distance = target - current;
-      final millis = distance * 1000 / scrollMaxPixelPerSecond / scrollDirection;
+      final millis = distance * 1000 / _scrollMaxPixelPerSecond / scrollDirection;
       _scrollController.animateTo(
         target,
         duration: Duration(milliseconds: millis.round()),
@@ -312,7 +299,7 @@ class _MenuQuickChooserState<T> extends State<MenuQuickChooser<T>> {
       );
       // use a timer to update the selection, because `_onPointerMove`
       // is not called when the pointer stays still while the view is scrolling
-      _scrollUpdateTimer = Timer.periodic(scrollUpdateInterval, (_) => _onPointerMove(_globalPosition));
+      _scrollUpdateTimer = Timer.periodic(_scrollUpdateInterval, (_) => _onPointerMove(_globalPosition));
     }
   }
 }
