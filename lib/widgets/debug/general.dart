@@ -8,6 +8,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -159,55 +160,19 @@ class const _InsetsOverlayEntry() extends StatelessWidget {
                 ValueListenableBuilder(
                   valueListenable: AvesApp.cutoutInsetsNotifier,
                   builder: (context, cutoutInsets, child) {
-                    return Text('cutoutInsets=${_stringifyEdgeInsets(cutoutInsets)}');
+                    return Text('cutoutInsets=${toStringDebug(cutoutInsets)}');
                   },
                 ),
-                Text('displayCornerRadii=${_stringifyBorderRadius(mq.displayCornerRadii)}'),
-                Text('systemGestureInsets=${_stringifyEdgeInsets(mq.systemGestureInsets)}'),
-                Text('viewInsets=${_stringifyEdgeInsets(mq.viewInsets)}'),
-                Text('viewPadding=${_stringifyEdgeInsets(mq.viewPadding)}'),
+                Text('displayCornerRadii=${toStringDebug(mq.displayCornerRadii)}'),
+                Text('systemGestureInsets=${toStringDebug(mq.systemGestureInsets)}'),
+                Text('viewInsets=${toStringDebug(mq.viewInsets)}'),
+                Text('viewPadding=${toStringDebug(mq.viewPadding)}'),
               ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  // because `toString` is unusable in non-debug mode
-  static String _stringifyBorderRadius(BorderRadius? radius) {
-    if (radius == null) return 'null';
-    final tl = radius.topLeft;
-    final tr = radius.topRight;
-    final bl = radius.bottomLeft;
-    final br = radius.bottomRight;
-    if (tl == tr && tr == bl && bl == br) {
-      return 'BorderRadius(${_stringifyRadius(tl)})';
-    }
-    return 'BorderRadius('
-        'topLeft=${_stringifyRadius(tl)}, '
-        'topRight=${_stringifyRadius(tr)}, '
-        'bottomLeft=${_stringifyRadius(bl)}, '
-        'bottomRight=${_stringifyRadius(br)})';
-  }
-
-  // because `toString` is unusable in non-debug mode
-  static String _stringifyRadius(Radius radius) {
-    final x = radius.x;
-    final y = radius.y;
-    if (x == y) return x.toStringAsFixed(1);
-    return 'Radius('
-        '${x.toStringAsFixed(1)}, '
-        '${y.toStringAsFixed(1)})';
-  }
-
-  // because `toString` is unusable in non-debug mode
-  static String _stringifyEdgeInsets(EdgeInsets insets) {
-    return 'EdgeInsets('
-        '${insets.left.toStringAsFixed(1)}, '
-        '${insets.top.toStringAsFixed(1)}, '
-        '${insets.right.toStringAsFixed(1)}, '
-        '${insets.bottom.toStringAsFixed(1)})';
   }
 }
 
