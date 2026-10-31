@@ -6,23 +6,14 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/filter_quick_
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 
-class TagQuickChooser extends StatelessWidget with FilterQuickChooserMixin<CollectionFilter> {
-  final ValueNotifier<CollectionFilter?> valueNotifier;
-  @override
-  final List<CollectionFilter> options;
-  final bool blurred;
-  final PopupMenuPosition chooserPosition;
-  final Stream<Offset> pointerGlobalPosition;
-
-  const new({
-    super.key,
-    required this.valueNotifier,
-    required this.options,
-    required this.blurred,
-    required this.chooserPosition,
-    required this.pointerGlobalPosition,
-  });
-
+class const TagQuickChooser({
+  super.key,
+  required final ValueNotifier<CollectionFilter?> valueNotifier,
+  @override required final List<CollectionFilter> options,
+  required final bool blurred,
+  required final PopupMenuPosition chooserPosition,
+  required final Stream<Offset> pointerGlobalPosition,
+}) extends StatelessWidget with FilterQuickChooserMixin<CollectionFilter> {
   @override
   Widget build(BuildContext context) {
     return MenuQuickChooser<CollectionFilter>(

@@ -9,23 +9,14 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class AlbumQuickChooser extends StatelessWidget with FilterQuickChooserMixin<String> {
-  final ValueNotifier<String?> valueNotifier;
-  @override
-  final List<String> options;
-  final bool blurred;
-  final PopupMenuPosition chooserPosition;
-  final Stream<Offset> pointerGlobalPosition;
-
-  const new({
-    super.key,
-    required this.valueNotifier,
-    required this.options,
-    required this.blurred,
-    required this.chooserPosition,
-    required this.pointerGlobalPosition,
-  });
-
+class const AlbumQuickChooser({
+  super.key,
+  required final ValueNotifier<String?> valueNotifier,
+  @override required final List<String> options,
+  required final bool blurred,
+  required final PopupMenuPosition chooserPosition,
+  required final Stream<Offset> pointerGlobalPosition,
+}) extends StatelessWidget with FilterQuickChooserMixin<String> {
   @override
   Widget build(BuildContext context) {
     return MenuQuickChooser<String>(

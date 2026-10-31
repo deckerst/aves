@@ -4,15 +4,13 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/rate_chooser.
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RateButton extends ChooserQuickButton<int> {
-  const new({
-    super.key,
-    required super.blurred,
-    super.onChooserValue,
-    super.focusNode,
-    required super.onPressed,
-  });
-
+class const RateButton({
+  super.key,
+  required super.blurred,
+  super.onChooserValue,
+  super.focusNode,
+  required super.onPressed,
+}) extends ChooserQuickButton<int> {
   @override
   State<RateButton> createState() => _RateButtonState();
 }

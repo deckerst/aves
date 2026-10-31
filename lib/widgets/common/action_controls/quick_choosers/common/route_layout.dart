@@ -2,20 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
 // adapted from Flutter `_PopupMenuRouteLayout` in `/material/popup_menu.dart`
-class QuickChooserRouteLayout extends SingleChildLayoutDelegate {
-  final RelativeRect triggerRect;
-  final PopupMenuPosition menuPosition;
-  final EdgeInsets padding;
-  final Set<Rect> avoidBounds;
-
+class QuickChooserRouteLayout(
+  final RelativeRect triggerRect,
+  final PopupMenuPosition menuPosition,
+  final EdgeInsets padding,
+  final Set<Rect> avoidBounds,
+) extends SingleChildLayoutDelegate {
   static const double _kMenuScreenPadding = 8.0;
-
-  new(
-    this.triggerRect,
-    this.menuPosition,
-    this.padding,
-    this.avoidBounds,
-  );
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {

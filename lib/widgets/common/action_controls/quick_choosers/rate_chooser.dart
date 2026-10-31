@@ -6,18 +6,12 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RateQuickChooser extends StatefulWidget {
-  final bool blurred;
-  final ValueNotifier<int?> valueNotifier;
-  final Stream<Offset> pointerGlobalPosition;
-
-  const new({
-    super.key,
-    required this.blurred,
-    required this.valueNotifier,
-    required this.pointerGlobalPosition,
-  });
-
+class const RateQuickChooser({
+  super.key,
+  required final bool blurred,
+  required final ValueNotifier<int?> valueNotifier,
+  required final Stream<Offset> pointerGlobalPosition,
+}) extends StatefulWidget {
   @override
   State<RateQuickChooser> createState() => _RateQuickChooserState();
 }

@@ -13,17 +13,13 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MoveButton extends ChooserQuickButton<String> {
-  final bool copy;
-
-  const new({
-    super.key,
-    required this.copy,
-    required super.blurred,
-    super.onChooserValue,
-    required super.onPressed,
-  });
-
+class const MoveButton({
+  super.key,
+  required final bool copy,
+  required super.blurred,
+  super.onChooserValue,
+  required super.onPressed,
+}) extends ChooserQuickButton<String> {
   @override
   State<MoveButton> createState() => _MoveButtonState();
 }

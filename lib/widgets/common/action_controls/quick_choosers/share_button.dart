@@ -6,18 +6,14 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/share_chooser
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ShareButton extends ChooserQuickButton<ShareAction> {
-  final Set<AvesEntry> entries;
-
-  const new({
-    super.key,
-    required super.blurred,
-    required this.entries,
-    super.onChooserValue,
-    super.focusNode,
-    required super.onPressed,
-  });
-
+class const ShareButton({
+  super.key,
+  required super.blurred,
+  required final Set<AvesEntry> entries,
+  super.onChooserValue,
+  super.focusNode,
+  required super.onPressed,
+}) extends ChooserQuickButton<ShareAction> {
   @override
   State<ShareButton> createState() => _ShareButtonState();
 }

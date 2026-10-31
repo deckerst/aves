@@ -8,20 +8,13 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MuteToggler extends StatelessWidget {
-  final AvesVideoController? controller;
-  final bool isMenuItem;
-  final FocusNode? focusNode;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.controller,
-    this.isMenuItem = false,
-    this.focusNode,
-    this.onPressed,
-  });
-
+class const MuteToggler({
+  super.key,
+  required final AvesVideoController? controller,
+  final bool isMenuItem = false,
+  final FocusNode? focusNode,
+  final VoidCallback? onPressed,
+}) extends StatelessWidget {
   bool get isMuted => controller?.isMuted ?? false;
 
   @override
@@ -54,16 +47,11 @@ class MuteToggler extends StatelessWidget {
   }
 }
 
-class MuteTogglerCaption extends StatelessWidget {
-  final AvesVideoController? controller;
-  final bool enabled;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.enabled,
-  });
-
+class const MuteTogglerCaption({
+  super.key,
+  required final AvesVideoController? controller,
+  required final bool enabled,
+}) extends StatelessWidget {
   bool get isMuted => controller?.isMuted ?? false;
 
   @override

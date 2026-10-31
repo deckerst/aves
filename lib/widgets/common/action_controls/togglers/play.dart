@@ -9,20 +9,13 @@ import 'package:aves_video/aves_video.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class PlayToggler extends StatefulWidget {
-  final AvesVideoController? controller;
-  final bool isMenuItem;
-  final FocusNode? focusNode;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.controller,
-    this.isMenuItem = false,
-    this.focusNode,
-    this.onPressed,
-  });
-
+class const PlayToggler({
+  super.key,
+  required final AvesVideoController? controller,
+  final bool isMenuItem = false,
+  final FocusNode? focusNode,
+  final VoidCallback? onPressed,
+}) extends StatefulWidget {
   @override
   State<PlayToggler> createState() => _PlayTogglerState();
 }
@@ -103,16 +96,11 @@ class _PlayTogglerState extends State<PlayToggler> with SingleTickerProviderStat
   }
 }
 
-class PlayTogglerCaption extends StatelessWidget {
-  final AvesVideoController? controller;
-  final bool enabled;
-
-  const new({
-    super.key,
-    required this.controller,
-    required this.enabled,
-  });
-
+class const PlayTogglerCaption({
+  super.key,
+  required final AvesVideoController? controller,
+  required final bool enabled,
+}) extends StatelessWidget {
   bool get isPlaying => controller?.isPlaying ?? false;
 
   @override

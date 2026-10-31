@@ -7,20 +7,13 @@ import 'package:aves/widgets/common/basic/gestures/gesture_detector.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-abstract class ChooserQuickButton<T> extends StatefulWidget {
-  final bool blurred;
-  final ValueSetter<T>? onChooserValue;
-  final FocusNode? focusNode;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.blurred,
-    this.onChooserValue,
-    this.focusNode,
-    required this.onPressed,
-  });
-}
+abstract class const ChooserQuickButton<T>({
+  super.key,
+  required final bool blurred,
+  final ValueSetter<T>? onChooserValue,
+  final FocusNode? focusNode,
+  required final VoidCallback? onPressed,
+}) extends StatefulWidget {}
 
 abstract class ChooserQuickButtonState<T extends ChooserQuickButton<U>, U> extends State<T> with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
