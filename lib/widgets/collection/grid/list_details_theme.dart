@@ -35,7 +35,7 @@ class const EntryListDetailsTheme({
             text: 'Fake Title',
             style: titleStyle,
           ),
-          textDirection: TextDirection.ltr,
+          textDirection: .ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final titleLineHeight = titleLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
@@ -46,7 +46,7 @@ class const EntryListDetailsTheme({
             text: formatDateTime(DateTime.now(), settings.avesLocale, use24hour),
             style: captionStyle,
           ),
-          textDirection: TextDirection.ltr,
+          textDirection: .ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);

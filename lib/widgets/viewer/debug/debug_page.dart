@@ -32,7 +32,7 @@ class ViewerDebugPage extends StatelessWidget {
       (const Tab(text: 'Thumbs'), ThumbnailsTab(entry: entry)),
     ];
     return Directionality(
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       child: DefaultTabController(
         length: tabs.length,
         child: Scaffold(

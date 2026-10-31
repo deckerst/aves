@@ -54,7 +54,7 @@ class const SideGestureAreaProtector({super.key}) extends StatelessWidget {
     return Positioned.fill(
       child: Row(
         // `systemGestureInsets` are not directional
-        textDirection: TextDirection.ltr,
+        textDirection: .ltr,
         children: [
           SizedBox(
             width: MediaQuery.systemGestureInsetsOf(context).left,

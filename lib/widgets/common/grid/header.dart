@@ -155,7 +155,7 @@ class const SectionHeader<T>({
           ),
         ],
       ),
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       textScaler: textScaler,
     )..layout(BoxConstraints(maxWidth: maxContentWidth), parentUsesSize: true);
     final height = paragraph.getMaxIntrinsicHeight(maxContentWidth);

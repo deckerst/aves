@@ -41,7 +41,7 @@ class const AppDebugPage({super.key}) extends StatelessWidget {
   Widget build(BuildContext context) {
     final animations = context.select<Settings, AccessibilityAnimations>((v) => v.accessibilityAnimations);
     return Directionality(
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       child: AvesScaffold(
         appBar: AppBar(
           title: const Text('Debug'),

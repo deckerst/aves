@@ -70,7 +70,7 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
                         ColorIndicator(value: v),
                         const SizedBox(width: 8),
                         Directionality(
-                          textDirection: TextDirection.ltr,
+                          textDirection: .ltr,
                           child: SelectableText(
                             '#${v.hex}',
                             style: const TextStyle(fontFamily: 'monospace'),

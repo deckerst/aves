@@ -179,7 +179,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
   double _getSpanWidth(TextSpan span, TextScaler textScaler) {
     final paragraph = RenderParagraph(
       span,
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       textScaler: textScaler,
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);

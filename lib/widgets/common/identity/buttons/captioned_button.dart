@@ -40,7 +40,7 @@ class CaptionedButton extends StatefulWidget {
     if (showCaption) {
       final paragraph = RenderParagraph(
         TextSpan(text: text, style: CaptionedButtonText._textStyle(context)),
-        textDirection: TextDirection.ltr,
+        textDirection: .ltr,
         textScaler: MediaQuery.textScalerOf(context),
         maxLines: CaptionedButtonText.maxLines,
       )..layout(const BoxConstraints(), parentUsesSize: true);

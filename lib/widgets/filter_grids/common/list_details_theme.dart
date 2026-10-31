@@ -45,7 +45,7 @@ class FilterListDetailsTheme extends StatelessWidget {
         final titleIconSize = textScaler.scale(AvesFilterChip.iconSize);
         final titleLineHeightParagraph = RenderParagraph(
           TextSpan(text: 'Fake Title', style: titleStyle),
-          textDirection: TextDirection.ltr,
+          textDirection: .ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final titleLineHeight = titleLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
@@ -53,7 +53,7 @@ class FilterListDetailsTheme extends StatelessWidget {
 
         final captionLineHeightParagraph = RenderParagraph(
           TextSpan(text: formatDateTime(DateTime.now(), settings.avesLocale, use24hour), style: captionStyle),
-          textDirection: TextDirection.ltr,
+          textDirection: .ltr,
           textScaler: textScaler,
         )..layout(const BoxConstraints(), parentUsesSize: true);
         final captionLineHeight = captionLineHeightParagraph.getMaxIntrinsicHeight(double.infinity);
