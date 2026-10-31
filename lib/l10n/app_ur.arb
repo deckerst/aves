@@ -528,7 +528,7 @@
     "aboutDataUsageExternal": "خارجی",
     "aboutDataUsageClearCache": "کیش صاف کریں",
     "aboutCreditsSectionTitle": "کریڈٹس",
-    "aboutCreditsWorldAtlas": "یہ ایپ TopoJSON فائل استعمال کرتی ہے از [World Atlas]({link}) ISC لائسنس کے تحت۔",
+    "aboutCreditsWorldAtlas": "یہ ایپ ISC لائسنس کے تحت [World Atlas]({link}) کی ایک TopoJSON فائل استعمال کرتی ہے۔",
     "@aboutCreditsWorldAtlas": {
         "placeholders": {
             "link": {
@@ -1005,5 +1005,8 @@
     "filterCredentialsValidityValidLabel": "جائز",
     "filterCredentialsValidityTrustedLabel": "قابلِ اعتماد",
     "searchCredentialsSectionTitle": "مواد کے اسناد",
-    "settingsThumbnailShowCredentialValidity": "اسناد کی توثیق دکھائیں"
+    "settingsThumbnailShowCredentialValidity": "اسناد کی توثیق دکھائیں",
+    "exportEntryDialogDimension": "ابعاد:",
+    "aboutCreditsStateFlags": "ریاستی پرچم (Wikimedia Commons) سے لیے گئے ہیں۔ یہ عوامی ملکیت (Public Domain) میں ہیں، سوائے:",
+    "sortRandomly": "بے ترتیب طور پر"
 }
