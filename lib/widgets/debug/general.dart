@@ -3,6 +3,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/service_policy.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
@@ -17,6 +18,7 @@ class const DebugGeneralSection({super.key}) extends StatefulWidget {
 }
 
 class _DebugGeneralSectionState extends State<DebugGeneralSection> with AutomaticKeepAliveClientMixin {
+  static OverlayEntry? _insetsOverlayEntry;
   static OverlayEntry? _taskQueueOverlayEntry;
 
   @override
@@ -50,6 +52,23 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
           value: AvesMethodChannel.kDebug,
           onChanged: (v) => setState(() => AvesMethodChannel.kDebug = v),
           title: const Text('Trace Aves platform channels'),
+        ),
+        SwitchListTile(
+          value: _insetsOverlayEntry != null,
+          onChanged: (v) {
+            _insetsOverlayEntry
+              ?..remove()
+              ..dispose();
+            _insetsOverlayEntry = null;
+            if (v) {
+              _insetsOverlayEntry = OverlayEntry(
+                builder: (context) => const _InsetsOverlayEntry(),
+              );
+              Overlay.of(context).insert(_insetsOverlayEntry!);
+            }
+            setState(() {});
+          },
+          title: const Text('Show insets overlay'),
         ),
         SwitchListTile(
           value: _taskQueueOverlayEntry != null,
@@ -119,6 +138,41 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class const _InsetsOverlayEntry() extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    return IgnorePointer(
+      child: DefaultTextStyle(
+        style: const TextStyle(),
+        child: Align(
+          alignment: .center,
+          child: Container(
+            color: Colors.indigo.shade900.withAlpha(0xCC),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: AvesApp.cutoutInsetsNotifier,
+                  builder: (context, cutoutInsets, child) {
+                    return Text('cutoutInsets=$cutoutInsets');
+                  },
+                ),
+                Text('displayCornerRadii=${mq.displayCornerRadii}'),
+                Text('systemGestureInsets=${mq.systemGestureInsets}'),
+                Text('viewInsets=${mq.viewInsets}'),
+                Text('viewPadding=${mq.viewPadding}'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class const _TaskQueueOverlay() extends StatelessWidget {
