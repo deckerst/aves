@@ -433,9 +433,9 @@ class CollectionLens with ChangeNotifier {
     _updateLayoutFactors();
 
     final sortFactorChanged = oldSortFactor != sortFactor;
-    final sortOrderChanged = switch(sortFactor) {
+    final sortOrderChanged = switch (sortFactor) {
       .random => oldSortRandomSeed != sortRandomSeed,
-      _ => oldSortReverse != sortReverse
+      _ => oldSortReverse != sortReverse,
     };
     final sectionFactorChanged = oldSectionFactor != sectionFactor;
 

@@ -7,17 +7,19 @@ import 'package:aves_model/aves_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ChipSectionKey extends SectionKey with Equatable {
-  final String title;
-
+class const ChipSectionKey({
+  final String title = '',
+}) extends SectionKey with Equatable {
   @override
   List<Object?> get props => [title];
 
-  const new({
-    this.title = '',
-  });
-
   Widget? get leading => null;
+
+  @override
+  String getTitle(BuildContext context) => title;
+
+  @override
+  bool get hasLeading => leading != null;
 }
 
 class ChipImportanceSectionKey extends ChipSectionKey {

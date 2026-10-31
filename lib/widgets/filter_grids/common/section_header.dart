@@ -16,9 +16,4 @@ class const FilterChipSectionHeader<T>({
       selectable: selectable,
     );
   }
-
-  static double getPreferredHeight(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    return textScaler.scale(SectionHeader.leadingSize.height) + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
-  }
 }
