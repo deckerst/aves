@@ -12,6 +12,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -54,6 +55,7 @@ const _channel = AvesMethodChannel('deckers.thibault/aves/analysis_service_backg
 @pragma('vm:entry-point')
 Future<void> _init() async {
   WidgetsFlutterBinding.ensureInitialized();
+  EquatableConfig.stringify = true;
   initPlatformServices();
   await androidFileUtils.init();
   await localMediaDb.init();

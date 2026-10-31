@@ -51,7 +51,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:equatable/equatable.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -193,7 +192,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    EquatableConfig.stringify = true;
     _appSetup = _setup();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));

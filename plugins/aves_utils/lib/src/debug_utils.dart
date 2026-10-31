@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-// because `toString` outputs `Instance of `Foo`` and is unusable in non-debug mode
+// because `toString` outputs `Instance of 'Foo'` and is unusable in non-debug mode
 String toStringDebug(Object? o) {
   if (o == null) return 'null';
 
@@ -16,8 +16,23 @@ String toStringDebug(Object? o) {
   return o.toString();
 }
 
+const _isOutputMode = kDebugMode || kProfileMode;
+
+class _ADiagnosticPropertiesBuilder() extends DiagnosticPropertiesBuilder {
+  @override
+  void add(DiagnosticsNode property) {
+    if (_isOutputMode) {
+      properties.add(property);
+    }
+  }
+}
+
 String _stringifyDiagnosticable(Diagnosticable o) {
-  return o.toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toString(minLevel: .info);
+  // as of Flutter v3.47.8, `Diagnosticable` is designed for output only in `debug` mode
+  final builder = _ADiagnosticPropertiesBuilder();
+  // ignore: invalid_use_of_protected_member
+  o.debugFillProperties(builder);
+  return '${o.runtimeType}#${shortHash(o)}(${builder.properties.map((v) => '${v.name}: ${toStringDebug(v.value)}').join(', ')})';
 }
 
 String _stringifyAlignment(Alignment o) {
