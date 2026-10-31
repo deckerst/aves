@@ -367,6 +367,7 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     final allowDoubleTap = widget.allowDoubleTap;
     if (allowDoubleTap != null) {
       final alignment = _getTapAlignment(localPosition);
+      debugPrint('TLAD $runtimeType _allowDoubleTap localPosition=${toStringDebug(localPosition)} alignment=${toStringDebug(alignment)}');
       if (alignment != null) {
         return allowDoubleTap(alignment);
       }
@@ -378,11 +379,13 @@ class _AvesMagnifierState extends State<AvesMagnifier> with TickerProviderStateM
     final onDoubleTap = widget.onDoubleTap;
     if (onDoubleTap != null) {
       final alignment = _getTapAlignment(details.localPosition);
+      debugPrint('TLAD $runtimeType onDoubleTap details=${toStringDebug(details)} alignment=${toStringDebug(alignment)}');
       if (alignment != null && onDoubleTap(alignment)) return;
     }
 
     final childTapPosition = _getChildTapPosition(details.localPosition);
     if (childTapPosition != null) {
+      debugPrint('TLAD $runtimeType onDoubleTap details=${toStringDebug(details)} childTapPosition=${toStringDebug(childTapPosition)}');
       nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
     }
   }

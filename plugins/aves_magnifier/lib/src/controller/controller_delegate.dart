@@ -5,6 +5,7 @@ import 'package:aves_magnifier/src/controller/state.dart';
 import 'package:aves_magnifier/src/core/core.dart';
 import 'package:aves_magnifier/src/scale/scale_boundaries.dart';
 import 'package:aves_magnifier/src/scale/state.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/widgets.dart';
 
 /// A  class to hold internal layout logic to sync both controller states
@@ -109,6 +110,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
 
   void nextScaleState(ChangeSource source, {Offset? childFocalPoint}) {
     final scaleState = controller.scaleState.state;
+    debugPrint('TLAD $runtimeType nextScaleState 1 scaleState=$scaleState childFocalPoint=${toStringDebug(childFocalPoint)}');
     if (scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut) {
       controller.setScaleState(scaleStateCycle(scaleState), source, childFocalPoint: childFocalPoint);
       return;
@@ -127,6 +129,7 @@ mixin AvesMagnifierControllerDelegate on State<AvesMagnifier> {
       nextScale = controller.getScaleForScaleState(nextScaleState);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
+    debugPrint('TLAD $runtimeType nextScaleState 2 originalScale=$originalScale nextScale=$nextScale same=${originalScale == nextScale}');
     if (originalScale == nextScale) return;
     controller.setScaleState(nextScaleState, source, childFocalPoint: childFocalPoint);
   }

@@ -1,5 +1,6 @@
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_magnifier/src/pan/edge_hit_detector.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
@@ -87,6 +88,7 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
           ..onDoubleTap = onDoubleTap != null
               ? () {
                   final details = doubleTapDetails.value;
+                  debugPrint('TLAD $runtimeType onDoubleTap details=${toStringDebug(details)}');
                   if (details != null) {
                     onDoubleTap(details);
                     doubleTapDetails.value = null;
@@ -103,9 +105,13 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
     );
   }
 
-  void _onDoubleTapCancel() => doubleTapDetails.value = null;
+  void _onDoubleTapCancel() {
+    debugPrint('TLAD $runtimeType _onDoubleTapCancel');
+    doubleTapDetails.value = null;
+  }
 
   void _onDoubleTapDown(TapDownDetails details) {
+    debugPrint('TLAD $runtimeType _onDoubleTapDown details=${toStringDebug(details)}');
     if (widget.allowDoubleTap?.call(details.localPosition) ?? true) {
       doubleTapDetails.value = details;
     }

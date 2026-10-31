@@ -494,9 +494,11 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
   // - zoom in/out by double tap
   bool _allowDoubleTap(Alignment alignment) {
     if (entry.isVideo && settings.videoGestureSideDoubleTapSeek) {
+      debugPrint('TLAD $runtimeType _allowDoubleTap isVideo');
       return true;
     }
     final actionNotification = _handleSideSingleTap(alignment);
+    debugPrint('TLAD $runtimeType _allowDoubleTap actionNotification=$actionNotification');
     return actionNotification == null;
   }
 

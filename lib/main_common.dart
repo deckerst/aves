@@ -5,6 +5,7 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/aves_app.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:material_ui/material_ui.dart';
@@ -13,7 +14,9 @@ void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
   debugProfilePlatformChannels = false;
 
   // HttpClient.enableTimelineLogging = true; // enable network traffic logging
-  // debugPrintGestureArenaDiagnostics = true;
+
+  // gesture arena diagnostics are only written in debug mode
+  debugPrintGestureArenaDiagnostics = true;
 
   EquatableConfig.stringify = true;
   initPlatformServices();
