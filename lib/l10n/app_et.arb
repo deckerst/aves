@@ -1007,5 +1007,6 @@
     "searchCredentialsSectionTitle": "Sisu autentimisandmed",
     "settingsThumbnailShowCredentialValidity": "Näita autentimisandmete kehtivust",
     "aboutCreditsStateFlags": "Riikide lipud on laaditud Wikimedia Commonsist. Nad on avaldatud avaliku omandi litsentsitingimuste alusel, välja arvatud:",
-    "exportEntryDialogDimension": "Mõõdud:"
+    "exportEntryDialogDimension": "Mõõdud:",
+    "sortRandomly": "Juhuslikult"
 }

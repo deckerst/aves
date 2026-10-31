@@ -984,5 +984,19 @@
     "chipActionCopyCenterCoordinates": "Kopírovat souřadnice středu",
     "calendarHijriTabular": "Hijri (Tabular)",
     "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
-    "videoThumbnailMethodEmbeddedImage": "Vložený obrázek"
+    "videoThumbnailMethodEmbeddedImage": "Vložený obrázek",
+    "filterCredentialsValidityUnknownLabel": "Neznámé",
+    "filterCredentialsValidityInvalidLabel": "Neplatné",
+    "filterCredentialsValidityValidLabel": "Platné",
+    "filterCredentialsValidityTrustedLabel": "Důvěryhodné",
+    "videoThumbnailMethodPreviewFrame": "Náhledový snímek",
+    "videoThumbnailMethodFirstFrame": "První snímek",
+    "renameTagDialogLabelAlreadyExistsHelper": "Štítek už existuje",
+    "exportEntryDialogDimension": "Rozměr:",
+    "collectionActionShowLayoutBar": "Zobrazit panel rozložení",
+    "collectionActionHideLayoutBar": "Skrýt panel rozložení",
+    "sortRandomly": "Náhodně",
+    "settingsThumbnailShowCredentialValidity": "Zobrazit platnost ověřovacích údajů",
+    "searchCredentialsSectionTitle": "Ověřovací údaje obsahu",
+    "settingsVideoThumbnailMethods": "Upřednostňovaný náhled"
 }

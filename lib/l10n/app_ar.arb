@@ -996,5 +996,8 @@
     "filterCredentialsValidityValidLabel": "صالح",
     "filterCredentialsValidityTrustedLabel": "موثوق به",
     "searchCredentialsSectionTitle": "بيانات اعتماد المحتوى",
-    "settingsThumbnailShowCredentialValidity": "إثبات صحة الشهادة"
+    "settingsThumbnailShowCredentialValidity": "إثبات صحة الشهادة",
+    "exportEntryDialogDimension": "الأبعاد:",
+    "aboutCreditsStateFlags": "أعلام الولايات مأخوذة من ويكيميديا كومنز. وهي في الملكية العامة، باستثناء:",
+    "sortRandomly": "عشوائيا"
 }

@@ -763,5 +763,6 @@
     "searchCredentialsSectionTitle": "Credenciales de contenido",
     "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales",
     "exportEntryDialogDimension": "Dimensión:",
-    "aboutCreditsStateFlags": "Las banderas de los estados provienen de Wikimedia Commons. Son de dominio público, excepto:"
+    "aboutCreditsStateFlags": "Las banderas de los estados provienen de Wikimedia Commons. Son de dominio público, excepto:",
+    "sortRandomly": "Aleatoriamente"
 }
