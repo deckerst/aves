@@ -119,6 +119,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _heroInfoNotifier.value = EntryHeroInfo(collection, entry);
     entryNotifier = viewerController.entryNotifier;
     entryNotifier.value = entry;
+    entryNotifier.addListener(_onEntryChanged);
     _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentEntryIndex);
@@ -185,6 +186,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
+    entryNotifier.removeListener(_onEntryChanged);
     cleanEntryControllers(entryNotifier.value);
     _playingVideoControllerNotifier.removeListener(_onPlayingVideoControllerChanged);
     updatePictureInPicture(context);
@@ -313,10 +315,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   @override
-  void didPopNext() => _overrideSnackBarMargin();
+  void didPopNext() => _updateSnackBarMargin();
 
   @override
-  void didPush() => _overrideSnackBarMargin();
+  void didPush() => _updateSnackBarMargin();
 
   @override
   void didPop() => _resetSnackBarMargin();
@@ -324,10 +326,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void didPushNext() => _resetSnackBarMargin();
 
-  void _overrideSnackBarMargin() {
+  void _updateSnackBarMargin() {
     MarginComputer marginComputer;
     if (isViewingImage) {
-      marginComputer = (context) => EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
+      marginComputer = (context) {
+        final entry = entryNotifier.value;
+        return EdgeInsets.only(
+          bottom: ViewerBottomOverlay.actionSafeHeight(context, entry),
+        );
+      };
     } else {
       marginComputer = FeedbackMixin.snackBarMarginDefault;
     }
@@ -710,7 +717,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
-    _overrideSnackBarMargin();
+    _updateSnackBarMargin();
     final animate = context.read<Settings>().animate;
     switch (page) {
       case transitionPage:
@@ -844,6 +851,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
         await viewerController.castEntry(entry);
       }
     }
+  }
+
+  void _onEntryChanged() {
+    _updateSnackBarMargin();
   }
 
   void _onPopInvoked() {

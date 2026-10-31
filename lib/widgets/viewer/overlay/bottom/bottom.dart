@@ -1,6 +1,7 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -11,6 +12,7 @@ import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/selection_button.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/thumbnail_preview.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video/video.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/viewer_buttons.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/wallpaper_buttons.dart';
 import 'package:aves/widgets/viewer/page_entry_builder.dart';
@@ -74,11 +76,13 @@ class const ViewerBottomOverlay({
     );
   }
 
-  static double actionSafeHeight(BuildContext context) {
+  static double actionSafeHeight(BuildContext context, AvesEntry? entry) {
+    final isVideo = entry?.isVideo ?? false;
+    final videoButtonBarHeight = isVideo ? VideoControlOverlay.preferredHeight(context) + ExtraBottomOverlay.padding : 0;
+    final viewerButtonBarHeight = ViewerButtons.preferredHeight(context);
+    final thumbnailHeight = settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0;
     final safeBottomPadding = context.select<MediaQueryData, double>((mq) => mq.safeBottomPadding);
-    final buttonHeight = ViewerButtons.preferredHeight(context);
-    final thumbnailHeight = (settings.showOverlayThumbnailPreview ? ViewerThumbnailPreview.preferredHeight : 0);
-    return safeBottomPadding + buttonHeight + thumbnailHeight;
+    return safeBottomPadding + thumbnailHeight + viewerButtonBarHeight + videoButtonBarHeight;
   }
 }
 
@@ -260,11 +264,13 @@ class const ExtraBottomOverlay({
   final EdgeInsets? viewPadding,
   required final Widget child,
 }) extends StatelessWidget {
+  static const double padding = 8;
+
   @override
   Widget build(BuildContext context) {
     final viewInsets = this.viewInsets ?? MediaQuery.viewInsetsOf(context);
     final viewPadding = this.viewPadding ?? MediaQuery.viewPaddingOf(context);
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8);
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: padding) + const EdgeInsets.symmetric(horizontal: padding);
 
     return Padding(
       padding: safePadding,

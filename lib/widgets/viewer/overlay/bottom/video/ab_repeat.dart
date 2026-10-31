@@ -57,24 +57,27 @@ class _VideoABRepeatOverlayState extends State<VideoABRepeatOverlay> {
             tooltip: l10n.resetTooltip,
           );
         }
-        return Row(
-          mainAxisSize: .min,
-          children: [
-            const Spacer(),
-            OverlayButton(
-              scale: scale,
-              child: boundButton,
-            ),
-            const SizedBox(width: 8),
-            OverlayButton(
-              scale: scale,
-              child: IconButton(
-                icon: const Icon(AIcons.repeatOff),
-                onPressed: () => controller?.toggleABRepeat(),
-                tooltip: l10n.stopTooltip,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            mainAxisSize: .min,
+            children: [
+              const Spacer(),
+              OverlayButton(
+                scale: scale,
+                child: boundButton,
               ),
-            ),
-          ],
+              const SizedBox(width: 8),
+              OverlayButton(
+                scale: scale,
+                child: IconButton(
+                  icon: const Icon(AIcons.repeatOff),
+                  onPressed: () => controller?.toggleABRepeat(),
+                  tooltip: l10n.stopTooltip,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
