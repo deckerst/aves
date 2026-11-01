@@ -990,5 +990,11 @@
     "videoThumbnailMethodEmbeddedImage": "Вбудоване зображення",
     "videoThumbnailMethodPreviewFrame": "Кадр попереднього перегляду",
     "videoThumbnailMethodFirstFrame": "Перший кадр",
-    "settingsVideoThumbnailMethods": "Бажана мініатюра"
+    "settingsVideoThumbnailMethods": "Бажана мініатюра",
+    "filterCredentialsValidityUnknownLabel": "Невідомо",
+    "filterCredentialsValidityInvalidLabel": "Недійсне",
+    "filterCredentialsValidityValidLabel": "Дійсний",
+    "exportEntryDialogDimension": "Розміри:",
+    "aboutCreditsStateFlags": "Прапори країн взято з Wikimedia Commons. Вони належать до суспільного надбання, за винятком:",
+    "sortRandomly": "Випадково"
 }
