@@ -606,5 +606,134 @@
     "filterCredentialsValidityUnknownLabel": "Neznano",
     "filterCredentialsValidityInvalidLabel": "Neveljavno",
     "filterCredentialsValidityValidLabel": "Veljavno",
-    "filterCredentialsValidityTrustedLabel": "Zaupano"
+    "filterCredentialsValidityTrustedLabel": "Zaupano",
+    "exportEntryDialogDimension": "Dimenzije:",
+    "aboutCreditsStateFlags": "Državne zastave so iz Wikimedijine zbirke. Vse so v javni domeni, razen naslednjih:",
+    "collectionDeleteFailureFeedback": "{count, plural, =1{Brisanje 1 predmeta ni uspelo} other{Brisanje {count} predmetov ni uspelo}}",
+    "@collectionDeleteFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionCopyFailureFeedback": "{count, plural, =1{Kopiranje 1 predmeta ni uspelo} other{Kopiranje {count} predmetov ni uspelo}}",
+    "@collectionCopyFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionMoveFailureFeedback": "{count, plural, =1{Premikanje 1 predmeta ni uspelo} other{Premikanje {count} predmetov ni uspelo}}",
+    "@collectionMoveFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionRenameFailureFeedback": "{count, plural, =1{Preimenovanje 1 predmeta ni uspelo} other{Preimenovanje {count} predmetov ni uspelo}}",
+    "@collectionRenameFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionEditFailureFeedback": "{count, plural, =1{Urejanje 1 predmeta ni uspelo} other{Urejanje {count} predmetov ni uspelo}}",
+    "@collectionEditFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionExportFailureFeedback": "{count, plural, =1{Izvoz 1 strani ni uspel} other{Izvoz {count} strani ni uspel}}",
+    "@collectionExportFailureFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionCopySuccessFeedback": "{count, plural, =1{1 predmet kopiran} two{{count} predmeta kopirana} few{{count} predmeti kopirani} other{{count} predmetov kopiranih}}",
+    "@collectionCopySuccessFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionMoveSuccessFeedback": "{count, plural, =1{1 predmet premaknjen} two{{count} predmeta premaknjena} few{{count} predmeti premaknjeni} other{{count} predmetov premaknjenih}}",
+    "@collectionMoveSuccessFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionRenameSuccessFeedback": "{count, plural, =1{1 predmet preimenovan} two{{count} predmeta preimenovana} few{{count} predmeti preimenovani} other{{count} predmetov preimenovanih}}",
+    "@collectionRenameSuccessFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "collectionEditSuccessFeedback": "{count, plural, =1{1 predmet urejen} two{{count} predmeta urejena} few{{count} predmeti urejeni} other{{count} predmetov urejenih}}",
+    "@collectionEditSuccessFeedback": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "format": "decimalPattern"
+            }
+        }
+    },
+    "sortRandomly": "Naključno",
+    "sortOrderHighestFirst": "Najvišji na vrhu",
+    "sortOrderLowestFirst": "Najnižji na vrhu",
+    "sortOrderLargestFirst": "Največji na vrhu",
+    "sortOrderSmallestFirst": "Najmanjši na vrhu",
+    "sortOrderShortestFirst": "Najkrajši na vrhu",
+    "sortOrderLongestFirst": "Najdaljši na vrhu",
+    "albumGroupTier": "Po tipu albuma",
+    "albumGroupType": "Po vrsti medija",
+    "albumGroupVolume": "Po porabljenem prostoru",
+    "albumMimeTypeMixed": "Mešano",
+    "albumPickPageTitleCopy": "Kopiraj v album",
+    "albumPickPageTitleExport": "Izvozi v album",
+    "albumPickPageTitleMove": "Premakni v album",
+    "albumPickPageTitlePick": "Izberi album",
+    "albumCamera": "Fotoaparat",
+    "albumDownload": "Prenosi",
+    "albumScreenshots": "Posnetki zaslona",
+    "albumScreenRecordings": "Videoposnetki zaslona",
+    "albumVideoCaptures": "Videoposnetki",
+    "albumPageTitle": "Albumi",
+    "albumEmpty": "Ni albumov",
+    "createAlbumButtonLabel": "USTVARI",
+    "newFilterBanner": "Nov",
+    "countryPageTitle": "Države",
+    "countryEmpty": "Ni držav",
+    "statePageTitle": "Dežele",
+    "stateEmpty": "Ni dežel",
+    "placePageTitle": "Kraji",
+    "placeEmpty": "Ni krajev",
+    "tagPageTitle": "Oznake",
+    "tagEmpty": "Ni oznak",
+    "tagPickPageTitle": "Izberi oznako",
+    "binPageTitle": "Koš",
+    "explorerPageTitle": "Raziskovalec",
+    "explorerActionSelectStorageVolume": "Izberi shrambo",
+    "selectStorageVolumeDialogTitle": "Izberi shrambo"
 }

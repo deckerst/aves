@@ -755,5 +755,12 @@
     "renameTagDialogLabelAlreadyExistsHelper": "Тег уже существует",
     "collectionActionShowLayoutBar": "Показать панель макета",
     "collectionActionHideLayoutBar": "Скрыть панель макета",
-    "settingsVideoThumbnailMethods": "Предпочитаемая миниатюра"
+    "settingsVideoThumbnailMethods": "Предпочитаемая миниатюра",
+    "filterCredentialsValidityUnknownLabel": "Неизвестно",
+    "filterCredentialsValidityInvalidLabel": "Недействительно",
+    "filterCredentialsValidityValidLabel": "Действительно",
+    "filterCredentialsValidityTrustedLabel": "Доверенный",
+    "exportEntryDialogDimension": "Размер:",
+    "sortRandomly": "Случайно",
+    "aboutCreditsStateFlags": "Государственные флаги взяты с Wikimedia Commons. Они находятся в общественном достоянии, за исключением:"
 }
