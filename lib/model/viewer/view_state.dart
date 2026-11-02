@@ -2,11 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class ViewState extends Equatable {
-  final Offset position;
-  final double? scale;
-  final Size? viewportSize, contentSize;
-
+class const ViewState({
+  required final Offset position,
+  required final double? scale,
+  required final Size? viewportSize,
+  required final Size? contentSize,
+}) extends Equatable {
   static const ViewState zero = ViewState(
     position: Offset.zero,
     scale: 0,
@@ -16,13 +17,6 @@ class ViewState extends Equatable {
 
   @override
   List<Object?> get props => [position, scale, viewportSize, contentSize];
-
-  const new({
-    required this.position,
-    required this.scale,
-    required this.viewportSize,
-    required this.contentSize,
-  });
 
   ViewState copyWith({
     Offset? position,

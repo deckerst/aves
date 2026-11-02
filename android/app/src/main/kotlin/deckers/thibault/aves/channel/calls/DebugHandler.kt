@@ -524,7 +524,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             if (errorDetails?.isNotEmpty() == true) {
                 errorDetails = errorDetails.split(Regex("\n"), 2).first()
             }
-            result.error("getThumbnail-null", "failed to get thumbnail for contentAddress", errorDetails)
+            result.error("getThumbnail-null", "failed to get thumbnail for $contentAddress", errorDetails)
         } else {
             result.success(bytes)
         }

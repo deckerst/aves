@@ -2,16 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class VideoPlaybackRow extends Equatable {
-  final int entryId, resumeTimeMillis;
-
+class const VideoPlaybackRow({
+  required final int entryId,
+  required final int resumeTimeMillis,
+}) extends Equatable {
   @override
   List<Object?> get props => [entryId, resumeTimeMillis];
-
-  const new({
-    required this.entryId,
-    required this.resumeTimeMillis,
-  });
 
   static VideoPlaybackRow? fromMap(Map map) {
     return VideoPlaybackRow(

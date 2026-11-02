@@ -13,18 +13,12 @@ import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class VectorImageView extends StatefulWidget {
-  final AvesEntry entry;
-  final ValueNotifier<ViewState> viewStateNotifier;
-  final ImageErrorWidgetBuilder errorBuilder;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.viewStateNotifier,
-    required this.errorBuilder,
-  });
-
+class const VectorImageView({
+  super.key,
+  required final AvesEntry entry,
+  required final ValueNotifier<ViewState> viewStateNotifier,
+  required final ImageErrorWidgetBuilder errorBuilder,
+}) extends StatefulWidget {
   @override
   State<VectorImageView> createState() => _VectorImageViewState();
 }
@@ -294,26 +288,16 @@ class _VectorImageViewState extends State<VectorImageView> {
 
 typedef _BackgroundFrameBuilder = Widget Function(Widget child, int? frame, Rect tileRect);
 
-class _RegionTile extends StatefulWidget {
-  final AvesEntry entry;
-
+class const _RegionTile({
+  required final AvesEntry entry,
   // `tileRect` uses Flutter view coordinates
+  required final Rect tileRect,
   // `regionRect` uses the raw image pixel coordinates
-  final Rect tileRect;
-  final Rectangle<double> regionRect;
-  final double scale;
-  final Color? backgroundColor;
-  final _BackgroundFrameBuilder? backgroundFrameBuilder;
-
-  const new({
-    required this.entry,
-    required this.tileRect,
-    required this.regionRect,
-    required this.scale,
-    required this.backgroundColor,
-    required this.backgroundFrameBuilder,
-  });
-
+  required final Rectangle<double> regionRect,
+  required final double scale,
+  required final Color? backgroundColor,
+  required final _BackgroundFrameBuilder? backgroundFrameBuilder,
+}) extends StatefulWidget {
   @override
   State<_RegionTile> createState() => _RegionTileState();
 
@@ -392,28 +376,21 @@ class _RegionTileState extends State<_RegionTile> {
   }
 }
 
-class _CheckeredBackgroundDecoration extends Decoration {
-  final Size viewportSize;
-  final double checkSize;
-  final Offset offset;
-
-  const new({
-    required this.viewportSize,
-    required this.checkSize,
-    required this.offset,
-  });
-
+class const _CheckeredBackgroundDecoration({
+  required final Size viewportSize,
+  required final double checkSize,
+  required final Offset offset,
+}) extends Decoration {
   @override
   _CheckeredBackgroundDecorationPainter createBoxPainter([VoidCallback? onChanged]) {
     return _CheckeredBackgroundDecorationPainter(this, onChanged);
   }
 }
 
-class _CheckeredBackgroundDecorationPainter extends BoxPainter {
-  final _CheckeredBackgroundDecoration decoration;
-
-  const new(this.decoration, VoidCallback? onChanged) : super(onChanged);
-
+class const _CheckeredBackgroundDecorationPainter(
+  final _CheckeredBackgroundDecoration decoration,
+  super.onChanged,
+) extends BoxPainter {
   static const deflation = Offset(.5, .5);
 
   @override

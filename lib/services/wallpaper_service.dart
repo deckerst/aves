@@ -1,6 +1,7 @@
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class WallpaperService {
@@ -15,7 +16,11 @@ class WallpaperService {
       });
       return true;
     } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
+      if ({'notsupported', 'notallowed'}.any(e.code.endsWith)) {
+        debugPrint('Unreported error with exception=$e');
+      } else {
+        await reportService.recordError(e, stack);
+      }
     }
     return false;
   }

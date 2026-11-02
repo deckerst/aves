@@ -269,7 +269,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             .setDataAndType(AppAdapterHandler.getShareableUri(activity, uri.toUri()), mimeType)
 
         if (intent.resolveActivity(activity.packageManager) == null) {
-            error("edit-resolve", "cannot resolve activity for this intent for uri=$uri mimeType=$mimeType", null)
+            error("edit-resolve", "cannot resolve activity for uri=$uri mimeType=$mimeType, intent=$intent", null)
             return
         }
 
@@ -278,7 +278,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
             endOfStream()
         }
         if (!safeStartActivityForResult(intent, MainActivity.EDIT_REQUEST)) {
-            error("edit-start", "cannot start activity for this intent for uri=$uri mimeType=$mimeType", null)
+            error("edit-start", "cannot start activity for uri=$uri mimeType=$mimeType, intent=$intent", null)
         }
     }
 

@@ -334,6 +334,12 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
                 .setType(mimeType)
         }
+
+        if (intent.resolveActivity(context.packageManager) == null) {
+            result.error("share-resolve", "cannot resolve activity for ${uriList.size} URIs, intent=$intent", null)
+            return
+        }
+
         try {
             val started = safeStartActivityChooser(title, intent)
             result.success(started)
@@ -368,8 +374,12 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
     private fun safeStartActivityChooser(title: String?, intent: Intent): Boolean {
         if (intent.resolveActivity(context.packageManager) == null) return false
+
+        val chooserIntent = Intent.createChooser(intent, title)
+        val intentToStart = if (chooserIntent.resolveActivity(context.packageManager) == null) intent else chooserIntent
+
         try {
-            context.startActivity(Intent.createChooser(intent, title))
+            context.startActivity(intentToStart)
             return true
         } catch (e: SecurityException) {
             if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {

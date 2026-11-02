@@ -15,7 +15,9 @@ class MimeTypes {
   static const jpeg = 'image/jpeg';
   static const png = 'image/png';
   static const svg = 'image/svg+xml';
-  static const tiff = 'image/tiff';
+  static const tif = 'image/tif'; // non-standard, but present in the wild
+  static const tiff = 'image/tiff'; // https://en.wikipedia.org/wiki/TIFF
+  static const tiffFx = 'image/tiff-fx'; // https://en.wikipedia.org/wiki/TIFF
   static const webp = 'image/webp';
   static const wbmp = 'image/vnd.wap.wbmp';
 
@@ -148,6 +150,8 @@ class MimeTypes {
   static bool isHeic(String? mimeType) => heicTypes.contains(mimeType);
 
   static String normalize(String mimeType) {
+    mimeType = mimeType.toLowerCase();
+
     if (isHeic(mimeType)) {
       return heic;
     }
@@ -170,6 +174,10 @@ class MimeTypes {
       case psdVnd:
       case psdX:
         return psdVnd;
+      case tif:
+      case tiff:
+      case tiffFx:
+        return tiff;
       default:
         return mimeType;
     }
