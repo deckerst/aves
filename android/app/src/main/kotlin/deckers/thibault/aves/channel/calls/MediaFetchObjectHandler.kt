@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.decoding.RegionFetcher
+import deckers.thibault.aves.model.ContentQueryException
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -53,7 +54,15 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
             allowUnsized = allowUnsized,
             callback = object : ImageOpCallback {
                 override fun onSuccess(fields: FieldMap) = result.success(fields)
-                override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri mimeType=$mimeType", throwable.message)
+                override fun onFailure(throwable: Throwable) {
+                    val errorCodeBase = "getEntry"
+                    val errorCode = if (throwable is ContentQueryException) {
+                        "$errorCodeBase-query"
+                    } else {
+                        "$errorCodeBase-failure"
+                    }
+                    result.error(errorCode, "failed to get entry for uri=$uri mimeType=$mimeType", throwable)
+                }
             })
     }
 

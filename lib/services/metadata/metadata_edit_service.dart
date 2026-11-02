@@ -138,6 +138,8 @@ class PlatformMetadataEditService implements MetadataEditService {
         await outputstream(customException);
       } else if (code.endsWith('filenotfound')) {
         debugPrint('Unreported `fileNotFound` error with exception=$e');
+      } else if (code.endsWith('readonly')) {
+        debugPrint('Unreported `readOnly` error with exception=$e');
       } else {
         await reportService.recordError(e, stack);
       }

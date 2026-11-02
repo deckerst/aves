@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.model.ContentQueryException
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
@@ -52,8 +53,8 @@ open class UnknownContentProvider : ImageProvider() {
                 }
                 cursor.close()
             }
-        } catch (e: Exception) {
-            callback.onFailure(Exception("failed to query content", e))
+        } catch (ex: Exception) {
+            callback.onFailure(ContentQueryException(ex))
             return
         }
 

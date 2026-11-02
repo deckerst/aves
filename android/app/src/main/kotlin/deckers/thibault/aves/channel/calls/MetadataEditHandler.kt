@@ -12,6 +12,7 @@ import deckers.thibault.aves.model.Mp4FragmentedException
 import deckers.thibault.aves.model.Mp4TooLargeException
 import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.OutputStreamException
+import deckers.thibault.aves.model.ReadOnlyFileSystemException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import io.flutter.plugin.common.MethodCall
@@ -261,6 +262,8 @@ private class MetadataOpCallback(
             "$errorCodeBase-filenotfound"
         } else if (throwable is OutputStreamException) {
             "$errorCodeBase-outputstream"
+        } else if (throwable is ReadOnlyFileSystemException) {
+            "$errorCodeBase-readonly"
         } else {
             "$errorCodeBase-failure"
         }

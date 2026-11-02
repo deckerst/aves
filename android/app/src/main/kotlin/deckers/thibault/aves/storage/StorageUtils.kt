@@ -21,6 +21,7 @@ import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.OutputStreamException
+import deckers.thibault.aves.model.ReadOnlyFileSystemException
 import deckers.thibault.aves.storage.apis.FilePermissions
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.SafPermissions
@@ -34,6 +35,7 @@ import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -739,7 +741,11 @@ object StorageUtils {
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+            if (ex is FileNotFoundException && (ex.message ?: "").startsWith("open failed: EROFS (Read-only file system)")) {
+                throw ReadOnlyFileSystemException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+            } else {
+                throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+            }
         }
     }
 

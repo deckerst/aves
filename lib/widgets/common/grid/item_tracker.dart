@@ -47,8 +47,8 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
   final Set<StreamSubscription> _subscriptions = {};
 
   // grid section metrics before the app is laid out with the new orientation
-  late SectionedListLayout<T> _lastSectionedListLayout;
-  late Size _lastScrollableSize;
+  SectionedListLayout<T>? _lastSectionedListLayout;
+  Size? _lastScrollableSize;
   Orientation _lastOrientation = .portrait;
 
   @override
@@ -147,7 +147,10 @@ class _GridItemTrackerState<T> extends State<GridItemTracker<T>> with WidgetsBin
     if (scrollController.offset == 0) return;
 
     final layout = _lastSectionedListLayout;
-    final halfSize = _lastScrollableSize / 2;
+    final scrollableSize = _lastScrollableSize;
+    if (layout == null || scrollableSize == null) return;
+
+    final halfSize = scrollableSize / 2;
     final center = Offset(
       halfSize.width,
       halfSize.height + scrollController.offset - appBarHeightNotifier.value,
