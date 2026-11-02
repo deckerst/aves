@@ -57,6 +57,8 @@ class AvesEntry with AvesEntryBase {
 
   final AChangeNotifier metadataChangeNotifier = .new(), addressChangeNotifier = .new();
 
+  bool _disposed = false;
+
   new({
     required int? id,
     required this.uri,
@@ -210,6 +212,7 @@ class AvesEntry with AvesEntryBase {
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
+    _disposed = true;
   }
 
   // do not implement [Object.==] and [Object.hashCode] using mutable attributes (e.g. `uri`)
@@ -475,7 +478,9 @@ class AvesEntry with AvesEntryBase {
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
-    metadataChangeNotifier.notify();
+    if (!_disposed) {
+      metadataChangeNotifier.notify();
+    }
   }
 
   Future<void> refresh({
@@ -524,7 +529,9 @@ class AvesEntry with AvesEntryBase {
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       EntryCache.evict(uri);
       await mediaFetchService.clearDecoders();
-      visualChangeNotifier.notify();
+      if (!_disposed) {
+        visualChangeNotifier.notify();
+      }
     }
   }
 }

@@ -29,6 +29,7 @@ import 'package:aves/widgets/viewer/visual/video/swipe_action.dart';
 import 'package:aves/widgets/viewer/visual/video/video_view.dart';
 import 'package:aves_magnifier/aves_magnifier.dart';
 import 'package:aves_model/aves_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -172,6 +173,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       child: RasterImageView(
         entry: entry,
         viewStateNotifier: _viewStateNotifier,
+        devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
         errorBuilder: (context, error, stackTrace) => ErrorView(
           entry: entry,
           onTap: _onTap,
@@ -522,18 +524,19 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     }
   }
 
-  void _onViewStateChanged(MagnifierState v) {
+  void _onViewStateChanged(MagnifierState magnifierState) {
     if (!mounted) return;
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
-      position: v.position,
-      scale: v.scale,
+      position: magnifierState.position,
+      scale: magnifierState.scale,
     );
   }
 
-  void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
+  void _onViewScaleBoundariesChanged(ScaleBoundaries boundaries) {
+    if (!mounted) return;
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
-      viewportSize: v.viewportSize,
-      contentSize: v.contentSize,
+      viewportSize: boundaries.viewportSize,
+      contentSize: boundaries.contentSize,
     );
   }
 
