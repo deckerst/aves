@@ -330,6 +330,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _goToHorizontalPage(int delta, {required bool animate}) {
+    if (!horizontalPager.hasClients) return;
+
     final page = horizontalPager.page?.round();
     final _collection = collection;
     if (page != null && _collection != null) {
