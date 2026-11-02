@@ -86,8 +86,8 @@ class _RasterImageViewState extends State<RasterImageView> {
   @override
   void dispose() {
     _unregisterWidget(widget);
-    _fullImageLoaded.dispose();
     _unregisterFullImage();
+    _fullImageLoaded.dispose();
     super.dispose();
   }
 
