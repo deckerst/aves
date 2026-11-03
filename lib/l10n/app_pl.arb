@@ -998,5 +998,6 @@
     "aboutCreditsStateFlags": "Flagi państw pochodzą z serwisu Wikimedia Commons. Znajdują się one w domenie publicznej, z wyjątkiem:",
     "searchCredentialsSectionTitle": "Dane uwierzytelniające treści",
     "settingsThumbnailShowCredentialValidity": "Pokaż ważność poświadczeń",
-    "exportEntryDialogDimension": "Wymiary:"
+    "exportEntryDialogDimension": "Wymiary:",
+    "sortRandomly": "Losowo"
 }

@@ -755,5 +755,12 @@
     "videoThumbnailMethodFirstFrame": "Erster Frame",
     "renameTagDialogLabelAlreadyExistsHelper": "Tag existiert bereits",
     "settingsVideoThumbnailMethods": "Bevorzugte Miniaturansicht",
-    "chipActionCopyCenterCoordinates": "Zentrale Koordinaten kopieren"
+    "chipActionCopyCenterCoordinates": "Zentrale Koordinaten kopieren",
+    "filterCredentialsValidityUnknownLabel": "Unbekannt",
+    "filterCredentialsValidityInvalidLabel": "Ungültig",
+    "filterCredentialsValidityValidLabel": "Gültig",
+    "filterCredentialsValidityTrustedLabel": "Zuverlässig",
+    "exportEntryDialogDimension": "Maße:",
+    "aboutCreditsStateFlags": "Staatsflaggen stammen von Wikimedia Commons. Sie sind gemeinfrei außer:",
+    "sortRandomly": "Zufällig"
 }
