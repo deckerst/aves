@@ -14,8 +14,12 @@ class Mp4ZeroSizeBoxException(message: String, cause: Throwable) : RuntimeExcept
 
 // IO
 
+class ContentProviderCrash(message: String, cause: Throwable? = null) : IOException(message, cause)
+
 class FileDescriptorException(message: String, cause: Throwable? = null) : IOException(message, cause)
 
 class OutputStreamException(message: String, cause: Throwable? = null) : IOException(message, cause)
+
+class PartialTransferException(message: String, cause: Throwable? = null) : IOException(message, cause)
 
 class ReadOnlyFileSystemException(message: String, cause: Throwable? = null) : IOException(message, cause)

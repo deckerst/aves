@@ -12,6 +12,7 @@ import deckers.thibault.aves.model.Mp4FragmentedException
 import deckers.thibault.aves.model.Mp4TooLargeException
 import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.OutputStreamException
+import deckers.thibault.aves.model.PartialTransferException
 import deckers.thibault.aves.model.ReadOnlyFileSystemException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -23,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
+import java.io.IOException
 
 class MetadataEditHandler(private val context: Context) : MethodCallHandler {
     private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -247,26 +249,48 @@ private class MetadataOpCallback(
     override fun onSuccess(fields: FieldMap) = result.success(fields)
     override fun onFailure(throwable: Throwable) {
         val errorCode = if (throwable is ExifInterfaceException) {
-            "$errorCodeBase-exifinterface"
+            val cause = throwable.cause
+            if (cause is IOException && (cause.message ?: "").startsWith("Failed to copy the given amount of bytes")) {
+                "$errorCodeBase-$ERROR_PARTIAL_TRANSFER"
+            } else {
+                "$errorCodeBase-$ERROR_EXIF_INTERFACE"
+            }
+        } else if (throwable is FileDescriptorException) {
+            "$errorCodeBase-$ERROR_FILE_NOT_FOUND"
+        } else if (throwable is FileNotFoundException) {
+            "$errorCodeBase-$ERROR_FILE_NOT_FOUND"
+        } else if (throwable is Mp4FragmentedException) {
+            "$errorCodeBase-$ERROR_MP4_FRAGMENTED"
         } else if (throwable is Mp4TooLargeException) {
             if (throwable.type == "moov") {
-                "$errorCodeBase-mp4largemoov"
+                "$errorCodeBase-$ERROR_MP4_LARGE_MOOV"
             } else {
-                "$errorCodeBase-mp4largeother"
+                "$errorCodeBase-$ERROR_MP4_LARGE_OTHER"
             }
-        } else if (throwable is Mp4FragmentedException) {
-            "$errorCodeBase-mp4fragmented"
         } else if (throwable is Mp4ZeroSizeBoxException) {
-            "$errorCodeBase-mp4zerosizebox"
-        } else if (throwable is FileNotFoundException || throwable is FileDescriptorException) {
-            "$errorCodeBase-filenotfound"
+            "$errorCodeBase-$ERROR_MP4_ZERO_SIZE_BOX"
         } else if (throwable is OutputStreamException) {
-            "$errorCodeBase-outputstream"
+            "$errorCodeBase-$ERROR_OUTPUT_STREAM"
+        } else if (throwable is PartialTransferException) {
+            "$errorCodeBase-$ERROR_PARTIAL_TRANSFER"
         } else if (throwable is ReadOnlyFileSystemException) {
-            "$errorCodeBase-readonly"
+            "$errorCodeBase-$ERROR_READ_ONLY"
         } else {
-            "$errorCodeBase-failure"
+            "$errorCodeBase-$ERROR_GENERIC_FAILURE"
         }
         result.error(errorCode, "failed for entry=$entryMap", throwable)
+    }
+
+    companion object {
+        const val ERROR_GENERIC_FAILURE = "failure"
+        const val ERROR_EXIF_INTERFACE = "exifinterface"
+        const val ERROR_FILE_NOT_FOUND = "filenotfound"
+        const val ERROR_MP4_FRAGMENTED = "mp4fragmented"
+        const val ERROR_MP4_LARGE_MOOV = "mp4largemoov"
+        const val ERROR_MP4_LARGE_OTHER = "mp4largeother"
+        const val ERROR_MP4_ZERO_SIZE_BOX = "mp4zerosizebox"
+        const val ERROR_OUTPUT_STREAM = "outputstream"
+        const val ERROR_PARTIAL_TRANSFER = "partialtransfer"
+        const val ERROR_READ_ONLY = "readonly"
     }
 }

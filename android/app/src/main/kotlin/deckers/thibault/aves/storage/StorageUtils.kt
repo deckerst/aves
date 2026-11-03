@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.ContentProviderCrash
 import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.model.ReadOnlyFileSystemException
@@ -33,6 +34,7 @@ import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isDataScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import deckers.thibault.aves.utils.UriUtils.tryParseId
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -644,13 +646,10 @@ object StorageUtils {
                 uriPath?.contains("/file/") == true -> {
                     // e.g. `content://media/external/file/...`
                     // create an ad-hoc temporary file for decoding only
-                    createTempFile(context).apply {
-                        try {
-                            copyFrom(openInputStream(context, uri), sizeBytes)
-                            return Uri.fromFile(this)
-                        } catch (ex: Exception) {
-                            Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", ex)
-                        }
+                    try {
+                        return Uri.fromFile(createTempFile(context, uri, sizeBytes))
+                    } catch (ex: Exception) {
+                        Log.e(LOG_TAG, "failed to create temporary file from uri=$uri", ex)
                     }
                 }
 
@@ -734,17 +733,20 @@ object StorageUtils {
         val uri = contentAddress.uri
         val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
         return try {
-            context.contentResolver.openOutputStream(effectiveUri, mode) ?: throw OutputStreamException(
+            context.contentResolver.openOutputStream(effectiveUri, mode) ?: throw ContentProviderCrash(
                 "failed to open output stream because provider recently crashed" +
                         ", from mode=$mode effectiveUri=$effectiveUri for $contentAddress"
             )
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            if (ex is FileNotFoundException && (ex.message ?: "").startsWith("open failed: EROFS (Read-only file system)")) {
-                throw ReadOnlyFileSystemException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
-            } else {
-                throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+            when (ex) {
+                is FileNotFoundException if (ex.message ?: "").startsWith("open failed: EROFS (Read-only file system)") -> {
+                    throw ReadOnlyFileSystemException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+                }
+
+                is ContentProviderCrash -> throw ex
+                else -> throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
             }
         }
     }
@@ -777,7 +779,7 @@ object StorageUtils {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
             Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", ex)
-            null
+            throw FileDescriptorException("failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", ex)
         }
     }
 
@@ -799,16 +801,31 @@ object StorageUtils {
 
     private fun getTempDirectory(context: Context): File = File(context.cacheDir, "temp")
 
-    fun createTempFile(context: Context, extension: String? = null): File {
+    fun createTempFile(context: Context): File {
         val directory = getTempDirectory(context)
         directory.mkdirs()
         if (!directory.exists()) {
             throw IOException("failed to create directories at path=$directory")
         }
-        val tempFile = File.createTempFile("aves", extension, directory)
+        val tempFile = File.createTempFile("aves", null, directory)
         // `deleteOnExit` is unreliable, but it does not hurt
         tempFile.deleteOnExit()
         return tempFile
+    }
+
+    // auto closes the provided input stream
+    fun createTempFile(context: Context, inputStream: InputStream?, streamLength: Long?): File {
+        return createTempFile(context).apply {
+            copyFrom(inputStream, streamLength)
+        }
+    }
+
+    fun createTempFile(context: Context, uri: Uri, streamLength: Long?): File {
+        return createTempFile(context, openInputStream(context, uri), streamLength)
+    }
+
+    fun createTempFile(context: Context, bytes: ByteArray): File {
+        return createTempFile(context, ByteArrayInputStream(bytes), bytes.size.toLong())
     }
 
     fun deleteTempDirectory(context: Context): Boolean {

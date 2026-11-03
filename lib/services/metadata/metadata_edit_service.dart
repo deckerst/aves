@@ -135,7 +135,9 @@ class PlatformMetadataEditService implements MetadataEditService {
       } else if (code.endsWith('mp4largeother')) {
         await mp4LargeOther(customException);
       } else if (code.endsWith('outputstream')) {
-        await outputstream(customException);
+        await outputStream(customException);
+      } else if (code.endsWith('partialtransfer')) {
+        await partialTransfer(customException);
       } else if (code.endsWith('filenotfound')) {
         debugPrint('Unreported `fileNotFound` error with exception=$e');
       } else if (code.endsWith('readonly')) {
@@ -159,11 +161,6 @@ class PlatformMetadataEditService implements MetadataEditService {
     return reportService.recordError(e);
   }
 
-  Future<void> mp4ZeroSizeBox(CustomPlatformException e) {
-    debugPrint('mp4ZeroSizeBox $e');
-    return reportService.recordError(e);
-  }
-
   Future<void> mp4LargeMoov(CustomPlatformException e) {
     debugPrint('mp4LargeMoov $e');
     return reportService.recordError(e);
@@ -174,8 +171,18 @@ class PlatformMetadataEditService implements MetadataEditService {
     return reportService.recordError(e);
   }
 
-  Future<void> outputstream(CustomPlatformException e) {
-    debugPrint('outputstream $e');
+  Future<void> mp4ZeroSizeBox(CustomPlatformException e) {
+    debugPrint('mp4ZeroSizeBox $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> outputStream(CustomPlatformException e) {
+    debugPrint('outputStream $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> partialTransfer(CustomPlatformException e) {
+    debugPrint('partialTransfer $e');
     return reportService.recordError(e);
   }
 }

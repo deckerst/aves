@@ -169,8 +169,8 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         val file = File(path)
         try {
             result.success(file.freeSpace)
-        } catch (e: SecurityException) {
-            result.error("getFreeSpace-security", "failed because of missing access", e.message)
+        } catch (ex: SecurityException) {
+            result.error("getFreeSpace-security", "failed because of missing access", ex.message)
         }
     }
 

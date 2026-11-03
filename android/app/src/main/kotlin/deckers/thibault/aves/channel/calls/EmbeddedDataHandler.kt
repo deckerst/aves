@@ -25,7 +25,6 @@ import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -328,9 +327,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         embeddedByteLength: Long,
     ) {
         val extension = extensionFor(mimeType, defaultExtension = null)
-        val targetFile = StorageUtils.createTempFile(context, extension).apply {
-            copyFrom(embeddedByteStream, embeddedByteLength)
-        }
+        val targetFile = StorageUtils.createTempFile(context, embeddedByteStream, embeddedByteLength)
 
         val authority = "${context.applicationContext.packageName}.file_provider"
         val uri = if (displayName != null) {
