@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Collection: long press and release on tag quick action to add multiple tags
 - Cataloguing: detect/filter C2PA content credentials validity
 - Info: show C2PA content credentials
+- Info: remove JUMBF (C2PA) metadata from JPEG
 - Countries: show states for Canada (provinces and territories)
 - States: flag icons
 - Export: conversion of mixed aspect ratios with a single target dimension

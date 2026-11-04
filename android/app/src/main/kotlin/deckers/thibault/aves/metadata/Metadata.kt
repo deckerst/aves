@@ -48,6 +48,7 @@ object Metadata {
     const val TYPE_JFIF = "jfif"
     const val TYPE_JPEG_ADOBE = "jpeg_adobe"
     const val TYPE_JPEG_DUCKY = "jpeg_ducky"
+    const val TYPE_JPEG_JUMBF = "jpeg_jumbf"
     const val TYPE_MP4 = "mp4"
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"
