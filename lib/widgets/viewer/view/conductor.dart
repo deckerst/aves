@@ -37,6 +37,17 @@ class ViewStateConductor {
     var controller = getController(entry);
     if (controller != null) {
       _controllers.remove(controller);
+      if (controller.entry != entry) {
+        // same content, but different entry instance
+        // so we a build a new controller for the that entry instance
+        // while preserving the current view state
+        final obsoleteController = controller;
+        controller = ViewStateController(
+          entry: entry,
+          initialViewState: obsoleteController.viewStateNotifier.value,
+        );
+        obsoleteController.dispose();
+      }
     } else {
       // try to initialize the view state to match magnifier initial state
       const initialScale = ScaleLevel(ref: ScaleReference.contained);
@@ -70,11 +81,12 @@ class ViewStateConductor {
   }
 
   void reset(AvesEntry entry) {
-    final uris = <AvesEntry>{
+    // dispose controllers for specific entry instances, not by URI
+    final obsoleteEntries = <AvesEntry>{
       entry,
       ...?entry.stackedEntries,
-    }.map((v) => v.uri).toSet();
-    final entryControllers = _controllers.where((v) => uris.contains(v.entry.uri)).toSet();
+    };
+    final entryControllers = _controllers.where((v) => obsoleteEntries.contains(v.entry)).toSet();
     entryControllers.forEach((controller) {
       _controllers.remove(controller);
       controller.dispose();

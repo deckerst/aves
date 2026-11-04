@@ -108,7 +108,7 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType load ${stopwatch.elapsed} fetch known entries');
     final knownEntries = await localMediaDb.loadEntries(origin: EntryOrigins.mediaStoreContent, directory: scopeDirectory);
     final knownLiveEntries = knownEntries.where((entry) => !entry.trashed).toSet();
-    final isLargeCollection = knownEntries.length > 80000;
+    final isLargeCollection = knownEntries.length > 100000;
     if (isLargeCollection && settings.isErrorReportingAllowed) {
       // disable error reporting for large collections, to prevent noisy OOM reports
       settings.isErrorReportingAllowed = false;

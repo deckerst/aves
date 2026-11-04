@@ -15,22 +15,14 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MultiEntryScroller extends StatefulWidget {
-  final CollectionLens collection;
-  final ViewerController viewerController;
-  final PageController pageController;
-  final ValueChanged<int> onPageChanged;
-  final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
-
-  const new({
+class const MultiEntryScroller({
     super.key,
-    required this.collection,
-    required this.viewerController,
-    required this.pageController,
-    required this.onPageChanged,
-    required this.onViewDisposed,
-  });
-
+    required final CollectionLens collection,
+    required final ViewerController viewerController,
+    required final PageController pageController,
+    required final ValueChanged<int> onPageChanged,
+    required final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed,
+  }) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MultiEntryScrollerState();
 }

@@ -8,19 +8,14 @@ import 'package:aves/widgets/viewer/providers.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryViewerPage extends StatefulWidget {
-  static const routeName = '/viewer';
-
+class const EntryViewerPage({
+  super.key,
   // provided collection should be a new instance specifically created
   // for the `EntryViewerPage` widget, so it can be safely disposed here
-  final CollectionLens? collection;
-  final AvesEntry initialEntry;
-
-  const new({
-    super.key,
-    this.collection,
-    required this.initialEntry,
-  });
+  final CollectionLens? collection,
+  required final AvesEntry initialEntry,
+}) extends StatefulWidget {
+  static const routeName = '/viewer';
 
   @override
   State<EntryViewerPage> createState() => _EntryViewerPageState();

@@ -71,37 +71,21 @@ class CollectionLens with ChangeNotifier {
     if (kFlutterMemoryAllocationsEnabled) ChangeNotifier.maybeDispatchObjectCreation(this);
     _updateLayoutFactors();
     id ??= hashCode;
+
+    final sourceEvents = source.eventBus;
     if (listenToSource) {
-      final sourceEvents = source.eventBus;
-      _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => _onEntryAdded(e.entries)));
+      _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => _onEntryRemoved(e.entries)));
-      _subscriptions.add(
-        sourceEvents.on<EntryMovedEvent>().listen((e) {
-          switch (e.type) {
-            case .copy:
-            case .export:
-              // refreshing new items is already handled via `EntryAddedEvent`s
-              break;
-            case .move:
-            case .fromBin:
-              refresh();
-            case .toBin:
-              _onEntryRemoved(e.entries);
-          }
-        }),
-      );
+      _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _onEntryMoved(e.type, e.entries)));
       _subscriptions.add(sourceEvents.on<EntryRefreshedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => refresh()));
       _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => refresh()));
-      _subscriptions.add(
-        sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
-          if (this.filters.any((filter) => filter is LocationFilter)) {
-            refresh();
-          }
-        }),
-      );
+      _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) => _onAddressMetadataChanged()));
       favourites.addListener(_onFavouritesChanged);
     }
+    // always process disposed entries
+    _subscriptions.add(sourceEvents.on<EntryDisposedEvent>().listen((e) => _onEntryDisposed(e.entries)));
+
     _subscriptions.add(settings.updateStream.where(_isLayoutFactorEvent).listen((_) => _onLayoutFactorChanged()));
     refresh();
   }
@@ -398,6 +382,12 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
+  void _onAddressMetadataChanged() {
+    if (filters.any((filter) => filter is LocationFilter)) {
+      refresh();
+    }
+  }
+
   bool _isLayoutFactorEvent(SettingsChangedEvent event) {
     return [
       SettingKeys.collectionBurstPatternsKey,
@@ -466,10 +456,6 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void _onEntryAdded(Set<AvesEntry>? entries) {
-    refresh();
-  }
-
   void _onEntryRemoved(Set<AvesEntry> entries) {
     if (_syntheticEntries.isNotEmpty) {
       // find impacted stacks
@@ -528,6 +514,51 @@ class CollectionLens with ChangeNotifier {
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
     sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));
     notifyListeners();
+  }
+
+  void _onEntryMoved(MoveType type, Set<AvesEntry> entries) {
+    switch (type) {
+      case .copy:
+      case .export:
+        // refreshing new items is already handled via `EntryAddedEvent`s
+        break;
+      case .move:
+      case .fromBin:
+        refresh();
+      case .toBin:
+        _onEntryRemoved(entries);
+    }
+  }
+
+  void _onEntryDisposed(Set<AvesEntry> obsoleteEntries) {
+    _resourceEntries(obsoleteEntries, fixedSelection);
+    refresh();
+  }
+
+  // replace obsolete entries in the `candidates` list by sourced ones
+  void _resourceEntries(Set<AvesEntry> obsoleteEntries, List<AvesEntry>? candidates) {
+    if (candidates == null) return;
+
+    final unsourcedIndices = <int>[];
+
+    // replace obsolete entries by sourced ones
+    for (var i = 0; i < candidates.length; i++) {
+      final candidate = candidates[i];
+      if (obsoleteEntries.contains(candidate)) {
+        final replacement = source.getEntryById(candidate.id);
+        if (replacement != null) {
+          candidates[i] = replacement;
+        } else {
+          // larger index first
+          unsourcedIndices.insert(0, i);
+        }
+      }
+    }
+
+    // remove unsourced entries
+    for (final index in unsourcedIndices) {
+      candidates.removeAt(index);
+    }
   }
 
   @override

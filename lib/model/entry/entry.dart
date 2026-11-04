@@ -59,6 +59,8 @@ class AvesEntry with AvesEntryBase {
 
   bool _disposed = false;
 
+  bool get isDisposed => _disposed;
+
   new({
     required int? id,
     required this.uri,
@@ -206,6 +208,8 @@ class AvesEntry with AvesEntryBase {
   }
 
   void dispose() {
+    assert(!isDisposed, 'entry already disposed, $this');
+
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
@@ -437,6 +441,8 @@ class AvesEntry with AvesEntryBase {
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
+    assert(!isDisposed, 'entry used after being disposed, $this');
+
     final oldMimeType = mimeType;
     final oldDateModifiedMillis = this.dateModifiedMillis;
     final oldRotationDegrees = this.rotationDegrees;
@@ -478,7 +484,7 @@ class AvesEntry with AvesEntryBase {
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
-    if (!_disposed) {
+    if (!isDisposed) {
       metadataChangeNotifier.notify();
     }
   }
@@ -526,10 +532,12 @@ class AvesEntry with AvesEntryBase {
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
+    assert(!isDisposed, 'entry used after being disposed, $this');
+
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       EntryCache.evict(uri);
       await mediaFetchService.clearDecoders();
-      if (!_disposed) {
+      if (!isDisposed) {
         visualChangeNotifier.notify();
       }
     }

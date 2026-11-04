@@ -32,22 +32,16 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryPageView extends StatefulWidget {
-  final AvesEntry mainEntry, pageEntry;
-  final ViewerController viewerController;
-  final VoidCallback? onDisposed;
-
+class const EntryPageView({
+  super.key,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+  required final ViewerController viewerController,
+  final VoidCallback? onDisposed,
+}) extends StatefulWidget {
   static const decorationCheckSize = 20.0;
   static const rasterMaxScale = ScaleLevel(factor: 5);
   static const vectorMaxScale = ScaleLevel(factor: 25);
-
-  const new({
-    super.key,
-    required this.mainEntry,
-    required this.pageEntry,
-    required this.viewerController,
-    this.onDisposed,
-  });
 
   @override
   State<EntryPageView> createState() => _EntryPageViewState();

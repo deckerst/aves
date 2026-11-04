@@ -125,6 +125,8 @@ class _ScreenSaverPageState extends State<ScreenSaverPage> with WidgetsBindingOb
     _slideshowCollection = CollectionLens(
       source: originalCollection.source,
       listenToSource: false,
+      // do not stack, so that all entries are part of the slideshow
+      allowStacks: false,
       fixedSort: true,
       fixedSelection: entries,
     );

@@ -44,18 +44,12 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryViewerStack extends StatefulWidget {
-  final CollectionLens? collection;
-  final AvesEntry initialEntry;
-  final ViewerController viewerController;
-
-  const new({
-    super.key,
-    this.collection,
-    required this.initialEntry,
-    required this.viewerController,
-  });
-
+class const EntryViewerStack({
+  super.key,
+  final CollectionLens? collection,
+  required final AvesEntry initialEntry,
+  required final ViewerController viewerController,
+}) extends StatefulWidget {
   @override
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
@@ -837,19 +831,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       return;
     }
 
+    final oldEntry = entryNotifier.value;
     final newEntry = _currentEntryIndex < entries.length ? entries[_currentEntryIndex] : null;
-    if (entryNotifier.value == newEntry) return;
-    cleanEntryControllers(entryNotifier.value);
+    if (oldEntry == newEntry) return;
+
+    assert(newEntry == null || !newEntry.isDisposed, 'viewer shows entry after being disposed, entry=$newEntry');
+
+    cleanEntryControllers(oldEntry);
     entryNotifier.value = newEntry;
     _isEntryTracked = false;
     await pauseVideoControllers();
     await initEntryControllers(newEntry);
 
-    if (viewerController.isCasting) {
-      final entry = entryNotifier.value;
-      if (entry != null) {
-        await viewerController.castEntry(entry);
-      }
+    if (viewerController.isCasting && newEntry != null) {
+      await viewerController.castEntry(newEntry);
     }
   }
 
