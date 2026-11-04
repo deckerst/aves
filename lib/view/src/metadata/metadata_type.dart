@@ -11,6 +11,7 @@ extension ExtraMetadataTypeView on MetadataType {
       .jfif => 'JFIF',
       .jpegAdobe => 'Adobe JPEG',
       .jpegDucky => 'Ducky',
+      .jpegJumbf => 'JUMBF (C2PA)',
       .mp4 => 'MP4',
       .photoshopIrb => 'Photoshop',
       .xmp => 'XMP',

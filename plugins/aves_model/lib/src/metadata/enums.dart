@@ -44,6 +44,8 @@ enum MetadataType {
   jpegAdobe,
   // JPEG APP12 / Ducky: https://www.exiftool.org/TagNames/APP12.html#Ducky
   jpegDucky,
+  // JPEG APP11 / JUMBF
+  jpegJumbf,
   // ISO User Data box content, etc.
   mp4,
   // Photoshop IRB: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
@@ -73,6 +75,7 @@ class MetadataTypes {
     .jfif,
     .jpegAdobe,
     .jpegDucky,
+    .jpegJumbf,
   };
 }
 
