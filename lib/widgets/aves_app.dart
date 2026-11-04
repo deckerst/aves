@@ -693,7 +693,11 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
 
   CollectionSource get source => widget.source;
 
-  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
+  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder(
+    // disable snapshotting because it prevents seeing items progressively appearing
+    // while entering route, e.g. with `flutter_staggered_animations` transitions
+    allowSnapshotting: false,
+  );
 
   @override
   void initState() {
