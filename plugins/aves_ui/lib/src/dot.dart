@@ -9,7 +9,7 @@ class const AvesDot({
   final double innerBorderWidth = 2,
   final ColorBuilder getOuterBorderColor = themedOuterBorderColor,
   final ColorBuilder getInnerBorderColor = themedInnerBorderColor,
-  final bool filled = false,
+  final bool filled = true,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
