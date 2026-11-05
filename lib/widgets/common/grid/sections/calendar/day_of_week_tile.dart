@@ -24,7 +24,7 @@ class const DayOfWeekTile({
       TextSpan(
         children: _narrowWeekdays(context).map((v) => TextSpan(text: v)).toList(),
       ),
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       textScaler: MediaQuery.textScalerOf(context),
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final textHeight = paragraph.getMaxIntrinsicHeight(double.infinity);

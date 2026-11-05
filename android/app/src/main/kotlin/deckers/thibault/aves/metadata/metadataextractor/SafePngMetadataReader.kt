@@ -23,7 +23,6 @@ import com.drew.lang.annotations.Nullable
 import com.drew.metadata.ErrorDirectory
 import com.drew.metadata.Metadata
 import com.drew.metadata.StringValue
-import com.drew.metadata.exif.ExifTiffHandler
 import com.drew.metadata.icc.IccReader
 import com.drew.metadata.iptc.IptcReader
 import com.drew.metadata.png.PngChromaticitiesDirectory
@@ -37,7 +36,7 @@ import java.util.Locale
 import java.util.zip.InflaterInputStream
 import java.util.zip.ZipException
 
-// adapted from `metadata-extractor` v2.21.0 `PngMetadataReader` to:
+// adapted from `metadata-extractor` v2.22.0 `PngMetadataReader` to:
 // - prevent OOM from reading large chunks (there is no way to customize the reader
 // without copying `desiredChunkTypes` and the whole `processChunk` function).
 // - parse `acTL` chunk to identify animated PNGs.
@@ -166,9 +165,9 @@ object SafePngMetadataReader {
                 val bytesLeft = bytes.size - (profileNameBytes.size + 1 + 1)
                 val compressedProfile = reader.getBytes(bytesLeft)
                 try {
-                    val inflateStream = InflaterInputStream(ByteArrayInputStream(compressedProfile))
-                    IccReader().extract(RandomAccessStreamReader(inflateStream), metadata, directory)
-                    inflateStream.close()
+                    InflaterInputStream(ByteArrayInputStream(compressedProfile)).use { inflateStream ->
+                        IccReader().extract(RandomAccessStreamReader(inflateStream), metadata, directory)
+                    }
                 } catch (zex: ZipException) {
                     directory.addError(String.format("Exception decompressing PNG iCCP chunk : %s", zex.message))
                     metadata.addDirectory(directory)
@@ -222,7 +221,9 @@ object SafePngMetadataReader {
             var textBytes: ByteArray? = null
             if (compressionMethod.toInt() == 0) {
                 try {
-                    textBytes = StreamUtil.readAllBytes(InflaterInputStream(ByteArrayInputStream(bytes, bytes.size - bytesLeft, bytesLeft)))
+                    InflaterInputStream(ByteArrayInputStream(bytes, bytes.size - bytesLeft, bytesLeft)).use { inflateStream ->
+                        textBytes = StreamUtil.readAllBytes(inflateStream)
+                    }
                 } catch (zex: ZipException) {
                     val directory = PngDirectory(PngChunkType.zTXt)
                     directory.addError(String.format("Exception decompressing PNG zTXt chunk with keyword \"%s\": %s", keyword, zex.message))
@@ -275,7 +276,9 @@ object SafePngMetadataReader {
             } else if (compressionFlag.toInt() == 1) {
                 if (compressionMethod.toInt() == 0) {
                     try {
-                        textBytes = StreamUtil.readAllBytes(InflaterInputStream(ByteArrayInputStream(bytes, bytes.size - bytesLeft, bytesLeft)))
+                        InflaterInputStream(ByteArrayInputStream(bytes, bytes.size - bytesLeft, bytesLeft)).use { inflateStream ->
+                            textBytes = StreamUtil.readAllBytes(inflateStream)
+                        }
                     } catch (zex: ZipException) {
                         val directory = PngDirectory(PngChunkType.iTXt)
                         directory.addError(String.format("Exception decompressing PNG iTXt chunk with keyword \"%s\": %s", keyword, zex.message))
@@ -350,7 +353,7 @@ object SafePngMetadataReader {
             metadata.addDirectory(directory)
         } else if (chunkType == PngChunkType.eXIf) {
             try {
-                val handler = ExifTiffHandler(metadata, null, 0)
+                val handler = SafeExifTiffHandler(metadata, null, 0)
                 TiffReader().processTiff(ByteArrayReader(bytes), handler, 0)
             } catch (ex: TiffProcessingException) {
                 val directory = PngDirectory(PngChunkType.eXIf)

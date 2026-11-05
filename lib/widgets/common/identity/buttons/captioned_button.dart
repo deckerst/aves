@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/identity/buttons/overlay_button.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 typedef CaptionedIconButtonBuilder = Widget Function(BuildContext context, FocusNode focusNode);
 
@@ -40,7 +40,7 @@ class CaptionedButton extends StatefulWidget {
     if (showCaption) {
       final paragraph = RenderParagraph(
         TextSpan(text: text, style: CaptionedButtonText._textStyle(context)),
-        textDirection: TextDirection.ltr,
+        textDirection: .ltr,
         textScaler: MediaQuery.textScalerOf(context),
         maxLines: CaptionedButtonText.maxLines,
       )..layout(const BoxConstraints(), parentUsesSize: true);

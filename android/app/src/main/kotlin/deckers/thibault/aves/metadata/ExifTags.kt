@@ -48,12 +48,9 @@ object ExifTags {
         GDAL_NO_DATA to "GDAL No Data",
     ).apply {
         putAll(DngTags.tagNameMap)
-        putAll(ExifGeoTiffTags.tagNameMap)
     }
 
     fun isDngTag(tag: Int) = DngTags.tags.contains(tag)
-
-    fun isGeoTiffTag(tag: Int) = ExifGeoTiffTags.tags.contains(tag)
 
     fun getTagName(tag: Int): String? {
         return tagNameMap[tag]

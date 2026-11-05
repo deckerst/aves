@@ -302,13 +302,19 @@
     "coverDialogTabCover": "Viršelis",
     "aboutLinkPolicy": "Privatumo politika",
     "aboutCreditsSectionTitle": "Padėkos",
-    "aboutCreditsWorldAtlas1": "Ši programa naudoja TopoJSON failą iš",
+    "aboutCreditsWorldAtlas": "Ši programa naudoja TopoJSON failą iš [World Atlas]({link}) pagal ISC licenciją.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Vertėjai",
     "menuActionSelectNone": "Nesirinkti nieko",
     "viewDialogGroupSectionTitle": "Skyreliai",
     "viewDialogReverseSortOrder": "Atvirkštinė rikiavimo tvarka",
     "aboutBugReportInstruction": "Praneškite „GitHub“ kartu su žurnalais ir sistemos informacija",
-    "aboutCreditsWorldAtlas2": "pagal ISC licenciją.",
     "aboutLicensesShowAllButtonLabel": "Rodyti visas licencijas",
     "collectionPickPageTitle": "Pasirinkti",
     "collectionPageTitle": "Kolekcija",

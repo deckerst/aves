@@ -464,7 +464,6 @@
     },
     "settingsThemeColorHighlights": "Каляровыя акцэнты",
     "exportEntryDialogWriteMetadata": "Запісаць метададзеныя",
-    "aboutCreditsWorldAtlas2": "пад ліцэнзіяй ISC.",
     "settingsPrivacySectionTitle": "Канфідэнцыяльнасць",
     "albumScreenRecordings": "Запісы экрана",
     "editEntryRatingDialogTitle": "Рэйтынг",
@@ -489,7 +488,14 @@
     "collectionDeselectSectionTooltip": "Адмяніць выбар раздзела",
     "settingsKeepScreenOnTile": "Трымаць экран уключаным",
     "tileLayoutGrid": "Сетка",
-    "aboutCreditsWorldAtlas1": "Гэта праграма выкарыстоўвае файл TopoJSON з",
+    "aboutCreditsWorldAtlas": "Гэта праграма выкарыстоўвае файл TopoJSON з [World Atlas]({link}) пад ліцэнзіяй ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "appExportCovers": "Вокладкі",
     "createAlbumButtonLabel": "СТВАРЫЦЬ",
     "menuActionSlideshow": "Слайд-шоў",

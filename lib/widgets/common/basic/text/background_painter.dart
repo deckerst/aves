@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 // as of Flutter v3.3.7, text style background does not have consistent height
 // when rendering multi-script text, so we paint the background behind via a stack instead

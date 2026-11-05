@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-enum EmbeddedDataSource { googleDevice, motionPhotoVideo, mpf, videoCover, xmp }
+enum EmbeddedDataSource { c2paResource, googleDevice, motionPhotoVideo, mpf, videoCover, xmp }
 
 @immutable
 class const OpenEmbeddedDataNotification._private({
@@ -11,6 +11,13 @@ class const OpenEmbeddedDataNotification._private({
   final String? dataUri,
   final int? mpfId,
 }) extends Notification {
+  factory c2paResource({
+    required String dataUri,
+  }) => OpenEmbeddedDataNotification._private(
+    source: .c2paResource,
+    dataUri: dataUri,
+  );
+
   factory googleDevice({
     required String dataUri,
   }) => OpenEmbeddedDataNotification._private(

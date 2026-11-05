@@ -33,11 +33,13 @@ class const LayoutBar({super.key}) extends StatefulWidget {
 class _LayoutBarState extends State<LayoutBar> {
   final Set<StreamSubscription> _subscriptions = {};
   final AChangeNotifier _sortReversedNotifier = AChangeNotifier();
+  final AChangeNotifier _shuffleNotifier = AChangeNotifier();
 
   @override
   void initState() {
     super.initState();
     _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.collectionSortReverseKey).listen((_) => _sortReversedNotifier.notify()));
+    _subscriptions.add(settings.updateStream.where((event) => event.key == SettingKeys.collectionSortRandomSeedKey).listen((_) => _shuffleNotifier.notify()));
   }
 
   @override
@@ -51,6 +53,7 @@ class _LayoutBarState extends State<LayoutBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final animate = context.select<Settings, bool>((v) => v.animate);
     final filters = context.select<CollectionLens, Set<CollectionFilter>>((v) => v.visibleFilters);
     return Container(
       padding: LayoutBar._padding,
@@ -59,11 +62,23 @@ class _LayoutBarState extends State<LayoutBar> {
         scrollDirection: Axis.horizontal,
         padding: LayoutBar._rowPadding,
         children: [
-          _buildSortOrderToggle(
-            icon: AIcons.sortOrder,
-            name: l10n.viewDialogReverseSortOrder,
-            animationTrigger: _sortReversedNotifier,
-            onPressed: () => settings.setStoredCollectionSortReverse(filters, !settings.getStoredCollectionSortReverse(filters)),
+          Selector<Settings, SortFactor>(
+            selector: (context, s) => s.getEffectiveCollectionSortFactor(filters),
+            builder: (context, sortFactor, child) {
+              if (sortFactor == .random) {
+                return _buildToggleButton(
+                  icon: AIcons.shuffle,
+                  animationTrigger: animate ? _shuffleNotifier : null,
+                  onPressed: settings.changeRandomSortSeed,
+                );
+              } else {
+                return _buildToggleButton(
+                  icon: AIcons.sortOrder,
+                  animationTrigger: animate ? _sortReversedNotifier : null,
+                  onPressed: () => settings.setStoredCollectionSortReverse(filters, !settings.getStoredCollectionSortReverse(filters)),
+                );
+              }
+            },
           ),
           _buildSelector<TileLayout>(
             categoryIcon: AIcons.layout,
@@ -157,16 +172,13 @@ class _LayoutBarState extends State<LayoutBar> {
     );
   }
 
-  Widget _buildSortOrderToggle({
+  Widget _buildToggleButton({
     required IconData icon,
-    required String name,
-    required Listenable animationTrigger,
+    required Listenable? animationTrigger,
     required VoidCallback onPressed,
   }) {
-    final animate = context.select<Settings, bool>((v) => v.animate);
-
     Widget child = Icon(icon);
-    if (animate) {
+    if (animationTrigger != null) {
       child = Rotator(
         listenable: animationTrigger,
         child: child,

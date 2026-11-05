@@ -572,8 +572,14 @@
     "menuActionConfigureView": "Visning",
     "aboutBugReportButton": "Rapportér",
     "aboutDataUsageExternal": "Eksternt",
-    "aboutCreditsWorldAtlas1": "Denne app bruger en TopoJSON-fil fra",
-    "aboutCreditsWorldAtlas2": "under ISC-licens.",
+    "aboutCreditsWorldAtlas": "Denne app bruger en TopoJSON-fil fra [World Atlas]({link}) under ISC-licens.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionActionAddDynamicAlbum": "Tilføj dynamisk album",
     "collectionEmptyImages": "Ingen billeder",
     "drawerCollectionFavourites": "Favoritter",

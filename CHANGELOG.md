@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.9"></a>[v1.15.9] - 2026-11-05
+
+### Added
+
+- Collection: C2PA content credentials validity overlay icons
+- Collection: sort randomly
+- Collection: long press and release on tag quick action to add multiple tags
+- Cataloguing: detect/filter C2PA content credentials validity
+- Info: show C2PA content credentials
+- Info: remove JUMBF (C2PA) metadata from JPEG
+- Countries: show states for Canada (provinces and territories)
+- States: flag icons
+- Export: conversion of mixed aspect ratios with a single target dimension
+
+### Changed
+
+- Info: do not merge `Exif SubIFD` sections
+- upgraded Flutter to stable v3.47.8
+
+### Removed
+
+- Export: conversion to BMP
+
+### Fixed
+
+- rendering of some malformed SVG
+- view state when relaunching the app from launcher
+- Accessibility: truncated headers with large font sizes
+
 ## <a id="v1.15.8"></a>[v1.15.8] - 2026-10-21
 
 ### Changed

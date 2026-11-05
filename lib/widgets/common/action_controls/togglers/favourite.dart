@@ -11,20 +11,13 @@ import 'package:aves/widgets/common/identity/buttons/captioned_button.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class FavouriteToggler extends StatefulWidget {
-  final Set<AvesEntry> entries;
-  final bool isMenuItem;
-  final FocusNode? focusNode;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    required this.entries,
-    this.isMenuItem = false,
-    this.focusNode,
-    this.onPressed,
-  });
-
+class const FavouriteToggler({
+  super.key,
+  required final Set<AvesEntry> entries,
+  final bool isMenuItem = false,
+  final FocusNode? focusNode,
+  final VoidCallback? onPressed,
+}) extends StatefulWidget {
   @override
   State<FavouriteToggler> createState() => _FavouriteTogglerState();
 }
@@ -104,16 +97,11 @@ class _FavouriteTogglerState extends State<FavouriteToggler> {
   }
 }
 
-class FavouriteTogglerCaption extends StatefulWidget {
-  final Set<AvesEntry> entries;
-  final bool enabled;
-
-  const new({
-    super.key,
-    required this.entries,
-    required this.enabled,
-  });
-
+class const FavouriteTogglerCaption({
+  super.key,
+  required final Set<AvesEntry> entries,
+  required final bool enabled,
+}) extends StatefulWidget {
   @override
   State<FavouriteTogglerCaption> createState() => _FavouriteTogglerCaptionState();
 }

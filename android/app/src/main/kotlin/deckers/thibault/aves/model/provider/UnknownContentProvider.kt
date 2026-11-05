@@ -4,15 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.util.Log
-import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.model.ContentQueryException
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
-import deckers.thibault.aves.storage.StorageUtils
-import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes
 
 open class UnknownContentProvider : ImageProvider() {
     open val reliableProviderMimeType: Boolean
@@ -28,25 +24,13 @@ open class UnknownContentProvider : ImageProvider() {
         var mimeType = sourceMimeType
         if (sourceMimeType == null || !reliableProviderMimeType) {
             // source MIME type may be incorrect, so we get a second opinion if possible
-            try {
-                val safeUri = Uri.fromFile(Metadata.createPreviewFile(context, uri))
-                StorageUtils.openInputStream(context, safeUri)?.use { input ->
-                    // `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives)
-                    // cf https://github.com/drewnoakes/metadata-extractor/issues/296
-                    Helper.readMimeType(input)?.takeIf { it != MimeTypes.TIFF }?.let {
-                        if (it != sourceMimeType) {
-                            Log.d(LOG_TAG, "source MIME type is $sourceMimeType but extracted MIME type is $it for uri=$uri")
-                            mimeType = it
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to get MIME type by metadata-extractor for uri=$uri", e)
-            }
+            mimeType = MetadataExtractorHelper.readMimeType(
+                context = context,
+                mimeType = sourceMimeType,
+                uri = uri,
+                path = null,
+                sizeBytes = null,
+            )
         }
 
         val fields: FieldMap = hashMapOf(
@@ -69,8 +53,8 @@ open class UnknownContentProvider : ImageProvider() {
                 }
                 cursor.close()
             }
-        } catch (e: Exception) {
-            callback.onFailure(Exception("failed to query content", e))
+        } catch (ex: Exception) {
+            callback.onFailure(ContentQueryException(ex))
             return
         }
 
@@ -83,11 +67,7 @@ open class UnknownContentProvider : ImageProvider() {
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
-            callback.onFailure(Exception("entry has no size"))
+            callback.onFailure(Exception("entry is not sized, for fields=$fields"))
         }
-    }
-
-    companion object {
-        private val LOG_TAG = LogUtils.createTag<UnknownContentProvider>()
     }
 }

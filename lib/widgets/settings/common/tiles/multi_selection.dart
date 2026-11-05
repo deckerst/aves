@@ -11,26 +11,29 @@ class const SettingsMultiSelectionListTile<T>({
   super.key,
   required final List<T> values,
   required final String Function(BuildContext, T) getName,
-  required final List<T> Function(BuildContext, Settings) selector,
-  required final ValueChanged<List<T>> onSelection,
+  required final Set<T> Function(BuildContext, Settings) selector,
+  required final ValueChanged<Set<T>> onSelection,
   required final TitleBuilder tileTitle,
-  required final String noneSubtitle,
+  final String? noneSubtitle,
   final String? dialogTitle,
+  final IconBuilder<T>? optionLeadingBuilder,
   final TextBuilder<T>? optionSubtitleBuilder,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Selector<Settings, List<T>>(
+    return Selector<Settings, Set<T>>(
       selector: selector,
       builder: (context, current, child) {
+        final subtitle = current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator);
         return ListTile(
           title: Text(tileTitle(context) ?? AText.valueNotAvailable),
-          subtitle: AvesListSubtitle(current.isEmpty ? noneSubtitle : current.map((v) => getName(context, v)).join(AText.separator)),
-          onTap: () => showSelectionDialog<List<T>>(
+          subtitle: subtitle != null ? AvesListSubtitle(subtitle) : null,
+          onTap: () => showSelectionDialog<Set<T>>(
             context: context,
             builder: (context) => AvesMultiSelectionDialog<T>(
               initialValue: current.toSet(),
               options: Map.fromEntries(values.map((v) => MapEntry(v, getName(context, v)))),
+              optionLeadingBuilder: optionLeadingBuilder,
               optionSubtitleBuilder: optionSubtitleBuilder,
               title: dialogTitle,
             ),

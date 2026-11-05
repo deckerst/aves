@@ -70,6 +70,8 @@ class const CollectionDraggableThumbLabel({
               if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
               ?entryFileName,
             ];
+          case .random:
+            return [];
           case .chipName:
           case .count:
             throw UnimplementedError();

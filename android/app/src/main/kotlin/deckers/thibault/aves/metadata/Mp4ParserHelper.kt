@@ -63,7 +63,7 @@ object Mp4ParserHelper {
 
     fun <R> consumeIso(context: Context, uri: Uri, boxParser: BoxParser, consumer: (IsoFile) -> R): R {
         // we can skip uninteresting boxes with a seekable data source
-        val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw FileDescriptorException("failed to open file descriptor for uri=$uri")
+        val pfd = StorageUtils.openInputFileDescriptor(context, uri) ?: throw FileDescriptorException("failed to open input file descriptor for uri=$uri")
         pfd.use {
             FileInputStream(it.fileDescriptor).use { stream ->
                 stream.channel.use { channel ->

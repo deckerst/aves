@@ -1,40 +1,32 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:aves/widgets/filter_grids/common/section_header.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:material_ui/material_ui.dart';
 
-class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends SectionedListLayoutProvider<FilterGridItem<T>> {
-  final bool selectable;
-
-  const new({
-    super.key,
-    required this.sections,
-    required this.showHeaders,
-    required this.selectable,
-    required super.scrollableWidth,
-    required super.tileLayout,
-    required super.columnCount,
-    required super.spacing,
-    required super.horizontalPadding,
-    required super.tileWidth,
-    required super.tileHeight,
-    required super.tileBuilder,
-    required super.tileAnimationDelay,
-    required super.coverRatioResolver,
-    required super.child,
-  });
-
-  @override
-  final Map<SectionKey, List<FilterGridItem<T>>> sections;
-
-  @override
-  final bool showHeaders;
-
+class const SectionedFilterListLayoutProvider<T extends CollectionFilter>({
+  super.key,
+  @override required final Map<SectionKey, List<FilterGridItem<T>>> sections,
+  @override required final bool showHeaders,
+  required final bool selectable,
+  required super.scrollableWidth,
+  required super.tileLayout,
+  required super.columnCount,
+  required super.spacing,
+  required super.horizontalPadding,
+  required super.tileWidth,
+  required super.tileHeight,
+  required super.tileBuilder,
+  required super.tileAnimationDelay,
+  required super.coverRatioResolver,
+  required super.child,
+}) extends SectionedListLayoutProvider<FilterGridItem<T>> {
   @override
   double getHeaderExtent(BuildContext context, SectionKey sectionKey) {
-    return FilterChipSectionHeader.getPreferredHeight(context);
+    final headerExtent = sectionKey.getPreferredHeight(context, scrollableWidth);
+    return headerExtent + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
   }
 
   @override

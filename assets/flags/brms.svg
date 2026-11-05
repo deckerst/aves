@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="svg154" width="1e3" height="700" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs id="defs144"/>
+ <rect id="rect146" width="1e3" height="700" fill="#ffffff"/>
+ <g>
+  <path id="path148" d="m0 700 700-700h300v700z" fill="#009ddc"/>
+  <path id="path150" d="m0 0v500l500-500z" fill="#00a160"/>
+  <path id="path370" d="m850 450 25 76.66667h75l-61.66667 43.33333 25 75.00004-63.33333-46.66671-63.33333 46.66671 25-75.00004-61.66667-43.33333h75z" fill="#ffe900" stroke-width="13.3333"/>
+ </g>
+</svg>

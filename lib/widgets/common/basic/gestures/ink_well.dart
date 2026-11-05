@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 
-// as of Flutter v3.41.9, `InkResponse` does not allow setting long press delay
+// as of Flutter v3.47.8, `InkResponse` does not allow setting long press delay
 // adapted from Flutter `InkResponse` and related classes in `/material/ink_well.dart`
 class AInkResponse extends StatelessWidget {
   /// Creates an area of a [Material] that responds to touch.

@@ -18,12 +18,19 @@ class ServicePolicy._private() {
   int _concurrentTaskMax = 0;
 
   int get concurrentTaskMax {
+    if (debugConcurrentTaskMaxOverride != null) {
+      return debugConcurrentTaskMaxOverride!;
+    }
+
     if (_concurrentTaskMax < 1) {
       // the minimum is a magic number
       _concurrentTaskMax = max(4, device.availableProcessors ?? 0);
     }
     return _concurrentTaskMax;
   }
+
+  // TODO TLAD remove after #2329 tests
+  int? debugConcurrentTaskMaxOverride;
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
 

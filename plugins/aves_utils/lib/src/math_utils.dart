@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
 
+// max value that can be used as argument to `Random().nextInt()`
+const randomNextIntMax = 0xFFFFFFFF;
+
 int highestPowerOf2(num x) => x < 1 ? 0 : pow(2, (log(x) / ln2).floor()).toInt();
 
 num smallestPowerOf2(num x, {bool allowNegativePower = false}) {

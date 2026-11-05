@@ -528,8 +528,14 @@
     "aboutDataUsageExternal": "خارجی",
     "aboutDataUsageClearCache": "کیش صاف کریں",
     "aboutCreditsSectionTitle": "کریڈٹس",
-    "aboutCreditsWorldAtlas1": "یہ ایپ TopoJSON فائل استعمال کرتی ہے از",
-    "aboutCreditsWorldAtlas2": "ISC لائسنس کے تحت۔",
+    "aboutCreditsWorldAtlas": "یہ ایپ ISC لائسنس کے تحت [World Atlas]({link}) کی ایک TopoJSON فائل استعمال کرتی ہے۔",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "مترجمین",
     "aboutLicensesSectionTitle": "اوپن سورس لائسنسز",
     "aboutLicensesBanner": "یہ ایپ درج ذیل اوپن سورس پیکجز اور لائبریریز استعمال کرتی ہے۔",
@@ -993,5 +999,14 @@
     "panoramaEnableSensorControl": "سینسر کنٹرول فعال کریں",
     "panoramaDisableSensorControl": "سینسر کنٹرول غیر فعال کریں",
     "sourceViewerPageTitle": "ماخذ",
-    "chipActionCopyCenterCoordinates": "مرکزی متناسقات کاپی کریں"
+    "chipActionCopyCenterCoordinates": "مرکزی متناسقات کاپی کریں",
+    "filterCredentialsValidityUnknownLabel": "نامعلوم",
+    "filterCredentialsValidityInvalidLabel": "غلط",
+    "filterCredentialsValidityValidLabel": "جائز",
+    "filterCredentialsValidityTrustedLabel": "قابلِ اعتماد",
+    "searchCredentialsSectionTitle": "مواد کے اسناد",
+    "settingsThumbnailShowCredentialValidity": "اسناد کی توثیق دکھائیں",
+    "exportEntryDialogDimension": "ابعاد:",
+    "aboutCreditsStateFlags": "ریاستی پرچم (Wikimedia Commons) سے لیے گئے ہیں۔ یہ عوامی ملکیت (Public Domain) میں ہیں، سوائے:",
+    "sortRandomly": "بے ترتیب طور پر"
 }

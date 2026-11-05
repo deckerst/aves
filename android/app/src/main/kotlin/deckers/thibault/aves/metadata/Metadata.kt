@@ -5,7 +5,6 @@ import android.net.Uri
 import android.util.Log
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
-import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.TimeZones
@@ -33,12 +32,11 @@ object Metadata {
     private val VIDEO_TIME_ZONE_PATTERN = Pattern.compile("(Z|[+-]\\d{4})$")
 
     // directory names, as shown when listing all metadata
-    const val DIR_GPS = "GPS" // from metadata-extractor
-    const val DIR_XMP = "XMP" // from metadata-extractor
+    const val DIR_GPS = "GPS" // from `metadata-extractor`
+    const val DIR_XMP = "XMP" // from `metadata-extractor`
     const val DIR_MEDIA = "Media" // custom
     const val DIR_COVER_ART = "Cover" // custom
     const val DIR_DNG = "DNG" // custom
-    const val DIR_EXIF_GEOTIFF = "GeoTIFF" // custom
     const val DIR_PNG_TEXTUAL_DATA = "PNG Textual Data" // custom
     const val DIR_MP4_USER_DATA = "User Data" // custom
 
@@ -50,6 +48,7 @@ object Metadata {
     const val TYPE_JFIF = "jfif"
     const val TYPE_JPEG_ADOBE = "jpeg_adobe"
     const val TYPE_JPEG_DUCKY = "jpeg_ducky"
+    const val TYPE_JPEG_JUMBF = "jpeg_jumbf"
     const val TYPE_MP4 = "mp4"
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"
@@ -140,7 +139,7 @@ object Metadata {
         return Pair(epochTimeMillis, localOffsetMinutes)
     }
 
-    // Opening some large files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // Opening some large files yields an OOM (both with `metadata-extractor` v2.22.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
     private const val FILE_SIZE_MAX = 100 * (1 shl 20) // MiB
@@ -197,9 +196,7 @@ object Metadata {
     fun createPreviewFile(context: Context, uri: Uri): File {
         val size = PREVIEW_SIZE
         Log.d(LOG_TAG, "create preview of size=$size for uri=$uri")
-        return StorageUtils.createTempFile(context).apply {
-            copyFrom(StorageUtils.openInputStream(context, uri), size)
-        }
+        return StorageUtils.createTempFile(context, uri, size)
     }
 
     fun openSafeInputStream(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): InputStream? {

@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/debug/utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const MetadataTab({
@@ -166,9 +167,14 @@ class _MetadataTabState extends State<MetadataTab> {
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+              final pageByIndex = Map.fromEntries(snapshot.data!.entries);
+              final indices = pageByIndex.keys.whereType<String>().toList().sorted(compareNatural);
               return Column(
                 crossAxisAlignment: .start,
-                children: snapshot.data!.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),
+                children: indices.map((index) {
+                  final page = pageByIndex[index] as Map;
+                  return builderFromSnapshotData(context, page, 'TIFF $index');
+                }).toList(),
               );
             },
           ),

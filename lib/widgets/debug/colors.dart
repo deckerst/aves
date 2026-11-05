@@ -14,7 +14,7 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
     super.build(context);
 
     final scheme = Theme.of(context).colorScheme;
-    final List<(String, Color)> colors = [
+    final List<(String, Color)?> colors = [
       ('primary', scheme.primary),
       ('onPrimary', scheme.onPrimary),
       ('primaryContainer', scheme.primaryContainer),
@@ -23,6 +23,7 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
       ('primaryFixedDim', scheme.primaryFixedDim),
       ('onPrimaryFixed', scheme.onPrimaryFixed),
       ('onPrimaryFixedVariant', scheme.onPrimaryFixedVariant),
+      null,
       ('secondary', scheme.secondary),
       ('onSecondary', scheme.onSecondary),
       ('secondaryContainer', scheme.secondaryContainer),
@@ -31,6 +32,7 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
       ('secondaryFixedDim', scheme.secondaryFixedDim),
       ('onSecondaryFixed', scheme.onSecondaryFixed),
       ('onSecondaryFixedVariant', scheme.onSecondaryFixedVariant),
+      null,
       ('tertiary', scheme.tertiary),
       ('onTertiary', scheme.onTertiary),
       ('tertiaryContainer', scheme.tertiaryContainer),
@@ -39,12 +41,15 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
       ('tertiaryFixedDim', scheme.tertiaryFixedDim),
       ('onTertiaryFixed', scheme.onTertiaryFixed),
       ('onTertiaryFixedVariant', scheme.onTertiaryFixedVariant),
+      null,
       ('error', scheme.error),
       ('onError', scheme.onError),
       ('errorContainer', scheme.errorContainer),
       ('onErrorContainer', scheme.onErrorContainer),
+      null,
       ('surface', scheme.surface),
       ('onSurface', scheme.onSurface),
+      ('onSurfaceVariant', scheme.onSurfaceVariant),
       ('surfaceDim', scheme.surfaceDim),
       ('surfaceBright', scheme.surfaceBright),
       ('surfaceContainerLowest', scheme.surfaceContainerLowest),
@@ -52,11 +57,12 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
       ('surfaceContainer', scheme.surfaceContainer),
       ('surfaceContainerHigh', scheme.surfaceContainerHigh),
       ('surfaceContainerHighest', scheme.surfaceContainerHighest),
-      ('onSurfaceVariant', scheme.onSurfaceVariant),
+      null,
       ('outline', scheme.outline),
       ('outlineVariant', scheme.outlineVariant),
       ('shadow', scheme.shadow),
       ('scrim', scheme.scrim),
+      null,
       ('inverseSurface', scheme.inverseSurface),
       ('onInverseSurface', scheme.onInverseSurface),
       ('inversePrimary', scheme.inversePrimary),
@@ -70,13 +76,14 @@ class _DebugColorSectionState extends State<DebugColorSection> with AutomaticKee
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: colors.map((kv) {
+              if (kv == null) return const Divider();
               final (text, color) = kv;
               return Row(
                 children: [
                   Text(text),
                   const Spacer(),
                   Text(
-                    color.hex,
+                    color.hexAlpha,
                     style: const TextStyle(fontFamily: 'monospace'),
                   ),
                   const SizedBox(width: 4),

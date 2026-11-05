@@ -15,25 +15,15 @@ class PlaceholderFilter extends CollectionFilter {
   static const _place = 'place';
 
   final String placeholder;
-  late final IconData _icon;
 
-  static final country = PlaceholderFilter._private(_country);
-  static final state = PlaceholderFilter._private(_state);
-  static final place = PlaceholderFilter._private(_place);
+  static const country = PlaceholderFilter._private(_country);
+  static const state = PlaceholderFilter._private(_state);
+  static const place = PlaceholderFilter._private(_place);
 
   @override
   List<Object?> get props => [placeholder];
 
-  new _private(this.placeholder) : super(reversed: false) {
-    switch (placeholder) {
-      case _country:
-        _icon = AIcons.country;
-      case _state:
-        _icon = AIcons.state;
-      case _place:
-        _icon = AIcons.place;
-    }
-  }
+  const new _private(this.placeholder) : super(reversed: false);
 
   factory fromMap(Map<String, Object?> json) {
     return PlaceholderFilter._private(
@@ -100,8 +90,20 @@ class PlaceholderFilter extends CollectionFilter {
     };
   }
 
+  IconData? getIcon() {
+    switch (placeholder) {
+      case _country:
+        return AIcons.country;
+      case _state:
+        return AIcons.state;
+      case _place:
+        return AIcons.place;
+    }
+    return null;
+  }
+
   @override
-  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(_icon, size: size);
+  Widget? iconBuilder(BuildContext context, double size, {bool allowGenericIcon = true}) => Icon(getIcon(), size: size);
 
   @override
   String get category => type;

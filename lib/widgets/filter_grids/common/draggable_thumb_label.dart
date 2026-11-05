@@ -44,6 +44,7 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
           case .albumItemName:
           case .rating:
           case .duration:
+          case .random:
             throw UnimplementedError();
         }
       },

@@ -37,6 +37,12 @@ class AvesEntry(map: FieldMap) {
     val displayHeight: Int
         get() = if (isRotated) width else height
 
+    val displayAspectRatio: Double
+        get() {
+            if (width == 0 || height == 0) return 1.0
+            return if (isRotated) height.toDouble() / width else width.toDouble() / height
+        }
+
     override fun toString(): String = "AvesEntry#${hashCode()}{uri=$uri path=$path pageId=$pageId mimeType=$mimeType width=$width height=$height rotationDegrees=$rotationDegrees isFlipped=$isFlipped sizeBytes=$sizeBytes trashed=$trashed trashPath=$trashPath}"
 
     companion object {

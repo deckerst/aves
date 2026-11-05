@@ -18,8 +18,8 @@ import java.io.IOException
 import java.util.Locale
 
 
-// adapted from `metadata-extractor` v2.21.0 `GifReader` to prevent OOM from reading large XMP
-// as of `metadata-extractor` v2.21.0, there is no way to customize the GIF reader
+// adapted from `metadata-extractor` v2.22.0 `GifReader` to prevent OOM from reading large XMP
+// as of `metadata-extractor` v2.22.0, there is no way to customize the GIF reader
 // without copying the whole `extract` function
 class SafeGifReader {
     fun extract(reader: SequentialReader, metadata: Metadata) {

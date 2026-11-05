@@ -267,8 +267,14 @@
     "aboutDataUsageInternal": "Intern",
     "aboutDataUsageExternal": "Extern",
     "aboutDataUsageClearCache": "Netejar Cache",
-    "aboutCreditsWorldAtlas1": "Aquesta aplicació utilitza el format de fitxers TopoJSON",
-    "aboutCreditsWorldAtlas2": "sota llicència ISC.",
+    "aboutCreditsWorldAtlas": "Aquesta aplicació utilitza el format de fitxers TopoJSON [World Atlas]({link}) sota llicència ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traductors",
     "aboutLicensesSectionTitle": "Llicències de codi obert",
     "aboutLicensesBanner": "Aquesta aplicació utilitza els següents paquets i biblioteques de codi obert.",

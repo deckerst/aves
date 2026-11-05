@@ -4,15 +4,13 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/rate_chooser.
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RateButton extends ChooserQuickButton<int> {
-  const new({
-    super.key,
-    required super.blurred,
-    super.onChooserValue,
-    super.focusNode,
-    required super.onPressed,
-  });
-
+class const RateButton({
+  super.key,
+  required super.blurred,
+  super.onChooserValues,
+  super.focusNode,
+  required super.onPressed,
+}) extends ChooserQuickButton<int> {
   @override
   State<RateButton> createState() => _RateButtonState();
 }
@@ -27,9 +25,6 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
   String get tooltip => _action.getText(context);
 
   @override
-  int? get defaultValue => 3;
-
-  @override
   Widget buildChooser(Animation<double> animation, PopupMenuPosition chooserPosition) {
     return FadeTransition(
       opacity: animation,
@@ -38,7 +33,7 @@ class _RateButtonState extends ChooserQuickButtonState<RateButton, int> {
         alignment: chooserPosition == PopupMenuPosition.over ? Alignment.bottomCenter : Alignment.topCenter,
         child: RateQuickChooser(
           blurred: widget.blurred,
-          valueNotifier: chooserValueNotifier,
+          valuesNotifier: chooserValuesNotifier,
           pointerGlobalPosition: pointerGlobalPosition,
         ),
       ),

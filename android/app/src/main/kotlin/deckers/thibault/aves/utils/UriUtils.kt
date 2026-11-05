@@ -7,6 +7,7 @@ import android.util.Log
 
 object UriUtils {
     private val LOG_TAG = LogUtils.createTag<UriUtils>()
+    private const val SCHEME_DATA = "data"
     private const val SCHEME_GEO = "geo"
 
     fun Uri.tryParseId(): Long? {
@@ -23,6 +24,9 @@ object UriUtils {
 
     val Uri.isFileScheme: Boolean
         get() = ContentResolver.SCHEME_FILE.equals(scheme, ignoreCase = true)
+
+    val Uri.isDataScheme: Boolean
+        get() = SCHEME_DATA.equals(scheme, ignoreCase = true)
 
     val Uri.isGeoScheme: Boolean
         get() = SCHEME_GEO.equals(scheme, ignoreCase = true)

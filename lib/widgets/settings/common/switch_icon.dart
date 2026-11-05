@@ -6,21 +6,28 @@ import 'package:provider/provider.dart';
 
 class const SettingSwitchTrailingIcon({
   super.key,
-  required final IconData icon,
+  required final WidgetBuilder iconBuilder,
   required final bool disabled,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       // Switch width (`_kSwitchWidth`) + tile content padding
       padding: const EdgeInsetsDirectional.only(end: 59 + 16),
-      child: AnimatedSwitcher(
-        duration: context.read<DurationsData>().iconAnimation,
-        child: Icon(
-          icon,
-          key: key,
-          size: getIconSize(context),
-          color: getIconColor(context).withValues(alpha: disabled ? SettingsSwitchListTile.disabledOpacity : 1),
+      child: Theme(
+        data: theme.copyWith(
+          iconTheme: theme.iconTheme.copyWith(
+            size: getIconSize(context),
+            color: getIconColor(context).withValues(alpha: disabled ? SettingsSwitchListTile.disabledOpacity : 1),
+          ),
+        ),
+        child: AnimatedSwitcher(
+          duration: context.read<DurationsData>().iconAnimation,
+          child: Builder(
+            key: key,
+            builder: iconBuilder,
+          ),
         ),
       ),
     );

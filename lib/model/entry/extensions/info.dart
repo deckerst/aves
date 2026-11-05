@@ -11,7 +11,7 @@ import 'package:aves/services/metadata/svg_metadata_service.dart';
 import 'package:aves/theme/colors.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/text.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +24,12 @@ extension ExtraAvesEntryInfo on AvesEntry {
 
   Future<List<MapEntry<String, MetadataDirectory>>> getMetadataDirectories(BuildContext context) async {
     final rawMetadata = await (isSvg ? SvgMetadataService.getAllMetadata(this) : metadataFetchService.getAllMetadata(this));
+
+    final c2pa = await metadataFetchService.getContentCredentials(this);
+    if (c2pa['json'] is String) {
+      rawMetadata[MetadataDirectory.c2paDirectory] = c2pa;
+    }
+
     final directories = rawMetadata.entries.map((dirKV) {
       var directoryName = dirKV.key as String;
 

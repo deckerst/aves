@@ -157,7 +157,7 @@ class VideoSubtitles extends StatelessWidget {
                           if (position != null) {
                             final paragraph = RenderParagraph(
                               TextSpan(children: spans),
-                              textDirection: TextDirection.ltr,
+                              textDirection: .ltr,
                               textScaler: MediaQuery.textScalerOf(context),
                             )..layout(const BoxConstraints());
                             final textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);

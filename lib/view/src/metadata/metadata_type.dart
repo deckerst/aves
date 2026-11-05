@@ -4,17 +4,18 @@ extension ExtraMetadataTypeView on MetadataType {
   // match `metadata-extractor` directory names
   String getText() {
     return switch (this) {
-      MetadataType.comment => 'Comment',
-      MetadataType.exif => 'Exif',
-      MetadataType.iccProfile => 'ICC Profile',
-      MetadataType.iptc => 'IPTC',
-      MetadataType.jfif => 'JFIF',
-      MetadataType.jpegAdobe => 'Adobe JPEG',
-      MetadataType.jpegDucky => 'Ducky',
-      MetadataType.mp4 => 'MP4',
-      MetadataType.photoshopIrb => 'Photoshop',
-      MetadataType.xmp => 'XMP',
-      MetadataType.file => 'File',
+      .comment => 'Comment',
+      .exif => 'Exif',
+      .iccProfile => 'ICC Profile',
+      .iptc => 'IPTC',
+      .jfif => 'JFIF',
+      .jpegAdobe => 'Adobe JPEG',
+      .jpegDucky => 'Ducky',
+      .jpegJumbf => 'JUMBF (C2PA)',
+      .mp4 => 'MP4',
+      .photoshopIrb => 'Photoshop',
+      .xmp => 'XMP',
+      .file => 'File',
     };
   }
 }

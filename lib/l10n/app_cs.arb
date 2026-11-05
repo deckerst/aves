@@ -572,7 +572,6 @@
     "aboutBugSaveLogInstruction": "Uložte aplikační logy do souboru",
     "aboutBugReportInstruction": "Nahlásit na GitHub s logy a informacemi o systému",
     "aboutBugReportButton": "Nahlásit",
-    "aboutCreditsWorldAtlas2": "pod ISC licencí.",
     "collectionEmptyFavourites": "Žádné oblíbené položky",
     "albumScreenRecordings": "Nahrávky obrazovky",
     "aboutCreditsSectionTitle": "Zásluhy",
@@ -605,7 +604,14 @@
     },
     "drawerCollectionRaws": "Fotografie Raw",
     "drawerTagPage": "Štítky",
-    "aboutCreditsWorldAtlas1": "Tato aplikace využívá soubor TopoJSON od",
+    "aboutCreditsWorldAtlas": "Tato aplikace využívá soubor TopoJSON od [World Atlas]({link}) pod ISC licencí.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "drawerCollectionSphericalVideos": "360° videa",
     "aboutLicensesBanner": "Tato aplikace využívá tyto open-source baličky a knihovny.",
     "aboutLicensesSectionTitle": "Licence open-source",
@@ -978,5 +984,20 @@
     "chipActionCopyCenterCoordinates": "Kopírovat souřadnice středu",
     "calendarHijriTabular": "Hijri (Tabular)",
     "calendarHijriUmalqura": "Hijri (Umm al-Qura)",
-    "videoThumbnailMethodEmbeddedImage": "Vložený obrázek"
+    "videoThumbnailMethodEmbeddedImage": "Vložený obrázek",
+    "filterCredentialsValidityUnknownLabel": "Neznámé",
+    "filterCredentialsValidityInvalidLabel": "Neplatné",
+    "filterCredentialsValidityValidLabel": "Platné",
+    "filterCredentialsValidityTrustedLabel": "Důvěryhodné",
+    "videoThumbnailMethodPreviewFrame": "Náhledový snímek",
+    "videoThumbnailMethodFirstFrame": "První snímek",
+    "renameTagDialogLabelAlreadyExistsHelper": "Štítek už existuje",
+    "exportEntryDialogDimension": "Rozměr:",
+    "collectionActionShowLayoutBar": "Zobrazit panel rozložení",
+    "collectionActionHideLayoutBar": "Skrýt panel rozložení",
+    "sortRandomly": "Náhodně",
+    "settingsThumbnailShowCredentialValidity": "Zobrazit platnost ověřovacích údajů",
+    "searchCredentialsSectionTitle": "Ověřovací údaje obsahu",
+    "settingsVideoThumbnailMethods": "Upřednostňovaný náhled",
+    "aboutCreditsStateFlags": "Státní vlajky jsou z Wikimedia Commons. Jedná se o volná díla, kromě:"
 }

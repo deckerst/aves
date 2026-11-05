@@ -179,10 +179,10 @@ class EntryInfoActionDelegate with FeedbackMixin, PermissionAwareMixin, EntryEdi
     await _applyTags(context, targetEntry, newTags);
   }
 
-  Future<void> quickTag(BuildContext context, AvesEntry targetEntry, CollectionFilter filter) async {
+  Future<void> quickTag(BuildContext context, AvesEntry targetEntry, Set<CollectionFilter> filters) async {
     final newTags = {
       ...targetEntry.tags,
-      ...await getTagsFromFilters({filter}, targetEntry),
+      ...await getTagsFromFilters(filters, targetEntry),
     };
     await _applyTags(context, targetEntry, newTags);
   }

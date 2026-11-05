@@ -221,7 +221,7 @@
     "videoStreamSelectionDialogNoSelection": "Других дорожек нет.",
     "genericSuccessFeedback": "Выполнено!",
     "genericFailureFeedback": "Не удалось",
-    "menuActionConfigureView": "Сменить вид",
+    "menuActionConfigureView": "Изменить макет",
     "menuActionSelect": "Выбрать",
     "menuActionSelectAll": "Выбрать все",
     "menuActionSelectNone": "Снять выделение",
@@ -248,8 +248,14 @@
     "aboutBugReportInstruction": "Отправьте отчёт об ошибке на GitHub вместе с логами и системной информацией",
     "aboutBugReportButton": "Отправить",
     "aboutCreditsSectionTitle": "Благодарности",
-    "aboutCreditsWorldAtlas1": "Это приложение использует файл TopoJSON из",
-    "aboutCreditsWorldAtlas2": "под лицензией ISC.",
+    "aboutCreditsWorldAtlas": "Это приложение использует файл TopoJSON из [World Atlas]({link}) под лицензией ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Переводчики",
     "aboutLicensesSectionTitle": "Лицензии с открытым исходным кодом",
     "aboutLicensesBanner": "Это приложение использует следующие пакеты и библиотеки с открытым исходным кодом.",
@@ -739,5 +745,22 @@
     "calendarGregorian": "Григорианский",
     "calendarPersian": "Персидский",
     "settingsCalendarTile": "Календарь",
-    "tileLayoutCalendar": "Календарь"
+    "tileLayoutCalendar": "Календарь",
+    "chipActionCopyCenterCoordinates": "Копировать координаты центра",
+    "calendarHijriTabular": "Хиджри (табличный)",
+    "calendarHijriUmalqura": "Хиджри (Умм аль‑Кура)",
+    "videoThumbnailMethodEmbeddedImage": "Встроенное изображение",
+    "videoThumbnailMethodPreviewFrame": "Кадр предпросмотра",
+    "videoThumbnailMethodFirstFrame": "Первый кадр",
+    "renameTagDialogLabelAlreadyExistsHelper": "Тег уже существует",
+    "collectionActionShowLayoutBar": "Показать панель макета",
+    "collectionActionHideLayoutBar": "Скрыть панель макета",
+    "settingsVideoThumbnailMethods": "Предпочитаемая миниатюра",
+    "filterCredentialsValidityUnknownLabel": "Неизвестно",
+    "filterCredentialsValidityInvalidLabel": "Недействительно",
+    "filterCredentialsValidityValidLabel": "Действительно",
+    "filterCredentialsValidityTrustedLabel": "Доверенный",
+    "exportEntryDialogDimension": "Размер:",
+    "sortRandomly": "Случайно",
+    "aboutCreditsStateFlags": "Государственные флаги взяты с Wikimedia Commons. Они находятся в общественном достоянии, за исключением:"
 }

@@ -107,7 +107,7 @@ class _MapStyleSelectionDialogState extends State<MapStyleSelectionDialog> {
       count: null,
       countFormatter: settings.avesLocale.decimalNumberFormat().format,
       drawArrow: false,
-      buildThumbnailImage: (_) => Image.asset('assets/$assetName'),
+      buildThumbnailImage: (_) => Image.asset('assets/map_samples/$assetName'),
     );
   }
 

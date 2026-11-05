@@ -98,7 +98,6 @@
     "aboutPageTitle": "Om",
     "aboutLinkLicense": "Lisens",
     "aboutLinkPolicy": "Personvernspraksis",
-    "aboutCreditsWorldAtlas2": "under ISC-lisens.",
     "aboutTranslatorsSectionTitle": "Oversettere",
     "aboutLicensesSectionTitle": "Frie lisenser",
     "policyPageTitle": "Personvernspraksis",
@@ -301,7 +300,14 @@
     "coverDialogTabColor": "Farge",
     "aboutBugSectionTitle": "Feilrapport",
     "aboutBugReportButton": "Rapporter",
-    "aboutCreditsWorldAtlas1": "Dette programmet bruker en TopoJSON-fil fra",
+    "aboutCreditsWorldAtlas": "Dette programmet bruker en TopoJSON-fil fra [World Atlas]({link}) under ISC-lisens.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionPageTitle": "Samling",
     "aboutCreditsSectionTitle": "Bidragsytere",
     "aboutLicensesShowAllButtonLabel": "Vis alle lisenser",

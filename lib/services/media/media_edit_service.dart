@@ -124,10 +124,11 @@ class PlatformMediaEditService implements MediaEditService {
             'op': 'convert',
             'entries': entries.map((entry) => entry.toPlatformEntryMap()).toList(),
             'exportMimeType': options.mimeType,
-            'quality': options.quality,
+            'targetDimension': options.targetDimension.name,
             'lengthUnit': options.lengthUnit.name,
             'width': options.width,
             'height': options.height,
+            'quality': options.quality,
             'writeMetadata': options.writeMetadata,
             'destinationPath': destinationAlbum,
             'nameConflictStrategy': nameConflictStrategy.toPlatform(),
@@ -187,23 +188,16 @@ class PlatformMediaEditService implements MediaEditService {
 }
 
 @immutable
-class EntryConvertOptions extends Equatable {
-  final EntryConvertAction action;
-  final String mimeType;
-  final bool writeMetadata;
-  final LengthUnit lengthUnit;
-  final int width, height, quality;
-
+class const EntryConvertOptions({
+  required final EntryConvertAction action,
+  required final String mimeType,
+  required final ConvertDimension targetDimension,
+  required final LengthUnit lengthUnit,
+  required final int? width,
+  required final int? height,
+  required final int quality,
+  required final bool writeMetadata,
+}) extends Equatable {
   @override
-  List<Object?> get props => [action, mimeType, writeMetadata, lengthUnit, width, height, quality];
-
-  const new({
-    required this.action,
-    required this.mimeType,
-    required this.writeMetadata,
-    required this.lengthUnit,
-    required this.width,
-    required this.height,
-    required this.quality,
-  });
+  List<Object?> get props => [action, mimeType, targetDimension, lengthUnit, width, height, quality, writeMetadata];
 }

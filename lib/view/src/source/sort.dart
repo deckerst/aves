@@ -1,4 +1,5 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
@@ -15,6 +16,7 @@ extension ExtraEntrySortFactorView on SortFactor {
       .path => l10n.sortByPath,
       .rating => l10n.sortByRating,
       .duration => l10n.sortByDuration,
+      .random => l10n.sortRandomly,
     };
   }
 
@@ -28,6 +30,7 @@ extension ExtraEntrySortFactorView on SortFactor {
       .path => AIcons.path,
       .rating => AIcons.rating,
       .duration => AIcons.duration,
+      .random => AIcons.random,
     };
   }
 
@@ -39,6 +42,7 @@ extension ExtraEntrySortFactorView on SortFactor {
       .count || .size => reverse ? l10n.sortOrderSmallestFirst : l10n.sortOrderLargestFirst,
       .rating => reverse ? l10n.sortOrderLowestFirst : l10n.sortOrderHighestFirst,
       .duration => reverse ? l10n.sortOrderShortestFirst : l10n.sortOrderLongestFirst,
+      .random => AText.valueNotAvailable,
     };
   }
 }

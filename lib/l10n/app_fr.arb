@@ -250,8 +250,14 @@
     "aboutBugReportInstruction": "Créer une « issue » sur GitHub en attachant les logs et informations d’environnement",
     "aboutBugReportButton": "Créer",
     "aboutCreditsSectionTitle": "Remerciements",
-    "aboutCreditsWorldAtlas1": "Cette app utilise un fichier TopoJSON de",
-    "aboutCreditsWorldAtlas2": "sous licence ISC.",
+    "aboutCreditsWorldAtlas": "Cette app utilise un fichier TopoJSON de [World Atlas]({link}) sous licence ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traducteurs",
     "aboutLicensesSectionTitle": "Licences open-source",
     "aboutLicensesBanner": "Cette app utilise ces librairies et packages open-source.",
@@ -749,5 +755,14 @@
     "videoThumbnailMethodFirstFrame": "Première image",
     "settingsVideoThumbnailMethods": "Vignette préférée",
     "chipActionCopyCenterCoordinates": "Copier les coordonnées du centre",
-    "renameTagDialogLabelAlreadyExistsHelper": "L’étiquette existe déjà"
+    "renameTagDialogLabelAlreadyExistsHelper": "L’étiquette existe déjà",
+    "sortRandomly": "Aléatoirement",
+    "exportEntryDialogDimension": "Dimension :",
+    "aboutCreditsStateFlags": "Les drapeaux des États proviennent de Wikimedia Commons. Ils sont dans le domaine public, à l’exception de :",
+    "settingsThumbnailShowCredentialValidity": "Afficher la validité de provenance",
+    "filterCredentialsValidityUnknownLabel": "Inconnu",
+    "filterCredentialsValidityInvalidLabel": "Invalide",
+    "filterCredentialsValidityValidLabel": "Valide",
+    "filterCredentialsValidityTrustedLabel": "Fiable",
+    "searchCredentialsSectionTitle": "Content Credentials"
 }

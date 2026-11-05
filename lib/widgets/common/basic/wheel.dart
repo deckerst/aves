@@ -1,6 +1,6 @@
 import 'package:aves/theme/durations.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 class WheelSelector<T> extends StatefulWidget {

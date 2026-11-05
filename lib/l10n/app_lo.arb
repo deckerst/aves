@@ -519,8 +519,14 @@
     "aboutDataUsageExternal": "ພາຍນອກ",
     "aboutDataUsageClearCache": "ລ້າງແຄຊ",
     "aboutCreditsSectionTitle": "ເຄຣດິດ",
-    "aboutCreditsWorldAtlas1": "ແອັບນີ້ໃຊ້ໄຟລ໌ TopoJSON ຈາກ",
-    "aboutCreditsWorldAtlas2": "ພາຍໃຕ້ໃບອະນຸຍາດ ISC.",
+    "aboutCreditsWorldAtlas": "ແອັບນີ້ໃຊ້ໄຟລ໌ TopoJSON ຈາກ [World Atlas]({link}) ພາຍໃຕ້ໃບອະນຸຍາດ ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "ນັກແປ",
     "aboutLicensesSectionTitle": "ໃບອະນຸຍາດ Open-Source",
     "aboutLicensesBanner": "ແອັບນີ້ໃຊ້ແພັກເກັດ ແລະ ໄລບຣາຣີ open-source ຕໍ່ໄປນີ້.",

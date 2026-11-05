@@ -15,8 +15,10 @@ class const VideoControlRow({
   final bool canOpenVideoPlayer = true,
   required final Function(EntryAction value) onActionSelected,
 }) extends StatelessWidget {
-  static const double edgeButtonPadding = 3;
-  static const Radius radius = Radius.circular(123);
+  static const double _edgeButtonPadding = 3;
+  static const Radius _radius = Radius.circular(123);
+
+  static double preferredHeight(BuildContext context) => OverlayButton.getSize(context);
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,9 @@ class const VideoControlRow({
           // zero radius yields a square button
           borderRadius = BorderRadius.zero;
           if (action == actions.first) {
-            borderRadius = const BorderRadius.horizontal(left: radius);
+            borderRadius = const BorderRadius.horizontal(left: _radius);
           } else if (action == actions.last) {
-            borderRadius = const BorderRadius.horizontal(right: radius);
+            borderRadius = const BorderRadius.horizontal(right: _radius);
           }
         }
         return _VideoOverlayButton(
@@ -49,7 +51,7 @@ class const VideoControlRow({
   }
 
   static double computeWidth(BuildContext context, List<EntryAction> actions) {
-    return actions.length * OverlayButton.getSize(context) + (actions.isEmpty ? 0 : 2 * edgeButtonPadding);
+    return actions.length * OverlayButton.getSize(context) + (actions.isEmpty ? 0 : 2 * _edgeButtonPadding);
   }
 }
 
@@ -82,8 +84,8 @@ class const _VideoOverlayButton({
     if (_borderRadius != null) {
       child = Padding(
         padding: EdgeInsets.only(
-          left: _borderRadius.topLeft.x > 0 ? VideoControlRow.edgeButtonPadding : 0,
-          right: _borderRadius.topRight.x > 0 ? VideoControlRow.edgeButtonPadding : 0,
+          left: _borderRadius.topLeft.x > 0 ? VideoControlRow._edgeButtonPadding : 0,
+          right: _borderRadius.topRight.x > 0 ? VideoControlRow._edgeButtonPadding : 0,
         ),
         child: child,
       );

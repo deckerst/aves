@@ -23,7 +23,17 @@ class SvgMetadataService {
       final root = document.rootElement;
 
       String? getAttribute(String attributeName) => root.attributes.firstWhereOrNull((a) => a.name.qualified == attributeName)?.value;
-      double? tryParseWithoutUnit(String? s) => s == null ? null : double.tryParse(s.replaceAll(RegExp(r'[a-z%]'), ''));
+      double? tryParseDimension(String? s) {
+        if (s == null) return null;
+
+        // e.g. `42`
+        // e.g. `2e3` for `2000`
+        final d = double.tryParse(s);
+        if (d != null) return d;
+
+        // e.g. `2500px` for `2500`
+        return double.tryParse(s.replaceAll(RegExp(r'[a-z%]'), ''));
+      }
 
       // prefer the viewbox over the viewport to determine size
 
@@ -32,8 +42,8 @@ class SvgMetadataService {
       if (viewBox != null) {
         final parts = viewBox.split(RegExp(r'[\s,]+'));
         if (parts.length == 4) {
-          final vbWidth = tryParseWithoutUnit(parts[2]);
-          final vbHeight = tryParseWithoutUnit(parts[3]);
+          final vbWidth = tryParseDimension(parts[2]);
+          final vbHeight = tryParseDimension(parts[3]);
           if (vbWidth != null && vbWidth > 0 && vbHeight != null && vbHeight > 0) {
             return Size(vbWidth, vbHeight);
           }
@@ -41,8 +51,8 @@ class SvgMetadataService {
       }
 
       // viewport
-      final width = tryParseWithoutUnit(getAttribute('width'));
-      final height = tryParseWithoutUnit(getAttribute('height'));
+      final width = tryParseDimension(getAttribute('width'));
+      final height = tryParseDimension(getAttribute('height'));
       if (width != null && height != null) {
         return Size(width, height);
       }

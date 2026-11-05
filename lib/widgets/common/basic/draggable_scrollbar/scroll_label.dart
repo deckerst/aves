@@ -1,17 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 
-class ScrollLabel extends StatelessWidget {
-  final Animation<double> animation;
-  final Color backgroundColor;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.child,
-    required this.animation,
-    required this.backgroundColor,
-  });
-
+class const ScrollLabel({
+  super.key,
+  required final Widget child,
+  required final Animation<double> animation,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -20,7 +13,6 @@ class ScrollLabel extends StatelessWidget {
         margin: const EdgeInsetsDirectional.only(end: 12.0),
         child: Material(
           elevation: 4.0,
-          color: backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(16)),
           child: child,
         ),

@@ -3,17 +3,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class AvesXmp extends Equatable {
-  final String? xmpString;
-  final String? extendedXmpString;
-
+class const AvesXmp({
+  required final String? xmpString,
+  final String? extendedXmpString,
+}) extends Equatable {
   @override
   List<Object?> get props => [xmpString, extendedXmpString];
-
-  const new({
-    required this.xmpString,
-    this.extendedXmpString,
-  });
 
   static AvesXmp fromList(List<String> xmpStrings) {
     switch (xmpStrings.length) {

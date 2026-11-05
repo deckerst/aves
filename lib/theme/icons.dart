@@ -21,6 +21,10 @@ class AIcons {
   static const circle = Symbols.fiber_manual_record;
   static const count = MdiIcons.counter;
   static const counter = Symbols.plus_one;
+  static const credentialsUnknown = Symbols.shield_question;
+  static const credentialsInvalid = Symbols.gpp_bad;
+  static const credentialsValid = Symbols.verified_user;
+  static const credentialsTrusted = Symbols.local_police;
   static const description = Symbols.description;
   static const descriptionUntitled = Symbols.comments_disabled;
   static const display = Symbols.light_mode;
@@ -34,12 +38,7 @@ class AIcons {
   static const height = Symbols.fit_page_height;
   static const histogram = Symbols.area_chart;
   static const home = Symbols.home;
-
-  // as of Flutter v3.16.3,
-  // `label_important_outlined` matches text direction but is filled
-  // `label_important_outline` is outlined but does not match text direction
-  static const important = IconData(labelImportantOutlineCodePoint, fontFamily: materialIconsFontFamily, matchTextDirection: true);
-
+  static const important = Symbols.label_important;
   static const language = Symbols.translate;
   static const legal = MdiIcons.scaleBalance;
   static const mimeType = Symbols.code;
@@ -51,6 +50,7 @@ class AIcons {
   static const palette = Symbols.palette;
   static const path = Symbols.account_tree;
   static const privacy = Symbols.shield_person;
+  static const random = Symbols.ifl;
   static const rating = Symbols.star;
   static const ratingRejected = MdiIcons.starMinusOutline;
   static const ratingUnrated = MdiIcons.starOffOutline;
@@ -150,8 +150,8 @@ class AIcons {
   static const reverse = Symbols.invert_colors;
   static const reset = Symbols.restart_alt;
   static const restore = Symbols.restore;
-  static const rotateLeft = Symbols.rotate_left;
-  static const rotateRight = Symbols.rotate_right;
+  static const rotateLeft = IconData(_rotateLeftCodePoint, fontFamily: _materialSymbolsOutlinedFontFamily, fontPackage: _materialSymbolsIconsFontPackage, matchTextDirection: false);
+  static const rotateRight = IconData(_rotateRightCodePoint, fontFamily: _materialSymbolsOutlinedFontFamily, fontPackage: _materialSymbolsIconsFontPackage, matchTextDirection: false);
   static const rotateScreen = Symbols.screen_rotation;
   static const search = Symbols.search;
   static const select = Symbols.select_all;
@@ -163,6 +163,7 @@ class AIcons {
   static const show = Symbols.visibility;
   static const showFullscreenArrows = Symbols.open_in_full;
   static const showFullscreenCorners = Symbols.fullscreen;
+  static const shuffle = Symbols.casino;
   static const slideshow = Symbols.slideshow;
   static const split = Symbols.call_split;
   static const stats = Symbols.donut_small;
@@ -228,8 +229,10 @@ class AIcons {
   static const selected = Symbols.check_circle;
   static const unselected = Symbols.radio_button_unchecked;
 
-  // Material Icons references to make constant instances of `IconData`
+  // References to make constant instances of `IconData`
   // as non-constant instances of `IconData` prevent icon font tree shaking
-  static const labelImportantOutlineCodePoint = 0xe362;
-  static const materialIconsFontFamily = 'MaterialIcons';
+  static const _materialSymbolsIconsFontPackage = 'material_symbols_icons';
+  static const _materialSymbolsOutlinedFontFamily = 'MaterialSymbolsOutlined';
+  static const _rotateLeftCodePoint = 0xe419;
+  static const _rotateRightCodePoint = 0xe41a;
 }

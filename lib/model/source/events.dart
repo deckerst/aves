@@ -3,42 +3,22 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class EntryAddedEvent {
-  final Set<AvesEntry>? entries;
-
-  const new([this.entries]);
-}
+class const EntryAddedEvent([final Set<AvesEntry>? entries]);
 
 @immutable
-class EntryRemovedEvent {
-  final Set<AvesEntry> entries;
-
-  const new(this.entries);
-}
+class const EntryRemovedEvent(final Set<AvesEntry> entries);
 
 @immutable
-class EntryMovedEvent {
-  final MoveType type;
-  final Set<AvesEntry> entries;
-
-  const new(this.type, this.entries);
-}
+class const EntryMovedEvent(final MoveType type, final Set<AvesEntry> entries);
 
 @immutable
-class EntryRefreshedEvent {
-  final Set<AvesEntry> entries;
-
-  const new(this.entries);
-}
+class const EntryRefreshedEvent(final Set<AvesEntry> entries);
 
 @immutable
-class FilterVisibilityChangedEvent {
-  const new();
-}
+class const EntryDisposedEvent(final Set<AvesEntry> entries);
 
 @immutable
-class ProgressEvent {
-  final int done, total;
+class const FilterVisibilityChangedEvent();
 
-  const new({required this.done, required this.total});
-}
+@immutable
+class const ProgressEvent({required final int done, required final int total});

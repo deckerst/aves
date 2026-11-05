@@ -32,22 +32,16 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryPageView extends StatefulWidget {
-  final AvesEntry mainEntry, pageEntry;
-  final ViewerController viewerController;
-  final VoidCallback? onDisposed;
-
+class const EntryPageView({
+  super.key,
+  required final AvesEntry mainEntry,
+  required final AvesEntry pageEntry,
+  required final ViewerController viewerController,
+  final VoidCallback? onDisposed,
+}) extends StatefulWidget {
   static const decorationCheckSize = 20.0;
   static const rasterMaxScale = ScaleLevel(factor: 5);
   static const vectorMaxScale = ScaleLevel(factor: 25);
-
-  const new({
-    super.key,
-    required this.mainEntry,
-    required this.pageEntry,
-    required this.viewerController,
-    this.onDisposed,
-  });
 
   @override
   State<EntryPageView> createState() => _EntryPageViewState();
@@ -172,6 +166,7 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
       child: RasterImageView(
         entry: entry,
         viewStateNotifier: _viewStateNotifier,
+        devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
         errorBuilder: (context, error, stackTrace) => ErrorView(
           entry: entry,
           onTap: _onTap,
@@ -522,18 +517,19 @@ class _EntryPageViewState extends State<EntryPageView> with TickerProviderStateM
     }
   }
 
-  void _onViewStateChanged(MagnifierState v) {
+  void _onViewStateChanged(MagnifierState magnifierState) {
     if (!mounted) return;
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
-      position: v.position,
-      scale: v.scale,
+      position: magnifierState.position,
+      scale: magnifierState.scale,
     );
   }
 
-  void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
+  void _onViewScaleBoundariesChanged(ScaleBoundaries boundaries) {
+    if (!mounted) return;
     _viewStateNotifier.value = _viewStateNotifier.value.copyWith(
-      viewportSize: v.viewportSize,
-      contentSize: v.contentSize,
+      viewportSize: boundaries.viewportSize,
+      contentSize: boundaries.contentSize,
     );
   }
 

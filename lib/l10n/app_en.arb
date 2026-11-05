@@ -186,6 +186,10 @@
   "filterAspectRatioLandscapeLabel": "Landscape",
   "filterAspectRatioPortraitLabel": "Portrait",
   "filterBinLabel": "Recycle bin",
+  "filterCredentialsValidityUnknownLabel": "Unknown",
+  "filterCredentialsValidityInvalidLabel": "Invalid",
+  "filterCredentialsValidityValidLabel": "Valid",
+  "filterCredentialsValidityTrustedLabel": "Trusted",
   "filterFavouriteLabel": "Favorite",
   "filterNoDateLabel": "Undated",
   "filterNoAddressLabel": "No address",
@@ -517,6 +521,7 @@
   },
 
   "exportEntryDialogFormat": "Format:",
+  "exportEntryDialogDimension": "Dimension:",
   "exportEntryDialogWidth": "Width",
   "exportEntryDialogHeight": "Height",
   "exportEntryDialogQuality": "Quality",
@@ -617,8 +622,15 @@
   "aboutDataUsageClearCache": "Clear Cache",
 
   "aboutCreditsSectionTitle": "Credits",
-  "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
-  "aboutCreditsWorldAtlas2": "under ISC License.",
+  "aboutCreditsWorldAtlas": "This app uses a TopoJSON file from [World Atlas]({link}) under ISC License.",
+  "@aboutCreditsWorldAtlas": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutCreditsStateFlags": "State flags are from Wikimedia Commons. They are in the public domain, except:",
   "aboutTranslatorsSectionTitle": "Translators",
 
   "aboutLicensesSectionTitle": "Open-Source Licenses",
@@ -784,6 +796,7 @@
   "sortByRating": "By rating",
   "sortByDuration": "By duration",
   "sortByPath": "By path",
+  "sortRandomly": "Randomly",
 
   "sortOrderNewestFirst": "Newest first",
   "sortOrderOldestFirst": "Oldest first",
@@ -849,6 +862,7 @@
   "searchTagsSectionTitle": "Tags",
   "searchRatingSectionTitle": "Ratings",
   "searchMetadataSectionTitle": "Metadata",
+  "searchCredentialsSectionTitle": "Content Credentials",
 
   "settingsPageTitle": "Settings",
   "settingsSystemDefault": "System default",
@@ -901,6 +915,7 @@
   "settingsThumbnailSectionTitle": "Thumbnails",
   "settingsThumbnailOverlayTile": "Overlay",
   "settingsThumbnailOverlayPageTitle": "Overlay",
+  "settingsThumbnailShowCredentialValidity": "Show credential validity",
   "settingsThumbnailShowHdrIcon": "Show HDR icon",
   "settingsThumbnailShowFavouriteIcon": "Show favorite icon",
   "settingsThumbnailShowTagIcon": "Show tag icon",

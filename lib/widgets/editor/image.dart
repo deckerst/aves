@@ -137,6 +137,7 @@ class _EditorImageState extends State<EditorImage> {
                       RasterImageView(
                         entry: entry,
                         viewStateNotifier: viewStateNotifier,
+                        devicePixelRatio: MediaQuery.devicePixelRatioOf(context),
                         errorBuilder: (context, error, stackTrace) => ErrorView(
                           entry: entry,
                           onTap: () {},

@@ -19,14 +19,12 @@ import 'package:flutter/widgets.dart';
  */
 
 /// Build the Scroll Thumb and label using the current configuration
-typedef ScrollThumbBuilder =
-    Widget Function(
-      Color backgroundColor,
-      Animation<double> thumbAnimation,
-      Animation<double> labelAnimation,
-      double height, {
-      Widget? labelText,
-    });
+typedef ScrollThumbBuilder = Widget Function(
+  Animation<double> thumbAnimation,
+  Animation<double> labelAnimation,
+  double height, {
+  Widget? labelText,
+});
 
 /// Build a Text widget using the current scroll offset
 typedef OffsetLabelBuilder = Widget Function(double offsetY);
@@ -34,55 +32,35 @@ typedef TextLabelBuilder = Widget Function(String label);
 
 /// A widget that will display a BoxScrollView with a ScrollThumb that can be dragged
 /// for quick navigation of the BoxScrollView.
-class DraggableScrollbar extends StatefulWidget {
-  /// The background color of the label and thumb
-  final Color backgroundColor;
+class const DraggableScrollbar({
+  super.key,
 
-  final Map<double, String> Function()? scrollCrumbsBuilder;
-
-  final Size scrollThumbSize;
+  required final Size scrollThumbSize,
 
   /// A function that builds a thumb using the current configuration
-  final ScrollThumbBuilder scrollThumbBuilder;
-
-  /// The amount of padding that should surround the thumb
-  final EdgeInsets padding;
-
-  /// Determines how quickly the scrollbar will animate in and out
-  final Duration scrollbarAnimationDuration;
-
-  /// How long should the thumb be visible before fading out
-  final Duration scrollbarTimeToFade;
-
-  /// Build a Text widget from the current offset in the BoxScrollView
-  final OffsetLabelBuilder labelTextBuilder;
-
-  final TextLabelBuilder crumbTextBuilder;
+  required final ScrollThumbBuilder scrollThumbBuilder,
 
   /// The ScrollController for the BoxScrollView
-  final ScrollController controller;
+  required final ScrollController controller,
+  final double Function(double scrollOffset, double offsetIncrement)? dragOffsetSnapper,
+  final Map<double, String> Function()? scrollCrumbsBuilder,
 
-  final double Function(double scrollOffset, double offsetIncrement)? dragOffsetSnapper;
+  /// The amount of padding that should surround the thumb
+  final EdgeInsets padding = EdgeInsets.zero,
+
+  /// Determines how quickly the scrollbar will animate in and out
+  final Duration scrollbarAnimationDuration = const Duration(milliseconds: 300),
+
+  /// How long should the thumb be visible before fading out
+  final Duration scrollbarTimeToFade = const Duration(milliseconds: 1000),
+
+  /// Build a Text widget from the current offset in the BoxScrollView
+  required final OffsetLabelBuilder labelTextBuilder,
+  required final TextLabelBuilder crumbTextBuilder,
 
   /// The view that will be scrolled with the scroll thumb
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.backgroundColor,
-    required this.scrollThumbSize,
-    required this.scrollThumbBuilder,
-    required this.controller,
-    this.dragOffsetSnapper,
-    this.scrollCrumbsBuilder,
-    this.padding = EdgeInsets.zero,
-    this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
-    this.scrollbarTimeToFade = const Duration(milliseconds: 1000),
-    required this.labelTextBuilder,
-    required this.crumbTextBuilder,
-    required this.child,
-  });
-
+  required final Widget child,
+}) extends StatefulWidget {
   @override
   State<DraggableScrollbar> createState() => _DraggableScrollbarState();
 
@@ -90,7 +68,6 @@ class DraggableScrollbar extends StatefulWidget {
 
   static Widget buildScrollThumbAndLabel({
     required Widget scrollThumb,
-    required Color backgroundColor,
     required Animation<double> thumbAnimation,
     required Animation<double> labelAnimation,
     required Widget? labelText,
@@ -103,7 +80,6 @@ class DraggableScrollbar extends StatefulWidget {
             children: [
               ScrollLabel(
                 animation: labelAnimation,
-                backgroundColor: backgroundColor,
                 child: labelText,
               ),
               const SizedBox(width: labelThumbPadding),
@@ -215,7 +191,6 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                     child: Center(
                       child: ScrollLabel(
                         animation: kAlwaysCompleteAnimation,
-                        backgroundColor: widget.backgroundColor,
                         child: widget.crumbTextBuilder(label),
                       ),
                     ),
@@ -247,7 +222,6 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
                     alignment: .topEnd,
                     padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
                     child: widget.scrollThumbBuilder(
-                      widget.backgroundColor,
                       _thumbAnimation,
                       _labelAnimation,
                       widget.scrollThumbSize.height,

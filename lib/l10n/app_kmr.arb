@@ -605,8 +605,14 @@
     "aboutDataUsageMisc": "Misc",
     "aboutDataUsageClearCache": "Bîrdanka demkî pak bike",
     "aboutCreditsSectionTitle": "Kredî",
-    "aboutCreditsWorldAtlas1": "Ev sepan pelek TopoJSON bi kar tîne ji",
-    "aboutCreditsWorldAtlas2": "di bin lîsansa ISC de.",
+    "aboutCreditsWorldAtlas": "Ev sepan pelek TopoJSON bi kar tîne ji [World Atlas]({link}) di bin lîsansa ISC de.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesSectionTitle": "Lîsansên çavkaniya vekirî",
     "aboutLicensesBanner": "Ev sepan pakêt û pirtûkxaneyên jêrîn ên çavkaniya vekirî bi kar tîne.",
     "aboutLicensesAndroidLibrariesSectionTitle": "Pirtûkxaneyên Androidê",

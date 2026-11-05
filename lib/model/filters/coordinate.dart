@@ -10,7 +10,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong2/latlong.dart';
 
-class CoordinateFilter(
+class const CoordinateFilter(
   final LatLng sw,
   final LatLng ne, {
   final bool minuteSecondPadding = false,
@@ -18,14 +18,8 @@ class CoordinateFilter(
 }) extends CollectionFilter {
   static const type = 'coordinate';
 
-  late final EntryPredicate _test;
-
   @override
   List<Object?> get props => [sw, ne, reversed];
-
-  this {
-    _test = (entry) => GeoUtils.contains(sw, ne, entry.latLng);
-  }
 
   factory fromMap(Map<String, Object?> json) {
     return CoordinateFilter(
@@ -44,7 +38,8 @@ class CoordinateFilter(
   };
 
   @override
-  EntryPredicate get positiveTest => _test;
+  EntryPredicate get positiveTest =>
+      (entry) => GeoUtils.contains(sw, ne, entry.latLng);
 
   String _formatBounds(String Function(LatLng latLng) s) => '${s(ne)}\n${s(sw)}';
 

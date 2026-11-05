@@ -524,8 +524,14 @@
     "collectionActionEmptyBin": "बीन खाली करे",
     "collectionActionCopy": "एल्बम में कॉपी करें",
     "collectionGroupAlbum": "एल्बम के अनुसार",
-    "aboutCreditsWorldAtlas1": "यह ऐप TopoJSON फ़ाइल का उपयोग करता है",
-    "aboutCreditsWorldAtlas2": "आईएससी लाइसेंस के तहत।",
+    "aboutCreditsWorldAtlas": "यह ऐप TopoJSON फ़ाइल का उपयोग करता है [World Atlas]({link}) आईएससी लाइसेंस के तहत।",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionPageTitle": "संग्रह",
     "collectionGroupMonth": "महीने के अनुसार",
     "sectionUnknown": "अज्ञात",

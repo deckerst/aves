@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
@@ -49,7 +50,7 @@ internal class FileImageProvider : ImageProvider() {
                 callback.onFailure(e)
                 return
             }
-            mimeType = detectMimeType(
+            mimeType = MetadataExtractorHelper.readMimeType(
                 context = context,
                 mimeType = null,
                 uri = uri,
@@ -83,10 +84,11 @@ internal class FileImageProvider : ImageProvider() {
         }
         entry.fillPreCatalogMetadata(context)
 
+        val fields = entry.toMap()
         if (allowUnsized || entry.isSized || entry.isSvg || entry.isVideo) {
-            callback.onSuccess(entry.toMap())
+            callback.onSuccess(fields)
         } else {
-            callback.onFailure(Exception("entry has no size"))
+            callback.onFailure(Exception("entry is not sized, for fields=$fields"))
         }
     }
 

@@ -26,9 +26,9 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/tag_button.da
 import 'package:aves/widgets/common/action_controls/togglers/favourite.dart';
 import 'package:aves/widgets/common/action_controls/togglers/layout_bar.dart';
 import 'package:aves/widgets/common/action_controls/togglers/title_search.dart';
+import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/bars/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/bars/app_bar_title.dart';
-import 'package:aves/widgets/common/bars/app_bar.dart';
 import 'package:aves/widgets/common/basic/popup/container.dart';
 import 'package:aves/widgets/common/basic/popup/expansion_panel.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
@@ -66,6 +66,7 @@ class const CollectionAppBar({
     .size,
     .rating,
     .duration,
+    .random,
   ];
 
   static const sectionOptions = <EntrySectionFactor>[
@@ -594,27 +595,27 @@ class _CollectionAppBarState extends State<CollectionAppBar> with RouteAware, Si
         return MoveButton(
           copy: true,
           blurred: blurred,
-          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: true),
+          onChooserValues: (v) => _actionDelegate.quickMove(context, v.first, copy: true),
           onPressed: onPressed,
         );
       case .move:
         return MoveButton(
           copy: false,
           blurred: blurred,
-          onChooserValue: (album) => _actionDelegate.quickMove(context, album, copy: false),
+          onChooserValues: (v) => _actionDelegate.quickMove(context, v.first, copy: false),
           onPressed: onPressed,
         );
       case .editRating:
         return RateButton(
           blurred: blurred,
-          onChooserValue: (rating) => _actionDelegate.quickRate(context, rating),
+          onChooserValues: (v) => _actionDelegate.quickRate(context, v.first),
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case .editTags:
         return TagButton(
           blurred: blurred,
-          onChooserValue: (filter) => _actionDelegate.quickTag(context, filter),
+          onChooserValues: (v) => _actionDelegate.quickTag(context, v),
           focusNode: focusNode,
           onPressed: onPressed,
         );

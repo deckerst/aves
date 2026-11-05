@@ -1,4 +1,5 @@
 import 'package:aves/services/geocoding_service.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:flutter/foundation.dart';
 
 typedef DateAndZone = (int dateMillis, int? timeZoneOffsetMinutes);
@@ -16,6 +17,7 @@ class CatalogMetadata({
   final bool isMotionPhoto = false,
   final bool isHdr = false,
   final bool isSlowMotion = false,
+  final C2paValidity credentialsValidity = .unknown,
   var int? rotationDegrees,
   final String? xmpSubjects,
   final String? xmpTitle,
@@ -37,6 +39,9 @@ class CatalogMetadata({
   static const _isMotionPhotoMask = 1 << 5;
   static const _isHdr = 1 << 6; // for images: embedded HDR gainmap, for videos: HDR color transfer
   static const _isSlowMotion = 1 << 7;
+  static const _areCredentialsPresent = 1 << 8;
+  static const _areCredentialsValid = 1 << 9;
+  static const _areCredentialsTrusted = 1 << 10;
 
   this {
     // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky value like `1.7056881853375E7`
@@ -78,6 +83,7 @@ class CatalogMetadata({
       isMotionPhoto: isMotionPhoto,
       isHdr: isHdr,
       isSlowMotion: isSlowMotion ?? this.isSlowMotion,
+      credentialsValidity: credentialsValidity,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitle: xmpTitle,
@@ -102,6 +108,11 @@ class CatalogMetadata({
       isMotionPhoto: flags & _isMotionPhotoMask != 0,
       isHdr: flags & _isHdr != 0,
       isSlowMotion: flags & _isSlowMotion != 0,
+      credentialsValidity: _toC2paValidity(
+        flags & _areCredentialsPresent != 0,
+        flags & _areCredentialsValid != 0,
+        flags & _areCredentialsTrusted != 0,
+      ),
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -112,34 +123,60 @@ class CatalogMetadata({
     );
   }
 
-  Map<String, Object?> toMap() => {
-    'id': id,
-    'mimeType': mimeType,
-    'dateMillis': dateMillis,
-    'timeZoneOffsetMinutes': timeZoneOffsetMinutes,
-    'flags':
-        (isAnimated ? _isAnimatedMask : 0) |
-        (isFlipped ? _isFlippedMask : 0) |
-        (isGeotiff ? _isGeotiffMask : 0) |
-        (is360 ? _is360Mask : 0) |
-        (isMultiPage ? _isMultiPageMask : 0) |
-        (isMotionPhoto ? _isMotionPhotoMask : 0) |
-        (isHdr ? _isHdr : 0) |
-        (isSlowMotion ? _isSlowMotion : 0),
-    'rotationDegrees': rotationDegrees,
-    'xmpSubjects': xmpSubjects,
-    'xmpTitle': xmpTitle,
-    'latitude': latitude,
-    'longitude': longitude,
-    'rating': rating,
-  };
+  static C2paValidity _toC2paValidity(bool present, bool valid, bool trusted) {
+    if (trusted) return .trusted;
+    if (valid) return .valid;
+    if (present) return .invalid;
+    return .unknown;
+  }
+
+  static (bool present, bool valid, bool trusted) _toCredentialFlags(C2paValidity validity) {
+    switch (validity) {
+      case .unknown:
+        return (false, false, false);
+      case .invalid:
+        return (true, false, false);
+      case .valid:
+        return (true, true, false);
+      case .trusted:
+        return (true, true, true);
+    }
+  }
+
+  Map<String, Object?> toMap() {
+    final (areCredentialsPresent, areCredentialsValid, areCredentialsTrusted) = _toCredentialFlags(credentialsValidity);
+    return {
+      'id': id,
+      'mimeType': mimeType,
+      'dateMillis': dateMillis,
+      'timeZoneOffsetMinutes': timeZoneOffsetMinutes,
+      'flags':
+          (isAnimated ? _isAnimatedMask : 0) |
+          (isFlipped ? _isFlippedMask : 0) |
+          (isGeotiff ? _isGeotiffMask : 0) |
+          (is360 ? _is360Mask : 0) |
+          (isMultiPage ? _isMultiPageMask : 0) |
+          (isMotionPhoto ? _isMotionPhotoMask : 0) |
+          (isHdr ? _isHdr : 0) |
+          (isSlowMotion ? _isSlowMotion : 0) |
+          (areCredentialsPresent ? _areCredentialsPresent : 0) |
+          (areCredentialsValid ? _areCredentialsValid : 0) |
+          (areCredentialsTrusted ? _areCredentialsTrusted : 0),
+      'rotationDegrees': rotationDegrees,
+      'xmpSubjects': xmpSubjects,
+      'xmpTitle': xmpTitle,
+      'latitude': latitude,
+      'longitude': longitude,
+      'rating': rating,
+    };
+  }
 
   Map<String, Object?> toDbMap() => toMap();
 
   @override
   String toString() =>
       '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis timeZoneOffsetMinutes=$timeZoneOffsetMinutes'
-      ', isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360'
-      ', isMultiPage=$isMultiPage, isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion'
+      ', isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage'
+      ', isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion, credentialsValidity=$credentialsValidity'
       ', rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

@@ -13,14 +13,11 @@ import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/home/home_page.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class WelcomePage extends StatefulWidget {
-  const new({super.key});
-
+class const WelcomePage({super.key}) extends StatefulWidget {
   @override
   State<WelcomePage> createState() => _WelcomePageState();
 }
@@ -29,14 +26,14 @@ class _WelcomePageState extends State<WelcomePage> {
   bool _hasAcceptedTerms = false;
   late Future<String> _termsLoader;
 
-  static const termsPath = 'assets/terms.md';
-  static const termsDirection = TextDirection.ltr;
+  static const _termsPath = 'assets/terms.md';
+  static const _termsDirection = TextDirection.ltr;
 
   @override
-  void initState() {
-    super.initState();
-    _termsLoader = rootBundle.loadString(termsPath);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initWelcomeSettings());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _termsLoader = DefaultAssetBundle.of(context).loadString(_termsPath);
+    _initWelcomeSettings();
   }
 
   void _initWelcomeSettings() {
@@ -94,7 +91,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             Flexible(
                               child: MarkdownContainer(
                                 data: terms,
-                                textDirection: termsDirection,
+                                textDirection: _termsDirection,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -109,7 +106,7 @@ class _WelcomePageState extends State<WelcomePage> {
                                       padding: const EdgeInsets.only(bottom: 8),
                                       child: MarkdownContainer(
                                         data: terms,
-                                        textDirection: termsDirection,
+                                        textDirection: _termsDirection,
                                       ),
                                     ),
                                   ),

@@ -74,6 +74,8 @@ enum WidgetOutline {
 
 // ideas for more shapes:
 // - Material 3: https://m3.material.io/styles/shape/overview-principles
+//   https://developer.android.com/images/reference/androidx/compose/material3/shapes.png
+//   cf `material_ui` package `MaterialShapes`
 enum WidgetShape {
   rrect,
   circle,

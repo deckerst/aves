@@ -11,6 +11,7 @@ import 'package:aves/model/filters/coordinate.dart';
 import 'package:aves/model/filters/covered/location.dart';
 import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
+import 'package:aves/model/filters/credentials.dart';
 import 'package:aves/model/filters/date.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -52,6 +53,7 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
     RatingFilter.type,
     TagFilter.type,
     AspectRatioFilter.type,
+    ContentCredentialsFilter.type,
     MissingFilter.type,
     PathFilter.type,
   ];
@@ -69,6 +71,8 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
         return TagGroupFilter.fromMap(jsonMap);
       case AspectRatioFilter.type:
         return AspectRatioFilter.fromMap(jsonMap);
+      case ContentCredentialsFilter.type:
+        return ContentCredentialsFilter.fromMap(jsonMap);
       case CoordinateFilter.type:
         return CoordinateFilter.fromMap(jsonMap);
       case DateFilter.type:
@@ -186,22 +190,18 @@ abstract class CollectionFilter extends Equatable implements Comparable<Collecti
 }
 
 @immutable
-class FilterGridItem<T extends CollectionFilter> with Equatable {
-  final T filter;
-  final AvesEntry? entry;
-
+class const FilterGridItem<T extends CollectionFilter>(
+  final T filter,
+  final AvesEntry? entry,
+) with Equatable {
   @override
   List<Object?> get props => [filter, entry?.uri];
-
-  const new(this.filter, this.entry);
 }
 
 typedef EntryPredicate = bool Function(AvesEntry entry);
 typedef CollectionFilterPredicate = bool Function(CollectionFilter filter);
 
-abstract class DummyCollectionFilter extends CollectionFilter {
-  const new({required super.reversed});
-
+abstract class const DummyCollectionFilter({required super.reversed}) extends CollectionFilter {
   @override
   String get category => throw UnimplementedError();
 

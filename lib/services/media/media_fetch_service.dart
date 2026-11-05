@@ -84,8 +84,14 @@ class PlatformMediaFetchService implements MediaFetchService {
     } on PlatformException catch (e, stack) {
       // ignore media content URIs as it is likely an obsolete Media Store entry
       if (!uri.startsWith('content://media/')) {
-        // ignore undecodable types
-        if (mimeType != null && !AppSupport.undecodableImages.contains(mimeType)) {
+        // ignore undefined or undecodable types
+        if (mimeType != null &&
+            !{
+              MimeTypes.any,
+              MimeTypes.anyImage,
+              MimeTypes.anyVideo,
+            }.contains(mimeType) &&
+            AppSupport.canDecode(mimeType)) {
           await reportService.recordError(e, stack);
         }
       }

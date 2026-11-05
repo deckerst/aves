@@ -237,8 +237,14 @@
     "aboutBugReportInstruction": "Reportar en GitHub con los registros y la información del sistema",
     "aboutBugReportButton": "Reportar",
     "aboutCreditsSectionTitle": "Créditos",
-    "aboutCreditsWorldAtlas1": "Esta aplicación usa un archivo TopoJSON de",
-    "aboutCreditsWorldAtlas2": "bajo licencia ISC.",
+    "aboutCreditsWorldAtlas": "Esta aplicación usa un archivo TopoJSON de [World Atlas]({link}) bajo licencia ISC.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Traductores",
     "aboutLicensesSectionTitle": "Licencias de código abierto",
     "aboutLicensesBanner": "Esta aplicación usa los siguientes paquetes y librerías de código abierto.",
@@ -749,5 +755,14 @@
     "videoThumbnailMethodFirstFrame": "Primer fotograma",
     "settingsVideoThumbnailMethods": "Miniatura preferida",
     "renameTagDialogLabelAlreadyExistsHelper": "La etiqueta ya existe",
-    "chipActionCopyCenterCoordinates": "Copiar las coordenadas del centro"
+    "chipActionCopyCenterCoordinates": "Copiar las coordenadas del centro",
+    "filterCredentialsValidityUnknownLabel": "Desconocida",
+    "filterCredentialsValidityValidLabel": "Válida",
+    "filterCredentialsValidityInvalidLabel": "No válida",
+    "filterCredentialsValidityTrustedLabel": "De confianza",
+    "searchCredentialsSectionTitle": "Credenciales de contenido",
+    "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales",
+    "exportEntryDialogDimension": "Dimensión:",
+    "aboutCreditsStateFlags": "Las banderas de los estados provienen de Wikimedia Commons. Son de dominio público, excepto:",
+    "sortRandomly": "Aleatoriamente"
 }

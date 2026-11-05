@@ -30,36 +30,25 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ViewerVerticalPageView extends StatefulWidget {
-  final CollectionLens? collection;
-  final ValueNotifier<AvesEntry?> entryNotifier;
-  final ViewerController viewerController;
-  final Animation<double> overlayOpacity;
-  final PageController verticalPager, horizontalPager;
-  final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
-  final VoidCallback onImagePageRequested;
-  final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
-
+class const ViewerVerticalPageView({
+  super.key,
+  required final CollectionLens? collection,
+  required final ValueNotifier<AvesEntry?> entryNotifier,
+  required final ViewerController viewerController,
+  required final Animation<double> overlayOpacity,
+  required final PageController verticalPager,
+  required final PageController horizontalPager,
+  required final void Function(int page) onVerticalPageChanged,
+  required final void Function(int page) onHorizontalPageChanged,
+  required final VoidCallback onImagePageRequested,
+  required final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed,
+}) extends StatefulWidget {
   // critically damped spring (ratio = 1) a bit stiffer than `ScrollPhysics._kDefaultSpring`
   static final spring = SpringDescription.withDampingRatio(
     mass: 0.5,
     stiffness: 140.0,
     ratio: 1.0,
   );
-
-  const new({
-    super.key,
-    required this.collection,
-    required this.entryNotifier,
-    required this.viewerController,
-    required this.overlayOpacity,
-    required this.verticalPager,
-    required this.horizontalPager,
-    required this.onVerticalPageChanged,
-    required this.onHorizontalPageChanged,
-    required this.onImagePageRequested,
-    required this.onViewDisposed,
-  });
 
   @override
   State<ViewerVerticalPageView> createState() => _ViewerVerticalPageViewState();
@@ -330,6 +319,8 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _goToHorizontalPage(int delta, {required bool animate}) {
+    if (!horizontalPager.hasClients) return;
+
     final page = horizontalPager.page?.round();
     final _collection = collection;
     if (page != null && _collection != null) {

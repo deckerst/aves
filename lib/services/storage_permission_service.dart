@@ -182,7 +182,7 @@ class PlatformStoragePermissionService implements StoragePermissionService {
       if (code == 'requestMediaStoreFileAccess-large') {
         throw TooManyItemsException();
       } else if (code == 'requestMediaStoreFileAccess-sendintent') {
-        await mediaStoreFileAccessSendIntent(customException);
+        debugPrint('Unreported `sendIntent` error with exception=$e');
       } else {
         final message = e.message;
         // mute issue in the specific case when an item:
@@ -199,11 +199,6 @@ class PlatformStoragePermissionService implements StoragePermissionService {
 
   // distinct exceptions to convince Crashlytics to split reports into distinct issues
   // The distinct debug statement is there to make the body unique, so that the methods are not merged at compile time.
-
-  Future<void> mediaStoreFileAccessSendIntent(CustomPlatformException e) {
-    debugPrint('mediaStoreFileAccessSendIntent $e');
-    return reportService.recordError(e);
-  }
 
   Future<void> mediaStoreFileAccessDenied(CustomPlatformException e) {
     debugPrint('mediaStoreFileAccessDenied $e');

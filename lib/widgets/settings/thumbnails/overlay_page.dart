@@ -1,10 +1,12 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/settings/common/switch_icon.dart';
+import 'package:aves/widgets/settings/common/tiles/multi_selection.dart';
 import 'package:aves/widgets/settings/common/tiles/single_selection.dart';
 import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/settings/settings_definition.dart';
@@ -12,7 +14,7 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailOverlayPage extends StatelessWidget {
+class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
   static const routeName = '/settings/thumbnail_overlay';
 
   static const List<String> settingKeys = [
@@ -23,11 +25,10 @@ class ThumbnailOverlayPage extends StatelessWidget {
     SettingKeys.showThumbnailVideoDurationKey,
     SettingKeys.showThumbnailFavouriteKey,
     SettingKeys.showThumbnailRatingKey,
+    SettingKeys.thumbnailCredentialValidityKey,
     SettingKeys.thumbnailLocationIconKey,
     SettingKeys.thumbnailTagIconKey,
   ];
-
-  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +118,7 @@ class ThumbnailOverlayPage extends StatelessWidget {
             ),
             SettingsTileThumbnailLocationIcon().build(context),
             SettingsTileThumbnailTagIcon().build(context),
+            SettingsTileThumbnailCredentialValidity().build(context),
           ],
         ),
       ),
@@ -145,7 +147,7 @@ class SettingsTileThumbnailLocationIcon extends SettingsTile {
     final iconType = context.select<Settings, ThumbnailOverlayLocationIcon>((v) => v.thumbnailLocationIcon);
     return SettingSwitchTrailingIcon(
       key: ValueKey(iconType),
-      icon: iconType.getIcon(context),
+      iconBuilder: (context) => Icon(iconType.getIcon(context)),
       disabled: iconType == .none,
     );
   }
@@ -172,8 +174,30 @@ class SettingsTileThumbnailTagIcon extends SettingsTile {
     final iconType = context.select<Settings, ThumbnailOverlayTagIcon>((v) => v.thumbnailTagIcon);
     return SettingSwitchTrailingIcon(
       key: ValueKey(iconType),
-      icon: iconType.getIcon(context),
+      iconBuilder: (context) => Icon(iconType.getIcon(context)),
       disabled: iconType == .none,
+    );
+  }
+}
+
+class SettingsTileThumbnailCredentialValidity extends SettingsTile {
+  @override
+  List<String> get settingKeys => [SettingKeys.thumbnailCredentialValidityKey];
+
+  @override
+  String title(BuildContext context) => context.l10n.settingsThumbnailShowCredentialValidity;
+
+  static const _options = <C2paValidity>[.trusted, .valid, .invalid, .unknown];
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsMultiSelectionListTile<C2paValidity>(
+      values: _options,
+      getName: (context, v) => v.getText(context),
+      selector: (context, s) => s.thumbnailCredentialValidity,
+      onSelection: (v) => settings.thumbnailCredentialValidity = v,
+      tileTitle: title,
+      optionLeadingBuilder: (v) => v.getIconData(),
     );
   }
 }

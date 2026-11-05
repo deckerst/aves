@@ -33,17 +33,18 @@ import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
-import deckers.thibault.aves.metadata.metadataextractor.Helper
+import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.ContentProviderCrash
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.ExifInterfaceException
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.NameConflictResolution
 import deckers.thibault.aves.model.NameConflictStrategy
-import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
@@ -54,7 +55,6 @@ import deckers.thibault.aves.storage.apis.StorageApi
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BmpWriter
 import deckers.thibault.aves.utils.FileUtils
-import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.FileUtils.copyTo
 import deckers.thibault.aves.utils.FileUtils.getFileSize
 import deckers.thibault.aves.utils.LogUtils
@@ -63,6 +63,7 @@ import deckers.thibault.aves.utils.MimeTypes.canEditExif
 import deckers.thibault.aves.utils.MimeTypes.canEditIptc
 import deckers.thibault.aves.utils.MimeTypes.canEditXmp
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
+import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.canRemoveMetadata
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -71,7 +72,6 @@ import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -82,6 +82,7 @@ import java.nio.channels.Channels
 import java.util.Date
 import java.util.TimeZone
 import java.util.concurrent.CompletableFuture
+import kotlin.math.roundToInt
 import kotlin.time.Clock
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
@@ -635,10 +636,11 @@ abstract class ImageProvider {
         exportMimeType: String,
         targetDir: String,
         entries: List<AvesEntry>,
-        quality: Int,
+        targetDimension: String,
         lengthUnit: String,
-        width: Int,
-        height: Int,
+        width: Int?,
+        height: Int?,
+        quality: Int,
         writeMetadata: Boolean,
         nameConflictStrategy: NameConflictStrategy,
         callback: ImageOpCallback,
@@ -649,6 +651,7 @@ abstract class ImageProvider {
         }
 
         for (entry in entries) {
+            val sourceMimeType = entry.mimeType
             val sourceUri = entry.uri
             val sourcePath = entry.path
             val pageId = entry.pageId
@@ -659,7 +662,25 @@ abstract class ImageProvider {
                 "success" to false,
             )
 
-            val sourceMimeType = entry.mimeType
+            val targetWidth: Int
+            val targetHeight: Int
+            when (targetDimension) {
+                "width" -> {
+                    targetWidth = width!!
+                    targetHeight = (targetWidth / entry.displayAspectRatio).roundToInt()
+                }
+
+                "height" -> {
+                    targetHeight = height!!
+                    targetWidth = (targetHeight * entry.displayAspectRatio).roundToInt()
+                }
+
+                else -> {
+                    targetWidth = width!!
+                    targetHeight = height!!
+                }
+            }
+
             try {
                 val newFields = convertSingle(
                     context = context,
@@ -667,8 +688,8 @@ abstract class ImageProvider {
                     targetDir = targetDir,
                     quality = quality,
                     lengthUnit = lengthUnit,
-                    width = width,
-                    height = height,
+                    width = targetWidth,
+                    height = targetHeight,
                     writeMetadata = writeMetadata,
                     nameConflictStrategy = nameConflictStrategy,
                     exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else exportMimeType,
@@ -844,15 +865,13 @@ abstract class ImageProvider {
         val targetUri = targetContentAddress.uri
         val targetPath = targetContentAddress.path ?: throw IllegalArgumentException()
 
-        val editableFile = StorageUtils.createTempFile(context).apply {
-            // copy original file to a temporary file for editing
-            copyFrom(StorageUtils.openInputStream(context, targetUri), getFileSize(targetPath))
-        }
+        // copy original file to a temporary file for editing
+        val editableFile = StorageUtils.createTempFile(context, targetUri, getFileSize(targetPath))
 
         // copy IPTC / XMP via PixyMeta
         PixyMetaHelper.copyIptcXmp(context, sourceMimeType, sourceUri, targetMimeType, targetUri, editableFile)
 
-        // copy Exif via ExifInterface
+        // copy Exif via `ExifInterface`
         val exifData = HashMap<String, String?>()
         val skippedTags = listOf(
             ExifInterface.TAG_IMAGE_LENGTH,
@@ -932,9 +951,7 @@ abstract class ImageProvider {
             if (exifFields.isEmpty()) {
                 output.write(bytes)
             } else {
-                val editableFile = StorageUtils.createTempFile(context).apply {
-                    copyFrom(ByteArrayInputStream(bytes), bytes.size.toLong())
-                }
+                val editableFile = StorageUtils.createTempFile(context, bytes)
 
                 val exifInterface = ExifInterface(editableFile)
 
@@ -942,7 +959,7 @@ abstract class ImageProvider {
                 if (rotationDegrees != null) {
                     // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                     // in that case we explicitly set it to `normal` first
-                    // because ExifInterface fails to rotate an image with undefined orientation
+                    // because `ExifInterface` fails to rotate an image with undefined orientation
                     // as of androidx.exifinterface:exifinterface:1.3.0
                     val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
@@ -1069,31 +1086,6 @@ abstract class ImageProvider {
         return NameConflictResolution(resolvedName, replacedFileCopy)
     }
 
-    // cf `MetadataFetchHandler.getCatalogMetadataByMetadataExtractor()` for a more thorough check
-    fun detectMimeType(context: Context, mimeType: String?, uri: Uri, path: String?, sizeBytes: Long?): String? {
-        var detectedMimeType: String? = null
-        if (MimeTypes.canReadWithMetadataExtractor(mimeType)) {
-            try {
-                Metadata.openSafeInputStream(
-                    context = context,
-                    mimeType = mimeType,
-                    uri = uri,
-                    path = path,
-                    sizeBytes = sizeBytes,
-                )?.use { input ->
-                    detectedMimeType = Helper.readMimeType(input)
-                }
-            } catch (ex: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            } catch (ex: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            } catch (ex: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for mimeType=$mimeType uri=$uri path=$path", ex)
-            }
-        }
-        return detectedMimeType
-    }
-
     // editing may corrupt the file for various reasons,
     // making them undecodable by some decoders (including Android's and Chrome's)
     // even though `BitmapFactory` successfully decodes their bounds,
@@ -1146,36 +1138,33 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
-        var trailerVideoSize: Long
-        var isTrailerVideoValid: Boolean
+        val trailerVideoSize: Long = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff } ?: 0
+        val isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
         var trailerVideoBytes: ByteArray? = null
-        val editableFile = StorageUtils.createTempFile(context).apply {
-            trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff } ?: 0
-            isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
-            try {
-                if (isTrailerVideoValid) {
-                    // handle motion photo and embedded video separately
-                    val imageSize = (originalFileSize - trailerVideoSize).toInt()
-                    val videoByteSize = trailerVideoSize.toInt()
-                    trailerVideoBytes = ByteArray(videoByteSize)
+        val editableFile = try {
+            if (isTrailerVideoValid) {
+                // handle motion photo and embedded video separately
+                val imageSize = (originalFileSize - trailerVideoSize).toInt()
+                val videoByteSize = trailerVideoSize.toInt()
+                trailerVideoBytes = ByteArray(videoByteSize)
 
-                    StorageUtils.openInputStream(context, uri)?.let { input ->
-                        val imageBytes = ByteArray(imageSize)
-                        input.read(imageBytes, 0, imageSize)
-                        input.read(trailerVideoBytes, 0, videoByteSize)
+                val input = StorageUtils.openInputStream(context, uri)
+                input ?: throw Exception("failed to open input stream from $contentAddress")
 
-                        // copy only the image to a temporary file for editing
-                        // video will be appended after metadata modification
-                        copyFrom(ByteArrayInputStream(imageBytes), imageBytes.size.toLong())
-                    }
-                } else {
-                    // copy original file to a temporary file for editing
-                    copyFrom(StorageUtils.openInputStream(context, uri), originalFileSize)
-                }
-            } catch (ex: Exception) {
-                callback.onFailure(ex)
-                return false
+                val imageBytes = ByteArray(imageSize)
+                input.read(imageBytes, 0, imageSize)
+                input.read(trailerVideoBytes, 0, videoByteSize)
+
+                // copy only the image to a temporary file for editing
+                // video will be appended after metadata modification
+                StorageUtils.createTempFile(context, imageBytes)
+            } else {
+                // copy original file to a temporary file for editing
+                StorageUtils.createTempFile(context, uri, originalFileSize)
             }
+        } catch (ex: Exception) {
+            callback.onFailure(ex)
+            return false
         }
 
         try {
@@ -1196,7 +1185,13 @@ abstract class ImageProvider {
                 return false
             }
 
-            val editedMimeType = detectMimeType(context, mimeType, Uri.fromFile(editableFile), editableFilePath, editableFileSizeBytes)
+            val editedMimeType = MetadataExtractorHelper.readMimeType(
+                context = context,
+                mimeType = mimeType,
+                uri = Uri.fromFile(editableFile),
+                path = editableFilePath,
+                sizeBytes = editableFileSizeBytes,
+            )
             if (editedMimeType != mimeType) {
                 throw Exception("editing Exif changes mimeType=$mimeType -> $editedMimeType for $contentAddress")
             }
@@ -1255,35 +1250,33 @@ abstract class ImageProvider {
         // may be temporary incorrect and not match results from `MediaScannerConnection`
         val originalFileSize = sizeBytes
 
-        var trailerVideoSize: Long
+        val trailerVideoSize: Long = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff } ?: 0
+        val isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
         var trailerVideoBytes: ByteArray? = null
-        val editableFile = StorageUtils.createTempFile(context).apply {
-            trailerVideoSize = MultiPage.getTrailerVideoSize(context, contentAddress, originalFileSize)?.let { it + trailerDiff } ?: 0
-            val isTrailerVideoValid = trailerVideoSize > 0 && MultiPage.getTrailerVideoInfo(context, contentAddress, originalFileSize, trailerVideoSize) != null
-            try {
-                if (isTrailerVideoValid) {
-                    // handle motion photo and embedded video separately
-                    val imageSize = (originalFileSize - trailerVideoSize).toInt()
-                    val videoByteSize = trailerVideoSize.toInt()
-                    trailerVideoBytes = ByteArray(videoByteSize)
+        val editableFile = try {
+            if (isTrailerVideoValid) {
+                // handle motion photo and embedded video separately
+                val imageSize = (originalFileSize - trailerVideoSize).toInt()
+                val videoByteSize = trailerVideoSize.toInt()
+                trailerVideoBytes = ByteArray(videoByteSize)
 
-                    StorageUtils.openInputStream(context, uri)?.let { input ->
-                        val imageBytes = ByteArray(imageSize)
-                        input.read(imageBytes, 0, imageSize)
-                        input.read(trailerVideoBytes, 0, videoByteSize)
+                val input = StorageUtils.openInputStream(context, uri)
+                input ?: throw Exception("failed to open input stream from $contentAddress")
 
-                        // copy only the image to a temporary file for editing
-                        // video will be appended after metadata modification
-                        copyFrom(ByteArrayInputStream(imageBytes), imageBytes.size.toLong())
-                    }
-                } else {
-                    // copy original file to a temporary file for editing
-                    copyFrom(StorageUtils.openInputStream(context, uri), originalFileSize)
-                }
-            } catch (ex: Exception) {
-                callback.onFailure(ex)
-                return false
+                val imageBytes = ByteArray(imageSize)
+                input.read(imageBytes, 0, imageSize)
+                input.read(trailerVideoBytes, 0, videoByteSize)
+
+                // copy only the image to a temporary file for editing
+                // video will be appended after metadata modification
+                StorageUtils.createTempFile(context, imageBytes)
+            } else {
+                // copy original file to a temporary file for editing
+                StorageUtils.createTempFile(context, uri, originalFileSize)
             }
+        } catch (ex: Exception) {
+            callback.onFailure(ex)
+            return false
         }
 
         try {
@@ -1380,7 +1373,7 @@ abstract class ImageProvider {
                 // "w" is enough on API 29+, but it will yield an empty file on API <29
                 // so "r" is necessary for backward compatibility
                 mode = "rw",
-            ) ?: throw Exception("failed to open file descriptor for $contentAddress")
+            ) ?: throw FileDescriptorException("failed to open output file descriptor for $contentAddress")
             pfd.use {
                 FileOutputStream(it.fileDescriptor).use { outputStream ->
                     outputStream.channel.use { outputChannel ->
@@ -1456,8 +1449,15 @@ abstract class ImageProvider {
             }
         }
 
-        if (getFileSize(editableFile.path) == 0L) {
+        val editedFileSize = getFileSize(editableFile.path)
+        if (editedFileSize == 0L) {
             callback.onFailure(Exception("editing XMP yielded an empty file"))
+            return false
+        }
+
+        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
+        if (hasMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)) {
+            callback.onFailure(Exception("editing XMP yielded metadata errors"))
             return false
         }
 
@@ -1529,6 +1529,24 @@ abstract class ImageProvider {
         }
     }
 
+    fun hasMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Boolean {
+        if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    return metadata.directories.any { it.hasErrors() }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (e: AssertionError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            }
+        }
+        return false
+    }
+
     // A few bytes are sometimes appended when writing to a document output stream.
     // In that case, we need to adjust the trailer video offset accordingly and rewrite the file.
     // returns whether the file at `path` is fine
@@ -1585,14 +1603,12 @@ abstract class ImageProvider {
         trailerVideoBytes: ByteArray,
         edit: (contentAddress: ContentAddress, callback: ImageOpCallback) -> Unit,
     ): ByteArray? {
-        val editableFile = StorageUtils.createTempFile(context).apply {
-            try {
-                copyFrom(ByteArrayInputStream(trailerVideoBytes), trailerVideoBytes.size.toLong())
-            } catch (ex: Exception) {
-                Log.d(LOG_TAG, "failed to copy trailer video", ex)
-                // skip
-                return trailerVideoBytes
-            }
+        val editableFile = try {
+            StorageUtils.createTempFile(context, trailerVideoBytes)
+        } catch (ex: Exception) {
+            Log.d(LOG_TAG, "failed to copy trailer video", ex)
+            // skip
+            return trailerVideoBytes
         }
 
         val trailerContentAddress = ContentAddress(mimeType = MimeTypes.MP4, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
@@ -1658,7 +1674,7 @@ abstract class ImageProvider {
             fun editImage(exifInterface: ExifInterface) {
                 // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
                 // in that case we explicitly set it to `normal` first
-                // because ExifInterface fails to rotate an image with undefined orientation
+                // because `ExifInterface` fails to rotate an image with undefined orientation
                 // as of androidx.exifinterface:exifinterface:1.3.0
                 val currentOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                 if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
@@ -1986,15 +2002,13 @@ abstract class ImageProvider {
             return
         }
 
-        val editableFile = StorageUtils.createTempFile(context).apply {
-            try {
-                // partial copy
-                copyFrom(StorageUtils.openInputStream(context, uri), originalFileSize - trailerVideoSize)
-            } catch (ex: Exception) {
-                Log.d(LOG_TAG, "failed to remove trailer video", ex)
-                callback.onFailure(ex)
-                return
-            }
+        val editableFile = try {
+            // partial copy
+            StorageUtils.createTempFile(context, uri, originalFileSize - trailerVideoSize)
+        } catch (ex: Exception) {
+            Log.d(LOG_TAG, "failed to remove trailer video", ex)
+            callback.onFailure(ex)
+            return
         }
 
         try {
@@ -2089,7 +2103,7 @@ abstract class ImageProvider {
             df ?: throw Exception("failed to get document file for $contentAddress")
 
             val documentUri = df.uri
-            context.contentResolver.openOutputStream(documentUri, mode) ?: throw OutputStreamException(
+            context.contentResolver.openOutputStream(documentUri, mode) ?: throw ContentProviderCrash(
                 "failed to open output stream because provider recently crashed" +
                         ", from mode=$mode documentUri=$documentUri for $contentAddress"
             )

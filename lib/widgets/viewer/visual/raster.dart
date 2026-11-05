@@ -10,55 +10,41 @@ import 'package:aves/model/viewer/view_state.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
+import 'package:aves/widgets/viewer/visual/tiling.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RasterImageView extends StatefulWidget {
-  final AvesEntry entry;
-  final ValueNotifier<ViewState> viewStateNotifier;
-  final ImageErrorWidgetBuilder errorBuilder;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.viewStateNotifier,
-    required this.errorBuilder,
-  });
-
+class const RasterImageView({
+  super.key,
+  required final AvesEntry entry,
+  required final ValueNotifier<ViewState> viewStateNotifier,
+  required final double devicePixelRatio,
+  required final ImageErrorWidgetBuilder errorBuilder,
+}) extends StatefulWidget {
   @override
   State<RasterImageView> createState() => _RasterImageViewState();
 }
 
 class _RasterImageViewState extends State<RasterImageView> {
-  late Size _displaySize;
-  late bool _useTiles;
-  bool _isTilingInitialized = false;
-  late int _maxSampleSize;
-  late double _tileSide;
-  Matrix4? _tileTransform;
+  Size? _viewportSize;
+  RasterTiling? _tiling;
   ImageStream? _fullImageStream;
   late ImageStreamListener _fullImageListener;
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
   ImageInfo? _fullImageInfo;
 
   static const int _pixelArtMaxSize = 256; // px
-  static const double _tilesByShortestSide = 2;
 
   AvesEntry get entry => widget.entry;
-
-  ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
-
-  ViewState get viewState => viewStateNotifier.value;
 
   ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
   ImageProvider get fullImageProvider {
-    if (_useTiles) {
-      assert(_isTilingInitialized);
+    if (entry.useTiles) {
+      assert(_tiling != null);
       return entry.getRegion(
-        sampleSize: _maxSampleSize,
+        sampleSize: _tiling!.maxSampleSize,
         region: entry.fullImageRegion,
       );
     } else {
@@ -69,46 +55,91 @@ class _RasterImageViewState extends State<RasterImageView> {
   @override
   void initState() {
     super.initState();
-    _displaySize = entry.displaySize;
-    _useTiles = entry.useTiles;
     _fullImageListener = ImageStreamListener(_onFullImageCompleted);
-    if (!_useTiles) _registerFullImage();
+    _viewportSize = widget.viewStateNotifier.value.viewportSize;
+    _registerWidget(widget);
+    _initFullImage();
   }
 
   @override
   void didUpdateWidget(covariant RasterImageView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
 
     final oldViewState = oldWidget.viewStateNotifier.value;
     final viewState = widget.viewStateNotifier.value;
-    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize) {
-      _isTilingInitialized = false;
-      _fullImageLoaded.value = false;
+    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize || oldWidget.devicePixelRatio != widget.devicePixelRatio) {
+      _initFullImage();
+    }
+  }
+
+  void _initFullImage() {
+    if (widget.entry.useTiles) {
+      _onTilingSpecsChanged();
+    } else {
       _unregisterFullImage();
+      _registerFullImage();
     }
   }
 
   @override
   void dispose() {
-    _fullImageLoaded.dispose();
+    _unregisterWidget(widget);
     _unregisterFullImage();
+    _fullImageLoaded.dispose();
     super.dispose();
+  }
+
+  void _registerWidget(RasterImageView widget) {
+    widget.viewStateNotifier.addListener(_onViewStateChanged);
+  }
+
+  void _unregisterWidget(RasterImageView widget) {
+    widget.viewStateNotifier.removeListener(_onViewStateChanged);
+  }
+
+  void _onViewStateChanged() {
+    final viewportSize = widget.viewStateNotifier.value.viewportSize;
+    if (_viewportSize != viewportSize) {
+      _viewportSize = viewportSize;
+      _onTilingSpecsChanged();
+    }
+  }
+
+  void _onTilingSpecsChanged() {
+    _tiling = null;
+
+    final viewportSize = _viewportSize;
+    if (viewportSize == null || viewportSize.isEmpty) return;
+
+    if (entry.useTiles) {
+      _tiling = RasterTiling.forEntry(
+        devicePixelRatio: widget.devicePixelRatio,
+        viewportSize: viewportSize,
+        entry: entry,
+      );
+      _unregisterFullImage();
+      _registerFullImage();
+    }
   }
 
   void _registerFullImage() {
     _fullImageStream = fullImageProvider.resolve(ImageConfiguration.empty);
     _fullImageStream!.addListener(_fullImageListener);
+    _fullImageLoaded.value = false;
   }
 
   void _unregisterFullImage() {
     _fullImageStream?.removeListener(_fullImageListener);
     _fullImageStream = null;
     _fullImageInfo?.dispose();
+    _fullImageInfo = null;
+    _fullImageLoaded.value = false;
   }
 
+  // implementer is responsible for disposing the provided `ImageInfo`
   void _onFullImageCompleted(ImageInfo image, bool synchronousCall) {
-    // implementer is responsible for disposing the provided `ImageInfo`
-    _unregisterFullImage();
     _fullImageInfo = image;
     _fullImageLoaded.value = true;
     FullImageLoadedNotification(entry, fullImageProvider).dispatch(context);
@@ -117,21 +148,17 @@ class _RasterImageViewState extends State<RasterImageView> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ViewState>(
-      valueListenable: viewStateNotifier,
+      valueListenable: widget.viewStateNotifier,
       builder: (context, viewState, child) {
-        final viewportSize = viewState.viewportSize;
-        final viewportSized = viewportSize?.isEmpty == false;
-        if (viewportSized && _useTiles && !_isTilingInitialized) _initTiling(viewportSize!);
-
         final magnifierScale = viewState.scale!;
         return SizedBox.fromSize(
-          size: _displaySize * magnifierScale,
+          size: entry.displaySize * magnifierScale,
           child: Stack(
             alignment: .center,
             children: [
-              if (entry.canHaveAlpha && viewportSized) _buildBackground(),
+              if (entry.canHaveAlpha) ?_buildBackground(viewState),
               _buildLoading(),
-              if (_useTiles) ..._buildTiles() else _buildFullImage(),
+              if (entry.useTiles) ..._buildTiles(viewState) else _buildFullImage(viewState),
             ],
           ),
         );
@@ -139,9 +166,9 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
   }
 
-  Widget _buildFullImage() {
+  Widget _buildFullImage(ViewState viewState) {
     final magnifierScale = viewState.scale!;
-    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final devicePixelRatio = widget.devicePixelRatio;
     final quality = _qualityForScaleAndSize(
       magnifierScale: magnifierScale,
       sampleSize: 1,
@@ -151,31 +178,10 @@ class _RasterImageViewState extends State<RasterImageView> {
       image: fullImageProvider,
       gaplessPlayback: true,
       errorBuilder: widget.errorBuilder,
-      width: (_displaySize * magnifierScale).width,
+      width: (entry.displaySize * magnifierScale).width,
       fit: BoxFit.contain,
       filterQuality: quality,
     );
-  }
-
-  void _initTiling(Size viewportSize) {
-    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
-    _tileSide = viewportSize.shortestSide * devicePixelRatio / _tilesByShortestSide;
-    // scale for initial state `contained`
-    final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
-    _maxSampleSize = ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: containedScale, devicePixelRatio: devicePixelRatio);
-
-    final rotationDegrees = entry.rotationDegrees;
-    final isFlipped = entry.isFlipped;
-    _tileTransform = null;
-    if (rotationDegrees != 0 || isFlipped) {
-      _tileTransform = Matrix4.identity()
-        ..translateByDouble(entry.width / 2.0, entry.height / 2.0, 0, 1)
-        ..scaleByDouble(isFlipped ? -1.0 : 1.0, 1.0, 1.0, 1.0)
-        ..rotateZ(-degToRadian(rotationDegrees.toDouble()))
-        ..translateByDouble(-_displaySize.width / 2.0, -_displaySize.height / 2.0, 0, 1);
-    }
-    _isTilingInitialized = true;
-    _registerFullImage();
   }
 
   Widget _buildLoading() {
@@ -198,9 +204,11 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
   }
 
-  Widget _buildBackground() {
-    final viewportSize = viewState.viewportSize!;
-    final viewSize = _displaySize * viewState.scale!;
+  Widget? _buildBackground(ViewState viewState) {
+    final viewportSize = _viewportSize;
+    if (viewportSize == null || viewportSize.isEmpty) return null;
+
+    final viewSize = entry.displaySize * viewState.scale!;
     final decorationOffset = ((viewSize - viewportSize) as Offset) / 2 - viewState.position;
     // deflate as a quick way to prevent background bleed
     final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - const Offset(.5, .5)) as Size;
@@ -240,14 +248,19 @@ class _RasterImageViewState extends State<RasterImageView> {
     );
   }
 
-  List<Widget> _buildTiles() {
-    if (!_isTilingInitialized) return [];
+  List<Widget> _buildTiles(ViewState viewState) {
+    final tiling = _tiling;
+    if (tiling == null) return [];
 
-    final displayWidth = _displaySize.width.round();
-    final displayHeight = _displaySize.height.round();
-    final viewRect = _getViewRect(displayWidth, displayHeight);
+    final maxSampleSize = tiling.maxSampleSize;
+    final tileSide = tiling.tileSide;
+
+    final displaySize = entry.displaySize;
+    final displayWidth = displaySize.width.round();
+    final displayHeight = displaySize.height.round();
+    final viewRect = _getViewRect(viewState, displayWidth, displayHeight);
     final magnifierScale = viewState.scale!;
-    final devicePixelRatio = MediaQuery.devicePixelRatioOf(context);
+    final devicePixelRatio = widget.devicePixelRatio;
 
     // for the largest sample size (matching the initial scale), the whole image is in view
     // so we subsample the whole image without tiling
@@ -255,19 +268,19 @@ class _RasterImageViewState extends State<RasterImageView> {
       entry: entry,
       tileRect: Rect.fromLTWH(0, 0, displayWidth * magnifierScale, displayHeight * magnifierScale),
       regionRect: entry.fullImageRegion,
-      sampleSize: _maxSampleSize,
+      sampleSize: maxSampleSize,
       quality: _qualityForScaleAndSize(
         magnifierScale: magnifierScale,
-        sampleSize: _maxSampleSize,
+        sampleSize: maxSampleSize,
         devicePixelRatio: devicePixelRatio,
       ),
     );
     final tiles = [fullImageRegionTile];
 
-    final minSampleSize = min(ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: magnifierScale, devicePixelRatio: devicePixelRatio), _maxSampleSize);
+    final minSampleSize = min(ExtraAvesEntryImages.sampleSizeForScale(magnifierScale: magnifierScale, devicePixelRatio: devicePixelRatio), maxSampleSize);
     int nextSampleSize(int sampleSize) => (sampleSize / 2).floor();
-    for (var sampleSize = nextSampleSize(_maxSampleSize); sampleSize >= minSampleSize; sampleSize = nextSampleSize(sampleSize)) {
-      final regionSide = (_tileSide * sampleSize).round();
+    for (var sampleSize = nextSampleSize(maxSampleSize); sampleSize >= minSampleSize; sampleSize = nextSampleSize(sampleSize)) {
+      final regionSide = (tileSide * sampleSize).round();
       for (var x = 0; x < displayWidth; x += regionSide) {
         for (var y = 0; y < displayHeight; y += regionSide) {
           final rects = _getTileRects(
@@ -301,10 +314,10 @@ class _RasterImageViewState extends State<RasterImageView> {
     return tiles;
   }
 
-  Rect _getViewRect(int displayWidth, int displayHeight) {
+  Rect _getViewRect(ViewState viewState, int displayWidth, int displayHeight) {
     final scale = viewState.scale!;
     final centerOffset = viewState.position;
-    final viewportSize = viewState.viewportSize!;
+    final viewportSize = _viewportSize!;
     final viewOrigin = Offset(
       ((displayWidth * scale - viewportSize.width) / 2 - centerOffset.dx),
       ((displayHeight * scale - viewportSize.height) / 2 - centerOffset.dy),
@@ -331,11 +344,12 @@ class _RasterImageViewState extends State<RasterImageView> {
     if (!viewRect.overlaps(tileRect)) return null;
 
     Rectangle<num> regionRect;
-    if (_tileTransform != null) {
+    final tileTransform = _tiling?.tileTransform;
+    if (tileTransform != null) {
       // apply EXIF orientation
       final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
-      final tl = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.topLeft);
-      final br = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.bottomRight);
+      final tl = MatrixUtils.transformPoint(tileTransform, regionRectDouble.topLeft);
+      final br = MatrixUtils.transformPoint(tileTransform, regionRectDouble.bottomRight);
       regionRect = Rectangle<double>.fromPoints(
         Point<double>(tl.dx, tl.dy),
         Point<double>(br.dx, br.dy),
@@ -368,7 +382,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     required int sampleSize,
     required double devicePixelRatio,
   }) {
-    if (_displaySize.longestSide < _pixelArtMaxSize) {
+    if (entry.displaySize.longestSide < _pixelArtMaxSize) {
       return FilterQuality.none;
     }
 
@@ -380,24 +394,15 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 }
 
-class _RegionTile extends StatefulWidget {
-  final AvesEntry entry;
-
+class const _RegionTile({
+  required final AvesEntry entry,
   // `tileRect` uses Flutter view coordinates
+  required final Rect tileRect,
   // `regionRect` uses the raw image pixel coordinates
-  final Rect tileRect;
-  final Rectangle<num> regionRect;
-  final int sampleSize;
-  final FilterQuality quality;
-
-  const new({
-    required this.entry,
-    required this.tileRect,
-    required this.regionRect,
-    required this.sampleSize,
-    required this.quality,
-  });
-
+  required final Rectangle<num> regionRect,
+  required final int sampleSize,
+  required final FilterQuality quality,
+}) extends StatefulWidget {
   @override
   State<_RegionTile> createState() => _RegionTileState();
 

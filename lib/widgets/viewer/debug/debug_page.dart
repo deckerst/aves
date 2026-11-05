@@ -32,7 +32,7 @@ class ViewerDebugPage extends StatelessWidget {
       (const Tab(text: 'Thumbs'), ThumbnailsTab(entry: entry)),
     ];
     return Directionality(
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       child: DefaultTabController(
         length: tabs.length,
         child: Scaffold(
@@ -133,6 +133,7 @@ class ViewerDebugPage extends StatelessWidget {
             'canRotate': '${entry.canRotate}',
             'canFlip': '${entry.canFlip}',
             'tags': '${entry.tags}',
+            'credentialsValidity': '${entry.credentialsValidity}',
           },
         ),
         const Divider(),

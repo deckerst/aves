@@ -70,7 +70,6 @@ const EdgeInsets _padding = .symmetric(vertical: 4, horizontal: 8);
 Widget _buildText(String text, {required bool isCrumb}) => FadingLine(
   text,
   style: TextStyle(
-    color: Colors.black,
     fontSize: isCrumb ? 10 : 14,
   ),
 );

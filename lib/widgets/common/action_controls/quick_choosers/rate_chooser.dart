@@ -6,18 +6,12 @@ import 'package:aves/widgets/common/action_controls/quick_choosers/common/quick_
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RateQuickChooser extends StatefulWidget {
-  final bool blurred;
-  final ValueNotifier<int?> valueNotifier;
-  final Stream<Offset> pointerGlobalPosition;
-
-  const new({
-    super.key,
-    required this.blurred,
-    required this.valueNotifier,
-    required this.pointerGlobalPosition,
-  });
-
+class const RateQuickChooser({
+  super.key,
+  required final bool blurred,
+  required final ValueNotifier<Set<int>> valuesNotifier,
+  required final Stream<Offset> pointerGlobalPosition,
+}) extends StatefulWidget {
   @override
   State<RateQuickChooser> createState() => _RateQuickChooserState();
 }
@@ -25,7 +19,7 @@ class RateQuickChooser extends StatefulWidget {
 class _RateQuickChooserState extends State<RateQuickChooser> {
   final Set<StreamSubscription> _subscriptions = {};
 
-  ValueNotifier<int?> get valueNotifier => widget.valueNotifier;
+  ValueNotifier<Set<int>> get valuesNotifier => widget.valuesNotifier;
 
   @override
   void initState() {
@@ -62,10 +56,10 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
       blurred: widget.blurred,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ValueListenableBuilder<int?>(
-          valueListenable: valueNotifier,
-          builder: (context, selectedValue, child) {
-            final _rating = selectedValue ?? 0;
+        child: ValueListenableBuilder<Set<int>>(
+          valueListenable: valuesNotifier,
+          builder: (context, selectedValues, child) {
+            final _rating = selectedValues.isNotEmpty ? selectedValues.first : 0;
             return Row(
               mainAxisSize: .min,
               children: List.generate(5, (i) {
@@ -95,6 +89,7 @@ class _RateQuickChooserState extends State<RateQuickChooser> {
 
     final local = chooserBox.globalToLocal(globalPosition);
     final t = (local.dx - padding / 2) / contentWidth;
-    valueNotifier.value = (5 * (context.isRtl ? 1 - t : t)).ceil().clamp(0, 5);
+    final rating = (5 * (context.isRtl ? 1 - t : t)).ceil().clamp(0, 5);
+    valuesNotifier.value = {rating};
   }
 }

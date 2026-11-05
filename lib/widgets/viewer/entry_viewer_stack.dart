@@ -44,18 +44,12 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EntryViewerStack extends StatefulWidget {
-  final CollectionLens? collection;
-  final AvesEntry initialEntry;
-  final ViewerController viewerController;
-
-  const new({
-    super.key,
-    this.collection,
-    required this.initialEntry,
-    required this.viewerController,
-  });
-
+class const EntryViewerStack({
+  super.key,
+  final CollectionLens? collection,
+  required final AvesEntry initialEntry,
+  required final ViewerController viewerController,
+}) extends StatefulWidget {
   @override
   State<EntryViewerStack> createState() => _EntryViewerStackState();
 }
@@ -119,6 +113,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
     _heroInfoNotifier.value = EntryHeroInfo(collection, entry);
     entryNotifier = viewerController.entryNotifier;
     entryNotifier.value = entry;
+    entryNotifier.addListener(_onEntryChanged);
     _currentEntryIndex = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentEntryIndex);
@@ -185,6 +180,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void dispose() {
     AvesApp.pageRouteObserver.unsubscribe(this);
+    entryNotifier.removeListener(_onEntryChanged);
     cleanEntryControllers(entryNotifier.value);
     _playingVideoControllerNotifier.removeListener(_onPlayingVideoControllerChanged);
     updatePictureInPicture(context);
@@ -313,10 +309,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   }
 
   @override
-  void didPopNext() => _overrideSnackBarMargin();
+  void didPopNext() => _updateSnackBarMargin();
 
   @override
-  void didPush() => _overrideSnackBarMargin();
+  void didPush() => _updateSnackBarMargin();
 
   @override
   void didPop() => _resetSnackBarMargin();
@@ -324,10 +320,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
   @override
   void didPushNext() => _resetSnackBarMargin();
 
-  void _overrideSnackBarMargin() {
+  void _updateSnackBarMargin() {
     MarginComputer marginComputer;
     if (isViewingImage) {
-      marginComputer = (context) => EdgeInsets.only(bottom: ViewerBottomOverlay.actionSafeHeight(context));
+      marginComputer = (context) {
+        final entry = entryNotifier.value;
+        return EdgeInsets.only(
+          bottom: ViewerBottomOverlay.actionSafeHeight(context, entry),
+        );
+      };
     } else {
       marginComputer = FeedbackMixin.snackBarMarginDefault;
     }
@@ -710,7 +711,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
 
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
-    _overrideSnackBarMargin();
+    _updateSnackBarMargin();
     final animate = context.read<Settings>().animate;
     switch (page) {
       case transitionPage:
@@ -830,20 +831,25 @@ class _EntryViewerStackState extends State<EntryViewerStack> with EntryViewContr
       return;
     }
 
+    final oldEntry = entryNotifier.value;
     final newEntry = _currentEntryIndex < entries.length ? entries[_currentEntryIndex] : null;
-    if (entryNotifier.value == newEntry) return;
-    cleanEntryControllers(entryNotifier.value);
+    if (oldEntry == newEntry) return;
+
+    assert(newEntry == null || !newEntry.isDisposed, 'viewer shows entry after being disposed, entry=$newEntry');
+
+    cleanEntryControllers(oldEntry);
     entryNotifier.value = newEntry;
     _isEntryTracked = false;
     await pauseVideoControllers();
     await initEntryControllers(newEntry);
 
-    if (viewerController.isCasting) {
-      final entry = entryNotifier.value;
-      if (entry != null) {
-        await viewerController.castEntry(entry);
-      }
+    if (viewerController.isCasting && newEntry != null) {
+      await viewerController.castEntry(newEntry);
     }
+  }
+
+  void _onEntryChanged() {
+    _updateSnackBarMargin();
   }
 
   void _onPopInvoked() {

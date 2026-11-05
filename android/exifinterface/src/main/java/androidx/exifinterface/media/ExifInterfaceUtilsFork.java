@@ -32,7 +32,7 @@ import java.io.OutputStream;
 
 /*
  * Forked from 'androidx.exifinterface:exifinterface:1.4.2'
- * Named differently to let ExifInterface be loaded as subdependency.
+ * Named differently to let `ExifInterface` be loaded as subdependency.
  * cf https://github.com/androidx/androidx/tree/androidx-main/exifinterface/exifinterface/src/main/java/androidx/exifinterface/media
  */
 

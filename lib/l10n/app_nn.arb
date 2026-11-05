@@ -420,9 +420,15 @@
     "viewDialogGroupSectionTitle": "Hop",
     "viewDialogLayoutSectionTitle": "Oppsett",
     "tileLayoutMosaic": "Mosaikk",
-    "aboutCreditsWorldAtlas1": "Denne appen nyttar ei TopoJSON-fil ifrå",
+    "aboutCreditsWorldAtlas": "Denne appen nyttar ei TopoJSON-fil ifrå [World Atlas]({link}) under ISC-løyve.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "viewerInfoSearchSuggestionDescription": "Utgreiing",
-    "aboutCreditsWorldAtlas2": "under ISC-løyve.",
     "videoSpeedDialogLabel": "Avspelingssnøggleik",
     "videoStreamSelectionDialogVideo": "Video",
     "videoStreamSelectionDialogAudio": "Ljod",

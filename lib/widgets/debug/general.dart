@@ -3,10 +3,12 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/analysis_service.dart';
 import 'package:aves/services/common/channel.dart';
 import 'package:aves/services/common/service_policy.dart';
+import 'package:aves/widgets/aves_app.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/common/tiles/switch_list.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves_utils/aves_utils.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,7 @@ class const DebugGeneralSection({super.key}) extends StatefulWidget {
 }
 
 class _DebugGeneralSectionState extends State<DebugGeneralSection> with AutomaticKeepAliveClientMixin {
+  static OverlayEntry? _insetsOverlayEntry;
   static OverlayEntry? _taskQueueOverlayEntry;
 
   @override
@@ -52,6 +55,23 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
           title: const Text('Trace Aves platform channels'),
         ),
         SwitchListTile(
+          value: _insetsOverlayEntry != null,
+          onChanged: (v) {
+            _insetsOverlayEntry
+              ?..remove()
+              ..dispose();
+            _insetsOverlayEntry = null;
+            if (v) {
+              _insetsOverlayEntry = OverlayEntry(
+                builder: (context) => const _InsetsOverlayEntry(),
+              );
+              Overlay.of(context).insert(_insetsOverlayEntry!);
+            }
+            setState(() {});
+          },
+          title: const Text('Show insets overlay'),
+        ),
+        SwitchListTile(
           value: _taskQueueOverlayEntry != null,
           onChanged: (v) {
             _taskQueueOverlayEntry
@@ -77,6 +97,28 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
           onPressed: () => AnalysisService.startService(force: false),
           child: const Text('Start analysis service'),
         ),
+        Selector<Settings, int>(
+          selector: (context, s) => s.debugCatalogConcurrentTaskMax,
+          builder: (context, concurrentTaskMax, child) {
+            return Column(
+              crossAxisAlignment: .start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text('Catalog max concurrent tasks ($concurrentTaskMax)'),
+                ),
+                Slider(
+                  value: concurrentTaskMax.toDouble(),
+                  onChanged: (v) => settings.debugCatalogConcurrentTaskMax = v.round(),
+                  min: 1.0,
+                  max: 8.0,
+                  divisions: 7,
+                  label: '$concurrentTaskMax',
+                ),
+              ],
+            );
+          },
+        ),
         const Divider(),
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
@@ -97,6 +139,41 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class const _InsetsOverlayEntry() extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    return IgnorePointer(
+      child: DefaultTextStyle(
+        style: const TextStyle(),
+        child: Align(
+          alignment: .center,
+          child: Container(
+            color: Colors.indigo.shade900.withAlpha(0xCC),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: AvesApp.cutoutInsetsNotifier,
+                  builder: (context, cutoutInsets, child) {
+                    return Text('cutoutInsets=${toStringDebug(cutoutInsets)}');
+                  },
+                ),
+                Text('displayCornerRadii=${toStringDebug(mq.displayCornerRadii)}'),
+                Text('systemGestureInsets=${toStringDebug(mq.systemGestureInsets)}'),
+                Text('viewInsets=${toStringDebug(mq.viewInsets)}'),
+                Text('viewPadding=${toStringDebug(mq.viewPadding)}'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class const _TaskQueueOverlay() extends StatelessWidget {

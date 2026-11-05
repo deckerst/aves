@@ -1,8 +1,8 @@
 [versions]
 androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
-androidGradlePlugin = "9.4.1"
-androidSvg = "c7e58e8e59"
+androidGradlePlugin = "9.5.0"
+androidSvg = "447068deae"
 androidxAnnotation = "1.11.0"
 androidxAppcompat = "1.8.0"
 androidxCoreKtx = "1.19.1"
@@ -12,6 +12,7 @@ androidxMedia = "1.8.0"
 androidxSecurity = "1.1.0"
 androidxWork = "2.12.0"
 commonswareCwac = "0.5.0"
+contentauthC2pa = "0.0.15"
 firebase = "3.0.8"
 glide = "5.0.9"
 gms = "4.5.0"
@@ -21,9 +22,9 @@ kotlin = "2.4.21"
 kotlinxCoroutines = "1.11.0"
 ksp = "2.3.8"
 material = "1.14.0"
-metadataExtractor = "2.21.0"
+metadataExtractor = "2.22.0"
 mp4parser = "c2898f1832"
-pixymeta = "f4513291b7"
+pixymeta = "e36bfbbf3d"
 slf4j = "2.0.20"
 tiffBitmapFactory = "424b18a4ae"
 reproducibleBuilds = "1.1"
@@ -38,6 +39,7 @@ androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-process", version.
 androidx-media = { module = "androidx.media:media", version.ref = "androidxMedia" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidxSecurity" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidxWork" }
+contentauth-c2pa = { module = "com.github.contentauth:c2pa-android", version.ref = "contentauthC2pa" }
 commonsware-cwac = { module = "com.commonsware.cwac:document", version.ref = "commonswareCwac" }
 deckerst-androidsvg = { module = "com.github.deckerst:androidsvg", version.ref = "androidSvg" }
 deckerst-mp4parser-isoparser = { module = "com.github.deckerst.mp4parser:isoparser", version.ref = "mp4parser" }

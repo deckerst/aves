@@ -1,0 +1,479 @@
+package deckers.thibault.aves.metadata.metadataextractor
+
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import com.drew.imaging.FileType
+import com.drew.imaging.FileTypeDetector
+import com.drew.imaging.ImageMetadataReader
+import com.drew.imaging.ImageProcessingException
+import com.drew.imaging.jpeg.JpegMetadataReader
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader
+import com.drew.imaging.mp4.Mp4Reader
+import com.drew.imaging.tiff.TiffProcessingException
+import com.drew.imaging.tiff.TiffReader
+import com.drew.lang.ByteArrayReader
+import com.drew.lang.RandomAccessStreamReader
+import com.drew.lang.Rational
+import com.drew.lang.SequentialByteArrayReader
+import com.drew.metadata.Directory
+import com.drew.metadata.StringValue
+import com.drew.metadata.Tag
+import com.drew.metadata.exif.ExifIFD0Directory
+import com.drew.metadata.exif.ExifReader
+import com.drew.metadata.exif.ExifSubIFDDirectory
+import com.drew.metadata.file.FileTypeDirectory
+import com.drew.metadata.iptc.IptcReader
+import com.drew.metadata.png.PngDirectory
+import com.drew.metadata.xmp.XmpReader
+import deckers.thibault.aves.metadata.DngTags
+import deckers.thibault.aves.metadata.ExifTags
+import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.metadataextractor.mpf.MpfReader
+import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MathUtils.round
+import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.TIFF_EXTENSION_PATTERN
+import deckers.thibault.aves.utils.TimeZones
+import java.io.BufferedInputStream
+import java.io.IOException
+import java.io.InputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+import java.util.regex.Pattern
+import kotlin.math.floor
+
+object MetadataExtractorHelper {
+    private val LOG_TAG = LogUtils.createTag<MetadataExtractorHelper>()
+
+    const val PNG_ITXT_DIR_NAME = "PNG-iTXt"
+    private const val PNG_TEXT_DIR_NAME = "PNG-tEXt"
+    const val PNG_TIME_DIR_NAME = "PNG-tIME"
+    private const val PNG_ZTXT_DIR_NAME = "PNG-zTXt"
+    private const val PNG_RAW_PROFILE_EXIF = "Raw profile type exif"
+    private const val PNG_RAW_PROFILE_IPTC = "Raw profile type iptc"
+
+    val PNG_LAST_MODIFICATION_TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
+
+    // Pattern to extract profile name, length, and text data
+    // of raw profiles (EXIF, IPTC, etc.) in PNG `zTXt` chunks
+    // e.g. "iptc [...] 114 [...] 3842494d040400[...]"
+    // e.g. "exif [...] 134 [...] 4578696600004949[...]"
+    private val PNG_RAW_PROFILE_PATTERN = Regex("^\\n(.*?)\\n\\s*(\\d+)\\n(.*)", RegexOption.DOT_MATCHES_ALL)
+
+    private const val RATIONAL_DESCRIPTION_DECIMALS = 4
+
+    fun getTagName(tag: Tag): String {
+        return if (tag.hasTagName()) {
+            tag.tagName
+        } else {
+            ExifTags.getTagName(tag.tagType) ?: tag.tagName
+        }
+    }
+
+    private fun formatRational(r: Rational): String {
+        val d = (r.numerator.toDouble() / r.denominator).round(RATIONAL_DESCRIPTION_DECIMALS)
+        val i = floor(d)
+        return if (d == i) {
+            String.format(Locale.ROOT, "%d", i.toInt())
+        } else {
+            String.format(Locale.ROOT, "%.${RATIONAL_DESCRIPTION_DECIMALS}f", d)
+        }
+    }
+
+    fun getTagDescription(dir: Directory, tag: Tag): String {
+        return when (tag.tagType) {
+            DngTags.ANALOG_BALANCE,
+            DngTags.AS_SHOT_NEUTRAL,
+            DngTags.AS_SHOT_WHITE_XY,
+            DngTags.BLACK_LEVEL,
+            DngTags.CAMERA_CALIBRATION_1,
+            DngTags.CAMERA_CALIBRATION_2,
+            DngTags.COLOR_MATRIX_1,
+            DngTags.COLOR_MATRIX_2,
+            DngTags.COLOR_MATRIX_3,
+            DngTags.DEFAULT_CROP_ORIGIN,
+            DngTags.DEFAULT_CROP_SIZE,
+            DngTags.DEFAULT_SCALE,
+            DngTags.FORWARD_MATRIX_1,
+            DngTags.FORWARD_MATRIX_2,
+            DngTags.FORWARD_MATRIX_3,
+            DngTags.LENS_INFO,
+                -> {
+                val o = dir.getObject(tag.tagType)
+                if (o != null) {
+
+                    if (o is Array<*> && o.isArrayOf<Rational>()) {
+                        return o.filterNotNull().joinToString(" ") {
+                            formatRational(it as Rational)
+                        }
+                    } else if (o is Rational) {
+                        return formatRational(o)
+                    }
+                }
+                tag.description
+            }
+
+            else -> tag.description
+        } ?: "${dir.getObject(tag.tagType)}"
+    }
+
+    /**
+     * - `metadata-extractor` sometimes detects the wrong MIME type (e.g. `pef` file as `tiff`, `mpeg` as `dvd`, `avif` as `mov`)
+     * - the content resolver / media store sometimes reports the wrong MIME type (e.g. `png` file as `jpeg`, `heif` as `tiff`, `tiff` as `srw`)
+     * - `context.getContentResolver().getType()` sometimes returns an incorrect value
+     * - `MediaMetadataRetriever.setDataSource()` sometimes fails with `status = 0x80000000`
+     * - file extension is unreliable
+     * In the end, `metadata-extractor` is the most reliable, except for `tiff`/`dvd`/`mov`/`zip`
+     * (false positives, false negatives), in which case we trust the file extension
+     */
+    fun readMimeType(input: InputStream, path: String?, sizeBytes: Long?): String? {
+        var detectedMimeType: String? = null
+        try {
+            val metadata = safeRead(input, sizeBytes, path)
+            for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
+                if (path?.matches(TIFF_EXTENSION_PATTERN) == true) {
+                    detectedMimeType = MimeTypes.TIFF
+                } else {
+                    // cf https://github.com/drewnoakes/metadata-extractor/issues/296
+                    dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
+                        if (it != MimeTypes.TIFF && it != MimeTypes.DVD && it != MimeTypes.MOV && it != MimeTypes.ZIP) {
+                            detectedMimeType = it
+                        }
+                    }
+                }
+            }
+        } catch (_: ImageProcessingException) {
+            // ignore
+        }
+        return detectedMimeType
+    }
+
+    fun readMimeType(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): String {
+        return readMimeType(
+            context = context,
+            mimeType = contentAddress.mimeType,
+            uri = contentAddress.uri,
+            path = contentAddress.path,
+            sizeBytes = sizeBytes
+        ) ?: contentAddress.mimeType
+    }
+
+    // alternative signature to allow unknown MIME type
+    fun readMimeType(context: Context, mimeType: String?, uri: Uri, path: String?, sizeBytes: Long?): String? {
+        var detectedMimeType: String? = null
+        try {
+            Metadata.openSafeInputStream(context, mimeType, uri, path, sizeBytes)?.use { input ->
+                detectedMimeType = readMimeType(input, path, sizeBytes)
+            }
+        } catch (_: Exception) {
+            // ignore
+        } catch (_: NoClassDefFoundError) {
+            // ignore
+        } catch (_: AssertionError) {
+            // ignore
+        }
+        return detectedMimeType ?: mimeType
+    }
+
+    @Throws(IOException::class, ImageProcessingException::class)
+    fun safeRead(input: InputStream, @Suppress("unused_parameter") sizeBytes: Long?, path: String?): com.drew.metadata.Metadata {
+        val inputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
+        val fileType = FileTypeDetector.detectFileType(inputStream, path)
+
+        // Providing the stream length is risky, as it may crash if it is incorrect.
+        // Not providing the stream length is also risky, as it may lead to OOM
+        // when `RandomAccessStreamReader` reads the entire stream to validate offsets.
+        val undefinedStreamLength = -1L
+
+        val metadata = when (fileType) {
+            FileType.Gif -> safeReadGif(inputStream)
+            FileType.Jpeg -> safeReadJpeg(inputStream)
+            FileType.Mp4 -> safeReadMp4(inputStream)
+            FileType.Png -> safeReadPng(inputStream)
+            FileType.Psd -> safeReadPsd(inputStream)
+            FileType.Tiff,
+            FileType.Arw,
+            FileType.Cr2,
+            FileType.Nef,
+            FileType.Orf,
+            FileType.Rw2,
+            FileType.Dng,
+            FileType.GoPro,
+            FileType.Kdc,
+            FileType.ThreeFR,
+            FileType.Pef,
+            FileType.Srw -> safeReadTiff(inputStream, undefinedStreamLength)
+
+            else -> ImageMetadataReader.readMetadata(inputStream, undefinedStreamLength, fileType)
+        }
+
+        metadata.addDirectory(FileTypeDirectory(fileType))
+        return metadata
+    }
+
+    // Some JPEG, TIFF, MP4 (and other types?) contain XMP with a preposterous number of `DocumentAncestors`.
+    // This bloated XMP is unsafely loaded in memory by Adobe's `XMPMetaParser.parseInputSource`
+    // which easily yields OOM on Android, so we try to detect and strip extended XMP with a modified XMP reader.
+    private fun safeReadJpeg(input: InputStream): com.drew.metadata.Metadata {
+        val readers = ArrayList<JpegSegmentMetadataReader>().apply {
+            addAll(JpegMetadataReader.ALL_READERS.filter { it !is XmpReader })
+            add(SafeXmpReader())
+            add(MpfReader())
+        }
+
+        val metadata = com.drew.metadata.Metadata()
+        JpegMetadataReader.process(metadata, input, readers)
+        return metadata
+    }
+
+    private fun safeReadGif(input: InputStream): com.drew.metadata.Metadata {
+        return SafeGifMetadataReader.readMetadata(input)
+    }
+
+    private fun safeReadPng(input: InputStream): com.drew.metadata.Metadata {
+        return SafePngMetadataReader.readMetadata(input)
+    }
+
+    private fun safeReadPsd(input: InputStream): com.drew.metadata.Metadata {
+        return SafePsdMetadataReader.readMetadata(input)
+    }
+
+    @Throws(IOException::class, TiffProcessingException::class)
+    fun safeReadTiff(input: InputStream, streamLength: Long): com.drew.metadata.Metadata {
+        val reader = RandomAccessStreamReader(input, RandomAccessStreamReader.DEFAULT_CHUNK_LENGTH, streamLength)
+        val metadata = com.drew.metadata.Metadata()
+        val handler = SafeExifTiffHandler(metadata, null, 0)
+        TiffReader().processTiff(reader, handler, 0)
+        return metadata
+    }
+
+    private fun safeReadMp4(input: InputStream): com.drew.metadata.Metadata {
+        val metadata = com.drew.metadata.Metadata()
+        Mp4Reader.extract(input, SafeMp4BoxHandler(metadata))
+        return metadata
+    }
+
+    // extensions
+
+    fun Directory.getSafeString(tag: Int, acceptBlank: Boolean = true, save: (value: String) -> Unit) {
+        if (this.containsTag(tag)) {
+            val string = this.getString(tag)
+            if (acceptBlank || string.isNotBlank()) {
+                save(string)
+            }
+        }
+    }
+
+    fun Directory.getSafeBoolean(tag: Int, save: (value: Boolean) -> Unit) {
+        if (this.containsTag(tag)) save(this.getBoolean(tag))
+    }
+
+    fun Directory.getSafeInt(tag: Int, save: (value: Int) -> Unit) {
+        if (this.containsTag(tag)) save(this.getInt(tag))
+    }
+
+    fun Directory.getSafeLong(tag: Int, save: (value: Long) -> Unit) {
+        if (this.containsTag(tag)) save(this.getLong(tag))
+    }
+
+    fun Directory.getSafeRational(tag: Int, save: (value: Rational) -> Unit) {
+        if (this.containsTag(tag)) save(this.getRational(tag))
+    }
+
+    // returns date time as UTC milliseconds since Epoch
+    fun Directory.getSafeDateMillis(tag: Int, subSecond: String?, isUtc: Boolean): Long? {
+        if (this.containsTag(tag)) {
+            val timeZone = if (isUtc) TimeZones.UTC else TimeZone.getDefault()
+            return this.getDatePlus(tag, subSecond, timeZone)
+        }
+        return null
+    }
+
+    // This seems to cover all known Exif and Xmp date strings
+    // Note that "    :  :     :  :  " is a valid date string according to the Exif spec (which means 'unknown date'): http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/datetimeoriginal.html
+    private val dateTimeFormatters = arrayOf(
+        "yyyy:MM:dd HH:mm:ss",
+        "yyyy:MM:dd HH:mm",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm",
+        "yyyy.MM.dd HH:mm:ss",
+        "yyyy.MM.dd HH:mm",
+        "yyyy-MM-dd'T'HH:mm:ss",
+        "yyyy-MM-dd'T'HH:mm",
+        "yyyy-MM-dd",
+        "yyyy-MM",
+        "yyyyMMdd",  // as used in IPTC data
+        "yyyy"
+    ).map {
+        // prefer `DateTimeFormatter` over `SimpleDateFormat` for concurrent usage
+        DateTimeFormatter.ofPattern(it, Locale.ROOT)
+    }.toTypedArray()
+    private val subsecondPattern = Pattern.compile("(\\d{2}:\\d{2}:\\d{2})(\\.\\d+)")
+    private val timeZonePattern = Pattern.compile("(Z|[+-]\\d{1,2}:\\d{2}|[+-]\\d{4})$")
+    private const val PARSED_DATE_YEAR_MAX = 10000
+
+    // adapted from `metadata-extractor` v2.22.0 `Directory.getDate()` to:
+    // - parse dates written as timestamps,
+    // - enforce time zone argument,
+    // - fixed concurrent date format usage.
+    // returns date time as UTC milliseconds since Epoch
+    private fun Directory.getDatePlus(tagType: Int, subSecond: String?, timeZone: TimeZone): Long? {
+        var effectiveSubSecond = subSecond
+        var effectiveTimeZone = timeZone
+        val o = this.getObject(tagType)
+        if (o is Date) return o.time
+
+        var epochTimeMillis: Long? = null
+        if (o is String || o is StringValue) {
+            var dateString = o.toString()
+
+            // This is a common NULL value known for cameras like Olympus C750UZ.
+            if (dateString == "0000:00:00 00:00:00") return null
+
+            // if the date string has subsecond information, it supersedes the subsecond parameter
+            val subsecondMatcher = subsecondPattern.matcher(dateString)
+            if (subsecondMatcher.find()) {
+                effectiveSubSecond = subsecondMatcher.group(2)?.substring(1)
+                dateString = subsecondMatcher.replaceAll("$1")
+            }
+
+            // if the date string has time zone information, it supersedes the timeZone parameter
+            val timeZoneMatcher = timeZonePattern.matcher(dateString)
+            if (timeZoneMatcher.find()) {
+                effectiveTimeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replace("Z".toRegex(), ""))
+                dateString = timeZoneMatcher.replaceAll("")
+            }
+            val zoneId = effectiveTimeZone.toZoneId()
+            for (formatter in dateTimeFormatters) {
+                val zonedFormatter = formatter.withZone(zoneId)
+                try {
+                    val parsed = LocalDateTime.parse(dateString, zonedFormatter)
+                    if (parsed.year < PARSED_DATE_YEAR_MAX) {
+                        epochTimeMillis = parsed.atZone(zoneId).toEpochSecond() * 1000
+                        break
+                    }
+                } catch (ex: Exception) {
+                    // `Date.parse()` declares throwing `ParseException`,
+                    // but other types are occasionally thrown too.
+                    // We simply try the next pattern.
+                    Log.d(LOG_TAG, "failed to parse date=$dateString with zonedFormatter=$zonedFormatter, ex=${ex.message}")
+                }
+            }
+            if (epochTimeMillis == null) {
+                val dateLong = dateString.toLongOrNull()
+                if (dateLong != null) {
+                    epochTimeMillis = when (dateLong) {
+                        in 0..99999999999 -> dateLong * 1000 // seconds
+                        in 100000000000..99999999999999 -> dateLong // millis
+                        in 100000000000000..9999999999999999 -> dateLong / 1000 // micros
+                        else -> dateLong / 1000000 // nanos
+                    }
+                }
+            }
+        }
+
+        if (epochTimeMillis != null && effectiveSubSecond != null) {
+            try {
+                val subSecondMillis = (".$effectiveSubSecond".toDouble() * 1000).toInt()
+                if (subSecondMillis in 0..999) {
+                    return epochTimeMillis + subSecondMillis
+                }
+            } catch (_: NumberFormatException) {
+                // ignore
+            }
+        }
+
+        return epochTimeMillis
+    }
+
+    // time tag and sub-second tag are *not* in the same directory
+    fun ExifSubIFDDirectory.getDateModifiedMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
+        val parent = parent
+        if (parent is ExifIFD0Directory) {
+            val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME)
+            val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE)
+            val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+            val dateMillis = parent.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, subSecond, isUtc = true)
+            if (dateMillis != null) {
+                save(dateMillis, timeZoneOffsetMinutes)
+            }
+        }
+    }
+
+    fun ExifSubIFDDirectory.getDateDigitizedMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
+        val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_DIGITIZED)
+        val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE_DIGITIZED)
+        val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED, subSecond, isUtc = true)
+        if (dateMillis != null) {
+            save(dateMillis, timeZoneOffsetMinutes)
+        }
+    }
+
+    fun ExifSubIFDDirectory.getDateOriginalMillis(save: (value: Long, timeZoneOffsetMinutes: Int?) -> Unit) {
+        val subSecond = getString(ExifSubIFDDirectory.TAG_SUBSECOND_TIME_ORIGINAL)
+        val timeZoneOffset = getString(ExifSubIFDDirectory.TAG_TIME_ZONE_ORIGINAL)
+        val timeZoneOffsetMinutes = TimeZones.parse(timeZoneOffset) ?: TimeZones.currentOffsetMinutes
+        val dateMillis = this.getSafeDateMillis(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, subSecond, isUtc = true)
+        if (dateMillis != null) {
+            save(dateMillis, timeZoneOffsetMinutes)
+        }
+    }
+
+    // PNG
+
+    fun Directory.isPngTextDir(): Boolean = this is PngDirectory && setOf(PNG_ITXT_DIR_NAME, PNG_TEXT_DIR_NAME, PNG_ZTXT_DIR_NAME).contains(this.name)
+
+    fun extractPngProfile(key: String, valueString: String): Iterable<Directory>? {
+        if (key == PNG_RAW_PROFILE_EXIF || key == PNG_RAW_PROFILE_IPTC) {
+            val match = PNG_RAW_PROFILE_PATTERN.matchEntire(valueString)
+            if (match != null) {
+                val dataString = match.groupValues[3]
+                val hexString = dataString.replace(Regex("[\\r\\n]"), "")
+                val dataBytes = hexString.decodeHex()
+                if (dataBytes != null) {
+                    val metadata = com.drew.metadata.Metadata()
+                    when (key) {
+                        PNG_RAW_PROFILE_EXIF -> {
+                            if (ExifReader.startsWithJpegExifPreamble(dataBytes)) {
+                                ExifReader().extract(ByteArrayReader(dataBytes), metadata, ExifReader.JPEG_SEGMENT_PREAMBLE.length)
+                            }
+                        }
+
+                        PNG_RAW_PROFILE_IPTC -> {
+                            val start = dataBytes.indexOf(Metadata.IPTC_MARKER_BYTE)
+                            if (start != -1) {
+                                val segmentBytes = dataBytes.copyOfRange(fromIndex = start, toIndex = dataBytes.size)
+                                IptcReader().extract(SequentialByteArrayReader(segmentBytes), metadata, segmentBytes.size.toLong())
+                            }
+                        }
+                    }
+                    return metadata.directories
+                }
+            }
+        }
+        return null
+    }
+
+    // convenience methods
+
+    private fun String.decodeHex(): ByteArray? {
+        if (length % 2 != 0) return null
+
+        try {
+            val byteIterator = chunkedSequence(2)
+                .map { it.toInt(16).toByte() }
+                .iterator()
+
+            return ByteArray(length / 2) { byteIterator.next() }
+        } catch (e: NumberFormatException) {
+            Log.w(LOG_TAG, "failed to decode hex string=$this", e)
+        }
+        return null
+    }
+}

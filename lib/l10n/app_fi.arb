@@ -475,8 +475,14 @@
     "aboutDataUsageInternal": "Sisäinen",
     "aboutDataUsageExternal": "Ulkoinen",
     "aboutDataUsageClearCache": "Tyhjennä Välimuisti",
-    "aboutCreditsWorldAtlas1": "Tämä sovellus käyttää TopoJSON tiedostoa lähteestä",
-    "aboutCreditsWorldAtlas2": "ISC-lisenssillä.",
+    "aboutCreditsWorldAtlas": "Tämä sovellus käyttää TopoJSON tiedostoa lähteestä [World Atlas]({link}) ISC-lisenssillä.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Kääntäjät",
     "aboutLicensesSectionTitle": "Avoimen Lähdekoodin Lisenssit",
     "aboutLicensesBanner": "Tämä sovellus käyttää seuraavia avoimen lähdekoodin paketteja ja kirjastoja.",

@@ -3,10 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class AddressDetails extends Equatable {
-  final int id;
-  final String? countryCode, countryName, adminArea, locality;
-
+class const AddressDetails({
+  required final int id,
+  final String? countryCode,
+  final String? countryName,
+  final String? adminArea,
+  final String? locality,
+}) extends Equatable {
   @override
   List<Object?> get props => [id, countryCode, countryName, adminArea, locality];
 
@@ -15,14 +18,6 @@ class AddressDetails extends Equatable {
   String? get stateCode => GeoStates.stateCodeByName[stateName];
 
   String? get stateName => GeoStates.stateCodesByCountryCode.containsKey(countryCode) ? adminArea : null;
-
-  const new({
-    required this.id,
-    this.countryCode,
-    this.countryName,
-    this.adminArea,
-    this.locality,
-  });
 
   AddressDetails copyWith({
     int? id,

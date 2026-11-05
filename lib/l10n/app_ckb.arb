@@ -332,8 +332,14 @@
     "aboutDataUsageDatabase": "بنکەدراوە",
     "aboutDataUsageInternal": "ناوەکی",
     "aboutDataUsageExternal": "دەرەکی",
-    "aboutCreditsWorldAtlas1": "ئەم کاربەرنامەیە پەڕگەی TopoJSON بەکاردەینێت لە",
-    "aboutCreditsWorldAtlas2": "لەبن مۆڵەتی .ISC",
+    "aboutCreditsWorldAtlas": "ئەم کاربەرنامەیە پەڕگەی TopoJSON بەکاردەینێت لە [World Atlas]({link}) لەبن مۆڵەتی .ISC",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "وەرگێڕەکان",
     "aboutLicensesSectionTitle": "مۆڵەتەکانی سەرچاوە کراوە",
     "aboutLicensesBanner": "ئەم کاربەرنامەیە گورزە و ژێدەرگە سەرچاوە کراوەکانی خوارەوە بەکاردەهێنێت.",

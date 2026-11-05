@@ -400,7 +400,6 @@
     "dateYesterday": "Včera",
     "exportEntryDialogQuality": "Kvalita",
     "locationPickerUseThisLocationButton": "Použiť túto polohu",
-    "aboutCreditsWorldAtlas2": "pod ISC licenciou.",
     "collectionPageTitle": "Kolekcie",
     "collectionActionMove": "Presunúť do albumu",
     "viewerActionLock": "Uzamknúť pohľad",
@@ -410,7 +409,14 @@
     "collectionActionRescan": "Opätovné skenovanie",
     "albumTierVaults": "Trezory",
     "vaultDialogLockTypeLabel": "Typ uzamknutia",
-    "aboutCreditsWorldAtlas1": "Táto aplikácia používa TopoJSON súbor od",
+    "aboutCreditsWorldAtlas": "Táto aplikácia používa TopoJSON súbor od [World Atlas]({link}) pod ISC licenciou.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionActionAddShortcut": "Pridať skratku",
     "collectionGroupAlbum": "Podľa albumu",
     "collectionGroupMonth": "Podľa mesiaca",
@@ -984,5 +990,14 @@
     "videoThumbnailMethodFirstFrame": "Prvá snímka",
     "settingsVideoThumbnailMethods": "Predvolená miniatúra",
     "renameTagDialogLabelAlreadyExistsHelper": "Štítok už existuje",
-    "chipActionCopyCenterCoordinates": "Skopírovať súradnice stredu"
+    "chipActionCopyCenterCoordinates": "Skopírovať súradnice stredu",
+    "filterCredentialsValidityUnknownLabel": "Neznáme",
+    "filterCredentialsValidityInvalidLabel": "Neplatné",
+    "filterCredentialsValidityValidLabel": "Platné",
+    "filterCredentialsValidityTrustedLabel": "Dôveryhodné",
+    "searchCredentialsSectionTitle": "Overovacie údaje obsahu",
+    "settingsThumbnailShowCredentialValidity": "Zobraziť platnosť overovacích údajov",
+    "aboutCreditsStateFlags": "Vlajky štátov pochádzajú z Wikimedia Commons. Nachádzajú sa vo verejnej doméne, s výnimkou:",
+    "exportEntryDialogDimension": "Rozmer:",
+    "sortRandomly": "Náhodne"
 }

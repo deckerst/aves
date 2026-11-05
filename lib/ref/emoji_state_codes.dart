@@ -22,7 +22,6 @@ class EmojiStateCodes {
   };
 
   // BR
-  // TODO TLAD use flag assets from https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
   static const brAcre = 'brac';
   static const brAlagoas = 'bral';
   static const brAmapa = 'brap';
@@ -79,6 +78,37 @@ class EmojiStateCodes {
     brSaoPaulo,
     brSergipe,
     brTocantins,
+  };
+
+  // CA
+  static const caAlberta = 'caab';
+  static const caBritishColumbia = 'cabc';
+  static const caManitoba = 'camb';
+  static const caNewBrunswick = 'canb';
+  static const caNewfoundlandAndLabrador = 'canl';
+  static const caNorthwestTerritories = 'cant';
+  static const caNovaScotia = 'cans';
+  static const caNunavut = 'canu';
+  static const caOntario = 'caon';
+  static const caPrinceEdwardIsland = 'cape';
+  static const caQuebec = 'caqc';
+  static const caSaskatchewan = 'cask';
+  static const caYukon = 'cayt';
+
+  static const canada = {
+    caAlberta,
+    caBritishColumbia,
+    caManitoba,
+    caNewBrunswick,
+    caNewfoundlandAndLabrador,
+    caNorthwestTerritories,
+    caNovaScotia,
+    caNunavut,
+    caOntario,
+    caPrinceEdwardIsland,
+    caQuebec,
+    caSaskatchewan,
+    caYukon,
   };
 
   // GB
@@ -283,6 +313,7 @@ class EmojiStateCodes {
   static const usSouthCarolina = 'ussc';
   static const usSouthDakota = 'ussd';
   static const usTennessee = 'ustn';
+  static const usTexas = 'ustx';
   static const usUtah = 'usut';
   static const usVermont = 'usvt';
   static const usVirginia = 'usva';

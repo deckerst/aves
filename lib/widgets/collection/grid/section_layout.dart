@@ -2,6 +2,7 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/any.dart';
+import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/common/grid/sections/provider.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -36,7 +37,8 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
 
   @override
   double getHeaderExtent(BuildContext context, SectionKey sectionKey) {
-    return CollectionSectionHeader.getPreferredHeight(context, scrollableWidth, collection.source, sectionKey);
+    final headerExtent = sectionKey.getPreferredHeight(context, scrollableWidth, source: collection.source);
+    return headerExtent + SectionHeader.padding.vertical + SectionHeader.margin.vertical;
   }
 
   @override

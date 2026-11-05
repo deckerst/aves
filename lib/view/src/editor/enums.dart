@@ -8,7 +8,7 @@ extension ExtraEditorActionView on EditorAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      EditorAction.transform => l10n.editorActionTransform,
+      .transform => l10n.editorActionTransform,
     };
   }
 
@@ -16,7 +16,7 @@ extension ExtraEditorActionView on EditorAction {
 
   IconData _getIconData() {
     return switch (this) {
-      EditorAction.transform => AIcons.transform,
+      .transform => AIcons.transform,
     };
   }
 }
@@ -25,11 +25,11 @@ extension ExtraCropAspectRatioView on CropAspectRatio {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      CropAspectRatio.free => l10n.cropAspectRatioFree,
-      CropAspectRatio.original => l10n.cropAspectRatioOriginal,
-      CropAspectRatio.square => l10n.cropAspectRatioSquare,
-      CropAspectRatio.ar_16_9 => '16${UniChars.ratio}9',
-      CropAspectRatio.ar_4_3 => '4${UniChars.ratio}3',
+      .free => l10n.cropAspectRatioFree,
+      .original => l10n.cropAspectRatioOriginal,
+      .square => l10n.cropAspectRatioSquare,
+      .ar_16_9 => '16${UniChars.ratio}9',
+      .ar_4_3 => '4${UniChars.ratio}3',
     };
   }
 
@@ -37,11 +37,11 @@ extension ExtraCropAspectRatioView on CropAspectRatio {
 
   IconData _getIconData() {
     return switch (this) {
-      CropAspectRatio.free => AIcons.aspectRatioFree,
-      CropAspectRatio.original => AIcons.aspectRatioOriginal,
-      CropAspectRatio.square => AIcons.aspectRatioSquare,
-      CropAspectRatio.ar_16_9 => AIcons.aspectRatio_16_9,
-      CropAspectRatio.ar_4_3 => AIcons.aspectRatio_4_3,
+      .free => AIcons.aspectRatioFree,
+      .original => AIcons.aspectRatioOriginal,
+      .square => AIcons.aspectRatioSquare,
+      .ar_16_9 => AIcons.aspectRatio_16_9,
+      .ar_4_3 => AIcons.aspectRatio_4_3,
     };
   }
 }

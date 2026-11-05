@@ -576,8 +576,14 @@
     "editEntryDialogCopyFromItem": "တခြားပုံကနေ ကော်ပီကူးမည်",
     "aboutDataUsageSectionTitle": "ဒေတာသုံးစွဲမှု",
     "aboutDataUsageMisc": "အခြား",
-    "aboutCreditsWorldAtlas2": "မှ TopoJSON ဖိုင်ကို ISC လိုင်စင်အောက်တွင် အသုံးပြုထားသည်။",
-    "aboutCreditsWorldAtlas1": "ဤအက်ပ်သည်",
+    "aboutCreditsWorldAtlas": "ဤအက်ပ်သည် [World Atlas]({link}) မှ TopoJSON ဖိုင်ကို ISC လိုင်စင်အောက်တွင် အသုံးပြုထားသည်။",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "ဘာသာပြန်သူများ",
     "aboutLicensesSectionTitle": "Open-Source လိုင်စင်များ",
     "aboutLicensesAndroidLibrariesSectionTitle": "Android Library များ",

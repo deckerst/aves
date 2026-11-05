@@ -5,6 +5,7 @@ import 'package:aves/model/entry/extensions/favourites.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
@@ -39,6 +40,7 @@ class const GridTheme({
           showHdr: settings.showThumbnailHdr,
           locationIcon: showLocation ? settings.thumbnailLocationIcon : .none,
           tagIcon: settings.thumbnailTagIcon,
+          credentialValidityLevels: settings.thumbnailCredentialValidity,
           showMotionPhoto: settings.showThumbnailMotionPhoto,
           showRating: settings.showThumbnailRating,
           showRaw: settings.showThumbnailRaw,
@@ -64,6 +66,7 @@ class GridThemeData({
   required final bool showHdr,
   required ThumbnailOverlayLocationIcon locationIcon,
   required ThumbnailOverlayTagIcon tagIcon,
+  required final Set<C2paValidity> credentialValidityLevels,
   required final bool showMotionPhoto,
   required final bool showRating,
   required final bool showRaw,
@@ -91,12 +94,13 @@ class GridThemeData({
     final tagged = entry.tags.isNotEmpty;
     final isMultiPage = entry.isMultiPage;
     return [
+      if (credentialValidityLevels.contains(entry.credentialsValidity)) CredentialValidityIcon(validity: entry.credentialsValidity),
       if (entry.isFavourite && showFavourite) const FavouriteIcon(),
       if (tagged && showTagged) TagIcon.tagged(),
       if (!tagged && showUntagged) TagIcon.untagged(),
       if (located && showLocated) LocationIcon.located(),
       if (!located && showUnlocated) LocationIcon.unlocated(),
-      if (entry.rating != 0 && showRating) RatingIcon(entry: entry),
+      if (entry.rating != 0 && showRating) RatingIcon(rating: entry.rating),
       if (entry.isHdr && showHdr) const HdrIcon(),
       if (entry.isPureVideo)
         VideoIcon(entry: entry)

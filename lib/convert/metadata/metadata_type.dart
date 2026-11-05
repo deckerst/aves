@@ -17,6 +17,8 @@ extension ExtraMetadataTypeConvert on MetadataType {
         return 'jpeg_adobe';
       case .jpegDucky:
         return 'jpeg_ducky';
+      case .jpegJumbf:
+        return 'jpeg_jumbf';
       case .mp4:
         return 'mp4';
       case .photoshopIrb:

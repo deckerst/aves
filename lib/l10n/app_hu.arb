@@ -826,8 +826,14 @@
         }
     },
     "hideFilterConfirmationDialogMessage": "Az egyező képek és videók el lesznek rejtve a gyűjteményedből. Újra megjelenítheted ezeket az „Adatvédelem” beállításokban.\n\nBiztosan el akarod rejteni őket?",
-    "aboutCreditsWorldAtlas1": "Ez az app egy TopoJSON fájlt használ",
-    "aboutCreditsWorldAtlas2": "oldalról ISC Licenccel.",
+    "aboutCreditsWorldAtlas": "Ez az app egy TopoJSON fájlt használ [World Atlas]({link}) oldalról ISC Licenccel.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "collectionExportFailureFeedback": "{count, plural, =1{Nem sikerült exportálni 1 oldalt} other{Nem sikerült exportálni {count} oldalt}}",
     "@collectionExportFailureFeedback": {
         "placeholders": {

@@ -4,18 +4,13 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class QuickChooser extends StatelessWidget {
-  final bool blurred;
-  final Widget child;
-
+class const QuickChooser({
+  super.key,
+  required final bool blurred,
+  required final Widget child,
+}) extends StatelessWidget {
   static const margin = EdgeInsets.all(8);
   static const padding = EdgeInsets.symmetric(horizontal: 8);
-
-  const new({
-    super.key,
-    required this.blurred,
-    required this.child,
-  });
 
   @override
   Widget build(BuildContext context) {

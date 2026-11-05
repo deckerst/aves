@@ -6,14 +6,10 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MetadataThumbnails extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const MetadataThumbnails({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<MetadataThumbnails> createState() => _MetadataThumbnailsState();
 }

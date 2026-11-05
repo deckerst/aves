@@ -4,7 +4,9 @@ import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/vaults/vaults.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/view/src/metadata/credentials.dart';
 import 'package:aves/widgets/common/basic/text/fading_line.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/theme.dart';
@@ -41,6 +43,18 @@ class const CalendarStackCount({
   }
 }
 
+class const CredentialValidityIcon({super.key, required final C2paValidity validity}) extends StatelessWidget {
+  static const scale = .95;
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: validity.getIconData(),
+      iconScale: scale,
+    );
+  }
+}
+
 class const FavouriteIcon({super.key}) extends StatelessWidget {
   static const scale = .9;
 
@@ -72,11 +86,7 @@ class const HdrIcon({super.key}) extends StatelessWidget {
   }
 }
 
-class LocationIcon extends StatelessWidget {
-  final IconData icon;
-
-  const new _private({required this.icon});
-
+class const LocationIcon._private({required final IconData icon}) extends StatelessWidget {
   factory located() => const LocationIcon._private(icon: AIcons.location);
 
   factory unlocated() => const LocationIcon._private(icon: AIcons.locationUnlocated);
@@ -141,7 +151,7 @@ class const PanoramaIcon({super.key}) extends StatelessWidget {
 
 class const RatingIcon({
   super.key,
-  required final AvesEntry entry,
+  required final int rating,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -151,7 +161,7 @@ class const RatingIcon({
       ),
       child: OverlayIcon(
         icon: AIcons.rating,
-        text: '${entry.rating}',
+        text: '$rating',
       ),
     );
   }
@@ -166,11 +176,7 @@ class const RawIcon({super.key}) extends StatelessWidget {
   }
 }
 
-class TagIcon extends StatelessWidget {
-  final IconData icon;
-
-  const new _private({required this.icon});
-
+class const TagIcon._private({required final IconData icon}) extends StatelessWidget {
   factory tagged() => const TagIcon._private(icon: AIcons.tag);
 
   factory untagged() => const TagIcon._private(icon: AIcons.tagUntagged);

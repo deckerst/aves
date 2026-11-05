@@ -5,31 +5,23 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/action_controls/quick_choosers/common/menu.dart';
 import 'package:aves/widgets/common/basic/popup/menu_row.dart';
 import 'package:aves_model/aves_model.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
-class ShareQuickChooser extends StatelessWidget {
-  final ValueNotifier<ShareAction?> valueNotifier;
-  final List<ShareAction> options;
-  final bool blurred;
-  final PopupMenuPosition chooserPosition;
-  final Stream<Offset> pointerGlobalPosition;
-
+class const ShareQuickChooser({
+  super.key,
+  required final ValueNotifier<Set<ShareAction>> valuesNotifier,
+  required final List<ShareAction> options,
+  required final bool blurred,
+  required final PopupMenuPosition chooserPosition,
+  required final Stream<Offset> pointerGlobalPosition,
+}) extends StatelessWidget {
   static const _itemPadding = EdgeInsetsDirectional.only(end: 8);
-
-  const new({
-    super.key,
-    required this.valueNotifier,
-    required this.options,
-    required this.blurred,
-    required this.chooserPosition,
-    required this.pointerGlobalPosition,
-  });
 
   @override
   Widget build(BuildContext context) {
     return MenuQuickChooser<ShareAction>(
-      valueNotifier: valueNotifier,
+      selectedValuesNotifier: valuesNotifier,
       options: options,
       autoReverse: false,
       blurred: blurred,

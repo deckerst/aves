@@ -223,8 +223,14 @@
     "aboutBugReportInstruction": "GitHub'da günlükleri ve sistem bilgilerini içeren bir rapor oluştur",
     "aboutBugReportButton": "Raporla",
     "aboutCreditsSectionTitle": "Kredi",
-    "aboutCreditsWorldAtlas1": "Bu uygulama bir TopoJSON dosyası kullanır",
-    "aboutCreditsWorldAtlas2": "ISC Lisansı kapsamında.",
+    "aboutCreditsWorldAtlas": "Bu uygulama bir TopoJSON dosyası kullanır [World Atlas]({link}) ISC Lisansı kapsamında.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Tercümanlar",
     "aboutLicensesSectionTitle": "Açık Kaynak Lisansları",
     "aboutLicensesBanner": "Bu uygulama aşağıdaki açık kaynaklı paketleri ve kütüphaneleri kullanır.",

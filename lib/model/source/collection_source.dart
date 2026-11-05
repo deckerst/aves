@@ -197,6 +197,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
   void _disposeEntries(bool Function(int id, AvesEntry entry) test) {
     final todoEntries = _entriesById.entries.where((kv) => test(kv.key, kv.value)).toSet();
     todoEntries.forEach((kv) => _entriesById.remove(kv.key)?.dispose());
+    eventBus.fire(EntryDisposedEvent(todoEntries.map((kv) => kv.value).toSet()));
   }
 
   void _disposeAllEntries() => _disposeEntries((_, _) => true);

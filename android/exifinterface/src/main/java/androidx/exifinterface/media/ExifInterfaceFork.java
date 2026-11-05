@@ -91,7 +91,7 @@ import java.util.zip.CRC32;
 
 /*
  * Forked from 'androidx.exifinterface:exifinterface:1.4.2'
- * Named differently to let ExifInterface be loaded as subdependency.
+ * Named differently to let `ExifInterface` be loaded as subdependency.
  * cf https://maven.google.com/web/index.html?q=exifinterface#androidx.exifinterface:exifinterface
  * cf https://github.com/androidx/androidx/tree/androidx-main/exifinterface/exifinterface/src/main/java/androidx/exifinterface/media
  */

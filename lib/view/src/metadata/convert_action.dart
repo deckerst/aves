@@ -7,15 +7,15 @@ extension ExtraEntryConvertActionView on EntryConvertAction {
   String getText(BuildContext context) {
     final l10n = context.l10n;
     return switch (this) {
-      EntryConvertAction.convert => l10n.entryActionConvert,
-      EntryConvertAction.convertMotionPhotoToStillImage => l10n.entryActionConvertMotionPhotoToStillImage,
+      .convert => l10n.entryActionConvert,
+      .convertMotionPhotoToStillImage => l10n.entryActionConvertMotionPhotoToStillImage,
     };
   }
 
   IconData getIconData() {
     return switch (this) {
-      EntryConvertAction.convert => AIcons.convert,
-      EntryConvertAction.convertMotionPhotoToStillImage => AIcons.convertToStillImage,
+      .convert => AIcons.convert,
+      .convertMotionPhotoToStillImage => AIcons.convertToStillImage,
     };
   }
 }

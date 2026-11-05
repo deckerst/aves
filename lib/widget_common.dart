@@ -14,6 +14,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/home_widget.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -22,6 +23,7 @@ const _widgetDrawChannel = AvesMethodChannel('deckers.thibault/aves/widget_draw'
 void widgetMainCommon(AppFlavor flavor) async {
   debugPrint('Widget main start');
   WidgetsFlutterBinding.ensureInitialized();
+  EquatableConfig.stringify = true;
   initPlatformServices();
   await device.init();
   await settings.init(monitorPlatformSettings: false, shouldSanitize: false);

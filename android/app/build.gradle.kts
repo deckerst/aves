@@ -198,6 +198,7 @@ repositories {
     maven {
         url = uri("https://jitpack.io")
         content {
+            includeGroup("com.github.contentauth")
             includeGroup("com.github.deckerst")
             includeGroup("com.github.deckerst.mp4parser")
         }
@@ -228,6 +229,7 @@ dependencies {
     implementation(libs.androidx.work.runtime)
 
     implementation(libs.commonsware.cwac)
+    implementation(libs.contentauth.c2pa)
     implementation(libs.metadata.extractor)
     implementation(libs.glide)
     implementation(libs.google.material)

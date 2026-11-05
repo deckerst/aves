@@ -12,6 +12,7 @@ class const AvesExpansionTile({
   String? value,
   final Widget? leading,
   required final String title,
+  final Widget? trailing,
   required final KnownLocale? locale,
   final Color? highlightColor,
   final ValueNotifier<String?>? expandedNotifier,
@@ -31,12 +32,20 @@ class const AvesExpansionTile({
       enabled: enabled,
       showHighlight: showHighlight,
     );
-    if (leading != null) {
+    final _leading = leading;
+    final _trailing = trailing;
+    if (_leading != null || _trailing != null) {
       titleChild = Row(
         children: [
-          leading!,
-          const SizedBox(width: 8),
+          if (_leading != null) ...[
+            _leading,
+            const SizedBox(width: 8),
+          ],
           Expanded(child: titleChild),
+          if (_trailing != null) ...[
+            const SizedBox(width: 8),
+            _trailing,
+          ],
         ],
       );
     }

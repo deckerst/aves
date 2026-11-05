@@ -427,7 +427,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
 
     final paragraph = RenderParagraph(
       TextSpan(text: _optionLines, style: Theme.of(context).textTheme.titleMedium!),
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       textScaler: MediaQuery.textScalerOf(context),
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final textWidth = paragraph.getMaxIntrinsicWidth(double.infinity);

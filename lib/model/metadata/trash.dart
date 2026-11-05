@@ -2,19 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class TrashDetails extends Equatable {
-  final int id;
-  final String path;
-  final int dateMillis;
-
+class const TrashDetails({
+  required final int id,
+  required final String path,
+  required final int dateMillis,
+}) extends Equatable {
   @override
   List<Object?> get props => [id, path, dateMillis];
-
-  const new({
-    required this.id,
-    required this.path,
-    required this.dateMillis,
-  });
 
   TrashDetails copyWith({
     int? id,

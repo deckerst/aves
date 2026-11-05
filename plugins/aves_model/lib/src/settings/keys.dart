@@ -4,16 +4,20 @@ class SettingKeys {
   static const Set<String> _internalKeys = {
     hasAcceptedTermsKey,
     catalogTimeZoneOffsetMillisKey,
-    platformAccelerometerRotationKey,
-    platformTransitionAnimationScaleKey,
     topEntryIdsKey,
     // history
-    recentSettingKeysKey,
     searchHistoryKey,
+    recentSettingKeysKey,
     recentDestinationAlbumsKey,
     recentTagsKey,
     // debug
+    debugCatalogConcurrentTaskMaxKey,
     debugShowViewerTilesKey,
+    // collection
+    collectionSortRandomSeedKey,
+    // platform settings
+    platformAccelerometerRotationKey,
+    platformTransitionAnimationScaleKey,
   };
 
   static const _widgetKeyPrefix = 'widget_';
@@ -41,6 +45,7 @@ class SettingKeys {
   static const recentTagsKey = 'recent_tags';
 
   // debug
+  static const debugCatalogConcurrentTaskMaxKey = 'debug_catalog_concurrent_task_max';
   static const debugShowViewerTilesKey = 'debug_show_viewer_tiles';
 
   // display
@@ -71,6 +76,7 @@ class SettingKeys {
   static const collectionBurstPatternsKey = 'collection_burst_patterns';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionSortReverseKey = 'collection_sort_reverse';
+  static const collectionSortRandomSeedKey = 'collection_sort_random_seed';
   static const collectionSectionFactorKey = 'collection_group_factor';
   static const showCollectionLayoutBarKey = 'show_collection_layout_bar';
   static const collectionBrowsingQuickActionsKey = 'collection_browsing_quick_actions';
@@ -79,6 +85,7 @@ class SettingKeys {
   static const showThumbnailHdrKey = 'show_thumbnail_hdr';
   static const thumbnailLocationIconKey = 'thumbnail_location_icon';
   static const thumbnailTagIconKey = 'thumbnail_tag_icon';
+  static const thumbnailCredentialValidityKey = 'thumbnail_credential_validity';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';

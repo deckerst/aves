@@ -1,4 +1,5 @@
 class MimeTypes {
+  static const any = '*/*';
   static const anyImage = 'image/*';
 
   // supported
@@ -14,7 +15,9 @@ class MimeTypes {
   static const jpeg = 'image/jpeg';
   static const png = 'image/png';
   static const svg = 'image/svg+xml';
-  static const tiff = 'image/tiff';
+  static const tif = 'image/tif'; // non-standard, but present in the wild
+  static const tiff = 'image/tiff'; // https://en.wikipedia.org/wiki/TIFF
+  static const tiffFx = 'image/tiff-fx'; // https://en.wikipedia.org/wiki/TIFF
   static const webp = 'image/webp';
   static const wbmp = 'image/vnd.wap.wbmp';
 
@@ -51,6 +54,7 @@ class MimeTypes {
   static const vtf = 'image/vnd.valve.source.texture';
   static const wmf = 'image/wmf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const xbm = 'image/x-xbitmap'; // https://en.wikipedia.org/wiki/X_BitMap
+  static const xcf = 'image/x-xcf'; // https://en.wikipedia.org/wiki/XCF_(file_format)
   static const xpm = 'image/x-xpixmap'; // https://en.wikipedia.org/wiki/X_PixMap
   static const xwd = 'image/x-xwindowdump'; // https://en.wikipedia.org/wiki/Xwd
 
@@ -146,6 +150,8 @@ class MimeTypes {
   static bool isHeic(String? mimeType) => heicTypes.contains(mimeType);
 
   static String normalize(String mimeType) {
+    mimeType = mimeType.toLowerCase();
+
     if (isHeic(mimeType)) {
       return heic;
     }
@@ -168,6 +174,10 @@ class MimeTypes {
       case psdVnd:
       case psdX:
         return psdVnd;
+      case tif:
+      case tiff:
+      case tiffFx:
+        return tiff;
       default:
         return mimeType;
     }

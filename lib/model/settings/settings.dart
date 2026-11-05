@@ -94,6 +94,7 @@ class Settings
     _unregister();
     _register(monitorPlatformSettings);
     initHistorySettings();
+    changeRandomSortSeed();
     if (shouldSanitize) {
       await sanitize();
     }
@@ -141,6 +142,8 @@ class Settings
     }
   }
 
+  void changeRandomSortSeed() => settings.collectionSortRandomSeed = Random().nextInt(randomNextIntMax);
+
   Future<void> setContextualDefaults(AppFlavor flavor) async {
     // performance
     final performanceClass = await deviceService.getMediaPerformanceClass();
@@ -149,7 +152,7 @@ class Settings
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     final manufacturer = androidInfo.manufacturer.toLowerCase();
     final pattern = BurstPatterns.byManufacturer[manufacturer];
-    collectionBurstPatterns = pattern != null ? [pattern] : [];
+    collectionBurstPatterns = pattern != null ? {pattern} : {};
 
     // availability
     if (flavor.hasMapStyleDefault) {
@@ -211,7 +214,7 @@ class Settings
     if (videoBackgroundMode == VideoBackgroundMode.pip && !device.supportPictureInPicture) {
       set(SettingKeys.videoBackgroundModeKey, null);
     }
-    collectionBurstPatterns = collectionBurstPatterns.where(BurstPatterns.options.contains).toList();
+    collectionBurstPatterns = collectionBurstPatterns.where(BurstPatterns.options.contains).toSet();
 
     // emulator
     if (!device.isPhysicalDevice) {
@@ -471,6 +474,7 @@ class Settings
           case SettingKeys.deactivatedHiddenFiltersKey:
           case SettingKeys.collectionBrowsingQuickActionsKey:
           case SettingKeys.collectionSelectionQuickActionsKey:
+          case SettingKeys.thumbnailCredentialValidityKey:
           case SettingKeys.viewerQuickActionsKey:
           case SettingKeys.videoThumbnailMethodsKey:
           case SettingKeys.videoControlActionsKey:

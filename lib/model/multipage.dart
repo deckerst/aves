@@ -146,26 +146,17 @@ class MultiPageInfo {
   String toString() => '$runtimeType#${shortHash(this)}{mainEntry=$mainEntry, pages=$_pages}';
 }
 
-class SinglePageInfo implements Comparable<SinglePageInfo> {
-  final int index, pageId;
-  final bool isDefault;
-  final String? uri;
-  final String mimeType;
-  final int width, height;
-  final int? rotationDegrees, durationMillis;
-
-  const new({
-    required this.index,
-    required this.pageId,
-    required this.isDefault,
-    this.uri,
-    required this.mimeType,
-    required this.width,
-    required this.height,
-    this.rotationDegrees,
-    this.durationMillis,
-  });
-
+class const SinglePageInfo({
+  required final int index,
+  required final int pageId,
+  required final bool isDefault,
+  final String? uri,
+  required final String mimeType,
+  required final int width,
+  required final int height,
+  final int? rotationDegrees,
+  final int? durationMillis,
+}) implements Comparable<SinglePageInfo> {
   SinglePageInfo copyWith({
     bool? isDefault,
     String? uri,

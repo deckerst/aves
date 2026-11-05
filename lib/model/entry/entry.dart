@@ -4,11 +4,13 @@ import 'dart:ui';
 import 'package:aves/model/entry/cache.dart';
 import 'package:aves/model/entry/dirs.dart';
 import 'package:aves/model/entry/extensions/keys.dart';
+import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/metadata/address.dart';
 import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/trash.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves_model/aves_model.dart';
@@ -54,6 +56,10 @@ class AvesEntry with AvesEntryBase {
   final AChangeNotifier visualChangeNotifier = .new();
 
   final AChangeNotifier metadataChangeNotifier = .new(), addressChangeNotifier = .new();
+
+  bool _disposed = false;
+
+  bool get isDisposed => _disposed;
 
   new({
     required int? id,
@@ -153,7 +159,7 @@ class AvesEntry with AvesEntryBase {
   }
 
   // for DB only
-  Map<String, dynamic> toDatabaseMap() {
+  Map<String, Object?> toDatabaseMap() {
     return {
       EntryFields.id: id,
       EntryFields.uri: uri,
@@ -174,7 +180,7 @@ class AvesEntry with AvesEntryBase {
     };
   }
 
-  Map<String, dynamic> toPlatformEntryMap() {
+  Map<String, Object?> toPlatformEntryMap() {
     return {
       EntryFields.uri: uri,
       EntryFields.path: path,
@@ -192,13 +198,25 @@ class AvesEntry with AvesEntryBase {
     };
   }
 
+  Map<String, Object?> toPlatformContentAddress() {
+    return {
+      EntryFields.mimeType: mimeType,
+      EntryFields.uri: uri,
+      EntryFields.path: storagePath,
+      EntryFields.sizeBytes: sizeBytes,
+    };
+  }
+
   void dispose() {
+    assert(!isDisposed, 'entry already disposed, $this');
+
     if (kFlutterMemoryAllocationsEnabled) {
       LeakTracking.dispatchObjectDisposed(object: this);
     }
     visualChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
+    _disposed = true;
   }
 
   // do not implement [Object.==] and [Object.hashCode] using mutable attributes (e.g. `uri`)
@@ -241,6 +259,8 @@ class AvesEntry with AvesEntryBase {
   String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
   bool get isCatalogued => _catalogMetadata != null;
+
+  C2paValidity get credentialsValidity => _catalogMetadata?.credentialsValidity ?? .unknown;
 
   DateTime? _bestDate;
 
@@ -421,6 +441,8 @@ class AvesEntry with AvesEntryBase {
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
+    assert(!isDisposed, 'entry used after being disposed, $this');
+
     final oldMimeType = mimeType;
     final oldDateModifiedMillis = this.dateModifiedMillis;
     final oldRotationDegrees = this.rotationDegrees;
@@ -462,7 +484,9 @@ class AvesEntry with AvesEntryBase {
     }
 
     await _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
-    metadataChangeNotifier.notify();
+    if (!isDisposed) {
+      metadataChangeNotifier.notify();
+    }
   }
 
   Future<void> refresh({
@@ -508,10 +532,14 @@ class AvesEntry with AvesEntryBase {
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
+    assert(!isDisposed, 'entry used after being disposed, $this');
+
     if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       EntryCache.evict(uri);
       await mediaFetchService.clearDecoders();
-      visualChangeNotifier.notify();
+      if (!isDisposed) {
+        visualChangeNotifier.notify();
+      }
     }
   }
 }

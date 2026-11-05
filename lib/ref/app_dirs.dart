@@ -1,6 +1,13 @@
 class AppDirs {
   // custom matches for album directory names that do not match their app names
   static final knownAppDirs = {
+    // App name: "Sketchbook"
+    // https://play.google.com/store/apps/details?id=com.adsk.sketchbook
+    'com.adsk.sketchbook': {
+      'Sketchbook Gallery',
+      'Sketchbook Previews',
+    },
+
     // App name: "Photos"
     // https://play.google.com/store/apps/details?id=com.google.android.apps.photos
     'com.google.android.apps.photos': {
@@ -30,6 +37,12 @@ class AppDirs {
     // https://play.google.com/store/apps/details?id=com.sony.playmemories.mobile
     'com.sony.playmemories.mobile': {
       'Imaging Edge Mobile',
+    },
+
+    // App name: "VWFNDR™ + MBL"
+    // https://play.google.com/store/apps/details?id=com.vwfndr.mbl
+    'com.vwfndr.mbl': {
+      'VWFNDR MBL',
     },
 
     // App name: "WhatsApp"

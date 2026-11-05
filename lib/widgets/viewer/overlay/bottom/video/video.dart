@@ -23,6 +23,8 @@ class const VideoControlOverlay({
 }) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _VideoControlOverlayState();
+
+  static double preferredHeight(BuildContext context) => VideoControlRow.preferredHeight(context);
 }
 
 class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTickerProviderStateMixin {
@@ -116,7 +118,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                   controller: controller,
                   scale: scale,
                 ),
-                const SizedBox(height: _padding),
                 ...progressAndControls,
               ],
             );

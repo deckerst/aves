@@ -35,6 +35,7 @@ class AppSupport {
     MimeTypes.vtf,
     MimeTypes.wmf,
     MimeTypes.xbm,
+    MimeTypes.xcf,
     MimeTypes.xpm,
     MimeTypes.xwd,
     // RAW

@@ -1,17 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
-class AvesOutlinedButton extends StatelessWidget {
-  final Widget? icon;
-  final String label;
-  final VoidCallback? onPressed;
-
-  const new({
-    super.key,
-    this.icon,
-    required this.label,
-    required this.onPressed,
-  });
-
+class const AvesOutlinedButton({
+  super.key,
+  final Widget? icon,
+  required final String label,
+  required final VoidCallback? onPressed,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

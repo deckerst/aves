@@ -6,12 +6,15 @@ import deckers.thibault.aves.utils.LogUtils
 class WindowChangeStreamHandler : BaseStreamHandler() {
     fun notifyCutoutInsetsChange() = success(mapOf(KEY_CODE to CODE_CUTOUT_INSETS))
     fun notifySystemBarVisibilityChange(statusBarVisible: Boolean, navBarVisible: Boolean) {
-        success(mapOf(
-            KEY_CODE to CODE_SYSTEM_BAR_VISIBILITY,
-            "status_bar" to statusBarVisible,
-            "nav_bar" to navBarVisible,
-        ))
+        success(
+            mapOf(
+                KEY_CODE to CODE_SYSTEM_BAR_VISIBILITY,
+                "status_bar" to statusBarVisible,
+                "nav_bar" to navBarVisible,
+            )
+        )
     }
+
     fun notifyWindowModeChange() = success(mapOf(KEY_CODE to CODE_WINDOW_MODE))
 
     override val logTag = LOG_TAG

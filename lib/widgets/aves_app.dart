@@ -51,7 +51,6 @@ import 'package:aves_model/aves_model.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:equatable/equatable.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -193,7 +192,6 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    EquatableConfig.stringify = true;
     _appSetup = _setup();
     _subscriptions.add(_mediaStoreChangeChannel.receiveBroadcastStream().cast<String?>().listen(_mediaStoreSource.onStoreChanged));
     _subscriptions.add(_newIntentChannel.receiveBroadcastStream().cast<Map?>().listen(_onNewIntent));
@@ -559,6 +557,17 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
     return currentRoute;
   }
 
+  static const _ignoredDefaultIntentDataKeys = {'debug'};
+
+  bool _isDefaultIntentData(Map? intentData) {
+    if (intentData == null) return true;
+    return intentData.entries.where((kv) {
+      if (_ignoredDefaultIntentDataKeys.contains(kv.key)) return false;
+      if (kv.value == null) return false;
+      return true;
+    }).isEmpty;
+  }
+
   void _onNewIntent(Map? intentData) {
     reportService.log('New intent data=$intentData');
 
@@ -567,7 +576,7 @@ class _AvesAppState extends State<AvesApp> with WidgetsBindingObserver {
       final shouldReset = _exitedMainByPop;
       _exitedMainByPop = false;
 
-      if (!shouldReset && (intentData ?? {}).values.nonNulls.isEmpty) {
+      if (!shouldReset && _isDefaultIntentData(intentData)) {
         reportService.log('Relaunch');
         return;
       }
@@ -684,7 +693,11 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
 
   CollectionSource get source => widget.source;
 
-  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder();
+  static const _defaultPageTransitionsBuilder = PredictiveBackPageTransitionsBuilder(
+    // disable snapshotting because it prevents seeing items progressively appearing
+    // while entering route, e.g. with `flutter_staggered_animations` transitions
+    allowSnapshotting: false,
+  );
 
   @override
   void initState() {

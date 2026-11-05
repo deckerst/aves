@@ -358,8 +358,14 @@
     "aboutDataUsageMisc": "Diverse",
     "aboutDataUsageExternal": "Externt",
     "aboutDataUsageClearCache": "Rensa Cacheminnet",
-    "aboutCreditsWorldAtlas1": "Den här appen använder en TopoJSON fil från",
-    "aboutCreditsWorldAtlas2": "under ISC Licens.",
+    "aboutCreditsWorldAtlas": "Den här appen använder en TopoJSON fil från [World Atlas]({link}) under ISC Licens.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutTranslatorsSectionTitle": "Översättare",
     "aboutLicensesSectionTitle": "Öppen-Källkod Licenser",
     "aboutLicensesAndroidLibrariesSectionTitle": "Android Bibliotek",
@@ -984,5 +990,13 @@
     "videoThumbnailMethodPreviewFrame": "Förhandsgranskningsruta",
     "videoThumbnailMethodFirstFrame": "Första bildrutan",
     "renameTagDialogLabelAlreadyExistsHelper": "Tagg existerar redan",
-    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild"
+    "settingsVideoThumbnailMethods": "Föredragen miniatyrbild",
+    "filterCredentialsValidityUnknownLabel": "Okänd",
+    "filterCredentialsValidityInvalidLabel": "Ogiltig",
+    "filterCredentialsValidityValidLabel": "Giltig",
+    "filterCredentialsValidityTrustedLabel": "Betrodd",
+    "searchCredentialsSectionTitle": "Innehållsreferenser",
+    "settingsThumbnailShowCredentialValidity": "Visa giltighet för referenser",
+    "exportEntryDialogDimension": "Dimension:",
+    "aboutCreditsStateFlags": "Delstatsflaggorna kommer från Wikimedia Commons. De är allmän egendom, med undantag för:"
 }

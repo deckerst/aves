@@ -1,13 +1,14 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/model/settings/modules/common_layout.dart';
+import 'package:aves/services/media/enums.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves_model/aves_model.dart';
 
 mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
-  List<String> get collectionBurstPatterns => getStringList(SettingKeys.collectionBurstPatternsKey) ?? [];
+  Set<String> get collectionBurstPatterns => getStringList(SettingKeys.collectionBurstPatternsKey)?.toSet() ?? {};
 
-  set collectionBurstPatterns(List<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue);
+  set collectionBurstPatterns(Set<String> newValue) => set(SettingKeys.collectionBurstPatternsKey, newValue.toList());
 
   bool get showCollectionLayoutBar => getBool(SettingKeys.showCollectionLayoutBarKey) ?? false;
 
@@ -20,6 +21,10 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   List<EntrySetAction> get collectionSelectionQuickActions => getEnumListOrDefault(SettingKeys.collectionSelectionQuickActionsKey, SettingsDefaults.collectionSelectionQuickActions, EntrySetAction.values);
 
   set collectionSelectionQuickActions(List<EntrySetAction> newValue) => set(SettingKeys.collectionSelectionQuickActionsKey, newValue.map((v) => v.name).toList());
+
+  Set<C2paValidity> get thumbnailCredentialValidity => getEnumListOrDefault(SettingKeys.thumbnailCredentialValidityKey, SettingsDefaults.thumbnailCredentialValidity, C2paValidity.values).toSet();
+
+  set thumbnailCredentialValidity(Set<C2paValidity> newValue) => set(SettingKeys.thumbnailCredentialValidityKey, newValue.map((v) => v.name).toList());
 
   bool get showThumbnailFavourite => getBool(SettingKeys.showThumbnailFavouriteKey) ?? SettingsDefaults.showThumbnailFavourite;
 
@@ -66,6 +71,10 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   bool get _collectionSortReverse => getBool(SettingKeys.collectionSortReverseKey) ?? false;
 
   set _collectionSortReverse(bool newValue) => set(SettingKeys.collectionSortReverseKey, newValue);
+
+  int get collectionSortRandomSeed => getInt(SettingKeys.collectionSortRandomSeedKey) ?? 0;
+
+  set collectionSortRandomSeed(int newValue) => set(SettingKeys.collectionSortRandomSeedKey, newValue);
 
   EntrySectionFactor get _collectionSectionFactor => getEnumOrDefault(SettingKeys.collectionSectionFactorKey, SettingsDefaults.collectionSectionFactor, EntrySectionFactor.values);
 
@@ -147,6 +156,7 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
             return .name;
           case .size:
           case .duration:
+          case .random:
             return .none;
           case .rating:
             return .rating;

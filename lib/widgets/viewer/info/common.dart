@@ -4,8 +4,8 @@ import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SectionRow extends StatelessWidget {
   final IconData icon;
@@ -179,7 +179,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
   double _getSpanWidth(TextSpan span, TextScaler textScaler) {
     final paragraph = RenderParagraph(
       span,
-      textDirection: TextDirection.ltr,
+      textDirection: .ltr,
       textScaler: textScaler,
     )..layout(const BoxConstraints(), parentUsesSize: true);
     final width = paragraph.getMaxIntrinsicWidth(double.infinity);

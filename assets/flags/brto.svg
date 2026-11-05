@@ -1,0 +1,10 @@
+<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#FFD700">
+<path d="m0 0h20v14H0" fill="#fff"/>
+<path d="m13 0h-13v9" fill="#1946b4"/>
+<path d="m7 14h13v-9"/>
+<g id="b"><g id="c">
+<path id="a" d="m9.08 5.69-.19-.71 .5 .54-.03-.73 .36 .63 .28-2.42 .28 2.42-.28 1.62"/>
+<use transform="rotate(45 10 7)" xlink:href="#a"/></g>
+<use transform="rotate(90 10 7)" xlink:href="#c"/></g>
+<use transform="rotate(180 10 7)" xlink:href="#b"/>
+</svg>

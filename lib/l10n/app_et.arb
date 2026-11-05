@@ -476,8 +476,14 @@
     "aboutDataUsageSectionTitle": "Andmekasutus",
     "aboutDataUsageCache": "Vahemälu",
     "aboutDataUsageClearCache": "Tühjenda vahemälu",
-    "aboutCreditsWorldAtlas1": "See rakendus kasutab TopoJSONi faili, mille on koostanud",
-    "aboutCreditsWorldAtlas2": ", avaldatud ISC Litsentsi alusel.",
+    "aboutCreditsWorldAtlas": "See rakendus kasutab TopoJSONi faili, mille on koostanud [World Atlas]({link}), avaldatud ISC Litsentsi alusel.",
+    "@aboutCreditsWorldAtlas": {
+        "placeholders": {
+            "link": {
+                "type": "String"
+            }
+        }
+    },
     "aboutLicensesSectionTitle": "Avatud lähtekoodiga tarkvara litsentsid",
     "aboutLicensesFlutterPackagesSectionTitle": "Flutteri paketid",
     "aboutLicensesDartPackagesSectionTitle": "Darti paketid",
@@ -993,5 +999,14 @@
     "videoThumbnailMethodFirstFrame": "Esimene kaader",
     "settingsVideoThumbnailMethods": "Eelista pisipilti",
     "renameTagDialogLabelAlreadyExistsHelper": "Selline silt juba on olemas",
-    "chipActionCopyCenterCoordinates": "Kopeeri keskpunkti koordinaadid"
+    "chipActionCopyCenterCoordinates": "Kopeeri keskpunkti koordinaadid",
+    "filterCredentialsValidityUnknownLabel": "Pole teada",
+    "filterCredentialsValidityInvalidLabel": "Vigane",
+    "filterCredentialsValidityValidLabel": "Kehtiv",
+    "filterCredentialsValidityTrustedLabel": "Usaldatud",
+    "searchCredentialsSectionTitle": "Sisu autentimisandmed",
+    "settingsThumbnailShowCredentialValidity": "Näita autentimisandmete kehtivust",
+    "aboutCreditsStateFlags": "Riikide lipud on laaditud Wikimedia Commonsist. Nad on avaldatud avaliku omandi litsentsitingimuste alusel, välja arvatud:",
+    "exportEntryDialogDimension": "Mõõdud:",
+    "sortRandomly": "Juhuslikult"
 }

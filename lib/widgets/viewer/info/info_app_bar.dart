@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/props.dart';
@@ -16,7 +18,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/route.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/info/info_search_delegate.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
@@ -27,7 +29,7 @@ class const InfoAppBar({
   required final AvesEntry entry,
   required final CollectionLens? collection,
   required final EntryInfoActionDelegate actionDelegate,
-  required final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier,
+  required final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> metadataNotifier,
   required final VoidCallback onBackPressed,
 }) extends StatelessWidget {
   @override

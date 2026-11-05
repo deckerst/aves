@@ -33,4 +33,7 @@ class ViewStateController with HistogramMixin {
     viewStateNotifier.dispose();
     fullImageNotifier.dispose();
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{entry=$entry}';
 }

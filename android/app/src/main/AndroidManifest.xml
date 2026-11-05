@@ -74,6 +74,12 @@
     `android.permission.USE_BIOMETRIC` by `io.flutter.plugins.localauth`, to unlock vaults (API >=28)
     -->
 
+    <!--
+    allow install on API 24, despite the `minSdk` declared in dependencies:
+    - `c2pa-android` is from API 28
+    -->
+    <uses-sdk tools:overrideLibrary="org.contentauth.c2pa" />
+
     <!-- from Android 11 (API 30), we should define <queries> to make other apps visible to this app -->
     <queries>
         <intent>

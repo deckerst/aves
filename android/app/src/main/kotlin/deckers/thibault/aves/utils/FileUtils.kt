@@ -1,6 +1,7 @@
 package deckers.thibault.aves.utils
 
 import android.os.Build
+import deckers.thibault.aves.model.PartialTransferException
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -105,7 +106,7 @@ object FileUtils {
                 Channels.newChannel(inputStream).use { input ->
                     val actuallyTransferred = fileOutput.transferFrom(input, 0, streamLength)
                     if (actuallyTransferred != streamLength) {
-                        throw Exception("failed to transfer $streamLength bytes, only transferred $actuallyTransferred bytes from input stream to file=$this")
+                        throw PartialTransferException("failed to transfer $streamLength bytes, only transferred $actuallyTransferred bytes from input stream to file=$this")
                     }
                 }
             }
@@ -126,7 +127,7 @@ object FileUtils {
                     val fileSize = fileInput.size()
                     val actuallyTransferred = fileInput.transferTo(0, fileSize, output)
                     if (actuallyTransferred != fileSize) {
-                        throw Exception("failed to transfer $fileSize bytes, only transferred $actuallyTransferred bytes from file=$this to output stream")
+                        throw PartialTransferException("failed to transfer $fileSize bytes, only transferred $actuallyTransferred bytes from file=$this to output stream")
                     }
                 }
             }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/entry/extensions/info.dart';
@@ -7,24 +8,20 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/buttons/outlined_button.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir.dart';
-import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
+import 'package:aves/widgets/viewer/info/metadata/dir_tiles/metadata.dart';
+import 'package:aves/widgets/viewer/info/metadata/model/metadata_dir.dart';
 import 'package:aves/widgets/viewer/info/metadata/tv_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class MetadataSectionSliver extends StatefulWidget {
-  final AvesEntry entry;
-  final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
-
-  const new({
-    super.key,
-    required this.entry,
-    required this.metadataNotifier,
-  });
-
+class const MetadataSectionSliver({
+  super.key,
+  required final AvesEntry entry,
+  required final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> metadataNotifier,
+}) extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();
 }
@@ -34,7 +31,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
 
   AvesEntry get entry => widget.entry;
 
-  ValueNotifier<Map<String, MetadataDirectory>> get metadataNotifier => widget.metadataNotifier;
+  ValueNotifier<SplayTreeMap<String, MetadataDirectory>> get metadataNotifier => widget.metadataNotifier;
 
   @override
   void initState() {
@@ -146,14 +143,14 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   void _onEntryChanged() {
-    metadataNotifier.value = {};
+    metadataNotifier.value = SplayTreeMap();
     _getMetadata();
   }
 
   Future<void> _getMetadata() async {
     final titledDirectories = await entry.getMetadataDirectories(context);
     if (!mounted) return;
-    metadataNotifier.value = Map.fromEntries(titledDirectories);
+    metadataNotifier.value = SplayTreeMap.of(Map.fromEntries(titledDirectories), compareNatural);
     _expandedDirectoryNotifier.value = null;
   }
 }

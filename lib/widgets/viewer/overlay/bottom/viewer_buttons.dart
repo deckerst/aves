@@ -457,21 +457,21 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
         return MoveButton(
           copy: true,
           blurred: blurred,
-          onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: true),
+          onChooserValues: (v) => actionDelegate.quickMove(context, v.first, copy: true),
           onPressed: onPressed,
         );
       case .move:
         return MoveButton(
           copy: false,
           blurred: blurred,
-          onChooserValue: (album) => actionDelegate.quickMove(context, album, copy: false),
+          onChooserValues: (v) => actionDelegate.quickMove(context, v.first, copy: false),
           onPressed: onPressed,
         );
       case .share:
         return ShareButton(
           blurred: blurred,
           entries: {mainEntry},
-          onChooserValue: (action) => actionDelegate.quickShare(context, action),
+          onChooserValues: (v) => actionDelegate.quickShare(context, v.first),
           focusNode: focusNode,
           onPressed: onPressed,
         );
@@ -503,14 +503,14 @@ class _ViewerButtonRowContentState extends State<ViewerButtonRowContent> {
       case .editRating:
         return RateButton(
           blurred: blurred,
-          onChooserValue: (rating) => actionDelegate.quickRate(context, rating),
+          onChooserValues: (v) => actionDelegate.quickRate(context, v.first),
           focusNode: focusNode,
           onPressed: onPressed,
         );
       case .editTags:
         return TagButton(
           blurred: blurred,
-          onChooserValue: (filter) => actionDelegate.quickTag(context, filter),
+          onChooserValues: (v) => actionDelegate.quickTag(context, v),
           focusNode: focusNode,
           onPressed: onPressed,
         );

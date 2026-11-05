@@ -384,9 +384,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     _metadataActionDelegate.quickRate(context, targetEntry, rating);
   }
 
-  void quickTag(BuildContext context, CollectionFilter filter) {
+  void quickTag(BuildContext context, Set<CollectionFilter> filters) {
     final targetEntry = _getTargetEntry(context, EntryAction.editTags);
-    _metadataActionDelegate.quickTag(context, targetEntry, filter);
+    _metadataActionDelegate.quickTag(context, targetEntry, filters);
   }
 
   Future<void> _addShortcut(BuildContext context, AvesEntry targetEntry) async {

@@ -118,6 +118,7 @@ class FilterNavigationPage<T extends CollectionFilter, CSAD extends ChipSetActio
       case .albumItemName:
       case .rating:
       case .duration:
+      case .random:
         throw UnimplementedError();
     }
     if (reverse) {
