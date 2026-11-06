@@ -16,11 +16,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ColorSectionSliver extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({super.key, required this.entry});
-
+class const ColorSectionSliver({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<ColorSectionSliver> createState() => _ColorSectionSliverState();
 }
@@ -31,7 +30,8 @@ class _ColorSectionSliverState extends State<ColorSectionSliver> {
   @override
   void initState() {
     super.initState();
-    final provider = widget.entry.getThumbnail(extent: min(200, widget.entry.displaySize.longestSide));
+    final entry = widget.entry;
+    final provider = entry.getThumbnail(extent: min(200, entry.displaySize.longestSide));
     _paletteLoader = _loadPalette(provider);
   }
 
