@@ -43,14 +43,10 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-class SettingsListView extends StatelessWidget {
-  final List<Widget> children;
-
-  const new({
-    super.key,
-    required this.children,
-  });
-
+class const SettingsListView({
+  super.key,
+  required final List<Widget> children,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
