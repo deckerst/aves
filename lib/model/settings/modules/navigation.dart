@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/settings/defaults.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/explorer/explorer_page.dart';
+import 'package:aves/widgets/explorer/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/navigation/nav_item.dart';

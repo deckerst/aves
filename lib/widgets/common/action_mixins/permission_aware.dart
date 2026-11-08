@@ -71,8 +71,9 @@ mixin PermissionAwareMixin {
     final uris = <String>[], mimeTypes = <String>[];
     entries
         ?.where((entry) {
-          final storageDirectory = androidFileUtils.ensureTrailingSeparator(entry.storageDirectory);
-          return dirPaths.contains(storageDirectory);
+          final storageDirectory = entry.storageDirectory;
+          if (storageDirectory == null) return false;
+          return dirPaths.contains(androidFileUtils.ensureTrailingSeparator(storageDirectory));
         })
         .forEach((entry) {
           uris.add(entry.uri);
@@ -104,7 +105,7 @@ mixin PermissionAwareMixin {
         needGrant = false;
       } else {
         final volume = requestDir.getVolumeDescription(context);
-        final relativeDir = androidFileUtils.removeTrailingSeparator(requestDir.relativeDir)!;
+        final relativeDir = androidFileUtils.removeTrailingSeparator(requestDir.relativeDir);
 
         final l10n = context.l10n;
         final directoryName = relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(relativeDir);
