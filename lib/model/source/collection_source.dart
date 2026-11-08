@@ -472,6 +472,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
 
   SourceScope get targetScope;
 
+  // Whether the current inventory has finished loading, independently of metadata analysis.
+  bool get hasLoadedEntries;
+
   Future<void> init({
     required SourceScope scope,
     AnalysisController? analysisController,

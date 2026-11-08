@@ -9,10 +9,12 @@ import 'package:test/fake.dart';
 class FakeMediaStoreService extends Fake implements MediaStoreService {
   late Set<AvesEntry> entries;
   Duration? latency;
+  Stream<AvesEntry>? entryStream;
 
   void reset() {
     entries = {};
     latency = null;
+    entryStream = null;
   }
 
   @override
@@ -34,7 +36,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   }
 
   @override
-  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => Stream.fromIterable(entries);
+  Stream<AvesEntry> getEntries(Map<int?, int?> knownEntries, {String? directory}) => entryStream ?? Stream.fromIterable(entries);
 
   static var _lastId = 1;
 

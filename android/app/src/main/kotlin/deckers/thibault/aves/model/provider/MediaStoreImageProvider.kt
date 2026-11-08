@@ -753,6 +753,12 @@ class MediaStoreImageProvider : ImageProvider() {
         }
 
         private fun getMediaUriOnVolume(context: Context, uri: Uri, mimeType: String, volumePath: String?): Uri? {
+            // The `external` URI already targets primary storage when updating media.
+            // Keep it so that the bulk write grant still applies. Replacing it with
+            // `external_primary` would require a separate permission activity per item.
+            // Only removable storage needs a volume-specific URI to avoid cross-volume moves.
+            if (volumePath == StorageUtils.getPrimaryVolumePath(context)) return uri
+
             var uriOnVolume: Uri? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && volumePath != null) {
                 val rootContentUri = StorageUtils.getMediaStoreRootContentUri(context, mimeType, volumePath)

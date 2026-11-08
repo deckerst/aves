@@ -9,6 +9,8 @@ import 'package:aves/model/filters/covered/stored_album.dart';
 import 'package:aves/model/filters/covered/tag.dart';
 import 'package:aves/model/grouping/common.dart';
 import 'package:aves/model/grouping/convert.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/services/common/services.dart';
@@ -168,6 +170,78 @@ void main() {
     await readyCompleter.future;
     return source;
   }
+
+  test('Keep saved album groups while rebuilding the catalog', () async {
+    const album = '${FakeStorageService.primaryPath}Pictures/grouped';
+    final filter = StoredAlbumFilter(album, null);
+    final groupUri = albumGrouping.buildGroupUri(null, groupName);
+    final childUri = GroupingConversion.filterToUri(filter)!;
+    settings.albumGroups = {
+      groupUri: {childUri},
+    };
+
+    // The database is empty, as it can be during recovery after a crash.
+    // Hold discovery open while a separate metadata analysis finishes.
+    final listening = Completer<void>();
+    final entries = StreamController<Never>(onListen: listening.complete);
+    (mediaStoreService as FakeMediaStoreService).entryStream = entries.stream;
+    final source = MediaStoreSource();
+    addTearDown(() async {
+      albumGrouping.unregisterSource(source);
+      tagGrouping.unregisterSource(source);
+      source.dispose();
+      if (!entries.isClosed) await entries.close();
+    });
+    await source.init(scope: CollectionSource.fullScope);
+    await listening.future;
+
+    await source.analyze(null, entries: {});
+    expect(source.isReady, true);
+    expect(source.hasLoadedEntries, false);
+    source.notifyAlbumsChanged();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(albumGrouping.getFilterParent(filter), groupUri);
+    expect(settings.albumGroups[groupUri], {childUri});
+
+    final loaded = source.eventBus.on<AlbumsChangedEvent>().firstWhere(
+      (_) => source.hasLoadedEntries,
+    );
+    await entries.close();
+    await loaded;
+    // Once discovery confirms the album is gone, normal cleanup still applies.
+    expect(albumGrouping.exists(groupUri), false);
+  });
+
+  test(
+    'Keep saved album groups after rediscovering more than 201 entries',
+    () async {
+      const album = '${FakeStorageService.primaryPath}Pictures/grouped';
+      final filter = StoredAlbumFilter(album, null);
+      final groupUri = albumGrouping.buildGroupUri(null, groupName);
+      final childUri = GroupingConversion.filterToUri(filter)!;
+      settings.albumGroups = {
+        groupUri: {childUri},
+      };
+      (mediaStoreService as FakeMediaStoreService).entries = {
+        for (var i = 0; i < 205; i++)
+          FakeMediaStoreService.newImage(album, 'image$i'),
+      };
+
+      final source = await _initSource();
+      addTearDown(() {
+        albumGrouping.unregisterSource(source);
+        tagGrouping.unregisterSource(source);
+        source.dispose();
+      });
+      await Future<void>.delayed(Duration.zero);
+
+      expect(source.hasLoadedEntries, true);
+      expect(source.allEntries.length, 205);
+      expect(albumGrouping.getFilterParent(filter), groupUri);
+      expect(settings.albumGroups[groupUri], {childUri});
+    },
+  );
 
   test('Keep group when renaming album', () async {
     const sourceAlbum = '${FakeStorageService.primaryPath}Pictures/source';

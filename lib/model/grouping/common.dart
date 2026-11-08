@@ -91,6 +91,7 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
     _sourceSubscriptions.remove(source)
       ?..forEach((sub) => sub.cancel())
       ..clear();
+    if (_source == source) _source = null;
   }
 
   void addToGroup(Set<Uri> childrenUris, Uri? destinationGroup) {
@@ -231,7 +232,9 @@ class FilterGrouping<T extends GroupBaseFilter> with ChangeNotifier {
 
   void _sanitize() {
     final source = _source;
-    if (source == null || source.targetScope != CollectionSource.fullScope || !source.isReady) return;
+    // Metadata analysis can mark the source ready while its inventory is still loading.
+    // Never persist group removals based on an incomplete collection after a restart.
+    if (source == null || source.targetScope != CollectionSource.fullScope || !source.hasLoadedEntries || !source.isReady) return;
 
     var changed = false;
 

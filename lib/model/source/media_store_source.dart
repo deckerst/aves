@@ -25,6 +25,7 @@ class MediaStoreSource extends CollectionSource {
   Map<String, int?>? _lastGenerationByVolume;
   SourceScope _loadedScope, _targetScope;
   bool _canAnalyze = true;
+  bool _hasLoadedEntries = false;
   Future<void>? _essentialLoader;
 
   @override
@@ -37,11 +38,15 @@ class MediaStoreSource extends CollectionSource {
   SourceScope get targetScope => _targetScope;
 
   @override
+  bool get hasLoadedEntries => _hasLoadedEntries;
+
+  @override
   Future<void> init({
     required SourceScope scope,
     AnalysisController? analysisController,
     bool loadTopEntriesFirst = false,
   }) async {
+    _hasLoadedEntries = false;
     _targetScope = scope;
     await reportService.log('$runtimeType init target scope=$scope');
     _essentialLoader ??= _loadEssentials();
@@ -63,11 +68,11 @@ class MediaStoreSource extends CollectionSource {
     await vaults.init();
     await favourites.init();
     albumGrouping.init();
-    albumGrouping.setGroups(settings.albumGroups);
     albumGrouping.registerSource(this);
+    albumGrouping.setGroups(settings.albumGroups);
     tagGrouping.init();
-    tagGrouping.setGroups(settings.tagGroups);
     tagGrouping.registerSource(this);
+    tagGrouping.setGroups(settings.tagGroups);
     await covers.init();
     await dynamicAlbums.init();
 
@@ -181,6 +186,7 @@ class MediaStoreSource extends CollectionSource {
         knownDateByContentId: knownDateByContentId,
       );
     } else {
+      _hasLoadedEntries = true;
       state = SourceState.ready;
     }
   }
@@ -275,6 +281,7 @@ class MediaStoreSource extends CollectionSource {
               // not only visible entries, as hidden and vault items may be analyzed
               analysisEntries = allEntries.where((entry) => analysisIds.contains(entry.id)).toSet();
             }
+            _hasLoadedEntries = true;
             await analyze(analysisController, entries: analysisEntries);
 
             // the home page may not reflect the current derived filters
