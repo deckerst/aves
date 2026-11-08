@@ -17,7 +17,7 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/vault_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
-import 'package:aves/widgets/explorer/explorer_page.dart';
+import 'package:aves/widgets/explorer/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/debug_page.dart';
