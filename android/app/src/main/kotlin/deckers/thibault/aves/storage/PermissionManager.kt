@@ -48,7 +48,11 @@ object PermissionManager {
         val storageAccess = HashMap<PathSegments, List<StorageApi>>()
         dirPaths.forEach { dirPath ->
             val apis = preferredEditionApis.filter { api ->
-                api.getPermissionDelegate().canEditWithUserInteraction(context, dirPath, insertion)
+                try {
+                    api.getPermissionDelegate().canEditWithUserInteraction(context, dirPath, insertion)
+                } catch (ex: Exception) {
+                    throw Exception("failed to check editability for api=$api", ex)
+                }
             }.toList()
             storageAccess[PathSegments(context, dirPath)] = apis
         }
