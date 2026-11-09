@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture
 
 object MediaStorePermissions : StoragePermissions {
     private val LOG_TAG = LogUtils.createTag<MediaStorePermissions>()
-    private val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
+    private const val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
     private val INSERTION_PRIMARY_DIRS_LOWER = listOf(
         Environment.DIRECTORY_DCIM,
         Environment.DIRECTORY_DOWNLOADS,
