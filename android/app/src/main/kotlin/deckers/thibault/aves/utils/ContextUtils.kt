@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 
@@ -26,14 +27,14 @@ object ContextUtils {
 
     fun Context.queryContentPropValue(uri: Uri, mimeType: String, column: String): Any? {
         var contentUri: Uri = uri
-        if (StorageUtils.isMediaStoreContentUri(uri)) {
+        if (MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
             uri.tryParseId()?.let { id ->
                 contentUri = when {
                     MimeTypes.isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     MimeTypes.isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                     else -> uri
                 }
-                contentUri = StorageUtils.getOriginalUri(this, contentUri)
+                contentUri = StorageUtils.getSafeInputUri(this, contentUri)
             }
         }
 

@@ -18,7 +18,7 @@ import deckers.thibault.aves.glide.AvesAppGlideModule
 import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.VideoThumbnailMethod
-import deckers.thibault.aves.storage.StorageUtils
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
@@ -74,7 +74,7 @@ class ThumbnailFetcher internal constructor(
                 // so we skip this step for flipped entries.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     bitmap = getByResolver()
-                } else if (StorageUtils.isMediaStoreContentUri(uri)) {
+                } else if (MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
                     bitmap = getByMediaStore()
                 }
             }
