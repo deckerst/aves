@@ -6,18 +6,15 @@ import 'package:aves/model/entry/extensions/images.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_debug_service.dart';
+import 'package:aves/widgets/common/basic/keep_alive.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/settings/language/locales.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ThumbnailsTab extends StatefulWidget {
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
-
+class const ThumbnailsTab({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   @override
   State<ThumbnailsTab> createState() => _ThumbnailsTabState();
 }
@@ -52,57 +49,44 @@ class _ThumbnailsTabState extends State<ThumbnailsTab> {
     return ListView(
       padding: const EdgeInsets.all(8),
       children: [
-        AvesExpansionTile(
-          title: 'Cached',
-          locale: KnownLocale.english,
-          children: entry.cachedThumbnails
-              .expand(
-                (provider) => [
-                  Text('Thumb extent: ${provider.key.extent}'),
-                  Center(
-                    child: Image(
-                      image: provider,
-                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                        return Container(
-                          foregroundDecoration: const BoxDecoration(
-                            border: Border.fromBorderSide(
-                              BorderSide(
-                                color: Colors.amber,
-                                width: .1,
-                              ),
-                            ),
-                          ),
-                          child: child,
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              )
-              .toList(),
+        AKeepAlive(
+          child: AvesExpansionTile(
+            title: 'Cached',
+            locale: KnownLocale.english,
+            children: entry.cachedThumbnails
+                .expand(
+                  (provider) => [
+                    Text('Thumb extent: ${provider.key.extent}'),
+                    Image(image: provider),
+                    const SizedBox(height: 16),
+                  ],
+                )
+                .toList(),
+          ),
         ),
-        FutureBuilder<List<MapEntry<ThumbnailMethod, Uint8List?>>>(
-          future: _byMethodLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+        AKeepAlive(
+          child: FutureBuilder<List<MapEntry<ThumbnailMethod, Uint8List?>>>(
+            future: _byMethodLoader,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return Text(snapshot.error.toString());
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
 
-            final result = snapshot.data!;
+              final result = snapshot.data!;
 
-            return AvesExpansionTile(
-              title: 'By method',
-              locale: KnownLocale.english,
-              children: result.expand((kv) {
-                final method = kv.key;
-                final bytes = kv.value;
-                return <Widget>[
-                  Text('$method'),
-                  if (bytes != null) Image.memory(bytes) else const Text('null'),
-                ];
-              }).toList(),
-            );
-          },
+              return AvesExpansionTile(
+                title: 'By method',
+                locale: KnownLocale.english,
+                children: result.expand((kv) {
+                  final method = kv.key;
+                  final bytes = kv.value;
+                  return <Widget>[
+                    Text('$method'),
+                    if (bytes != null) Image.memory(bytes) else const Text('null'),
+                  ];
+                }).toList(),
+              );
+            },
+          ),
         ),
       ],
     );

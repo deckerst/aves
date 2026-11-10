@@ -68,20 +68,27 @@ mixin PermissionAwareMixin {
 
     // request media access, which will trigger an OS level dialog
     // if the Media Management permission is not granted
-    final uris = <String>[], mimeTypes = <String>[];
+    final uris = <String>[], mimeTypes = <String>[], paths = <String>[];
     entries
         ?.where((entry) {
-          final storageDirectory = androidFileUtils.ensureTrailingSeparator(entry.storageDirectory);
-          return dirPaths.contains(storageDirectory);
+          final storageDirectory = entry.storageDirectory;
+          if (storageDirectory == null) return false;
+          return dirPaths.contains(androidFileUtils.ensureTrailingSeparator(storageDirectory));
         })
         .forEach((entry) {
-          uris.add(entry.uri);
-          mimeTypes.add(entry.mimeType);
+          final path = entry.path;
+          if (path != null) {
+            uris.add(entry.uri);
+            mimeTypes.add(entry.mimeType);
+            paths.add(path);
+          } else {
+            reportService.recordError('Failed to request MediaStore write access because path is missing for entry=$entry');
+          }
         });
     if (uris.isNotEmpty) {
       var granted = false;
       try {
-        granted = await storagePermissionService.requestMediaStoreFileAccess(uris, mimeTypes);
+        granted = await storagePermissionService.requestMediaStoreWriteAccess(uris, mimeTypes, paths);
       } on TooManyItemsException catch (_) {
         await showWarningDialog(
           context: context,
@@ -104,7 +111,7 @@ mixin PermissionAwareMixin {
         needGrant = false;
       } else {
         final volume = requestDir.getVolumeDescription(context);
-        final relativeDir = androidFileUtils.removeTrailingSeparator(requestDir.relativeDir)!;
+        final relativeDir = androidFileUtils.removeTrailingSeparator(requestDir.relativeDir);
 
         final l10n = context.l10n;
         final directoryName = relativeDir.isEmpty ? l10n.rootDirectoryDescription : l10n.otherDirectoryDescription(relativeDir);

@@ -14,9 +14,7 @@ import 'package:provider/provider.dart';
 // because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 591), as of Flutter v3.3.3.
 // cf https://github.com/flutter/flutter/issues/49027
 // adapted from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
-class SectionedListSliver<T> extends StatelessWidget {
-  const new({super.key});
-
+class const SectionedListSliver<T>({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sectionLayouts = context.watch<SectionedListLayout<T>>().sectionLayouts;
@@ -57,9 +55,10 @@ class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   }
 }
 
-class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
-  List<SectionLayout> _sectionLayouts;
-
+class _RenderSliverKnownExtentBoxAdaptor({
+  required super.childManager,
+  required var List<SectionLayout> _sectionLayouts,
+}) extends RenderSliverMultiBoxAdaptor {
   List<SectionLayout> get sectionLayouts => _sectionLayouts;
 
   set sectionLayouts(List<SectionLayout> value) {
@@ -67,11 +66,6 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     _sectionLayouts = value;
     markNeedsLayout();
   }
-
-  new({
-    required super.childManager,
-    required this._sectionLayouts,
-  });
 
   // cf `ItemExtentBuilder`, used by `RenderSliverVariedExtentList` / `SliverVariedExtentList`
   late ItemExtentBuilder itemExtentBuilder = (index, dimensions) {

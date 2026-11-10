@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
+
+### Added
+
+- Info: credential section
+
+### Fixed
+
+- crash when moving many items
+
 ## <a id="v1.15.9"></a>[v1.15.9] - 2026-11-05
 
 ### Added

@@ -46,6 +46,7 @@ import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.NameConflictResolution
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
@@ -244,14 +245,15 @@ abstract class ImageProvider {
             // even if we have permissions on the tree document via SAF
             val scopedStorage = Build.VERSION.SDK_INT > Build.VERSION_CODES.Q
             if (MediaStorePermissions.canEdit(context, contentAddress) || !scopedStorage) {
-                Log.d(LOG_TAG, "delete via content resolver at uri=$uri")
+                val safeUri = StorageUtils.getSafeOutputUri(context, contentAddress)
+                Log.d(LOG_TAG, "delete via content resolver at safeUri=$safeUri")
                 try {
-                    val rowDeleted = context.contentResolver.delete(uri, null, null) > 0
-                    if (!rowDeleted && contentExists(context, uri)) {
+                    val rowDeleted = context.contentResolver.delete(safeUri, null, null) > 0
+                    if (!rowDeleted && contentExists(context, safeUri)) {
                         throw Exception("failed to delete row from content resolver")
                     }
                 } catch (ex: SecurityException) {
-                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at uri=$uri ex=${ex.message}")
+                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at safeUri=$safeUri for $contentAddress, ex=${ex.message}")
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
                         throw ex
                     }
@@ -296,7 +298,7 @@ abstract class ImageProvider {
             }
         }
 
-        if (contentExists(context, uri) && StorageUtils.isMediaStoreContentUri(uri)) {
+        if (contentExists(context, uri) && MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
             // in theory, scanning an obsolete path should remove the entry from the Media Store
             // in practice, the entry may still be there afterward
             MediaStoreImageProvider.scanObsoletePath(context, uri, path, mimeType)
@@ -863,7 +865,7 @@ abstract class ImageProvider {
     ) {
         val targetMimeType = targetContentAddress.mimeType
         val targetUri = targetContentAddress.uri
-        val targetPath = targetContentAddress.path ?: throw IllegalArgumentException()
+        val targetPath = targetContentAddress.path ?: throw IllegalArgumentException("null path for $targetContentAddress")
 
         // copy original file to a temporary file for editing
         val editableFile = StorageUtils.createTempFile(context, targetUri, getFileSize(targetPath))
@@ -1561,7 +1563,7 @@ abstract class ImageProvider {
     ): Boolean {
         if (originalTrailerOffset == 0L) return true
 
-        val path = contentAddress.path ?: throw IllegalArgumentException()
+        val path = contentAddress.path ?: throw IllegalArgumentException("null path for $contentAddress")
 
         val expectedLength = getFileSize(editedFile.path)
         val actualLength = getFileSize(path)
@@ -2097,7 +2099,7 @@ abstract class ImageProvider {
         return if (MediaStorePermissions.canEdit(context, contentAddress)) {
             StorageUtils.openOutputStream(context, contentAddress, mode)
         } else {
-            val path = contentAddress.path ?: throw IllegalArgumentException()
+            val path = contentAddress.path ?: throw IllegalArgumentException("null path for $contentAddress")
 
             val df = StorageUtils.getDocumentFileForExistingFile(context, filePath = path, mediaUri = contentAddress.uri)
             df ?: throw Exception("failed to get document file for $contentAddress")

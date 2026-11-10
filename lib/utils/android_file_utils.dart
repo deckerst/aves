@@ -124,13 +124,11 @@ class AndroidFileUtils {
     return recoveryPathByVolume;
   }
 
-  String? ensureTrailingSeparator(String? dirPath) {
-    if (dirPath == null) return null;
+  String ensureTrailingSeparator(String dirPath) {
     return dirPath.endsWith(separator) ? dirPath : dirPath + separator;
   }
 
-  String? removeTrailingSeparator(String? dirPath) {
-    if (dirPath == null) return null;
+  String removeTrailingSeparator(String dirPath) {
     return dirPath.endsWith(separator) ? dirPath.substring(0, dirPath.length - 1) : dirPath;
   }
 

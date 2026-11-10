@@ -1,10 +1,7 @@
 package deckers.thibault.aves.storage
 
-import android.Manifest
 import android.content.ContentResolver
-import android.content.ContentUris
 import android.content.Context
-import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -15,7 +12,6 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.text.isDigitsOnly
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.ContentAddress
@@ -28,12 +24,8 @@ import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.SafPermissions
 import deckers.thibault.aves.utils.FileUtils.copyFrom
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isDataScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
@@ -420,7 +412,7 @@ object StorageUtils {
         try {
             if (!FilePermissions.canEdit(context, filePath)) {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && MediaStoreUriHelper.isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
                     SafPermissions.sanitizePersistedUriPermissions(context)
                     try {
@@ -438,7 +430,7 @@ object StorageUtils {
 
                 // try to strip user info, if any
                 if (mediaUri.userInfo != null) {
-                    val genericMediaUri = stripMediaUriUserInfo(mediaUri)
+                    val genericMediaUri = MediaStoreUriHelper.stripMediaUriUserInfo(mediaUri)
                     Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
                     return getDocumentFileForExistingFile(context, filePath = filePath, mediaUri = genericMediaUri)
                 }
@@ -556,75 +548,11 @@ object StorageUtils {
      * Misc
      */
 
-    fun isMediaStoreContentUri(uri: Uri?): Boolean {
-        uri ?: return false
-        // a URI's authority is [userinfo@]host[:port]
-        // but we only want the host when comparing to Media Store's "authority"
-        return uri.isContentScheme && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun getMediaStoreVolumeName(context: Context, anyPath: String): String {
-        val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
-        val volume = storageManager?.getStorageVolume(File(anyPath))
-        volume ?: throw Exception("failed to get volume name because storage manager could not find volume for path=$anyPath")
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val volumeName = volume.mediaStoreVolumeName
-            volumeName ?: throw Exception("failed to get Media Store volume name because field is null")
-            return volumeName
-        }
-
-        // normalization logic from Android source
-        return if (volume.isPrimary) {
-            MediaStore.VOLUME_EXTERNAL_PRIMARY
-        } else {
-            val uuid = volume.uuid
-            uuid ?: throw Exception("failed to get Media Store volume name because volume UUID is null")
-            uuid.lowercase(Locale.US)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun getMediaStoreRootContentUri(context: Context, mimeType: String, anyPath: String): Uri? {
-        val mediaStoreVolumeName = getMediaStoreVolumeName(context, anyPath)
-
-        return if (isInDownloadPath(context, anyPath)) {
-            MediaStore.Downloads.getContentUri(mediaStoreVolumeName)
-        } else if (isImage(mimeType)) {
-            MediaStore.Images.Media.getContentUri(mediaStoreVolumeName)
-        } else if (isVideo(mimeType)) {
-            MediaStore.Video.Media.getContentUri(mediaStoreVolumeName)
-        } else {
-            Log.w(LOG_TAG, "failed to find MediaStore content URI for mimeType=$mimeType, path=$anyPath")
-            null
-        }
-    }
-
     fun isInDownloadPath(context: Context, anyPath: String): Boolean {
         val volumePath = getVolumePath(context, anyPath) ?: return false
         val downloadDirPath = ensureTrailingSeparator(File(volumePath, Environment.DIRECTORY_DOWNLOADS).path)
         // effective download path may have a different case
         return anyPath.lowercase().startsWith(downloadDirPath.lowercase())
-    }
-
-    fun getOriginalUri(context: Context, uri: Uri): Uri {
-        // we get a permission denial if we require original from a provider other than the media store
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            val path = uri.path
-            path ?: return uri
-
-            // from Android 11 (API 30), accessing the original URI for a `file` or `downloads` media content yields a `SecurityException`
-            val imagesPath = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.path!!
-            val videoPath = MediaStore.Video.Media.EXTERNAL_CONTENT_URI.path!!
-            if (path.startsWith(imagesPath) || path.startsWith(videoPath)) {
-                // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
-                if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    return MediaStore.setRequireOriginal(uri)
-                }
-            }
-        }
-        return uri
     }
 
     // As of Glide v4.12.0, a special loader `QMediaStoreUriLoader` is automatically used
@@ -635,12 +563,12 @@ object StorageUtils {
         val mimeType = contentAddress.mimeType
         val uri = contentAddress.uri
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
             val uriPath = uri.path
             when {
                 uriPath?.contains("/downloads/") == true -> {
                     // e.g. `content://media/external_primary/downloads/...`
-                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
+                    MediaStoreUriHelper.getMediaUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
                 }
 
                 uriPath?.contains("/file/") == true -> {
@@ -653,62 +581,28 @@ object StorageUtils {
                     }
                 }
 
-                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
+                uri.userInfo != null -> return MediaStoreUriHelper.stripMediaUriUserInfo(uri)
             }
         }
         return uri
     }
 
-    // requesting access or writing to some MediaStore content URIs
-    // yields an exception with `All requested items must be referenced by specific ID`
-    fun getMediaStoreScopedStorageSafeUri(uri: Uri, mimeType: String): Uri {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            val uriPath = uri.path
-            when {
-                uriPath?.contains("/downloads/") == true -> {
-                    // e.g. `content://media/external_primary/downloads/...`
-                    getMediaUriImageVideoUri(uri, mimeType)?.let { imageVideoUri -> return imageVideoUri }
-                }
-
-                uri.userInfo != null -> return stripMediaUriUserInfo(uri)
-            }
+    fun getSafeInputUri(context: Context, uri: Uri): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
+            return MediaStoreUriHelper.sanitizeInputUri(context, uri)
         }
         return uri
     }
 
-    // Build a typical `images` or `video` content URI from the original content ID.
-    // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
-    // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
-    private fun getMediaUriImageVideoUri(uri: Uri, mimeType: String): Uri? {
-        return uri.tryParseId()?.let { id ->
-            return when {
-                isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                else -> uri
-            }
+    fun getSafeOutputUri(context: Context, contentAddress: ContentAddress): Uri {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && MediaStoreUriHelper.isMediaStoreContentUri(contentAddress.uri)) {
+            return MediaStoreUriHelper.sanitizeOutputUri(context, contentAddress)
         }
-    }
-
-    /*
-        Strip user info, if any
-        e.g. `content://0@media/...`
-          -> `content://media/...`
-
-        `MediaStore` source indicates the following:
-        ------------
-        NOTE: The user-id in URI authority is ONLY required to find the correct MediaProvider
-        process. Once in the correct process, the field is no longer required and may cause
-        breakage in MediaProvider code. This is because per process logic is agnostic of
-        user-id. Hence, strip away the user ids from URI, if present.
-        ------------
-     */
-    private fun stripMediaUriUserInfo(uri: Uri): Uri {
-        if (uri.userInfo == null) return uri
-        return uri.buildUpon().authority(uri.host).build()
+        return contentAddress.uri
     }
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
-        val effectiveUri = getOriginalUri(context, uri)
+        val safeUri = getSafeInputUri(context, uri)
         return try {
             return if (uri.isFileScheme) {
                 FileInputStream(uri.path)
@@ -718,83 +612,78 @@ object StorageUtils {
                 if (index == -1) throw Exception("unsupported data URI encoding for uri=$uri")
                 Base64.decode(uriString, index + DATA_URI_BASE64_SEPARATOR.length).inputStream()
             } else {
-                context.contentResolver.openInputStream(effectiveUri)
+                context.contentResolver.openInputStream(safeUri)
             }
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open input stream from effectiveUri=$effectiveUri for uri=$uri", ex)
+            Log.w(LOG_TAG, "failed to open input stream from safeUri=$safeUri for uri=$uri", ex)
             null
         }
     }
 
     fun openOutputStream(context: Context, contentAddress: ContentAddress, mode: String): OutputStream {
-        val mimeType = contentAddress.mimeType
-        val uri = contentAddress.uri
-        val effectiveUri = getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        val safeUri = getSafeOutputUri(context, contentAddress)
         return try {
-            context.contentResolver.openOutputStream(effectiveUri, mode) ?: throw ContentProviderCrash(
+            context.contentResolver.openOutputStream(safeUri, mode) ?: throw ContentProviderCrash(
                 "failed to open output stream because provider recently crashed" +
-                        ", from mode=$mode effectiveUri=$effectiveUri for $contentAddress"
+                        ", from mode=$mode safeUri=$safeUri for $contentAddress"
             )
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
             when (ex) {
                 is FileNotFoundException if (ex.message ?: "").startsWith("open failed: EROFS (Read-only file system)") -> {
-                    throw ReadOnlyFileSystemException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+                    throw ReadOnlyFileSystemException("failed to open output stream from mode=$mode safeUri=$safeUri for $contentAddress", ex)
                 }
 
                 is ContentProviderCrash -> throw ex
-                else -> throw OutputStreamException("failed to open output stream from mode=$mode effectiveUri=$effectiveUri for $contentAddress", ex)
+                else -> throw OutputStreamException("failed to open output stream from mode=$mode safeUri=$safeUri for $contentAddress", ex)
             }
         }
     }
 
     fun openInputFileDescriptor(context: Context, uri: Uri): ParcelFileDescriptor? {
-        val effectiveUri = getOriginalUri(context, uri)
+        val safeUri = getSafeInputUri(context, uri)
         return try {
-            context.contentResolver.openFileDescriptor(effectiveUri, "r")
+            context.contentResolver.openFileDescriptor(safeUri, "r")
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", ex)
-            throw FileDescriptorException("failed to open input file descriptor from effectiveUri=$effectiveUri for uri=$uri", ex)
+            Log.w(LOG_TAG, "failed to open input file descriptor from safeUri=$safeUri for uri=$uri", ex)
+            throw FileDescriptorException("failed to open input file descriptor from safeUri=$safeUri for uri=$uri", ex)
         }
     }
 
     fun openOutputFileDescriptor(context: Context, contentAddress: ContentAddress, mode: String): ParcelFileDescriptor? {
-        val mimeType = contentAddress.mimeType
-        val uri = contentAddress.uri
-
-        val effectiveUri = if (MediaStorePermissions.canEdit(context, contentAddress)) {
-            getMediaStoreScopedStorageSafeUri(uri, mimeType)
+        val safeUri = if (MediaStorePermissions.canEdit(context, contentAddress)) {
+            getSafeOutputUri(context, contentAddress)
         } else {
-            val path = contentAddress.path ?: throw IllegalArgumentException()
+            val uri = contentAddress.uri
+            val path = contentAddress.path ?: throw IllegalArgumentException("null path for $contentAddress")
             getDocumentFileForExistingFile(context, filePath = path, mediaUri = uri)?.uri ?: throw Exception("failed to get document file for $contentAddress")
         }
         return try {
-            context.contentResolver.openFileDescriptor(effectiveUri, mode)
+            context.contentResolver.openFileDescriptor(safeUri, mode)
         } catch (ex: Exception) {
             // among various other exceptions,
             // opening a file marked pending and owned by another package throws an `IllegalStateException`
-            Log.w(LOG_TAG, "failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", ex)
-            throw FileDescriptorException("failed to open output file descriptor from effectiveUri=$effectiveUri for $contentAddress", ex)
+            Log.w(LOG_TAG, "failed to open output file descriptor from safeUri=$safeUri for $contentAddress", ex)
+            throw FileDescriptorException("failed to open output file descriptor from safeUri=$safeUri for $contentAddress", ex)
         }
     }
 
     fun openMetadataRetriever(context: Context, contentAddress: ContentAddress): MediaMetadataRetriever? {
-        val uri = contentAddress.uri
-        val effectiveUri = getOriginalUri(context, uri)
+        val safeUri = getSafeInputUri(context, contentAddress.uri)
         return try {
             MediaMetadataRetriever().apply {
                 // on Android 12 preview, setting the data source works but yields an internal IOException
                 // (`Input file descriptor already original`), whether we provide the original URI or not
-                setDataSource(context, effectiveUri)
+                setDataSource(context, safeUri)
             }
         } catch (_: Exception) {
             // unsupported format
-            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for effectiveUri=$effectiveUri $contentAddress")
+            Log.w(LOG_TAG, "failed to initialize MediaMetadataRetriever for effectiveUri=$safeUri $contentAddress")
             null
         }
     }

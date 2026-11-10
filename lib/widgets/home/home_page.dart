@@ -30,7 +30,7 @@ import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/search/page.dart';
 import 'package:aves/widgets/editor/entry_editor_page.dart';
-import 'package:aves/widgets/explorer/explorer_page.dart';
+import 'package:aves/widgets/explorer/page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/home/home_error.dart';

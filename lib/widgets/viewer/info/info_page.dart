@@ -15,6 +15,7 @@ import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/color_section.dart';
+import 'package:aves/widgets/viewer/info/credential/credential_section.dart';
 import 'package:aves/widgets/viewer/info/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
@@ -142,12 +143,14 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   final Set<StreamSubscription> _subscriptions = {};
   late EntryInfoActionDelegate _actionDelegate;
   final ValueNotifier<bool> _isBasicSectionVisibleNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isCredentialSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isMetadataSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isColorSectionVisibleNotifier = ValueNotifier(false);
   final ValueNotifier<SplayTreeMap<String, MetadataDirectory>> _metadataNotifier = ValueNotifier(SplayTreeMap());
   final ValueNotifier<EntryAction?> _isEditingMetadataNotifier = ValueNotifier(null);
 
   static const _basicSectionVisibilityRatio = .2;
+  static const _credentialSectionVisibilityRatio = .5;
   static const _metadataSectionVisibilityRatio = .5;
   static const _colorSectionVisibilityRatio = .8;
   static const _horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
@@ -172,6 +175,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       _unregisterWidget(oldWidget);
       _registerWidget(widget);
       _isBasicSectionVisibleNotifier.value = false;
+      _isCredentialSectionVisibleNotifier.value = false;
       _isMetadataSectionVisibleNotifier.value = false;
       _isColorSectionVisibleNotifier.value = false;
     }
@@ -180,6 +184,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   @override
   void dispose() {
     _isBasicSectionVisibleNotifier.dispose();
+    _isCredentialSectionVisibleNotifier.dispose();
     _isMetadataSectionVisibleNotifier.dispose();
     _isColorSectionVisibleNotifier.dispose();
     _metadataNotifier.dispose();
@@ -204,6 +209,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
   void _onPageInViewChanged() {
     final inView = widget.pageInViewNotifier.value;
     _isBasicSectionVisibleNotifier.value |= inView > _basicSectionVisibilityRatio;
+    _isCredentialSectionVisibleNotifier.value |= inView > _credentialSectionVisibilityRatio;
     _isMetadataSectionVisibleNotifier.value |= inView > _metadataSectionVisibilityRatio;
     _isColorSectionVisibleNotifier.value |= inView > _colorSectionVisibilityRatio;
   }
@@ -276,6 +282,18 @@ class _InfoPageContentState extends State<_InfoPageContent> {
                   : const SliverToBoxAdapter(child: SizedBox());
             },
           ),
+          if (!settings.useTvLayout && entry.credentialsValidity != .unknown)
+            ValueListenableBuilder<bool>(
+              valueListenable: _isCredentialSectionVisibleNotifier,
+              builder: (context, visible, child) {
+                return visible
+                    ? SliverPadding(
+                        padding: _horizontalPadding + const EdgeInsets.only(bottom: 8),
+                        sliver: CredentialSectionSliver(entry: entry),
+                      )
+                    : const SliverToBoxAdapter(child: SizedBox());
+              },
+            ),
           ValueListenableBuilder<bool>(
             valueListenable: _isMetadataSectionVisibleNotifier,
             builder: (context, visible, child) {

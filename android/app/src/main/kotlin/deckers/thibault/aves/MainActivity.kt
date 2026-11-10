@@ -1,10 +1,12 @@
 package deckers.thibault.aves
 
+import android.app.Activity
 import android.app.KeyguardManager
 import android.app.SearchManager
 import android.appwidget.AppWidgetManager
 import android.content.ClipData
 import android.content.Intent
+import android.content.IntentSender
 import android.content.res.Configuration
 import android.graphics.RectF
 import android.net.Uri
@@ -312,6 +314,32 @@ open class MainActivity : FlutterFragmentActivity() {
         logExtras(intent, "onNewIntent")
         super.onNewIntent(intent)
         intentStreamHandler.notifyNewIntent(extractIntentData(intent))
+    }
+
+    override fun startActivity(intent: Intent?, options: Bundle?) {
+        Log.d(LOG_TAG, "startActivity intent=$intent options=$options")
+        super.startActivity(intent, options)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun startActivityForResult(intent: Intent, requestCode: Int) {
+        Log.d(LOG_TAG, "startActivityForResult intent=$intent requestCode=$requestCode")
+        @Suppress("DEPRECATION")
+        super.startActivityForResult(intent, requestCode)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun startIntentSenderForResult(intent: IntentSender, requestCode: Int, fillInIntent: Intent?, flagsMask: Int, flagsValues: Int, extraFlags: Int, options: Bundle?) {
+        Log.d(LOG_TAG, "startIntentSenderForResult intent=$intent fillInIntent=$fillInIntent requestCode=$requestCode options=$options")
+        @Suppress("DEPRECATION")
+        super.startIntentSenderForResult(intent, requestCode, fillInIntent, flagsMask, flagsValues, extraFlags, options)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun startIntentSenderFromChild(child: Activity?, intent: IntentSender?, requestCode: Int, fillInIntent: Intent?, flagsMask: Int, flagsValues: Int, extraFlags: Int, options: Bundle?) {
+        Log.d(LOG_TAG, "startIntentSenderFromChild intent=$intent requestCode=$requestCode options=$options")
+        @Suppress("DEPRECATION")
+        super.startIntentSenderFromChild(child, intent, requestCode, fillInIntent, flagsMask, flagsValues, extraFlags, options)
     }
 
     @Deprecated("Deprecated in Java")

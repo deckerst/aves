@@ -75,6 +75,10 @@ class AIcons {
   static const width = Symbols.fit_page_width;
   static const zoomLevel = Symbols.loupe;
 
+  // authors
+  static const authorOrganization = Symbols.group;
+  static const authorPerson = Symbols.person;
+
   // time/space
   static const date = Symbols.calendar_today;
   static const dateByDay = Symbols.today;

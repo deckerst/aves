@@ -1,5 +1,0 @@
-In v1.15.4, since v1.14.9:
-- check what happened that day with the calendar layout
-- switch views with the layout bar
-- enjoy the app in Thai
-Full changelog available on GitHub

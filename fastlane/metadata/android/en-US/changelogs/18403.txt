@@ -1,0 +1,4 @@
+In v1.15.10:
+- C2PA: detect it, validate it, show it, inspect it, remove it (technologic)
+- a little treat for vexillophiles taking photos in different states
+Full changelog available on GitHub

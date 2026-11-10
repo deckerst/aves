@@ -16,7 +16,7 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
 import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.model.ContentAddress
-import deckers.thibault.aves.storage.StorageUtils
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
@@ -76,7 +76,7 @@ object XMP {
         val mimeType = contentAddress.mimeType
         val uri = contentAddress.uri
 
-        if (!foundXmp && isIsoBMFFImage(mimeType) && StorageUtils.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (!foundXmp && isIsoBMFFImage(mimeType) && MediaStoreUriHelper.isMediaStoreContentUri(uri) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 val xmpBytes = context.queryContentPropValue(uri, mimeType, MediaStore.MediaColumns.XMP)
                 if (xmpBytes is ByteArray && xmpBytes.isNotEmpty()) {

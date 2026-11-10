@@ -10,18 +10,16 @@ import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/explorer/explorer_page.dart';
+import 'package:aves/widgets/explorer/page.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip.dart';
 import 'package:aves/widgets/stats/stats_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class ExplorerActionDelegate with FeedbackMixin {
-  final VolumeRelativeDirectory directory;
-
-  new({required this.directory});
-
+class ExplorerActionDelegate({
+  required final VolumeRelativeDirectory directory,
+}) with FeedbackMixin {
   bool isVisible(
     ExplorerAction action, {
     required AppMode appMode,

@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture
 
 object MediaStorePermissions : StoragePermissions {
     private val LOG_TAG = LogUtils.createTag<MediaStorePermissions>()
-    private val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
+    private const val INVALID_URI_EXCEPTION_MESSAGE_PREFIX = "Invalid Uri: "
     private val INSERTION_PRIMARY_DIRS_LOWER = listOf(
         Environment.DIRECTORY_DCIM,
         Environment.DIRECTORY_DOWNLOADS,
@@ -57,8 +57,8 @@ object MediaStorePermissions : StoragePermissions {
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    fun requestFileAccess(activity: Activity, uris: List<Uri>, mimeTypes: List<String>): Boolean {
-        val safeUris = uris.mapIndexed { index, uri -> StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeTypes[index]) }
+    fun requestWriteAccess(activity: Activity, contentAddresses: List<ContentAddress>): Boolean {
+        val safeUris = contentAddresses.map { StorageUtils.getSafeOutputUri(activity, it) }
 
         val todoUris = ArrayList<Uri>()
         val pid = Binder.getCallingPid()
@@ -97,11 +97,12 @@ object MediaStorePermissions : StoragePermissions {
                 throw TransactionTooLargeException(message)
             } else if (message != null && message.startsWith(INVALID_URI_EXCEPTION_MESSAGE_PREFIX)) {
                 val invalidUri = message.substring(INVALID_URI_EXCEPTION_MESSAGE_PREFIX.length).toUri()
-                if (uris.contains(invalidUri)) {
-                    val retryUris = uris as? ArrayList ?: arrayListOf<Uri>().apply { addAll(uris) }
-                    retryUris.remove(invalidUri)
+                val invalidAddress = contentAddresses.firstOrNull { it.uri == invalidUri }
+                if (contentAddresses.contains(invalidAddress)) {
+                    val retryAddresses = contentAddresses as? ArrayList ?: arrayListOf<ContentAddress>().apply { addAll(contentAddresses) }
+                    retryAddresses.remove(invalidAddress)
                     Log.w(LOG_TAG, "retry request without invalid URI=$invalidUri")
-                    requestFileAccess(activity, retryUris, mimeTypes)
+                    requestWriteAccess(activity, retryAddresses)
                 }
             }
             throw ex
@@ -115,9 +116,7 @@ object MediaStorePermissions : StoragePermissions {
 
     fun canEdit(context: Context, contentAddress: ContentAddress): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val mimeType = contentAddress.mimeType
-            val uri = contentAddress.uri
-            val safeUri = StorageUtils.getMediaStoreScopedStorageSafeUri(uri, mimeType)
+            val safeUri = StorageUtils.getSafeOutputUri(context, contentAddress)
 
             val pid = Binder.getCallingPid()
             val uid = Binder.getCallingUid()
