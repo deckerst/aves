@@ -406,7 +406,7 @@
     "viewerInfoSearchFieldLabel": "جستجو فراداده",
     "tagEmpty": "بدون برچسب ها",
     "binPageTitle": "سطل زباله",
-    "settingsViewerShowOverlayThumbnails": "نمایش ریزعکس ها",
+    "settingsViewerShowOverlayThumbnails": "نمایش تصاویر کوچک",
     "settingsStorageAccessEmpty": "دسترسی اهدا نشد",
     "settingsThemeBrightnessDialogTitle": "پوسته",
     "tagEditorSectionPlaceholders": "جایگاه متن",
@@ -737,7 +737,7 @@
     "sortOrderAtoZ": "ا تا ی",
     "albumPickPageTitleCopy": "رونوشت به آلبوم",
     "settingsModificationWarningDialogMessage": "دیگر تنظیمات اصلاح خواهد شد.",
-    "settingsThumbnailSectionTitle": "ریز عکس ها",
+    "settingsThumbnailSectionTitle": "تصاویر کوچک",
     "settingsThumbnailOverlayPageTitle": "روکش",
     "settingsViewerSectionTitle": "بیننده",
     "settingsViewerShowInformationSubtitle": "نمایش عنوان، تاریخ، مکان، و...",
@@ -849,7 +849,7 @@
             }
         }
     },
-    "aboutCreditsWorldAtlas": "این برنامه یک پرونده TopoJSON استفاده میکند از [World Atlas]({link}) زیر مجوز ISC.",
+    "aboutCreditsWorldAtlas": "این برنامه یک پرونده TopoJSON از [World Atlas]({link}) را استفاده می‌کند با مجوز ISC.",
     "@aboutCreditsWorldAtlas": {
         "placeholders": {
             "link": {
@@ -979,5 +979,24 @@
     "settingsForced": "اجباری",
     "showThumbnailSlowMotionVideoIcon": "نمایش نماد حرکت آهسته",
     "settingsPermissionsTile": "دسترسی‌ها",
-    "settingsPermissionsPageTitle": "دسترسی‌ها"
+    "settingsPermissionsPageTitle": "دسترسی‌ها",
+    "filterCredentialsValidityUnknownLabel": "ناشناخته",
+    "filterCredentialsValidityInvalidLabel": "نامعتبر",
+    "filterCredentialsValidityValidLabel": "معتبر",
+    "filterCredentialsValidityTrustedLabel": "مورد اعتماد",
+    "calendarHijriTabular": "هجری (جدولی)",
+    "calendarHijriUmalqura": "هجری (ام القری)",
+    "videoThumbnailMethodEmbeddedImage": "تصویر جاسازی شده",
+    "videoThumbnailMethodPreviewFrame": "قاب پیش‌نمایش",
+    "videoThumbnailMethodFirstFrame": "قاب آغازین",
+    "renameTagDialogLabelAlreadyExistsHelper": "برچسب از پیش وجود دارد",
+    "exportEntryDialogDimension": "ابعاد:",
+    "tileLayoutCalendar": "تقویم",
+    "aboutCreditsStateFlags": "پرچم ایالت‌ها از Wikimedia Commons هستند. آنها مالکیت عمومی دارند، به جز:",
+    "collectionActionShowLayoutBar": "نمایش نوار طرح‌بندی",
+    "collectionActionHideLayoutBar": "مخفی‌سازی نوار طرح بندی",
+    "sortRandomly": "تصادفی",
+    "searchCredentialsSectionTitle": "اعتبار محتوا",
+    "settingsThumbnailShowCredentialValidity": "نمایش صحت اعتبار",
+    "settingsVideoThumbnailMethods": "تصویر کوچک ترجیحی"
 }
