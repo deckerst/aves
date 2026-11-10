@@ -1,5 +1,0 @@
-In v1.15.5:
-- preview videos your way
-- listen to captured audio behind your panoramas
-- find significant dates with the Hijri calendars
-Full changelog available on GitHub
