@@ -194,6 +194,8 @@ class Contributors {
     Contributor('Feliks-WR', 'aq.1428@tuta.io'),
     Contributor('Jani Buni', 'alejandrolage@outlook.com'),
     Contributor('Checon56', 'checon56@users.noreply.hosted.weblate.org'),
+    Contributor('Belkin Fahri', 'belfah@users.noreply.hosted.weblate.org'),
+    Contributor('Kanok', 'triplepilot@tutamail.com'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
