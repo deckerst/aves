@@ -68,7 +68,7 @@ mixin PermissionAwareMixin {
 
     // request media access, which will trigger an OS level dialog
     // if the Media Management permission is not granted
-    final uris = <String>[], mimeTypes = <String>[];
+    final uris = <String>[], mimeTypes = <String>[], paths = <String>[];
     entries
         ?.where((entry) {
           final storageDirectory = entry.storageDirectory;
@@ -76,13 +76,19 @@ mixin PermissionAwareMixin {
           return dirPaths.contains(androidFileUtils.ensureTrailingSeparator(storageDirectory));
         })
         .forEach((entry) {
-          uris.add(entry.uri);
-          mimeTypes.add(entry.mimeType);
+          final path = entry.path;
+          if (path != null) {
+            uris.add(entry.uri);
+            mimeTypes.add(entry.mimeType);
+            paths.add(path);
+          } else {
+            reportService.recordError('Failed to request MediaStore write access because path is missing for entry=$entry');
+          }
         });
     if (uris.isNotEmpty) {
       var granted = false;
       try {
-        granted = await storagePermissionService.requestMediaStoreFileAccess(uris, mimeTypes);
+        granted = await storagePermissionService.requestMediaStoreWriteAccess(uris, mimeTypes, paths);
       } on TooManyItemsException catch (_) {
         await showWarningDialog(
           context: context,

@@ -113,7 +113,7 @@ internal class FileImageProvider : ImageProvider() {
     }
 
     override fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
-        val path = contentAddress.path ?: throw IllegalArgumentException()
+        val path = contentAddress.path ?: throw IllegalArgumentException("null path for $contentAddress")
 
         try {
             val file = File(path)

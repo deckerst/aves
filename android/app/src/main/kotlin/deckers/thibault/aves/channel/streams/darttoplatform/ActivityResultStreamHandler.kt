@@ -12,6 +12,8 @@ import deckers.thibault.aves.MainActivity
 import deckers.thibault.aves.PendingStorageAccessResultHandler
 import deckers.thibault.aves.channel.calls.AppAdapterHandler
 import deckers.thibault.aves.channel.streams.BaseStreamHandler
+import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
@@ -43,7 +45,7 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         when (op) {
             "requestSafAnyDirectoryAccess" -> ioScope.launch { safe(::requestSafAnyDirectoryAccess, closeStream) }
             "requestSafMediaDirectoryAccess" -> ioScope.launch { safe(::requestSafMediaDirectoryAccess, closeStream) }
-            "requestMediaStoreFileAccess" -> ioScope.launch { safe(::requestMediaStoreFileAccess, closeStream) }
+            "requestMediaStoreWriteAccess" -> ioScope.launch { safe(::requestMediaStoreWriteAccess, closeStream) }
             "createFile" -> ioScope.launch { safe(::createFile, closeStream) }
             "openFile" -> ioScope.launch { safe(::openFile, closeStream) }
             "copyFile" -> ioScope.launch { safe(::copyFile, closeStream) }
@@ -85,41 +87,50 @@ class ActivityResultStreamHandler(private val activity: Activity, arguments: Any
         })
     }
 
-    private fun requestMediaStoreFileAccess() {
+    private fun requestMediaStoreWriteAccess() {
         val uris = (args["uris"] as List<*>?)?.mapNotNull { if (it is String) it.toUri() else null }
         val mimeTypes = (args["mimeTypes"] as List<*>?)?.filterIsInstance<String>()
-        if (uris.isNullOrEmpty() || mimeTypes == null || mimeTypes.size != uris.size) {
-            error("requestMediaStoreFileAccess-args", "missing arguments", null)
+        val paths = (args["paths"] as List<*>?)?.filterIsInstance<String>()
+        if (uris == null || mimeTypes == null || paths == null) {
+            error("requestMediaStoreWriteAccess-args", "missing arguments", null)
             return
         }
 
-        if (uris.any { !StorageUtils.isMediaStoreContentUri(it) }) {
-            error("requestMediaStoreFileAccess-nonmediastore", "request is only valid for Media Store content URIs, uris=$uris", null)
+        val uriCount = uris.size
+        if (uriCount == 0 || mimeTypes.size != uriCount || paths.size != uriCount) {
+            error("requestMediaStoreWriteAccess-argsize", "inconsistent argument sizes", null)
+            return
+        }
+
+        if (uris.any { !MediaStoreUriHelper.isMediaStoreContentUri(it) }) {
+            error("requestMediaStoreWriteAccess-nonmediastore", "request is only valid for Media Store content URIs, uris=$uris", null)
             return
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            error("requestMediaStoreFileAccess-unsupported", "media file bulk access is not allowed before Android 11", null)
+            error("requestMediaStoreWriteAccess-unsupported", "media file bulk access is not allowed before Android 11", null)
             return
         }
+
+        val contentAddresses = List(uriCount) { i -> ContentAddress(mimeType = mimeTypes[i], uri = uris[i], path = paths[i], pageId = null) }
 
         try {
             var granted = true
             // process URIs by chunk to avoid large inter-process transactions
-            uris.chunked(1000).forEach { chunkedUris ->
-                granted = granted and MediaStorePermissions.requestFileAccess(activity, chunkedUris, mimeTypes)
+            contentAddresses.chunked(1000).forEach { chunked ->
+                granted = granted and MediaStorePermissions.requestWriteAccess(activity, chunked)
             }
             success(granted)
             endOfStream()
         } catch (ex: Exception) {
             if (ex.anyCauseIs<TransactionTooLargeException>()) {
-                error("requestMediaStoreFileAccess-large", "transaction too large with ${uris.size} uris", ex)
+                error("requestMediaStoreWriteAccess-large", "transaction too large with $uriCount uris", ex)
             } else if (ex.anyCauseIs<IntentSender.SendIntentException>()) {
-                error("requestMediaStoreFileAccess-sendintent", "intent no longer usable", ex)
+                error("requestMediaStoreWriteAccess-sendintent", "intent no longer usable", ex)
             } else {
-                val byFromMediaStore = uris.groupBy(StorageUtils::isMediaStoreContentUri)
+                val byFromMediaStore = uris.groupBy(MediaStoreUriHelper::isMediaStoreContentUri)
                 error(
-                    "requestMediaStoreFileAccess-request", "failed to request access to ${uris.size} uris" +
+                    "requestMediaStoreWriteAccess-request", "failed to request access to $uriCount uris" +
                             " (${byFromMediaStore[true]?.size ?: 0} from media store" +
                             ", ${byFromMediaStore[false]?.size ?: 0} others=${byFromMediaStore[false]}" +
                             ")", ex

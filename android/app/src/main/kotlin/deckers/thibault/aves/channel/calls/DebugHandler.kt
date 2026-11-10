@@ -29,6 +29,7 @@ import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.VideoThumbnailMethod
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
@@ -203,14 +204,14 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         var contentUri: Uri = uri
-        if (StorageUtils.isMediaStoreContentUri(uri)) {
+        if (MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
             uri.tryParseId()?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                     else -> uri
                 }
-                contentUri = StorageUtils.getOriginalUri(context, contentUri)
+                contentUri = StorageUtils.getSafeInputUri(context, contentUri)
             }
         }
 
