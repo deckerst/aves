@@ -29,7 +29,7 @@ class const ContentCredentialsFilter(
 
   @override
   EntryPredicate get positiveTest =>
-      (entry) => entry.credentialsValidity == validity;
+      (entry) => entry.c2paValidity == validity;
 
   @override
   bool get exclusiveProp => true;

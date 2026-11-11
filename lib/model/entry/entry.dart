@@ -260,7 +260,7 @@ class AvesEntry with AvesEntryBase {
 
   bool get isCatalogued => _catalogMetadata != null;
 
-  C2paValidity get credentialsValidity => _catalogMetadata?.credentialsValidity ?? .unknown;
+  C2paValidity get c2paValidity => _catalogMetadata?.c2paValidity ?? .unknown;
 
   DateTime? _bestDate;
 

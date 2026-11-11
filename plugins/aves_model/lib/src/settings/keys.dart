@@ -86,10 +86,10 @@ class SettingKeys {
   static const thumbnailLocationIconKey = 'thumbnail_location_icon';
   static const thumbnailTagIconKey = 'thumbnail_tag_icon';
   static const thumbnailCredentialValidityKey = 'thumbnail_credential_validity';
+  static const showThumbnailFormatKey = 'show_thumbnail_format';
   static const showThumbnailMotionPhotoKey = 'show_thumbnail_motion_photo';
   static const showThumbnailRatingKey = 'show_thumbnail_rating';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
-  static const showThumbnailSlowMotionVideoKey = 'show_thumbnail_slow_motion_video';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids

@@ -15,6 +15,7 @@ String formatDateTime(DateTime date, AvesLocale locale, bool use24hour) => [
   formatTime(date, locale, use24hour),
 ].join(AText.separator);
 
+// TODO TLAD [l10n] use locale formatter
 String formatFriendlyDuration(Duration d) {
   final isNegative = d.isNegative;
   final sign = isNegative ? '-' : '';

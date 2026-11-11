@@ -923,7 +923,7 @@
   "settingsThumbnailShowMotionPhotoIcon": "Show motion photo icon",
   "settingsThumbnailShowRating": "Show rating",
   "settingsThumbnailShowRawIcon": "Show raw icon",
-  "showThumbnailSlowMotionVideoIcon": "Show slow motion icon",
+  "settingsThumbnailShowFormat": "Show format",
   "settingsThumbnailShowVideoDuration": "Show video duration",
 
   "settingsCollectionQuickActionsTile": "Quick actions",

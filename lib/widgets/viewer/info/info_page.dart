@@ -282,7 +282,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
                   : const SliverToBoxAdapter(child: SizedBox());
             },
           ),
-          if (!settings.useTvLayout && entry.credentialsValidity != .unknown)
+          if (!settings.useTvLayout && entry.c2paValidity != .unknown)
             ValueListenableBuilder<bool>(
               valueListenable: _isCredentialSectionVisibleNotifier,
               builder: (context, visible, child) {

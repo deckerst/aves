@@ -129,7 +129,7 @@ class const ViewerDebugPage({
             'canRotate': '${entry.canRotate}',
             'canFlip': '${entry.canFlip}',
             'tags': '${entry.tags}',
-            'credentialsValidity': '${entry.credentialsValidity}',
+            'c2paValidity': '${entry.c2paValidity}',
           },
         ),
         const Divider(),

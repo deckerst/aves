@@ -371,10 +371,10 @@ class Settings
           case SettingKeys.showCollectionLayoutBarKey:
           case SettingKeys.showThumbnailFavouriteKey:
           case SettingKeys.showThumbnailHdrKey:
+          case SettingKeys.showThumbnailFormatKey:
           case SettingKeys.showThumbnailMotionPhotoKey:
           case SettingKeys.showThumbnailRatingKey:
           case SettingKeys.showThumbnailRawKey:
-          case SettingKeys.showThumbnailSlowMotionVideoKey:
           case SettingKeys.showThumbnailVideoDurationKey:
           case SettingKeys.albumSortReverseKey:
           case SettingKeys.countrySortReverseKey:

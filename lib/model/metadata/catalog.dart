@@ -17,7 +17,7 @@ class CatalogMetadata({
   final bool isMotionPhoto = false,
   final bool isHdr = false,
   final bool isSlowMotion = false,
-  final C2paValidity credentialsValidity = .unknown,
+  final C2paValidity c2paValidity = .unknown,
   var int? rotationDegrees,
   final String? xmpSubjects,
   final String? xmpTitle,
@@ -83,7 +83,7 @@ class CatalogMetadata({
       isMotionPhoto: isMotionPhoto,
       isHdr: isHdr,
       isSlowMotion: isSlowMotion ?? this.isSlowMotion,
-      credentialsValidity: credentialsValidity,
+      c2paValidity: c2paValidity,
       rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitle: xmpTitle,
@@ -108,7 +108,7 @@ class CatalogMetadata({
       isMotionPhoto: flags & _isMotionPhotoMask != 0,
       isHdr: flags & _isHdr != 0,
       isSlowMotion: flags & _isSlowMotion != 0,
-      credentialsValidity: _toC2paValidity(
+      c2paValidity: _toC2paValidity(
         flags & _areCredentialsPresent != 0,
         flags & _areCredentialsValid != 0,
         flags & _areCredentialsTrusted != 0,
@@ -144,7 +144,7 @@ class CatalogMetadata({
   }
 
   Map<String, Object?> toMap() {
-    final (areCredentialsPresent, areCredentialsValid, areCredentialsTrusted) = _toCredentialFlags(credentialsValidity);
+    final (areCredentialsPresent, areCredentialsValid, areCredentialsTrusted) = _toCredentialFlags(c2paValidity);
     return {
       'id': id,
       'mimeType': mimeType,
@@ -177,6 +177,6 @@ class CatalogMetadata({
   String toString() =>
       '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis timeZoneOffsetMinutes=$timeZoneOffsetMinutes'
       ', isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage'
-      ', isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion, credentialsValidity=$credentialsValidity'
+      ', isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion, c2paValidity=$c2paValidity'
       ', rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
 }

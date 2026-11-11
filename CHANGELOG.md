@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Collection: format overlay option
 - Info: credential section
 
 ### Fixed
