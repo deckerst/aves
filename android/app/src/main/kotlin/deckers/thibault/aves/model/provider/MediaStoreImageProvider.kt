@@ -140,8 +140,8 @@ class MediaStoreImageProvider : ImageProvider() {
                     }
                     cursor.close()
                 }
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
+            } catch (ex: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", ex)
             }
         }
         check(context, IMAGE_CONTENT_URI)
@@ -167,8 +167,8 @@ class MediaStoreImageProvider : ImageProvider() {
                     }
                     cursor.close()
                 }
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
+            } catch (ex: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", ex)
             }
         }
         check(context, IMAGE_CONTENT_URI)
@@ -192,8 +192,8 @@ class MediaStoreImageProvider : ImageProvider() {
                     }
                     cursor.close()
                 }
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
+            } catch (ex: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", ex)
             }
         }
         sinceGenerationByVolume.forEach { (volumeName, sinceGeneration) ->
@@ -327,8 +327,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
                 cursor.close()
             }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to get entries", e)
+        } catch (ex: Exception) {
+            Log.e(LOG_TAG, "failed to get entries", ex)
         }
         return found
     }
@@ -402,8 +402,8 @@ class MediaStoreImageProvider : ImageProvider() {
                     cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) newFields[EntryFields.SIZE_BYTES] = cursor.getLong(it) }
                     cursor.close()
                 }
-            } catch (e: Exception) {
-                callback.onFailure(e)
+            } catch (ex: Exception) {
+                callback.onFailure(ex)
                 return@scanFile
             }
             getFileModifiedDateMillis(path)?.let { newFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
@@ -428,8 +428,8 @@ class MediaStoreImageProvider : ImageProvider() {
                     }
                     cursor.close()
                 }
-            } catch (e: Exception) {
-                Log.e(LOG_TAG, "failed to get URI for contentUri=$contentUri path=$path", e)
+            } catch (ex: Exception) {
+                Log.e(LOG_TAG, "failed to get URI for contentUri=$contentUri path=$path", ex)
             }
             return mediaContentUri
         }
@@ -569,8 +569,8 @@ class MediaStoreImageProvider : ImageProvider() {
                             getFileModifiedDateMillis(path)?.let { newFields[EntryFields.DATE_MODIFIED_MILLIS] = it }
                             return newFields
                         }
-                    } catch (e: Exception) {
-                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
+                    } catch (ex: Exception) {
+                        Log.w(LOG_TAG, "failed to scan uri=$uri", ex)
                     }
                     return null
                 }
@@ -728,7 +728,7 @@ class MediaStoreImageProvider : ImageProvider() {
             } catch (ex: IllegalArgumentException) {
                 throw Exception("failed to update fields for uri=$uri values=$values]", ex)
             } catch (ex: SecurityException) {
-                Log.w(LOG_TAG, "caught a security exception when attempting to update content for uri=$uri values=$values] ex=${ex.message}")
+                Log.w(LOG_TAG, "caught a security exception when attempting to update content for uri=$uri values=$values]", ex)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
                     throw ex
                 }

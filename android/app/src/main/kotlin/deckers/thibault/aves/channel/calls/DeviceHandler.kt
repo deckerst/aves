@@ -157,6 +157,11 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
         }
 
         val intent = Intent(Settings.ACTION_REQUEST_MANAGE_MEDIA, "package:${context.packageName}".toUri())
+        if (intent.resolveActivity(context.packageManager) == null) {
+            result.error("requestMediaManagementPermission-resolve", "cannot resolve activity, intent=$intent", null)
+            return
+        }
+
         context.startActivity(intent)
         result.success(true)
     }

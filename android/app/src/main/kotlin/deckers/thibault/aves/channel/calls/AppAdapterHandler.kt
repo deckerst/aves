@@ -101,8 +101,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                             @Suppress("DEPRECATION")
                             resources.updateConfiguration(englishConfig, resources.displayMetrics)
                             englishLabel = resources.getString(labelRes)
-                        } catch (e: Exception) {
-                            Log.w(LOG_TAG, "failed to get app label in English for packageName=$packageName", e)
+                        } catch (ex: Exception) {
+                            Log.w(LOG_TAG, "failed to get app label in English for packageName=$packageName", ex)
                         }
                         englishLabel
                     }
@@ -121,22 +121,22 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         // they should be fetched before the other packages, to be marked as launcher packages
         try {
             addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to list launcher packages", e)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to list launcher packages", ex)
         }
 
         try {
             // complete with all the other packages
             addPackageDetails(Intent(Intent.ACTION_MAIN))
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             // `PackageManager.queryIntentActivities()` may kill the package manager if the response is too large
-            Log.w(LOG_TAG, "failed to list all packages", e)
+            Log.w(LOG_TAG, "failed to list all packages", ex)
 
             // fallback to the default category packages, which typically include system and OEM tools
             try {
                 addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_DEFAULT))
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to list default packages", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to list default packages", ex)
             }
         }
 
@@ -190,13 +190,13 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
                     // do not recycle bitmaps fetched from `ContentResolver` as their lifecycle is unknown
                     bytes = BitmapUtils.getBytes(bitmap, recycle = false, decoded = true, applyGainmap = false, mimeType = null)
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
+                } catch (ex: Exception) {
+                    Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", ex)
                 }
                 Glide.with(context).clear(target)
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get app info for packageName=$packageName", e)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to get app info for packageName=$packageName", ex)
             return
         }
         if (bytes != null) {
@@ -239,11 +239,11 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 } else {
                     result.success(false)
                 }
-            } catch (e: Exception) {
-                if (e.anyCauseIs<TransactionTooLargeException>()) {
-                    result.error("copyToClipboard-large", "transaction too large with text=${text?.length} chars", e)
+            } catch (ex: Exception) {
+                if (ex.anyCauseIs<TransactionTooLargeException>()) {
+                    result.error("copyToClipboard-large", "transaction too large with text=${text?.length} chars", ex)
                 } else {
-                    result.error("copyToClipboard-exception", "failed to set clip", e.message)
+                    result.error("copyToClipboard-exception", "failed to set clip", ex.message)
                 }
             }
         }
@@ -343,11 +343,11 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         try {
             val started = safeStartActivityChooser(title, intent)
             result.success(started)
-        } catch (e: Exception) {
-            if (e.anyCauseIs<TransactionTooLargeException>()) {
-                result.error("share-large", "transaction too large with ${uriList.size} URIs", e)
+        } catch (ex: Exception) {
+            if (ex.anyCauseIs<TransactionTooLargeException>()) {
+                result.error("share-large", "transaction too large with ${uriList.size} URIs", ex)
             } else {
-                result.error("share-exception", "failed to share ${uriList.size} URIs", e)
+                result.error("share-exception", "failed to share ${uriList.size} URIs", ex)
             }
         }
     }
@@ -357,7 +357,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         try {
             context.startActivity(intent)
             return true
-        } catch (e: SecurityException) {
+        } catch (ex: SecurityException) {
             if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
                 // in some environments, providing the write flag yields a `SecurityException`:
                 // "UID XXXX does not have permission to content://XXXX"
@@ -366,7 +366,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
                 return safeStartActivity(intent)
             } else {
-                Log.w(LOG_TAG, "failed to start activity for intent=$intent", e)
+                Log.w(LOG_TAG, "failed to start activity for intent=$intent", ex)
             }
         }
         return false
@@ -381,7 +381,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         try {
             context.startActivity(intentToStart)
             return true
-        } catch (e: SecurityException) {
+        } catch (ex: SecurityException) {
             if (intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
                 // in some environments, providing the write flag yields a `SecurityException`:
                 // "UID XXXX does not have permission to content://XXXX"
@@ -390,7 +390,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 intent.flags = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv()
                 return safeStartActivityChooser(title, intent)
             } else {
-                Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", e)
+                Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", ex)
             }
         }
         return false

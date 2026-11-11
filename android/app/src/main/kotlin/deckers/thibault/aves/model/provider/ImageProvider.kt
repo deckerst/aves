@@ -253,7 +253,7 @@ abstract class ImageProvider {
                         throw Exception("failed to delete row from content resolver")
                     }
                 } catch (ex: SecurityException) {
-                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at safeUri=$safeUri for $contentAddress, ex=${ex.message}")
+                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at safeUri=$safeUri for $contentAddress", ex)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
                         throw ex
                     }
@@ -1538,12 +1538,12 @@ abstract class ImageProvider {
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     return metadata.directories.any { it.hasErrors() }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
             }
         }
         return false
@@ -1655,8 +1655,8 @@ abstract class ImageProvider {
             var currentRotationDegrees: Int? = null
             try {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { currentRotationDegrees = it }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get video rotation by MediaMetadataRetriever for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to get video rotation by MediaMetadataRetriever for $contentAddress", ex)
             } finally {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
                 retriever.release()
