@@ -7,9 +7,6 @@ extension ExtraDisplayRefreshRateMode on DisplayRefreshRateMode {
   Future<void> apply() async {
     if (!await windowService.isActivity()) return;
 
-    final androidInfo = await deviceService.getAndroidInfo();
-    if (androidInfo.version.sdkInt < 23) return;
-
     debugPrint('Apply display refresh rate: $name');
     switch (this) {
       case .auto:

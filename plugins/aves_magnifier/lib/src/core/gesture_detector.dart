@@ -112,16 +112,12 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
   }
 }
 
-class MagnifierDoubleTapGestureRecognizer extends DoubleTapGestureRecognizer {
-  final MagnifierDoubleTapPredicate allowDoubleTap;
-
-  new({
-    super.debugOwner,
-    super.supportedDevices,
-    super.allowedButtonsFilter,
-    required this.allowDoubleTap,
-  });
-
+class MagnifierDoubleTapGestureRecognizer({
+  super.debugOwner,
+  super.supportedDevices,
+  super.allowedButtonsFilter,
+  required final MagnifierDoubleTapPredicate allowDoubleTap,
+}) extends DoubleTapGestureRecognizer {
   @override
   bool isPointerAllowed(PointerDownEvent event) {
     if (!allowDoubleTap(event.localPosition)) {

@@ -14,6 +14,8 @@ void mainCommon(AppFlavor flavor, {Map<String, Object?>? debugIntentData}) {
 
   // HttpClient.enableTimelineLogging = true; // enable network traffic logging
   // debugPrintGestureArenaDiagnostics = true;
+  // debugPrintRecognizerCallbacksTrace = true;
+  // debugPrintResamplingMargin = true;
 
   EquatableConfig.stringify = true;
   initPlatformServices();
