@@ -19,7 +19,7 @@ class const BottomGestureAreaProtector({super.key}) extends StatelessWidget {
       left: 0,
       right: 0,
       bottom: 0,
-      height: MediaQuery.systemGestureInsetsOf(context).bottom,
+      height: context.select<MediaQueryData, double>((mq) => mq.sanitizedSystemGestureInsets.bottom),
       child: GestureDetector(
         // absorb vertical gestures only
         onVerticalDragDown: (details) {},
@@ -37,7 +37,7 @@ class const TopGestureAreaProtector({super.key}) extends StatelessWidget {
       left: 0,
       top: 0,
       right: 0,
-      height: MediaQuery.systemGestureInsetsOf(context).top,
+      height: context.select<MediaQueryData, double>((mq) => mq.sanitizedSystemGestureInsets.top),
       child: GestureDetector(
         // absorb vertical gestures only
         onVerticalDragDown: (details) {},
@@ -57,7 +57,7 @@ class const SideGestureAreaProtector({super.key}) extends StatelessWidget {
         textDirection: .ltr,
         children: [
           SizedBox(
-            width: MediaQuery.systemGestureInsetsOf(context).left,
+            width: context.select<MediaQueryData, double>((mq) => mq.sanitizedSystemGestureInsets.left),
             child: GestureDetector(
               // absorb horizontal gestures only
               onHorizontalDragDown: (details) {},
@@ -66,7 +66,7 @@ class const SideGestureAreaProtector({super.key}) extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(
-            width: MediaQuery.systemGestureInsetsOf(context).right,
+            width: context.select<MediaQueryData, double>((mq) => mq.sanitizedSystemGestureInsets.right),
             child: GestureDetector(
               // absorb horizontal gestures only
               onHorizontalDragDown: (details) {},

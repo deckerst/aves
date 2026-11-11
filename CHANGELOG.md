@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Added
+
+- Collection: format overlay option
+
+### Fixed
+
+- large padding due to incorrect system gesture insets
+
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 
 ### Added
 
-- Collection: format overlay option
 - Info: credential section
 
 ### Fixed

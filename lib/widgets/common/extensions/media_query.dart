@@ -61,12 +61,26 @@ extension ExtraMediaQueryData on MediaQueryData {
   viewInsets        EdgeInsets(0.0, 0.0, 0.0, 338.0)
    */
 
-  double get safeBottomPadding => <double>{
-    viewPadding.bottom,
-    viewInsets.bottom,
-    systemGestureInsets.bottom,
-    bottomDisplayCornerRadius,
-  }.fold(0, max);
+  // some devices randomly report large gesture insets, so we ignore
+  // insets that seem too large to represent gestures on screen edges
+  EdgeInsets get sanitizedSystemGestureInsets {
+    double sanitize(double v) => v < 160 ? v : 0;
+    return EdgeInsets.fromLTRB(
+      sanitize(systemGestureInsets.left),
+      sanitize(systemGestureInsets.top),
+      sanitize(systemGestureInsets.right),
+      sanitize(systemGestureInsets.bottom),
+    );
+  }
+
+  double get safeBottomPadding {
+    return <double>{
+      viewPadding.bottom,
+      viewInsets.bottom,
+      sanitizedSystemGestureInsets.bottom,
+      bottomDisplayCornerRadius,
+    }.fold(0, max);
+  }
 
   double get bottomDisplayCornerRadius {
     final r = displayCornerRadii;
