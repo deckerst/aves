@@ -112,24 +112,15 @@ class MultiPageInfo {
     final trashed = (mainEntry.isMotionPhoto && pageInfo.isVideo) ? false : mainEntry.trashed;
 
     final pageEntry =
-        AvesEntry(
-            id: mainEntry.id,
-            uri: pageInfo.uri ?? mainEntry.uri,
-            path: mainEntry.path,
-            contentId: mainEntry.contentId,
+        mainEntry.copyWith(
+            uri: pageInfo.uri,
             pageId: pageId,
             sourceMimeType: pageInfo.mimeType,
             width: pageInfo.width,
             height: pageInfo.height,
-            sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
-            sizeBytes: mainEntry.sizeBytes,
-            sourceTitle: mainEntry.sourceTitle,
-            dateAddedSecs: mainEntry.dateAddedSecs,
-            dateModifiedMillis: mainEntry.dateModifiedMillis,
-            sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
-            durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
+            sourceRotationDegrees: pageInfo.rotationDegrees,
+            durationMillis: pageInfo.durationMillis,
             trashed: trashed,
-            origin: mainEntry.origin,
           )
           ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
             mimeType: pageInfo.mimeType,

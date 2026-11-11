@@ -99,10 +99,16 @@ class AvesEntry with AvesEntryBase {
     String? uri,
     String? path,
     int? contentId,
+    int? pageId,
     String? sourceMimeType,
+    int? width,
+    int? height,
+    int? sourceRotationDegrees,
     String? sourceTitle,
     int? dateAddedSecs,
     int? dateModifiedMillis,
+    int? durationMillis,
+    bool? trashed,
     int? origin,
     List<AvesEntry>? stackedEntries,
   }) {
@@ -113,18 +119,18 @@ class AvesEntry with AvesEntryBase {
             uri: uri ?? this.uri,
             path: path ?? this.path,
             contentId: contentId ?? this.contentId,
-            pageId: null,
+            pageId: pageId ?? this.pageId,
             sourceMimeType: sourceMimeType ?? this.sourceMimeType,
-            width: width,
-            height: height,
-            sourceRotationDegrees: sourceRotationDegrees,
+            width: width ?? this.width,
+            height: height ?? this.height,
+            sourceRotationDegrees: sourceRotationDegrees ?? this.sourceRotationDegrees,
             sizeBytes: sizeBytes,
             sourceTitle: sourceTitle ?? this.sourceTitle,
             dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
             dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
             sourceDateTakenMillis: sourceDateTakenMillis,
-            durationMillis: durationMillis,
-            trashed: trashed,
+            durationMillis: durationMillis ?? this.durationMillis,
+            trashed: trashed ?? this.trashed,
             origin: origin ?? this.origin,
             stackedEntries: stackedEntries ?? this.stackedEntries,
           )
@@ -448,6 +454,7 @@ class AvesEntry with AvesEntryBase {
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
 
+    // content address
     final uri = newFields[EntryFields.uri];
     if (uri is String) this.uri = uri;
     final path = newFields[EntryFields.path];
@@ -455,6 +462,7 @@ class AvesEntry with AvesEntryBase {
     final contentId = newFields[EntryFields.contentId];
     if (contentId is int) this.contentId = contentId;
 
+    // source fields
     final sourceTitle = newFields[EntryFields.title];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
     final sourceRotationDegrees = newFields[EntryFields.sourceRotationDegrees];
@@ -462,6 +470,7 @@ class AvesEntry with AvesEntryBase {
     final sourceDateTakenMillis = newFields[EntryFields.sourceDateTakenMillis];
     if (sourceDateTakenMillis is int) this.sourceDateTakenMillis = sourceDateTakenMillis;
 
+    // spatial/temporal sizing
     final width = newFields[EntryFields.width];
     if (width is int) this.width = width;
     final height = newFields[EntryFields.height];

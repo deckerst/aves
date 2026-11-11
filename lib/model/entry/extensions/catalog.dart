@@ -14,70 +14,87 @@ extension ExtraAvesEntryCatalog on AvesEntry {
   Future<void> catalog({required bool background, required bool force, required bool persist}) async {
     if (isCatalogued && !force) return;
 
-    if (isSvg) {
-      // vector image sizing is not essential, so we should not spend time for it during loading
-      // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
-      final size = await SvgMetadataService.getSize(this);
-      if (size != null) {
-        final fields = {
-          EntryFields.width: size.width.ceil(),
-          EntryFields.height: size.height.ceil(),
-        };
-        await applyNewFields(fields, persist: persist);
-      }
-      catalogMetadata = CatalogMetadata(id: id);
+    final _mimeType = mimeType;
+    if (MimeTypes.isVideo(_mimeType) || _mimeType == MimeTypes.avif) {
+      await _catalogVideoLike(background: background, persist: persist);
+    } else if (_mimeType == MimeTypes.svg) {
+      await _catalogVectorImage(persist);
     } else {
-      // pre-processing
-      if (isVideo || mimeType == MimeTypes.avif) {
-        // on initial loading, original source may report incorrect size, rotation or duration
-        final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
-        // check size as the video interpreter may fail on some AVIF stills
-        final width = fields[EntryFields.width];
-        final height = fields[EntryFields.height];
-        final isValid = (width == null || width > 0) && (height == null || height > 0);
-        if (isValid) {
-          await applyNewFields(fields, persist: persist);
-        }
-      }
+      await _catalogRasterImage(background);
+    }
+  }
 
-      // cataloguing on platform
-      catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
+  Future<void> _catalogRasterImage(bool background) async {
+    catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
 
-      // post-processing
-      if ((isVideo && !isDated) || (mimeType == MimeTypes.avif && durationMillis != null)) {
-        final videoMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
-        if (videoMetadata != null) {
-          catalogMetadata = videoMetadata;
-        }
-      }
-      if (isSlowMotion) {
-        final (slowMotionFactor, captureDurationMillis) = await videoMetadataFetcher.computeSlowMotionFactorAndDuration(uri: uri, mimeType: mimeType);
-        if (slowMotionFactor == 1) {
-          // correct false positive derived only from capture FPS
-          catalogMetadata = catalogMetadata?.copyWith(isSlowMotion: false);
-        } else if (captureDurationMillis != null) {
-          durationMillis = captureDurationMillis;
-          final fields = {
-            EntryFields.durationMillis: captureDurationMillis,
-          };
-          await applyNewFields(fields, persist: persist);
-        }
-      }
-      if (isGeotiff && !hasGps) {
-        final info = await metadataFetchService.getGeoTiffInfo(this);
-        if (info != null) {
-          final center = GeoTiffCoordinateConverter(
-            info: info,
-            entry: this,
-          ).center;
-          if (center != null) {
-            catalogMetadata = catalogMetadata?.copyWith(
-              latitude: center.latitude,
-              longitude: center.longitude,
-            );
-          }
+    if (isGeotiff && !hasGps) {
+      final info = await metadataFetchService.getGeoTiffInfo(this);
+      if (info != null) {
+        final center = GeoTiffCoordinateConverter(
+          info: info,
+          entry: this,
+        ).center;
+        if (center != null) {
+          catalogMetadata = catalogMetadata?.copyWith(
+            latitude: center.latitude,
+            longitude: center.longitude,
+          );
         }
       }
     }
+  }
+
+  Future<void> _catalogVideoLike({required bool background, required bool persist}) async {
+    // pre-processing
+    if (isVideo || mimeType == MimeTypes.avif) {
+      // on initial loading, original source may report incorrect size, rotation or duration
+      final fields = await VideoMetadataFormatter.getLoadingMetadata(this);
+      // check size as the video interpreter may fail on some AVIF stills
+      final width = fields[EntryFields.width];
+      final height = fields[EntryFields.height];
+      final isValid = (width == null || width > 0) && (height == null || height > 0);
+      if (isValid) {
+        await applyNewFields(fields, persist: persist);
+      }
+    }
+
+    // cataloguing on platform
+    catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
+
+    // post-processing
+    if ((isVideo && !isDated) || (mimeType == MimeTypes.avif && durationMillis != null)) {
+      final videoMetadata = await VideoMetadataFormatter.completeCatalogMetadata(this);
+      if (videoMetadata != null) {
+        catalogMetadata = videoMetadata;
+      }
+    }
+
+    if (isSlowMotion) {
+      final (slowMotionFactor, captureDurationMillis) = await videoMetadataFetcher.computeSlowMotionFactorAndDuration(uri: uri, mimeType: mimeType);
+      if (slowMotionFactor == 1) {
+        // correct false positive derived only from capture FPS
+        catalogMetadata = catalogMetadata?.copyWith(isSlowMotion: false);
+      } else if (captureDurationMillis != null) {
+        durationMillis = captureDurationMillis;
+        final fields = {
+          EntryFields.durationMillis: captureDurationMillis,
+        };
+        await applyNewFields(fields, persist: persist);
+      }
+    }
+  }
+
+  Future<void> _catalogVectorImage(bool persist) async {
+    // vector image sizing is not essential, so we should not spend time for it during loading
+    // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
+    final size = await SvgMetadataService.getSize(this);
+    if (size != null) {
+      final fields = {
+        EntryFields.width: size.width.ceil(),
+        EntryFields.height: size.height.ceil(),
+      };
+      await applyNewFields(fields, persist: persist);
+    }
+    catalogMetadata = CatalogMetadata(id: id);
   }
 }
