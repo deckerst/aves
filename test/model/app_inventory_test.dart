@@ -22,7 +22,7 @@ class _FakeAppService extends Fake implements AppService {
 void main() {
   setUpAll(() async {
     await setUpAllServices();
-    getIt.unregister<AppService>();
+    await getIt.unregister<AppService>();
     getIt.registerLazySingleton<AppService>(_FakeAppService.new);
     await appInventory.initAppNames();
   });
