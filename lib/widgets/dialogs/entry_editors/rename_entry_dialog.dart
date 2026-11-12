@@ -53,7 +53,10 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
               decoration: InputDecoration(
                 labelText: context.l10n.renameEntryDialogLabel,
               ),
+              // prevent multiline input caused by `maxLines: null`
+              keyboardType: .text,
               autofocus: true,
+              // allow field height to grow to show the full name
               maxLines: null,
               onChanged: (_) => _validate(),
               onSubmitted: (_) => _submit(context),
