@@ -25,14 +25,36 @@ class const CredentialSectionSliver({
 }
 
 class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
-  late final Future<Map> _loader;
+  Future<Map> _loader = Future.value({});
 
   static const double _thumbnailExtent = 40;
 
   @override
   void initState() {
     super.initState();
-    _loader = metadataFetchService.getContentCredentials(widget.entry);
+    _registerWidget(widget);
+    _initLoader();
+  }
+
+  @override
+  void didUpdateWidget(covariant CredentialSectionSliver oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(CredentialSectionSliver widget) {
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
+  }
+
+  void _unregisterWidget(CredentialSectionSliver widget) {
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
   }
 
   @override
@@ -127,5 +149,14 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
         })
         .nonNulls
         .toList();
+  }
+
+  void _initLoader() {
+    _loader = metadataFetchService.getContentCredentials(widget.entry);
+  }
+
+  void _onMetadataChanged() {
+    _initLoader();
+    setState(() {});
   }
 }
