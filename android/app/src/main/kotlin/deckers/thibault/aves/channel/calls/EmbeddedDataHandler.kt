@@ -6,10 +6,8 @@ import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPUtils
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.metadata.C2paHelper
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
@@ -24,7 +22,6 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.storage.StorageUtils
-import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -46,8 +43,8 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getExifThumbnails" -> ioScope.launch { safeSuspend(call, result, ::getExifThumbnails) }
             "extractC2paResource" -> ioScope.launch { safe(call, result, ::extractC2paResource) }
+            "extractExifThumbnail" -> ioScope.launch { safe(call, result, ::extractExifThumbnail) }
             "extractGoogleDeviceItem" -> ioScope.launch { safe(call, result, ::extractGoogleDeviceItem) }
             "extractJpegMpfItem" -> ioScope.launch { safe(call, result, ::extractJpegMpfItem) }
             "extractMotionPhotoImage" -> ioScope.launch { safe(call, result, ::extractMotionPhotoImage) }
@@ -56,35 +53,6 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             "extractXmpDataProp" -> ioScope.launch { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
         }
-    }
-
-    private suspend fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
-        val contentAddress = ContentAddress.fromMethodCall(call)
-        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (contentAddress == null) {
-            result.error("getExifThumbnails-args", "missing arguments", null)
-            return
-        }
-
-        val thumbnails = ArrayList<ByteArray>()
-        if (canReadWithExifInterface(contentAddress.mimeType)) {
-            try {
-                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val exifInterface = ExifInterface(input)
-                    val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-                    exifInterface.thumbnailBitmap?.let { bitmap ->
-                        TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            // do not recycle bitmaps fetched from `ExifInterface` as their lifecycle is unknown
-                            BitmapUtils.getBytes(it, recycle = false, decoded = true, applyGainmap = false, mimeType = null)?.let { bytes -> thumbnails.add(bytes) }
-                        }
-                    }
-                }
-            } catch (_: Exception) {
-                // `ExifInterface` initialization can fail with a RuntimeException
-                // caused by an internal MediaMetadataRetriever failure
-            }
-        }
-        result.success(thumbnails)
     }
 
     private fun extractC2paResource(call: MethodCall, result: MethodChannel.Result) {
@@ -97,15 +65,38 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         }
 
         C2paHelper.openResource(contentAddress, dataUri)?.let { bytes ->
-            var embedMimeType: String? = null
-            bytes.inputStream().use { input ->
-                MetadataExtractorHelper.readMimeType(input, path = null, sizeBytes = bytes.size.toLong())?.let { embedMimeType = it }
-            }
-            copyEmbeddedBytes(result, embedMimeType ?: MimeTypes.ANY, displayName, bytes.inputStream(), bytes.size.toLong())
+            copyEmbeddedBytes(result, displayName, bytes)
             return
         }
 
         result.error("extractC2paResource-empty", "failed to extract resource from C2PA at $contentAddress dataUri=$dataUri", null)
+    }
+
+    private fun extractExifThumbnail(call: MethodCall, result: MethodChannel.Result) {
+        val contentAddress = ContentAddress.fromMethodCall(call)
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val displayName = call.argument<String>("displayName")
+        if (contentAddress == null) {
+            result.error("extractExifThumbnail-args", "missing arguments", null)
+            return
+        }
+
+        if (canReadWithExifInterface(contentAddress.mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                    val exifInterface = ExifInterface(input)
+                    // do not process (e.g. rotate) the thumbnail as we want original bytes
+                    exifInterface.thumbnailBytes?.let { bytes ->
+                        copyEmbeddedBytes(result, displayName, bytes)
+                        return
+                    }
+                }
+            } catch (_: Exception) {
+                // `ExifInterface` initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+            }
+        }
+        result.error("extractExifThumbnail-empty", "failed to extract Exif thumbnail for $contentAddress", null)
     }
 
     private fun extractGoogleDeviceItem(call: MethodCall, result: MethodChannel.Result) {
@@ -247,11 +238,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (retriever != null) {
             try {
                 retriever.embeddedPicture?.let { bytes ->
-                    var embedMimeType: String? = null
-                    bytes.inputStream().use { input ->
-                        MetadataExtractorHelper.readMimeType(input, path = null, sizeBytes = bytes.size.toLong())?.let { embedMimeType = it }
-                    }
-                    copyEmbeddedBytes(result, embedMimeType ?: MimeTypes.ANY_IMAGE, displayName, bytes.inputStream(), bytes.size.toLong())
+                    copyEmbeddedBytes(result, displayName, bytes)
                     return
                 }
             } catch (e: Exception) {
@@ -316,6 +303,14 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP $contentAddress prop=$dataProp", null)
+    }
+
+    private fun copyEmbeddedBytes(result: MethodChannel.Result, displayName: String?, bytes: ByteArray) {
+        var embedMimeType: String? = null
+        bytes.inputStream().use { input ->
+            embedMimeType = MetadataExtractorHelper.readMimeType(input, path = null, sizeBytes = bytes.size.toLong())
+        }
+        copyEmbeddedBytes(result, embedMimeType ?: MimeTypes.ANY_IMAGE, displayName, bytes.inputStream(), bytes.size.toLong())
     }
 
     // auto closes the provided input stream

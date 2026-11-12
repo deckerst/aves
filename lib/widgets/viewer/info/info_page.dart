@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/basic/tv_edge_focus.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/viewer/action/entry_info_action_delegate.dart';
 import 'package:aves/widgets/viewer/controls/notifications.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
@@ -34,6 +35,8 @@ class const InfoPage({
   required final ValueNotifier<bool> isScrollingNotifier,
   required final ValueNotifier<double> pageInViewNotifier,
 }) extends StatefulWidget {
+  static const double inlineThumbnailExtent = kMinInteractiveDimension;
+
   @override
   State<StatefulWidget> createState() => _InfoPageState();
 }
@@ -42,7 +45,7 @@ class _InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
-  static const splitScreenWidthThreshold = 600;
+  static const double splitScreenWidthThreshold = 600;
 
   @override
   void dispose() {
@@ -69,14 +72,17 @@ class _InfoPageState extends State<InfoPage> {
                   return EmbeddedDataOpener(
                     enabled: !isSelecting,
                     entry: targetEntry,
-                    child: _InfoPageContent(
-                      collection: widget.collection,
-                      entry: targetEntry,
-                      isScrollingNotifier: widget.isScrollingNotifier,
-                      pageInViewNotifier: widget.pageInViewNotifier,
-                      scrollController: _scrollController,
-                      split: MediaQuery.sizeOf(context).width > splitScreenWidthThreshold,
-                      goToViewer: _goToViewer,
+                    child: GridTheme(
+                      extent: InfoPage.inlineThumbnailExtent,
+                      child: _InfoPageContent(
+                        collection: widget.collection,
+                        entry: targetEntry,
+                        isScrollingNotifier: widget.isScrollingNotifier,
+                        pageInViewNotifier: widget.pageInViewNotifier,
+                        scrollController: _scrollController,
+                        split: MediaQuery.sizeOf(context).width > splitScreenWidthThreshold,
+                        goToViewer: _goToViewer,
+                      ),
                     ),
                   );
                 }

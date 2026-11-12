@@ -1,8 +1,8 @@
 import 'package:aves/model/entry/entry.dart';
-import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/widgets/common/thumbnail/decorated.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
+import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -10,7 +10,6 @@ class const ManifestThumbnail({
   super.key,
   required final AvesEntry entry,
   required final String? thumbnailUri,
-  required final double thumbnailExtent,
 }) extends StatefulWidget {
   @override
   State<ManifestThumbnail> createState() => _ManifestThumbnailState();
@@ -23,7 +22,7 @@ class _ManifestThumbnailState extends State<ManifestThumbnail> {
   void initState() {
     super.initState();
     final thumbnailUri = widget.thumbnailUri;
-    _loader = thumbnailUri != null ? embeddedDataService.extractC2paResource(widget.entry, thumbnailUri).then(_entryFromFields) : SynchronousFuture(null);
+    _loader = thumbnailUri != null ? embeddedDataService.extractC2paResource(widget.entry, thumbnailUri).then(AvesEntry.maybeFromFields) : SynchronousFuture(null);
   }
 
   @override
@@ -39,7 +38,7 @@ class _ManifestThumbnailState extends State<ManifestThumbnail> {
           onTap: thumbnailUri != null ? () => OpenEmbeddedDataNotification.c2paResource(dataUri: thumbnailUri).dispatch(context) : null,
           child: DecoratedThumbnail(
             entry: thumbnailEntry,
-            tileExtent: widget.thumbnailExtent,
+            tileExtent: InfoPage.inlineThumbnailExtent,
             isMosaic: true,
             selectable: false,
             highlightable: false,
@@ -47,13 +46,5 @@ class _ManifestThumbnailState extends State<ManifestThumbnail> {
         );
       },
     );
-  }
-
-  static AvesEntry? _entryFromFields(Map fields) {
-    AvesEntry.normalizeMimeTypeFields(fields);
-    final mimeType = fields[EntryFields.mimeType] as String?;
-    final uri = fields[EntryFields.uri] as String?;
-    if (mimeType == null || uri == null) return null;
-    return AvesEntry.fromMap(fields);
   }
 }

@@ -16,7 +16,6 @@ class const Manifest({
   super.key,
   required final AvesEntry entry,
   required final Map<String, Object?> json,
-  required final double thumbnailExtent,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -141,7 +140,6 @@ class const Manifest({
                 ManifestThumbnail(
                   entry: entry,
                   thumbnailUri: thumbnailUri,
-                  thumbnailExtent: thumbnailExtent,
                 ),
             ],
           ),

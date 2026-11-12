@@ -7,7 +7,6 @@ import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/view/src/metadata/credentials.dart';
-import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/credential/manifest.dart';
 import 'package:aves_utils/aves_utils.dart';
@@ -26,8 +25,6 @@ class const CredentialSectionSliver({
 
 class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
   Future<Map> _loader = Future.value({});
-
-  static const double _thumbnailExtent = 40;
 
   @override
   void initState() {
@@ -87,7 +84,6 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
                 Manifest(
                   entry: widget.entry,
                   json: manifest,
-                  thumbnailExtent: _thumbnailExtent,
                 ),
               );
               todoManifestIds.addAll(_getComponentManifests(manifest));
@@ -104,27 +100,24 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
           }
 
           final durations = context.watch<DurationsData>();
-          return GridTheme(
-            extent: _thumbnailExtent,
-            child: Wrap(
-              alignment: .center,
-              children: AnimationConfiguration.toStaggeredList(
-                duration: durations.staggeredAnimation,
-                delay: durations.staggeredAnimationDelay * timeDilation,
-                childAnimationBuilder: (child) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  child: FadeInAnimation(
-                    child: child,
-                  ),
+          return Wrap(
+            alignment: .center,
+            children: AnimationConfiguration.toStaggeredList(
+              duration: durations.staggeredAnimation,
+              delay: durations.staggeredAnimationDelay * timeDilation,
+              childAnimationBuilder: (child) => SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: child,
                 ),
-                children: [
-                  SectionRow(
-                    icon: validity.getIconData(),
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                  ),
-                  ...children,
-                ],
               ),
+              children: [
+                SectionRow(
+                  icon: validity.getIconData(),
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                ),
+                ...children,
+              ],
             ),
           );
         },

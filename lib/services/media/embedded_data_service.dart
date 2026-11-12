@@ -1,16 +1,13 @@
-import 'dart:ui' as ui;
-
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/channel.dart';
-import 'package:aves/services/common/decoding.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/theme/text.dart';
 import 'package:flutter/services.dart';
 
 abstract class EmbeddedDataService {
-  Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry);
-
   Future<Map> extractC2paResource(AvesEntry entry, String dataUri);
+
+  Future<Map> extractExifThumbnail(AvesEntry entry);
 
   Future<Map> extractGoogleDeviceItem(AvesEntry entry, String dataUri);
 
@@ -29,31 +26,26 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/embedded');
 
   @override
-  Future<List<ui.ImageDescriptor?>> getExifThumbnails(AvesEntry entry) async {
-    try {
-      final result = await _platform.invokeMethod('getExifThumbnails', <String, Object?>{
-        ...entry.toPlatformContentAddress(),
-      });
-      if (result != null) {
-        final descriptors = <ui.ImageDescriptor?>[];
-        await Future.forEach((result as List).cast<Uint8List>(), (bytes) async {
-          descriptors.add(await InteropDecoding.rawBytesToDescriptor(bytes));
-        });
-        return descriptors;
-      }
-    } on PlatformException catch (e, stack) {
-      await reportService.recordError(e, stack);
-    }
-    return [];
-  }
-
-  @override
   Future<Map> extractC2paResource(AvesEntry entry, String dataUri) async {
     try {
       final result = await _platform.invokeMethod('extractC2paResource', <String, Object?>{
         ...entry.toPlatformContentAddress(),
         'displayName': ['${entry.bestTitle}', dataUri].join(AText.separator),
         'dataUri': dataUri,
+      });
+      if (result != null) return result as Map;
+    } on PlatformException catch (e, stack) {
+      await reportService.recordError(e, stack);
+    }
+    return {};
+  }
+
+  @override
+  Future<Map> extractExifThumbnail(AvesEntry entry) async {
+    try {
+      final result = await _platform.invokeMethod('extractExifThumbnail', <String, Object?>{
+        ...entry.toPlatformContentAddress(),
+        'displayName': ['${entry.bestTitle}', 'Exif thumbnail'].join(AText.separator),
       });
       if (result != null) return result as Map;
     } on PlatformException catch (e, stack) {

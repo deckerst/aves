@@ -141,6 +141,15 @@ class AvesEntry with AvesEntryBase {
     return copied;
   }
 
+  // for embedded resources
+  static AvesEntry? maybeFromFields(Map fields) {
+    normalizeMimeTypeFields(fields);
+    final mimeType = fields[EntryFields.mimeType] as String?;
+    final uri = fields[EntryFields.uri] as String?;
+    if (mimeType == null || uri == null) return null;
+    return .fromMap(fields);
+  }
+
   // from DB or platform source entry
   factory fromMap(Map map) {
     return AvesEntry(

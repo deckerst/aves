@@ -11,18 +11,12 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
 import 'package:material_ui/material_ui.dart';
 
-class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
-  final bool enabled;
-  final AvesEntry entry;
-  final Widget child;
-
-  const new({
-    super.key,
-    required this.enabled,
-    required this.entry,
-    required this.child,
-  });
-
+class const EmbeddedDataOpener({
+  super.key,
+  required final bool enabled,
+  required final AvesEntry entry,
+  required final Widget child,
+}) extends StatelessWidget with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     return NotificationListener<OpenEmbeddedDataNotification>(
@@ -42,6 +36,8 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
     switch (notification.source) {
       case .c2paResource:
         fields = await embeddedDataService.extractC2paResource(entry, notification.dataUri!);
+      case .exifThumbnail:
+        fields = await embeddedDataService.extractExifThumbnail(entry);
       case .googleDevice:
         fields = await embeddedDataService.extractGoogleDeviceItem(entry, notification.dataUri!);
       case .motionPhotoVideo:
@@ -53,21 +49,22 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
       case .xmp:
         fields = await embeddedDataService.extractXmpDataProp(entry, notification.propPath, notification.mimeType);
     }
+
     AvesEntry.normalizeMimeTypeFields(fields);
-    final mimeType = fields[EntryFields.mimeType] as String?;
-    final uri = fields[EntryFields.uri] as String?;
-    if (mimeType == null || uri == null) {
+    final embeddedMimeType = fields[EntryFields.mimeType] as String?;
+    final embeddedUri = fields[EntryFields.uri] as String?;
+    if (embeddedMimeType == null || embeddedUri == null) {
       showFeedback(context, FeedbackType.warn, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
       return;
     }
 
-    if (!MimeTypes.isImage(mimeType) && !MimeTypes.isVideo(mimeType)) {
+    if (!MimeTypes.isImage(embeddedMimeType) && !MimeTypes.isVideo(embeddedMimeType)) {
       // open with another app
       unawaited(
-        appService.open(uri, mimeType, forceChooser: true).then((success) {
+        appService.open(embeddedUri, embeddedMimeType, forceChooser: true).then((success) {
           if (!success) {
             // fallback to sharing, so that the file can be saved somewhere
-            appService.shareSingle(uri, mimeType).then((success) {
+            appService.shareSingle(embeddedUri, embeddedMimeType).then((success) {
               if (!success) showNoMatchingAppDialog(context);
             });
           }
@@ -76,7 +73,10 @@ class EmbeddedDataOpener extends StatelessWidget with FeedbackMixin {
       return;
     }
 
-    _openTempEntry(context, AvesEntry.fromMap(fields));
+    final embeddedEntry = AvesEntry.maybeFromFields(fields);
+    if (embeddedEntry != null) {
+      _openTempEntry(context, embeddedEntry);
+    }
   }
 
   void _openTempEntry(BuildContext context, AvesEntry tempEntry) {
