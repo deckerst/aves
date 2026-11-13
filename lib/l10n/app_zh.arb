@@ -738,7 +738,6 @@
     "mapHideItemTracks": "隐藏路径",
     "filterTypeSlowMotionVideoLabel": "慢动作",
     "drawerCollectionSlowMotionVideos": "慢动作视频",
-    "showThumbnailSlowMotionVideoIcon": "显示慢动作图标",
     "settingsAllowNotifications": "允许通知",
     "settingsPermissionsTile": "权限",
     "settingsPermissionsPageTitle": "权限",
@@ -764,5 +763,6 @@
     "settingsThumbnailShowCredentialValidity": "显示凭据有效性",
     "aboutCreditsStateFlags": "来自 Wikimedia Commons 的地区旗帜。它们位于公共领域，除了：",
     "exportEntryDialogDimension": "尺寸：",
-    "sortRandomly": "随机"
+    "sortRandomly": "随机",
+    "settingsThumbnailShowFormat": "显示格式"
 }

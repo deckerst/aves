@@ -982,7 +982,6 @@
     "mapHideItemTracks": "Peida asukohad",
     "filterTypeSlowMotionVideoLabel": "Aegluubis",
     "drawerCollectionSlowMotionVideos": "Aegluubis videod",
-    "showThumbnailSlowMotionVideoIcon": "Näita aegluubis ikooni",
     "settingsAllowNotifications": "Luba teavitused",
     "settingsPermissionsTile": "Õigused",
     "settingsPermissionsPageTitle": "Õigused",
@@ -1008,5 +1007,6 @@
     "settingsThumbnailShowCredentialValidity": "Näita autentimisandmete kehtivust",
     "aboutCreditsStateFlags": "Riikide lipud on laaditud Wikimedia Commonsist. Nad on avaldatud avaliku omandi litsentsitingimuste alusel, välja arvatud:",
     "exportEntryDialogDimension": "Mõõdud:",
-    "sortRandomly": "Juhuslikult"
+    "sortRandomly": "Juhuslikult",
+    "settingsThumbnailShowFormat": "Näita vormingut"
 }

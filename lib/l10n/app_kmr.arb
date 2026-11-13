@@ -605,7 +605,7 @@
     "aboutDataUsageMisc": "Misc",
     "aboutDataUsageClearCache": "Bîrdanka demkî pak bike",
     "aboutCreditsSectionTitle": "Kredî",
-    "aboutCreditsWorldAtlas": "Ev sepan pelek TopoJSON bi kar tîne ji [World Atlas]({link}) di bin lîsansa ISC de.",
+    "aboutCreditsWorldAtlas": "Ev sepan peleke TopoJSON bi kar tîne ji [World Atlas]({link}) di bin lîsansa ISC de.",
     "@aboutCreditsWorldAtlas": {
         "placeholders": {
             "link": {
@@ -817,7 +817,6 @@
     "settingsThumbnailShowMotionPhotoIcon": "Îkona wêneya tevgerî nîşan bide",
     "settingsThumbnailShowRating": "Nirxandinê nîşan bide",
     "settingsThumbnailShowRawIcon": "Îkona xav nîşan bide",
-    "showThumbnailSlowMotionVideoIcon": "Îkona vîdiyoya hêdî nîşan bide",
     "settingsThumbnailShowVideoDuration": "Dirêjahiya vîdiyoyê nîşan bide",
     "settingsCollectionQuickActionsTile": "Çalakiyên bilez",
     "settingsCollectionQuickActionEditorPageTitle": "Çalakiyên bilez",
@@ -1000,5 +999,14 @@
     "collectionActionHideLayoutBar": "Bendê şêwazê veşêre",
     "settingsVideoThumbnailMethods": "Wêneyê biçûk ê bijarte",
     "chipActionCopyCenterCoordinates": "Koordînatên navendê jê bigire",
-    "videoThumbnailMethodEmbeddedImage": "Wêneyê pêvekirî"
+    "videoThumbnailMethodEmbeddedImage": "Wêneyê pêvekirî",
+    "filterCredentialsValidityUnknownLabel": "Nenas",
+    "filterCredentialsValidityInvalidLabel": "Nederbasdar",
+    "filterCredentialsValidityValidLabel": "Derbasdar",
+    "filterCredentialsValidityTrustedLabel": "Pêbawer",
+    "exportEntryDialogDimension": "Rehend:",
+    "aboutCreditsStateFlags": "Alên welatan ji Wikimedia Commonsê ne. Ew di navpara giştî de ne, ji bilî:",
+    "sortRandomly": "Rastehatî",
+    "searchCredentialsSectionTitle": "Nasnameyên naverokê",
+    "settingsThumbnailShowCredentialValidity": "Derbasdariya nasnameyê nîşan bide"
 }

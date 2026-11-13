@@ -737,7 +737,6 @@
     "calendarGregorian": "Gregoriano",
     "calendarPersian": "Persa",
     "drawerCollectionSlowMotionVideos": "Vídeos a cámara lenta",
-    "showThumbnailSlowMotionVideoIcon": "Mostrar icono de cámara lenta",
     "settingsAutoExportSettings": "Auto‐exportar ajustes",
     "settingsAllowNotifications": "Conceder notificaciones",
     "settingsPermissionsTile": "Permisos",
@@ -764,5 +763,6 @@
     "settingsThumbnailShowCredentialValidity": "Mostrar validez de las credenciales",
     "exportEntryDialogDimension": "Dimensión:",
     "aboutCreditsStateFlags": "Las banderas de los estados provienen de Wikimedia Commons. Son de dominio público, excepto:",
-    "sortRandomly": "Aleatoriamente"
+    "sortRandomly": "Aleatoriamente",
+    "settingsThumbnailShowFormat": "Mostrar formato"
 }

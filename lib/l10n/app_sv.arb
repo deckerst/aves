@@ -976,7 +976,6 @@
     "settingsPermissionsPageTitle": "Rättigheter",
     "filterTypeSlowMotionVideoLabel": "Slowmotion",
     "drawerCollectionSlowMotionVideos": "Slowmotion videor",
-    "showThumbnailSlowMotionVideoIcon": "Visa slowmotion ikon",
     "settingsCalendarTile": "Kalender",
     "mapShowItemTracks": "Visa sökvägar",
     "mapHideItemTracks": "Dölj sökvägar",
@@ -998,5 +997,7 @@
     "searchCredentialsSectionTitle": "Innehållsreferenser",
     "settingsThumbnailShowCredentialValidity": "Visa giltighet för referenser",
     "exportEntryDialogDimension": "Dimension:",
-    "aboutCreditsStateFlags": "Delstatsflaggorna kommer från Wikimedia Commons. De är allmän egendom, med undantag för:"
+    "aboutCreditsStateFlags": "Delstatsflaggorna kommer från Wikimedia Commons. De är allmän egendom, med undantag för:",
+    "sortRandomly": "Slumpmässigt",
+    "settingsThumbnailShowFormat": "Visa format"
 }
