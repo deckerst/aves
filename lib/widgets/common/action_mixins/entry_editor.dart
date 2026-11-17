@@ -147,7 +147,7 @@ mixin EntryEditorMixin {
   Future<bool> checkUndatedItems(BuildContext context, Set<AvesEntry> entries) async {
     // make sure entries are catalogued before we check whether they have a metadata date
     await Future.forEach(entries.where((entry) => !entry.isCatalogued), (entry) async {
-      await entry.catalog(background: false, force: false, persist: true);
+      await entry.catalog(background: false, force: false, persistSourceFields: false);
     });
 
     final undatedItems = entries.where((entry) {
@@ -167,7 +167,8 @@ mixin EntryEditorMixin {
         );
         // recatalog so that the metadata dates are not ignored when best dates are evaluated
         await Future.forEach(entriesToDate, (entry) async {
-          await entry.catalog(background: false, force: true, persist: true);
+          await entry.catalog(background: false, force: true, persistSourceFields: true);
+          await localMediaDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
         });
       }
     }

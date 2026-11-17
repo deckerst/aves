@@ -93,7 +93,7 @@ class MultiPageInfo {
             uri: fields[EntryFields.uri] as String?,
             // the initial fake page may contain inaccurate values for the following fields
             // so we override them with values from the extracted standalone video
-            rotationDegrees: fields[EntryFields.sourceRotationDegrees] as int?,
+            rotationDegrees: fields[EntryFields.rotationDegrees] as int?,
             durationMillis: fields[EntryFields.durationMillis] as int?,
           ),
         );
@@ -115,17 +115,15 @@ class MultiPageInfo {
         mainEntry.copyWith(
             uri: pageInfo.uri,
             pageId: pageId,
-            sourceMimeType: pageInfo.mimeType,
+            mimeType: pageInfo.mimeType,
             width: pageInfo.width,
             height: pageInfo.height,
-            sourceRotationDegrees: pageInfo.rotationDegrees,
+            rotationDegrees: pageInfo.rotationDegrees,
             durationMillis: pageInfo.durationMillis,
             trashed: trashed,
           )
           ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
-            mimeType: pageInfo.mimeType,
             isMultiPage: false,
-            rotationDegrees: pageInfo.rotationDegrees,
           )
           ..addressDetails = mainEntry.addressDetails?.copyWith()
           ..trashDetails = trashed ? mainEntry.trashDetails : null;

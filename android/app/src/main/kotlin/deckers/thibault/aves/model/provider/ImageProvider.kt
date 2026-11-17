@@ -90,7 +90,7 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 abstract class ImageProvider {
     open fun fetchSingle(
         context: Context,
-        sourceMimeType: String?,
+        mimeTypeHint: String?,
         uri: Uri,
         allowUnsized: Boolean,
         callback: ImageOpCallback,

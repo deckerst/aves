@@ -49,7 +49,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
 
         provider.fetchSingle(
             context = context,
-            sourceMimeType = mimeType,
+            mimeTypeHint = mimeType,
             uri = uri,
             allowUnsized = allowUnsized,
             callback = object : ImageOpCallback {

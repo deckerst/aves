@@ -1,12 +1,14 @@
 class ViewerDebugUtils {
   static String toDateValue(int? time, {int factor = 1, bool isUtc = false}) {
-    var value = '$time';
+    String value;
     if (time != null && time > 0) {
       try {
-        value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor, isUtc: isUtc)})';
+        value = '${DateTime.fromMillisecondsSinceEpoch(time * factor, isUtc: isUtc)} ($time)';
       } catch (error) {
-        value += ' (invalid DateTime})';
+        value = '$time (invalid DateTime})';
       }
+    } else {
+      value = '$time';
     }
     return value;
   }

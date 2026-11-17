@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - large padding due to incorrect system gesture insets
+- item dimensions and size when source reported incorrect values
 
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 

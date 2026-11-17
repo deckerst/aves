@@ -6,7 +6,6 @@ import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -27,7 +26,6 @@ import deckers.thibault.aves.storage.apis.FilePermissions
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.UriUtils.tryParseId
@@ -35,7 +33,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
-import java.io.IOException
 import java.io.OutputStream
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.Continuation
@@ -89,7 +86,7 @@ class MediaStoreImageProvider : ImageProvider() {
     // so the effective entry URI may not match the provided URI
     override fun fetchSingle(
         context: Context,
-        sourceMimeType: String?,
+        mimeTypeHint: String?,
         uri: Uri,
         allowUnsized: Boolean,
         callback: ImageOpCallback,
@@ -100,11 +97,11 @@ class MediaStoreImageProvider : ImageProvider() {
         val alwaysValid: NewEntryChecker = fun(_: Long, _: Long): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
-            if (sourceMimeType == null || isImage(sourceMimeType)) {
+            if (mimeTypeHint == null || isImage(mimeTypeHint)) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
                 found = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)
             }
-            if (!found && (sourceMimeType == null || isVideo(sourceMimeType))) {
+            if (!found && (mimeTypeHint == null || isVideo(mimeTypeHint))) {
                 val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
                 found = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)
             }
@@ -113,7 +110,7 @@ class MediaStoreImageProvider : ImageProvider() {
             // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
             // without an equivalent image/video if it is shared from a file browser
             // but the file is not publicly visible
-            found = fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)
+            found = fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = mimeTypeHint)
         }
 
         if (found && fetched.isNotEmpty()) {
@@ -227,7 +224,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
                 val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
                 val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
-                val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                val sizeBytesColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
                 val dateAddedSecsColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED)
@@ -251,8 +248,8 @@ class MediaStoreImageProvider : ImageProvider() {
                         // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
                         // in that case we try to use the MIME type provided along the URI
                         val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
-                        var width = cursor.getInt(widthColumn)
-                        var height = cursor.getInt(heightColumn)
+                        val width = cursor.getInt(widthColumn)
+                        val height = cursor.getInt(heightColumn)
                         val durationMillis = if (durationColumn != -1) cursor.getLong(durationColumn) else 0L
 
                         if (mimeType == null) {
@@ -269,11 +266,11 @@ class MediaStoreImageProvider : ImageProvider() {
                                     EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
                                     EntryFields.URI to itemUri.toString(),
                                     EntryFields.PATH to path,
-                                    EntryFields.SOURCE_MIME_TYPE to mimeType,
+                                    EntryFields.MIME_TYPE to mimeType,
                                     EntryFields.WIDTH to width,
                                     EntryFields.HEIGHT to height,
-                                    EntryFields.SOURCE_ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
-                                    EntryFields.SIZE_BYTES to cursor.getLong(sizeColumn),
+                                    EntryFields.ROTATION_DEGREES to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
+                                    EntryFields.SIZE_BYTES to cursor.getLong(sizeBytesColumn),
                                     EntryFields.DATE_ADDED_SECS to cursor.getInt(dateAddedSecsColumn),
                                     EntryFields.DATE_MODIFIED_MILLIS to dateModifiedMillis,
                                     EntryFields.SOURCE_DATE_TAKEN_MILLIS to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
@@ -281,29 +278,6 @@ class MediaStoreImageProvider : ImageProvider() {
                                     // only for map export
                                     EntryFields.CONTENT_ID to id,
                                 )
-
-                                if (isHeic(mimeType) || mimeType == MimeTypes.TIFF) {
-                                    // The reported size for some HEIC images is simply incorrect.
-                                    // Some HEIC images are detected as TIFF.
-                                    try {
-                                        StorageUtils.openInputStream(context, itemUri)?.use { input ->
-                                            val options = BitmapFactory.Options().apply {
-                                                inJustDecodeBounds = true
-                                            }
-                                            BitmapFactory.decodeStream(input, null, options)
-                                            val outWidth = options.outWidth
-                                            val outHeight = options.outHeight
-                                            if (outWidth > 0 && outHeight > 0) {
-                                                width = outWidth
-                                                height = outHeight
-                                                entryFields[EntryFields.WIDTH] = width
-                                                entryFields[EntryFields.HEIGHT] = height
-                                            }
-                                        }
-                                    } catch (_: IOException) {
-                                        // ignore
-                                    }
-                                }
 
                                 if (MimeTypes.isRaw(mimeType)
                                     || (width <= 0 || height <= 0) && needSize(mimeType)

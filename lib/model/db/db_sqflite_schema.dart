@@ -40,10 +40,10 @@ class SqfliteLocalMediaDbSchema {
           ', contentId INTEGER'
           ', uri TEXT'
           ', path TEXT'
-          ', sourceMimeType TEXT'
+          ', mimeType TEXT'
           ', width INTEGER'
           ', height INTEGER'
-          ', sourceRotationDegrees INTEGER'
+          ', rotationDegrees INTEGER'
           ', sizeBytes INTEGER'
           ', title TEXT'
           ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
@@ -66,16 +66,14 @@ class SqfliteLocalMediaDbSchema {
         return db.execute(
           'CREATE TABLE $metadataTable('
           'id INTEGER PRIMARY KEY'
-          ', mimeType TEXT'
           ', dateMillis INTEGER'
+          ', timeZoneOffsetMinutes INTEGER'
           ', flags INTEGER'
-          ', rotationDegrees INTEGER'
-          ', xmpSubjects TEXT'
-          ', xmpTitle TEXT'
           ', latitude REAL'
           ', longitude REAL'
           ', rating INTEGER'
-          ', timeZoneOffsetMinutes INTEGER'
+          ', xmpSubjects TEXT'
+          ', xmpTitle TEXT'
           ')',
         );
       case addressTable:

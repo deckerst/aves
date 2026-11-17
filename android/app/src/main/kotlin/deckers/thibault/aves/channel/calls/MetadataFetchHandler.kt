@@ -1,10 +1,12 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.util.Log
+import android.util.Size
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -82,6 +84,7 @@ import deckers.thibault.aves.metadata.xmp.XMP.hasHdrGainMap
 import deckers.thibault.aves.metadata.xmp.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.xmp.XMP.isPanorama
 import deckers.thibault.aves.model.ContentAddress
+import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
@@ -106,6 +109,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.mp4parser.boxes.threegpp.ts26244.LocationInformationBox
 import org.mp4parser.tools.Path
+import java.io.File
 import java.io.FileNotFoundException
 import java.nio.charset.StandardCharsets
 import java.text.ParseException
@@ -513,6 +517,46 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         return dirMap
     }
 
+    private fun getImageDimensions(contentAddress: ContentAddress, sizeBytes: Long?): Size? {
+        var width = 0
+        var height = 0
+
+        val mimeType = contentAddress.mimeType
+        if (MimeTypes.isImage(mimeType)) {
+            if (MimeTypes.isRaw(mimeType)) {
+                // for RAW images, `BitmapFactory` and `metadata-extractor` yield the decoded preview dimensions instead of the RAW dimensions
+                if (canReadWithExifInterface(mimeType)) {
+                    try {
+                        Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
+                            val exifInterface = ExifInterface(input)
+                            exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
+                            exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
+                        }
+                    } catch (_: Exception) {
+                        // ignore
+                    }
+                }
+            } else {
+                try {
+                    StorageUtils.openInputStream(context, contentAddress.uri)?.use { input ->
+                        val options = BitmapFactory.Options().apply {
+                            inJustDecodeBounds = true
+                        }
+                        BitmapFactory.decodeStream(input, null, options)
+                        width = options.outWidth
+                        height = options.outHeight
+                    }
+                } catch (_: Exception) {
+                    // ignore
+                }
+            }
+        }
+        if (width > 0 && height > 0) {
+            return Size(width, height)
+        }
+        return null
+    }
+
     // set `KEY_DATE_MILLIS` from these fields (by precedence):
     // - Exif / DATETIME_ORIGINAL
     // - Exif / DATETIME
@@ -531,7 +575,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
     // - XMP / MicrosoftPhoto:Rating
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val contentAddress = ContentAddress.fromMethodCall(call)
-        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        var sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (contentAddress == null) {
             result.error("getCatalogMetadata-args", "missing arguments", null)
             return
@@ -540,6 +584,25 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val beforeAvailableHeapSize = MemoryUtils.getAvailableHeapSize()
 
         val metadataMap = HashMap<String, Any>()
+
+        // the reported size from source may be defined but missing
+        if (sizeBytes == 0L) {
+            contentAddress.path?.let { path ->
+                try {
+                    sizeBytes = File(path).length()
+                    metadataMap[EntryFields.SIZE_BYTES] = sizeBytes
+                } catch (_: Exception) {
+                    // ignore
+                }
+            }
+        }
+
+        // the reported dimensions from source are unreliable
+        getImageDimensions(contentAddress, sizeBytes)?.let { size ->
+            metadataMap[EntryFields.WIDTH] = size.width
+            metadataMap[EntryFields.HEIGHT] = size.height
+        }
+
         getCatalogMetadataByMetadataExtractor(contentAddress, sizeBytes, metadataMap)
 
         val mimeType = contentAddress.mimeType
@@ -547,15 +610,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(contentAddress, metadataMap)
 
             // fallback to MP4 `loci` box for location
-            if (!metadataMap.contains(KEY_LATITUDE) || !metadataMap.contains(KEY_LONGITUDE)) {
+            if (!metadataMap.contains(EntryFields.LATITUDE) || !metadataMap.contains(EntryFields.LONGITUDE)) {
                 try {
                     Mp4ParserHelper.getUserDataBox(context, contentAddress)?.let { userDataBox ->
                         Path.getPath<LocationInformationBox>(userDataBox, LocationInformationBox.TYPE)?.let { locationBox ->
                             if (!locationBox.isParsed) {
                                 locationBox.parseDetails()
                             }
-                            metadataMap[KEY_LATITUDE] = locationBox.latitude
-                            metadataMap[KEY_LONGITUDE] = locationBox.longitude
+                            metadataMap[EntryFields.LATITUDE] = locationBox.latitude
+                            metadataMap[EntryFields.LONGITUDE] = locationBox.longitude
                         }
                     }
                 } catch (e: Exception) {
@@ -565,9 +628,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         if (isIsoBMFFImage(mimeType)) {
-            val flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
+            val flags = (metadataMap[EntryFields.FLAGS] ?: 0) as Int
             if ((flags and MASK_IS_MOTION_PHOTO == 0) && MultiPage.isIsoBMFFImageSefdMotionPhoto(context, contentAddress.uri)) {
-                metadataMap[KEY_FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
+                metadataMap[EntryFields.FLAGS] = flags or MASK_IS_MULTIPAGE or MASK_IS_MOTION_PHOTO
             }
         }
 
@@ -604,7 +667,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return flags
         }
 
-        metadataMap[KEY_FLAGS] = addCredentialsFlags(contentAddress, (metadataMap[KEY_FLAGS] ?: 0) as Int)
+        metadataMap[EntryFields.FLAGS] = addCredentialsFlags(contentAddress, (metadataMap[EntryFields.FLAGS] ?: 0) as Int)
 
         // report success even when empty
         result.success(metadataMap)
@@ -620,9 +683,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         val path = sourceContentAddress.path
         val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = sourceContentAddress.pageId)
 
-        metadataMap[KEY_MIME_TYPE] = mimeType
+        metadataMap[EntryFields.MIME_TYPE] = mimeType
 
-        var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
+        var flags = (metadataMap[EntryFields.FLAGS] ?: 0) as Int
         var foundExif = false
         var foundXmp = false
         var foundMp4Uuid = false
@@ -633,32 +696,32 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 if (xmpMeta.doesPropExist(XMP.DC_SUBJECT_PROP_NAME)) {
                     val values = xmpMeta.getPropArrayItemValues(XMP.DC_SUBJECT_PROP_NAME)
-                    metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
+                    metadataMap[EntryFields.XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
                 }
-                xmpMeta.getSafeLocalizedText(XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
-                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                xmpMeta.getSafeLocalizedText(XMP.DC_TITLE_PROP_NAME, acceptBlank = false) { metadataMap[EntryFields.XMP_TITLE] = it }
+                if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                     xmpMeta.getSafeDateMillis(XMP.XMP_CREATE_DATE_PROP_NAME) { date, offset ->
                         run {
-                            metadataMap[KEY_DATE_MILLIS] = date
-                            offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                            metadataMap[EntryFields.DATE_MILLIS] = date
+                            offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                         }
                     }
-                    if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                    if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                         xmpMeta.getSafeDateMillis(XMP.PS_DATE_CREATED_PROP_NAME) { date, offset ->
                             run {
-                                metadataMap[KEY_DATE_MILLIS] = date
-                                offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                                metadataMap[EntryFields.DATE_MILLIS] = date
+                                offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                             }
                         }
                     }
                 }
 
-                xmpMeta.getSafeInt(XMP.XMP_RATING_PROP_NAME) { metadataMap[KEY_RATING] = it }
-                if (!metadataMap.containsKey(KEY_RATING)) {
+                xmpMeta.getSafeInt(XMP.XMP_RATING_PROP_NAME) { metadataMap[EntryFields.RATING] = it }
+                if (!metadataMap.containsKey(EntryFields.RATING)) {
                     xmpMeta.getSafeInt(XMP.MS_RATING_PROP_NAME) { percentRating ->
                         // values of 1,25,50,75,99% correspond to 1,2,3,4,5 stars
                         val standardRating = (percentRating / 25f).roundToInt() + 1
-                        metadataMap[KEY_RATING] = standardRating
+                        metadataMap[EntryFields.RATING] = standardRating
                     }
                 }
 
@@ -699,35 +762,35 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         dir.getDateOriginalMillis { date, offset ->
                             run {
-                                metadataMap[KEY_DATE_MILLIS] = date
-                                offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                                metadataMap[EntryFields.DATE_MILLIS] = date
+                                offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                             }
                         }
-                        if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                        if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                             // fetch date modified from SubIFD directory first, as the sub-second tag is here
                             dir.getDateModifiedMillis { date, offset ->
                                 run {
-                                    metadataMap[KEY_DATE_MILLIS] = date
-                                    offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                                    metadataMap[EntryFields.DATE_MILLIS] = date
+                                    offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                                 }
                             }
                         }
                     }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                        if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                        if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                             // fallback to fetch date modified from IFD0 directory,
                             // without the sub-second tag nor the time zone offset tag,
                             // in case there was no SubIFD directory
                             dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = true)?.let { date ->
-                                metadataMap[KEY_DATE_MILLIS] = date
-                                metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
+                                metadataMap[EntryFields.DATE_MILLIS] = date
+                                metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                             }
                         }
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) { orientation ->
                             if (isFlippedForExifCode(orientation)) {
                                 flags = flags or MASK_IS_FLIPPED
                             }
-                            metadataMap[KEY_ROTATION_DEGREES] = getRotationDegreesForExifCode(orientation)
+                            metadataMap[EntryFields.ROTATION_DEGREES] = getRotationDegreesForExifCode(orientation)
                         }
                     }
 
@@ -735,8 +798,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     for (dir in metadata.getDirectoriesOfType(GpsDirectory::class.java)) {
                         val geoLocation = dir.geoLocation
                         if (geoLocation != null) {
-                            metadataMap[KEY_LATITUDE] = geoLocation.latitude
-                            metadataMap[KEY_LONGITUDE] = geoLocation.longitude
+                            metadataMap[EntryFields.LATITUDE] = geoLocation.latitude
+                            metadataMap[EntryFields.LONGITUDE] = geoLocation.longitude
                         }
                     }
 
@@ -756,19 +819,19 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
 
                         // XMP fallback to IPTC
-                        if (!metadataMap.containsKey(KEY_XMP_TITLE) || !metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
+                        if (!metadataMap.containsKey(EntryFields.XMP_TITLE) || !metadataMap.containsKey(EntryFields.XMP_SUBJECTS)) {
                             for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
-                                if (!metadataMap.containsKey(KEY_XMP_TITLE)) {
-                                    dir.getSafeString(IptcDirectory.TAG_OBJECT_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE] = it }
+                                if (!metadataMap.containsKey(EntryFields.XMP_TITLE)) {
+                                    dir.getSafeString(IptcDirectory.TAG_OBJECT_NAME, acceptBlank = false) { metadataMap[EntryFields.XMP_TITLE] = it }
                                 }
-                                if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
-                                    dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
+                                if (!metadataMap.containsKey(EntryFields.XMP_SUBJECTS)) {
+                                    dir.keywords?.let { metadataMap[EntryFields.XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
                                 }
                             }
                         }
                     }
 
-                    if (!metadataMap.containsKey(KEY_LATITUDE) || !metadataMap.containsKey(KEY_LONGITUDE)) {
+                    if (!metadataMap.containsKey(EntryFields.LATITUDE) || !metadataMap.containsKey(EntryFields.LONGITUDE)) {
                         for (dir in metadata.getDirectoriesOfType(QuickTimeMetadataDirectory::class.java)) {
                             dir.getSafeString(QuickTimeMetadataDirectory.TAG_LOCATION_ISO6709) { locationString ->
                                 val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
@@ -776,8 +839,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                     val latitude = matcher.group(1)?.toDoubleOrNull()
                                     val longitude = matcher.group(2)?.toDoubleOrNull()
                                     if (latitude != null && longitude != null) {
-                                        metadataMap[KEY_LATITUDE] = latitude
-                                        metadataMap[KEY_LONGITUDE] = longitude
+                                        metadataMap[EntryFields.LATITUDE] = latitude
+                                        metadataMap[EntryFields.LONGITUDE] = longitude
                                     }
                                 }
                             }
@@ -787,13 +850,13 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     when (mimeType) {
                         MimeTypes.PNG -> {
                             // date fallback to PNG time chunk
-                            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                            if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                                 for (dir in metadata.getDirectoriesOfType(PngDirectory::class.java).filter { it.name == PNG_TIME_DIR_NAME }) {
                                     dir.getSafeString(PngDirectory.TAG_LAST_MODIFICATION_TIME) {
                                         try {
                                             val date = LocalDateTime.parse(it, PNG_LAST_MODIFICATION_TIME_FORMAT).toUtcEpochMillis()
-                                            metadataMap[KEY_DATE_MILLIS] = date
-                                            metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
+                                            metadataMap[EntryFields.DATE_MILLIS] = date
+                                            metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
                                         } catch (e: ParseException) {
                                             Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri path=$path", e)
                                         }
@@ -852,27 +915,27 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         ExifInterface.TAG_SUBSEC_TIME_ORIGINAL,
                         ExifInterface.TAG_OFFSET_TIME_ORIGINAL,
                     ) { date, offset ->
-                        metadataMap[KEY_DATE_MILLIS] = date
-                        offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                        metadataMap[EntryFields.DATE_MILLIS] = date
+                        offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                     }
-                    if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                    if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                         exifInterface.getSafeDateMillis(
                             ExifInterface.TAG_DATETIME,
                             ExifInterface.TAG_SUBSEC_TIME,
                             ExifInterface.TAG_OFFSET_TIME,
                         ) { date, offset ->
-                            metadataMap[KEY_DATE_MILLIS] = date
-                            offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                            metadataMap[EntryFields.DATE_MILLIS] = date
+                            offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                         }
                     }
                     exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
                         if (exifInterface.isFlipped) flags = flags or MASK_IS_FLIPPED
-                        metadataMap[KEY_ROTATION_DEGREES] = exifInterface.rotationDegrees
+                        metadataMap[EntryFields.ROTATION_DEGREES] = exifInterface.rotationDegrees
                     }
                     val latLong = exifInterface.latLong
                     if (latLong?.size == 2) {
-                        metadataMap[KEY_LATITUDE] = latLong[0]
-                        metadataMap[KEY_LONGITUDE] = latLong[1]
+                        metadataMap[EntryFields.LATITUDE] = latLong[0]
+                        metadataMap[EntryFields.LONGITUDE] = latLong[1]
                     }
                 }
             } catch (e: Exception) {
@@ -898,7 +961,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         if (mimeType == MimeTypes.TIFF && MultiPage.isMultiPageTiff(context, uri)) flags = flags or MASK_IS_MULTIPAGE
 
-        metadataMap[KEY_FLAGS] = flags
+        metadataMap[EntryFields.FLAGS] = flags
     }
 
     private fun hasAppleHdrGainMap(contentAddress: ContentAddress, sizeBytes: Long?): Boolean {
@@ -937,17 +1000,17 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
 
-        var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
+        var flags = (metadataMap[EntryFields.FLAGS] ?: 0) as Int
         try {
-            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
-            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[EntryFields.ROTATION_DEGREES] = it }
+            if (!metadataMap.containsKey(EntryFields.DATE_MILLIS)) {
                 retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { date, offset ->
-                    metadataMap[KEY_DATE_MILLIS] = date
-                    offset?.let { metadataMap[KEY_TIME_ZONE_OFFSET_MINUTES] = it }
+                    metadataMap[EntryFields.DATE_MILLIS] = date
+                    offset?.let { metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = it }
                 }
             }
 
-            if (!metadataMap.containsKey(KEY_LATITUDE) || !metadataMap.containsKey(KEY_LONGITUDE)) {
+            if (!metadataMap.containsKey(EntryFields.LATITUDE) || !metadataMap.containsKey(EntryFields.LONGITUDE)) {
                 val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
                 if (locationString != null) {
                     val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
@@ -955,8 +1018,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         val latitude = matcher.group(1)?.toDoubleOrNull()
                         val longitude = matcher.group(2)?.toDoubleOrNull()
                         if (latitude != null && longitude != null) {
-                            metadataMap[KEY_LATITUDE] = latitude
-                            metadataMap[KEY_LONGITUDE] = longitude
+                            metadataMap[EntryFields.LATITUDE] = latitude
+                            metadataMap[EntryFields.LONGITUDE] = longitude
                         }
                     }
                 }
@@ -982,7 +1045,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 }
             }
 
-            metadataMap[KEY_FLAGS] = flags
+            metadataMap[EntryFields.FLAGS] = flags
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for $contentAddress", e)
         } finally {
@@ -1013,7 +1076,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // and process it to make sure the numerator is `1` when the ratio value is less than 1
             val num = value.numerator
             val denom = value.denominator
-            metadataMap[KEY_EXPOSURE_TIME] = when {
+            metadataMap[EntryFields.EXPOSURE_TIME] = when {
                 num >= denom -> "${value.toSimpleString(true)}″"
                 num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
                 else -> value.toString()
@@ -1027,20 +1090,20 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
-                        if (fields.contains(KEY_APERTURE)) {
-                            dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
+                        if (fields.contains(EntryFields.APERTURE)) {
+                            dir.getSafeRational(ExifDirectoryBase.TAG_FNUMBER) { metadataMap[EntryFields.APERTURE] = it.numerator.toDouble() / it.denominator }
                         }
-                        if (fields.contains(KEY_DESCRIPTION)) {
-                            getDescriptionByMetadataExtractor(metadata)?.let { metadataMap[KEY_DESCRIPTION] = it }
+                        if (fields.contains(EntryFields.DESCRIPTION)) {
+                            getDescriptionByMetadataExtractor(metadata)?.let { metadataMap[EntryFields.DESCRIPTION] = it }
                         }
-                        if (fields.contains(KEY_EXPOSURE_TIME)) {
+                        if (fields.contains(EntryFields.EXPOSURE_TIME)) {
                             dir.getSafeRational(ExifDirectoryBase.TAG_EXPOSURE_TIME, saveExposureTime)
                         }
-                        if (fields.contains(KEY_FOCAL_LENGTH)) {
-                            dir.getSafeRational(ExifDirectoryBase.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
+                        if (fields.contains(EntryFields.FOCAL_LENGTH)) {
+                            dir.getSafeRational(ExifDirectoryBase.TAG_FOCAL_LENGTH) { metadataMap[EntryFields.FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
                         }
-                        if (fields.contains(KEY_ISO)) {
-                            dir.getSafeInt(ExifDirectoryBase.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
+                        if (fields.contains(EntryFields.ISO)) {
+                            dir.getSafeInt(ExifDirectoryBase.TAG_ISO_EQUIVALENT) { metadataMap[EntryFields.ISO] = it }
                         }
                     }
                 }
@@ -1058,17 +1121,17 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val exifInterface = ExifInterface(input)
-                    if (fields.contains(KEY_APERTURE)) {
-                        exifInterface.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
+                    if (fields.contains(EntryFields.APERTURE)) {
+                        exifInterface.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[EntryFields.APERTURE] = it }
                     }
-                    if (fields.contains(KEY_EXPOSURE_TIME)) {
+                    if (fields.contains(EntryFields.EXPOSURE_TIME)) {
                         exifInterface.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
                     }
-                    if (fields.contains(KEY_FOCAL_LENGTH)) {
-                        exifInterface.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
+                    if (fields.contains(EntryFields.FOCAL_LENGTH)) {
+                        exifInterface.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[EntryFields.FOCAL_LENGTH] = it }
                     }
-                    if (fields.contains(KEY_ISO)) {
-                        exifInterface.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                    if (fields.contains(EntryFields.ISO)) {
+                        exifInterface.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[EntryFields.ISO] = it }
                     }
                 }
             } catch (e: Exception) {
@@ -1465,8 +1528,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
 
         val fields: FieldMap = hashMapOf(
-            KEY_DATE_MILLIS to dateMillis,
-            KEY_TIME_ZONE_OFFSET_MINUTES to offsetMinutes,
+            EntryFields.DATE_MILLIS to dateMillis,
+            EntryFields.TIME_ZONE_OFFSET_MINUTES to offsetMinutes,
         )
 
         result.success(fields)
@@ -1601,18 +1664,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return Pair(MetadataExtractorHelper.getTagName(tag), MetadataExtractorHelper.getTagDescription(dir, tag))
         }
 
-        // catalog metadata
-        private const val KEY_MIME_TYPE = "mimeType"
-        private const val KEY_DATE_MILLIS = "dateMillis"
-        private const val KEY_TIME_ZONE_OFFSET_MINUTES = "timeZoneOffsetMinutes"
-        private const val KEY_FLAGS = "flags"
-        private const val KEY_ROTATION_DEGREES = "rotationDegrees"
-        private const val KEY_LATITUDE = "latitude"
-        private const val KEY_LONGITUDE = "longitude"
-        private const val KEY_XMP_SUBJECTS = "xmpSubjects"
-        private const val KEY_XMP_TITLE = "xmpTitle"
-        private const val KEY_RATING = "rating"
-
         private const val MASK_IS_ANIMATED = 1 shl 0
         private const val MASK_IS_FLIPPED = 1 shl 1
         private const val MASK_IS_GEOTIFF = 1 shl 2
@@ -1625,13 +1676,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_ARE_CREDENTIALS_VALID = 1 shl 9
         private const val MASK_ARE_CREDENTIALS_TRUSTED = 1 shl 10
         private const val XMP_SUBJECTS_SEPARATOR = ";"
-
-        // overlay metadata
-        private const val KEY_APERTURE = "aperture"
-        private const val KEY_DESCRIPTION = "description"
-        private const val KEY_EXPOSURE_TIME = "exposureTime"
-        private const val KEY_FOCAL_LENGTH = "focalLength"
-        private const val KEY_ISO = "iso"
 
         // additional media key
         private const val KEY_HAS_EMBEDDED_PICTURE = "Has Embedded Picture"

@@ -350,7 +350,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             ioScope.launch {
                 provider.fetchSingle(
                     context = context,
-                    sourceMimeType = mimeType,
+                    mimeTypeHint = mimeType,
                     uri = uri,
                     allowUnsized = false,
                     callback = object : ImageProvider.ImageOpCallback {

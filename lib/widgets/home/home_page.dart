@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     final entry = await mediaFetchService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
-      await entry.catalog(background: false, force: false, persist: false);
+      await entry.catalog(background: false, force: false, persistSourceFields: false);
     }
     return entry;
   }

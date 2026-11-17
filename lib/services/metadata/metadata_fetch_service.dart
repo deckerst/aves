@@ -1,10 +1,10 @@
 import 'package:aves/convert/convert.dart';
 import 'package:aves/model/entry/entry.dart';
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/model/entry/extensions/multipage.dart';
 import 'package:aves/model/entry/extensions/props.dart';
 import 'package:aves/model/media/geotiff.dart';
 import 'package:aves/model/media/panorama.dart';
-import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/model/metadata/overlay.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/services/common/channel.dart';
@@ -22,7 +22,7 @@ abstract class MetadataFetchService {
   // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   Future<Map> getAllMetadata(AvesEntry entry);
 
-  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false});
+  Future<Map?> getCatalogMetadata(AvesEntry entry, {bool background = false});
 
   Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry, Set<MetadataSyntheticField> fields);
 
@@ -77,7 +77,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
   }
 
   @override
-  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
+  Future<Map?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
     if (!kReleaseMode) {
@@ -85,26 +85,34 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata ${entry.storagePath ?? entry.uri}');
     }
 
-    Future<CatalogMetadata?> call() async {
+    Future<Map?> call() async {
       try {
         // returns map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'timeZoneOffsetMinutes': offset in minutes of the time zone used for the date returned in `dateMillis` (int)
-        // 'isAnimated': animated gif/webp (bool)
-        // 'isFlipped': flipped according to EXIF orientation (bool)
-        // 'rating': rating in [-1,5] (int)
-        // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
+        // 'flags':
+        // \ 'isAnimated': animated avif/gif/png/webp
+        // \ 'isFlipped': flipped according to EXIF orientation
+        // \ 'isGeotiff': TIFF with GeoTIFF metadata
+        // \ 'is360': image/video
+        // \ 'isMultiPage': contains multiple images/videos
+        // \ 'isMotionPhoto': jpeg/heic with trailing video
+        // \ 'isHdr': image/video
+        // \ 'isSlowMotion': video with different capture/playback rates
+        // \ 'c2paValidity': present/valid/trusted states of embedded C2PA credentials
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
+        // 'rating': rating in [-1,5] (int)
+        // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitle': XMP title (string)
         final result = await _channel.invokeMethod('getCatalogMetadata', <String, Object?>{
           ...entry.toPlatformContentAddress(),
         }) as Map;
-        result['id'] = entry.id;
+        result[EntryFields.id] = entry.id;
         AvesEntry.normalizeMimeTypeFields(result);
-        return CatalogMetadata.fromMap(result);
+        return result;
       } on PlatformException catch (e, stack) {
         await _processPlatformException(entry, e, stack);
       }
@@ -164,9 +172,9 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       final pageMaps = ((result as List?) ?? []).cast<Map>();
       if (entry.isMotionPhoto && pageMaps.isNotEmpty) {
         final imagePage = pageMaps[0];
-        imagePage['width'] = entry.width;
-        imagePage['height'] = entry.height;
-        imagePage['rotationDegrees'] = entry.rotationDegrees;
+        imagePage[EntryFields.width] = entry.width;
+        imagePage[EntryFields.height] = entry.height;
+        imagePage[EntryFields.rotationDegrees] = entry.rotationDegrees;
       }
       pageMaps.forEach(AvesEntry.normalizeMimeTypeFields);
       return MultiPageInfo.fromPageMaps(entry, pageMaps);
@@ -263,8 +271,8 @@ class PlatformMetadataFetchService implements MetadataFetchService {
       });
       if (result is Map) {
         final fields = result.cast<String, Object?>();
-        final dateMillis = fields['dateMillis'] as int?;
-        final offsetMinutes = fields['timeZoneOffsetMinutes'] as int?;
+        final dateMillis = fields[EntryFields.dateMillis] as int?;
+        final offsetMinutes = fields[EntryFields.timeZoneOffsetMinutes] as int?;
         if (dateMillis != null) {
           return (dateTimeFromMillis(dateMillis, isUtc: false), offsetMinutes);
         }

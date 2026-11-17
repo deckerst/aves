@@ -159,7 +159,6 @@ object Metadata {
         path: String?,
         sizeBytes: Long?
     ): Uri {
-        // formats known to yield OOM for large files
         return when (mimeType) {
             // formats known to yield OOM for large files
             MimeTypes.DNG,

@@ -9,23 +9,33 @@ import 'package:aves/model/metadata/catalog.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/common/services.dart';
 import 'package:aves/services/metadata/svg_metadata_service.dart';
+import 'package:aves_utils/aves_utils.dart';
 
 extension ExtraAvesEntryCatalog on AvesEntry {
-  Future<void> catalog({required bool background, required bool force, required bool persist}) async {
+  static final _unreliableSourceFields = {
+    EntryFields.mimeType,
+    EntryFields.sizeBytes,
+    EntryFields.width,
+    EntryFields.height,
+    EntryFields.rotationDegrees,
+  };
+
+  Future<void> catalog({required bool background, required bool force, required bool persistSourceFields}) async {
     if (isCatalogued && !force) return;
 
     final _mimeType = mimeType;
     if (MimeTypes.isVideo(_mimeType) || _mimeType == MimeTypes.avif) {
-      await _catalogVideoLike(background: background, persist: persist);
+      await _catalogVideoLike(background: background, persistSourceFields: persistSourceFields);
     } else if (_mimeType == MimeTypes.svg) {
-      await _catalogVectorImage(persist);
+      await _catalogVectorImage(persistSourceFields: persistSourceFields);
     } else {
-      await _catalogRasterImage(background);
+      await _catalogRasterImage(background: background, persist: persistSourceFields);
     }
   }
 
-  Future<void> _catalogRasterImage(bool background) async {
-    catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
+  Future<void> _catalogRasterImage({required bool background, required bool persist}) async {
+    final fields = await metadataFetchService.getCatalogMetadata(this, background: background);
+    await _applyCatalogSourceFields(catalogFields: fields, persistSourceFields: persist);
 
     if (isGeotiff && !hasGps) {
       final info = await metadataFetchService.getGeoTiffInfo(this);
@@ -44,7 +54,7 @@ extension ExtraAvesEntryCatalog on AvesEntry {
     }
   }
 
-  Future<void> _catalogVideoLike({required bool background, required bool persist}) async {
+  Future<void> _catalogVideoLike({required bool background, required bool persistSourceFields}) async {
     // pre-processing
     if (isVideo || mimeType == MimeTypes.avif) {
       // on initial loading, original source may report incorrect size, rotation or duration
@@ -54,12 +64,13 @@ extension ExtraAvesEntryCatalog on AvesEntry {
       final height = fields[EntryFields.height];
       final isValid = (width == null || width > 0) && (height == null || height > 0);
       if (isValid) {
-        await applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persistSourceFields);
       }
     }
 
     // cataloguing on platform
-    catalogMetadata = await metadataFetchService.getCatalogMetadata(this, background: background);
+    final fields = await metadataFetchService.getCatalogMetadata(this, background: background);
+    await _applyCatalogSourceFields(catalogFields: fields, persistSourceFields: persistSourceFields);
 
     // post-processing
     if ((isVideo && !isDated) || (mimeType == MimeTypes.avif && durationMillis != null)) {
@@ -79,12 +90,12 @@ extension ExtraAvesEntryCatalog on AvesEntry {
         final fields = {
           EntryFields.durationMillis: captureDurationMillis,
         };
-        await applyNewFields(fields, persist: persist);
+        await applyNewFields(fields, persist: persistSourceFields);
       }
     }
   }
 
-  Future<void> _catalogVectorImage(bool persist) async {
+  Future<void> _catalogVectorImage({required bool persistSourceFields}) async {
     // vector image sizing is not essential, so we should not spend time for it during loading
     // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
     final size = await SvgMetadataService.getSize(this);
@@ -93,8 +104,20 @@ extension ExtraAvesEntryCatalog on AvesEntry {
         EntryFields.width: size.width.ceil(),
         EntryFields.height: size.height.ceil(),
       };
-      await applyNewFields(fields, persist: persist);
+      await applyNewFields(fields, persist: persistSourceFields);
     }
     catalogMetadata = CatalogMetadata(id: id);
+  }
+
+  Future<void> _applyCatalogSourceFields({required Map? catalogFields, required bool persistSourceFields}) async {
+    if (catalogFields != null) {
+      final sourceFields = Map.fromEntries(_unreliableSourceFields.where(catalogFields.containsKey).map((k) => MapEntry(k, catalogFields[k]))).whereNotNullValue();
+      if (sourceFields.isNotEmpty) {
+        await applyNewFields(sourceFields, persist: persistSourceFields);
+      }
+      catalogMetadata = CatalogMetadata.fromMap(catalogFields);
+    } else {
+      catalogMetadata = null;
+    }
   }
 }

@@ -390,7 +390,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      await newEntry.catalog(background: false, force: false, persist: true);
+      await newEntry.catalog(background: false, force: false, persistSourceFields: false);
       await newEntry.locate(
         background: false,
         force: false,

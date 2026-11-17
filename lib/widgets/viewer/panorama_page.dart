@@ -60,7 +60,6 @@ class _PanoramaPageState extends State<PanoramaPage> {
     required String propMimeType,
   }) async {
     final fields = await embeddedDataService.extractXmpDataProp(entry, propPath, propMimeType);
-    fields[EntryFields.sourceMimeType] ??= fields[EntryFields.mimeType];
     fields[EntryFields.origin] ??= EntryOrigins.unknownContent;
     final audioEntry = AvesEntry.fromMap(fields);
 
