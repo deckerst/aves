@@ -66,7 +66,6 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["googleApiKey"] = keystoreProperties["googleApiKey"] ?: "NONE"
-        multiDexEnabled = true
     }
 
     // remove dependency metadata from build artifacts
