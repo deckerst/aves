@@ -71,6 +71,9 @@ object MediaStoreUriHelper {
     fun getMediaStoreVolumeName(context: Context, anyPath: String): String {
         val storageManager = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
         val volume = storageManager?.getStorageVolume(File(anyPath))
+        if (volume == null && StorageUtils.isOnPrimaryVolumePathForAnyUser(anyPath)) {
+            return MediaStore.VOLUME_EXTERNAL_PRIMARY
+        }
         volume ?: throw Exception("failed to get volume name because storage manager could not find volume for path=$anyPath")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
