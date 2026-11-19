@@ -1,6 +1,7 @@
 import 'package:aves/ref/emoji_state_codes.dart';
 import 'package:country_code/country_code.dart';
 
+// cf https://en.wikipedia.org/wiki/Federated_state
 class GeoStates {
   static final countriesWithStateFlagAssets = {
     // Australia (public domain)

@@ -11,7 +11,6 @@ import 'package:aves/utils/emoji_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves_utils/aves_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
