@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aves/geo/states.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/device.dart';
 import 'package:aves/model/filters/covered/covered.dart';
@@ -120,20 +121,7 @@ class LocationFilter extends CollectionFilter with CoveredFilter {
       case .state:
         if (_code != null) {
           final countryCode = _code.substring(0, 2).toUpperCase();
-          if ({
-            // Australia (public domain)
-            // https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
-            CountryCode.AU.alpha2,
-            // Brazil (public domain)
-            // https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
-            CountryCode.BR.alpha2,
-            // Canada (public domain)
-            // https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
-            CountryCode.CA.alpha2,
-            // USA (public domain, except CC BY-SA for Maine's)
-            // https://commons.wikimedia.org/wiki/Flags_of_the_U.S._states_and_territories
-            CountryCode.US.alpha2,
-          }.contains(countryCode)) {
+          if (GeoStates.countriesWithStateFlagAssets.contains(countryCode)) {
             final flagAsset = _flagAssets[_code];
             final Future<(String, ByteData)?> flagAssetFuture;
             if (flagAsset != null) {

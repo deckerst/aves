@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Collection: format overlay option
+- Countries: show states for Germany (Bundesländer)
 
 ### Fixed
 
