@@ -136,9 +136,18 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
     return ingredients
         .where((v) => v['relationship'] == relationship)
         .map((v) {
-          final manifest = v['manifest_data'] as Map<String, Object?>?;
-          if (manifest == null) return null;
-          return manifest['identifier'] as String?;
+          // `manifest_data` / `identifier`
+          var manifest = v['manifest_data'] as Map<String, Object?>?;
+          if (manifest != null) {
+            return manifest['identifier'] as String?;
+          }
+          // `active_manifest` / `url`
+          manifest = v['active_manifest'] as Map<String, Object?>?;
+          if (manifest != null) {
+            final url = manifest['url'] as String?;
+            return url?.replaceFirst('self#jumbf=/c2pa/', '');
+          }
+          return null;
         })
         .nonNulls
         .toList();
