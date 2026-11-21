@@ -3,6 +3,8 @@ import 'package:aves_model/aves_model.dart';
 extension ExtraMetadataTypeConvert on MetadataType {
   String get toPlatform {
     switch (this) {
+      case .c2pa:
+        return 'c2pa';
       case .comment:
         return 'comment';
       case .exif:
@@ -17,8 +19,6 @@ extension ExtraMetadataTypeConvert on MetadataType {
         return 'jpeg_adobe';
       case .jpegDucky:
         return 'jpeg_ducky';
-      case .jpegJumbf:
-        return 'jpeg_jumbf';
       case .mp4:
         return 'mp4';
       case .photoshopIrb:

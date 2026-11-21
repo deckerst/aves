@@ -43,7 +43,7 @@
     <uses-permission
         android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING"
         tools:ignore="SystemPermissionTypo" />
-    <!-- TODO TLAD still needed to fetch map tiles / reverse geocoding / else ? check in release mode -->
+    <!-- fetch map tiles / reverse geocoding / C2PA signing TSA -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- from Android 12 (API 31), users can optionally grant access to the media management permission -->
     <uses-permission
@@ -53,7 +53,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- to change wallpaper -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
+    <!-- TODO TLAD [permission] remove when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-permission
@@ -69,7 +69,7 @@
     `android.permission.RECEIVE_BOOT_COMPLETED`,
     `android.permission.WAKE_LOCK` by `androidx.work:work-runtime-ktx`, to analyze media in a service
 
-    `android.permission.ACCESS_NETWORK_STATE` by `dev.fluttercommunity.plus.connectivity`, TODO TLAD still needed?
+    `android.permission.ACCESS_NETWORK_STATE` by `dev.fluttercommunity.plus.connectivity`,
 
     `android.permission.USE_BIOMETRIC` by `io.flutter.plugins.localauth`, to unlock vaults (API >=28)
     -->

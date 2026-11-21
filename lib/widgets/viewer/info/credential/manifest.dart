@@ -2,12 +2,12 @@ import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/c2pa.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/viewer/info/credential/assertions.dart';
 import 'package:aves/widgets/viewer/info/credential/thumbnail.dart';
 import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
@@ -30,8 +30,9 @@ class const Manifest({
     if (signDate != null) {
       final date = DateTime.tryParse(signDate);
       if (date != null) {
+        final dateLocal = DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
         final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
-        signDate = formatDateTime(date, settings.avesLocale, use24hour);
+        signDate = formatDateTime(dateLocal, settings.avesLocale, use24hour);
       }
     }
 
@@ -46,7 +47,7 @@ class const Manifest({
           .expand<String?>((v) {
             final label = v['label'] as String?;
             switch (label) {
-              case Assertions.actionsV2:
+              case C2paAssertions.actionsV2:
                 final data = v['data'] as Map<String, Object?>?;
                 if (data == null) return [];
                 final actions = (data['actions'] as List?)?.cast<Map<String, Object?>>();
@@ -61,20 +62,20 @@ class const Manifest({
                   }
                   return action;
                 });
-              case Assertions.metadataC2pa:
-              case Assertions.metadataCawg:
-              case Assertions.metadataExif:
-              case Assertions.metadataIptc:
+              case C2paAssertions.metadataC2pa:
+              case C2paAssertions.metadataCawg:
+              case C2paAssertions.metadataExif:
+              case C2paAssertions.metadataIptc:
                 return [label];
-              case Assertions.creativeWork:
-              case Assertions.hashBmffV2:
-              case Assertions.hashBmffV3:
-              case Assertions.hashDataPart:
-              case Assertions.hashMultiAsset:
-              case Assertions.identity:
-              case Assertions.softBinding:
-              case Assertions.trainingMiningC2pa:
-              case Assertions.trainingMiningCawg:
+              case C2paAssertions.creativeWork:
+              case C2paAssertions.hashBmffV2:
+              case C2paAssertions.hashBmffV3:
+              case C2paAssertions.hashDataPart:
+              case C2paAssertions.hashMultiAsset:
+              case C2paAssertions.identity:
+              case C2paAssertions.softBinding:
+              case C2paAssertions.trainingMiningC2pa:
+              case C2paAssertions.trainingMiningCawg:
                 // ignore
                 return [];
               default:
@@ -83,7 +84,7 @@ class const Manifest({
             return [];
           })
           .nonNulls
-          .map((v) => v.replaceFirst(Assertions.actionPrefixPattern, '').toSentenceCase())
+          .map((v) => v.replaceFirst(C2paAssertions.actionPrefixPattern, '').replaceAll('.', '_').toSentenceCase())
           .toSet()
           .toList()
           .join(AText.separator);
@@ -92,7 +93,7 @@ class const Manifest({
       assertions.forEach((v) {
         final label = v['label'] as String?;
         switch (label) {
-          case Assertions.creativeWork:
+          case C2paAssertions.creativeWork:
             final data = v['data'] as Map<String, Object?>?;
             if (data == null) return;
             final authors = (data['author'] as List?)?.cast<Map<String, Object?>>();
@@ -115,12 +116,13 @@ class const Manifest({
     final subStyle = mainStyle.copyWith(color: subColor);
 
     const double iconSize = 16;
+    const double padding = 8;
     return Container(
       decoration: BoxDecoration(
         border: AvesBorder.border(context),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -136,11 +138,13 @@ class const Manifest({
                   ],
                 ),
               ),
-              if (thumbnailUri != null)
+              if (thumbnailUri != null) ...[
+                const SizedBox(width: padding),
                 ManifestThumbnail(
                   entry: entry,
                   thumbnailUri: thumbnailUri,
                 ),
+              ],
             ],
           ),
           if (actionLine.isNotEmpty)

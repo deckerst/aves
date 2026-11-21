@@ -52,11 +52,14 @@ class const RatingIcon({
   super.key,
   required final int rating,
 }) extends StatelessWidget {
+  static const double _scale = .85;
+
   @override
   Widget build(BuildContext context) {
     final numberFormat = context.select<GridThemeData, ANumberFormat>((t) => t.numberFormatter);
     final child = OverlayIcon(
       icon: AIcons.rating,
+      iconScale: _scale,
       text: numberFormat.format(rating),
     );
 
@@ -72,14 +75,14 @@ class const StackIcon({
   super.key,
   required final AvesEntry entry,
 }) extends StatelessWidget {
-  static const double scale = .8;
+  static const double _scale = .8;
 
   @override
   Widget build(BuildContext context) {
     final numberFormat = context.select<GridThemeData, ANumberFormat>((t) => t.numberFormatter);
     final child = OverlayIcon(
       icon: AIcons.multiPage,
-      iconScale: scale,
+      iconScale: _scale,
       text: numberFormat.format(entry.stackedEntries?.length ?? 0),
     );
 
@@ -95,13 +98,13 @@ class const TrashIcon({
   super.key,
   required final int? trashDaysLeft,
 }) extends StatelessWidget {
-  static const double scale = .85;
+  static const double _scale = .85;
 
   @override
   Widget build(BuildContext context) {
     final child = OverlayIcon(
       icon: AIcons.bin,
-      iconScale: scale,
+      iconScale: _scale,
       text: trashDaysLeft != null ? context.l10n.timeDays(trashDaysLeft!) : null,
     );
 

@@ -4,6 +4,7 @@ extension ExtraMetadataTypeView on MetadataType {
   // match `metadata-extractor` directory names
   String getText() {
     return switch (this) {
+      .c2pa => 'C2PA',
       .comment => 'Comment',
       .exif => 'Exif',
       .iccProfile => 'ICC Profile',
@@ -11,7 +12,6 @@ extension ExtraMetadataTypeView on MetadataType {
       .jfif => 'JFIF',
       .jpegAdobe => 'Adobe JPEG',
       .jpegDucky => 'Ducky',
-      .jpegJumbf => 'JUMBF (C2PA)',
       .mp4 => 'MP4',
       .photoshopIrb => 'Photoshop',
       .xmp => 'XMP',

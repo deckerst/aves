@@ -7,7 +7,7 @@ class Device {
   late final int? _availableProcessors;
   late final bool _canAuthenticateUser, _canPinShortcut, _showPinShortcutFeedback;
   late final bool _canRenderSubdivisionFlagEmojis, _canRequestMediaManagementPermission, _canRequestNotificationPermission;
-  late final bool _hasGeocoder, _isDynamicColorAvailable, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
+  late final bool _hasGeocoder, _isDynamicColorAvailable, _supportC2pa, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
   late final bool _isPhysicalDevice, _isTelevision;
 
   String get packageName => _packageName;
@@ -38,6 +38,8 @@ class Device {
 
   bool get showPinShortcutFeedback => _showPinShortcutFeedback;
 
+  bool get supportC2pa => _supportC2pa;
+
   bool get supportEdgeToEdgeUIMode => _supportEdgeToEdgeUIMode;
 
   bool get supportPictureInPicture => _supportPictureInPicture;
@@ -65,6 +67,7 @@ class Device {
     _hasGeocoder = capabilities['hasGeocoder'] as bool? ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] as bool? ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] as bool? ?? false;
+    _supportC2pa = capabilities['supportC2pa'] as bool? ?? false;
     _supportEdgeToEdgeUIMode = capabilities['supportEdgeToEdgeUIMode'] as bool? ?? false;
     _supportPictureInPicture = capabilities['supportPictureInPicture'] as bool? ?? false;
   }

@@ -1,4 +1,5 @@
-class Assertions {
+// cf https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html#standard-assertions
+class C2paAssertions {
   static final actionPrefixPattern = RegExp('(c2pa||cawg||stds)\\.');
 
   // displayed
@@ -18,6 +19,11 @@ class Assertions {
   static const softBinding = 'c2pa.soft-binding';
   static const trainingMiningC2pa = 'c2pa.training-mining';
   static const trainingMiningCawg = 'cawg.training-mining';
+}
+
+// cf https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html#list-of-actions
+class C2paActions {
+  static const editedMetadata = 'c2pa.edited.metadata';
 }
 
 class CreativeWorkAuthorTypes {

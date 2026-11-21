@@ -30,6 +30,8 @@ enum LocationEditAction {
 }
 
 enum MetadataType {
+  // JPEG APP11 / JUMBF
+  c2pa,
   // JPEG COM marker or GIF comment
   comment,
   // Exif: https://en.wikipedia.org/wiki/Exif
@@ -44,8 +46,6 @@ enum MetadataType {
   jpegAdobe,
   // JPEG APP12 / Ducky: https://www.exiftool.org/TagNames/APP12.html#Ducky
   jpegDucky,
-  // JPEG APP11 / JUMBF
-  jpegJumbf,
   // ISO User Data box content, etc.
   mp4,
   // Photoshop IRB: https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/
@@ -58,6 +58,7 @@ enum MetadataType {
 
 class MetadataTypes {
   static const main = <MetadataType>{
+    .c2pa,
     .exif,
     .xmp,
   };
@@ -72,10 +73,10 @@ class MetadataTypes {
   };
 
   static const jpeg = <MetadataType>{
+    .c2pa,
     .jfif,
     .jpegAdobe,
     .jpegDucky,
-    .jpegJumbf,
   };
 }
 

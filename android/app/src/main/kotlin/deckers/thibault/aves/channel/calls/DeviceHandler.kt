@@ -66,6 +66,7 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "hasGeocoder" to Geocoder.isPresent(),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
+                "supportC2pa" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P),
                 "supportEdgeToEdgeUIMode" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q),
                 "supportPictureInPicture" to supportPictureInPicture(),
             )

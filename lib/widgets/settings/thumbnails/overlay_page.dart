@@ -7,7 +7,6 @@ import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/theme.dart';
-import 'package:aves/widgets/common/identity/icons/textless.dart';
 import 'package:aves/widgets/settings/common/switch_icon.dart';
 import 'package:aves/widgets/settings/common/tiles/multi_selection.dart';
 import 'package:aves/widgets/settings/common/tiles/single_selection.dart';
@@ -72,13 +71,10 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
               selector: (context, s) => s.showThumbnailMotionPhoto,
               onChanged: (v) => settings.showThumbnailMotionPhoto = v,
               title: (_) => l10n.settingsThumbnailShowMotionPhotoIcon,
-              trailing: Padding(
-                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - MotionPhotoIcon.scale) / 2),
-                child: Icon(
-                  AIcons.motionPhoto,
-                  size: iconSize * MotionPhotoIcon.scale,
-                  color: iconColor,
-                ),
+              trailing: Icon(
+                AIcons.motionPhoto,
+                size: iconSize,
+                color: iconColor,
               ),
             ),
             SettingsSwitchListTile(
@@ -100,13 +96,10 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
               selector: (context, s) => s.showThumbnailFavourite,
               onChanged: (v) => settings.showThumbnailFavourite = v,
               title: (_) => l10n.settingsThumbnailShowFavouriteIcon,
-              trailing: Padding(
-                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - FavouriteIcon.scale) / 2),
-                child: Icon(
-                  AIcons.favourite,
-                  size: iconSize * FavouriteIcon.scale,
-                  color: iconColor,
-                ),
+              trailing: Icon(
+                AIcons.favourite,
+                size: iconSize,
+                color: iconColor,
               ),
             ),
             SettingsSwitchListTile(
