@@ -735,7 +735,6 @@
     "collectionActionExportGpx": "GPX exportieren",
     "filterTypeSlowMotionVideoLabel": "Zeitlupe",
     "drawerCollectionSlowMotionVideos": "Zeitlupenvideos",
-    "showThumbnailSlowMotionVideoIcon": "Zeitlupensymbol anzeigen",
     "mapShowItemTracks": "Pfade anzeigen",
     "mapHideItemTracks": "Pfade verbergen",
     "settingsAutoExportSettings": "Automatischer Export der Einstellungen",
@@ -762,5 +761,8 @@
     "filterCredentialsValidityTrustedLabel": "Zuverlässig",
     "exportEntryDialogDimension": "Maße:",
     "aboutCreditsStateFlags": "Staatsflaggen stammen von Wikimedia Commons. Sie sind gemeinfrei außer:",
-    "sortRandomly": "Zufällig"
+    "sortRandomly": "Zufällig",
+    "searchCredentialsSectionTitle": "Inhaltsnachweise",
+    "settingsThumbnailShowCredentialValidity": "Gültigkeit der Zugangsdaten anzeigen",
+    "settingsThumbnailShowFormat": "Format anzeigen"
 }

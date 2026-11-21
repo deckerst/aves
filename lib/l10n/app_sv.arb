@@ -389,11 +389,11 @@
     "appPickDialogNone": "Igen",
     "aboutPageTitle": "Om",
     "aboutLinkLicense": "Licens",
-    "aboutLinkPolicy": "IntegritetsPolicy",
+    "aboutLinkPolicy": "Integritetspolicy",
     "aboutBugSectionTitle": "Felrapport",
     "aboutBugSaveLogInstruction": "Spara appens log till en fil",
     "aboutLicensesShowAllButtonLabel": "Visa alla licenser",
-    "policyPageTitle": "IntegritetsPolicy",
+    "policyPageTitle": "Integritetspolicy",
     "collectionActionHideTitleSearch": "Göm titelfilter",
     "collectionActionAddShortcut": "Lägg till genväg",
     "collectionActionRescan": "Scanna om",
@@ -976,7 +976,6 @@
     "settingsPermissionsPageTitle": "Rättigheter",
     "filterTypeSlowMotionVideoLabel": "Slowmotion",
     "drawerCollectionSlowMotionVideos": "Slowmotion videor",
-    "showThumbnailSlowMotionVideoIcon": "Visa slowmotion ikon",
     "settingsCalendarTile": "Kalender",
     "mapShowItemTracks": "Visa sökvägar",
     "mapHideItemTracks": "Dölj sökvägar",
@@ -998,5 +997,7 @@
     "searchCredentialsSectionTitle": "Innehållsreferenser",
     "settingsThumbnailShowCredentialValidity": "Visa giltighet för referenser",
     "exportEntryDialogDimension": "Dimension:",
-    "aboutCreditsStateFlags": "Delstatsflaggorna kommer från Wikimedia Commons. De är allmän egendom, med undantag för:"
+    "aboutCreditsStateFlags": "Delstatsflaggorna kommer från Wikimedia Commons. De är allmän egendom, med undantag för:",
+    "sortRandomly": "Slumpmässigt",
+    "settingsThumbnailShowFormat": "Visa format"
 }
