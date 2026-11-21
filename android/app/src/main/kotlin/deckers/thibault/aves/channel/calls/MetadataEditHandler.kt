@@ -58,7 +58,8 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        if (entryMap == null || c2paActions == null) {
             result.error("editOrientation-args", "missing arguments", null)
             return
         }
@@ -85,18 +86,20 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             op = op,
             callback = callback,
         )
     }
 
     private fun editExifDate(call: MethodCall, result: MethodChannel.Result) {
+        val entryMap = call.argument<FieldMap>("entry")
+        val c2paActions = call.argument<List<String>>("c2paActions")
         val dateMillis = call.argument<Number>("dateMillis")?.toLong()
         val timeZoneOffsetMinutes = call.argument<Int>("timeZoneOffsetMinutes")
         val shiftSeconds = call.argument<Number>("shiftSeconds")?.toLong()
         val fields = call.argument<List<String>>("fields")
-        val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || fields == null) {
+        if (entryMap == null || c2paActions == null || fields == null) {
             result.error("editExifDate-args", "missing arguments", null)
             return
         }
@@ -123,6 +126,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             dateMillis = dateMillis,
             timeZoneOffsetMinutes = timeZoneOffsetMinutes,
             shiftSeconds = shiftSeconds,
@@ -132,10 +136,11 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val metadata = call.argument<FieldMap>("metadata")
         val entryMap = call.argument<FieldMap>("entry")
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        val metadata = call.argument<FieldMap>("metadata")
         val autoCorrectTrailerOffset = call.argument<Boolean>("autoCorrectTrailerOffset")
-        if (entryMap == null || metadata == null || autoCorrectTrailerOffset == null) {
+        if (entryMap == null || c2paActions == null || metadata == null || autoCorrectTrailerOffset == null) {
             result.error("editMetadata-args", "missing arguments", null)
             return
         }
@@ -162,6 +167,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             modifier = metadata,
             autoCorrectTrailerOffset = autoCorrectTrailerOffset,
             callback = callback,
@@ -170,7 +176,8 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        if (entryMap == null || c2paActions == null) {
             result.error("removeTrailerVideo-args", "missing arguments", null)
             return
         }
@@ -197,14 +204,16 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             callback = callback,
         )
     }
 
     private fun removeTypes(call: MethodCall, result: MethodChannel.Result) {
-        val types = call.argument<List<String>>("types")
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || types == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        val types = call.argument<List<String>>("types")
+        if (entryMap == null || c2paActions == null || types == null) {
             result.error("removeTypes-args", "missing arguments", null)
             return
         }
@@ -231,6 +240,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             types = types.toSet(),
             callback = callback,
         )

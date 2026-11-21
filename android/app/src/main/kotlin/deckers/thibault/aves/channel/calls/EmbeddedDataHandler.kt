@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
@@ -8,9 +9,9 @@ import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPUtils
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.C2paHelper
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
+import deckers.thibault.aves.metadata.c2pa.C2paReading
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
@@ -64,7 +65,12 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        C2paHelper.openResource(contentAddress, dataUri)?.let { bytes ->
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            result.error("extractC2paResource-unsupported", "c2pa-android library is usable only from Android P (API 28)", null)
+            return
+        }
+
+        C2paReading.openResource(context, contentAddress, dataUri)?.let { bytes ->
             copyEmbeddedBytes(result, displayName, bytes)
             return
         }

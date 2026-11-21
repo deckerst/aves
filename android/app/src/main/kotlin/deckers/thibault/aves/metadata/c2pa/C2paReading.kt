@@ -1,36 +1,51 @@
-package deckers.thibault.aves.metadata
+package deckers.thibault.aves.metadata.c2pa
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.utils.LogUtils
 import org.contentauth.c2pa.ByteArrayStream
+import org.contentauth.c2pa.C2PAContext
 import org.contentauth.c2pa.C2PAError
+import org.contentauth.c2pa.C2PASettings
 import org.contentauth.c2pa.FileStream
 import org.contentauth.c2pa.Reader
+import org.contentauth.c2pa.settings.C2PASettingsDefinition
+import org.contentauth.c2pa.settings.TrustSettings
 import org.json.JSONObject
 import java.io.File
 
-enum class C2paValidity {
-    UNKNOWN, INVALID, VALID, TRUSTED
-}
+object C2paReading {
+    private val LOG_TAG = LogUtils.createTag<C2paReading>()
+    private const val KEY_VALIDATION_STATE = "validation_state"
 
-object C2paHelper {
-    private val LOG_TAG = LogUtils.createTag<C2paHelper>()
-    const val KEY_VALIDATION_STATE = "validation_state"
-
-    fun getValidity(contentAddress: ContentAddress): C2paValidity {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            return C2paValidity.UNKNOWN
+    private fun read(
+        context: Context,
+        contentAddress: ContentAddress,
+        inputStream: FileStream,
+    ): Reader {
+        val settingsDefinition = C2PASettingsDefinition(
+            trust = TrustSettings(
+                trustAnchors = C2paCommon.getTrustAnchors(context),
+            ),
+        )
+        C2PASettings.fromDefinition(settingsDefinition).use { settings ->
+            C2PAContext.fromSettings(settings).use { c2paContext ->
+                return Reader.fromContext(c2paContext).withStream(contentAddress.mimeType, inputStream)
+            }
         }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun getValidity(context: Context, contentAddress: ContentAddress): C2paValidity {
         val path = contentAddress.path ?: return C2paValidity.UNKNOWN
         if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
-        val imageStream = FileStream(File(path), FileStream.Mode.READ)
-        imageStream.use { imageStream ->
+        FileStream(File(path), FileStream.Mode.READ).use { inputStream ->
             try {
-                Reader.fromStream(contentAddress.mimeType, imageStream).use { reader ->
+                read(context, contentAddress, inputStream).use { reader ->
                     val json = JSONObject(reader.json())
                     if (json.has(KEY_VALIDATION_STATE)) {
                         return when (val validationState = json.getString(KEY_VALIDATION_STATE)) {
@@ -51,18 +66,14 @@ object C2paHelper {
         return C2paValidity.UNKNOWN
     }
 
-    fun getManifestJson(contentAddress: ContentAddress): String? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            return null
-        }
-
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun getManifestJson(context: Context, contentAddress: ContentAddress): String? {
         val path = contentAddress.path ?: return null
         if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
-        val imageStream = FileStream(File(path), FileStream.Mode.READ)
-        imageStream.use { imageStream ->
+        FileStream(File(path), FileStream.Mode.READ).use { inputStream ->
             try {
-                Reader.fromStream(contentAddress.mimeType, imageStream).use { reader ->
+                read(context, contentAddress, inputStream).use { reader ->
                     return reader.json()
                 }
             } catch (_: C2PAError.Api) {
@@ -72,18 +83,14 @@ object C2paHelper {
         }
     }
 
-    fun openResource(contentAddress: ContentAddress, uri: String): ByteArray? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            return null
-        }
-
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun openResource(context: Context, contentAddress: ContentAddress, uri: String): ByteArray? {
         val path = contentAddress.path ?: return null
         if (!File(path).exists()) throw Exception("file is missing at path=$path")
 
-        val imageStream = FileStream(File(path), FileStream.Mode.READ)
-        imageStream.use { imageStream ->
+        FileStream(File(path), FileStream.Mode.READ).use { inputStream ->
             try {
-                Reader.fromStream(contentAddress.mimeType, imageStream).use { reader ->
+                read(context, contentAddress, inputStream).use { reader ->
                     ByteArrayStream().use { outputStream ->
                         reader.resource(uri, outputStream)
                         return outputStream.getData()

@@ -75,6 +75,11 @@ android {
         includeInBundle = false
     }
 
+    packaging {
+        // exclude redundant `BouncyCastle` subpackage files
+        resources.excludes.add("META-INF/LICENSE.md")
+    }
+
     signingConfigs {
         val storeFilePath = keystoreProperties["storeFile"] as String?
         if (storeFilePath != null) {
@@ -227,6 +232,8 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.work.runtime)
 
+    implementation(libs.bouncycastle.bcpg)
+    implementation(libs.bouncycastle.bcpkix)
     implementation(libs.commonsware.cwac)
     implementation(libs.contentauth.c2pa)
     implementation(libs.metadata.extractor)

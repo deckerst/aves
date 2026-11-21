@@ -22,6 +22,11 @@ class Dependencies {
       sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/core/core-ktx',
     ),
     Dependency(
+      name: 'Bouncy Castle',
+      license: mit,
+      sourceUrl: 'https://github.com/bcgit/bc-java',
+    ),
+    Dependency(
       name: 'C2PA Android',
       license: '$apache2, $mit',
       sourceUrl: 'https://github.com/contentauth/c2pa-android',

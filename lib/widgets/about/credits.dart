@@ -5,9 +5,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AboutCredits extends StatelessWidget {
-  const new({super.key});
-
+// TODO TLAD [c2pa] add credit for TSA
+class const AboutCredits({super.key}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

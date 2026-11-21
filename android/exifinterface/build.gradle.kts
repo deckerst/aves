@@ -1,5 +1,5 @@
 plugins {
-    // TODO TLAD find how to use `alias(libs.plugins.android.library)`
+    // TODO TLAD [Gradle] find how to use `alias(libs.plugins.android.library)`
     id("com.android.library")
 }
 

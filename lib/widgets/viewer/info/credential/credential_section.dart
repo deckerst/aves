@@ -6,6 +6,8 @@ import 'package:aves/services/common/services.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/text.dart';
+import 'package:aves/utils/string_utils.dart';
 import 'package:aves/view/src/metadata/credentials.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/credential/manifest.dart';
@@ -25,6 +27,8 @@ class const CredentialSectionSliver({
 
 class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
   Future<Map> _loader = Future.value({});
+
+  static final _statusPrefixPattern = RegExp('(signingCredential|assertion)\\.');
 
   @override
   void initState() {
@@ -75,7 +79,31 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
           final validity = C2paValidity.values.safeByName(validityString, ignoreCase: true) ?? .unknown;
           final todoManifestIds = [activeManifestLabel];
 
+          final validationStatus = (json['validation_status'] as List? ?? []).cast<Map>();
+          final errorCodes = validationStatus.map((kv) => kv['code']).whereType<String>().toSet();
+          final errorLine = errorCodes.map((v) => v.replaceFirst(_statusPrefixPattern, '').replaceAll('.', '_').toSentenceCase()).join(AText.separator);
+
           final children = <Widget>[];
+
+          if (errorLine.isNotEmpty) {
+            final theme = Theme.of(context);
+            final textTheme = theme.textTheme;
+            final mainStyle = textTheme.bodyMedium!;
+            final subColor = theme.colorScheme.onSurfaceVariant;
+            children.add(
+              Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 16),
+                child: Row(
+                  children: [
+                    Icon(AIcons.error, size: 16, color: subColor),
+                    const SizedBox(width: 4),
+                    Expanded(child: Text(errorLine, style: mainStyle)),
+                  ],
+                ),
+              ),
+            );
+          }
+
           while (todoManifestIds.isNotEmpty) {
             final manifestId = todoManifestIds.removeAt(0);
             final manifest = manifests[manifestId] as Map<String, Object?>?;

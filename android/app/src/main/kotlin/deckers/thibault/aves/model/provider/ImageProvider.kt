@@ -33,6 +33,9 @@ import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
+import deckers.thibault.aves.metadata.c2pa.C2paReading
+import deckers.thibault.aves.metadata.c2pa.C2paSigning
+import deckers.thibault.aves.metadata.c2pa.C2paValidity
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
@@ -110,6 +113,10 @@ abstract class ImageProvider {
         } else {
             MediaStoreImageProvider.scanNewPathByMediaStore(context, path, mimeType)
         }
+    }
+
+    open fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
+        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
     fun createSingle(
@@ -627,10 +634,6 @@ abstract class ImageProvider {
         newFile: File,
     ): FieldMap {
         throw UnsupportedOperationException("`renameSingle` is not supported by this image provider")
-    }
-
-    open fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
-        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
     suspend fun convertMultiple(
@@ -1638,10 +1641,48 @@ abstract class ImageProvider {
         return baos.toByteArray()
     }
 
+    private fun addC2paManifest(
+        context: Context,
+        contentAddress: ContentAddress,
+        c2paActions: List<String>,
+    ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        if (c2paActions.isEmpty()) return
+        val path = contentAddress.path ?: return
+
+        val signedFile: File?
+        try {
+            signedFile = C2paSigning.sign(
+                context = context,
+                contentAddress = contentAddress,
+                title = File(path).name,
+                actions = c2paActions
+            )
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to sign $contentAddress", ex)
+            return
+        }
+
+        if (signedFile == null) {
+            Log.w(LOG_TAG, "failed to sign $contentAddress")
+            return
+        }
+
+        val signedContentAddress = ContentAddress(mimeType = contentAddress.mimeType, uri = Uri.fromFile(signedFile), path = signedFile.path, pageId = null)
+        val signedValidity = C2paReading.getValidity(context, signedContentAddress)
+        // would be useless to add an invalid manifest
+        if (!listOf(C2paValidity.VALID, C2paValidity.TRUSTED).contains(signedValidity)) return
+
+        // copy the edited temporary file back to the original
+        signedFile.copyTo(outputStream(context, contentAddress))
+        signedFile.delete()
+    }
+
     fun editOrientation(
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
@@ -1703,7 +1744,14 @@ abstract class ImageProvider {
 
                 return editTrailerVideo(context, trailerVideoBytes) { contentAddress, callback ->
                     val sizeBytes = trailerVideoBytes.size.toLong()
-                    editOrientation(context, contentAddress, sizeBytes, op, callback)
+                    editOrientation(
+                        context = context,
+                        contentAddress = contentAddress,
+                        sizeBytes = sizeBytes,
+                        c2paActions = c2paActions,
+                        op = op,
+                        callback = callback,
+                    )
                 }
             }
 
@@ -1711,6 +1759,7 @@ abstract class ImageProvider {
         }
 
         if (success) {
+            addC2paManifest(context, contentAddress, c2paActions)
             scanPostMetadataEdit(context, contentAddress, newFields, callback)
         }
     }
@@ -1719,6 +1768,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         dateMillis: Long?,
         timeZoneOffsetMinutes: Int?,
         shiftSeconds: Long?,
@@ -1834,6 +1884,7 @@ abstract class ImageProvider {
         val success = editExif(context, contentAddress, sizeBytes, callback, editImage = ::editImage, editTrailerVideo = ::editTrailerVideo)
 
         if (success) {
+            addC2paManifest(context, contentAddress, c2paActions)
             scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
         }
     }
@@ -1842,6 +1893,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         modifier: FieldMap,
         autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
@@ -1977,6 +2029,7 @@ abstract class ImageProvider {
             }
         }
 
+        addC2paManifest(context, contentAddress, c2paActions)
         scanPostMetadataEdit(context, contentAddress, newFields, callback)
     }
 
@@ -1984,6 +2037,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         callback: ImageOpCallback,
     ) {
         val uri = contentAddress.uri
@@ -2022,14 +2076,15 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields: FieldMap = hashMapOf()
-        scanPostMetadataEdit(context, contentAddress, newFields, callback)
+        addC2paManifest(context, contentAddress, c2paActions)
+        scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
     }
 
     fun removeMetadataTypes(
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         types: Set<String>,
         callback: ImageOpCallback,
     ) {
@@ -2089,8 +2144,8 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields: FieldMap = hashMapOf()
-        scanPostMetadataEdit(context, contentAddress, newFields, callback)
+        addC2paManifest(context, contentAddress, c2paActions)
+        scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
     }
 
     private fun outputStream(context: Context, contentAddress: ContentAddress): OutputStream {

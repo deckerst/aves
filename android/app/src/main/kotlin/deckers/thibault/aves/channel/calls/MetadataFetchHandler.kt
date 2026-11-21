@@ -7,6 +7,7 @@ import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.util.Log
 import android.util.Size
+import androidx.annotation.RequiresApi
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
@@ -31,8 +32,6 @@ import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
-import deckers.thibault.aves.metadata.C2paHelper
-import deckers.thibault.aves.metadata.C2paValidity
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -55,6 +54,8 @@ import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.QuickTimeMetadata
+import deckers.thibault.aves.metadata.c2pa.C2paReading
+import deckers.thibault.aves.metadata.c2pa.C2paValidity
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.PNG_ITXT_DIR_NAME
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
@@ -88,6 +89,7 @@ import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
+import deckers.thibault.aves.utils.HashAlgorithm
 import deckers.thibault.aves.utils.HashUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils.round
@@ -141,7 +143,6 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    // as of `c2pa-android` v0.0.15, library is usable only from Android P (API 28)
     private fun getContentCredentials(call: MethodCall, result: MethodChannel.Result) {
         val contentAddress = ContentAddress.fromMethodCall(call)
         if (contentAddress == null) {
@@ -149,10 +150,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            result.error("getContentCredentials-unsupported", "c2pa-android library is usable only from Android P (API 28)", null)
+            return
+        }
+
         try {
             val fields: FieldMap = hashMapOf(
-                "validity" to C2paHelper.getValidity(contentAddress).toString(),
-                "json" to C2paHelper.getManifestJson(contentAddress),
+                "validity" to C2paReading.getValidity(context, contentAddress).toString(),
+                "json" to C2paReading.getManifestJson(context, contentAddress),
             )
             result.success(fields)
         } catch (ex: FileNotFoundException) {
@@ -646,11 +652,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             MemoryUtils.requestGarbageCollection()
         }
 
+        @RequiresApi(Build.VERSION_CODES.P)
         fun addCredentialsFlags(contentAddress: ContentAddress, existingFlags: Int): Int {
             var flags = existingFlags
 
             try {
-                val validity = C2paHelper.getValidity(contentAddress)
+                val validity = C2paReading.getValidity(context, contentAddress)
 
                 if (validity == C2paValidity.UNKNOWN) return flags
                 flags = flags or MASK_ARE_CREDENTIALS_PRESENT
@@ -1561,7 +1568,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             val function = field.substringAfter(HASH_FIELD_PREFIX).lowercase(Locale.ROOT)
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    metadataMap[field] = HashUtils.getHash(input, function)
+                    val algorithm = HashAlgorithm.fromKey(function) ?: throw Exception("unsupported hash algorithm: $function")
+                    metadataMap[field] = HashUtils.getHash(input, algorithm)
                 }
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to get hash for $contentAddress function=$function", e)

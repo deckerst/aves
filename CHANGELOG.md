@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- Metadata: add C2PA manifest (self-signed, remote TSA) when editing items with Content Credentials
 - Collection: format overlay option
 - Countries: show states for Germany (Bundesländer)
 
