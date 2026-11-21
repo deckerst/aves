@@ -51,7 +51,6 @@ import 'package:aves/widgets/navigation/nav_bar/nav_bar.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:material_ui/material_ui.dart';
