@@ -971,7 +971,6 @@
     "settingsAutoExportSettings": "Beállítások automatikus exportálása",
     "filterTypeSlowMotionVideoLabel": "Lassított felvétel",
     "drawerCollectionSlowMotionVideos": "Lassított videók",
-    "showThumbnailSlowMotionVideoIcon": "Lassított felvétel ikonjának megjelenítése",
     "mapShowItemTracks": "Útvonalak megjelenítése",
     "mapHideItemTracks": "Útvonalak elrejtése"
 }
