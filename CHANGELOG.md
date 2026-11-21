@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Collection: format overlay option
 - Countries: show states for Germany (Bundesländer)
 
+### Changed
+
+- upgraded Flutter to stable v3.50.1
+
 ### Fixed
 
 - large padding due to incorrect system gesture insets

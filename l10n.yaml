@@ -8,3 +8,6 @@ template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 preferred-supported-locales:
   - en
+
+# TODO TLAD remove when this is fixed: https://github.com/flutter/flutter/issues/191072
+header: "// ignore_for_file: deprecated_member_use"
