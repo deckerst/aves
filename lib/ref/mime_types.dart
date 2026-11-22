@@ -24,6 +24,7 @@ class MimeTypes {
   // unsupported
   static const aces = 'image/aces'; // https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
   static const art = 'image/x-jg';
+  static const base64 = 'image/octet-stream';
   static const cdr = 'image/x-coreldraw';
   static const cdrt = 'image/x-coreldrawtemplate';
   static const cpt = 'image/x-corelphotopaint';

@@ -16,6 +16,7 @@ import org.contentauth.c2pa.settings.C2PASettingsDefinition
 import org.contentauth.c2pa.settings.TrustSettings
 import org.json.JSONObject
 import java.io.File
+import java.io.IOException
 
 object C2paReading {
     private val LOG_TAG = LogUtils.createTag<C2paReading>()
@@ -56,6 +57,8 @@ object C2paReading {
                         }
                     }
                 }
+            } catch (ex: IOException) {
+                Log.w(LOG_TAG, "failed to read from $contentAddress", ex)
             } catch (ex: C2PAError.Api) {
                 if (!ex.message.contains("ManifestNotFound")) {
                     Log.w(LOG_TAG, "failed to read C2PA manifest from $contentAddress", ex)
@@ -76,11 +79,14 @@ object C2paReading {
                 read(context, contentAddress, inputStream).use { reader ->
                     return reader.json()
                 }
+            } catch (ex: IOException) {
+                Log.w(LOG_TAG, "failed to read from $contentAddress", ex)
             } catch (_: C2PAError.Api) {
                 // ignore
-                return null
             }
         }
+
+        return null
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -96,10 +102,13 @@ object C2paReading {
                         return outputStream.getData()
                     }
                 }
+            } catch (ex: IOException) {
+                Log.w(LOG_TAG, "failed to read from $contentAddress", ex)
             } catch (_: C2PAError.Api) {
                 // ignore
-                return null
             }
         }
+
+        return null
     }
 }

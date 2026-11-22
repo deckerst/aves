@@ -5,6 +5,7 @@ class AppSupport {
     // unsupported
     MimeTypes.aces,
     MimeTypes.art,
+    MimeTypes.base64,
     MimeTypes.cdr,
     MimeTypes.cdrt,
     MimeTypes.cpt,

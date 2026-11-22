@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 extension ExtraBuildContext on BuildContext {
   String? get currentRouteName => ModalRoute.of(this)?.settings.name;
 
-  bool get isPortrait => MediaQuery.orientationOf(this) == .portrait;
+  bool get isPortrait => MediaQuery.maybeOrientationOf(this) == .portrait;
 
   // l10n
 
