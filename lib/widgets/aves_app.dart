@@ -822,48 +822,65 @@ class _AvesAppContentDecoratorState extends State<AvesAppContentDecorator> with 
     AvesApp.canGestureToOtherApps.value = await windowService.isInMultiWindowMode() && !isInPipMode;
   }
 
-  Future<void> _onSourceStateChanged() async {
+  void _onSourceStateChanged() {
     final appMode = context.read<ValueNotifier<AppMode>>().value;
     if (appMode == .main) {
       if (source.isReady) {
-        final dirPath = settings.autoExportPath;
-        if (dirPath != null) {
-          final content = SettingsActionDelegate.getExportContent(
-            source: source,
-            toExport: AppExportItem.values.toSet(),
-          );
-          const mimeType = MimeTypes.json;
-          const suffix = kProfileMode
-              ? '-profile'
-              : kDebugMode
-              ? '-debug'
-              : '';
-          final success = await storageService.createFile(
-            dirPath: dirPath,
-            basename: 'aves$suffix-settings-auto',
-            mimeType: mimeType,
-            bytes: content,
-            reportErrors: false,
-          );
-
-          if (success != null) {
-            if (success) {
-              await reportService.log('Exported settings to dirPath=$dirPath');
-            } else {
-              final l10n = context.l10n;
-              showFeedback(
-                context,
-                FeedbackType.warn,
-                '${l10n.genericFailureFeedback}${AText.separator}${l10n.settingsAutoExportSettings}',
-                SnackBarAction(
-                  label: 'FAQ',
-                  onPressed: () => AvesApp.launchUrl('${AppReference.avesFaq}#why-is-auto-settings-export-failing'),
-                ),
-              );
-            }
-          }
-        }
+        _checkExpiredTrash();
+        _checkSettingsExport();
         source.stateNotifier.removeListener(_onSourceStateChanged);
+      }
+    }
+  }
+
+  Future<void> _checkExpiredTrash() async {
+    try {
+      final deletedUris = await source.deleteExpiredTrash();
+      if (deletedUris.isNotEmpty) {
+        debugPrint('evicted ${deletedUris.length} expired items from the trash');
+        await source.removeEntries(deletedUris, includeTrash: true);
+      }
+    } catch (error) {
+      debugPrint('failed to evict expired trash error=$error');
+    }
+  }
+
+  Future<void> _checkSettingsExport() async {
+    final dirPath = settings.autoExportPath;
+    if (dirPath == null) return;
+
+    final content = SettingsActionDelegate.getExportContent(
+      source: source,
+      toExport: AppExportItem.values.toSet(),
+    );
+    const mimeType = MimeTypes.json;
+    const suffix = kProfileMode
+        ? '-profile'
+        : kDebugMode
+        ? '-debug'
+        : '';
+    final success = await storageService.createFile(
+      dirPath: dirPath,
+      basename: 'aves$suffix-settings-auto',
+      mimeType: mimeType,
+      bytes: content,
+      reportErrors: false,
+    );
+
+    if (success != null) {
+      if (success) {
+        await reportService.log('Exported settings to dirPath=$dirPath');
+      } else {
+        final l10n = context.l10n;
+        showFeedback(
+          context,
+          FeedbackType.warn,
+          '${l10n.genericFailureFeedback}${AText.separator}${l10n.settingsAutoExportSettings}',
+          SnackBarAction(
+            label: 'FAQ',
+            onPressed: () => AvesApp.launchUrl('${AppReference.avesFaq}#why-is-auto-settings-export-failing'),
+          ),
+        );
       }
     }
   }

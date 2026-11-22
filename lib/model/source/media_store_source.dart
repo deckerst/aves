@@ -149,17 +149,6 @@ class MediaStoreSource extends CollectionSource {
 
       // trash
       await loadTrashDetails();
-      unawaited(
-        deleteExpiredTrash().then(
-          (deletedUris) {
-            if (deletedUris.isNotEmpty) {
-              debugPrint('evicted ${deletedUris.length} expired items from the trash');
-              removeEntries(deletedUris, includeTrash: true);
-            }
-          },
-          onError: (error) => debugPrint('failed to evict expired trash error=$error'),
-        ),
-      );
     }
     updateDerivedFilters();
 
