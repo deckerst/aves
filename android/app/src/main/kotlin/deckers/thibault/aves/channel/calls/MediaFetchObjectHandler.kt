@@ -61,7 +61,7 @@ class MediaFetchObjectHandler(private val context: Context) : MethodCallHandler 
                     } else {
                         "$errorCodeBase-failure"
                     }
-                    result.error(errorCode, "failed to get entry for uri=$uri mimeType=$mimeType", throwable)
+                    result.error(errorCode, "failed to get entry for mimeType=$mimeType uri=$uri", throwable)
                 }
             })
     }

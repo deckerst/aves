@@ -52,6 +52,8 @@ class MimeTypes {
   static const rgbe = 'image/vnd.radiance';
   static const sgif = 'image/vnd.sealedmedia.softseal.gif';
   static const tap = 'image/vnd.tencent.tap';
+  static const tga = 'image/tga'; // https://en.wikipedia.org/wiki/Truevision_TGA
+  static const tgaX = 'image/x-tga'; // https://en.wikipedia.org/wiki/Truevision_TGA
   static const vtf = 'image/vnd.valve.source.texture';
   static const wmf = 'image/wmf'; // https://en.wikipedia.org/wiki/Windows_Metafile
   static const xbm = 'image/x-xbitmap'; // https://en.wikipedia.org/wiki/X_BitMap

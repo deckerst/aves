@@ -131,24 +131,30 @@ class PlatformMetadataEditService implements MetadataEditService {
     if (entry.isValid) {
       final code = e.code;
       final customException = CustomPlatformException.fromStandard(e);
-      if (code.endsWith('exifinterface')) {
+      if (code.endsWith('exifInterface')) {
         await exifInterface(customException);
-      } else if (code.endsWith('mp4fragmented')) {
-        await mp4Fragmented(customException);
-      } else if (code.endsWith('mp4zerosizebox')) {
-        await mp4ZeroSizeBox(customException);
-      } else if (code.endsWith('mp4largemoov')) {
-        await mp4LargeMoov(customException);
-      } else if (code.endsWith('mp4largeother')) {
-        await mp4LargeOther(customException);
-      } else if (code.endsWith('outputstream')) {
-        await outputStream(customException);
-      } else if (code.endsWith('partialtransfer')) {
-        await partialTransfer(customException);
-      } else if (code.endsWith('filenotfound')) {
+      } else if (code.endsWith('fileNotFound')) {
         debugPrint('Unreported `fileNotFound` error with exception=$e');
-      } else if (code.endsWith('readonly')) {
+      } else if (code.endsWith('readOnly')) {
         debugPrint('Unreported `readOnly` error with exception=$e');
+      } else if (code.endsWith('mp4Fragmented')) {
+        await mp4Fragmented(customException);
+      } else if (code.endsWith('mp4LargeMoov')) {
+        await mp4LargeMoov(customException);
+      } else if (code.endsWith('mp4LargeOther')) {
+        await mp4LargeOther(customException);
+      } else if (code.endsWith('mp4ZeroSizeBox')) {
+        await mp4ZeroSizeBox(customException);
+      } else if (code.endsWith('outputStream')) {
+        await outputStream(customException);
+      } else if (code.endsWith('partialTransfer')) {
+        await partialTransfer(customException);
+      } else if (code.endsWith('security')) {
+        await security(customException);
+      } else if (code.endsWith('undecodableContent')) {
+        await undecodableContent(customException);
+      } else if (code.endsWith('undecodableCopy')) {
+        await undecodableCopy(customException);
       } else {
         await reportService.recordError(e, stack);
       }
@@ -190,6 +196,21 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   Future<void> partialTransfer(CustomPlatformException e) {
     debugPrint('partialTransfer $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> security(CustomPlatformException e) {
+    debugPrint('security $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> undecodableContent(CustomPlatformException e) {
+    debugPrint('undecodableContent $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> undecodableCopy(CustomPlatformException e) {
+    debugPrint('undecodableCopy $e');
     return reportService.recordError(e);
   }
 }

@@ -87,6 +87,7 @@ import deckers.thibault.aves.metadata.xmp.XMP.isPanorama
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.EntryFields
 import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.Mp4ParseException
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.HashAlgorithm
@@ -468,8 +469,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         if (isVideo(mimeType)) {
             // `metadata-extractor` do not extract custom tags in user data box
-            Mp4ParserHelper.getUserDataBox(context, contentAddress)?.let { box ->
-                metadataMap[Metadata.DIR_MP4_USER_DATA] = Mp4ParserHelper.extractBoxFields(box)
+            try {
+                Mp4ParserHelper.getUserDataBox(context, contentAddress)?.let { box ->
+                    metadataMap[Metadata.DIR_MP4_USER_DATA] = Mp4ParserHelper.extractBoxFields(box)
+                }
+            } catch (ex: Exception) {
+                throw Mp4ParseException("failed to get user data box", ex)
             }
 
             // this is used as fallback when the video metadata cannot be found on the Dart side
@@ -489,10 +494,14 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             // about embedded images as they do not list them as separate tracks
             // and only identify at most one
         } else if (isIsoBMFFImage(mimeType)) {
-            Mp4ParserHelper.getSamsungSefd(context, contentAddress.uri)?.let { (_, bytes) ->
-                metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = hashMapOf(
-                    "Size" to bytes.size.toString(),
-                )
+            try {
+                Mp4ParserHelper.getSamsungSefd(context, contentAddress.uri)?.let { (_, bytes) ->
+                    metadataMap[Mp4ParserHelper.SAMSUNG_MAKERNOTE_BOX_TYPE] = hashMapOf(
+                        "Size" to bytes.size.toString(),
+                    )
+                }
+            } catch (ex: Exception) {
+                throw Mp4ParseException("failed to get SEFD box", ex)
             }
         }
 

@@ -14,6 +14,8 @@ import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.model.PartialTransferException
 import deckers.thibault.aves.model.ReadOnlyFileSystemException
+import deckers.thibault.aves.model.UndecodableContentException
+import deckers.thibault.aves.model.UndecodableCopyException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import io.flutter.plugin.common.MethodCall
@@ -285,6 +287,12 @@ private class MetadataOpCallback(
             "$errorCodeBase-$ERROR_PARTIAL_TRANSFER"
         } else if (throwable is ReadOnlyFileSystemException) {
             "$errorCodeBase-$ERROR_READ_ONLY"
+        } else if (throwable is SecurityException) {
+            "$errorCodeBase-$ERROR_SECURITY"
+        } else if (throwable is UndecodableContentException) {
+            "$errorCodeBase-$ERROR_UNDECODABLE_CONTENT"
+        } else if (throwable is UndecodableCopyException) {
+            "$errorCodeBase-$ERROR_UNDECODABLE_COPY"
         } else {
             "$errorCodeBase-$ERROR_GENERIC_FAILURE"
         }
@@ -293,14 +301,17 @@ private class MetadataOpCallback(
 
     companion object {
         const val ERROR_GENERIC_FAILURE = "failure"
-        const val ERROR_EXIF_INTERFACE = "exifinterface"
-        const val ERROR_FILE_NOT_FOUND = "filenotfound"
-        const val ERROR_MP4_FRAGMENTED = "mp4fragmented"
-        const val ERROR_MP4_LARGE_MOOV = "mp4largemoov"
-        const val ERROR_MP4_LARGE_OTHER = "mp4largeother"
-        const val ERROR_MP4_ZERO_SIZE_BOX = "mp4zerosizebox"
-        const val ERROR_OUTPUT_STREAM = "outputstream"
-        const val ERROR_PARTIAL_TRANSFER = "partialtransfer"
-        const val ERROR_READ_ONLY = "readonly"
+        const val ERROR_EXIF_INTERFACE = "exifInterface"
+        const val ERROR_FILE_NOT_FOUND = "fileNotFound"
+        const val ERROR_MP4_FRAGMENTED = "mp4Fragmented"
+        const val ERROR_MP4_LARGE_MOOV = "mp4LargeMoov"
+        const val ERROR_MP4_LARGE_OTHER = "mp4LargeOther"
+        const val ERROR_MP4_ZERO_SIZE_BOX = "mp4ZeroSizeBox"
+        const val ERROR_OUTPUT_STREAM = "outputStream"
+        const val ERROR_PARTIAL_TRANSFER = "partialTransfer"
+        const val ERROR_READ_ONLY = "readOnly"
+        const val ERROR_SECURITY = "security"
+        const val ERROR_UNDECODABLE_CONTENT = "undecodableContent"
+        const val ERROR_UNDECODABLE_COPY = "undecodableCopy"
     }
 }

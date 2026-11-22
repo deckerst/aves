@@ -33,6 +33,8 @@ class AppSupport {
     MimeTypes.rgbe,
     MimeTypes.sgif,
     MimeTypes.tap,
+    MimeTypes.tga,
+    MimeTypes.tgaX,
     MimeTypes.vtf,
     MimeTypes.wmf,
     MimeTypes.xbm,

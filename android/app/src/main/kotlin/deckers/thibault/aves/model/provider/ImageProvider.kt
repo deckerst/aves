@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.BaseColumns
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -49,6 +50,8 @@ import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.NameConflictResolution
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.model.UndecodableContentException
+import deckers.thibault.aves.model.UndecodableCopyException
 import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
@@ -58,6 +61,7 @@ import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.StorageApi
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BmpWriter
+import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.FileUtils
 import deckers.thibault.aves.utils.FileUtils.copyTo
 import deckers.thibault.aves.utils.FileUtils.getFileSize
@@ -1134,8 +1138,9 @@ abstract class ImageProvider {
         try {
             // ensure content is decodable before editing
             ensureDecodable(mimeType, context, uri)
-        } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode content (exists=${contentExists(context, uri)}) before editing", ex))
+        } catch (ex: Exception) {
+            val fileExists = contentAddress.path?.let { File(it).exists() } ?: false
+            callback.onFailure(UndecodableContentException("failed to decode content before editing (exists at uri=${contentExists(context, uri)}, at path=$fileExists)", ex))
             return false
         }
 
@@ -1175,8 +1180,11 @@ abstract class ImageProvider {
         try {
             // ensure file is decodable before editing
             ensureDecodable(mimeType, editableFile)
-        } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode editable file before editing, with trailer video size=$trailerVideoSize valid=$isTrailerVideoValid", ex))
+        } catch (ex: Exception) {
+            val sourceContentSize = context.queryContentPropValue(contentAddress.uri, contentAddress.mimeType, OpenableColumns.SIZE)
+            val sourceFileSize = contentAddress.path?.let { File(it) }?.let { if (it.exists()) it.length() else null }
+            val editableFileSize = editableFile.let { if (it.exists()) it.length() else null }
+            callback.onFailure(UndecodableCopyException("failed to decode editable file before editing (sourceContentSize=$sourceContentSize, sourceFileSize=$sourceFileSize, editableFileSize=$editableFileSize)", ex))
             return false
         }
 
