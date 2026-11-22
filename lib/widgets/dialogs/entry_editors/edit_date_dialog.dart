@@ -281,15 +281,14 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
     if (_time == null) return;
 
-    setState(
-      () => _customDateTime = DateTime(
-        _date!.year,
-        _date.month,
-        _date.day,
-        _time.hour,
-        _time.minute,
-      ),
+    _customDateTime = DateTime(
+      _date.year,
+      _date.month,
+      _date.day,
+      _time.hour,
+      _time.minute,
     );
+    setState(() {});
   }
 
   CollectionLens? _createPickCollection() {
@@ -330,7 +329,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return DateModifier.setCustom(
           fields: const {},
           date: _customDateTime,
-          timeZoneOffsetMinutes: null,
+          timeZoneOffsetMinutes: _customDateTime.isUtc ? _customDateTime.timeZoneOffset.inMinutes : null,
         );
       case .copyField:
         return DateModifier.copyField(_copyFieldSource);

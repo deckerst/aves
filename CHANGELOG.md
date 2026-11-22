@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
 
 - large padding due to incorrect system gesture insets
 - item dimensions and size when source reported incorrect values
+- editing IPTC/XMP for items with existing metadata errors
+- time zone offset lost on custom date editing
 
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 
