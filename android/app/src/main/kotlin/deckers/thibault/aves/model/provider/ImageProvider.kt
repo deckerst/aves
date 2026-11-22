@@ -1453,6 +1453,7 @@ abstract class ImageProvider {
                 return false
             }
         }
+        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
 
         val editedFileSize = getFileSize(editableFile.path)
         if (editedFileSize == 0L) {
@@ -1460,9 +1461,10 @@ abstract class ImageProvider {
             return false
         }
 
-        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
-        if (hasMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)) {
-            callback.onFailure(Exception("editing XMP yielded metadata errors"))
+        val sourceMetadataErrors = getMetadataErrors(context, contentAddress, sizeBytes = editedFileSize)
+        val editedMetadataErrors = getMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)
+        if (editedMetadataErrors.subtract(sourceMetadataErrors).isNotEmpty()) {
+            callback.onFailure(Exception("editing XMP yielded new metadata errors"))
             return false
         }
 
@@ -1534,12 +1536,12 @@ abstract class ImageProvider {
         }
     }
 
-    fun hasMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Boolean {
+    fun getMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Set<String> {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
-                    return metadata.directories.any { it.hasErrors() }
+                    return metadata.directories.filter { it.hasErrors() }.map { "${it.name}-${it.errors}" }.toSet()
                 }
             } catch (ex: Exception) {
                 Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
@@ -1549,7 +1551,7 @@ abstract class ImageProvider {
                 Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
             }
         }
-        return false
+        return HashSet()
     }
 
     // A few bytes are sometimes appended when writing to a document output stream.
