@@ -24,15 +24,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class RenameEntrySetPage extends StatefulWidget {
+class const RenameEntrySetPage ({
+  super.key,
+  required final List<AvesEntry> entries,
+}) extends StatefulWidget {
   static const routeName = '/rename_entry_set';
-
-  final List<AvesEntry> entries;
-
-  const new({
-    super.key,
-    required this.entries,
-  });
 
   @override
   State<RenameEntrySetPage> createState() => _RenameEntrySetPageState();
@@ -128,16 +124,19 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                           PopupMenuExpansionPanel<String>(
                             value: MetadataFieldNamingProcessor.key,
                             icon: AIcons.more,
-                            title: MaterialLocalizations.of(context).moreButtonTooltip,
+                            title: MaterialLocalizations
+                                .of(context)
+                                .moreButtonTooltip,
                             items: [
                               ...[
                                 MetadataField.exifMake,
                                 MetadataField.exifModel,
                               ].map(
-                                (field) => PopupMenuItem(
-                                  value: MetadataFieldNamingProcessor.keyWithField(field),
-                                  child: MenuRow(text: field.title),
-                                ),
+                                    (field) =>
+                                    PopupMenuItem(
+                                      value: MetadataFieldNamingProcessor.keyWithField(field),
+                                      child: MenuRow(text: field.title),
+                                    ),
                               ),
                               PopupMenuItem(
                                 value: HashNamingProcessor.key,
@@ -192,7 +191,10 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                             children: [
                               FadingLine(
                                 sourceName,
-                                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                                style: TextStyle(color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
                               ),
                               const SizedBox(height: 4),
                               ValueListenableBuilder<NamingPattern>(
@@ -213,9 +215,10 @@ class _RenameEntrySetPageState extends State<RenameEntrySetPage> {
                       ],
                     );
                   },
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: CollectionGrid.spacingForLayout(TileLayout.list),
-                  ),
+                  separatorBuilder: (context, index) =>
+                      SizedBox(
+                        height: CollectionGrid.spacingForLayout(TileLayout.list),
+                      ),
                   itemCount: min(entryCount, previewMax),
                 ),
               ),

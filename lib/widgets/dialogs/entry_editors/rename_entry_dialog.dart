@@ -7,15 +7,11 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-class RenameEntryDialog extends StatefulWidget {
+class const RenameEntryDialog({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   static const routeName = '/dialog/rename_entry';
-
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
 
   @override
   State<RenameEntryDialog> createState() => _RenameEntryDialogState();

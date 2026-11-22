@@ -6,15 +6,11 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class EditEntryRatingDialog extends StatefulWidget {
+class const EditEntryRatingDialog ({
+  super.key,
+  required final AvesEntry entry,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_rating';
-
-  final AvesEntry entry;
-
-  const new({
-    super.key,
-    required this.entry,
-  });
 
   @override
   State<EditEntryRatingDialog> createState() => _EditEntryRatingDialogState();
@@ -74,10 +70,11 @@ class _EditEntryRatingDialogState extends State<EditEntryRatingDialog> {
                               final thisRating = i + 1;
                               final disabled = _rating < thisRating;
                               return GestureDetector(
-                                onTap: () => setState(() {
-                                  _action = _RatingAction.set;
-                                  _rating = thisRating;
-                                }),
+                                onTap: () =>
+                                    setState(() {
+                                      _action = _RatingAction.set;
+                                      _rating = thisRating;
+                                    }),
                                 behavior: HitTestBehavior.opaque,
                                 child: Padding(
                                   padding: const EdgeInsets.all(4),

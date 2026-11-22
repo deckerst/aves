@@ -14,15 +14,11 @@ import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class RemoveEntryMetadataDialog extends StatefulWidget {
+class const RemoveEntryMetadataDialog ({
+  super.key,
+  required final bool showJpegTypes,
+}) extends StatefulWidget {
   static const routeName = '/dialog/remove_entry_metadata';
-
-  final bool showJpegTypes;
-
-  const new({
-    super.key,
-    required this.showJpegTypes,
-  });
 
   @override
   State<RemoveEntryMetadataDialog> createState() => _RemoveEntryMetadataDialogState();
@@ -42,8 +38,10 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
       if (widget.showJpegTypes) ...MetadataTypes.jpeg,
     ];
     final byMain = groupBy(_allOptions, MetadataTypes.main.contains);
-    _mainOptions = (byMain[true] ?? [])..sort(_compareTypeText);
-    _moreOptions = (byMain[false] ?? [])..sort(_compareTypeText);
+    _mainOptions = (byMain[true] ?? [])
+      ..sort(_compareTypeText);
+    _moreOptions = (byMain[false] ?? [])
+      ..sort(_compareTypeText);
     _validate();
   }
 
@@ -84,9 +82,10 @@ class _RemoveEntryMetadataDialogState extends State<RemoveEntryMetadataDialog> {
               elevation: 0,
               children: [
                 ExpansionPanel(
-                  headerBuilder: (context, isExpanded) => ListTile(
-                    title: Text(l10n.removeEntryMetadataDialogMore),
-                  ),
+                  headerBuilder: (context, isExpanded) =>
+                      ListTile(
+                        title: Text(l10n.removeEntryMetadataDialogMore),
+                      ),
                   body: Column(
                     children: _moreOptions.map(_toTile).toList(),
                   ),

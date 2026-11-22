@@ -22,17 +22,12 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EditEntryDateDialog extends StatefulWidget {
+class const EditEntryDateDialog({
+  super.key,
+  required final AvesEntry entry,
+  final CollectionLens? collection,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_date';
-
-  final AvesEntry entry;
-  final CollectionLens? collection;
-
-  const new({
-    super.key,
-    required this.entry,
-    this.collection,
-  });
 
   @override
   State<EditEntryDateDialog> createState() => _EditEntryDateDialogState();

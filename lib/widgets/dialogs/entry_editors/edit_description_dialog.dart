@@ -5,16 +5,12 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class EditEntryTitleDescriptionDialog extends StatefulWidget {
+class const EditEntryTitleDescriptionDialog({
+  super.key,
+  required final String initialTitle,
+  required final String initialDescription,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_title_description';
-
-  final String initialTitle, initialDescription;
-
-  const new({
-    super.key,
-    required this.initialTitle,
-    required this.initialDescription,
-  });
 
   @override
   State<EditEntryTitleDescriptionDialog> createState() => _EditEntryTitleDescriptionDialogState();
