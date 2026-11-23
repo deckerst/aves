@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.11"></a>[v1.15.11] - 2026-11-23
+
 ### Added
 
 - Metadata: add C2PA manifest (self-signed, remote TSA) when editing items with Content Credentials
