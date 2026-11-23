@@ -41,6 +41,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.ResolverStyle
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -311,7 +312,8 @@ object MetadataExtractorHelper {
         "yyyy"
     ).map {
         // prefer `DateTimeFormatter` over `SimpleDateFormat` for concurrent usage
-        DateTimeFormatter.ofPattern(it, Locale.ROOT)
+        // use lenient resolution to accept unusual values found in the wild (e.g. hour-of-day over 23)
+        DateTimeFormatter.ofPattern(it, Locale.ROOT).withResolverStyle(ResolverStyle.LENIENT)
     }.toTypedArray()
     private val subsecondPattern = Pattern.compile("(\\d{2}:\\d{2}:\\d{2})(\\.\\d+)")
     private val timeZonePattern = Pattern.compile("(Z|[+-]\\d{1,2}:\\d{2}|[+-]\\d{4})$")
