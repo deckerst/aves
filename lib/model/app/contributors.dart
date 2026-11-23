@@ -196,6 +196,7 @@ class Contributors {
     Contributor('Checon56', 'checon56@users.noreply.hosted.weblate.org'),
     Contributor('Belkin Fahri', 'belfah@users.noreply.hosted.weblate.org'),
     Contributor('Kanok', 'triplepilot@tutamail.com'),
+    Contributor('xincrement', 'xincrement@users.noreply.hosted.weblate.org'),
 
     // * pending
     // Contributor('Femini', 'nizamismidov4@gmail.com'), // Azerbaijani
