@@ -331,7 +331,7 @@
     "editEntryDialogCopyFromItem": "Kopírovat z jiné položky",
     "editEntryDialogTargetFieldsHeader": "Pole k úpravě",
     "editEntryDateDialogCopyField": "Kopírovat z jiného data",
-    "editEntryDateDialogExtractFromTitle": "Odvodit z názvu",
+    "editEntryDateDialogExtractFromTitle": "Odvodit z názvu souboru",
     "editEntryDateDialogShift": "Posun",
     "editEntryDateDialogSourceFileModifiedDate": "Datum úpravy souboru",
     "durationDialogHours": "Hodiny",
@@ -998,5 +998,6 @@
     "settingsThumbnailShowCredentialValidity": "Zobrazit platnost ověřovacích údajů",
     "searchCredentialsSectionTitle": "Ověřovací údaje obsahu",
     "settingsVideoThumbnailMethods": "Upřednostňovaný náhled",
-    "aboutCreditsStateFlags": "Státní vlajky jsou z Wikimedia Commons. Jedná se o volná díla, kromě:"
+    "aboutCreditsStateFlags": "Státní vlajky jsou z Wikimedia Commons. Jedná se o volná díla, kromě:",
+    "settingsThumbnailShowFormat": "Ukázat formát"
 }
