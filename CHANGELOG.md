@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - item dimensions and size when source reported incorrect values
 - editing IPTC/XMP for items with existing metadata errors
 - time zone offset lost on custom date editing
+- item shortcut loading
 
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 
