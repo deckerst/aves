@@ -1,5 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
@@ -11,6 +12,7 @@ class const MetadataCard({
   super.key,
   required final String title,
   required final int count,
+  required final int depth,
   required final InfoRowGroup Function(int? index) indexedInfoGroupBuilder,
   required final List<Widget> Function(int? index) subCardsBuilder,
 }) extends StatefulWidget {
@@ -20,8 +22,12 @@ class const MetadataCard({
 
 class _MetadataCardState extends State<MetadataCard> {
   final ValueNotifier<int> _indexNotifier = ValueNotifier(0);
+  late Color _minDepthTint;
+  late Color _maxDepthTint;
 
   int get count => widget.count;
+
+  static const _tintMaxDepth = 5;
 
   @override
   void initState() {
@@ -44,11 +50,19 @@ class _MetadataCardState extends State<MetadataCard> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _minDepthTint = Themes.secondLayerColor(context);
+    _maxDepthTint = Themes.thirdLayerColor(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isIndexed = count > 0;
 
     return Container(
       decoration: BoxDecoration(
+        color: Color.lerp(_minDepthTint, _maxDepthTint, (widget.depth.toDouble() / _tintMaxDepth).clamp(0, 1)),
         border: Border.all(
           color: Theme.of(context).dividerColor,
         ),

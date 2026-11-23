@@ -136,8 +136,8 @@ class const Manifest({
                     child: Column(
                       crossAxisAlignment: .start,
                       children: [
-                        if (signedBy != null) Text(signedBy, style: mainStyle),
-                        if (signDate != null) Text(signDate, style: subStyle),
+                        if (signedBy != null) SelectableText(signedBy, style: mainStyle),
+                        if (signDate != null) SelectableText(signDate, style: subStyle),
                       ],
                     ),
                   ),
@@ -155,7 +155,7 @@ class const Manifest({
                   children: [
                     Icon(AIcons.edit, size: iconSize, color: subColor),
                     const SizedBox(width: 4),
-                    Expanded(child: Text(actionLine, style: mainStyle)),
+                    Expanded(child: SelectableText(actionLine, style: mainStyle)),
                   ],
                 ),
               if (creativeLineByType.isNotEmpty)
@@ -177,7 +177,7 @@ class const Manifest({
                           Icon(icon, size: iconSize, color: subColor),
                           const SizedBox(width: 4),
                         ],
-                        Expanded(child: Text(creativeLine, style: mainStyle)),
+                        Expanded(child: SelectableText(creativeLine, style: mainStyle)),
                       ],
                     );
                   },
@@ -193,10 +193,7 @@ class const Manifest({
           ),
           child: Text(
             countFormatter(index),
-            style: TextStyle(
-              fontSize: 12,
-              color: theme.colorScheme.onPrimary,
-            ),
+            style: const TextStyle(fontSize: 12),
           ),
         ),
       ],

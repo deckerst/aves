@@ -112,7 +112,7 @@ class _CredentialSectionSliverState extends State<CredentialSectionSliver> {
                   children: [
                     Icon(AIcons.error, size: 16, color: subColor),
                     const SizedBox(width: 4),
-                    Expanded(child: Text(errorLine, style: mainStyle)),
+                    Expanded(child: SelectableText(errorLine, style: mainStyle)),
                   ],
                 ),
               ),

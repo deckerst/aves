@@ -13,29 +13,51 @@ class const JsonCard({
   final Map<String, InfoValueSpanBuilder> Function(SplayTreeMap<String, String> tags)? getLinkHandlers,
   final EdgeInsets? padding,
 }) extends StatelessWidget {
+  static const _subCardMargin = EdgeInsetsDirectional.only(start: 8, top: 4, end: 2, bottom: 4);
+
   @override
   Widget build(BuildContext context) {
-    return _buildContentCard(context, titleKey, content, padding: padding) ?? const SizedBox();
+    return _buildContentCard(
+          context,
+          titleKey,
+          content,
+          depth: 0,
+          padding: padding,
+        ) ??
+        const SizedBox();
   }
 
-  Widget? _buildContentCard(BuildContext context, String titleKey, Object? o, {EdgeInsets? padding}) {
+  Widget? _buildContentCard(
+    BuildContext context,
+    String titleKey,
+    Object? o, {
+    required int depth,
+    EdgeInsets? padding,
+  }) {
     if (o == null) return null;
-    if (o is List) return _buildMapListCard(context, titleKey, o, padding: padding);
-    if (o is Map) return _buildMapCard(context, titleKey, o, padding: padding);
+    if (o is List) return _buildMapListCard(context, titleKey, o, depth: depth, padding: padding);
+    if (o is Map) return _buildMapCard(context, titleKey, o, depth: depth, padding: padding);
     return Text('$o');
   }
 
-  Widget _buildMapListCard(BuildContext context, String titleKey, Object o, {EdgeInsets? padding}) {
+  Widget _buildMapListCard(
+    BuildContext context,
+    String titleKey,
+    Object o, {
+    required int depth,
+    EdgeInsets? padding,
+  }) {
     if (o is! List) return Text('$o');
 
     final contents = o as List<Object?>;
     if (contents.isEmpty) return const SizedBox();
 
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      padding: padding ?? _subCardMargin,
       child: MetadataCard(
         title: formatKey(titleKey),
         count: contents.length,
+        depth: depth,
         indexedInfoGroupBuilder: (index) {
           final content = contents[index!] as Map<String, Object?>;
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toSet();
@@ -51,22 +73,29 @@ class const JsonCard({
           final content = contents[index!] as Map<String, Object?>;
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toList().sorted();
 
-          return subKeys.map((key) => _buildContentCard(context, key, content[key])).nonNulls.toList();
+          return subKeys.map((key) => _buildContentCard(context, key, content[key], depth: depth + 1)).nonNulls.toList();
         },
       ),
     );
   }
 
-  Widget _buildMapCard(BuildContext context, String titleKey, Object o, {EdgeInsets? padding}) {
+  Widget _buildMapCard(
+    BuildContext context,
+    String titleKey,
+    Object o, {
+    required int depth,
+    EdgeInsets? padding,
+  }) {
     if (o is! Map) return Text('$o');
 
     final content = o as Map<String, Object?>;
 
     return Padding(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      padding: padding ?? _subCardMargin,
       child: MetadataCard(
         title: formatKey(titleKey),
         count: 0,
+        depth: depth,
         indexedInfoGroupBuilder: (index) {
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toSet();
           final infoEntries = content.entries.whereNot((kv) => subKeys.contains(kv.key)).toSet();
@@ -80,7 +109,7 @@ class const JsonCard({
         subCardsBuilder: (index) {
           final subKeys = content.entries.where((kv) => isMapOrMapList(kv.value)).map((kv) => kv.key).toList().sorted();
 
-          return subKeys.map((key) => _buildContentCard(context, key, content[key])).nonNulls.toList();
+          return subKeys.map((key) => _buildContentCard(context, key, content[key], depth: depth + 1)).nonNulls.toList();
         },
       ),
     );
