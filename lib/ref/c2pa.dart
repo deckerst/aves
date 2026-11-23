@@ -1,6 +1,23 @@
 // cf https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html#standard-assertions
 class C2paAssertions {
-  static final actionPrefixPattern = RegExp('(c2pa||cawg||stds)\\.');
+  static final actionPrefixPattern = RegExp('(aves||c2pa||cawg||stds)\\.');
+
+  static const all = {
+    actionsV2,
+    creativeWork,
+    metadataC2pa,
+    metadataCawg,
+    metadataExif,
+    metadataIptc,
+    hashBmffV2,
+    hashBmffV3,
+    hashDataPart,
+    hashMultiAsset,
+    identity,
+    softBinding,
+    trainingMiningC2pa,
+    trainingMiningCawg,
+  };
 
   // displayed
   static const actionsV2 = 'c2pa.actions.v2';
@@ -24,6 +41,16 @@ class C2paAssertions {
 // cf https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html#list-of-actions
 class C2paActions {
   static const editedMetadata = 'c2pa.edited.metadata';
+}
+
+class AvesC2paActions {
+  static const date = 'aves.date';
+  static const description = 'aves.description';
+  static const location = 'aves.location';
+  static const rating = 'aves.rating';
+  static const orientation = 'aves.orientation';
+  static const redaction = 'aves.redaction';
+  static const tags = 'aves.tags';
 }
 
 class CreativeWorkAuthorTypes {

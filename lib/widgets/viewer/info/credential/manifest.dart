@@ -6,17 +6,28 @@ import 'package:aves/ref/c2pa.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/info/credential/thumbnail.dart';
 import 'package:collection/collection.dart';
+import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const Manifest({
   super.key,
   required final AvesEntry entry,
   required final Map<String, Object?> json,
+  required final int index,
 }) extends StatelessWidget {
+  static const _displayedAssertions = {
+    C2paAssertions.metadataC2pa,
+    C2paAssertions.metadataCawg,
+    C2paAssertions.metadataExif,
+    C2paAssertions.metadataIptc,
+  };
+  static final _ignoredAssertions = C2paAssertions.all.difference(_displayedAssertions);
+
   @override
   Widget build(BuildContext context) {
     final signatureInfo = json['signature_info'] as Map<String, Object?>?;
@@ -46,42 +57,30 @@ class const Manifest({
       actionLine = assertions
           .expand<String?>((v) {
             final label = v['label'] as String?;
-            switch (label) {
-              case C2paAssertions.actionsV2:
-                final data = v['data'] as Map<String, Object?>?;
-                if (data == null) return [];
-                final actions = (data['actions'] as List?)?.cast<Map<String, Object?>>();
-                if (actions == null) return [];
-                return actions.map((v) {
-                  final action = v['action'] as String?;
-                  final source = v['digitalSourceType'] as String?;
-                  if (action == null) return null;
+            if (label == C2paAssertions.actionsV2) {
+              final data = v['data'] as Map<String, Object?>?;
+              if (data == null) return [];
+              final actions = (data['actions'] as List?)?.cast<Map<String, Object?>>();
+              if (actions == null) return [];
+              return actions.map((v) {
+                final action = v['action'] as String?;
+                final source = v['digitalSourceType'] as String?;
+                if (action == null) return null;
 
-                  if (DigitalSourceTypes.genAiSources.contains(source)) {
-                    return '$action (AI)';
-                  }
-                  return action;
-                });
-              case C2paAssertions.metadataC2pa:
-              case C2paAssertions.metadataCawg:
-              case C2paAssertions.metadataExif:
-              case C2paAssertions.metadataIptc:
-                return [label];
-              case C2paAssertions.creativeWork:
-              case C2paAssertions.hashBmffV2:
-              case C2paAssertions.hashBmffV3:
-              case C2paAssertions.hashDataPart:
-              case C2paAssertions.hashMultiAsset:
-              case C2paAssertions.identity:
-              case C2paAssertions.softBinding:
-              case C2paAssertions.trainingMiningC2pa:
-              case C2paAssertions.trainingMiningCawg:
-                // ignore
-                return [];
-              default:
-                debugPrint('unhandled assertion label=$label');
+                if (DigitalSourceTypes.genAiSources.contains(source)) {
+                  return '$action (AI)';
+                }
+                return action;
+              });
+            } else if (_displayedAssertions.contains(label)) {
+              return [label];
+            } else if (_ignoredAssertions.contains(label)) {
+              // ignore
+              return [];
+            } else {
+              debugPrint('unhandled assertion label=$label');
+              return [];
             }
-            return [];
           })
           .nonNulls
           .map((v) => v.replaceFirst(C2paAssertions.actionPrefixPattern, '').replaceAll('.', '_').toSentenceCase())
@@ -114,72 +113,114 @@ class const Manifest({
     final mainStyle = textTheme.bodyMedium!;
     final subColor = theme.colorScheme.onSurfaceVariant;
     final subStyle = mainStyle.copyWith(color: subColor);
+    final countFormatter = settings.avesLocale.decimalNumberFormat().format;
 
     const double iconSize = 16;
     const double padding = 8;
-    return Container(
-      decoration: BoxDecoration(
-        border: AvesBorder.border(context),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      padding: const EdgeInsets.all(padding),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Row(
+    return Stack(
+      alignment: .topEnd,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: AvesBorder.border(context),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+          padding: const EdgeInsets.all(padding),
+          child: Column(
             crossAxisAlignment: .start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
+              Row(
+                crossAxisAlignment: .start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        if (signedBy != null) Text(signedBy, style: mainStyle),
+                        if (signDate != null) Text(signDate, style: subStyle),
+                      ],
+                    ),
+                  ),
+                  if (thumbnailUri != null) ...[
+                    const SizedBox(width: padding),
+                    ManifestThumbnail(
+                      entry: entry,
+                      thumbnailUri: thumbnailUri,
+                    ),
+                  ],
+                ],
+              ),
+              if (actionLine.isNotEmpty)
+                Row(
                   children: [
-                    if (signedBy != null) Text(signedBy, style: mainStyle),
-                    if (signDate != null) Text(signDate, style: subStyle),
+                    Icon(AIcons.edit, size: iconSize, color: subColor),
+                    const SizedBox(width: 4),
+                    Expanded(child: Text(actionLine, style: mainStyle)),
                   ],
                 ),
-              ),
-              if (thumbnailUri != null) ...[
-                const SizedBox(width: padding),
-                ManifestThumbnail(
-                  entry: entry,
-                  thumbnailUri: thumbnailUri,
+              if (creativeLineByType.isNotEmpty)
+                ...creativeLineByType.entries.map(
+                  (kv) {
+                    final type = kv.key;
+                    final creativeLine = kv.value;
+
+                    IconData? icon;
+                    switch (type) {
+                      case CreativeWorkAuthorTypes.organization:
+                        icon = AIcons.authorOrganization;
+                      case CreativeWorkAuthorTypes.person:
+                        icon = AIcons.authorPerson;
+                    }
+                    return Row(
+                      children: [
+                        if (icon != null) ...[
+                          Icon(icon, size: iconSize, color: subColor),
+                          const SizedBox(width: 4),
+                        ],
+                        Expanded(child: Text(creativeLine, style: mainStyle)),
+                      ],
+                    );
+                  },
                 ),
-              ],
             ],
           ),
-          if (actionLine.isNotEmpty)
-            Row(
-              children: [
-                Icon(AIcons.edit, size: iconSize, color: subColor),
-                const SizedBox(width: 4),
-                Expanded(child: Text(actionLine, style: mainStyle)),
-              ],
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: ShapeDecoration(
+            color: Themes.firstLayerColor(context),
+            shape: _buildCornerDetailShape(context),
+          ),
+          child: Text(
+            countFormatter(index),
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.colorScheme.onPrimary,
             ),
-          if (creativeLineByType.isNotEmpty)
-            ...creativeLineByType.entries.map(
-              (kv) {
-                final type = kv.key;
-                final creativeLine = kv.value;
+          ),
+        ),
+      ],
+    );
+  }
 
-                IconData? icon;
-                switch (type) {
-                  case CreativeWorkAuthorTypes.organization:
-                    icon = AIcons.authorOrganization;
-                  case CreativeWorkAuthorTypes.person:
-                    icon = AIcons.authorPerson;
-                }
-                return Row(
-                  children: [
-                    if (icon != null) ...[
-                      Icon(icon, size: iconSize, color: subColor),
-                      const SizedBox(width: 4),
-                    ],
-                    Expanded(child: Text(creativeLine, style: mainStyle)),
-                  ],
-                );
-              },
-            ),
-        ],
+  ShapeBorder _buildCornerDetailShape(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final side = AvesBorder.curvedSide(context);
+    const innerRadius = Radius.circular(8);
+    return CustomRoundedRectangleBorder(
+      leftSide: side,
+      rightSide: side,
+      topSide: side,
+      bottomSide: side,
+      topLeftCornerSide: isRtl ? side : null,
+      topRightCornerSide: isRtl ? null : side,
+      bottomLeftCornerSide: isRtl ? null : side,
+      bottomRightCornerSide: isRtl ? side : null,
+      borderRadius: BorderRadius.only(
+        topLeft: isRtl ? innerRadius : Radius.zero,
+        topRight: isRtl ? Radius.zero : innerRadius,
+        bottomLeft: isRtl ? Radius.zero : innerRadius,
+        bottomRight: isRtl ? innerRadius : Radius.zero,
       ),
     );
   }

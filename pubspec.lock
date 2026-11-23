@@ -212,7 +212,7 @@ packages:
     source: hosted
     version: "1.1.7"
   custom_rounded_rectangle_border:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: custom_rounded_rectangle_border
       sha256: "3e8ca0c26b8d22d5d3842bab59dfd209995f8e42af7c2eef03da70642c040819"

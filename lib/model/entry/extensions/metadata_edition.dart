@@ -38,7 +38,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<Set<EntryDataType>> editDate(DateModifier userModifier) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.date]);
     final dataTypes = <EntryDataType>{};
 
     final appliedModifier = await _applyDateModifierToEntry(userModifier);
@@ -102,7 +102,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   static const removalLocation = LatLng(0, 0);
 
   Future<Set<EntryDataType>> editLocation(LatLng? latLng) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.location]);
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
 
@@ -167,13 +167,13 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   }
 
   Future<Set<EntryDataType>> rotate({required bool clockwise}) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.orientation]);
     final dataTypes = await _editOrientation(() => metadataEditService.rotate(this, c2paActions, clockwise: clockwise));
     return dataTypes;
   }
 
   Future<Set<EntryDataType>> flip() async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.orientation]);
     final dataTypes = await _editOrientation(() => metadataEditService.flip(this, c2paActions));
     return dataTypes;
   }
@@ -187,7 +187,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - IPTC / caption-abstract, if IPTC exists
   // - XMP / dc:description
   Future<Set<EntryDataType>> editTitleDescription(Map<DescriptionField, String?> fields) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.description]);
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
 
@@ -258,7 +258,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - IPTC / keywords, if IPTC exists
   // - XMP / dc:subject
   Future<Set<EntryDataType>> editTags(Set<String> tags) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.tags]);
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
 
@@ -291,7 +291,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - Exif / Rating
   // - Exif / RatingPercent
   Future<Set<EntryDataType>> editRating(int? rating) async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.rating]);
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
 
@@ -314,7 +314,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   // - XMP / GCamera:MicroVideo*
   // - XMP / GCamera:MotionPhoto*
   Future<Set<EntryDataType>> removeTrailerVideo() async {
-    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata]);
+    final c2paActions = await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.redaction]);
     final dataTypes = <EntryDataType>{};
     final metadata = <MetadataType, dynamic>{};
 
@@ -334,7 +334,7 @@ extension ExtraAvesEntryMetadataEdition on AvesEntry {
   Future<Set<EntryDataType>> removeMetadata(Set<MetadataType> types) async {
     final c2paActions = <String>[];
     if (!types.contains(MetadataType.c2pa)) {
-      c2paActions.addAll(await _toEntryC2paActions([C2paActions.editedMetadata]));
+      c2paActions.addAll(await _toEntryC2paActions([C2paActions.editedMetadata, AvesC2paActions.redaction]));
     }
 
     final dataTypes = <EntryDataType>{};
