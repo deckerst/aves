@@ -59,8 +59,6 @@ import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.storage.StorageUtils.getVolumePath
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.StorageApi
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BmpWriter
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.FileUtils
 import deckers.thibault.aves.utils.FileUtils.copyTo
@@ -78,6 +76,8 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
+import deckers.thibault.aves.utils.image.BitmapUtils
+import deckers.thibault.aves.utils.image.BmpWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream

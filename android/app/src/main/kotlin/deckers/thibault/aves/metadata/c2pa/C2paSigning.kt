@@ -1,11 +1,11 @@
 package deckers.thibault.aves.metadata.c2pa
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
+import deckers.thibault.aves.utils.DeviceFeatures
 import org.contentauth.c2pa.Builder
 import org.contentauth.c2pa.BuilderIntent
 import org.contentauth.c2pa.C2PAContext
@@ -33,8 +33,8 @@ object C2paSigning {
     private const val ANDROID_KEY_STORE_TYPE = "AndroidKeyStore"
     private const val ASSERTION_C2PA_METADATA = "c2pa.metadata"
 
-    private const val SOFTWARE_SIGNER_KEY_ALIAS = "aves_gallery_software_key"
-    private const val HARDWARE_SIGNER_KEY_ALIAS = "aves_gallery_hardware_key"
+    private const val SOFTWARE_SIGNER_KEY_ALIAS = "aves_self_signed_software_key"
+    private const val HARDWARE_SIGNER_KEY_ALIAS = "aves_self_signed_hardware_key"
 
     // URI friendly name (i.e. no space)
     private const val MANIFEST_VENDOR = "aves_gallery"
@@ -43,7 +43,7 @@ object C2paSigning {
     // to apply new config, remove/rename associated signer key alias
     private val LEAF_CERTIFICATE_CONFIG = CertificateManager.CertificateConfig(
         commonName = "Aves Gallery",
-        organization = "Aves Gallery Self-Signed",
+        organization = "Aves Self-Signed",
         organizationalUnit = "Mobile",
         country = COUNTRY,
     )
@@ -66,8 +66,11 @@ object C2paSigning {
             vendor = MANIFEST_VENDOR,
         )
 
-        val hasStrongBox = context.packageManager.hasSystemFeature(PackageManager.FEATURE_STRONGBOX_KEYSTORE)
-        val signer = if (hasStrongBox) createStrongBoxSigner(context) else createKeystoreSigner(context)
+        val signer = if (DeviceFeatures.hasStrongBox(context)) {
+            createStrongBoxSigner(context)
+        } else {
+            createKeystoreSigner(context)
+        }
 
         val outputFile = StorageUtils.createTempFile(context)
         signStream(

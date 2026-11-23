@@ -16,7 +16,6 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.util.Locale
 
@@ -28,6 +27,17 @@ object MediaStoreUriHelper {
         // a URI's authority is [userinfo@]host[:port]
         // but we only want the host when comparing to Media Store's "authority"
         return uri.isContentScheme && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
+    }
+
+    fun tryParseId(uri: Uri): Long? {
+        if (isMediaStoreContentUri(uri)) {
+            try {
+                return ContentUris.parseId(uri)
+            } catch (_: Exception) {
+                Log.w(LOG_TAG, "failed to parse ID from contentUri=$uri")
+            }
+        }
+        return null
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -59,7 +69,7 @@ object MediaStoreUriHelper {
         val path = contentAddress.path ?: throw IllegalArgumentException("null path for $contentAddress")
         val volumePath = StorageUtils.getVolumePath(context, path) ?: throw Exception("failed to find volume for path=$path")
         val rootContentUri = getOutputRootContentUriOnVolume(context, contentAddress.mimeType, volumePath)
-        val contentId = uri.tryParseId()
+        val contentId = tryParseId(uri)
         if (rootContentUri != null && contentId != null) {
             uri = ContentUris.withAppendedId(rootContentUri, contentId)
         }
@@ -112,7 +122,7 @@ object MediaStoreUriHelper {
     // We cannot safely apply this to a `file` content URI, as it may point to a file not indexed
     // by the Media Store (via `.nomedia`), and therefore has no matching image/video content URI.
     fun getMediaUri(uri: Uri, mimeType: String): Uri? {
-        return uri.tryParseId()?.let { id ->
+        return tryParseId(uri)?.let { id ->
             return when {
                 isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                 isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)

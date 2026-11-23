@@ -19,15 +19,14 @@ import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.MediaStoreUriHelper
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
-import deckers.thibault.aves.utils.UriUtils.tryParseId
+import deckers.thibault.aves.utils.image.BitmapUtils
+import deckers.thibault.aves.utils.image.BitmapUtils.applyExifOrientation
 import java.io.ByteArrayInputStream
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -142,7 +141,7 @@ class ThumbnailFetcher internal constructor(
     }
 
     fun getByMediaStore(): Bitmap? {
-        val contentId = uri.tryParseId() ?: return null
+        val contentId = MediaStoreUriHelper.tryParseId(uri) ?: return null
         val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
             @Suppress("DEPRECATION")

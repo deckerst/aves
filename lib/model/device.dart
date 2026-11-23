@@ -2,12 +2,12 @@ import 'package:aves/services/common/services.dart';
 
 final Device device = Device._private();
 
-class Device {
+class Device._private() {
   late final String _packageName, _packageVersion, _userAgent;
   late final int? _availableProcessors;
   late final bool _canAuthenticateUser, _canPinShortcut, _showPinShortcutFeedback;
   late final bool _canRenderSubdivisionFlagEmojis, _canRequestMediaManagementPermission, _canRequestNotificationPermission;
-  late final bool _hasGeocoder, _isDynamicColorAvailable, _supportC2pa, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
+  late final bool _hasGeocoder, _hasStrongBox, _isDynamicColorAvailable, _supportC2pa, _supportEdgeToEdgeUIMode, _supportPictureInPicture;
   late final bool _isPhysicalDevice, _isTelevision;
 
   String get packageName => _packageName;
@@ -30,6 +30,8 @@ class Device {
 
   bool get hasGeocoder => _hasGeocoder;
 
+  bool get hasStrongBox => _hasStrongBox;
+
   bool get isDynamicColorAvailable => _isDynamicColorAvailable;
 
   bool get isPhysicalDevice => _isPhysicalDevice;
@@ -43,8 +45,6 @@ class Device {
   bool get supportEdgeToEdgeUIMode => _supportEdgeToEdgeUIMode;
 
   bool get supportPictureInPicture => _supportPictureInPicture;
-
-  new _private();
 
   Future<void> init() async {
     final packageInfo = await deviceService.getPackageInfo();
@@ -65,6 +65,7 @@ class Device {
     _canRequestMediaManagementPermission = capabilities['canRequestMediaManagementPermission'] as bool? ?? false;
     _canRequestNotificationPermission = capabilities['canRequestNotificationPermission'] as bool? ?? false;
     _hasGeocoder = capabilities['hasGeocoder'] as bool? ?? false;
+    _hasStrongBox = capabilities['hasStrongBox'] as bool? ?? false;
     _isDynamicColorAvailable = capabilities['isDynamicColorAvailable'] as bool? ?? false;
     _showPinShortcutFeedback = capabilities['showPinShortcutFeedback'] as bool? ?? false;
     _supportC2pa = capabilities['supportC2pa'] as bool? ?? false;

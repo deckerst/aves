@@ -56,6 +56,7 @@ class _DebugCapabilitiesSectionState extends State<DebugCapabilitiesSection> wit
                   'canRequestMediaManagementPermission': '${device.canRequestMediaManagementPermission}',
                   'canRequestNotificationPermission': '${device.canRequestNotificationPermission}',
                   'hasGeocoder': '${device.hasGeocoder}',
+                  'hasStrongBox': '${device.hasStrongBox}',
                   'isDynamicColorAvailable': '${device.isDynamicColorAvailable}',
                   'isTelevision': '${device.isTelevision}',
                   'showPinShortcutFeedback': '${device.showPinShortcutFeedback}',

@@ -28,7 +28,6 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -93,7 +92,7 @@ class MediaStoreImageProvider : ImageProvider() {
     ) {
         var found = false
         val fetched = arrayListOf<FieldMap>()
-        val id = uri.tryParseId()
+        val id = MediaStoreUriHelper.tryParseId(uri)
         val alwaysValid: NewEntryChecker = fun(_: Long, _: Long): Boolean = true
         val onSuccess: NewEntryHandler = fun(entry: FieldMap) { fetched.add(entry) }
         if (id != null) {
@@ -534,7 +533,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             val newFields = hashMapOf<String, Any?>(
                                 EntryFields.ORIGIN to SourceEntry.ORIGIN_MEDIA_STORE_CONTENT,
                                 EntryFields.URI to uri.toString(),
-                                EntryFields.CONTENT_ID to uri.tryParseId(),
+                                EntryFields.CONTENT_ID to MediaStoreUriHelper.tryParseId(uri),
                                 EntryFields.PATH to path,
                             )
                             cursor.getColumnIndex(MediaStore.MediaColumns.DATE_ADDED).let { if (it != -1) newFields[EntryFields.DATE_ADDED_SECS] = cursor.getInt(it) }
@@ -553,7 +552,7 @@ class MediaStoreImageProvider : ImageProvider() {
                     var contentUri: Uri? = null
                     // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
                     // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                    val contentId = newUri.tryParseId()
+                    val contentId = MediaStoreUriHelper.tryParseId(newUri)
                     if (contentId != null) {
                         if (isImage(mimeType)) {
                             contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, contentId)

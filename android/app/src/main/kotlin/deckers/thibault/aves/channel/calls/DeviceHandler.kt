@@ -6,9 +6,7 @@ import android.app.LocaleConfig
 import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.location.Geocoder
 import android.os.Build
 import android.os.LocaleList
 import android.provider.Settings
@@ -21,6 +19,7 @@ import com.google.android.material.color.DynamicColors
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
+import deckers.thibault.aves.utils.DeviceFeatures
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import io.flutter.plugin.common.MethodCall
@@ -63,20 +62,15 @@ class DeviceHandler(private val context: Context) : MethodCallHandler {
                 "canRenderSubdivisionFlagEmojis" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
                 "canRequestMediaManagementPermission" to MediaStorePermissions.canRequestMediaManagement(),
                 "canRequestNotificationPermission" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU),
-                "hasGeocoder" to Geocoder.isPresent(),
+                "hasGeocoder" to DeviceFeatures.hasGeocoder(),
+                "hasStrongBox" to DeviceFeatures.hasStrongBox(context),
                 "isDynamicColorAvailable" to DynamicColors.isDynamicColorAvailable(),
                 "showPinShortcutFeedback" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O),
                 "supportC2pa" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P),
                 "supportEdgeToEdgeUIMode" to (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q),
-                "supportPictureInPicture" to supportPictureInPicture(),
+                "supportPictureInPicture" to DeviceFeatures.supportPictureInPicture(context),
             )
         )
-    }
-
-    private fun supportPictureInPicture(): Boolean {
-        // minimum version for `PictureInPictureParams.Builder#setAutoEnterEnabled`
-        val supportPipOnLeave = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        return supportPipOnLeave && context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
     private fun getLocales(@Suppress("unused_parameter") call: MethodCall, result: MethodChannel.Result) {

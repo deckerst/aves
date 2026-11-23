@@ -35,12 +35,12 @@ import deckers.thibault.aves.RouteNames
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safeSuspend
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.ContextUtils.devicePixelRatio
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
 import deckers.thibault.aves.utils.anyCauseIs
 import deckers.thibault.aves.utils.getApplicationInfoCompat
+import deckers.thibault.aves.utils.image.BitmapUtils
 import deckers.thibault.aves.utils.queryIntentActivitiesCompat
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
