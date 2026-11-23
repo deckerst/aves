@@ -2,22 +2,32 @@ import 'dart:collection';
 
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/c2pa.dart';
 import 'package:aves/theme/format.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/theme/text.dart';
+import 'package:aves/theme/themes.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/viewer/info/credential/assertions.dart';
 import 'package:aves/widgets/viewer/info/credential/thumbnail.dart';
 import 'package:collection/collection.dart';
+import 'package:custom_rounded_rectangle_border/custom_rounded_rectangle_border.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const Manifest({
   super.key,
   required final AvesEntry entry,
   required final Map<String, Object?> json,
-  required final double thumbnailExtent,
+  required final int index,
 }) extends StatelessWidget {
+  static const _displayedAssertions = {
+    C2paAssertions.metadataC2pa,
+    C2paAssertions.metadataCawg,
+    C2paAssertions.metadataExif,
+    C2paAssertions.metadataIptc,
+  };
+  static final _ignoredAssertions = C2paAssertions.all.difference(_displayedAssertions);
+
   @override
   Widget build(BuildContext context) {
     final signatureInfo = json['signature_info'] as Map<String, Object?>?;
@@ -31,8 +41,9 @@ class const Manifest({
     if (signDate != null) {
       final date = DateTime.tryParse(signDate);
       if (date != null) {
+        final dateLocal = DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
         final use24hour = MediaQuery.alwaysUse24HourFormatOf(context);
-        signDate = formatDateTime(date, settings.avesLocale, use24hour);
+        signDate = formatDateTime(dateLocal, settings.avesLocale, use24hour);
       }
     }
 
@@ -46,45 +57,33 @@ class const Manifest({
       actionLine = assertions
           .expand<String?>((v) {
             final label = v['label'] as String?;
-            switch (label) {
-              case Assertions.actionsV2:
-                final data = v['data'] as Map<String, Object?>?;
-                if (data == null) return [];
-                final actions = (data['actions'] as List?)?.cast<Map<String, Object?>>();
-                if (actions == null) return [];
-                return actions.map((v) {
-                  final action = v['action'] as String?;
-                  final source = v['digitalSourceType'] as String?;
-                  if (action == null) return null;
+            if (label == C2paAssertions.actionsV2) {
+              final data = v['data'] as Map<String, Object?>?;
+              if (data == null) return [];
+              final actions = (data['actions'] as List?)?.cast<Map<String, Object?>>();
+              if (actions == null) return [];
+              return actions.map((v) {
+                final action = v['action'] as String?;
+                final source = v['digitalSourceType'] as String?;
+                if (action == null) return null;
 
-                  if (DigitalSourceTypes.genAiSources.contains(source)) {
-                    return '$action (AI)';
-                  }
-                  return action;
-                });
-              case Assertions.metadataC2pa:
-              case Assertions.metadataCawg:
-              case Assertions.metadataExif:
-              case Assertions.metadataIptc:
-                return [label];
-              case Assertions.creativeWork:
-              case Assertions.hashBmffV2:
-              case Assertions.hashBmffV3:
-              case Assertions.hashDataPart:
-              case Assertions.hashMultiAsset:
-              case Assertions.identity:
-              case Assertions.softBinding:
-              case Assertions.trainingMiningC2pa:
-              case Assertions.trainingMiningCawg:
-                // ignore
-                return [];
-              default:
-                debugPrint('unhandled assertion label=$label');
+                if (DigitalSourceTypes.genAiSources.contains(source)) {
+                  return '$action (AI)';
+                }
+                return action;
+              });
+            } else if (_displayedAssertions.contains(label)) {
+              return [label];
+            } else if (_ignoredAssertions.contains(label)) {
+              // ignore
+              return [];
+            } else {
+              debugPrint('unhandled assertion label=$label');
+              return [];
             }
-            return [];
           })
           .nonNulls
-          .map((v) => v.replaceFirst(Assertions.actionPrefixPattern, '').toSentenceCase())
+          .map((v) => v.replaceFirst(C2paAssertions.actionPrefixPattern, '').replaceAll('.', '_').toSentenceCase())
           .toSet()
           .toList()
           .join(AText.separator);
@@ -93,7 +92,7 @@ class const Manifest({
       assertions.forEach((v) {
         final label = v['label'] as String?;
         switch (label) {
-          case Assertions.creativeWork:
+          case C2paAssertions.creativeWork:
             final data = v['data'] as Map<String, Object?>?;
             if (data == null) return;
             final authors = (data['author'] as List?)?.cast<Map<String, Object?>>();
@@ -114,70 +113,111 @@ class const Manifest({
     final mainStyle = textTheme.bodyMedium!;
     final subColor = theme.colorScheme.onSurfaceVariant;
     final subStyle = mainStyle.copyWith(color: subColor);
+    final countFormatter = settings.avesLocale.decimalNumberFormat().format;
 
     const double iconSize = 16;
-    return Container(
-      decoration: BoxDecoration(
-        border: AvesBorder.border(context),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Row(
+    const double padding = 8;
+    return Stack(
+      alignment: .topEnd,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: AvesBorder.border(context),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+          padding: const EdgeInsets.all(padding),
+          child: Column(
             crossAxisAlignment: .start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
+              Row(
+                crossAxisAlignment: .start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        if (signedBy != null) SelectableText(signedBy, style: mainStyle),
+                        if (signDate != null) SelectableText(signDate, style: subStyle),
+                      ],
+                    ),
+                  ),
+                  if (thumbnailUri != null) ...[
+                    const SizedBox(width: padding),
+                    ManifestThumbnail(
+                      entry: entry,
+                      thumbnailUri: thumbnailUri,
+                    ),
+                  ],
+                ],
+              ),
+              if (actionLine.isNotEmpty)
+                Row(
                   children: [
-                    if (signedBy != null) Text(signedBy, style: mainStyle),
-                    if (signDate != null) Text(signDate, style: subStyle),
+                    Icon(AIcons.edit, size: iconSize, color: subColor),
+                    const SizedBox(width: 4),
+                    Expanded(child: SelectableText(actionLine, style: mainStyle)),
                   ],
                 ),
-              ),
-              if (thumbnailUri != null)
-                ManifestThumbnail(
-                  entry: entry,
-                  thumbnailUri: thumbnailUri,
-                  thumbnailExtent: thumbnailExtent,
+              if (creativeLineByType.isNotEmpty)
+                ...creativeLineByType.entries.map(
+                  (kv) {
+                    final type = kv.key;
+                    final creativeLine = kv.value;
+
+                    IconData? icon;
+                    switch (type) {
+                      case CreativeWorkAuthorTypes.organization:
+                        icon = AIcons.authorOrganization;
+                      case CreativeWorkAuthorTypes.person:
+                        icon = AIcons.authorPerson;
+                    }
+                    return Row(
+                      children: [
+                        if (icon != null) ...[
+                          Icon(icon, size: iconSize, color: subColor),
+                          const SizedBox(width: 4),
+                        ],
+                        Expanded(child: SelectableText(creativeLine, style: mainStyle)),
+                      ],
+                    );
+                  },
                 ),
             ],
           ),
-          if (actionLine.isNotEmpty)
-            Row(
-              children: [
-                Icon(AIcons.edit, size: iconSize, color: subColor),
-                const SizedBox(width: 4),
-                Expanded(child: Text(actionLine, style: mainStyle)),
-              ],
-            ),
-          if (creativeLineByType.isNotEmpty)
-            ...creativeLineByType.entries.map(
-              (kv) {
-                final type = kv.key;
-                final creativeLine = kv.value;
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          decoration: ShapeDecoration(
+            color: Themes.firstLayerColor(context),
+            shape: _buildCornerDetailShape(context),
+          ),
+          child: Text(
+            countFormatter(index),
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
 
-                IconData? icon;
-                switch (type) {
-                  case CreativeWorkAuthorTypes.organization:
-                    icon = AIcons.authorOrganization;
-                  case CreativeWorkAuthorTypes.person:
-                    icon = AIcons.authorPerson;
-                }
-                return Row(
-                  children: [
-                    if (icon != null) ...[
-                      Icon(icon, size: iconSize, color: subColor),
-                      const SizedBox(width: 4),
-                    ],
-                    Expanded(child: Text(creativeLine, style: mainStyle)),
-                  ],
-                );
-              },
-            ),
-        ],
+  ShapeBorder _buildCornerDetailShape(BuildContext context) {
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final side = AvesBorder.curvedSide(context);
+    const innerRadius = Radius.circular(8);
+    return CustomRoundedRectangleBorder(
+      leftSide: side,
+      rightSide: side,
+      topSide: side,
+      bottomSide: side,
+      topLeftCornerSide: isRtl ? side : null,
+      topRightCornerSide: isRtl ? null : side,
+      bottomLeftCornerSide: isRtl ? null : side,
+      bottomRightCornerSide: isRtl ? side : null,
+      borderRadius: BorderRadius.only(
+        topLeft: isRtl ? innerRadius : Radius.zero,
+        topRight: isRtl ? Radius.zero : innerRadius,
+        bottomLeft: isRtl ? Radius.zero : innerRadius,
+        bottomRight: isRtl ? innerRadius : Radius.zero,
       ),
     );
   }

@@ -31,14 +31,27 @@ class AvesEntry with AvesEntryBase {
   int? pageId;
 
   @override
+  String mimeType;
+
+  @override
   int? sizeBytes;
 
-  String? _path, _fileName, _extension, _sourceTitle;
+  @override
+  int rotationDegrees;
+
+  String? _path;
+
+  // derived from `path`
+  String? _fileName, _extension;
+
+  // derived from `path`
   EntryDir? _directory;
+
   int? contentId;
-  final String sourceMimeType;
-  int width, height, sourceRotationDegrees;
-  int? dateAddedSecs, _dateModifiedMillis, sourceDateTakenMillis, _durationMillis;
+  int width, height;
+  String? _sourceTitle;
+  int? dateAddedSecs, _dateModifiedMillis, sourceDateTakenMillis;
+  int? _durationMillis;
   bool trashed;
   int origin;
 
@@ -64,19 +77,19 @@ class AvesEntry with AvesEntryBase {
   new({
     required int? id,
     required this.uri,
-    required String? path,
+    required this._path,
     required this.contentId,
     required this.pageId,
-    required this.sourceMimeType,
+    required this.mimeType,
     required this.width,
     required this.height,
-    required this.sourceRotationDegrees,
+    required this.rotationDegrees,
     required this.sizeBytes,
-    required String? sourceTitle,
+    required this._sourceTitle,
     required this.dateAddedSecs,
-    required int? dateModifiedMillis,
+    required this._dateModifiedMillis,
     required this.sourceDateTakenMillis,
-    required int? durationMillis,
+    required this._durationMillis,
     required this.trashed,
     required this.origin,
     this.stackedEntries,
@@ -88,10 +101,6 @@ class AvesEntry with AvesEntryBase {
         object: this,
       );
     }
-    this.path = path;
-    this.sourceTitle = sourceTitle;
-    this.dateModifiedMillis = dateModifiedMillis;
-    this.durationMillis = durationMillis;
   }
 
   AvesEntry copyWith({
@@ -99,10 +108,16 @@ class AvesEntry with AvesEntryBase {
     String? uri,
     String? path,
     int? contentId,
-    String? sourceMimeType,
+    int? pageId,
+    String? mimeType,
+    int? width,
+    int? height,
+    int? rotationDegrees,
     String? sourceTitle,
     int? dateAddedSecs,
     int? dateModifiedMillis,
+    int? durationMillis,
+    bool? trashed,
     int? origin,
     List<AvesEntry>? stackedEntries,
   }) {
@@ -113,18 +128,18 @@ class AvesEntry with AvesEntryBase {
             uri: uri ?? this.uri,
             path: path ?? this.path,
             contentId: contentId ?? this.contentId,
-            pageId: null,
-            sourceMimeType: sourceMimeType ?? this.sourceMimeType,
-            width: width,
-            height: height,
-            sourceRotationDegrees: sourceRotationDegrees,
+            pageId: pageId ?? this.pageId,
+            mimeType: mimeType ?? this.mimeType,
+            width: width ?? this.width,
+            height: height ?? this.height,
+            rotationDegrees: rotationDegrees ?? this.rotationDegrees,
             sizeBytes: sizeBytes,
             sourceTitle: sourceTitle ?? this.sourceTitle,
             dateAddedSecs: dateAddedSecs ?? this.dateAddedSecs,
             dateModifiedMillis: dateModifiedMillis ?? this.dateModifiedMillis,
             sourceDateTakenMillis: sourceDateTakenMillis,
-            durationMillis: durationMillis,
-            trashed: trashed,
+            durationMillis: durationMillis ?? this.durationMillis,
+            trashed: trashed ?? this.trashed,
             origin: origin ?? this.origin,
             stackedEntries: stackedEntries ?? this.stackedEntries,
           )
@@ -135,6 +150,15 @@ class AvesEntry with AvesEntryBase {
     return copied;
   }
 
+  // for embedded resources
+  static AvesEntry? maybeFromFields(Map fields) {
+    normalizeMimeTypeFields(fields);
+    final mimeType = fields[EntryFields.mimeType] as String?;
+    final uri = fields[EntryFields.uri] as String?;
+    if (mimeType == null || uri == null) return null;
+    return .fromMap(fields);
+  }
+
   // from DB or platform source entry
   factory fromMap(Map map) {
     return AvesEntry(
@@ -143,10 +167,10 @@ class AvesEntry with AvesEntryBase {
       path: map[EntryFields.path] as String?,
       pageId: null,
       contentId: map[EntryFields.contentId] as int?,
-      sourceMimeType: map[EntryFields.sourceMimeType] as String,
+      mimeType: map[EntryFields.mimeType] as String,
       width: map[EntryFields.width] as int? ?? 0,
       height: map[EntryFields.height] as int? ?? 0,
-      sourceRotationDegrees: map[EntryFields.sourceRotationDegrees] as int? ?? 0,
+      rotationDegrees: map[EntryFields.rotationDegrees] as int? ?? 0,
       sizeBytes: map[EntryFields.sizeBytes] as int?,
       sourceTitle: map[EntryFields.title] as String?,
       dateAddedSecs: map[EntryFields.dateAddedSecs] as int?,
@@ -165,10 +189,10 @@ class AvesEntry with AvesEntryBase {
       EntryFields.uri: uri,
       EntryFields.path: path,
       EntryFields.contentId: contentId,
-      EntryFields.sourceMimeType: sourceMimeType,
+      EntryFields.mimeType: mimeType,
       EntryFields.width: width,
       EntryFields.height: height,
-      EntryFields.sourceRotationDegrees: sourceRotationDegrees,
+      EntryFields.rotationDegrees: rotationDegrees,
       EntryFields.sizeBytes: sizeBytes,
       EntryFields.title: sourceTitle,
       EntryFields.dateAddedSecs: dateAddedSecs,
@@ -253,14 +277,9 @@ class AvesEntry with AvesEntryBase {
     return _extension;
   }
 
-  // the MIME type reported by the Media Store is unreliable
-  // so we use the one found during cataloguing if possible
-  @override
-  String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
-
   bool get isCatalogued => _catalogMetadata != null;
 
-  C2paValidity get credentialsValidity => _catalogMetadata?.credentialsValidity ?? .unknown;
+  C2paValidity get c2paValidity => _catalogMetadata?.c2paValidity ?? .unknown;
 
   DateTime? _bestDate;
 
@@ -289,14 +308,6 @@ class AvesEntry with AvesEntryBase {
   bool get isSlowMotion => _catalogMetadata?.isSlowMotion ?? false;
 
   int get rating => _catalogMetadata?.rating ?? 0;
-
-  @override
-  int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
-
-  set rotationDegrees(int rotationDegrees) {
-    sourceRotationDegrees = rotationDegrees;
-    _catalogMetadata?.rotationDegrees = rotationDegrees;
-  }
 
   bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
 
@@ -395,6 +406,8 @@ class AvesEntry with AvesEntryBase {
   set catalogMetadata(CatalogMetadata? newMetadata) {
     final oldMimeType = mimeType;
     final oldDateModifiedMillis = dateModifiedMillis;
+    final oldWidth = width;
+    final oldHeight = height;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
 
@@ -404,7 +417,14 @@ class AvesEntry with AvesEntryBase {
     _tags = null;
     metadataChangeNotifier.notify();
 
-    _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
+    _onVisualFieldChanged(
+      oldMimeType: oldMimeType,
+      oldDateModifiedMillis: oldDateModifiedMillis,
+      oldWidth: oldWidth,
+      oldHeight: oldHeight,
+      oldRotationDegrees: oldRotationDegrees,
+      oldIsFlipped: oldIsFlipped,
+    );
   }
 
   void clearMetadata() {
@@ -434,58 +454,111 @@ class AvesEntry with AvesEntryBase {
     if (mimeType != null) {
       fields[EntryFields.mimeType] = MimeTypes.normalize(mimeType);
     }
-    final sourceMimeType = fields[EntryFields.sourceMimeType] as String?;
-    if (sourceMimeType != null) {
-      fields[EntryFields.sourceMimeType] = MimeTypes.normalize(sourceMimeType);
-    }
   }
 
   Future<void> applyNewFields(Map newFields, {required bool persist}) async {
     assert(!isDisposed, 'entry used after being disposed, $this');
 
-    final oldMimeType = mimeType;
+    final oldMimeType = this.mimeType;
     final oldDateModifiedMillis = this.dateModifiedMillis;
+    final oldWidth = this.width;
+    final oldHeight = this.height;
     final oldRotationDegrees = this.rotationDegrees;
     final oldIsFlipped = this.isFlipped;
 
+    var changed = false;
+
+    // content address
+    final mimeType = newFields[EntryFields.mimeType];
+    if (mimeType is String && this.mimeType != mimeType) {
+      this.mimeType = mimeType;
+      changed = true;
+    }
     final uri = newFields[EntryFields.uri];
-    if (uri is String) this.uri = uri;
+    if (uri is String && this.uri != uri) {
+      this.uri = uri;
+      changed = true;
+    }
     final path = newFields[EntryFields.path];
-    if (path is String) this.path = path;
-    final contentId = newFields[EntryFields.contentId];
-    if (contentId is int) this.contentId = contentId;
-
-    final sourceTitle = newFields[EntryFields.title];
-    if (sourceTitle is String) this.sourceTitle = sourceTitle;
-    final sourceRotationDegrees = newFields[EntryFields.sourceRotationDegrees];
-    if (sourceRotationDegrees is int) this.sourceRotationDegrees = sourceRotationDegrees;
-    final sourceDateTakenMillis = newFields[EntryFields.sourceDateTakenMillis];
-    if (sourceDateTakenMillis is int) this.sourceDateTakenMillis = sourceDateTakenMillis;
-
-    final width = newFields[EntryFields.width];
-    if (width is int) this.width = width;
-    final height = newFields[EntryFields.height];
-    if (height is int) this.height = height;
-    final durationMillis = newFields[EntryFields.durationMillis];
-    if (durationMillis is int) this.durationMillis = durationMillis;
-
+    if (path is String && this.path != path) {
+      this.path = path;
+      changed = true;
+    }
     final sizeBytes = newFields[EntryFields.sizeBytes];
-    if (sizeBytes is int) this.sizeBytes = sizeBytes;
-    final dateModifiedMillis = newFields[EntryFields.dateModifiedMillis];
-    if (dateModifiedMillis is int) this.dateModifiedMillis = dateModifiedMillis;
-    final rotationDegrees = newFields[EntryFields.rotationDegrees];
-    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
-    final isFlipped = newFields[EntryFields.isFlipped];
-    if (isFlipped is bool) this.isFlipped = isFlipped;
-
-    if (persist) {
-      await localMediaDb.updateEntry(id, this);
-      if (catalogMetadata != null) await localMediaDb.saveCatalogMetadata({catalogMetadata!});
+    if (sizeBytes is int && this.sizeBytes != sizeBytes) {
+      this.sizeBytes = sizeBytes;
+      changed = true;
     }
 
-    await _onVisualFieldChanged(oldMimeType, oldDateModifiedMillis, oldRotationDegrees, oldIsFlipped);
-    if (!isDisposed) {
-      metadataChangeNotifier.notify();
+    // dates
+    final sourceDateTakenMillis = newFields[EntryFields.sourceDateTakenMillis];
+    if (sourceDateTakenMillis is int && this.sourceDateTakenMillis != sourceDateTakenMillis) {
+      this.sourceDateTakenMillis = sourceDateTakenMillis;
+      changed = true;
+    }
+    final dateModifiedMillis = newFields[EntryFields.dateModifiedMillis];
+    if (dateModifiedMillis is int && this.dateModifiedMillis != dateModifiedMillis) {
+      this.dateModifiedMillis = dateModifiedMillis;
+      changed = true;
+    }
+
+    // spatial/temporal dimensions
+    final width = newFields[EntryFields.width];
+    if (width is int && this.width != width) {
+      this.width = width;
+      changed = true;
+    }
+    final height = newFields[EntryFields.height];
+    if (height is int && this.height != height) {
+      this.height = height;
+      changed = true;
+    }
+    final durationMillis = newFields[EntryFields.durationMillis];
+    if (durationMillis is int && this.durationMillis != durationMillis) {
+      this.durationMillis = durationMillis;
+      changed = true;
+    }
+
+    // visual
+    final rotationDegrees = newFields[EntryFields.rotationDegrees];
+    if (rotationDegrees is int && this.rotationDegrees != rotationDegrees) {
+      this.rotationDegrees = rotationDegrees;
+      changed = true;
+    }
+    final isFlipped = newFields[EntryFields.isFlipped];
+    if (isFlipped is bool && this.isFlipped != isFlipped) {
+      this.isFlipped = isFlipped;
+      changed = true;
+    }
+
+    // misc
+    final contentId = newFields[EntryFields.contentId];
+    if (contentId is int && this.contentId != contentId) {
+      this.contentId = contentId;
+      changed = true;
+    }
+    final sourceTitle = newFields[EntryFields.title];
+    if (sourceTitle is String && this.sourceTitle != sourceTitle) {
+      this.sourceTitle = sourceTitle;
+      changed = true;
+    }
+
+    if (changed) {
+      if (persist) {
+        await localMediaDb.updateEntry(id, this);
+      }
+
+      await _onVisualFieldChanged(
+        oldMimeType: oldMimeType,
+        oldDateModifiedMillis: oldDateModifiedMillis,
+        oldWidth: oldWidth,
+        oldHeight: oldHeight,
+        oldRotationDegrees: oldRotationDegrees,
+        oldIsFlipped: oldIsFlipped,
+      );
+      if (!isDisposed) {
+        metadataChangeNotifier.notify();
+      }
     }
   }
 
@@ -526,15 +599,24 @@ class AvesEntry with AvesEntryBase {
   }
 
   // when the MIME type or the image itself changed (e.g. after rotation)
-  Future<void> _onVisualFieldChanged(
-    String oldMimeType,
-    int? oldDateModifiedMillis,
-    int oldRotationDegrees,
-    bool oldIsFlipped,
-  ) async {
+  Future<void> _onVisualFieldChanged({
+    required String oldMimeType,
+    required int? oldDateModifiedMillis,
+    required int oldWidth,
+    required int oldHeight,
+    required int oldRotationDegrees,
+    required bool oldIsFlipped,
+  }) async {
     assert(!isDisposed, 'entry used after being disposed, $this');
 
-    if ((!MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType)) || oldDateModifiedMillis != dateModifiedMillis || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+    var invalidate = !MimeTypes.refersToSameType(oldMimeType, mimeType) && !MimeTypes.isVideo(oldMimeType);
+    invalidate |= oldDateModifiedMillis != dateModifiedMillis;
+    invalidate |= oldWidth != width;
+    invalidate |= oldHeight != height;
+    invalidate |= oldRotationDegrees != rotationDegrees;
+    invalidate |= oldIsFlipped != isFlipped;
+
+    if (invalidate) {
       EntryCache.evict(uri);
       await mediaFetchService.clearDecoders();
       if (!isDisposed) {

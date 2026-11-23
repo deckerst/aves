@@ -82,9 +82,14 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
   @override
   void initState() {
     super.initState();
-    _setup();
     imageCache.maximumSize = 1000;
     imageCache.maximumSizeBytes = 100 * (1 << 20); // MiB
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _setup(context);
   }
 
   @override
@@ -97,7 +102,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
         : null,
   );
 
-  Future<void> _setup() async {
+  Future<void> _setup(BuildContext context) async {
     try {
       final stopwatch = Stopwatch()..start();
       if (await windowService.isActivity()) {
@@ -126,15 +131,16 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
           bytes: Uint8List.fromList(utf8.encode(logs.join('\n'))),
         );
         if (success != null) {
+          final l10n = context.l10n;
           if (success) {
-            showFeedback(context, FeedbackType.info, context.l10n.genericSuccessFeedback);
+            showFeedback(context, FeedbackType.info, l10n.genericSuccessFeedback);
           } else {
-            showFeedback(context, FeedbackType.warn, context.l10n.genericFailureFeedback);
+            showFeedback(context, FeedbackType.warn, l10n.genericFailureFeedback);
           }
         }
         unawaited(
           Navigator.maybeOf(context)?.pushAndRemoveUntil(
-            await _getRedirectRoute(appMode),
+            await _getRedirectRoute(context, appMode),
             (route) => false,
           ),
         );
@@ -296,7 +302,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
       // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
       unawaited(
         Navigator.maybeOf(context)?.pushAndRemoveUntil(
-          await _getRedirectRoute(appMode),
+          await _getRedirectRoute(context, appMode),
           (route) => false,
         ),
       );
@@ -323,12 +329,12 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
     final entry = await mediaFetchService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
-      await entry.catalog(background: false, force: false, persist: false);
+      await entry.catalog(background: false, force: false, persistSourceFields: false);
     }
     return entry;
   }
 
-  Future<Route> _getRedirectRoute(AppMode appMode) async {
+  Future<Route> _getRedirectRoute(BuildContext context, AppMode appMode) async {
     String routeName;
     Set<CollectionFilter?>? filters;
     switch (appMode) {

@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.11"></a>[v1.15.11] - 2026-11-23
+
+### Added
+
+- Metadata: add C2PA manifest (self-signed, remote TSA) when editing items with Content Credentials
+- Collection: format overlay option
+- Countries: show states for Germany (Bundesländer)
+
+### Changed
+
+- upgraded Flutter to stable v3.50.1
+
+### Fixed
+
+- large padding due to incorrect system gesture insets
+- item dimensions and size when source reported incorrect values
+- editing IPTC/XMP for items with existing metadata errors
+- time zone offset lost on custom date editing
+- item shortcut loading
+
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 
 ### Added

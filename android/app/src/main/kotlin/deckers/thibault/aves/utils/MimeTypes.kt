@@ -110,8 +110,7 @@ object MimeTypes {
     // * Supported for reading: JPEG, PNG, WebP, HEIC, DNG, CR2, NEF, NRW, ARW, RW2, ORF, PEF, SRW, RAF, AVIF (on API 31+).
     // * Supported for writing: JPEG, PNG, WebP.
     fun canReadWithExifInterface(mimeType: String, strict: Boolean = true): Boolean {
-        if (!strict) return true
-        return ExifInterface.isSupportedMimeType(mimeType) || mimeType == AVIF
+        return !strict || ExifInterface.isSupportedMimeType(mimeType) || mimeType == AVIF
     }
 
     // as of latest PixyMeta
@@ -151,9 +150,7 @@ object MimeTypes {
     // Maybe related to `ExifInterface` version used by Glide:
     // https://github.com/bumptech/glide/blob/master/gradle/libs.versions.toml#L29
     fun needRotationAfterGlide(mimeType: String, pageId: Int?): Boolean {
-        return if (pageId != null && MultiPageImage.isSupported(mimeType)) {
-            true
-        } else when (mimeType) {
+        return pageId != null && MultiPageImage.isSupported(mimeType) || when (mimeType) {
             AVIF, PNG, TIFF, WEBP -> true
             else -> isRaw(mimeType)
         }

@@ -1,0 +1,3 @@
+In v1.15.11:
+- edit metadata with C2PA manifest signing
+Full changelog available on GitHub

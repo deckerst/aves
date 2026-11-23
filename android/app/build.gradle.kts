@@ -66,7 +66,6 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["googleApiKey"] = keystoreProperties["googleApiKey"] ?: "NONE"
-        multiDexEnabled = true
     }
 
     // remove dependency metadata from build artifacts
@@ -74,6 +73,11 @@ android {
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
+    }
+
+    packaging {
+        // exclude redundant `BouncyCastle` subpackage files
+        resources.excludes.add("META-INF/LICENSE.md")
     }
 
     signingConfigs {
@@ -228,6 +232,8 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.work.runtime)
 
+    implementation(libs.bouncycastle.bcpg)
+    implementation(libs.bouncycastle.bcpkix)
     implementation(libs.commonsware.cwac)
     implementation(libs.contentauth.c2pa)
     implementation(libs.metadata.extractor)

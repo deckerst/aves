@@ -111,6 +111,44 @@ class EmojiStateCodes {
     caYukon,
   };
 
+  // DE
+
+  static const deBadenWurttemberg = 'debw';
+  static const deBayern = 'deby';
+  static const deBerlin = 'debe';
+  static const deBrandenburg = 'debb';
+  static const deBremen = 'dehb';
+  static const deHamburg = 'dehh';
+  static const deHessen = 'dehe';
+  static const deNiedersachsen = 'deni';
+  static const deMecklenburgVorpommern = 'demv';
+  static const deNordrheinWestfalen = 'denw';
+  static const deRheinlandPfalz = 'derp';
+  static const deSaarland = 'desl';
+  static const deSachsen = 'desn';
+  static const deSachsenAnhalt = 'dest';
+  static const deSchleswigHolstein = 'desh';
+  static const deThuringen = 'deth';
+
+  static const germany = {
+    deBadenWurttemberg,
+    deBayern,
+    deBerlin,
+    deBrandenburg,
+    deBremen,
+    deHamburg,
+    deHessen,
+    deNiedersachsen,
+    deMecklenburgVorpommern,
+    deNordrheinWestfalen,
+    deRheinlandPfalz,
+    deSaarland,
+    deSachsen,
+    deSachsenAnhalt,
+    deSchleswigHolstein,
+    deThuringen,
+  };
+
   // GB
   static const gbEngland = 'gbeng';
   static const gbNorthernIreland = 'gbnir';

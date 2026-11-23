@@ -71,6 +71,7 @@ class SettingsDefaults {
   static const showThumbnailHdr = true;
   static const thumbnailLocationIcon = ThumbnailOverlayLocationIcon.none;
   static const thumbnailTagIcon = ThumbnailOverlayTagIcon.none;
+  static const showThumbnailFormat = false;
   static const showThumbnailMotionPhoto = true;
   static const showThumbnailRating = true;
   static const showThumbnailRaw = true;

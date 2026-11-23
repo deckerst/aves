@@ -17,12 +17,12 @@ import deckers.thibault.aves.glide.MultiPageImage
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.BitmapRegionDecoderCompat
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BitmapUtils.describe
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MathUtils
 import deckers.thibault.aves.utils.MemoryUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.image.BitmapUtils
+import deckers.thibault.aves.utils.image.BitmapUtils.describe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream

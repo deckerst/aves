@@ -58,6 +58,8 @@ class LocalMediaDbUpgrader {
           await _upgradeFrom15(db);
         case 16:
           await _upgradeFrom16(db);
+        case 17:
+          await _upgradeFrom17(db);
       }
       oldVersion++;
     }
@@ -595,5 +597,64 @@ class LocalMediaDbUpgrader {
 
     await db.execute('ALTER TABLE $dateTakenTable ADD COLUMN timeZoneOffsetMinutes INTEGER;');
     await db.execute('ALTER TABLE $metadataTable ADD COLUMN timeZoneOffsetMinutes INTEGER;');
+  }
+
+  static Future<void> _upgradeFrom17(Database db) async {
+    debugPrint('upgrading DB from v17');
+
+    // rename column 'sourceMimeType' to 'mimeType' (merging value from `metadata`)
+    // rename column 'sourceRotationDegrees' to 'rotationDegrees' (merging value from `metadata`)
+    const newEntryTable = '${entryTable}TEMP';
+    await db.execute(
+      'CREATE TABLE $newEntryTable ('
+      'id INTEGER PRIMARY KEY'
+      ', contentId INTEGER'
+      ', uri TEXT'
+      ', path TEXT'
+      ', mimeType TEXT'
+      ', width INTEGER'
+      ', height INTEGER'
+      ', rotationDegrees INTEGER'
+      ', sizeBytes INTEGER'
+      ', title TEXT'
+      ', dateAddedSecs INTEGER DEFAULT (strftime(\'%s\',\'now\'))'
+      ', dateModifiedMillis INTEGER'
+      ', sourceDateTakenMillis INTEGER'
+      ', durationMillis INTEGER'
+      ', trashed INTEGER DEFAULT 0'
+      ', origin INTEGER DEFAULT 0'
+      ')',
+    );
+    await db.rawInsert(
+      'INSERT INTO $newEntryTable (id,contentId,uri,path,mimeType,width,height,rotationDegrees,sizeBytes,title,dateAddedSecs,dateModifiedMillis,sourceDateTakenMillis,durationMillis,trashed,origin)'
+      ' SELECT $entryTable.id,contentId,uri,path,COALESCE(mimeType, sourceMimeType),width,height,COALESCE(rotationDegrees, sourceRotationDegrees),sizeBytes,title,dateAddedSecs,dateModifiedMillis,sourceDateTakenMillis,durationMillis,trashed,origin'
+      ' FROM $entryTable INNER JOIN $metadataTable ON $metadataTable.id = $entryTable.id;',
+    );
+    await db.execute('DROP TABLE $entryTable;');
+    await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
+
+    // remove column 'mimeType'
+    // remove column 'rotationDegrees'
+    const newMetadataTable = '${metadataTable}TEMP';
+    await db.execute(
+      'CREATE TABLE $newMetadataTable ('
+      'id INTEGER PRIMARY KEY'
+      ', dateMillis INTEGER'
+      ', timeZoneOffsetMinutes INTEGER'
+      ', flags INTEGER'
+      ', latitude REAL'
+      ', longitude REAL'
+      ', rating INTEGER'
+      ', xmpSubjects TEXT'
+      ', xmpTitle TEXT'
+      ')',
+    );
+    await db.rawInsert(
+      'INSERT INTO $newMetadataTable (id,dateMillis,timeZoneOffsetMinutes,flags,latitude,longitude,rating,xmpSubjects,xmpTitle)'
+      ' SELECT id,dateMillis,timeZoneOffsetMinutes,flags,latitude,longitude,rating,xmpSubjects,xmpTitle'
+      ' FROM $metadataTable;',
+    );
+    await db.execute('DROP TABLE $metadataTable;');
+    await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
   }
 }

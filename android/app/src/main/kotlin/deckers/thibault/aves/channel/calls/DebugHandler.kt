@@ -31,7 +31,6 @@ import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.VideoThumbnailMethod
 import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
-import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.canReadWithExifInterface
@@ -39,7 +38,7 @@ import deckers.thibault.aves.utils.MimeTypes.canReadWithMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.canReadWithPixyMeta
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.UriUtils.tryParseId
+import deckers.thibault.aves.utils.image.BitmapUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -205,7 +204,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
         var contentUri: Uri = uri
         if (MediaStoreUriHelper.isMediaStoreContentUri(uri)) {
-            uri.tryParseId()?.let { id ->
+            MediaStoreUriHelper.tryParseId(uri)?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)

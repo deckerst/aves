@@ -68,7 +68,7 @@ mixin TagMixin on SourceBase {
             if (controller.isStopping) return;
           }
 
-          await entry.catalog(background: true, force: force, persist: true);
+          await entry.catalog(background: true, force: force, persistSourceFields: true);
           if (entry.isCatalogued) {
             newMetadata.add(entry.catalogMetadata!);
             if (newMetadata.length >= commitCountThreshold) {

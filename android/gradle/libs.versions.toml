@@ -1,21 +1,22 @@
 [versions]
 androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
-androidGradlePlugin = "9.5.1"
+androidGradlePlugin = "9.5.2"
 androidSvg = "447068deae"
 androidxAnnotation = "1.11.0"
 androidxAppcompat = "1.8.0"
 androidxCoreKtx = "1.19.1"
 androidxCorePerformance = "1.0.0"
-androidxLifecycle = "2.11.0"
+androidxLifecycle = "2.11.1"
 androidxMedia = "1.8.0"
 androidxSecurity = "1.1.0"
 androidxWork = "2.12.0"
+bouncycastle = "1.87"
 commonswareCwac = "0.5.0"
-contentauthC2pa = "0.0.15"
+contentauthC2pa = "0.1.0"
 firebase = "3.0.8"
-glide = "5.0.9"
-gms = "4.5.0"
+glide = "5.0.10"
+gms = "4.6.0"
 jspecify = "1.0.1"
 junit = "6.1.3"
 kotlin = "2.4.21"
@@ -39,6 +40,8 @@ androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-process", version.
 androidx-media = { module = "androidx.media:media", version.ref = "androidxMedia" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidxSecurity" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "androidxWork" }
+bouncycastle-bcpg = { module = "org.bouncycastle:bcpg-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
 contentauth-c2pa = { module = "com.github.contentauth:c2pa-android", version.ref = "contentauthC2pa" }
 commonsware-cwac = { module = "com.commonsware.cwac:document", version.ref = "commonswareCwac" }
 deckerst-androidsvg = { module = "com.github.deckerst:androidsvg", version.ref = "androidSvg" }

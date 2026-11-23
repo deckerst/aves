@@ -5,6 +5,7 @@ class AppSupport {
     // unsupported
     MimeTypes.aces,
     MimeTypes.art,
+    MimeTypes.base64,
     MimeTypes.cdr,
     MimeTypes.cdrt,
     MimeTypes.cpt,
@@ -32,6 +33,8 @@ class AppSupport {
     MimeTypes.rgbe,
     MimeTypes.sgif,
     MimeTypes.tap,
+    MimeTypes.tga,
+    MimeTypes.tgaX,
     MimeTypes.vtf,
     MimeTypes.wmf,
     MimeTypes.xbm,

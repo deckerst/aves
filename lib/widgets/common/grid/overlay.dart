@@ -1,22 +1,16 @@
 import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves/widgets/common/identity/icons/overlay.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class GridItemSelectionOverlay<T> extends StatelessWidget {
-  final T item;
-  final BorderRadius? borderRadius;
-  final EdgeInsets? padding;
-
-  const new({
-    super.key,
-    required this.item,
-    this.borderRadius,
-    this.padding,
-  });
-
+class const GridItemSelectionOverlay<T>({
+  super.key,
+  required final T item,
+  final BorderRadius? borderRadius,
+  final EdgeInsets? padding,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final duration = context.select<DurationsData, Duration>((v) => v.formTransition);

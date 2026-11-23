@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
-class AvesMethodChannel extends MethodChannel {
+class const AvesMethodChannel(super.name) extends MethodChannel {
   static bool kDebug = false;
-
-  const new(super.name);
 
   @override
   Future<T?> invokeMethod<T>(String method, [arguments]) {
@@ -16,9 +14,7 @@ class AvesMethodChannel extends MethodChannel {
   }
 }
 
-class AvesStreamsChannel extends StreamsChannel {
-  new(super.name);
-
+class AvesStreamsChannel(super.name) extends StreamsChannel {
   @override
   Stream receiveBroadcastStream([arguments]) {
     if (AvesMethodChannel.kDebug) {

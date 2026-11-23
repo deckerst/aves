@@ -14,6 +14,8 @@ import deckers.thibault.aves.model.Mp4ZeroSizeBoxException
 import deckers.thibault.aves.model.OutputStreamException
 import deckers.thibault.aves.model.PartialTransferException
 import deckers.thibault.aves.model.ReadOnlyFileSystemException
+import deckers.thibault.aves.model.UndecodableContentException
+import deckers.thibault.aves.model.UndecodableCopyException
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import io.flutter.plugin.common.MethodCall
@@ -58,7 +60,8 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun editOrientation(call: MethodCall, result: MethodChannel.Result, op: ExifOrientationOp) {
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        if (entryMap == null || c2paActions == null) {
             result.error("editOrientation-args", "missing arguments", null)
             return
         }
@@ -85,18 +88,20 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             op = op,
             callback = callback,
         )
     }
 
     private fun editExifDate(call: MethodCall, result: MethodChannel.Result) {
+        val entryMap = call.argument<FieldMap>("entry")
+        val c2paActions = call.argument<List<String>>("c2paActions")
         val dateMillis = call.argument<Number>("dateMillis")?.toLong()
         val timeZoneOffsetMinutes = call.argument<Int>("timeZoneOffsetMinutes")
         val shiftSeconds = call.argument<Number>("shiftSeconds")?.toLong()
         val fields = call.argument<List<String>>("fields")
-        val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || fields == null) {
+        if (entryMap == null || c2paActions == null || fields == null) {
             result.error("editExifDate-args", "missing arguments", null)
             return
         }
@@ -123,6 +128,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             dateMillis = dateMillis,
             timeZoneOffsetMinutes = timeZoneOffsetMinutes,
             shiftSeconds = shiftSeconds,
@@ -132,10 +138,11 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun editMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val metadata = call.argument<FieldMap>("metadata")
         val entryMap = call.argument<FieldMap>("entry")
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        val metadata = call.argument<FieldMap>("metadata")
         val autoCorrectTrailerOffset = call.argument<Boolean>("autoCorrectTrailerOffset")
-        if (entryMap == null || metadata == null || autoCorrectTrailerOffset == null) {
+        if (entryMap == null || c2paActions == null || metadata == null || autoCorrectTrailerOffset == null) {
             result.error("editMetadata-args", "missing arguments", null)
             return
         }
@@ -162,6 +169,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             modifier = metadata,
             autoCorrectTrailerOffset = autoCorrectTrailerOffset,
             callback = callback,
@@ -170,7 +178,8 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
 
     private fun removeTrailerVideo(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        if (entryMap == null || c2paActions == null) {
             result.error("removeTrailerVideo-args", "missing arguments", null)
             return
         }
@@ -197,14 +206,16 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             callback = callback,
         )
     }
 
     private fun removeTypes(call: MethodCall, result: MethodChannel.Result) {
-        val types = call.argument<List<String>>("types")
         val entryMap = call.argument<FieldMap>("entry")
-        if (entryMap == null || types == null) {
+        val c2paActions = call.argument<List<String>>("c2paActions")
+        val types = call.argument<List<String>>("types")
+        if (entryMap == null || c2paActions == null || types == null) {
             result.error("removeTypes-args", "missing arguments", null)
             return
         }
@@ -231,6 +242,7 @@ class MetadataEditHandler(private val context: Context) : MethodCallHandler {
             context = context,
             contentAddress = contentAddress,
             sizeBytes = sizeBytes,
+            c2paActions = c2paActions,
             types = types.toSet(),
             callback = callback,
         )
@@ -275,6 +287,12 @@ private class MetadataOpCallback(
             "$errorCodeBase-$ERROR_PARTIAL_TRANSFER"
         } else if (throwable is ReadOnlyFileSystemException) {
             "$errorCodeBase-$ERROR_READ_ONLY"
+        } else if (throwable is SecurityException) {
+            "$errorCodeBase-$ERROR_SECURITY"
+        } else if (throwable is UndecodableContentException) {
+            "$errorCodeBase-$ERROR_UNDECODABLE_CONTENT"
+        } else if (throwable is UndecodableCopyException) {
+            "$errorCodeBase-$ERROR_UNDECODABLE_COPY"
         } else {
             "$errorCodeBase-$ERROR_GENERIC_FAILURE"
         }
@@ -283,14 +301,17 @@ private class MetadataOpCallback(
 
     companion object {
         const val ERROR_GENERIC_FAILURE = "failure"
-        const val ERROR_EXIF_INTERFACE = "exifinterface"
-        const val ERROR_FILE_NOT_FOUND = "filenotfound"
-        const val ERROR_MP4_FRAGMENTED = "mp4fragmented"
-        const val ERROR_MP4_LARGE_MOOV = "mp4largemoov"
-        const val ERROR_MP4_LARGE_OTHER = "mp4largeother"
-        const val ERROR_MP4_ZERO_SIZE_BOX = "mp4zerosizebox"
-        const val ERROR_OUTPUT_STREAM = "outputstream"
-        const val ERROR_PARTIAL_TRANSFER = "partialtransfer"
-        const val ERROR_READ_ONLY = "readonly"
+        const val ERROR_EXIF_INTERFACE = "exifInterface"
+        const val ERROR_FILE_NOT_FOUND = "fileNotFound"
+        const val ERROR_MP4_FRAGMENTED = "mp4Fragmented"
+        const val ERROR_MP4_LARGE_MOOV = "mp4LargeMoov"
+        const val ERROR_MP4_LARGE_OTHER = "mp4LargeOther"
+        const val ERROR_MP4_ZERO_SIZE_BOX = "mp4ZeroSizeBox"
+        const val ERROR_OUTPUT_STREAM = "outputStream"
+        const val ERROR_PARTIAL_TRANSFER = "partialTransfer"
+        const val ERROR_READ_ONLY = "readOnly"
+        const val ERROR_SECURITY = "security"
+        const val ERROR_UNDECODABLE_CONTENT = "undecodableContent"
+        const val ERROR_UNDECODABLE_COPY = "undecodableCopy"
     }
 }

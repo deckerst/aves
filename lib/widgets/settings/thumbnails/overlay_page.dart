@@ -1,10 +1,12 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/view/view.dart';
 import 'package:aves/widgets/common/basic/scaffold.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/settings/common/switch_icon.dart';
 import 'package:aves/widgets/settings/common/tiles/multi_selection.dart';
 import 'package:aves/widgets/settings/common/tiles/single_selection.dart';
@@ -20,8 +22,8 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
   static const List<String> settingKeys = [
     SettingKeys.showThumbnailHdrKey,
     SettingKeys.showThumbnailRawKey,
+    SettingKeys.showThumbnailFormatKey,
     SettingKeys.showThumbnailMotionPhotoKey,
-    SettingKeys.showThumbnailSlowMotionVideoKey,
     SettingKeys.showThumbnailVideoDurationKey,
     SettingKeys.showThumbnailFavouriteKey,
     SettingKeys.showThumbnailRatingKey,
@@ -32,8 +34,9 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = SettingSwitchTrailingIcon.getIconSize(context);
     final iconColor = SettingSwitchTrailingIcon.getIconColor(context);
+    final iconSize = SettingSwitchTrailingIcon.getIconSize(context);
+    final fontSize = GridTheme.getFontSize(iconSize);
 
     final l10n = context.l10n;
     return AvesScaffold(
@@ -68,21 +71,8 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
               selector: (context, s) => s.showThumbnailMotionPhoto,
               onChanged: (v) => settings.showThumbnailMotionPhoto = v,
               title: (_) => l10n.settingsThumbnailShowMotionPhotoIcon,
-              trailing: Padding(
-                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - MotionPhotoIcon.scale) / 2),
-                child: Icon(
-                  AIcons.motionPhoto,
-                  size: iconSize * MotionPhotoIcon.scale,
-                  color: iconColor,
-                ),
-              ),
-            ),
-            SettingsSwitchListTile(
-              selector: (context, s) => s.showThumbnailSlowMotionVideo,
-              onChanged: (v) => settings.showThumbnailSlowMotionVideo = v,
-              title: (_) => l10n.showThumbnailSlowMotionVideoIcon,
               trailing: Icon(
-                AIcons.slowMotion,
+                AIcons.motionPhoto,
                 size: iconSize,
                 color: iconColor,
               ),
@@ -92,18 +82,24 @@ class const ThumbnailOverlayPage({super.key}) extends StatelessWidget {
               onChanged: (v) => settings.showThumbnailVideoDuration = v,
               title: (_) => l10n.settingsThumbnailShowVideoDuration,
             ),
+            SettingsSwitchListTile(
+              selector: (context, s) => s.showThumbnailFormat,
+              onChanged: (v) => settings.showThumbnailFormat = v,
+              title: (_) => l10n.settingsThumbnailShowFormat,
+              trailing: Text(
+                MimeUtils.displayType(MimeTypes.jpeg),
+                style: TextStyle(fontSize: fontSize),
+              ),
+            ),
             const Divider(),
             SettingsSwitchListTile(
               selector: (context, s) => s.showThumbnailFavourite,
               onChanged: (v) => settings.showThumbnailFavourite = v,
               title: (_) => l10n.settingsThumbnailShowFavouriteIcon,
-              trailing: Padding(
-                padding: EdgeInsets.symmetric(horizontal: iconSize * (1 - FavouriteIcon.scale) / 2),
-                child: Icon(
-                  AIcons.favourite,
-                  size: iconSize * FavouriteIcon.scale,
-                  color: iconColor,
-                ),
+              trailing: Icon(
+                AIcons.favourite,
+                size: iconSize,
+                color: iconColor,
               ),
             ),
             SettingsSwitchListTile(

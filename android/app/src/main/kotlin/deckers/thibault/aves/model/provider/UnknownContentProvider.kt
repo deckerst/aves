@@ -16,17 +16,17 @@ open class UnknownContentProvider : ImageProvider() {
 
     override fun fetchSingle(
         context: Context,
-        sourceMimeType: String?,
+        mimeTypeHint: String?,
         uri: Uri,
         allowUnsized: Boolean,
         callback: ImageOpCallback,
     ) {
-        var mimeType = sourceMimeType
-        if (sourceMimeType == null || !reliableProviderMimeType) {
+        var mimeType = mimeTypeHint
+        if (mimeTypeHint == null || !reliableProviderMimeType) {
             // source MIME type may be incorrect, so we get a second opinion if possible
             mimeType = MetadataExtractorHelper.readMimeType(
                 context = context,
-                mimeType = sourceMimeType,
+                mimeType = mimeTypeHint,
                 uri = uri,
                 path = null,
                 sizeBytes = null,
@@ -36,7 +36,7 @@ open class UnknownContentProvider : ImageProvider() {
         val fields: FieldMap = hashMapOf(
             EntryFields.ORIGIN to SourceEntry.ORIGIN_UNKNOWN_CONTENT,
             EntryFields.URI to uri.toString(),
-            EntryFields.SOURCE_MIME_TYPE to mimeType,
+            EntryFields.MIME_TYPE to mimeType,
         )
         try {
             // some providers do not provide the mandatory `OpenableColumns`
@@ -49,7 +49,7 @@ open class UnknownContentProvider : ImageProvider() {
                 cursor.getColumnIndex(MediaStore.MediaColumns.DATA).let { if (it != -1) fields[EntryFields.PATH] = cursor.getString(it) }
                 // mime type fallback if it was not provided and not found via `metadata-extractor`
                 if (mimeType == null) {
-                    cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1) fields[EntryFields.SOURCE_MIME_TYPE] = cursor.getString(it) }
+                    cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE).let { if (it != -1) fields[EntryFields.MIME_TYPE] = cursor.getString(it) }
                 }
                 cursor.close()
             }
@@ -58,7 +58,7 @@ open class UnknownContentProvider : ImageProvider() {
             return
         }
 
-        if (fields[EntryFields.SOURCE_MIME_TYPE] == null) {
+        if (fields[EntryFields.MIME_TYPE] == null) {
             callback.onFailure(Exception("failed to find MIME type for uri=$uri"))
             return
         }

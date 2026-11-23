@@ -1,11 +1,31 @@
 import 'package:aves/ref/emoji_state_codes.dart';
 import 'package:country_code/country_code.dart';
 
+// cf https://en.wikipedia.org/wiki/Federated_state
 class GeoStates {
+  static final countriesWithStateFlagAssets = {
+    // Australia (public domain)
+    // https://commons.wikimedia.org/wiki/Flags_of_subdivisions_of_Australia
+    CountryCode.AU.alpha2,
+    // Brazil (public domain)
+    // https://commons.wikimedia.org/wiki/Flags_of_states_of_Brazil
+    CountryCode.BR.alpha2,
+    // Canada (public domain)
+    // https://commons.wikimedia.org/wiki/Flags_of_provinces_and_territories_of_Canada
+    CountryCode.CA.alpha2,
+    // Germany (public domain)
+    // https://commons.wikimedia.org/wiki/Flags_of_states_of_Germany
+    CountryCode.DE.alpha2,
+    // USA (public domain, except CC BY-SA for Maine's)
+    // https://commons.wikimedia.org/wiki/Flags_of_the_U.S._states_and_territories
+    CountryCode.US.alpha2,
+  };
+
   static final stateCodesByCountryCode = <String, Set<String>>{
     CountryCode.AU.alpha2: EmojiStateCodes.australia,
     CountryCode.BR.alpha2: EmojiStateCodes.brazil,
     CountryCode.CA.alpha2: EmojiStateCodes.canada,
+    CountryCode.DE.alpha2: EmojiStateCodes.germany,
     CountryCode.GB.alpha2: EmojiStateCodes.unitedKingdom,
     CountryCode.IN.alpha2: EmojiStateCodes.india,
     CountryCode.MX.alpha2: EmojiStateCodes.mexico,
@@ -16,45 +36,11 @@ class GeoStates {
     ..._australiaEnglish,
     ..._brazilPortuguese,
     ..._canadaEnglish,
+    ..._germanyGerman,
     ..._indiaEnglish,
     ..._mexicoSpanish,
     ..._unitedKingdomEnglish,
     ..._unitedStatesEnglish,
-  };
-
-  static const _mexicoSpanish = {
-    'Aguascalientes': EmojiStateCodes.mxAguascalientes,
-    'Baja California': EmojiStateCodes.mxBajaCalifornia,
-    'Baja California Sur': EmojiStateCodes.mxBajaCaliforniaSur,
-    'Campeche': EmojiStateCodes.mxCampeche,
-    'Chiapas': EmojiStateCodes.mxChiapas,
-    'Chihuahua': EmojiStateCodes.mxChihuahua,
-    'Ciudad de México': EmojiStateCodes.mxCiudadDeMexico,
-    'Coahuila': EmojiStateCodes.mxCoahuila,
-    'Colima': EmojiStateCodes.mxColima,
-    'Durango': EmojiStateCodes.mxDurango,
-    'Guanajuato': EmojiStateCodes.mxGuanajuato,
-    'Guerrero': EmojiStateCodes.mxGuerrero,
-    'Hidalgo': EmojiStateCodes.mxHidalgo,
-    'Jalisco': EmojiStateCodes.mxJalisco,
-    'Estado de México': EmojiStateCodes.mxMexicoState,
-    'Michoacán': EmojiStateCodes.mxMichoacan,
-    'Morelos': EmojiStateCodes.mxMorelos,
-    'Nayarit': EmojiStateCodes.mxNayarit,
-    'Nuevo León': EmojiStateCodes.mxNuevoLeon,
-    'Oaxaca': EmojiStateCodes.mxOaxaca,
-    'Puebla': EmojiStateCodes.mxPuebla,
-    'Querétaro': EmojiStateCodes.mxQueretaro,
-    'Quintana Roo': EmojiStateCodes.mxQuintanaRoo,
-    'San Luis Potosí': EmojiStateCodes.mxSanLuisPotosi,
-    'Sinaloa': EmojiStateCodes.mxSinaloa,
-    'Sonora': EmojiStateCodes.mxSonora,
-    'Tabasco': EmojiStateCodes.mxTabasco,
-    'Tamaulipas': EmojiStateCodes.mxTamaulipas,
-    'Tlaxcala': EmojiStateCodes.mxTlaxcala,
-    'Veracruz': EmojiStateCodes.mxVeracruz,
-    'Yucatán': EmojiStateCodes.mxYucatan,
-    'Zacatecas': EmojiStateCodes.mxZacatecas,
   };
 
   static const _australiaEnglish = {
@@ -114,6 +100,25 @@ class GeoStates {
     'Nunavut': EmojiStateCodes.caNunavut,
   };
 
+  static const _germanyGerman = {
+    'Baden-Württemberg': EmojiStateCodes.deBadenWurttemberg,
+    'Bayern': EmojiStateCodes.deBayern,
+    'Berlin': EmojiStateCodes.deBerlin,
+    'Brandenburg': EmojiStateCodes.deBrandenburg,
+    'Bremen': EmojiStateCodes.deBremen,
+    'Hamburg': EmojiStateCodes.deHamburg,
+    'Hessen': EmojiStateCodes.deHessen,
+    'Niedersachsen': EmojiStateCodes.deNiedersachsen,
+    'Mecklenburg-Vorpommern': EmojiStateCodes.deMecklenburgVorpommern,
+    'Nordrhein-Westfalen': EmojiStateCodes.deNordrheinWestfalen,
+    'Rheinland-Pfalz': EmojiStateCodes.deRheinlandPfalz,
+    'Saarland': EmojiStateCodes.deSaarland,
+    'Sachsen': EmojiStateCodes.deSachsen,
+    'Sachsen-Anhalt': EmojiStateCodes.deSachsenAnhalt,
+    'Schleswig-Holstein': EmojiStateCodes.deSchleswigHolstein,
+    'Thüringen': EmojiStateCodes.deThuringen,
+  };
+
   static const _indiaEnglish = {
     'Andaman and Nicobar Islands': EmojiStateCodes.inAndamanAndNicobarIslands,
     'Andhra Pradesh': EmojiStateCodes.inAndhraPradesh,
@@ -151,6 +156,41 @@ class GeoStates {
     'Uttar Pradesh': EmojiStateCodes.inUttarPradesh,
     'Uttarakhand': EmojiStateCodes.inUttarakhand,
     'West Bengal': EmojiStateCodes.inWestBengal,
+  };
+
+  static const _mexicoSpanish = {
+    'Aguascalientes': EmojiStateCodes.mxAguascalientes,
+    'Baja California': EmojiStateCodes.mxBajaCalifornia,
+    'Baja California Sur': EmojiStateCodes.mxBajaCaliforniaSur,
+    'Campeche': EmojiStateCodes.mxCampeche,
+    'Chiapas': EmojiStateCodes.mxChiapas,
+    'Chihuahua': EmojiStateCodes.mxChihuahua,
+    'Ciudad de México': EmojiStateCodes.mxCiudadDeMexico,
+    'Coahuila': EmojiStateCodes.mxCoahuila,
+    'Colima': EmojiStateCodes.mxColima,
+    'Durango': EmojiStateCodes.mxDurango,
+    'Guanajuato': EmojiStateCodes.mxGuanajuato,
+    'Guerrero': EmojiStateCodes.mxGuerrero,
+    'Hidalgo': EmojiStateCodes.mxHidalgo,
+    'Jalisco': EmojiStateCodes.mxJalisco,
+    'Estado de México': EmojiStateCodes.mxMexicoState,
+    'Michoacán': EmojiStateCodes.mxMichoacan,
+    'Morelos': EmojiStateCodes.mxMorelos,
+    'Nayarit': EmojiStateCodes.mxNayarit,
+    'Nuevo León': EmojiStateCodes.mxNuevoLeon,
+    'Oaxaca': EmojiStateCodes.mxOaxaca,
+    'Puebla': EmojiStateCodes.mxPuebla,
+    'Querétaro': EmojiStateCodes.mxQueretaro,
+    'Quintana Roo': EmojiStateCodes.mxQuintanaRoo,
+    'San Luis Potosí': EmojiStateCodes.mxSanLuisPotosi,
+    'Sinaloa': EmojiStateCodes.mxSinaloa,
+    'Sonora': EmojiStateCodes.mxSonora,
+    'Tabasco': EmojiStateCodes.mxTabasco,
+    'Tamaulipas': EmojiStateCodes.mxTamaulipas,
+    'Tlaxcala': EmojiStateCodes.mxTlaxcala,
+    'Veracruz': EmojiStateCodes.mxVeracruz,
+    'Yucatán': EmojiStateCodes.mxYucatan,
+    'Zacatecas': EmojiStateCodes.mxZacatecas,
   };
 
   static const _unitedKingdomEnglish = {

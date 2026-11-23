@@ -172,7 +172,7 @@ class _LicenseData {
   void sortPackages([int Function(String a, String b)? compare]) {
     packages.sort(
       compare ??
-          (String a, String b) {
+          (a, b) {
             // Based on how LicenseRegistry currently behaves, the first package
             // returned is the end user application license. This should be
             // presented first in the list. So here we make sure that first package

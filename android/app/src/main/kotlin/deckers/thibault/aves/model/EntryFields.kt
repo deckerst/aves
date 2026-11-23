@@ -8,12 +8,10 @@ object EntryFields {
     const val CONTENT_ID = "contentId" // long
     const val PATH = "path" // string
     const val PAGE_ID = "pageId" // int
-    const val SOURCE_MIME_TYPE = "sourceMimeType" // string
     const val MIME_TYPE = "mimeType" // string
 
     const val WIDTH = "width" // int
     const val HEIGHT = "height" // int
-    const val SOURCE_ROTATION_DEGREES = "sourceRotationDegrees" // int
     const val ROTATION_DEGREES = "rotationDegrees" // int
     const val IS_FLIPPED = "isFlipped" // boolean
 
@@ -26,4 +24,21 @@ object EntryFields {
     const val TRASHED = "trashed" // boolean
     const val TRASH_PATH = "trashPath" // string
     const val TITLE = "title" // string
+
+    // catalog metadata
+    const val DATE_MILLIS = "dateMillis"
+    const val TIME_ZONE_OFFSET_MINUTES = "timeZoneOffsetMinutes"
+    const val FLAGS = "flags"
+    const val LATITUDE = "latitude"
+    const val LONGITUDE = "longitude"
+    const val RATING = "rating"
+    const val XMP_SUBJECTS = "xmpSubjects"
+    const val XMP_TITLE = "xmpTitle"
+
+    // overlay metadata
+    const val APERTURE = "aperture"
+    const val DESCRIPTION = "description"
+    const val EXPOSURE_TIME = "exposureTime"
+    const val FOCAL_LENGTH = "focalLength"
+    const val ISO = "iso"
 }

@@ -12,28 +12,29 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 abstract class MetadataEditService {
-  Future<Map<String, Object?>> rotate(AvesEntry entry, {required bool clockwise});
+  Future<Map<String, Object?>> rotate(AvesEntry entry, List<String> c2paActions, {required bool clockwise});
 
-  Future<Map<String, Object?>> flip(AvesEntry entry);
+  Future<Map<String, Object?>> flip(AvesEntry entry, List<String> c2paActions);
 
-  Future<Map<String, Object?>> editExifDate(AvesEntry entry, DateModifier modifier);
+  Future<Map<String, Object?>> editExifDate(AvesEntry entry, List<String> c2paActions, DateModifier modifier);
 
-  Future<Map<String, Object?>> editMetadata(AvesEntry entry, Map<MetadataType, dynamic> modifier, {bool autoCorrectTrailerOffset = true});
+  Future<Map<String, Object?>> editMetadata(AvesEntry entry, List<String> c2paActions, Map<MetadataType, dynamic> modifier, {bool autoCorrectTrailerOffset = true});
 
-  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry);
+  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry, List<String> c2paActions);
 
-  Future<Map<String, Object?>> removeTypes(AvesEntry entry, Set<MetadataType> types);
+  Future<Map<String, Object?>> removeTypes(AvesEntry entry, List<String> c2paActions, Set<MetadataType> types);
 }
 
 class PlatformMetadataEditService implements MetadataEditService {
   static const _platform = AvesMethodChannel('deckers.thibault/aves/metadata_edit');
 
   @override
-  Future<Map<String, Object?>> rotate(AvesEntry entry, {required bool clockwise}) async {
+  Future<Map<String, Object?>> rotate(AvesEntry entry, List<String> c2paActions, {required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await _platform.invokeMethod('rotate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
         'clockwise': clockwise,
       });
       if (result is Map) return result.cast<String, Object?>();
@@ -44,11 +45,12 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, Object?>> flip(AvesEntry entry) async {
+  Future<Map<String, Object?>> flip(AvesEntry entry, List<String> c2paActions) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await _platform.invokeMethod('flip', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
       });
       if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
@@ -58,10 +60,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, Object?>> editExifDate(AvesEntry entry, DateModifier modifier) async {
+  Future<Map<String, Object?>> editExifDate(AvesEntry entry, List<String> c2paActions, DateModifier modifier) async {
     try {
       final result = await _platform.invokeMethod('editExifDate', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
         'dateMillis': modifier.setDateTime?.millisecondsSinceEpoch,
         'timeZoneOffsetMinutes': modifier.timeZoneOffsetMinutes,
         'shiftSeconds': modifier.shiftSeconds,
@@ -77,12 +80,14 @@ class PlatformMetadataEditService implements MetadataEditService {
   @override
   Future<Map<String, Object?>> editMetadata(
     AvesEntry entry,
+    List<String> c2paActions,
     Map<MetadataType, dynamic> metadata, {
     bool autoCorrectTrailerOffset = true,
   }) async {
     try {
       final result = await _platform.invokeMethod('editMetadata', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
         'metadata': metadata.map((type, value) => MapEntry(type.toPlatform, value)),
         'autoCorrectTrailerOffset': autoCorrectTrailerOffset,
       });
@@ -94,10 +99,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry) async {
+  Future<Map<String, Object?>> removeTrailerVideo(AvesEntry entry, List<String> c2paActions) async {
     try {
       final result = await _platform.invokeMethod('removeTrailerVideo', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
       });
       if (result is Map) return result.cast<String, Object?>();
     } on PlatformException catch (e, stack) {
@@ -107,10 +113,11 @@ class PlatformMetadataEditService implements MetadataEditService {
   }
 
   @override
-  Future<Map<String, Object?>> removeTypes(AvesEntry entry, Set<MetadataType> types) async {
+  Future<Map<String, Object?>> removeTypes(AvesEntry entry, List<String> c2paActions, Set<MetadataType> types) async {
     try {
       final result = await _platform.invokeMethod('removeTypes', <String, Object?>{
         'entry': entry.toPlatformEntryMap(),
+        'c2paActions': c2paActions,
         'types': types.map((v) => v.toPlatform).toList(),
       });
       if (result is Map) return result.cast<String, Object?>();
@@ -124,24 +131,30 @@ class PlatformMetadataEditService implements MetadataEditService {
     if (entry.isValid) {
       final code = e.code;
       final customException = CustomPlatformException.fromStandard(e);
-      if (code.endsWith('exifinterface')) {
+      if (code.endsWith('exifInterface')) {
         await exifInterface(customException);
-      } else if (code.endsWith('mp4fragmented')) {
-        await mp4Fragmented(customException);
-      } else if (code.endsWith('mp4zerosizebox')) {
-        await mp4ZeroSizeBox(customException);
-      } else if (code.endsWith('mp4largemoov')) {
-        await mp4LargeMoov(customException);
-      } else if (code.endsWith('mp4largeother')) {
-        await mp4LargeOther(customException);
-      } else if (code.endsWith('outputstream')) {
-        await outputStream(customException);
-      } else if (code.endsWith('partialtransfer')) {
-        await partialTransfer(customException);
-      } else if (code.endsWith('filenotfound')) {
+      } else if (code.endsWith('fileNotFound')) {
         debugPrint('Unreported `fileNotFound` error with exception=$e');
-      } else if (code.endsWith('readonly')) {
+      } else if (code.endsWith('readOnly')) {
         debugPrint('Unreported `readOnly` error with exception=$e');
+      } else if (code.endsWith('mp4Fragmented')) {
+        await mp4Fragmented(customException);
+      } else if (code.endsWith('mp4LargeMoov')) {
+        await mp4LargeMoov(customException);
+      } else if (code.endsWith('mp4LargeOther')) {
+        await mp4LargeOther(customException);
+      } else if (code.endsWith('mp4ZeroSizeBox')) {
+        await mp4ZeroSizeBox(customException);
+      } else if (code.endsWith('outputStream')) {
+        await outputStream(customException);
+      } else if (code.endsWith('partialTransfer')) {
+        await partialTransfer(customException);
+      } else if (code.endsWith('security')) {
+        await security(customException);
+      } else if (code.endsWith('undecodableContent')) {
+        await undecodableContent(customException);
+      } else if (code.endsWith('undecodableCopy')) {
+        await undecodableCopy(customException);
       } else {
         await reportService.recordError(e, stack);
       }
@@ -183,6 +196,21 @@ class PlatformMetadataEditService implements MetadataEditService {
 
   Future<void> partialTransfer(CustomPlatformException e) {
     debugPrint('partialTransfer $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> security(CustomPlatformException e) {
+    debugPrint('security $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> undecodableContent(CustomPlatformException e) {
+    debugPrint('undecodableContent $e');
+    return reportService.recordError(e);
+  }
+
+  Future<void> undecodableCopy(CustomPlatformException e) {
+    debugPrint('undecodableCopy $e');
     return reportService.recordError(e);
   }
 }

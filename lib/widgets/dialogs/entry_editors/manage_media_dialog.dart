@@ -3,10 +3,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ManageMediaDialog extends StatefulWidget {
+class const ManageMediaDialog({super.key}) extends StatefulWidget {
   static const routeName = '/dialog/manage_media';
-
-  const new({super.key});
 
   @override
   State<ManageMediaDialog> createState() => _ManageMediaDialogState();

@@ -22,17 +22,12 @@ import 'package:aves_model/aves_model.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class EditEntryDateDialog extends StatefulWidget {
+class const EditEntryDateDialog({
+  super.key,
+  required final AvesEntry entry,
+  final CollectionLens? collection,
+}) extends StatefulWidget {
   static const routeName = '/dialog/edit_entry_date';
-
-  final AvesEntry entry;
-  final CollectionLens? collection;
-
-  const new({
-    super.key,
-    required this.entry,
-    this.collection,
-  });
 
   @override
   State<EditEntryDateDialog> createState() => _EditEntryDateDialogState();
@@ -286,15 +281,14 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
     );
     if (_time == null) return;
 
-    setState(
-      () => _customDateTime = DateTime(
-        _date!.year,
-        _date.month,
-        _date.day,
-        _time.hour,
-        _time.minute,
-      ),
+    _customDateTime = DateTime(
+      _date.year,
+      _date.month,
+      _date.day,
+      _time.hour,
+      _time.minute,
     );
+    setState(() {});
   }
 
   CollectionLens? _createPickCollection() {
@@ -335,7 +329,7 @@ class _EditEntryDateDialogState extends State<EditEntryDateDialog> {
         return DateModifier.setCustom(
           fields: const {},
           date: _customDateTime,
-          timeZoneOffsetMinutes: null,
+          timeZoneOffsetMinutes: _customDateTime.isUtc ? _customDateTime.timeZoneOffset.inMinutes : null,
         );
       case .copyField:
         return DateModifier.copyField(_copyFieldSource);

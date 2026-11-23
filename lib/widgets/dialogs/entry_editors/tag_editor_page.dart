@@ -16,15 +16,11 @@ import 'package:aves/widgets/dialogs/aves_confirmation_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
-class TagEditorPage extends StatefulWidget {
+class const TagEditorPage({
+  super.key,
+  required final Map<AvesEntry, Set<TagFilter>> tagsByEntry,
+}) extends StatefulWidget {
   static const routeName = '/info/tag_editor';
-
-  final Map<AvesEntry, Set<TagFilter>> tagsByEntry;
-
-  const new({
-    super.key,
-    required this.tagsByEntry,
-  });
 
   @override
   State<TagEditorPage> createState() => _TagEditorPageState();
@@ -314,19 +310,12 @@ class _TagEditorPageState extends State<TagEditorPage> {
   }
 }
 
-class _FilterRow extends StatelessWidget {
-  final String title;
-  final List<CollectionFilter> filters;
-  final ValueNotifier<String?> expandedNotifier;
-  final void Function(CollectionFilter filter) onTap;
-
-  const new({
-    required this.title,
-    required this.filters,
-    required this.expandedNotifier,
-    required this.onTap,
-  });
-
+class const _FilterRow({
+  required final String title,
+  required final List<CollectionFilter> filters,
+  required final ValueNotifier<String?> expandedNotifier,
+  required final void Function(CollectionFilter filter) onTap,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return filters.isEmpty
@@ -342,13 +331,9 @@ class _FilterRow extends StatelessWidget {
   }
 }
 
-class _TagCount extends StatelessWidget {
-  final int count;
-
-  const new({
-    required this.count,
-  });
-
+class const _TagCount({
+  required final int count,
+}) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

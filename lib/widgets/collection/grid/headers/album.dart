@@ -4,7 +4,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves/widgets/common/identity/icons/album.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const AlbumSectionHeader({

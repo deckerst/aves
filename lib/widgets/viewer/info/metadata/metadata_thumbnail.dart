@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:ui' as ui;
 
-import 'package:aves/image_providers/descriptor_provider.dart';
 import 'package:aves/model/entry/entry.dart';
 import 'package:aves/services/common/services.dart';
+import 'package:aves/widgets/common/thumbnail/decorated.dart';
+import 'package:aves/widgets/viewer/info/embedded/notifications.dart';
+import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 class const MetadataThumbnails({
@@ -15,41 +16,36 @@ class const MetadataThumbnails({
 }
 
 class _MetadataThumbnailsState extends State<MetadataThumbnails> {
-  late Future<List<ui.ImageDescriptor?>> _loader;
-
-  AvesEntry get entry => widget.entry;
-
-  String get uri => entry.uri;
+  late Future<AvesEntry?> _loader;
 
   @override
   void initState() {
     super.initState();
-    _loader = embeddedDataService.getExifThumbnails(entry);
+    _loader = embeddedDataService.extractExifThumbnail(widget.entry).then(AvesEntry.maybeFromFields);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ui.ImageDescriptor?>>(
+    return FutureBuilder<AvesEntry?>(
       future: _loader,
       builder: (context, snapshot) {
-        if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data!.isNotEmpty) {
-          return Container(
-            alignment: .topStart,
-            padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
-            child: Wrap(
-              children: snapshot.data!.map((descriptor) {
-                if (descriptor == null) return const SizedBox();
-                return Image(
-                  image: DescriptorImageProvider(
-                    descriptor,
-                    scale: MediaQuery.devicePixelRatioOf(context),
-                  ),
-                );
-              }).toList(),
+        final thumbnailEntry = snapshot.data;
+        if (thumbnailEntry == null) return const SizedBox();
+
+        return Container(
+          alignment: .topStart,
+          padding: const EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
+          child: GestureDetector(
+            onTap: () => OpenEmbeddedDataNotification.exifThumbnail().dispatch(context),
+            child: DecoratedThumbnail(
+              entry: thumbnailEntry,
+              tileExtent: InfoPage.inlineThumbnailExtent,
+              isMosaic: true,
+              selectable: false,
+              highlightable: false,
             ),
-          );
-        }
-        return const SizedBox();
+          ),
+        );
       },
     );
   }

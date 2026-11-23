@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.utils.image
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace

@@ -2,20 +2,9 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
-import deckers.thibault.aves.metadata.Metadata.TYPE_COMMENT
-import deckers.thibault.aves.metadata.Metadata.TYPE_EXIF
-import deckers.thibault.aves.metadata.Metadata.TYPE_ICC_PROFILE
-import deckers.thibault.aves.metadata.Metadata.TYPE_IPTC
-import deckers.thibault.aves.metadata.Metadata.TYPE_JFIF
-import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_ADOBE
-import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_DUCKY
-import deckers.thibault.aves.metadata.Metadata.TYPE_JPEG_JUMBF
-import deckers.thibault.aves.metadata.Metadata.TYPE_PHOTOSHOP_IRB
-import deckers.thibault.aves.metadata.Metadata.TYPE_XMP
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.MimeTypes
-import pixy.meta.meta.Metadata
 import pixy.meta.meta.MetadataEntry
 import pixy.meta.meta.MetadataType
 import pixy.meta.meta.iptc.IPTC
@@ -27,6 +16,8 @@ import pixy.meta.string.XMLUtils
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import deckers.thibault.aves.metadata.Metadata as AvesMetadata
+import pixy.meta.meta.Metadata as PixyMetadata
 
 object PixyMetaHelper {
     fun describe(input: InputStream): HashMap<String, String> {
@@ -41,7 +32,7 @@ object PixyMetaHelper {
             }
         }
 
-        val metadataByType = Metadata.readMetadata(input)
+        val metadataByType = PixyMetadata.readMetadata(input)
         for ((type, metadata) in metadataByType.entries) {
             if (type == MetadataType.XMP) {
                 val xmp = metadataByType[MetadataType.XMP] as XMP?
@@ -60,7 +51,7 @@ object PixyMetaHelper {
     }
 
     fun getIptc(input: InputStream): List<FieldMap>? {
-        val iptc = Metadata.readMetadata(input)[MetadataType.IPTC] as? IPTC? ?: return null
+        val iptc = PixyMetadata.readMetadata(input)[MetadataType.IPTC] as? IPTC? ?: return null
 
         val iptcDataList = ArrayList<FieldMap>()
         iptc.dataSets.forEach { dataSetEntry ->
@@ -88,10 +79,10 @@ object PixyMetaHelper {
             val values = it["values"] as List<*>
             values.map { data -> IPTCDataSet(IPTCRecord.fromRecordNumber(record), tag, data as ByteArray) }
         } ?: ArrayList()
-        Metadata.insertIPTC(input, output, iptc)
+        PixyMetadata.insertIPTC(input, output, iptc)
     }
 
-    fun getXmp(input: InputStream): XMP? = Metadata.readMetadata(input)[MetadataType.XMP] as XMP?
+    fun getXmp(input: InputStream): XMP? = PixyMetadata.readMetadata(input)[MetadataType.XMP] as XMP?
 
     // PixyMeta may fail with just a log, and write nothing to the output
     fun setXmp(
@@ -103,7 +94,7 @@ object PixyMetaHelper {
         if (extendedXmpString != null) {
             JPGMeta.insertXMP(input, output, xmpString, extendedXmpString)
         } else {
-            Metadata.insertXMP(input, output, xmpString)
+            PixyMetadata.insertXMP(input, output, xmpString)
         }
     }
 
@@ -123,7 +114,7 @@ object PixyMetaHelper {
         var pixyXmp: XMP? = null
         if (MimeTypes.canReadWithPixyMeta(sourceMimeType)) {
             StorageUtils.openInputStream(context, sourceUri)?.use { input ->
-                val metadata = Metadata.readMetadata(input)
+                val metadata = PixyMetadata.readMetadata(input)
                 if (MimeTypes.canEditIptc(targetMimeType)) {
                     pixyIptc = metadata[MetadataType.IPTC] as IPTC?
                 }
@@ -138,7 +129,7 @@ object PixyMetaHelper {
                     // reopen input to read from start
                     StorageUtils.openInputStream(context, targetUri)?.use { input ->
                         val iptcs = pixyIptc.dataSets.flatMap { it.value }
-                        Metadata.insertIPTC(input, output, iptcs)
+                        PixyMetadata.insertIPTC(input, output, iptcs)
                     }
                 }
                 if (pixyXmp != null) {
@@ -155,20 +146,20 @@ object PixyMetaHelper {
 
     fun removeMetadata(input: InputStream, output: OutputStream, metadataTypes: Set<String>) {
         val types = metadataTypes.map(::toMetadataType).toTypedArray()
-        Metadata.removeMetadata(input, output, *types)
+        PixyMetadata.removeMetadata(input, output, *types)
     }
 
     private fun toMetadataType(typeString: String): MetadataType? = when (typeString) {
-        TYPE_COMMENT -> MetadataType.COMMENT
-        TYPE_EXIF -> MetadataType.EXIF
-        TYPE_ICC_PROFILE -> MetadataType.ICC_PROFILE
-        TYPE_IPTC -> MetadataType.IPTC
-        TYPE_JFIF -> MetadataType.JPG_JFIF
-        TYPE_JPEG_ADOBE -> MetadataType.JPG_ADOBE
-        TYPE_JPEG_DUCKY -> MetadataType.JPG_DUCKY
-        TYPE_JPEG_JUMBF -> MetadataType.JPG_JUMBF
-        TYPE_PHOTOSHOP_IRB -> MetadataType.PHOTOSHOP_IRB
-        TYPE_XMP -> MetadataType.XMP
+        AvesMetadata.TYPE_C2PA -> MetadataType.JPG_JUMBF
+        AvesMetadata.TYPE_COMMENT -> MetadataType.COMMENT
+        AvesMetadata.TYPE_EXIF -> MetadataType.EXIF
+        AvesMetadata.TYPE_ICC_PROFILE -> MetadataType.ICC_PROFILE
+        AvesMetadata.TYPE_IPTC -> MetadataType.IPTC
+        AvesMetadata.TYPE_JFIF -> MetadataType.JPG_JFIF
+        AvesMetadata.TYPE_JPEG_ADOBE -> MetadataType.JPG_ADOBE
+        AvesMetadata.TYPE_JPEG_DUCKY -> MetadataType.JPG_DUCKY
+        AvesMetadata.TYPE_PHOTOSHOP_IRB -> MetadataType.PHOTOSHOP_IRB
+        AvesMetadata.TYPE_XMP -> MetadataType.XMP
         else -> null
     }
 }

@@ -1,3 +1,4 @@
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -16,11 +17,11 @@ class const OverlayMetadata({
 
   factory fromMap(Map map) {
     return OverlayMetadata(
-      aperture: map['aperture'] as double?,
-      exposureTime: map['exposureTime'] as String?,
-      focalLength: map['focalLength'] as double?,
-      iso: map['iso'] as int?,
-      description: map['description'] as String?,
+      aperture: map[EntryFields.aperture] as double?,
+      exposureTime: map[EntryFields.exposureTime] as String?,
+      focalLength: map[EntryFields.focalLength] as double?,
+      iso: map[EntryFields.iso] as int?,
+      description: map[EntryFields.description] as String?,
     );
   }
 }

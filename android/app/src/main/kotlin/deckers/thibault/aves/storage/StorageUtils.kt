@@ -40,6 +40,8 @@ import kotlin.io.encoding.Base64
 object StorageUtils {
     private val LOG_TAG = LogUtils.createTag<StorageUtils>()
 
+    private val EXTERNAL_PRIMARY_VOLUME_PATTERN = Pattern.compile("(?i)^/storage/emulated/[0-9]+/")
+
     // cf DocumentsContract.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
     private const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
 
@@ -129,7 +131,20 @@ object StorageUtils {
     }
 
     fun getVolumePath(context: Context, anyPath: String): String? {
-        return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
+        return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }?.let {
+            // check whether the path is in a different user space,
+            // which would not appear in the volume list for the current user
+            return getPrimaryVolumePathForAnyUser(anyPath)
+        }
+    }
+
+    private fun getPrimaryVolumePathForAnyUser(anyPath: String): String? {
+        val matcher = EXTERNAL_PRIMARY_VOLUME_PATTERN.matcher(anyPath)
+        return if (matcher.find()) matcher.group() else null
+    }
+
+    fun isOnPrimaryVolumePathForAnyUser(anyPath: String): Boolean {
+        return getPrimaryVolumePathForAnyUser(anyPath) != null
     }
 
     private fun getPathStepIterator(anyPath: String, root: String): Iterator<String?>? {

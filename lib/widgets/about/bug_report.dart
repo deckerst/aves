@@ -25,6 +25,7 @@ import 'package:aves/widgets/settings/app_export/items.dart';
 import 'package:aves_model/aves_model.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -70,9 +71,7 @@ class _BugReportState extends State<BugReport> {
   }
 }
 
-class BugReportContent extends StatefulWidget {
-  const new({super.key});
-
+class const BugReportContent({super.key}) extends StatefulWidget {
   @override
   State<BugReportContent> createState() => _BugReportContentState();
 }
@@ -84,7 +83,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
   @override
   void initState() {
     super.initState();
-    _infoLoader = _getInfo(context);
+    _infoLoader = _getEnvironmentInfo(context);
   }
 
   @override
@@ -135,12 +134,14 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
     );
   }
 
-  Future<String> _getInfo(BuildContext context) async {
+  static Future<String> _getEnvironmentInfo(BuildContext context) async {
     final flavor = context.read<AppFlavor>().toString().split('.')[1];
     final packageInfo = await deviceService.getPackageInfo();
     final androidInfo = await deviceService.getAndroidInfo();
     final mpc = await deviceService.getMediaPerformanceClass();
     final viewPhysicalSize = View.of(context).physicalSize;
+    final activeDisplayMode = await FlutterDisplayMode.active;
+    final supportedDisplayModes = await FlutterDisplayMode.supported;
 
     final ram = await deviceService.getRamSizes(<MemorySizeType>{.total});
     final heap = await deviceService.getHeapSizes(<MemorySizeType>{.max});
@@ -173,6 +174,7 @@ class _BugReportContentState extends State<BugReportContent> with FeedbackMixin 
       'Memory: ram.total=$ramTotal, heap.max=$heapMax, class.normal=$normalMemoryClass, class.large=$largeMemoryClass',
       'Screen: size.physical=${viewPhysicalSize.width.round()}x${viewPhysicalSize.height.round()}, HDR=$supportsHdr, wide gamut=$supportsWideGamut',
       'Graphics: size.logical=${MediaQuery.widthOf(context)}x${MediaQuery.heightOf(context)}, pixel ratio=${MediaQuery.devicePixelRatioOf(context)}, cross window blur=$crossWindowBlurEnabled',
+      'Display modes: active=$activeDisplayMode, supported=$supportedDisplayModes',
       'Mobile services: ${mobileServices.isServiceAvailable ? 'ready' : 'not available'}, geocoder=${device.hasGeocoder}',
       'Connectivity: ${connections.map((v) => v.name).join(', ')}',
       'System locales: ${WidgetsBinding.instance.platformDispatcher.locales.join(', ')}',

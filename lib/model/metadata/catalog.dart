@@ -1,3 +1,4 @@
+import 'package:aves/model/entry/extensions/keys.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/media/enums.dart';
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,6 @@ typedef DateAndZone = (int dateMillis, int? timeZoneOffsetMinutes);
 
 class CatalogMetadata({
   required final int id,
-  final String? mimeType,
   final int? dateMillis,
   final int? timeZoneOffsetMinutes,
   final bool isAnimated = false,
@@ -17,13 +17,12 @@ class CatalogMetadata({
   final bool isMotionPhoto = false,
   final bool isHdr = false,
   final bool isSlowMotion = false,
-  final C2paValidity credentialsValidity = .unknown,
-  var int? rotationDegrees,
-  final String? xmpSubjects,
-  final String? xmpTitle,
+  final C2paValidity c2paValidity = .unknown,
   double? latitude,
   double? longitude,
   var int rating = 0,
+  final String? xmpSubjects,
+  final String? xmpTitle,
 }) {
   double? latitude, longitude;
   Address? address;
@@ -60,19 +59,16 @@ class CatalogMetadata({
 
   CatalogMetadata copyWith({
     int? id,
-    String? mimeType,
     int? dateMillis,
     int? timeZoneOffsetMinutes,
     bool? isAnimated,
     bool? isMultiPage,
     bool? isSlowMotion,
-    int? rotationDegrees,
     double? latitude,
     double? longitude,
   }) {
     return CatalogMetadata(
       id: id ?? this.id,
-      mimeType: mimeType ?? this.mimeType,
       dateMillis: dateMillis ?? this.dateMillis,
       timeZoneOffsetMinutes: timeZoneOffsetMinutes ?? this.timeZoneOffsetMinutes,
       isAnimated: isAnimated ?? this.isAnimated,
@@ -83,23 +79,21 @@ class CatalogMetadata({
       isMotionPhoto: isMotionPhoto,
       isHdr: isHdr,
       isSlowMotion: isSlowMotion ?? this.isSlowMotion,
-      credentialsValidity: credentialsValidity,
-      rotationDegrees: rotationDegrees ?? this.rotationDegrees,
-      xmpSubjects: xmpSubjects,
-      xmpTitle: xmpTitle,
+      c2paValidity: c2paValidity,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       rating: rating,
+      xmpSubjects: xmpSubjects,
+      xmpTitle: xmpTitle,
     );
   }
 
   factory fromMap(Map map) {
-    final flags = map['flags'] ?? 0;
+    final flags = map[EntryFields.flags] ?? 0;
     return CatalogMetadata(
-      id: map['id'],
-      mimeType: map['mimeType'],
-      dateMillis: map['dateMillis'] ?? 0,
-      timeZoneOffsetMinutes: map['timeZoneOffsetMinutes'],
+      id: map[EntryFields.id],
+      dateMillis: map[EntryFields.dateMillis] ?? 0,
+      timeZoneOffsetMinutes: map[EntryFields.timeZoneOffsetMinutes],
       isAnimated: flags & _isAnimatedMask != 0,
       isFlipped: flags & _isFlippedMask != 0,
       isGeotiff: flags & _isGeotiffMask != 0,
@@ -108,18 +102,16 @@ class CatalogMetadata({
       isMotionPhoto: flags & _isMotionPhotoMask != 0,
       isHdr: flags & _isHdr != 0,
       isSlowMotion: flags & _isSlowMotion != 0,
-      credentialsValidity: _toC2paValidity(
+      c2paValidity: _toC2paValidity(
         flags & _areCredentialsPresent != 0,
         flags & _areCredentialsValid != 0,
         flags & _areCredentialsTrusted != 0,
       ),
-      // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
-      rotationDegrees: map['rotationDegrees'],
-      xmpSubjects: map['xmpSubjects'] ?? '',
-      xmpTitle: map['xmpTitle'] ?? '',
-      latitude: map['latitude'],
-      longitude: map['longitude'],
-      rating: map['rating'] ?? 0,
+      latitude: map[EntryFields.latitude],
+      longitude: map[EntryFields.longitude],
+      rating: map[EntryFields.rating] ?? 0,
+      xmpSubjects: map[EntryFields.xmpSubjects] ?? '',
+      xmpTitle: map[EntryFields.xmpTitle] ?? '',
     );
   }
 
@@ -144,13 +136,12 @@ class CatalogMetadata({
   }
 
   Map<String, Object?> toMap() {
-    final (areCredentialsPresent, areCredentialsValid, areCredentialsTrusted) = _toCredentialFlags(credentialsValidity);
+    final (areCredentialsPresent, areCredentialsValid, areCredentialsTrusted) = _toCredentialFlags(c2paValidity);
     return {
-      'id': id,
-      'mimeType': mimeType,
-      'dateMillis': dateMillis,
-      'timeZoneOffsetMinutes': timeZoneOffsetMinutes,
-      'flags':
+      EntryFields.id: id,
+      EntryFields.dateMillis: dateMillis,
+      EntryFields.timeZoneOffsetMinutes: timeZoneOffsetMinutes,
+      EntryFields.flags:
           (isAnimated ? _isAnimatedMask : 0) |
           (isFlipped ? _isFlippedMask : 0) |
           (isGeotiff ? _isGeotiffMask : 0) |
@@ -162,12 +153,11 @@ class CatalogMetadata({
           (areCredentialsPresent ? _areCredentialsPresent : 0) |
           (areCredentialsValid ? _areCredentialsValid : 0) |
           (areCredentialsTrusted ? _areCredentialsTrusted : 0),
-      'rotationDegrees': rotationDegrees,
-      'xmpSubjects': xmpSubjects,
-      'xmpTitle': xmpTitle,
-      'latitude': latitude,
-      'longitude': longitude,
-      'rating': rating,
+      EntryFields.latitude: latitude,
+      EntryFields.longitude: longitude,
+      EntryFields.rating: rating,
+      EntryFields.xmpSubjects: xmpSubjects,
+      EntryFields.xmpTitle: xmpTitle,
     };
   }
 
@@ -175,8 +165,8 @@ class CatalogMetadata({
 
   @override
   String toString() =>
-      '$runtimeType#${shortHash(this)}{id=$id, mimeType=$mimeType, dateMillis=$dateMillis timeZoneOffsetMinutes=$timeZoneOffsetMinutes'
+      '$runtimeType#${shortHash(this)}{id=$id, dateMillis=$dateMillis timeZoneOffsetMinutes=$timeZoneOffsetMinutes'
       ', isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage'
-      ', isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion, credentialsValidity=$credentialsValidity'
-      ', rotationDegrees=$rotationDegrees, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle, latitude=$latitude, longitude=$longitude, rating=$rating}';
+      ', isMotionPhoto=$isMotionPhoto, isHdr=$isHdr, isSlowMotion=$isSlowMotion, c2paValidity=$c2paValidity'
+      ', latitude=$latitude, longitude=$longitude, rating=$rating, xmpSubjects=$xmpSubjects, xmpTitle=$xmpTitle}';
 }

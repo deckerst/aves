@@ -6,8 +6,8 @@ import android.graphics.Rect
 import android.net.Uri
 import deckers.thibault.aves.channel.streams.darttoplatform.ByteSink
 import deckers.thibault.aves.glide.TiffFetcher
-import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.image.BitmapUtils
 import org.beyka.tiffbitmapfactory.DecodeArea
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.ByteArrayInputStream

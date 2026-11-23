@@ -10,8 +10,7 @@ class AvesEmbeddedMediaProvider : UnknownContentProvider() {
 
     companion object {
         fun provides(context: Context, uri: Uri): Boolean {
-            if (!uri.isContentScheme) return false
-            return uri.authority == "${context.applicationContext.packageName}.file_provider"
+            return uri.isContentScheme && uri.authority == "${context.applicationContext.packageName}.file_provider"
         }
     }
 }

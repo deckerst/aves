@@ -18,6 +18,8 @@ class XmpCard({
   late final XmpExtractedCard? directStruct;
   late final List<XmpExtractedCard>? indexedStructs;
 
+  static const _subCardMargin = EdgeInsetsDirectional.only(start: 8, top: 4, end: 2, bottom: 4);
+
   this {
     directStruct = structByIndex[null];
 
@@ -30,6 +32,7 @@ class XmpCard({
     return MetadataCard(
       title: title,
       count: indexedStructs?.length ?? 0,
+      depth: 0,
       indexedInfoGroupBuilder: _buildIndexedInfoGroup,
       subCardsBuilder: _buildSubCards,
     );
@@ -54,7 +57,7 @@ class XmpCard({
     return cards.where((v) => !v.isEmpty).map((card) {
       final spanBuilders = card.spanBuilders;
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: _subCardMargin,
         child: XmpCard(
           title: card.title,
           structByIndex: card.data,

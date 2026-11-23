@@ -6,11 +6,17 @@ class ContentQueryException(cause: Throwable) : RuntimeException(cause)
 
 class ExifInterfaceException(ex: Exception) : RuntimeException(ex)
 
-class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)
-
 class Mp4FragmentedException(message: String) : RuntimeException(message)
 
+class Mp4ParseException(message: String, cause: Throwable) : RuntimeException(message, cause)
+
+class Mp4TooLargeException(val type: String, message: String) : RuntimeException(message)
+
 class Mp4ZeroSizeBoxException(message: String, cause: Throwable) : RuntimeException(message, cause)
+
+class UndecodableContentException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+
+class UndecodableCopyException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 // IO
 

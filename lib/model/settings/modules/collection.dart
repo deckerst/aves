@@ -42,6 +42,10 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
 
   set thumbnailTagIcon(ThumbnailOverlayTagIcon newValue) => set(SettingKeys.thumbnailTagIconKey, newValue.name);
 
+  bool get showThumbnailFormat => getBool(SettingKeys.showThumbnailFormatKey) ?? SettingsDefaults.showThumbnailFormat;
+
+  set showThumbnailFormat(bool newValue) => set(SettingKeys.showThumbnailFormatKey, newValue);
+
   bool get showThumbnailMotionPhoto => getBool(SettingKeys.showThumbnailMotionPhotoKey) ?? SettingsDefaults.showThumbnailMotionPhoto;
 
   set showThumbnailMotionPhoto(bool newValue) => set(SettingKeys.showThumbnailMotionPhotoKey, newValue);
@@ -53,10 +57,6 @@ mixin CollectionSettings on SettingsAccess, CommonLayoutSettings {
   bool get showThumbnailRaw => getBool(SettingKeys.showThumbnailRawKey) ?? SettingsDefaults.showThumbnailRaw;
 
   set showThumbnailRaw(bool newValue) => set(SettingKeys.showThumbnailRawKey, newValue);
-
-  bool get showThumbnailSlowMotionVideo => getBool(SettingKeys.showThumbnailSlowMotionVideoKey) ?? SettingsDefaults.showThumbnailRaw;
-
-  set showThumbnailSlowMotionVideo(bool newValue) => set(SettingKeys.showThumbnailSlowMotionVideoKey, newValue);
 
   bool get showThumbnailVideoDuration => getBool(SettingKeys.showThumbnailVideoDurationKey) ?? SettingsDefaults.showThumbnailVideoDuration;
 

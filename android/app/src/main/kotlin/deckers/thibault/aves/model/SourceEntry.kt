@@ -24,10 +24,9 @@ import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeLong
+import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.UriUtils.isContentScheme
-import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
@@ -36,11 +35,11 @@ class SourceEntry {
     private val origin: Int
     val uri: Uri // content or file URI
     var path: String? = null // best effort to get local path
-    private val sourceMimeType: String
+    private val mimeType: String
     private var title: String? = null
     var width: Int? = null
     var height: Int? = null
-    private var sourceRotationDegrees: Int? = null
+    private var rotationDegrees: Int? = null
     private var sizeBytes: Long? = null
     private var dateAddedSecs: Long? = null
     private var dateModifiedMillis: Long? = null
@@ -49,20 +48,20 @@ class SourceEntry {
 
     private var foundExif: Boolean = false
 
-    constructor(origin: Int, uri: Uri, sourceMimeType: String) {
+    constructor(origin: Int, uri: Uri, mimeType: String) {
         this.origin = origin
         this.uri = uri
-        this.sourceMimeType = sourceMimeType
+        this.mimeType = mimeType
     }
 
     constructor(map: FieldMap) {
         origin = map[EntryFields.ORIGIN] as Int
         uri = (map[EntryFields.URI] as String).toUri()
         path = map[EntryFields.PATH] as String?
-        sourceMimeType = map[EntryFields.SOURCE_MIME_TYPE] as String
+        mimeType = map[EntryFields.MIME_TYPE] as String
         width = map[EntryFields.WIDTH] as Int?
         height = map[EntryFields.HEIGHT] as Int?
-        sourceRotationDegrees = map[EntryFields.SOURCE_ROTATION_DEGREES] as Int?
+        rotationDegrees = map[EntryFields.ROTATION_DEGREES] as Int?
         sizeBytes = toLong(map[EntryFields.SIZE_BYTES])
         title = map[EntryFields.TITLE] as String?
         dateAddedSecs = toLong(map[EntryFields.DATE_ADDED_SECS])
@@ -83,10 +82,10 @@ class SourceEntry {
             EntryFields.ORIGIN to origin,
             EntryFields.URI to uri.toString(),
             EntryFields.PATH to path,
-            EntryFields.SOURCE_MIME_TYPE to sourceMimeType,
+            EntryFields.MIME_TYPE to mimeType,
             EntryFields.WIDTH to width,
             EntryFields.HEIGHT to height,
-            EntryFields.SOURCE_ROTATION_DEGREES to (sourceRotationDegrees ?: 0),
+            EntryFields.ROTATION_DEGREES to (rotationDegrees ?: 0),
             EntryFields.SIZE_BYTES to sizeBytes,
             EntryFields.TITLE to title,
             EntryFields.DATE_ADDED_SECS to dateAddedSecs,
@@ -101,7 +100,7 @@ class SourceEntry {
     // ignore when the ID is not a number
     // e.g. content://com.sec.android.app.myfiles.FileProvider/device_storage/20200109_162621.jpg
     private val contentId: Long?
-        get() = if (uri.isContentScheme) uri.tryParseId() else null
+        get() = MediaStoreUriHelper.tryParseId(uri)
 
     val isSized: Boolean
         get() = (width ?: 0) > 0 && (height ?: 0) > 0
@@ -110,10 +109,10 @@ class SourceEntry {
         get() = (durationMillis ?: 0) > 0
 
     val isVideo: Boolean
-        get() = MimeTypes.isVideo(sourceMimeType)
+        get() = MimeTypes.isVideo(mimeType)
 
     val isSvg: Boolean
-        get() = sourceMimeType == MimeTypes.SVG
+        get() = mimeType == MimeTypes.SVG
 
     // metadata retrieval
     // expects entry with: uri, mimeType
@@ -130,7 +129,7 @@ class SourceEntry {
             fillByExifInterface(context)
         }
         if (!isSized) {
-            when (sourceMimeType) {
+            when (mimeType) {
                 MimeTypes.TIFF -> fillByTiffDecode(context)
                 else -> fillByBitmapDecode(context)
             }
@@ -140,7 +139,7 @@ class SourceEntry {
 
     // finds: width, height, orientation, date, duration, title
     private fun fillVideoByMediaMetadataRetriever(context: Context) {
-        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         val retriever = StorageUtils.openMetadataRetriever(context, contentAddress) ?: return
         try {
@@ -149,7 +148,7 @@ class SourceEntry {
             retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
             retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { date, _ -> sourceDateTakenMillis = date }
             retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
-            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { rotationDegrees = it }
         } catch (_: Exception) {
             // ignore
         } finally {
@@ -161,11 +160,11 @@ class SourceEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         // skip raw images because `metadata-extractor` reports the decoded dimensions instead of the raw dimensions
-        if (!MimeTypes.canReadWithMetadataExtractor(sourceMimeType)
-            || MimeTypes.isRaw(sourceMimeType)
+        if (!MimeTypes.canReadWithMetadataExtractor(mimeType)
+            || MimeTypes.isRaw(mimeType)
         ) return
 
-        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
@@ -184,7 +183,7 @@ class SourceEntry {
                         dir.getSafeInt(Mp4VideoDirectory.TAG_HEIGHT) { height = it }
                     }
                     for (dir in metadata.getDirectoriesOfType(Mp4Directory::class.java)) {
-                        dir.getSafeInt(Mp4Directory.TAG_ROTATION) { sourceRotationDegrees = it }
+                        dir.getSafeInt(Mp4Directory.TAG_ROTATION) { rotationDegrees = it }
                         dir.getSafeLong(Mp4Directory.TAG_DURATION) { durationMillis = it }
                     }
                 } else {
@@ -192,7 +191,7 @@ class SourceEntry {
                         foundExif = true
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT) { height = it }
-                        dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { sourceRotationDegrees = getRotationDegreesForExifCode(it) }
+                        dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { rotationDegrees = getRotationDegreesForExifCode(it) }
                         dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME, null, isUtc = false)?.let { sourceDateTakenMillis = it }
                     }
 
@@ -219,9 +218,9 @@ class SourceEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
-        if (!MimeTypes.canReadWithExifInterface(sourceMimeType)) return
+        if (!MimeTypes.canReadWithExifInterface(mimeType)) return
 
-        val contentAddress = ContentAddress(mimeType = sourceMimeType, uri = uri, path = path, pageId = null)
+        val contentAddress = ContentAddress(mimeType = mimeType, uri = uri, path = path, pageId = null)
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
@@ -229,7 +228,7 @@ class SourceEntry {
                 foundExif = true
                 exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
                 exifInterface.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
-                exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exifInterface.rotationDegrees }
+                exifInterface.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { rotationDegrees = exifInterface.rotationDegrees }
                 exifInterface.getSafeDateMillis(
                     ExifInterface.TAG_DATETIME,
                     ExifInterface.TAG_SUBSEC_TIME,

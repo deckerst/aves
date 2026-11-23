@@ -19,12 +19,12 @@ import java.io.OutputStream
 internal class FileImageProvider : ImageProvider() {
     override fun fetchSingle(
         context: Context,
-        sourceMimeType: String?,
+        mimeTypeHint: String?,
         uri: Uri,
         allowUnsized: Boolean,
         callback: ImageOpCallback,
     ) {
-        var mimeType = sourceMimeType
+        var mimeType = mimeTypeHint
         val path = uri.path
 
         if (mimeType == null) {

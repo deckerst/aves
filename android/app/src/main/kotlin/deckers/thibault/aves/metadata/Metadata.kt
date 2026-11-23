@@ -41,6 +41,7 @@ object Metadata {
     const val DIR_MP4_USER_DATA = "User Data" // custom
 
     // types of metadata
+    const val TYPE_C2PA = "c2pa"
     const val TYPE_COMMENT = "comment"
     const val TYPE_EXIF = "exif"
     const val TYPE_ICC_PROFILE = "icc_profile"
@@ -48,7 +49,6 @@ object Metadata {
     const val TYPE_JFIF = "jfif"
     const val TYPE_JPEG_ADOBE = "jpeg_adobe"
     const val TYPE_JPEG_DUCKY = "jpeg_ducky"
-    const val TYPE_JPEG_JUMBF = "jpeg_jumbf"
     const val TYPE_MP4 = "mp4"
     const val TYPE_PHOTOSHOP_IRB = "photoshop_irb"
     const val TYPE_XMP = "xmp"
@@ -159,7 +159,6 @@ object Metadata {
         path: String?,
         sizeBytes: Long?
     ): Uri {
-        // formats known to yield OOM for large files
         return when (mimeType) {
             // formats known to yield OOM for large files
             MimeTypes.DNG,

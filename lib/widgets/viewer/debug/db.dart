@@ -107,11 +107,10 @@ class _DbTabState extends State<DbTab> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await localMediaDb.updateEntry(entry.id, entry.copyWith(sourceMimeType: MimeTypes.jpeg));
+                      await localMediaDb.updateEntry(entry.id, entry.copyWith(mimeType: MimeTypes.jpeg));
                       await localMediaDb.updateCatalogMetadata(
                         entry.id,
                         entry.catalogMetadata?.copyWith(
-                          mimeType: MimeTypes.jpeg,
                           isAnimated: false,
                         ),
                       );

@@ -498,7 +498,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, CountryMixin, Place
       // explicit GC before cataloguing multiple items
       await deviceService.requestGarbageCollection();
       await Future.forEach(entries, (entry) async {
-        await entry.catalog(background: background, force: true, persist: persist);
+        await entry.catalog(background: background, force: true, persistSourceFields: persist);
         await localMediaDb.updateCatalogMetadata(entry.id, entry.catalogMetadata);
       });
       onCatalogMetadataChanged();

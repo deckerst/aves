@@ -64,7 +64,7 @@ mixin SingleEntryEditorMixin on FeedbackMixin, PermissionAwareMixin, EntryEditor
           const background = false;
           const persist = false;
           await targetEntry.refresh(background: background, persist: persist, dataTypes: dataTypes);
-          await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persist: persist);
+          await targetEntry.catalog(background: background, force: dataTypes.contains(EntryDataType.catalog), persistSourceFields: persist);
           await targetEntry.locate(
             background: background,
             force: dataTypes.contains(EntryDataType.address),

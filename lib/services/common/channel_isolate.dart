@@ -8,13 +8,12 @@ import 'package:flutter/services.dart';
 
 // TODO TLAD remove experiment if useless
 // Experiment: drop-in replacement for `MethodChannel` to perform calls in an `Isolate`
-class ChannelIsolate {
+class ChannelIsolate(final String channelName) {
   final Map<int, Completer<Object?>> _requestCompleters = {};
   int _nextRequestId = 0;
   late Future<SendPort> _isolateRequestPort;
-  final String channelName;
 
-  new(this.channelName) {
+  this {
     _isolateRequestPort = _initRequestPort();
   }
 
@@ -99,29 +98,25 @@ class ChannelIsolate {
 }
 
 @immutable
-class IsolateChannelRequest extends Equatable {
-  final int id;
-  final String channelName;
-  final String method;
-  final Map<String, Object?>? arguments;
-
+class const IsolateChannelRequest(
+  final int id,
+  final String channelName,
+  final String method,
+  final Map<String, Object?>? arguments,
+) extends Equatable {
   @override
   List<Object?> get props => [id, method, arguments];
-
-  const new(this.id, this.channelName, this.method, this.arguments);
 }
 
 @immutable
-class IsolateChannelResponse extends Equatable {
-  final int id;
-  final Object? result;
-  final Exception? error;
-  final StackTrace? stack;
-
+class const IsolateChannelResponse._private(
+  final int id,
+  final Object? result,
+  final Exception? error,
+  final StackTrace? stack,
+) extends Equatable {
   @override
   List<Object?> get props => [id, result, error, stack];
-
-  const new _private(this.id, this.result, this.error, this.stack);
 
   factory success(int id, Object? result) {
     return IsolateChannelResponse._private(id, result, null, null);
@@ -132,12 +127,7 @@ class IsolateChannelResponse extends Equatable {
   }
 }
 
-class _IsolateData {
-  final RootIsolateToken token;
-  final SendPort answerPort;
-
-  new({
-    required this.token,
-    required this.answerPort,
-  });
-}
+class _IsolateData({
+  required final RootIsolateToken token,
+  required final SendPort answerPort,
+});

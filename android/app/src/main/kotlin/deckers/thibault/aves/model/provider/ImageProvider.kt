@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.BaseColumns
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -33,6 +34,9 @@ import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.PixyMetaHelper
 import deckers.thibault.aves.metadata.PixyMetaHelper.extendedXmpDocString
 import deckers.thibault.aves.metadata.PixyMetaHelper.xmpDocString
+import deckers.thibault.aves.metadata.c2pa.C2paReading
+import deckers.thibault.aves.metadata.c2pa.C2paSigning
+import deckers.thibault.aves.metadata.c2pa.C2paValidity
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
@@ -46,6 +50,8 @@ import deckers.thibault.aves.model.FileDescriptorException
 import deckers.thibault.aves.model.NameConflictResolution
 import deckers.thibault.aves.model.NameConflictStrategy
 import deckers.thibault.aves.model.SourceEntry
+import deckers.thibault.aves.model.UndecodableContentException
+import deckers.thibault.aves.model.UndecodableCopyException
 import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.PermissionManager
 import deckers.thibault.aves.storage.StorageUtils
@@ -53,8 +59,7 @@ import deckers.thibault.aves.storage.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.storage.StorageUtils.getVolumePath
 import deckers.thibault.aves.storage.apis.MediaStorePermissions
 import deckers.thibault.aves.storage.apis.StorageApi
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BmpWriter
+import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
 import deckers.thibault.aves.utils.FileUtils
 import deckers.thibault.aves.utils.FileUtils.copyTo
 import deckers.thibault.aves.utils.FileUtils.getFileSize
@@ -71,6 +76,8 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.TimeZones
 import deckers.thibault.aves.utils.UriUtils.isContentScheme
 import deckers.thibault.aves.utils.UriUtils.isFileScheme
+import deckers.thibault.aves.utils.image.BitmapUtils
+import deckers.thibault.aves.utils.image.BmpWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -90,7 +97,7 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 abstract class ImageProvider {
     open fun fetchSingle(
         context: Context,
-        sourceMimeType: String?,
+        mimeTypeHint: String?,
         uri: Uri,
         allowUnsized: Boolean,
         callback: ImageOpCallback,
@@ -110,6 +117,10 @@ abstract class ImageProvider {
         } else {
             MediaStoreImageProvider.scanNewPathByMediaStore(context, path, mimeType)
         }
+    }
+
+    open fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
+        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
     fun createSingle(
@@ -253,7 +264,7 @@ abstract class ImageProvider {
                         throw Exception("failed to delete row from content resolver")
                     }
                 } catch (ex: SecurityException) {
-                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at safeUri=$safeUri for $contentAddress, ex=${ex.message}")
+                    Log.w(LOG_TAG, "caught a security exception when attempting to delete content at safeUri=$safeUri for $contentAddress", ex)
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || context !is Activity) {
                         throw ex
                     }
@@ -627,10 +638,6 @@ abstract class ImageProvider {
         newFile: File,
     ): FieldMap {
         throw UnsupportedOperationException("`renameSingle` is not supported by this image provider")
-    }
-
-    open fun scanPostMetadataEdit(context: Context, contentAddress: ContentAddress, newFields: FieldMap, callback: ImageOpCallback) {
-        throw UnsupportedOperationException("`scanPostMetadataEdit` is not supported by this image provider")
     }
 
     suspend fun convertMultiple(
@@ -1131,8 +1138,9 @@ abstract class ImageProvider {
         try {
             // ensure content is decodable before editing
             ensureDecodable(mimeType, context, uri)
-        } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode content (exists=${contentExists(context, uri)}) before editing", ex))
+        } catch (ex: Exception) {
+            val fileExists = contentAddress.path?.let { File(it).exists() } ?: false
+            callback.onFailure(UndecodableContentException("failed to decode content before editing (exists at uri=${contentExists(context, uri)}, at path=$fileExists)", ex))
             return false
         }
 
@@ -1172,8 +1180,11 @@ abstract class ImageProvider {
         try {
             // ensure file is decodable before editing
             ensureDecodable(mimeType, editableFile)
-        } catch (ex: IOException) {
-            callback.onFailure(Exception("failed to decode editable file before editing, with trailer video size=$trailerVideoSize valid=$isTrailerVideoValid", ex))
+        } catch (ex: Exception) {
+            val sourceContentSize = context.queryContentPropValue(contentAddress.uri, contentAddress.mimeType, OpenableColumns.SIZE)
+            val sourceFileSize = contentAddress.path?.let { File(it) }?.let { if (it.exists()) it.length() else null }
+            val editableFileSize = editableFile.let { if (it.exists()) it.length() else null }
+            callback.onFailure(UndecodableCopyException("failed to decode editable file before editing (sourceContentSize=$sourceContentSize, sourceFileSize=$sourceFileSize, editableFileSize=$editableFileSize)", ex))
             return false
         }
 
@@ -1450,6 +1461,7 @@ abstract class ImageProvider {
                 return false
             }
         }
+        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
 
         val editedFileSize = getFileSize(editableFile.path)
         if (editedFileSize == 0L) {
@@ -1457,9 +1469,10 @@ abstract class ImageProvider {
             return false
         }
 
-        val editedContentAddress = ContentAddress(mimeType = mimeType, uri = Uri.fromFile(editableFile), path = editableFile.path, pageId = null)
-        if (hasMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)) {
-            callback.onFailure(Exception("editing XMP yielded metadata errors"))
+        val sourceMetadataErrors = getMetadataErrors(context, contentAddress, sizeBytes = editedFileSize)
+        val editedMetadataErrors = getMetadataErrors(context, editedContentAddress, sizeBytes = editedFileSize)
+        if (editedMetadataErrors.subtract(sourceMetadataErrors).isNotEmpty()) {
+            callback.onFailure(Exception("editing XMP yielded new metadata errors"))
             return false
         }
 
@@ -1531,22 +1544,22 @@ abstract class ImageProvider {
         }
     }
 
-    fun hasMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Boolean {
+    fun getMetadataErrors(context: Context, contentAddress: ContentAddress, sizeBytes: Long): Set<String> {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
                     val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
-                    return metadata.directories.any { it.hasErrors() }
+                    return metadata.directories.filter { it.hasErrors() }.map { "${it.name}-${it.errors}" }.toSet()
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to check whether metadata has errors", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to check whether metadata has errors", ex)
             }
         }
-        return false
+        return HashSet()
     }
 
     // A few bytes are sometimes appended when writing to a document output stream.
@@ -1638,10 +1651,48 @@ abstract class ImageProvider {
         return baos.toByteArray()
     }
 
+    private fun addC2paManifest(
+        context: Context,
+        contentAddress: ContentAddress,
+        c2paActions: List<String>,
+    ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+        if (c2paActions.isEmpty()) return
+        val path = contentAddress.path ?: return
+
+        val signedFile: File?
+        try {
+            signedFile = C2paSigning.sign(
+                context = context,
+                contentAddress = contentAddress,
+                title = File(path).name,
+                actions = c2paActions
+            )
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to sign $contentAddress", ex)
+            return
+        }
+
+        if (signedFile == null) {
+            Log.w(LOG_TAG, "failed to sign $contentAddress")
+            return
+        }
+
+        val signedContentAddress = ContentAddress(mimeType = contentAddress.mimeType, uri = Uri.fromFile(signedFile), path = signedFile.path, pageId = null)
+        val signedValidity = C2paReading.getValidity(context, signedContentAddress)
+        // would be useless to add an invalid manifest
+        if (!listOf(C2paValidity.VALID, C2paValidity.TRUSTED).contains(signedValidity)) return
+
+        // copy the edited temporary file back to the original
+        signedFile.copyTo(outputStream(context, contentAddress))
+        signedFile.delete()
+    }
+
     fun editOrientation(
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         op: ExifOrientationOp,
         callback: ImageOpCallback,
     ) {
@@ -1655,8 +1706,8 @@ abstract class ImageProvider {
             var currentRotationDegrees: Int? = null
             try {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { currentRotationDegrees = it }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get video rotation by MediaMetadataRetriever for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to get video rotation by MediaMetadataRetriever for $contentAddress", ex)
             } finally {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
                 retriever.release()
@@ -1703,7 +1754,14 @@ abstract class ImageProvider {
 
                 return editTrailerVideo(context, trailerVideoBytes) { contentAddress, callback ->
                     val sizeBytes = trailerVideoBytes.size.toLong()
-                    editOrientation(context, contentAddress, sizeBytes, op, callback)
+                    editOrientation(
+                        context = context,
+                        contentAddress = contentAddress,
+                        sizeBytes = sizeBytes,
+                        c2paActions = c2paActions,
+                        op = op,
+                        callback = callback,
+                    )
                 }
             }
 
@@ -1711,6 +1769,7 @@ abstract class ImageProvider {
         }
 
         if (success) {
+            addC2paManifest(context, contentAddress, c2paActions)
             scanPostMetadataEdit(context, contentAddress, newFields, callback)
         }
     }
@@ -1719,6 +1778,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         dateMillis: Long?,
         timeZoneOffsetMinutes: Int?,
         shiftSeconds: Long?,
@@ -1834,6 +1894,7 @@ abstract class ImageProvider {
         val success = editExif(context, contentAddress, sizeBytes, callback, editImage = ::editImage, editTrailerVideo = ::editTrailerVideo)
 
         if (success) {
+            addC2paManifest(context, contentAddress, c2paActions)
             scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
         }
     }
@@ -1842,6 +1903,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         modifier: FieldMap,
         autoCorrectTrailerOffset: Boolean,
         callback: ImageOpCallback,
@@ -1977,6 +2039,7 @@ abstract class ImageProvider {
             }
         }
 
+        addC2paManifest(context, contentAddress, c2paActions)
         scanPostMetadataEdit(context, contentAddress, newFields, callback)
     }
 
@@ -1984,6 +2047,7 @@ abstract class ImageProvider {
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         callback: ImageOpCallback,
     ) {
         val uri = contentAddress.uri
@@ -2022,14 +2086,15 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields: FieldMap = hashMapOf()
-        scanPostMetadataEdit(context, contentAddress, newFields, callback)
+        addC2paManifest(context, contentAddress, c2paActions)
+        scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
     }
 
     fun removeMetadataTypes(
         context: Context,
         contentAddress: ContentAddress,
         sizeBytes: Long,
+        c2paActions: List<String>,
         types: Set<String>,
         callback: ImageOpCallback,
     ) {
@@ -2089,8 +2154,8 @@ abstract class ImageProvider {
             return
         }
 
-        val newFields: FieldMap = hashMapOf()
-        scanPostMetadataEdit(context, contentAddress, newFields, callback)
+        addC2paManifest(context, contentAddress, c2paActions)
+        scanPostMetadataEdit(context, contentAddress, HashMap(), callback)
     }
 
     private fun outputStream(context: Context, contentAddress: ContentAddress): OutputStream {

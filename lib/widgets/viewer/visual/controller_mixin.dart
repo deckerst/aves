@@ -232,43 +232,47 @@ mixin EntryViewControllerMixin<T extends StatefulWidget> on State<T> {
   Future<void> updatePictureInPicture(BuildContext context) async {
     if (!device.supportPictureInPicture) return;
 
+    final appMode = context.mounted ? context.read<ValueNotifier<AppMode>>().value : null;
+    if (appMode == .screenSaver) {
+      // `Floating` plugin is not bound to activity,
+      // and there is no user interaction in this mode anyway
+      return;
+    }
+
     if (context.mounted && settings.videoBackgroundMode == VideoBackgroundMode.pip) {
-      final appMode = context.read<ValueNotifier<AppMode>>().value;
-      if (appMode != .screenSaver) {
-        final playingController = context.read<VideoConductor>().getPlayingController();
-        if (playingController != null) {
-          final entrySize = playingController.entry.displaySize;
-          final entryAspectRatio = entrySize.aspectRatio;
-          final Rational pipAspectRatio;
-          if (entryAspectRatio > _pipRatioMax.aspectRatio) {
-            pipAspectRatio = _pipRatioMax;
-          } else if (entryAspectRatio < _pipRatioMin.aspectRatio) {
-            pipAspectRatio = _pipRatioMin;
-          } else {
-            pipAspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
-          }
+      final playingController = context.read<VideoConductor>().getPlayingController();
+      if (playingController != null) {
+        final entrySize = playingController.entry.displaySize;
+        final entryAspectRatio = entrySize.aspectRatio;
+        final Rational pipAspectRatio;
+        if (entryAspectRatio > _pipRatioMax.aspectRatio) {
+          pipAspectRatio = _pipRatioMax;
+        } else if (entryAspectRatio < _pipRatioMin.aspectRatio) {
+          pipAspectRatio = _pipRatioMin;
+        } else {
+          pipAspectRatio = Rational(entrySize.width.round(), entrySize.height.round());
+        }
 
-          final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
-          final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
-          final sourceRectHint = Rectangle<int>(
-            ((viewSize.width - fittedSize.width) / 2).round(),
-            ((viewSize.height - fittedSize.height) / 2).round(),
-            fittedSize.width.round(),
-            fittedSize.height.round(),
+        final viewSize = MediaQuery.sizeOf(context) * MediaQuery.devicePixelRatioOf(context);
+        final fittedSize = applyBoxFit(BoxFit.contain, entrySize, viewSize).destination;
+        final sourceRectHint = Rectangle<int>(
+          ((viewSize.width - fittedSize.width) / 2).round(),
+          ((viewSize.height - fittedSize.height) / 2).round(),
+          fittedSize.width.round(),
+          fittedSize.height.round(),
+        );
+
+        try {
+          final status = await Floating().enable(
+            OnLeavePiP(
+              aspectRatio: pipAspectRatio,
+              sourceRectHint: sourceRectHint,
+            ),
           );
-
-          try {
-            final status = await Floating().enable(
-              OnLeavePiP(
-                aspectRatio: pipAspectRatio,
-                sourceRectHint: sourceRectHint,
-              ),
-            );
-            debugPrint('Enabled picture-in-picture with status=$status');
-            return;
-          } on PlatformException catch (e, stack) {
-            await reportService.recordError(e, stack);
-          }
+          debugPrint('Enabled picture-in-picture with status=$status');
+          return;
+        } on PlatformException catch (e, stack) {
+          await reportService.recordError(e, stack);
         }
       }
     }

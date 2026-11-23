@@ -93,7 +93,7 @@ class MultiPageInfo {
             uri: fields[EntryFields.uri] as String?,
             // the initial fake page may contain inaccurate values for the following fields
             // so we override them with values from the extracted standalone video
-            rotationDegrees: fields[EntryFields.sourceRotationDegrees] as int?,
+            rotationDegrees: fields[EntryFields.rotationDegrees] as int?,
             durationMillis: fields[EntryFields.durationMillis] as int?,
           ),
         );
@@ -112,29 +112,18 @@ class MultiPageInfo {
     final trashed = (mainEntry.isMotionPhoto && pageInfo.isVideo) ? false : mainEntry.trashed;
 
     final pageEntry =
-        AvesEntry(
-            id: mainEntry.id,
-            uri: pageInfo.uri ?? mainEntry.uri,
-            path: mainEntry.path,
-            contentId: mainEntry.contentId,
+        mainEntry.copyWith(
+            uri: pageInfo.uri,
             pageId: pageId,
-            sourceMimeType: pageInfo.mimeType,
+            mimeType: pageInfo.mimeType,
             width: pageInfo.width,
             height: pageInfo.height,
-            sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
-            sizeBytes: mainEntry.sizeBytes,
-            sourceTitle: mainEntry.sourceTitle,
-            dateAddedSecs: mainEntry.dateAddedSecs,
-            dateModifiedMillis: mainEntry.dateModifiedMillis,
-            sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
-            durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
+            rotationDegrees: pageInfo.rotationDegrees,
+            durationMillis: pageInfo.durationMillis,
             trashed: trashed,
-            origin: mainEntry.origin,
           )
           ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
-            mimeType: pageInfo.mimeType,
             isMultiPage: false,
-            rotationDegrees: pageInfo.rotationDegrees,
           )
           ..addressDetails = mainEntry.addressDetails?.copyWith()
           ..trashDetails = trashed ? mainEntry.trashDetails : null;

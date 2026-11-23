@@ -67,22 +67,14 @@ Future<AlbumBaseFilter?> pickAlbum({
   );
 }
 
-class _AlbumPickPage extends StatefulWidget {
+class const _AlbumPickPage({
+  required final CollectionSource source,
+  required final MoveType? moveType,
+  required final Set<AlbumChipType> chipTypes,
+  required final Uri? initialGroup,
+  required final GroupUriPredicate? isValidGroupPick,
+}) extends StatefulWidget {
   static const routeName = '/album_pick';
-
-  final CollectionSource source;
-  final MoveType? moveType;
-  final Set<AlbumChipType> chipTypes;
-  final Uri? initialGroup;
-  final GroupUriPredicate? isValidGroupPick;
-
-  const new({
-    required this.source,
-    required this.moveType,
-    required this.chipTypes,
-    required this.initialGroup,
-    required this.isValidGroupPick,
-  });
 
   @override
   State<_AlbumPickPage> createState() => _AlbumPickPageState();

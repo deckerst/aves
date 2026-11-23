@@ -8,13 +8,13 @@ publish_to: none
 # - edit GitHub changelog:     /CHANGELOG.md
 # - edit Play Store changelog: /whatsnew/whatsnew-en-US
 # - run `scripts/apply_version_bump.sh`
-version: 1.15.10+184
+version: 1.15.11+185
 
 environment:
   # this project bundles Flutter SDK via `flutter_wrapper`
   # cf https://github.com/passsy/flutter_wrapper
-  flutter: 3.47.8
-  sdk: ">=3.13.7 <4.0.0"
+  flutter: 3.50.1
+  sdk: ">=3.14.0 <4.0.0"
 
 platforms:
   android:
@@ -75,6 +75,7 @@ dependencies:
   connectivity_plus:
   country_code:
   csv:
+  custom_rounded_rectangle_border:
   device_info_plus:
   dlna_dart:
     git:

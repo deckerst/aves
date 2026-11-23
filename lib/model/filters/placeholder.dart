@@ -43,7 +43,7 @@ class PlaceholderFilter extends CollectionFilter {
       case _state:
       case _place:
         if (!entry.isCatalogued) {
-          await entry.catalog(background: false, force: false, persist: true);
+          await entry.catalog(background: false, force: false, persistSourceFields: false);
         }
         if (!entry.hasGps) return null;
 
