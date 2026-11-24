@@ -177,7 +177,7 @@ android {
                 val baseAbiVersionCode = abiCodes[abi]
                 if (baseAbiVersionCode != null) {
                     val versionCodeOverride = versionCode * 100 + baseAbiVersionCode
-                    println("  output versionCodeOverride=$versionCodeOverride for abi=$abi")
+                    println("  output versionCodeOverride=$versionCodeOverride for versionCode=$versionCode abi=$abi")
                     (output as ApkVariantOutputImpl).versionCodeOverride = versionCodeOverride
                 }
             }
