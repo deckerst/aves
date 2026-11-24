@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
-## <a id="v1.15.11"></a>[v1.15.11] - 2026-11-23
+## <a id="v1.15.12"></a>[v1.15.12] - 2026-11-24
 
 ### Added
 
@@ -23,6 +23,8 @@ All notable changes to this project will be documented in this file.
 - editing IPTC/XMP for items with existing metadata errors
 - time zone offset lost on custom date editing
 - item shortcut loading
+
+## <a id="v1.15.11"></a>[v1.15.11] - 2026-11-23 [YANKED]
 
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 
