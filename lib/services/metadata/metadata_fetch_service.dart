@@ -82,7 +82,7 @@ class PlatformMetadataFetchService implements MetadataFetchService {
 
     if (!kReleaseMode) {
       // useful to track a specific file triggering a crash
-      await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata ${entry.storagePath ?? entry.uri}');
+      await localMediaDb.addDebugLog('${DateTime.now().toIso8601String()} getCatalogMetadata mimeType=${entry.mimeType} size=${entry.sizeBytes} path=${entry.storagePath ?? entry.uri}');
     }
 
     Future<Map?> call() async {

@@ -4,7 +4,11 @@ import 'package:flutter/widgets.dart';
 
 extension ExtraStorageVolumeView on StorageVolume {
   String getDescription(BuildContext? context) {
-    if (description != null) return description!;
+    final _description = description;
+    if (_description != null && _description.isNotEmpty) {
+      return _description;
+    }
+
     // ideally, the context should always be provided, but in some cases (e.g. album comparison),
     // this would require numerous additional methods to have the context as argument
     // for such a minor benefit: fallback volume description on Android < N

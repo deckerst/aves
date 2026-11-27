@@ -105,7 +105,15 @@ class _DebugGeneralSectionState extends State<DebugGeneralSection> with Automati
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Text('Catalog max concurrent tasks ($concurrentTaskMax)'),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text('Catalog max concurrent tasks ($concurrentTaskMax)')),
+                      ElevatedButton(
+                        onPressed: () => scanServicePolicy.debugConcurrentTaskMaxOverride = settings.debugCatalogConcurrentTaskMax,
+                        child: const Text('Apply'),
+                      ),
+                    ],
+                  ),
                 ),
                 Slider(
                   value: concurrentTaskMax.toDouble(),
