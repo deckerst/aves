@@ -8,13 +8,13 @@ import com.adobe.internal.xmp.XMPError
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import com.adobe.internal.xmp.XMPMetaFactory
+import com.adobe.internal.xmp.options.ParseOptions
 import com.adobe.internal.xmp.properties.XMPProperty
 import com.drew.metadata.Directory
 import deckers.thibault.aves.metadata.Mp4ParserHelper
 import deckers.thibault.aves.metadata.Mp4ParserHelper.processBoxes
 import deckers.thibault.aves.metadata.Mp4ParserHelper.toBytes
 import deckers.thibault.aves.metadata.metadataextractor.SafeMp4UuidBoxHandler
-import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.model.ContentAddress
 import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.utils.ContextUtils.queryContentPropValue
@@ -71,6 +71,7 @@ object XMP {
         context: Context,
         contentAddress: ContentAddress,
         foundXmp: Boolean,
+        xmpParseOptions: ParseOptions,
         processXmp: (xmpMeta: XMPMeta) -> Unit,
     ) {
         val mimeType = contentAddress.mimeType
@@ -80,7 +81,7 @@ object XMP {
             try {
                 val xmpBytes = context.queryContentPropValue(uri, mimeType, MediaStore.MediaColumns.XMP)
                 if (xmpBytes is ByteArray && xmpBytes.isNotEmpty()) {
-                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, SafeXmpReader.PARSE_OPTIONS)
+                    val xmpMeta = XMPMetaFactory.parseFromBuffer(xmpBytes, xmpParseOptions)
                     processXmp(xmpMeta)
                 }
             } catch (e: Exception) {
@@ -94,6 +95,7 @@ object XMP {
     fun checkMp4(
         context: Context,
         contentAddress: ContentAddress,
+        xmpParseOptions: ParseOptions,
         processDirs: (dirs: List<Directory>) -> Unit,
     ) {
         val mimeType = contentAddress.mimeType
@@ -109,7 +111,7 @@ object XMP {
                         val payload = bytes.copyOfRange(8, bytes.size)
 
                         val metadata = com.drew.metadata.Metadata()
-                        SafeMp4UuidBoxHandler(metadata).processBox("", payload, -1, null)
+                        SafeMp4UuidBoxHandler(metadata, xmpParseOptions).processBox("", payload, -1, null)
                         processDirs(metadata.directories.filter { dir -> dir.tagCount > 0 }.toList())
                     } else {
                         Log.w(LOG_TAG, "MP4 box too large at $boxSize bytes, for $contentAddress")

@@ -24,7 +24,7 @@ object MemoryUtils {
         return !danger
     }
 
-    fun getAvailableHeapSize() = getHeapSizes(listOf(TYPE_AVAILABLE))[TYPE_AVAILABLE] ?: 0
+    fun getAvailableHeapSize() = Runtime.getRuntime().let { it.maxMemory() - it.totalMemory() + it.freeMemory() }
 
     fun getHeapSizes(types: List<String>): Map<String, Long?> {
         val result = HashMap<String, Long?>()

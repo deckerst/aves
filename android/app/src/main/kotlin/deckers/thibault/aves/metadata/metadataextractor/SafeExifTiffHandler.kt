@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.lang.RandomAccessReader
 import com.drew.metadata.Directory
 import com.drew.metadata.Metadata
@@ -8,7 +9,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.ExifTiffHandler
 import java.io.IOException
 
-class SafeExifTiffHandler(metadata: Metadata, parentDirectory: Directory?, exifStartOffset: Int) : ExifTiffHandler(metadata, parentDirectory, exifStartOffset) {
+class SafeExifTiffHandler(metadata: Metadata, parentDirectory: Directory?, exifStartOffset: Int, val xmpParseOptions: ParseOptions) : ExifTiffHandler(metadata, parentDirectory, exifStartOffset) {
     @Throws(IOException::class)
     override fun customProcessTag(
         tagOffset: Int,
@@ -19,7 +20,7 @@ class SafeExifTiffHandler(metadata: Metadata, parentDirectory: Directory?, exifS
         byteCount: Int,
     ): Boolean {
         if (tagId == ExifSubIFDDirectory.TAG_APPLICATION_NOTES && (_currentDirectory is ExifIFD0Directory || _currentDirectory is ExifSubIFDDirectory)) {
-            SafeXmpReader().extract(reader!!.getNullTerminatedBytes(tagOffset, byteCount), _metadata, _currentDirectory)
+            SafeXmpReader(xmpParseOptions).extract(reader!!.getNullTerminatedBytes(tagOffset, byteCount), _metadata, _currentDirectory)
             return true
         }
 

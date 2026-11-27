@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.lang.ByteArrayReader
 import com.drew.lang.SequentialReader
 import com.drew.metadata.Directory
@@ -21,7 +22,7 @@ import java.util.Locale
 // adapted from `metadata-extractor` v2.22.0 `GifReader` to prevent OOM from reading large XMP
 // as of `metadata-extractor` v2.22.0, there is no way to customize the GIF reader
 // without copying the whole `extract` function
-class SafeGifReader {
+class SafeGifReader(val xmpParseOptions: ParseOptions) {
     fun extract(reader: SequentialReader, metadata: Metadata) {
         reader.isMotorolaByteOrder = false
 
@@ -221,7 +222,7 @@ class SafeGifReader {
             val xmpLengh = xmpBytes.size - 257 // Exclude the "magic trailer", see XMP Specification Part 3, 1.1.2 GIF
             if (xmpLengh > 0) {
                 // Only extract valid blocks
-                SafeXmpReader().extract(xmpBytes, 0, xmpBytes.size - 257, metadata, null)
+                SafeXmpReader(xmpParseOptions).extract(xmpBytes, 0, xmpBytes.size - 257, metadata, null)
             }
         } else if (extensionType == "ICCRGBG1012") {
             // ICC profile extension

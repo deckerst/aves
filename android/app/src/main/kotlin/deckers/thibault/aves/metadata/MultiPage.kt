@@ -19,6 +19,7 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeInt
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntry
 import deckers.thibault.aves.metadata.metadataextractor.mpf.MpEntryDirectory
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
@@ -40,6 +41,8 @@ import androidx.exifinterface.media.ExifInterfaceFork as ExifInterface
 
 object MultiPage {
     private val LOG_TAG = LogUtils.createTag<MultiPage>()
+
+    private val MINIMAL_XMP_PARSING = SafeXmpReader.MINIMAL_PARSE_OPTIONS
 
     // TODO TLAD more generic support, (e.g. 0x00000014 + `ftyp` + `qt  `)
     // atom length (variable, e.g. `0x00000018`) + atom type (`ftyp`) + type (variable, e.g. `mp42`, `qt`)
@@ -116,7 +119,7 @@ object MultiPage {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, MINIMAL_XMP_PARSING)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
@@ -195,7 +198,7 @@ object MultiPage {
     fun getJpegMpfEntries(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): List<MpEntry>? {
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, MINIMAL_XMP_PARSING)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
         } catch (e: Exception) {
@@ -330,6 +333,7 @@ object MultiPage {
 
         var offsetFromEnd: Long? = null
         var foundXmp = false
+        val xmpParseOptions = MINIMAL_XMP_PARSING
 
         fun processXmp(xmpMeta: XMPMeta) {
             offsetFromEnd = offsetFromEnd ?: GoogleXMP.getTrailingVideoOffsetFromEnd(xmpMeta)
@@ -337,7 +341,7 @@ object MultiPage {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, xmpParseOptions)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
@@ -349,7 +353,7 @@ object MultiPage {
             Log.w(LOG_TAG, "failed to get motion photo offset from $contentAddress", e)
         }
 
-        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, xmpParseOptions, ::processXmp)
 
         return offsetFromEnd
     }

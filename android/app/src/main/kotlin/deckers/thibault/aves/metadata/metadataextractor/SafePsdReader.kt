@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.lang.SequentialReader
 import com.drew.metadata.Metadata
 import com.drew.metadata.photoshop.PsdHeaderDirectory
@@ -8,7 +9,7 @@ import java.io.IOException
 // adapted from `metadata-extractor` v2.22.0 `PsdReader` to prevent OOM from reading large XMP
 // as of `metadata-extractor` v2.22.0, there is no way to customize the Photoshop reader
 // without copying the whole `extract` function
-class SafePsdReader {
+class SafePsdReader(val xmpParseOptions: ParseOptions) {
     fun extract(reader: SequentialReader, metadata: Metadata) {
         val directory = PsdHeaderDirectory()
         metadata.addDirectory(directory)
@@ -81,7 +82,7 @@ class SafePsdReader {
 
             assert(sectionLength <= Int.MAX_VALUE)
 
-            SafePhotoshopReader().extract(reader, sectionLength.toInt(), metadata)
+            SafePhotoshopReader(xmpParseOptions).extract(reader, sectionLength.toInt(), metadata)
         } catch (_: IOException) {
             // ignore
         }
