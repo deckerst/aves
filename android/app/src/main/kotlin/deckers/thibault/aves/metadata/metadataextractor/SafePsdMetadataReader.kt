@@ -1,13 +1,14 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.lang.StreamReader
 import com.drew.metadata.Metadata
 import java.io.InputStream
 
 object SafePsdMetadataReader {
-    fun readMetadata(inputStream: InputStream): Metadata {
+    fun readMetadata(inputStream: InputStream, xmpParseOptions: ParseOptions): Metadata {
         val metadata = Metadata()
-        SafePsdReader().extract(StreamReader(inputStream), metadata)
+        SafePsdReader(xmpParseOptions).extract(StreamReader(inputStream), metadata)
         return metadata
     }
 }

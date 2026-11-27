@@ -13,6 +13,7 @@ import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.c2pa.C2paReading
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.metadata.xmp.GoogleDeviceContainer
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.metadata.xmp.XMP.getSafeStructField
@@ -120,7 +121,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
@@ -279,7 +280,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
@@ -314,7 +315,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
     private fun copyEmbeddedBytes(result: MethodChannel.Result, displayName: String?, bytes: ByteArray) {
         var embedMimeType: String? = null
         bytes.inputStream().use { input ->
-            embedMimeType = MetadataExtractorHelper.readMimeType(input, path = null, sizeBytes = bytes.size.toLong())
+            embedMimeType = MetadataExtractorHelper.readMimeType(input, path = null)
         }
         copyEmbeddedBytes(result, embedMimeType ?: MimeTypes.ANY_IMAGE, displayName, bytes.inputStream(), bytes.size.toLong())
     }

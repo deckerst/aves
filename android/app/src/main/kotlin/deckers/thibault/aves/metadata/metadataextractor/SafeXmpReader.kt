@@ -18,7 +18,7 @@ import deckers.thibault.aves.utils.LogUtils
 import java.io.IOException
 import java.util.Locale
 
-class SafeXmpReader : XmpReader() {
+class SafeXmpReader(val parseOptions: ParseOptions) : XmpReader() {
     // adapted from `metadata-extractor` v2.22.0 `XmpReader` to detect and skip large extended XMP
     override fun readJpegSegments(segments: Iterable<ByteArray>, metadata: Metadata, segmentType: JpegSegmentType) {
         val preambleLength = XMP_JPEG_PREAMBLE.length
@@ -75,10 +75,10 @@ class SafeXmpReader : XmpReader() {
 
         try {
             val xmpMeta: XMPMeta = if (offset == 0 && length == totalSize) {
-                XMPMetaFactory.parseFromBuffer(xmpBytes, PARSE_OPTIONS)
+                XMPMetaFactory.parseFromBuffer(xmpBytes, parseOptions)
             } else {
                 val buffer = ByteBuffer(xmpBytes, offset, length)
-                XMPMetaFactory.parse(buffer.byteStream, PARSE_OPTIONS)
+                XMPMetaFactory.parse(buffer.byteStream, parseOptions)
             }
             directory.xmpMeta = xmpMeta
         } catch (e: XMPException) {
@@ -172,14 +172,31 @@ class SafeXmpReader : XmpReader() {
         // arbitrary size to detect extended XMP that may yield an OOM
         const val SEGMENT_TYPE_SIZE_DANGER_THRESHOLD = 3 * (1 shl 20) // MiB
 
-        // tighter node limits for faster loading
-        val PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(
-            mapOf(
-                "crs:Dabs" to 20,
-                "photoshop:DocumentAncestors" to 200,
-                "xmpMM:History" to 200,
-            )
+        // known nodes that may be found in large numbers, which makes parsing slower and use more heap,
+        // e.g. a small JPEG with many dabs in many masks can make `XMPMetaParser` use over 100 MB of memory
+        private val RISKY_NODES = setOf(
+            "crs:CircularGradientBasedCorrections",
+            "crs:GradientBasedCorrections",
+            "crs:Look",
+            "crs:MaskGroupBasedCorrections",
+            "crs:PaintBasedCorrections",
+            "crs:RetouchAreas",
+
+            "crs:CorrectionMasks",
+            "crs:CorrectionRangeMask",
+            "crs:Dabs",
+            "crs:Gesture",
+            "crs:Masks",
+
+            "photoshop:DocumentAncestors",
+            "xmpMM:History",
         )
+
+        // show risky nodes with a conservative limit, as they could be nested into each other
+        val MAXIMAL_PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(RISKY_NODES.associateWith { 20 })
+
+        // skip risky nodes entirely
+        val MINIMAL_PARSE_OPTIONS: ParseOptions = ParseOptions().setXMPNodesToLimit(RISKY_NODES.associateWith { 0 })
 
         private const val XMP_JPEG_PREAMBLE = "http://ns.adobe.com/xap/1.0/\u0000"
         private const val XMP_EXTENSION_JPEG_PREAMBLE = "http://ns.adobe.com/xmp/extension/\u0000"
