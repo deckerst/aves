@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> with FeedbackMixin {
 
         final date = DateFormat('yyyyMMdd_HHmmss', IntlUtils.rootLocaleName).format(DateTime.now());
         final success = await storageService.createFile(
-          basename: 'aves_debug_logs-$date}',
+          basename: 'aves_debug_logs-$date',
           mimeType: MimeTypes.plainText,
           bytes: Uint8List.fromList(utf8.encode(logs.join('\n'))),
         );
