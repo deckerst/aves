@@ -8,8 +8,8 @@ class XmpNamespaces {
   static const avm = 'http://www.communicatingastronomy.org/avm/1.0/';
   static const camera = 'http://pix4d.com/camera/1.0/';
   static const cc = 'http://creativecommons.org/ns#';
-  static const creatorAtom = 'http://ns.adobe.com/creatorAtom/1.0/';
   static const crd = 'http://ns.adobe.com/camera-raw-defaults/1.0/';
+  static const creatorAtom = 'http://ns.adobe.com/creatorAtom/1.0/';
   static const crlcp = 'http://ns.adobe.com/camera-raw-embedded-lens-profile/1.0/';
   static const crs = 'http://ns.adobe.com/camera-raw-settings/1.0/';
   static const crss = 'http://ns.adobe.com/camera-raw-saved-settings/1.0/';
@@ -24,6 +24,7 @@ class XmpNamespaces {
   static const exif = 'http://ns.adobe.com/exif/1.0/';
   static const exifAux = 'http://ns.adobe.com/exif/1.0/aux/';
   static const exifEx = 'http://cipa.jp/exif/1.0/';
+  static const extensisFontSense = 'http://www.extensis.com/meta/FontSense/';
   static const fstop = 'http://www.fstopapp.com/xmp/';
   static const gAudio = 'http://ns.google.com/photos/1.0/audio/';
   static const gCamera = 'http://ns.google.com/photos/1.0/camera/';
@@ -65,6 +66,7 @@ class XmpNamespaces {
   static const panoStudio = 'http://www.tshsoft.com/xmlns';
   static const pdf = 'http://ns.adobe.com/pdf/1.3/';
   static const pdfX = 'http://ns.adobe.com/pdfx/1.3/';
+  static const pdfxid = 'http://www.npes.org/pdfx/ns/id/';
   static const photoMechanic = 'http://ns.camerabits.com/photomechanic/1.0/';
   static const photoshop = 'http://ns.adobe.com/photoshop/1.0/';
   static const plus = 'http://ns.useplus.org/ldf/xmp/1.0/';

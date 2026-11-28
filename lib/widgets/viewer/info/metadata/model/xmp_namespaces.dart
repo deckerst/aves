@@ -39,7 +39,7 @@ class XmpNamespace extends Equatable {
     final nsUri = schemaRegistryPrefixes[nsPrefix] ?? '';
     switch (nsUri) {
       case XmpNamespaces.creatorAtom:
-        return XmpCreatorAtom(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+        return XmpCreatorAtomNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case XmpNamespaces.crs:
         return XmpCrsNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case XmpNamespaces.darktable:
@@ -48,6 +48,8 @@ class XmpNamespace extends Equatable {
         return XmpDwcNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case XmpNamespaces.exif:
         return XmpExifNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
+      case XmpNamespaces.extensisFontSense:
+        return XmpExtensisFontSenseNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case XmpNamespaces.gAudio:
         return XmpGAudioNamespace(schemaRegistryPrefixes: schemaRegistryPrefixes, rawProps: rawProps);
       case XmpNamespaces.gCamera:
