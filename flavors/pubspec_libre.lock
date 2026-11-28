@@ -1217,26 +1217,26 @@ packages:
     dependency: "direct main"
     description:
       name: screen_brightness
-      sha256: e0edf92c08889e8f493cde291e7c687db2b4a1471f2371c074070b75d7c7d79b
+      sha256: "33deaf332653a70378a8b4cd4cb49589b7052e6bd612be0bd4d0865fe71eceb7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.11"
+    version: "2.1.12"
   screen_brightness_android:
     dependency: transitive
     description:
       name: screen_brightness_android
-      sha256: "2008ad8e9527cc968f7a4de1ec58b476d495b3c612a149dbd6550c4f046da147"
+      sha256: "84438a78e3c794159b2ec350a1a7dec51c2115fc55884350f323f3caf40ed2f4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   screen_brightness_ios:
     dependency: transitive
     description:
       name: screen_brightness_ios
-      sha256: "352d355e8523a186ba1e494b74218e5ca96e51975a0630b8ed89fbb7ff609762"
+      sha256: f06ee86d0a7cbd79a67a39ec4f234542a8894e2387f2bbb7105d02fc0b75d780
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.5"
   screen_brightness_macos:
     dependency: transitive
     description:
@@ -1703,10 +1703,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "5af728d811c218fdc100b7e89bcda789fe34d36d53a968912011bc2d7df14b46"
+      sha256: "69782f89ed334b6a316d87ded16b07816d18e4c0952b69a88a1b502afb45fe3b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.4"
+    version: "2.12.5"
   video_player_platform_interface:
     dependency: transitive
     description:
