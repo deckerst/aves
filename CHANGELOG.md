@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+## <a id="v1.15.13"></a>[v1.15.13] - 2026-11-28
+
+### Fixed
+
+- crash when scanning large RAW/TIFF
+- crash when scanning items with heavy XMP
+- moving files to SD card
+
 ## <a id="v1.15.12"></a>[v1.15.12] - 2026-11-24
 
 ### Added
@@ -25,6 +33,8 @@ All notable changes to this project will be documented in this file.
 - item shortcut loading
 
 ## <a id="v1.15.11"></a>[v1.15.11] - 2026-11-23 [YANKED]
+
+Aves v1.15.11 is not upgradable because of an issue with its version codes. Cf [issue #2418](https://github.com/deckerst/aves/issues/2418) for more details.
 
 ## <a id="v1.15.10"></a>[v1.15.10] - 2026-11-10
 

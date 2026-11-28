@@ -79,15 +79,15 @@ The list of changes for past and future releases is available [here](https://git
 
 ## Permissions
 
-| Permission                                                                                                                                             | Purpose                       |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
-| READ_MEDIA_IMAGES<br>READ_MEDIA_VIDEO<br>READ_MEDIA_VISUAL_USER_SELECTED<br>ACCESS_MEDIA_LOCATION                                                      | Media collection read access  |
-| MANAGE_MEDIA                                                                                                                                           | Media collection write access |
-| FOREGROUND_SERVICE<br>FOREGROUND_SERVICE_MEDIA_PROCESSING<br>POST_NOTIFICATIONS<br>ACCESS_NETWORK_STATE<br>ACCESS_WIFI_STATE<br>RECEIVE_BOOT_COMPLETED | Media scan service feedback   |
-| INTERNET                                                                                                                                               | Map view, reverse geocoding   |
-| SET_WALLPAPER                                                                                                                                          | Wallpaper setting             |
-| USE_BIOMETRIC<br>USE_FINGERPRINT                                                                                                                       | Vault lock                    |
-| WAKE_LOCK                                                                                                                                              | Keeping screen on             |
+| Purpose                       | Permission                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Media collection read access  | READ_MEDIA_IMAGES<br>READ_MEDIA_VIDEO<br>READ_MEDIA_VISUAL_USER_SELECTED<br>ACCESS_MEDIA_LOCATION                                                      |
+| Media collection write access | MANAGE_MEDIA                                                                                                                                           |
+| Media scan service feedback   | FOREGROUND_SERVICE<br>FOREGROUND_SERVICE_MEDIA_PROCESSING<br>POST_NOTIFICATIONS<br>ACCESS_NETWORK_STATE<br>ACCESS_WIFI_STATE<br>RECEIVE_BOOT_COMPLETED |
+| Map view, geocoder, C2PA TSA  | INTERNET                                                                                                                                               |
+| Wallpaper setting             | SET_WALLPAPER                                                                                                                                          |
+| Vault lock                    | USE_BIOMETRIC<br>USE_FINGERPRINT                                                                                                                       |
+| Keeping screen on             | WAKE_LOCK                                                                                                                                              |
 
 ## Contributing
 

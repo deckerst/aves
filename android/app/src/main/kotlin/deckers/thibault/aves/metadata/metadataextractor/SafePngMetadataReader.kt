@@ -1,6 +1,7 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
 import android.util.Log
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.imaging.png.PngChromaticities
 import com.drew.imaging.png.PngChunk
 import com.drew.imaging.png.PngChunkReader
@@ -68,12 +69,12 @@ object SafePngMetadataReader {
     )
 
     @Throws(IOException::class, PngProcessingException::class)
-    fun readMetadata(inputStream: InputStream): Metadata {
+    fun readMetadata(inputStream: InputStream, xmpParseOptions: ParseOptions): Metadata {
         val chunks = PngChunkReader().extract(StreamReader(inputStream), desiredChunkTypes)
         val metadata = Metadata()
         for (chunk in chunks) {
             try {
-                processChunk(metadata, chunk)
+                processChunk(metadata, chunk, xmpParseOptions)
             } catch (e: Exception) {
                 metadata.addDirectory(ErrorDirectory("Exception reading PNG chunk: " + e.message))
             }
@@ -82,7 +83,7 @@ object SafePngMetadataReader {
     }
 
     @Throws(PngProcessingException::class, IOException::class)
-    private fun processChunk(metadata: Metadata, chunk: PngChunk) {
+    private fun processChunk(metadata: Metadata, chunk: PngChunk, xmpParseOptions: ParseOptions) {
         val chunkType = chunk.type
         val bytes = chunk.bytes
 
@@ -353,7 +354,7 @@ object SafePngMetadataReader {
             metadata.addDirectory(directory)
         } else if (chunkType == PngChunkType.eXIf) {
             try {
-                val handler = SafeExifTiffHandler(metadata, null, 0)
+                val handler = SafeExifTiffHandler(metadata, null, 0, xmpParseOptions)
                 TiffReader().processTiff(ByteArrayReader(bytes), handler, 0)
             } catch (ex: TiffProcessingException) {
                 val directory = PngDirectory(PngChunkType.eXIf)

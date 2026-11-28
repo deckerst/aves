@@ -1,5 +1,6 @@
 package deckers.thibault.aves.metadata.metadataextractor
 
+import com.adobe.internal.xmp.options.ParseOptions
 import com.drew.imaging.ImageProcessingException
 import com.drew.lang.ByteArrayReader
 import com.drew.lang.SequentialByteArrayReader
@@ -15,7 +16,7 @@ import com.drew.metadata.photoshop.PhotoshopReader
 // adapted from `metadata-extractor` v2.22.0 `PhotoshopReader` to prevent OOM from reading large XMP
 // as of `metadata-extractor` v2.22.0, there is no way to customize the Photoshop reader
 // without copying the whole `extract` function
-class SafePhotoshopReader : PhotoshopReader() {
+class SafePhotoshopReader(val xmpParseOptions: ParseOptions) : PhotoshopReader() {
     override fun extract(reader: SequentialReader, length: Int, metadata: Metadata, parentDirectory: Directory?) {
         val directory = PhotoshopDirectory()
         metadata.addDirectory(directory)
@@ -88,7 +89,7 @@ class SafePhotoshopReader : PhotoshopReader() {
                         PhotoshopDirectory.TAG_EXIF_DATA_1,
                         PhotoshopDirectory.TAG_EXIF_DATA_3 -> ExifReader().extract(ByteArrayReader(tagBytes), metadata, 0, directory)
 
-                        PhotoshopDirectory.TAG_XMP_DATA -> SafeXmpReader().extract(tagBytes, metadata, directory)
+                        PhotoshopDirectory.TAG_XMP_DATA -> SafeXmpReader(xmpParseOptions).extract(tagBytes, metadata, directory)
                         in 0x07D0..0x0BB6 -> {
                             clippingPathCount++
                             tagBytes = tagBytes.copyOf(tagBytes.size + description.length + 1)

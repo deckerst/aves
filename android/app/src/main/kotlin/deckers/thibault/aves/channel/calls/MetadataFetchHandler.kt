@@ -179,8 +179,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         val metadataMap = HashMap<String, MutableMap<String, String>>()
         var foundExif = false
-        var foundXmp = false
         var foundMp4Uuid = false
+        var foundXmp = false
+        val xmpParseOptions = SafeXmpReader.MAXIMAL_PARSE_OPTIONS
 
         fun processXmp(xmpMeta: XMPMeta, dirMap: MutableMap<String, String>, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
@@ -197,8 +198,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", e)
+            } catch (ex: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", ex)
             }
             // remove this stat as it is not actual XMP data
             dirMap.remove(XmpDirectory().getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
@@ -269,7 +270,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, xmpParseOptions)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
 
@@ -400,12 +401,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
@@ -426,7 +427,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             if (xmpRaw != null) {
                                 val metadata = com.drew.metadata.Metadata()
                                 val xmpBytes = xmpRaw.toByteArray(Charsets.UTF_8)
-                                SafeXmpReader().extract(xmpBytes, 0, xmpBytes.size, metadata, null)
+                                SafeXmpReader(xmpParseOptions).extract(xmpBytes, 0, xmpBytes.size, metadata, null)
                                 metadata.getFirstDirectoryOfType(XmpDirectory::class.java)?.let { xmpDir ->
                                     val dirMap = HashMap<String, String>()
                                     processXmp(xmpDir.xmpMeta, dirMap, allowMultiple = true)
@@ -437,10 +438,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     }
                     metadataMap.putAll(allTags.mapValues { it.value.toMutableMap() })
                 }
-            } catch (e: Exception) {
+            } catch (ex: Exception) {
                 // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", ex)
             }
         }
 
@@ -453,10 +454,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::fallbackProcessXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, xmpParseOptions, ::fallbackProcessXmp)
         // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
         // so we always check with `mp4parser`, even for smaller files
-        XMP.checkMp4(context, contentAddress) { dirs ->
+        XMP.checkMp4(context, contentAddress, xmpParseOptions) { dirs ->
             for (dir in dirs.filterIsInstance<XmpDirectory>()) {
                 fallbackProcessXmp(dir.xmpMeta)
             }
@@ -523,8 +524,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 // additional key for the Dart side to know whether to add a `Cover` section
                 dirMap[KEY_HAS_EMBEDDED_PICTURE] = "yes"
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for $contentAddress", e)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for $contentAddress", ex)
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release()
@@ -636,8 +637,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                             metadataMap[EntryFields.LONGITUDE] = locationBox.longitude
                         }
                     }
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to get Location Information box by MP4 parser for $contentAddress", e)
+                } catch (ex: Exception) {
+                    Log.w(LOG_TAG, "failed to get Location Information box by MP4 parser for $contentAddress", ex)
                 }
             }
         }
@@ -703,8 +704,9 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         var flags = (metadataMap[EntryFields.FLAGS] ?: 0) as Int
         var foundExif = false
-        var foundXmp = false
         var foundMp4Uuid = false
+        var foundXmp = false
+        val xmpParseOptions = MINIMAL_XMP_PARSING
 
         fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
@@ -755,8 +757,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 if (xmpMeta.hasHdrGainMap()) {
                     flags = flags or MASK_IS_HDR
                 }
-            } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", e)
+            } catch (ex: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", ex)
             }
         }
 
@@ -770,7 +772,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, xmpParseOptions)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     foundMp4Uuid = metadata.directories.any { it is Mp4UuidBoxDirectory && it.tagCount > 0 }
 
@@ -873,8 +875,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                                             val date = LocalDateTime.parse(it, PNG_LAST_MODIFICATION_TIME_FORMAT).toUtcEpochMillis()
                                             metadataMap[EntryFields.DATE_MILLIS] = date
                                             metadataMap[EntryFields.TIME_ZONE_OFFSET_MINUTES] = TimeZones.currentOffsetMinutes
-                                        } catch (e: ParseException) {
-                                            Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri path=$path", e)
+                                        } catch (ex: ParseException) {
+                                            Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri path=$path", ex)
                                         }
                                     }
                                 }
@@ -912,12 +914,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
                     metadata.getDirectoriesOfType(Mp4UuidBoxDirectory::class.java).forEach(::processMp4Uuid)
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
@@ -954,17 +956,17 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[EntryFields.LONGITUDE] = latLong[1]
                     }
                 }
-            } catch (e: Exception) {
+            } catch (ex: Exception) {
                 // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri path=$path", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for mimeType=$mimeType uri=$uri path=$path", ex)
             }
         }
 
-        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, xmpParseOptions, ::processXmp)
         // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
         // so we always check with `mp4parser`, even for smaller files
-        XMP.checkMp4(context, contentAddress) { dirs ->
+        XMP.checkMp4(context, contentAddress, xmpParseOptions) { dirs ->
             for (dir in dirs.filterIsInstance<XmpDirectory>()) {
                 processXmp(dir.xmpMeta)
             }
@@ -996,12 +998,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             StorageUtils.openInputStream(context, uri)?.let { input ->
                 input.skip(dataOffset)
                 try {
-                    val pageMetadata = MetadataExtractorHelper.safeRead(input, sizeBytes, path)
+                    val pageMetadata = MetadataExtractorHelper.safeRead(input, sizeBytes, path, MINIMAL_XMP_PARSING)
                     if (pageMetadata.getDirectoriesOfType(XmpDirectory::class.java).any { it.xmpMeta.hasHdrGainMap() }) {
                         return true
                     }
-                } catch (e: Exception) {
-                    Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress mpIndex=$mpIndex mpEntry=$mpEntry", e)
+                } catch (ex: Exception) {
+                    Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress mpIndex=$mpIndex mpEntry=$mpEntry", ex)
                 }
             }
         }
@@ -1062,8 +1064,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
             }
 
             metadataMap[EntryFields.FLAGS] = flags
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for $contentAddress", e)
+        } catch (ex: Exception) {
+            Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for $contentAddress", ex)
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release()
@@ -1103,7 +1105,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
                         if (fields.contains(EntryFields.APERTURE)) {
@@ -1123,12 +1125,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
@@ -1150,10 +1152,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         exifInterface.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[EntryFields.ISO] = it }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (ex: Exception) {
                 // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", ex)
             }
         }
 
@@ -1173,8 +1175,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                 if (xmpMeta.doesPropExist(XMP.DC_DESCRIPTION_PROP_NAME)) {
                     xmpMeta.getSafeLocalizedText(XMP.DC_DESCRIPTION_PROP_NAME, acceptBlank = false) { description = it }
                 }
-            } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory", e)
+            } catch (ex: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory", ex)
             }
         }
         if (description == null) {
@@ -1220,7 +1222,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                     val fields = HashMap<Int, Any?>()
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         fields.putAll(dir.tags.map { it.tagType }.filter { tagType ->
@@ -1248,12 +1250,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     result.success(fields)
                     return
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
         result.error("getGeoTiffInfo-empty", "failed to get info for $contentAddress", null)
@@ -1298,6 +1300,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         val fields: FieldMap = hashMapOf()
         var foundXmp = false
+        val xmpParseOptions = MINIMAL_XMP_PARSING
 
         fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
@@ -1309,24 +1312,24 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType) && !isLargeMp4(mimeType, sizeBytes)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, xmpParseOptions)
                     metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach {
                         processXmp(it, allowMultiple = true)
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
-        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, xmpParseOptions, ::processXmp)
         // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
         // so we always check with `mp4parser`, even for smaller files
-        XMP.checkMp4(context, contentAddress) { dirs ->
+        XMP.checkMp4(context, contentAddress, xmpParseOptions) { dirs ->
             for (dir in dirs.filterIsInstance<XmpDirectory>()) {
                 processXmp(dir.xmpMeta)
             }
@@ -1354,8 +1357,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     result.success(iptcDataList)
                     return
                 }
-            } catch (e: Exception) {
-                result.error("getIptc-exception", "failed to read IPTC for $contentAddress", e.stackTraceToString())
+            } catch (ex: Exception) {
+                result.error("getIptc-exception", "failed to read IPTC for $contentAddress", ex.stackTraceToString())
                 return
             }
         }
@@ -1375,14 +1378,15 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         val xmpStrings = mutableListOf<String>()
         var foundXmp = false
+        val xmpParseOptions = MINIMAL_XMP_PARSING
 
         fun processXmp(xmpMeta: XMPMeta, allowMultiple: Boolean = false) {
             if (foundXmp && !allowMultiple) return
             foundXmp = true
             try {
                 xmpStrings.add(XMPMetaFactory.serializeToString(xmpMeta, xmpSerializeOptions))
-            } catch (e: XMPException) {
-                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", e)
+            } catch (ex: XMPException) {
+                Log.w(LOG_TAG, "failed to read XMP directory for $contentAddress", ex)
             }
         }
 
@@ -1390,27 +1394,27 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType) && !isLargeMp4(mimeType, sizeBytes)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, xmpParseOptions)
                     metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach {
                         processXmp(it, allowMultiple = true)
                     }
                 }
-            } catch (e: Exception) {
-                result.error("getXmp-exception", "failed to read XMP for $contentAddress", e.stackTraceToString())
+            } catch (ex: Exception) {
+                result.error("getXmp-exception", "failed to read XMP for $contentAddress", ex.stackTraceToString())
                 return
-            } catch (e: NoClassDefFoundError) {
-                result.error("getXmp-noclass", "failed to read XMP for $contentAddress", e.stackTraceToString())
+            } catch (ex: NoClassDefFoundError) {
+                result.error("getXmp-noclass", "failed to read XMP for $contentAddress", ex.stackTraceToString())
                 return
-            } catch (e: AssertionError) {
-                result.error("getXmp-assert", "failed to read XMP for $contentAddress", e.stackTraceToString())
+            } catch (ex: AssertionError) {
+                result.error("getXmp-assert", "failed to read XMP for $contentAddress", ex.stackTraceToString())
                 return
             }
         }
 
-        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, ::processXmp)
+        XMP.checkIsoBMFFImage(context, contentAddress, foundXmp, xmpParseOptions, ::processXmp)
         // `metadata-extractor` may fail to get UUID boxes for some MP4 files,
         // so we always check with `mp4parser`, even for smaller files
-        XMP.checkMp4(context, contentAddress) { dirs ->
+        XMP.checkMp4(context, contentAddress, xmpParseOptions) { dirs ->
             for (dir in dirs.filterIsInstance<XmpDirectory>()) {
                 processXmp(dir.xmpMeta)
             }
@@ -1448,8 +1452,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         try {
             val value = context.queryContentPropValue(contentAddress.uri, contentAddress.mimeType, prop)
             result.success(value?.toString())
-        } catch (e: Exception) {
-            result.error("getContentPropValue-query", "failed to query prop for $contentAddress", e.stackTraceToString())
+        } catch (ex: Exception) {
+            result.error("getContentPropValue-query", "failed to query prop for $contentAddress", ex.stackTraceToString())
         }
     }
 
@@ -1467,7 +1471,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                     val tag = when (field) {
                         ExifInterface.TAG_DATETIME -> ExifIFD0Directory.TAG_DATETIME
                         ExifInterface.TAG_DATETIME_DIGITIZED -> ExifSubIFDDirectory.TAG_DATETIME_DIGITIZED
@@ -1534,12 +1538,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
@@ -1580,8 +1584,8 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                     val algorithm = HashAlgorithm.fromKey(function) ?: throw Exception("unsupported hash algorithm: $function")
                     metadataMap[field] = HashUtils.getHash(input, algorithm)
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get hash for $contentAddress function=$function", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to get hash for $contentAddress function=$function", ex)
             }
         }
         return metadataMap
@@ -1599,7 +1603,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                     for (dir in metadata.getDirectoriesOfType(ExifDirectoryBase::class.java)) {
                         foundExif = true
                         val allTags = ExifInterfaceHelper.allTags
@@ -1611,12 +1615,12 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
-            } catch (e: AssertionError) {
-                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", e)
+            } catch (ex: Exception) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
+            } catch (ex: AssertionError) {
+                Log.w(LOG_TAG, "failed to read metadata by metadata-extractor for $contentAddress", ex)
             }
         }
 
@@ -1634,10 +1638,10 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (ex: Exception) {
                 // `ExifInterface` initialization can fail with a RuntimeException
                 // caused by an internal MediaMetadataRetriever failure
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", e)
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for $contentAddress", ex)
             }
         }
 
@@ -1699,5 +1703,7 @@ class MetadataFetchHandler(private val context: Context) : MethodCallHandler {
 
         private const val HASH_FIELD_PREFIX = "hash"
         private const val VALUE_SKIPPED_DATA = "[skipped]"
+
+        private val MINIMAL_XMP_PARSING = SafeXmpReader.MINIMAL_PARSE_OPTIONS
     }
 }

@@ -24,6 +24,7 @@ import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper.getSafeLong
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.storage.MediaStoreUriHelper
 import deckers.thibault.aves.storage.StorageUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -168,7 +169,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)

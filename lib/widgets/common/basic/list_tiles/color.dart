@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/basic/color_indicator.dart';
 import 'package:aves/widgets/common/basic/list_tiles/common.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType;
+import 'package:flex_color_picker/flex_color_picker.dart' show ColorPicker, ColorPickerType, ColorPickerCopyPasteBehavior;
 import 'package:material_ui/material_ui.dart';
 
 class const ColorListTile({
@@ -64,6 +64,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
         ColorPicker(
           color: color,
           onColorChanged: (v) => color = v,
+          // Color picker types shown and used by the color picker.
           pickersEnabled: useTvLayout
               ? const {
                   ColorPickerType.primary: true,
@@ -74,9 +75,15 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
                   ColorPickerType.accent: false,
                   ColorPickerType.wheel: true,
                 },
+          // Picker action buttons and copy paste behavior.
+          copyPasteBehavior: const ColorPickerCopyPasteBehavior(copyFormat: .hexRRGGBB),
+          // Picker item and wheel picker properties.
           hasBorder: true,
           borderRadius: 20,
+          // Title, headings and sub headings used by the color picker.
           subheading: useTvLayout ? const SizedBox(height: 16) : null,
+          // Toggles to show color names and codes and their text styles.
+          showColorCode: true,
         ),
       ],
       actions: [

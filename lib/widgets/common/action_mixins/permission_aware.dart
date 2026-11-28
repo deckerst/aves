@@ -28,6 +28,7 @@ mixin PermissionAwareMixin {
     final apiByDir = await storagePermissionService.getEditionApis(storageDirs, insertion: insertion);
     final restrictedDirectories = apiByDir.entries.where((kv) => kv.value.isEmpty).map((kv) => kv.key).toSet();
     if (restrictedDirectories.isNotEmpty) {
+      debugPrint('Checking storage permissions yielded restrictedDirectories=$restrictedDirectories for storageDirs=$storageDirs');
       await showRestrictedDirectoryDialog(context, restrictedDirectories.first);
       return false;
     }

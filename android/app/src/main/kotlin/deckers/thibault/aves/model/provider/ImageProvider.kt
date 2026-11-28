@@ -38,6 +38,7 @@ import deckers.thibault.aves.metadata.c2pa.C2paReading
 import deckers.thibault.aves.metadata.c2pa.C2paSigning
 import deckers.thibault.aves.metadata.c2pa.C2paValidity
 import deckers.thibault.aves.metadata.metadataextractor.MetadataExtractorHelper
+import deckers.thibault.aves.metadata.metadataextractor.SafeXmpReader
 import deckers.thibault.aves.metadata.xmp.GoogleXMP
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ContentAddress
@@ -1548,7 +1549,7 @@ abstract class ImageProvider {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     return metadata.directories.filter { it.hasErrors() }.map { "${it.name}-${it.errors}" }.toSet()
                 }
             } catch (ex: Exception) {
