@@ -131,11 +131,12 @@ object StorageUtils {
     }
 
     fun getVolumePath(context: Context, anyPath: String): String? {
-        return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }?.let {
-            // check whether the path is in a different user space,
-            // which would not appear in the volume list for the current user
-            return getPrimaryVolumePathForAnyUser(anyPath)
-        }
+        val volumePath = getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
+        if (volumePath != null) return volumePath
+
+        // check whether the path is in a different user space,
+        // which would not appear in the volume list for the current user
+        return getPrimaryVolumePathForAnyUser(anyPath)
     }
 
     private fun getPrimaryVolumePathForAnyUser(anyPath: String): String? {
