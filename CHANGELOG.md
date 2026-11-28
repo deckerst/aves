@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## <a id="unreleased"></a>[Unreleased]
 
+### Fixed
+
+- crash when scanning large RAW/TIFF
+- crash when scanning items with heavy XMP
+
 ## <a id="v1.15.12"></a>[v1.15.12] - 2026-11-24
 
 ### Added

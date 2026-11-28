@@ -121,7 +121,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
@@ -280,7 +280,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
