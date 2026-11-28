@@ -314,7 +314,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
                         if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
                             dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)

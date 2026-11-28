@@ -169,7 +169,7 @@ class SourceEntry {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
 
                 // do not switch on specific MIME types, as the reported MIME type could be wrong
                 // (e.g. PNG registered as JPG)

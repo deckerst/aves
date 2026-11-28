@@ -70,6 +70,12 @@ object MetadataExtractorHelper {
 
     private val UNRELIABLE_DETECTED_MIME_TYPES = setOf(MimeTypes.TIFF, MimeTypes.DVD, MimeTypes.MOV, MimeTypes.ZIP)
 
+    // as used in `RandomAccessStreamReader`
+    private const val UNDEFINED_STREAM_LENGTH = -1L
+
+    // threshold to switch from risking crash from OOM to crash from incorrect indexing
+    private const val UNDEFINED_STREAM_LENGTH_THRESHOLD = 25 * (1 shl 20) // MiB
+
     fun getTagName(tag: Tag): String {
         return if (tag.hasTagName()) {
             tag.tagName
@@ -178,14 +184,14 @@ object MetadataExtractorHelper {
         return detectedMimeType ?: mimeType
     }
 
-    fun safeRead(input: InputStream, path: String?, xmpParseOptions: ParseOptions): com.drew.metadata.Metadata {
+    fun safeRead(input: InputStream, sizeBytes: Long?, path: String?, xmpParseOptions: ParseOptions): com.drew.metadata.Metadata {
         val inputStream = input as? BufferedInputStream ?: BufferedInputStream(input)
         val fileType = FileTypeDetector.detectFileType(inputStream, path)
 
         // Providing the stream length is risky, as it may crash if it is incorrect.
         // Not providing the stream length is also risky, as it may lead to OOM
         // when `RandomAccessStreamReader` reads the entire stream to validate offsets.
-        val undefinedStreamLength = -1L
+        val streamLength = if (sizeBytes != null && sizeBytes > UNDEFINED_STREAM_LENGTH_THRESHOLD) sizeBytes else UNDEFINED_STREAM_LENGTH
 
         val metadata = when (fileType) {
             FileType.Gif -> safeReadGif(inputStream, xmpParseOptions)
@@ -204,9 +210,9 @@ object MetadataExtractorHelper {
             FileType.Kdc,
             FileType.ThreeFR,
             FileType.Pef,
-            FileType.Srw -> safeReadTiff(inputStream, undefinedStreamLength, xmpParseOptions)
+            FileType.Srw -> safeReadTiff(inputStream, streamLength, xmpParseOptions)
 
-            else -> ImageMetadataReader.readMetadata(inputStream, undefinedStreamLength, fileType)
+            else -> ImageMetadataReader.readMetadata(inputStream, streamLength, fileType)
         }
 
         metadata.addDirectory(FileTypeDirectory(fileType))

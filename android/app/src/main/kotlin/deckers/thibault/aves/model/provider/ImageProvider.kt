@@ -1549,7 +1549,7 @@ abstract class ImageProvider {
         if (canReadWithMetadataExtractor(contentAddress.mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, SafeXmpReader.MINIMAL_PARSE_OPTIONS)
                     return metadata.directories.filter { it.hasErrors() }.map { "${it.name}-${it.errors}" }.toSet()
                 }
             } catch (ex: Exception) {

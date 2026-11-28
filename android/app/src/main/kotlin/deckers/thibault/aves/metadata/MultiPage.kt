@@ -119,7 +119,7 @@ object MultiPage {
         if (canReadWithMetadataExtractor(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                    val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, MINIMAL_XMP_PARSING)
+                    val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                     foundExif = metadata.directories.any { it is ExifDirectoryBase && it.tagCount > 0 }
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         dir.getSafeInt(ExifDirectoryBase.TAG_ORIENTATION) {
@@ -198,7 +198,7 @@ object MultiPage {
     fun getJpegMpfEntries(context: Context, contentAddress: ContentAddress, sizeBytes: Long?): List<MpEntry>? {
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, MINIMAL_XMP_PARSING)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, MINIMAL_XMP_PARSING)
                 return metadata.getDirectoriesOfType(MpEntryDirectory::class.java).map { it.entry }
             }
         } catch (e: Exception) {
@@ -341,7 +341,7 @@ object MultiPage {
 
         try {
             Metadata.openSafeInputStream(context, contentAddress, sizeBytes)?.use { input ->
-                val metadata = MetadataExtractorHelper.safeRead(input, contentAddress.path, xmpParseOptions)
+                val metadata = MetadataExtractorHelper.safeRead(input, sizeBytes, contentAddress.path, xmpParseOptions)
                 foundXmp = metadata.directories.any { it is XmpDirectory && it.tagCount > 0 }
                 metadata.getDirectoriesOfType(XmpDirectory::class.java).map { it.xmpMeta }.forEach(::processXmp)
             }
