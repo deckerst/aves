@@ -2,7 +2,7 @@ import 'package:aves/ref/metadata/xmp.dart';
 import 'package:aves/widgets/viewer/info/metadata/model/xmp_card_data.dart';
 import 'package:aves/widgets/viewer/info/metadata/model/xmp_namespaces.dart';
 
-class XmpCreatorAtom extends XmpNamespace {
+class XmpCreatorAtomNamespace extends XmpNamespace {
   new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.creatorAtom);
 
   @override
@@ -34,6 +34,15 @@ class XmpDwcNamespace extends XmpNamespace {
     XmpCardData(RegExp(nsPrefix + r'Record/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'ResourceRelationship/(.*)')),
     XmpCardData(RegExp(nsPrefix + r'Taxon/(.*)')),
+  ];
+}
+
+class XmpExtensisFontSenseNamespace extends XmpNamespace {
+  new({required super.schemaRegistryPrefixes, required super.rawProps}) : super(nsUri: XmpNamespaces.extensisFontSense);
+
+  @override
+  late final List<XmpCardData> cards = [
+    XmpCardData(RegExp(nsPrefix + r'slug\[(\d+)\]/(.*)')),
   ];
 }
 
